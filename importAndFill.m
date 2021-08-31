@@ -45,7 +45,7 @@
 
 %% CURRENTLY CANNOT IMPORT CLUSTERS! SKELETON MARKERS AND UNLABELED MARKERS ONLY!
 
-% function [importStruct,batchRaw] = importAndFill(projectPath,projectName)
+function [importStruct] = importAndFill(importStruct,isFun)
 projectName='Spr21TWWBiomechanics';
 % projectPath='C:\Users\zafer\Documents\MATLAB\GitRepos\TurnTest'; % Dell laptop
 projectPath='C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics'; % For Mitchell's desktop

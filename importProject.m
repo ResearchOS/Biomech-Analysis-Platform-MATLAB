@@ -11,8 +11,12 @@ st=dbstack;
 fName=st(1).name;
 
 %% Specify trial names for import
+cd(projectStruct.Info.ProjectPath);
+addpath(genpath(cd)); % Add all subfolders of the project folder.
+% currCD=cd('SpecifyTrials');
 inclStruct=feval(['specifyTrials_' fName],projectStruct.Info.LogsheetPath,projectStruct.Info.ProjectPath,projectStruct.Info.ProjectName); % Specify metadata to use to isolate trials of interest.
-[trialsOfInt,ProjHelper,logsheet]=getValidTrialNames(projectStruct.Info.LogsheetPath,projectStruct.Info.Flags.Org,inclStruct); % Trial names of interest for importing/loading.
+% cd(currCD);
+[trialsOfInt,ProjHelper,logsheet]=getValidTrialNames(projectStruct.Info.LogsheetPath,0,inclStruct); % Trial names of interest for importing/loading.
 
 % Get the list of all subject names used in the logsheet. Use this to identify placeholders in the projectStruct.
 [~,subIDCol]=find(strcmp(logsheet(1,:),ProjHelper.Info.ColumnNames.Subject.Codename),1,'first');
@@ -20,7 +24,7 @@ subNamesInLogsheet=unique(logsheet(4:end,subIDCol),'stable');
 
 projectStruct.Info.ProjHelper=ProjHelper;
 
-cd(projectStruct.Info.ProjectPath); % Switch current directory to projectPath
+% cd(currCD); % Switch current directory to projectPath
 cd('Subject Data'); % Down into Subject Data folder (contains all subjects' data folders)
 
 if ~isfield(projectStruct,'Subject') % If projectStruct has no data in it, initialize it.

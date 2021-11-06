@@ -34,3 +34,7 @@ for i=1:numLines
     end
     
 end
+
+if ~exist('projectNamesPaths','var')
+    projectNamesPaths=''; % Empty char for no path names being present.
+end

@@ -43,7 +43,8 @@ dataPathLabel.Text='Data Path';
 codePathLabel=uilabel(importTab);
 codePathLabel.Text='Code Path';
 projectNameField=uieditfield(importTab,'text','Value','Project Name','ValueChangedFcn',@(projectNameField,event) projectNameFieldValueChanged(projectNameField)); % Project name edit field
-logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .xlsx)'); % Logsheet path name edit field (ends with .xlsx or .xls)
+logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .xlsx)','ValueChangedFcn',@(logsheetPathField,event) logsheetPathFieldValueChanged(logsheetPathField));
+% logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .xlsx)',@(logsheetPathField,event) logsheetPathFieldValueChanged(logsheetPathField)); % Logsheet path name edit field (ends with .xlsx or .xls)
 dataPathField=uieditfield(importTab,'text','Value','Data Path (contains ''Subject Data'' folder)'); % Data path name edit field (to the folder containing 'Subject Data' folder)
 codePathField=uieditfield(importTab,'text','Value','Path to Project Processing Code Folder'); % Code path name edit field (to the folder containing all code for this project).
 % Button to open the project's importSettings file.

@@ -38,7 +38,7 @@ end
 
 % If the project was pre-existing
 if existingProject==1
-    A=readAllProjects(); % Return the text of the 'allProjects_ProjectNamesPaths.txt' file
+    A=readAllProjects(getappdata(fig,'everythingPath')); % Return the text of the 'allProjects_ProjectNamesPaths.txt' file
     projectNamePaths=isolateProjectNamesPaths(A,projectName); % Return the path names associated with the specified project name.
     
     % Set those path names into the figure's app data, & update the displays

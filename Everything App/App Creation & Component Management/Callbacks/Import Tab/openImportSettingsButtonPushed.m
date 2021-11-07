@@ -20,7 +20,7 @@ elseif ismac==1
     slash='/';
 end
 
-importPath=[codePath projectName '_Import' slash];
+importPath=[codePath 'Import_' projectName slash];
 
 if ~isfolder(importPath)
     mkdir(importPath);
@@ -28,8 +28,10 @@ end
 
 importSettingsName=['importSettings_' projectName '.m'];
 
-if isequal(fig.Children.Children(1,1).Children(8,1).Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it.    
-    copyfile('importSettingsTemplate.m',[importPath importSettingsName]); % Copy the project-independent template to the new location. Makes the Import folder if it doesn't already exist.
+if isequal(fig.Children.Children(1,1).Children(8,1).Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it.   
+    everythingPath=getappdata(fig,'everythingPath');
+    templatePath=[everythingPath 'App Creation & Component Management' everythingPath(end) 'Project-Independent Templates' everythingPath(end) 'importSettingsTemplate.m'];
+    copyfile(templatePath,[importPath importSettingsName]); % Copy the project-independent template to the new location. Makes the Import folder if it doesn't already exist.
     A=regexp(fileread([importPath importSettingsName]),'\n','split'); % Open the newly created importSettings file.
     A{1}=['function [ProjHelper,dataTypes,segment]=' importSettingsName(1:end-2) '(subjectListInStruct,markerName)'];
     fid=fopen([importPath importSettingsName],'w');

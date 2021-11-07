@@ -6,7 +6,15 @@ function []=pgui()
 % WRITTEN BY: MITCHELL TILLMAN, 11/06/2021
 % IN HONOR OF DOUGLAS ERIC TILLMAN, 10/29/1961-07/05/2021
 
+% Assumes that the app is being run from within the 'Everything App' folder and that the rest of the files & folders are untouched.
 addpath(genpath(fileparts(mfilename('fullpath')))); % Add all subfolders to the path so that app creation & management is unencumbered.
+
+% Check if Mac or PC
+if ispc==1
+    slash='\';
+elseif ismac==1
+    slash='/';
+end
 
 %% Create figure & store its attributes
 fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize); % Create the figure window for the app
@@ -17,6 +25,7 @@ figSize=get(fig,'Position'); % Get the figure's position.
 figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax: left offset, bottom offset, width, height (pixels)
 
 %% Initialize app data
+setappdata(fig,'everythingPath',[fileparts(mfilename('fullpath')) slash]); % Path to the 'Everything App' folder.
 setappdata(fig,'projectName',''); % projectName always begins empty.
 setappdata(fig,'logsheetPath',''); % logsheetPath always begins empty.
 setappdata(fig,'dataPath',''); % dataPath always begins empty.
@@ -78,7 +87,7 @@ rootSavePlotPathField=uieditfield(plotTab,'text','Value','Root Folder to Save Pl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% AFTER COMPONENT INITIALIZATION
 %% Read any existing projects' info (path names, etc.), store them, and display them.
-[A,allProjectsTxt]=readAllProjects(); % Return the text of the 'allProjects_ProjectNamesPaths.txt' file
+[A,allProjectsTxt]=readAllProjects(getappdata(fig,'everythingPath')); % Return the text of the 'allProjects_ProjectNamesPaths.txt' file
 setappdata(fig,'allProjectsTxtPath',allProjectsTxt); % Store the address of the 'allProjects_ProjectNamesPaths.txt' file
 if iscell(A) % The file exists and has a pre-existing project in it.
     allProjectsList=getAllProjectNames(A);
@@ -133,22 +142,12 @@ if isempty(getappdata(fig,'projectName'))
     end
 end
 
-% Check if Mac or PC
-if ispc==1
-    slash='\';
-elseif ismac==1
-    slash='/';
-end
-
 % Change the text on the importSettings, specifyTrials, and specifyVars buttons  based on what paths/files are present.
 % This will change their behavior.
 codePath=getappdata(fig,'codePath');
 projectName=getappdata(fig,'projectName');
-importSettingsTemplate=0; % Initialize that the project-specific importSettings template is not found.
 importSettingsFile=0; % Initialize that the project-specific user customized importSettings is found.
-specifyTrialsTemplate=0; % Initialize that the project-specific specifyTrials template is not found.
 specifyTrialsFile=0; % Initialize that the project-specific user customized specifyTrials is found.
-specifyVarsTemplate=0; % Initialize that the project-specific specifyVars template is not found.
 specifyVarsFile=0; % Initialize that the project-specific user customized specifyVars is found.
 if ~isempty(codePath) && ~isempty(projectName) % Code path and project name are both present, look for the project-specific templates.
     if isfolder([codePath projectName '_Import' slash]) % Project-specific user customized files stored in Import subfolder of project-specific codePath

@@ -1,0 +1,12 @@
+Project Name: Spr21TWWBiomechanics
+Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Subject Data\Spr21TWW_AllSubjects.xlsx
+Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
+Code Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
+Save Plot Root Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Plots\
+
+Project Name: Pitching
+Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\20210817_PitchingLogsheet_TOKYO.xlsx
+Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\
+Code Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\
+
+Most Recent Project Name: Spr21TWWBiomechanics

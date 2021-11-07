@@ -20,7 +20,7 @@ elseif ismac==1
     slash='/';
 end
 
-importPath=[codePath projectName '_Import' slash];
+importPath=[codePath 'Import_' projectName slash];
 
 if ~isfolder(importPath)
     mkdir(importPath);

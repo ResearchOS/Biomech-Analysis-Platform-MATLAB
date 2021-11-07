@@ -8,8 +8,8 @@ function [projectNamesPaths]=isolateProjectNamesPaths(text,projectName)
 numLines=length(text);
 foundProject=0; % Initialize the project name to not be found.
 logsheetPathPrefix='Logsheet Path:';
-dataPathPrefix='Project Data Path:';
-codePathPrefix='Project Code Path:';
+dataPathPrefix='Data Path:';
+codePathPrefix='Code Path:';
 rootSavePlotPathPrefix='Save Plot Root Path:';
 for i=1:numLines
     if contains(text{i},'Project Name:') && contains(text{i},projectName) % This is the project name line

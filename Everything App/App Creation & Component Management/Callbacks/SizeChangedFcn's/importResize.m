@@ -39,16 +39,17 @@ end
 %% Positions specified as relative to tab width & height
 % All positions here are specified as relative positions
 projectNameLabelRelPos=[0.02 0.9];
-logsheetNameLabelRelPos=[0.02 0.85];
-dataPathLabelRelPos=[0.02 0.8];
-codePathLabelRelPos=[0.02 0.75];
-projectNameEditFieldRelPos=[0.15 0.9]; % Width (relative) by height (relative)
-logsheetNameEditFieldRelPos=[0.15 0.85];
-dataPathEditFieldRelPos=[0.15 0.8];
-codePathEditFieldRelPos=[0.15 0.75];
+logsheetNameButtonRelPos=[0.02 0.85];
+dataPathButtonRelPos=[0.02 0.8];
+codePathButtonRelPos=[0.02 0.75];
+
+projectNameEditFieldRelPos=[0.2 0.9]; % Width (relative) by height (relative)
+logsheetNameEditFieldRelPos=[0.2 0.85];
+dataPathEditFieldRelPos=[0.2 0.8];
+codePathEditFieldRelPos=[0.2 0.75];
 openImportSettingsButtonRelPos=[0.08 0.7];
 openSpecifyTrialsButtonRelPos=[0.08 0.65];
-projectDropDownRelPos=[0.6 0.9];
+projectDropDownRelPos=[0.65 0.9];
 runImportButtonRelPos=[0.08 0.5];
 openSpecifyVarsButtonRelPos=[0.08 0.6];
 redoImportCheckboxRelPos=[0.7 0.5];
@@ -59,9 +60,9 @@ updateMetadataCheckboxRelPos=[0.7 0.4];
 % All component dimensions here are specified as absolute sizes (pixels)
 compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text
 projectNameLabelSize=[0.18 compHeight];
-logsheetNameLabelSize=[0.18 compHeight];
-dataPathLabelSize=[0.18 compHeight];
-codePathLabelSize=[0.18 compHeight];
+logsheetNameButtonSize=[0.17 compHeight];
+dataPathButtonSize=[0.15 compHeight];
+codePathButtonSize=[0.15 compHeight];
 
 projectNameEditFieldSize=[0.25 compHeight]; % Width (relative) by height (absolute)
 logsheetNameEditFieldSize=[0.4 compHeight];
@@ -78,9 +79,9 @@ updateMetadataCheckboxSize=[0.3 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
-logsheetNameLabelPos=round([logsheetNameLabelRelPos.*figSize logsheetNameLabelSize(1)*figSize(1) logsheetNameLabelSize(2)]);
-dataPathLabelPos=round([dataPathLabelRelPos.*figSize dataPathLabelSize(1)*figSize(1) dataPathLabelSize(2)]);
-codePathLabelPos=round([codePathLabelRelPos.*figSize codePathLabelSize(1)*figSize(1) codePathLabelSize(2)]);
+logsheetNameButtonPos=round([logsheetNameButtonRelPos.*figSize logsheetNameButtonSize(1)*figSize(1) logsheetNameButtonSize(2)]);
+dataPathButtonPos=round([dataPathButtonRelPos.*figSize dataPathButtonSize(1)*figSize(1) dataPathButtonSize(2)]);
+codePathButtonPos=round([codePathButtonRelPos.*figSize codePathButtonSize(1)*figSize(1) codePathButtonSize(2)]);
 
 projectNameEditFieldPos=round([projectNameEditFieldRelPos.*figSize projectNameEditFieldSize(1)*figSize(1) projectNameEditFieldSize(2)]);
 logsheetNameEditFieldPos=round([logsheetNameEditFieldRelPos.*figSize logsheetNameEditFieldSize(1)*figSize(1) logsheetNameEditFieldSize(2)]);
@@ -97,9 +98,9 @@ updateMetadataCheckBoxPos=round([updateMetadataCheckboxRelPos.*figSize updateMet
 
 % Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
-data.LogsheetNameLabel.Position=logsheetNameLabelPos;
-data.DataPathLabel.Position=dataPathLabelPos;
-data.CodePathLabel.Position=codePathLabelPos;
+data.LogsheetPathButton.Position=logsheetNameButtonPos;
+data.DataPathButton.Position=dataPathButtonPos;
+data.CodePathButton.Position=codePathButtonPos;
 data.ProjectNameField.Position=projectNameEditFieldPos;
 data.LogsheetPathField.Position=logsheetNameEditFieldPos;
 data.DataPathField.Position=dataPathEditFieldPos;
@@ -115,9 +116,9 @@ data.UpdateMetadataCheckBox.Position=updateMetadataCheckBoxPos;
 
 % Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
-data.LogsheetNameLabel.FontSize=newFontSize;
-data.DataPathLabel.FontSize=newFontSize;
-data.CodePathLabel.FontSize=newFontSize;
+data.LogsheetPathButton.FontSize=newFontSize;
+data.DataPathButton.FontSize=newFontSize;
+data.CodePathButton.FontSize=newFontSize;
 data.ProjectNameField.FontSize=newFontSize;
 data.LogsheetPathField.FontSize=newFontSize;
 data.DataPathField.FontSize=newFontSize;

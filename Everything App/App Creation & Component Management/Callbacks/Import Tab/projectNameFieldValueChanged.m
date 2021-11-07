@@ -5,13 +5,24 @@ function []=projectNameFieldValueChanged(src)
 
 projectName=src.Value;
 
+fig=ancestor(src,'figure','toplevel');
 if isempty(projectName)
+    src.Value=getappdata(fig,'projectName');
+    if isempty(src.Value) % Because there was no prior projectName stored
+        src.Value='Project Name';
+    end
     return;
 end
 
-fig=ancestor(src,'figure','toplevel');
 setappdata(fig,'projectName',projectName); % Store the project name to the app data.
 fileName=getappdata(fig,'allProjectsTxtPath'); % Get the 'allProjects_ProjectNamesPaths.txt' path.
+
+h=findall(fig.Children.Children(1,1));
+for i=1:length(h)
+    if i~=1 && i~=13 && i~=17 % Ignore the project name textbox and label.
+        h(i).Visible='on';
+    end
+end
 
 % Check if this project name is already part of the drop down list (e.g. it's already an existing project, at least in name)
 % If so, just change the drop down entry and update the metadata/edit fields accordingly.

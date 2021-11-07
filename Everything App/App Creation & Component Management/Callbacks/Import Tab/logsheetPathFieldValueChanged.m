@@ -6,6 +6,19 @@ data=src.Value;
 if isempty(data)
     return;
 end
+
+if exist(data,'file')~=2
+    warning(['Incorrect path: ' data]);
+    return;
+end
+if ispc==1 % On PC
+    slash='\';
+elseif ismac==1 % On Mac
+    slash='/';
+end
+if ~isequal(data(end),slash)
+    data=[data slash];
+end
 fig=ancestor(src,'figure','toplevel');
 
 setappdata(fig,'logsheetPath',data); % Store the logsheet path name to the figure variable.
@@ -14,7 +27,7 @@ allProjectsPathTxt=getappdata(fig,'allProjectsTxtPath'); % The full file name of
 
 % The project name should ALWAYS be in this file at this point. If not, it's because it's the first time and they've never entered a project name before.
 if exist(allProjectsPathTxt,'file')~=2
-    warning('MUST ENTER A PROJECT NAME FIRST!');
+    warning('ENTER A PROJECT NAME!');
     return;
 end
 
@@ -49,7 +62,7 @@ for i=1:length(text)
 end
 
 if logsheetPathExists==0
-    linesAfter=text(i:length(text)); % Extract everything after the new line.
+    linesAfter=text(lineNum:length(text)); % Extract everything after the new line.
     text{i}=[logsheetPrefix ' ' data]; % Add the logsheet path to the text.
     text(i+1:i+length(linesAfter))=linesAfter; % Replace the 2nd part of the text.
 end

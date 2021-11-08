@@ -28,7 +28,8 @@ end
 
 importSettingsName=['importSettings_' projectName '.m'];
 
-if isequal(fig.Children.Children(1,1).Children(8,1).Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it.   
+h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
+if isequal(h.Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it.   
     everythingPath=getappdata(fig,'everythingPath');
     templatePath=[everythingPath 'App Creation & Component Management' everythingPath(end) 'Project-Independent Templates' everythingPath(end) 'importSettingsTemplate.m'];
     copyfile(templatePath,[importPath importSettingsName]); % Copy the project-independent template to the new location. Makes the Import folder if it doesn't already exist.
@@ -38,7 +39,7 @@ if isequal(fig.Children.Children(1,1).Children(8,1).Text(1:6),'Create') % Creati
     fprintf(fid,'%s\n',A{1:end-1});
     fprintf(fid,'%s',A{end});
     fclose(fid);    
-    fig.Children.Children(1,1).Children(8,1).Text=['Open importSettings ' projectName '.m'];
+    h.Text=['Open importSettings ' projectName '.m'];
 end
 
 edit([importPath importSettingsName]); % Always open the file.

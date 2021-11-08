@@ -17,7 +17,8 @@ setappdata(fig,'logsheetPath',logsheetPath);
 disp(logsheetPath);
 
 % Set the logsheetPathField to display the new path
-fig.Children.Children(1,1).Children(11,1).Value=logsheetPath;
+h=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
+h.Value=logsheetPath;
 
 % Run the logsheetPathFieldValueChanged callback.
-logsheetPathFieldValueChanged(fig.Children.Children(1,1).Children(11,1));
+logsheetPathFieldValueChanged(h);

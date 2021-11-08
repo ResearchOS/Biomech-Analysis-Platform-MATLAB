@@ -52,9 +52,10 @@ openSpecifyTrialsButtonRelPos=[0.08 0.65];
 projectDropDownRelPos=[0.65 0.9];
 runImportButtonRelPos=[0.08 0.5];
 openSpecifyVarsButtonRelPos=[0.08 0.6];
-redoImportCheckboxRelPos=[0.7 0.5];
-addDataTypesCheckboxRelPos=[0.7 0.45];
-updateMetadataCheckboxRelPos=[0.7 0.4];
+redoImportCheckboxRelPos=[0.7 0.85];
+addDataTypesCheckboxRelPos=[0.7 0.8];
+updateMetadataCheckboxRelPos=[0.7 0.75];
+dataTypeImportSettingsDropDownRelPos=[0.65 0.7];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -63,7 +64,6 @@ projectNameLabelSize=[0.18 compHeight];
 logsheetNameButtonSize=[0.17 compHeight];
 dataPathButtonSize=[0.15 compHeight];
 codePathButtonSize=[0.15 compHeight];
-
 projectNameEditFieldSize=[0.25 compHeight]; % Width (relative) by height (absolute)
 logsheetNameEditFieldSize=[0.4 compHeight];
 dataPathEditFieldSize=[0.4 compHeight];
@@ -76,6 +76,7 @@ openSpecifyVarsButtonSize=[0.4 compHeight];
 redoImportCheckboxSize=[0.3 compHeight];
 addDataTypesCheckboxSize=[0.3 compHeight];
 updateMetadataCheckboxSize=[0.3 compHeight];
+dataTypeImportSettingsDropDownSize=[0.25 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
@@ -95,6 +96,7 @@ openSpecifyVarsButtonPos=round([openSpecifyVarsButtonRelPos.*figSize openSpecify
 redoImportCheckboxPos=round([redoImportCheckboxRelPos.*figSize redoImportCheckboxSize(1)*figSize(1) redoImportCheckboxSize(2)]);
 addDataTypesCheckboxPos=round([addDataTypesCheckboxRelPos.*figSize addDataTypesCheckboxSize(1)*figSize(1) addDataTypesCheckboxSize(2)]);
 updateMetadataCheckBoxPos=round([updateMetadataCheckboxRelPos.*figSize updateMetadataCheckboxSize(1)*figSize(1) updateMetadataCheckboxSize(2)]);
+dataTypeImportSettingsDropDownPos=round([dataTypeImportSettingsDropDownRelPos.*figSize dataTypeImportSettingsDropDownSize(1)*figSize(1) dataTypeImportSettingsDropDownSize(2)]);
 
 % Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
@@ -113,6 +115,7 @@ data.OpenSpecifyVarsButton.Position=openSpecifyVarsButtonPos;
 data.RedoImportCheckBox.Position=redoImportCheckboxPos;
 data.AddDataTypesCheckBox.Position=addDataTypesCheckboxPos;
 data.UpdateMetadataCheckBox.Position=updateMetadataCheckBoxPos;
+data.DataTypeImportSettingsDropDown.Position=dataTypeImportSettingsDropDownPos;
 
 % Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
@@ -131,5 +134,6 @@ data.OpenSpecifyVarsButton.FontSize=newFontSize;
 data.RedoImportCheckBox.FontSize=newFontSize;
 data.AddDataTypesCheckBox.FontSize=newFontSize;
 data.UpdateMetadataCheckBox.FontSize=newFontSize;
+data.DataTypeImportSettingsDropDown.FontSize=newFontSize;
 
 % Restore component visibility

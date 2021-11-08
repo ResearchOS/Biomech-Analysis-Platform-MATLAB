@@ -15,7 +15,8 @@ setappdata(fig,'dataPath',dataPath);
 disp(dataPath);
 
 % Set the dataPathField to display the new path.
-fig.Children.Children(1,1).Children(10,1).Value=dataPath;
+h=findobj(fig,'Type','uieditfield','Tag','DataPathField');
+h.Value=dataPath;
 
 % Run the dataPathFieldValueChanged callback
-dataPathFieldValueChanged(fig.Children.Children(1,1).Children(10,1));
+dataPathFieldValueChanged(h);

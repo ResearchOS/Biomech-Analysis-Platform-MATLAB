@@ -45,32 +45,34 @@ settingsTab=uitab(tabGroup1,'Title','Settings','AutoResizeChildren','off'); % Cr
 %% Initialize the import tab.
 projectNameLabel=uilabel(importTab);
 projectNameLabel.Text='Project Name';
-logsheetPathButton=uibutton(importTab,'push','Text','Logsheet Path','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
-dataPathButton=uibutton(importTab,'push','Text','Data Path','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
-codePathButton=uibutton(importTab,'push','Text','Code Path','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
-projectNameField=uieditfield(importTab,'text','Value','Project Name','ValueChangedFcn',@(projectNameField,event) projectNameFieldValueChanged(projectNameField)); % Project name edit field
-logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .xlsx)','ValueChangedFcn',@(logsheetPathField,event) logsheetPathFieldValueChanged(logsheetPathField));
-dataPathField=uieditfield(importTab,'text','Value','Data Path (contains ''Subject Data'' folder)','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
-codePathField=uieditfield(importTab,'text','Value','Path to Project Processing Code Folder','ValueChangedFcn',@(codePathField,event) codePathFieldValueChanged(codePathField)); % Code path name edit field (to the folder containing all code for this project).
+logsheetPathButton=uibutton(importTab,'push','Text','Logsheet Path','Tag','LogsheetPathButton','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
+dataPathButton=uibutton(importTab,'push','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
+codePathButton=uibutton(importTab,'push','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
+projectNameField=uieditfield(importTab,'text','Value','Project Name','Tag','ProjectNameField','ValueChangedFcn',@(projectNameField,event) projectNameFieldValueChanged(projectNameField)); % Project name edit field
+logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .xlsx)','Tag','LogsheetPathField','ValueChangedFcn',@(logsheetPathField,event) logsheetPathFieldValueChanged(logsheetPathField));
+dataPathField=uieditfield(importTab,'text','Value','Data Path (contains ''Subject Data'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
+codePathField=uieditfield(importTab,'text','Value','Path to Project Processing Code Folder','Tag','CodePathField','ValueChangedFcn',@(codePathField,event) codePathFieldValueChanged(codePathField)); % Code path name edit field (to the folder containing all code for this project).
 % Button to open the project's importSettings file.
-openImportSettingsButton=uibutton(importTab,'push','Text','Create importSettings.m','ButtonPushedFcn',@(openImportSettingsButton,event) openImportSettingsButtonPushed(openImportSettingsButton,projectNameField.Value));
+openImportSettingsButton=uibutton(importTab,'push','Text','Create importSettings.m','Tag','OpenImportSettingsButton','ButtonPushedFcn',@(openImportSettingsButton,event) openImportSettingsButtonPushed(openImportSettingsButton,projectNameField.Value));
 % Button to open the project's specifyTrials to select which trials to load/import
-openSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton,projectNameField.Value));
+openSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton,projectNameField.Value));
 % Button to open the project's specifyVars to select which data from those trials to load.
-openSpecifyVarsButton=uibutton(importTab,'push','Text','Create specifyVars.m','ButtonPushedFcn',@(openSpecifyVarsButton,event) openSpecifyVarsButtonPushed(openSpecifyVarsButton,projectNameField.Value));
-% Drop down to switch between active projects.
-switchProjectsDropDown=uidropdown(importTab,'Items',{'New Project'},'Editable','off','ValueChangedFcn',@(switchProjectsDropDown,event) switchProjectsDropDownValueChanged(switchProjectsDropDown));
+openSpecifyVarsButton=uibutton(importTab,'push','Text','Create specifyVars.m','Tag','OpenSpecifyVarsButton','ButtonPushedFcn',@(openSpecifyVarsButton,event) openSpecifyVarsButtonPushed(openSpecifyVarsButton,projectNameField.Value));
 % Checkbox to redo import (overwrites all existing data files)
-redoImportCheckbox=uicheckbox(importTab,'Text','Redo (Overwrite) Import','Value',0,'ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
+redoImportCheckbox=uicheckbox(importTab,'Text','Redo (Overwrite) Import','Value',0,'Tag','RedoImportCheckbox','ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
 % Checkbox to add new data types to existing files
-addDataTypesCheckbox=uicheckbox(importTab,'Text','Add Data Types','Value',0,'ValueChangedFcn',@(addDataTypesCheckbox,event) addDataTypesCheckboxValueChanged(addDataTypesCheckbox));
+addDataTypesCheckbox=uicheckbox(importTab,'Text','Add Data Types','Value',0,'Tag','AddDataTypesCheckbox','ValueChangedFcn',@(addDataTypesCheckbox,event) addDataTypesCheckboxValueChanged(addDataTypesCheckbox));
 % Checkbox to update metadata only in existing files
-updateMetadataCheckbox=uicheckbox(importTab,'Text','Update Metadata Only','Value',0','ValueChangedFcn',@(updateMetadataCheckbox,event) updateMetadataCheckboxValueChanged(updateMetadataCheckbox));
+updateMetadataCheckbox=uicheckbox(importTab,'Text','Update Metadata Only','Value',0','Tag','UpdateMetadataCheckbox','ValueChangedFcn',@(updateMetadataCheckbox,event) updateMetadataCheckboxValueChanged(updateMetadataCheckbox));
 % Button to run the import/load procedure
-runImportButton=uibutton(importTab,'push','Text','Run Import/Load','ButtonPushedFcn',@(runImportButton,event) runImportButtonPushed(runImportButton));
+runImportButton=uibutton(importTab,'push','Text','Run Import/Load','Tag','RunImportButton','ButtonPushedFcn',@(runImportButton,event) runImportButtonPushed(runImportButton));
+% Drop down to switch between active projects.
+switchProjectsDropDown=uidropdown(importTab,'Items',{'New Project'},'Editable','off','Tag','SwitchProjectsDropDown','ValueChangedFcn',@(switchProjectsDropDown,event) switchProjectsDropDownValueChanged(switchProjectsDropDown));
+% Drop down to specify & open a new data type's importSettings
+dataTypeImportSettingsDropDown=uidropdown(importTab,'Items',{'MOCAP','FP','EMG','IMU'},'Editable','on','Tag','DataTypeImportSettingsDropDown','ValueChangedFcn',@(dataTypeImportSettingsDropDown,event) dataTypeImportSettingsDropDownValueChanged(dataTypeImportSettingsDropDown));
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
-    'ProjectNameField',projectNameField,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,...
+    'ProjectNameField',projectNameField,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
     'OpenImportSettingsButton',openImportSettingsButton,'OpenSpecifyTrialsButton',openSpecifyTrialsButton,'OpenSpecifyVarsButton',openSpecifyVarsButton,...
     'SwitchProjectsDropDown',switchProjectsDropDown,'RedoImportCheckBox',redoImportCheckbox,'AddDataTypesCheckBox',addDataTypesCheckbox,'UpdateMetadataCheckBox',updateMetadataCheckbox,'RunImportButton',runImportButton);
 
@@ -133,6 +135,7 @@ else % The file does not exist, or exists and has nothing in it.
     
 end
 
+% Make everything invisible until the project name is entered!
 if isempty(getappdata(fig,'projectName'))
     h=findall(fig.Children.Children(1,1)); % The import tab and all of its components.
     for i=1:length(h)
@@ -150,8 +153,8 @@ importSettingsFile=0; % Initialize that the project-specific user customized imp
 specifyTrialsFile=0; % Initialize that the project-specific user customized specifyTrials is found.
 specifyVarsFile=0; % Initialize that the project-specific user customized specifyVars is found.
 if ~isempty(codePath) && ~isempty(projectName) % Code path and project name are both present, look for the project-specific templates.
-    if isfolder([codePath projectName '_Import' slash]) % Project-specific user customized files stored in Import subfolder of project-specific codePath
-        listing=dir([codePath projectName '_Import' slash]);
+    if isfolder([codePath 'Import_' projectName slash]) % Project-specific user customized files stored in Import subfolder of project-specific codePath
+        listing=dir([codePath 'Import_' projectName slash]);
         for i=1:length(listing)
             if isequal(listing(i).name,['importSettings_' projectName '.m'])
                 importSettingsFile=1;
@@ -165,25 +168,32 @@ if ~isempty(codePath) && ~isempty(projectName) % Code path and project name are 
 end
 
 % 'Create' new project-specific templates.
-if importSettingsFile==0 % Make the button function to create a new project-specific importSettings
-    fig.Children.Children(1,1).Children(8,1).Text=['Create importSettings_' projectName '.m'];
+% h=findobj(fig,'Type','uibutton');
+if importSettingsFile==0 % Make the button function to create a new project-specific importSettings    
+    h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
+    h.Text=['Create importSettings_' projectName '.m'];
 end
 if specifyTrialsFile==0 % Make the button function to create a new project-specific specifyTrials
-    fig.Children.Children(1,1).Children(7,1).Text=['Create specifyTrials_Import' projectName '.m'];
+    h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
+    h.Text=['Create specifyTrials_Import' projectName '.m'];   
 end
 if specifyVarsFile==0 % Make the button function to create a new project-specific specifyVars
-    fig.Children.Children(1,1).Children(6,1).Text=['Create specifyVars_Import' projectName '.m'];
+    h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyVarsButton');
+    h.Text=['Create specifyVars_Import' projectName '.m'];   
 end
 
 % 'Open' the project-specific files.
 if importSettingsFile==1
-    fig.Children.Children(1,1).Children(8,1).Text=['Open importSettings_' projectName '.m'];
+    h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
+    h.Text=['Open importSettings_' projectName '.m'];
 end
 if specifyTrialsFile==1
-    fig.Children.Children(1,1).Children(7,1).Text=['Open specifyTrials_Import' projectName '.m'];
+    h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
+    h.Text=['Open specifyTrials_Import' projectName '.m'];
 end
 if specifyVarsFile==1
-    fig.Children.Children(1,1).Children(6,1).Text=['Open specifyVars_Import ' projectName '.m'];
+    h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyVarsButton');
+    h.Text=['Open specifyVars_Import' projectName '.m'];
 end
 
 assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected

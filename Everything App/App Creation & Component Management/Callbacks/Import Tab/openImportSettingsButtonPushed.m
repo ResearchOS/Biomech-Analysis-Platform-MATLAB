@@ -39,7 +39,7 @@ if isequal(h.Text(1:6),'Create') % Creating the project's importSetting file for
     fprintf(fid,'%s\n',A{1:end-1});
     fprintf(fid,'%s',A{end});
     fclose(fid);    
-    h.Text=['Open importSettings ' projectName '.m'];
+    h.Text=['Open importSettings_' projectName '.m'];
 end
 
 edit([importPath importSettingsName]); % Always open the file.

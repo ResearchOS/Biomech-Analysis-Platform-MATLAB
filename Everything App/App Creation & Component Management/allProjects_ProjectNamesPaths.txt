@@ -1,12 +1,12 @@
 Project Name: Spr21TWWBiomechanics
-Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Subject Data\Spr21TWW_AllSubjects.xlsx\
-Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
-Code Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
+Logsheet Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/Subject Data/Spr21TWW_AllSubjects.xlsx/
+Data Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App/
+Code Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App/App Creation & Component Management/
 Save Plot Root Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Plots\
 
 Project Name: Pitching
 Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\20210817_PitchingLogsheet_TOKYO.xlsx
 Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\
-Code Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\
+Code Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App/App Creation & Component Management/
 
 Most Recent Project Name: Spr21TWWBiomechanics

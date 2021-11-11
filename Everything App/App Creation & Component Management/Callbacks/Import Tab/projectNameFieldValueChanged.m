@@ -80,7 +80,7 @@ if existingProject==1
     else
         setappdata(fig,'rootSavePlotPath','');
     end
-    saveFile=0;
+    saveFile=0; % Indicates to not save the file again.
 elseif existingProject==0
     % If not already existing, check if the allProjects file exists and/or make a new entry in the 'allProjects_ProjectNamesPaths.txt' file and save it.
     if exist(fileName,'file')~=2 % File does not exist.
@@ -91,9 +91,9 @@ elseif existingProject==0
         fprintf(fid,'%s\n',A{1:end-1});
         fprintf(fid,'%s',A{end});
         fclose(fid); % Close the file
-        saveFile=0;
+        saveFile=0; % Indicates to not save the file again.
     else % If file already exists, put new project at the end
-        saveFile=1;
+        saveFile=1; % Indicates to save the file.
         A=readAllProjects(everythingPath);
         mostRecent=A(end-1:end); % Isolate last two lines
         A(end)={['Project Name: ' projectName]}; % Replace last line with project name
@@ -116,21 +116,45 @@ elseif existingProject==0
     
 end
 
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
 % Change the project suffix for the importSettings, specifyTrials, and specifyVars buttons.
 h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
-underIdx=find(h.Text=='_');
-h.Text=[h.Text(1:underIdx) projectName '.m'];
+% Check if the new project's importSettings file exists. If not, label it
+% 'Create'. If so, label it 'Open'
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'importSettings_' projectName '.m'],'file')==2 % This file exists.
+    prefix='Open';
+else
+    prefix='Create';
+end
+h.Text=[prefix ' importSettings_' projectName '.m'];
 
 h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
-underIdx=find(h.Text=='_');
-h.Text=[h.Text(1:underIdx) projectName '.m'];
+% Check if the new project's specifyTrials file exists. If not, label it
+% 'Create'. If so, label it 'Open'
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'specifyTrials_Import' projectName '.m'],'file')==2 % This file exists.
+    prefix='Open';
+else
+    prefix='Create';
+end
+h.Text=[prefix ' specifyTrials_Import' projectName '.m'];
 
 h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyVarsButton');
-underIdx=find(h.Text=='_');
-h.Text=[h.Text(1:underIdx) projectName '.m'];
+% Check if the new project's specifyVars file exists. If not, label it
+% 'Create'. If so, label it 'Open'
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'specifyVars_Import' projectName '.m'],'file')==2 % This file exists.
+    prefix='Open';
+else
+    prefix='Create';
+end
+h.Text=[prefix ' specifyVars_Import' projectName '.m'];
 
 %% Set the entered project name as the most recently used project at the end of the file.
-if saveFile==1
+if saveFile==1 % Indicates to save the file
     mostRecentProjPrefix='Most Recent Project Name:';
     for i=length(A):-1:1
         if length(A{i})>length(mostRecentProjPrefix) && isequal(A{i}(1:length(mostRecentProjPrefix)),mostRecentProjPrefix)

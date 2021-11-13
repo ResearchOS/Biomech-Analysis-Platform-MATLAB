@@ -42,7 +42,6 @@ projectNameLabelRelPos=[0.02 0.9];
 logsheetNameButtonRelPos=[0.02 0.85];
 dataPathButtonRelPos=[0.02 0.8];
 codePathButtonRelPos=[0.02 0.75];
-
 projectNameEditFieldRelPos=[0.2 0.9]; % Width (relative) by height (relative)
 logsheetNameEditFieldRelPos=[0.2 0.85];
 dataPathEditFieldRelPos=[0.2 0.8];
@@ -50,12 +49,23 @@ codePathEditFieldRelPos=[0.2 0.75];
 openImportSettingsButtonRelPos=[0.08 0.7];
 openSpecifyTrialsButtonRelPos=[0.08 0.65];
 projectDropDownRelPos=[0.65 0.9];
-runImportButtonRelPos=[0.08 0.5];
-openSpecifyVarsButtonRelPos=[0.08 0.6];
+runImportButtonRelPos=[0.75 0.2];
 redoImportCheckboxRelPos=[0.7 0.85];
-addDataTypesCheckboxRelPos=[0.7 0.8];
-updateMetadataCheckboxRelPos=[0.7 0.75];
-dataTypeImportSettingsDropDownRelPos=[0.65 0.7];
+updateMetadataCheckboxRelPos=[0.7 0.8];
+dataTypeImportSettingsDropDownRelPos=[0.65 0.75];
+logsheetLabelRelPos=[0.5 0.6];
+numHeaderRowsLabelRelPos=[0.5 0.55];
+numHeaderRowsFieldRelPos=[0.7 0.55];
+subjectIDColHeaderLabelRelPos=[0.5 0.5];
+subjectIDColHeaderFieldRelPos=[0.7 0.5];
+trialIDColHeaderLabelRelPos=[0.5 0.45];
+trialIDColHeaderFieldRelPos=[0.7 0.45];
+trialIDFormatLabelRelPos=[0.5 0.4];
+trialIDFormatFieldRelPos=[0.7 0.4];
+targetTrialIDFormatLabelRelPos=[0.5 0.35];
+targetTrialIDFormatFieldRelPos=[0.7 0.35];
+saveAllButtonRelPos=[0.75 0.25];
+selectDataPanelRelPos=[0.1 0.55];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -72,18 +82,28 @@ openImportSettingsButtonSize=[0.4 compHeight];
 openSpecifyTrialsButtonSize=[0.4 compHeight];
 projectDropDownSize=[0.25 compHeight];
 runImportButtonSize=[0.2 compHeight];
-openSpecifyVarsButtonSize=[0.4 compHeight];
 redoImportCheckboxSize=[0.3 compHeight];
-addDataTypesCheckboxSize=[0.3 compHeight];
 updateMetadataCheckboxSize=[0.3 compHeight];
 dataTypeImportSettingsDropDownSize=[0.25 compHeight];
+logsheetLabelSize=[0.2 compHeight];
+numHeaderRowsLabelSize=[0.2 compHeight];
+numHeaderRowsFieldSize=[0.1 compHeight];
+subjectIDColHeaderLabelSize=[0.2 compHeight];
+subjectIDColHeaderFieldSize=[0.2 compHeight];
+trialIDColHeaderLabelSize=[0.2 compHeight];
+trialIDColHeaderFieldSize=[0.2 compHeight];
+trialIDFormatLabelSize=[0.2 compHeight];
+trialIDFormatFieldSize=[0.2 compHeight];
+targetTrialIDFormatLabelSize=[0.2 compHeight];
+targetTrialIDFormatFieldSize=[0.2 compHeight];
+saveAllButtonSize=[0.15 compHeight];
+selectDataPanelSize=[0.3 0.25];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
 logsheetNameButtonPos=round([logsheetNameButtonRelPos.*figSize logsheetNameButtonSize(1)*figSize(1) logsheetNameButtonSize(2)]);
 dataPathButtonPos=round([dataPathButtonRelPos.*figSize dataPathButtonSize(1)*figSize(1) dataPathButtonSize(2)]);
 codePathButtonPos=round([codePathButtonRelPos.*figSize codePathButtonSize(1)*figSize(1) codePathButtonSize(2)]);
-
 projectNameEditFieldPos=round([projectNameEditFieldRelPos.*figSize projectNameEditFieldSize(1)*figSize(1) projectNameEditFieldSize(2)]);
 logsheetNameEditFieldPos=round([logsheetNameEditFieldRelPos.*figSize logsheetNameEditFieldSize(1)*figSize(1) logsheetNameEditFieldSize(2)]);
 dataPathEditFieldPos=round([dataPathEditFieldRelPos.*figSize dataPathEditFieldSize(1)*figSize(1) dataPathEditFieldSize(2)]);
@@ -92,11 +112,23 @@ openImportSettingsButtonPos=round([openImportSettingsButtonRelPos.*figSize openI
 openSpecifyTrialsButtonPos=round([openSpecifyTrialsButtonRelPos.*figSize openSpecifyTrialsButtonSize(1)*figSize(1) openSpecifyTrialsButtonSize(2)]);
 projectDropDownPos=round([projectDropDownRelPos.*figSize projectDropDownSize(1)*figSize(1) projectDropDownSize(2)]);
 runImportButtonPos=round([runImportButtonRelPos.*figSize runImportButtonSize(1)*figSize(1) runImportButtonSize(2)]);
-openSpecifyVarsButtonPos=round([openSpecifyVarsButtonRelPos.*figSize openSpecifyVarsButtonSize(1)*figSize(1) openSpecifyVarsButtonSize(2)]);
 redoImportCheckboxPos=round([redoImportCheckboxRelPos.*figSize redoImportCheckboxSize(1)*figSize(1) redoImportCheckboxSize(2)]);
-addDataTypesCheckboxPos=round([addDataTypesCheckboxRelPos.*figSize addDataTypesCheckboxSize(1)*figSize(1) addDataTypesCheckboxSize(2)]);
 updateMetadataCheckBoxPos=round([updateMetadataCheckboxRelPos.*figSize updateMetadataCheckboxSize(1)*figSize(1) updateMetadataCheckboxSize(2)]);
 dataTypeImportSettingsDropDownPos=round([dataTypeImportSettingsDropDownRelPos.*figSize dataTypeImportSettingsDropDownSize(1)*figSize(1) dataTypeImportSettingsDropDownSize(2)]);
+
+logsheetLabelPos=round([logsheetLabelRelPos.*figSize logsheetLabelSize(1)*figSize(1) logsheetLabelSize(2)]);
+numHeaderRowsLabelPos=round([numHeaderRowsLabelRelPos.*figSize numHeaderRowsLabelSize(1)*figSize(1) numHeaderRowsLabelSize(2)]);
+numHeaderRowsFieldPos=round([numHeaderRowsFieldRelPos.*figSize numHeaderRowsFieldSize(1)*figSize(1) numHeaderRowsFieldSize(2)]);
+subjectIDColHeaderLabelPos=round([subjectIDColHeaderLabelRelPos.*figSize subjectIDColHeaderLabelSize(1)*figSize(1) subjectIDColHeaderLabelSize(2)]);
+subjectIDColHeaderFieldPos=round([subjectIDColHeaderFieldRelPos.*figSize subjectIDColHeaderFieldSize(1)*figSize(1) subjectIDColHeaderFieldSize(2)]);
+trialIDColHeaderLabelPos=round([trialIDColHeaderLabelRelPos.*figSize trialIDColHeaderLabelSize(1)*figSize(1) trialIDColHeaderLabelSize(2)]);
+trialIDColHeaderFieldPos=round([trialIDColHeaderFieldRelPos.*figSize trialIDColHeaderFieldSize(1)*figSize(1) trialIDColHeaderFieldSize(2)]);
+trialIDFormatLabelPos=round([trialIDFormatLabelRelPos.*figSize trialIDFormatLabelSize(1)*figSize(1) trialIDFormatLabelSize(2)]);
+trialIDFormatFieldPos=round([trialIDFormatFieldRelPos.*figSize trialIDFormatFieldSize(1)*figSize(1) trialIDFormatFieldSize(2)]);
+targetTrialIDFormatLabelPos=round([targetTrialIDFormatLabelRelPos.*figSize targetTrialIDFormatLabelSize(1)*figSize(1) targetTrialIDFormatLabelSize(2)]);
+targetTrialIDFormatFieldPos=round([targetTrialIDFormatFieldRelPos.*figSize targetTrialIDFormatFieldSize(1)*figSize(1) targetTrialIDFormatFieldSize(2)]);
+saveAllButtonPos=round([saveAllButtonRelPos.*figSize saveAllButtonSize(1)*figSize(1) saveAllButtonSize(2)]);
+selectDataPanelPos=round([selectDataPanelRelPos.*figSize selectDataPanelSize(1)*figSize(1) selectDataPanelSize(2)]);
 
 % Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
@@ -111,11 +143,22 @@ data.OpenImportSettingsButton.Position=openImportSettingsButtonPos;
 data.OpenSpecifyTrialsButton.Position=openSpecifyTrialsButtonPos;
 data.SwitchProjectsDropDown.Position=projectDropDownPos;
 data.RunImportButton.Position=runImportButtonPos;
-data.OpenSpecifyVarsButton.Position=openSpecifyVarsButtonPos;
 data.RedoImportCheckBox.Position=redoImportCheckboxPos;
-data.AddDataTypesCheckBox.Position=addDataTypesCheckboxPos;
 data.UpdateMetadataCheckBox.Position=updateMetadataCheckBoxPos;
 data.DataTypeImportSettingsDropDown.Position=dataTypeImportSettingsDropDownPos;
+data.LogsheetLabel.Position=logsheetLabelPos;
+data.NumHeaderRowsLabel.Position=numHeaderRowsLabelPos;
+data.NumHeaderRowsField.Position=numHeaderRowsFieldPos;
+data.SubjectIDColHeaderLabel.Position=subjectIDColHeaderLabelPos;
+data.SubjectIDColHeaderField.Position=subjectIDColHeaderFieldPos;
+data.TrialIDColHeaderLabel.Position=trialIDColHeaderLabelPos;
+data.TrialIDColHeaderField.Position=trialIDColHeaderFieldPos;
+data.TrialIDFormatLabel.Position=trialIDFormatLabelPos;
+data.TrialIDFormatField.Position=trialIDFormatFieldPos;
+data.TargetTrialIDFormatLabel.Position=targetTrialIDFormatLabelPos;
+data.TargetTrialIDFormatField.Position=targetTrialIDFormatFieldPos;
+data.SaveAllButton.Position=saveAllButtonPos;
+data.selectDataPanel.Position=selectDataPanelPos;
 
 % Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
@@ -130,10 +173,21 @@ data.OpenImportSettingsButton.FontSize=newFontSize;
 data.OpenSpecifyTrialsButton.FontSize=newFontSize;
 data.SwitchProjectsDropDown.FontSize=newFontSize;
 data.RunImportButton.FontSize=newFontSize;
-data.OpenSpecifyVarsButton.FontSize=newFontSize;
 data.RedoImportCheckBox.FontSize=newFontSize;
-data.AddDataTypesCheckBox.FontSize=newFontSize;
 data.UpdateMetadataCheckBox.FontSize=newFontSize;
 data.DataTypeImportSettingsDropDown.FontSize=newFontSize;
+data.LogsheetLabel.FontSize=newFontSize;
+data.NumHeaderRowsLabel.FontSize=newFontSize;
+data.NumHeaderRowsField.FontSize=newFontSize;
+data.SubjectIDColHeaderLabel.FontSize=newFontSize;
+data.SubjectIDColHeaderField.FontSize=newFontSize;
+data.TrialIDColHeaderLabel.FontSize=newFontSize;
+data.TrialIDColHeaderField.FontSize=newFontSize;
+data.TrialIDFormatLabel.FontSize=newFontSize;
+data.TrialIDFormatField.FontSize=newFontSize;
+data.TargetTrialIDFormatLabel.FontSize=newFontSize;
+data.TargetTrialIDFormatField.FontSize=newFontSize;
+data.SaveAllButton.FontSize=newFontSize;
+data.selectDataPanel.FontSize=newFontSize;
 
 % Restore component visibility

@@ -35,16 +35,15 @@ setappdata(fig,'rootSavePlotPath',''); % rootSavePlotPath always begins empty.
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off'); % Create the tab group for the four stages of data processing
 fig.UserData=struct('TabGroup1',tabGroup1); % Store the components to the figure.
-importTab=uitab(tabGroup1,'Title','Import','AutoResizeChildren','off','SizeChangedFcn',@(importTab,event) importResize(importTab)); % Create the import tab
-processTab=uitab(tabGroup1,'Title','Process','AutoResizeChildren','off'); % Create the process tab
-plotTab=uitab(tabGroup1,'Title','Plot','AutoResizeChildren','off'); % Create the plot tab
-statsTab=uitab(tabGroup1,'Title','Stats','AutoResizeChildren','off'); % Create the stats tab
-settingsTab=uitab(tabGroup1,'Title','Settings','AutoResizeChildren','off'); % Create the settings tab
+importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off','SizeChangedFcn',@(importTab,event) importResize(importTab)); % Create the import tab
+processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off','SizeChangedFcn',@(processTab,event) processResize(processTab)); % Create the process tab
+plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off'); % Create the plot tab
+statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off'); % Create the stats tab
+settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.
-projectNameLabel=uilabel(importTab);
-projectNameLabel.Text='Project Name';
+projectNameLabel=uilabel(importTab,'Text','Project Name');
 logsheetPathButton=uibutton(importTab,'push','Text','Logsheet Path','Tag','LogsheetPathButton','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
 dataPathButton=uibutton(importTab,'push','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
 codePathButton=uibutton(importTab,'push','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
@@ -56,12 +55,10 @@ codePathField=uieditfield(importTab,'text','Value','Path to Project Processing C
 openImportSettingsButton=uibutton(importTab,'push','Text','Create importSettings.m','Tag','OpenImportSettingsButton','ButtonPushedFcn',@(openImportSettingsButton,event) openImportSettingsButtonPushed(openImportSettingsButton,projectNameField.Value));
 % Button to open the project's specifyTrials to select which trials to load/import
 openSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton,projectNameField.Value));
-% Button to open the project's specifyVars to select which data from those trials to load.
-openSpecifyVarsButton=uibutton(importTab,'push','Text','Create specifyVars.m','Tag','OpenSpecifyVarsButton','ButtonPushedFcn',@(openSpecifyVarsButton,event) openSpecifyVarsButtonPushed(openSpecifyVarsButton,projectNameField.Value));
 % Checkbox to redo import (overwrites all existing data files)
 redoImportCheckbox=uicheckbox(importTab,'Text','Redo (Overwrite) Import','Value',0,'Tag','RedoImportCheckbox','ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
 % Checkbox to add new data types to existing files
-addDataTypesCheckbox=uicheckbox(importTab,'Text','Add Data Types','Value',0,'Tag','AddDataTypesCheckbox','ValueChangedFcn',@(addDataTypesCheckbox,event) addDataTypesCheckboxValueChanged(addDataTypesCheckbox));
+% addDataTypesCheckbox=uicheckbox(importTab,'Text','Add Data Types','Value',0,'Tag','AddDataTypesCheckbox','ValueChangedFcn',@(addDataTypesCheckbox,event) addDataTypesCheckboxValueChanged(addDataTypesCheckbox));
 % Checkbox to update metadata only in existing files
 updateMetadataCheckbox=uicheckbox(importTab,'Text','Update Metadata Only','Value',0','Tag','UpdateMetadataCheckbox','ValueChangedFcn',@(updateMetadataCheckbox,event) updateMetadataCheckboxValueChanged(updateMetadataCheckbox));
 % Button to run the import/load procedure
@@ -70,17 +67,62 @@ runImportButton=uibutton(importTab,'push','Text','Run Import/Load','Tag','RunImp
 switchProjectsDropDown=uidropdown(importTab,'Items',{'New Project'},'Editable','off','Tag','SwitchProjectsDropDown','ValueChangedFcn',@(switchProjectsDropDown,event) switchProjectsDropDownValueChanged(switchProjectsDropDown));
 % Drop down to specify & open a new data type's importSettings
 dataTypeImportSettingsDropDown=uidropdown(importTab,'Items',{'MOCAP','FP','EMG','IMU'},'Editable','on','Tag','DataTypeImportSettingsDropDown','ValueChangedFcn',@(dataTypeImportSettingsDropDown,event) dataTypeImportSettingsDropDownValueChanged(dataTypeImportSettingsDropDown));
+% Logsheet label
+logsheetLabel=uilabel(importTab,'Text','Logsheet:');
+% Number of header rows label
+numHeaderRowsLabel=uilabel(importTab,'Text','# of Header Rows','Tag','NumHeaderRowsLabel');
+% Number of header rows text box
+numHeaderRowsField=uieditfield(importTab,'numeric','Value',1,'Tag','NumHeaderRowsField');
+% Subject ID column header label
+subjIDColHeaderLabel=uilabel(importTab,'Text','Subject ID Column Header','Tag','SubjectIDColumnHeaderLabel');
+% Subject ID column header text box
+subjIDColHeaderField=uieditfield(importTab,'text','Value','Subject ID Column Header','Tag','SubjIDColumnHeaderField');
+% Trial ID column header label
+trialIDColHeaderLabel=uilabel(importTab,'Text','Trial ID Column Header');
+% Trial ID column header text box
+trialIDColHeaderField=uieditfield(importTab,'text','Value','Trial ID Column Header','Tag','TrialIDColumnHeaderField');
+% Trial ID format label
+trialIDFormatLabel=uilabel(importTab,'Text','Trial ID Format','Tag','TrialIDFormatLabel');
+% Trial ID format field
+trialIDFormatField=uieditfield(importTab,'text','Value','S T','Tag','TrialIDFormatField');
+% Target Trial ID format label
+targetTrialIDFormatLabel=uilabel(importTab,'Text','Target Trial ID Format','Tag','TargetTrialIDFormatLabel');
+% Target Trial ID format field
+targetTrialIDFormatField=uieditfield(importTab,'text','Value','T','Tag','TargetTrialIDFormatField');
+% Save all trials button
+saveAllButton=uibutton(importTab,'push','Text','Save Struct','Tag','SaveAllButton');
+% Load which data label
+selectDataPanel=uipanel(importTab,'Title','Select Groups'' Data to Load','Tag','SelectDataPanel');
+% Need to read the groups text file to get group names. Create
+% corresponding number of checkboxes & their labels.
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
     'ProjectNameField',projectNameField,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
-    'OpenImportSettingsButton',openImportSettingsButton,'OpenSpecifyTrialsButton',openSpecifyTrialsButton,'OpenSpecifyVarsButton',openSpecifyVarsButton,...
-    'SwitchProjectsDropDown',switchProjectsDropDown,'RedoImportCheckBox',redoImportCheckbox,'AddDataTypesCheckBox',addDataTypesCheckbox,'UpdateMetadataCheckBox',updateMetadataCheckbox,'RunImportButton',runImportButton);
+    'OpenImportSettingsButton',openImportSettingsButton,'OpenSpecifyTrialsButton',openSpecifyTrialsButton,'SwitchProjectsDropDown',switchProjectsDropDown,'RedoImportCheckBox',redoImportCheckbox,...
+    'UpdateMetadataCheckBox',updateMetadataCheckbox,'RunImportButton',runImportButton,'LogsheetLabel',logsheetLabel,'NumHeaderRowsLabel',numHeaderRowsLabel,'NumHeaderRowsField',numHeaderRowsField,...
+    'SubjectIDColHeaderLabel',subjIDColHeaderLabel,'SubjectIDColHeaderField',subjIDColHeaderField,'TrialIDColHeaderLabel',trialIDColHeaderLabel,'TrialIDColHeaderField',trialIDColHeaderField,...
+    'TrialIDFormatLabel',trialIDFormatLabel,'TrialIDFormatField',trialIDFormatField,'TargetTrialIDFormatLabel',targetTrialIDFormatLabel,'TargetTrialIDFormatField',targetTrialIDFormatField,...
+    'SaveAllButton',saveAllButton,'SelectDataPanel',selectDataPanel);
 
 importResize(importTab); % Run the importResize to set all components' positions to their correct positions
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the process tab.
-% a=uilabel(processTab);
+tabGroupProcess=uitabgroup(processTab,'Tag','ProcessTabGroup','Position',[0 0 figSize],'AutoResizeChildren','off');
+processTab.UserData=struct('ProcessTabGroup',tabGroupProcess);
+processSetupTab=uitab(tabGroupProcess,'Title','Setup','Tag','Setup','AutoResizeChildren','off','SizeChangedFcn',@(processSetupTab,event) processSetupResize(processSetupTab)); % Create the process > setup tab
+processRunTab=uitab(tabGroupProcess,'Title','Run','Tag','Run','AutoResizeChildren','off','SizeChangedFcn',@(processRunTab,event) processRunResize(processRunTab)); % Create the process > run tab
+
+processTab.UserData=struct('ProcessSetupTab',processSetupTab,'ProcessRunTab',processRunTab); % Store the components to the process tab.
+processResize(processTab);
+
+% Create the Process > Setup tab
+processSetupResize(processSetupTab); % Place the components in the Process > Setup tab.
+
+% Create the Process > Run tab
+
+
+processRunResize(processRunTab); % Place the components in the Process > Run tab.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the plot tab
@@ -151,7 +193,6 @@ codePath=getappdata(fig,'codePath');
 projectName=getappdata(fig,'projectName');
 importSettingsFile=0; % Initialize that the project-specific user customized importSettings is found.
 specifyTrialsFile=0; % Initialize that the project-specific user customized specifyTrials is found.
-specifyVarsFile=0; % Initialize that the project-specific user customized specifyVars is found.
 if ~isempty(codePath) && ~isempty(projectName) % Code path and project name are both present, look for the project-specific templates.
     if isfolder([codePath 'Import_' projectName slash]) % Project-specific user customized files stored in Import subfolder of project-specific codePath
         listing=dir([codePath 'Import_' projectName slash]);
@@ -160,8 +201,6 @@ if ~isempty(codePath) && ~isempty(projectName) % Code path and project name are 
                 importSettingsFile=1;
             elseif isequal(listing(i).name,['specifyTrials_Import' projectName '.m'])
                 specifyTrialsFile=1;
-            elseif isequal(listing(i).name,['specifyVars_Import' projectName '.m'])
-                specifyVarsFile=1;
             end
         end
     end    
@@ -177,10 +216,6 @@ if specifyTrialsFile==0 % Make the button function to create a new project-speci
     h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
     h.Text=['Create specifyTrials_Import' projectName '.m'];   
 end
-if specifyVarsFile==0 % Make the button function to create a new project-specific specifyVars
-    h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyVarsButton');
-    h.Text=['Create specifyVars_Import' projectName '.m'];   
-end
 
 % 'Open' the project-specific files.
 if importSettingsFile==1
@@ -190,10 +225,6 @@ end
 if specifyTrialsFile==1
     h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
     h.Text=['Open specifyTrials_Import' projectName '.m'];
-end
-if specifyVarsFile==1
-    h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyVarsButton');
-    h.Text=['Open specifyVars_Import' projectName '.m'];
 end
 
 assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected

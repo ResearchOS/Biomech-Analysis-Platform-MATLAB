@@ -29,4 +29,4 @@ if exist(fileName,'file')~=2
 end
 
 % 4. If there is, open it.
-edit([importFolder 'importSettings_' dataType '_' projectName]);
+edit(fileName);

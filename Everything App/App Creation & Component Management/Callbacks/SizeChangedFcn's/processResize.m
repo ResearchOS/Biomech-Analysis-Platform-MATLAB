@@ -1,4 +1,4 @@
-function []=processResize(src)
+function []=processResize(src, event)
 
 %% RESIZE THE COMPONENTS WITHIN THE PROCESS TAB.
 
@@ -8,18 +8,16 @@ if isempty(data)
     return; % Called on uifigure creation
 end
 
-% Set components to be invisible
-
 fig=ancestor(src,'figure','toplevel');
-figSize=src.Position(3:4); % Width x height
+figSize=fig.Position(3:4); % Width x height
 
-h1=findobj(fig,'Tag','Setup'); % Rreturn the Process > Setup tab.
-h1.Position=[h1.Position(1:2) figSize];
-h2=findobj(fig,'Tag','Run'); % Return the Process > Run tab.
-h2.Position=[h1.Position(1:2) figSize];
+hGroup=findobj(fig,'Tag','ProcessTabGroup');
+hGroup.Position=[0 0 figSize(1) figSize(2)-20]; % Resize the Process tab group to be just smaller than the top level tab group.
 
-if isequal(src.Tag,h1.Tag) % Currently in the Setup tab, run the Setup SizeChangedFcn
-    processSetupResize(src);
-elseif isequal(src.Tag,h2.Tag) % Currently in the Run tab, run the Run SizeChangedFcn
-    processRunResize(src);
-end
+% if isequal(hGroup.SelectedTab.Tag,'Setup') % Currently in the Setup tab, run the Setup SizeChangedFcn
+%     processSetupResize(src);
+% elseif isequal(hGroup.SelectedTab.Tag,'Run') % Currently in the Run tab, run the Run SizeChangedFcn
+%     processRunResize(src);
+% end
+
+processSetupResize(src); % Both subtabs run off of same callback function

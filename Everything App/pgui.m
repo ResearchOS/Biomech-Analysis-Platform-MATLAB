@@ -35,8 +35,8 @@ setappdata(fig,'rootSavePlotPath',''); % rootSavePlotPath always begins empty.
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off'); % Create the tab group for the four stages of data processing
 fig.UserData=struct('TabGroup1',tabGroup1); % Store the components to the figure.
-importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off','SizeChangedFcn',@(importTab,event) importResize(importTab)); % Create the import tab
-processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off','SizeChangedFcn',@(processTab,event) processResize(processTab)); % Create the process tab
+importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off','SizeChangedFcn',@importResize); % Create the import tab
+processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off','SizeChangedFcn',@processResize); % Create the process tab
 plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off'); % Create the plot tab
 statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off'); % Create the stats tab
 settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
@@ -54,7 +54,7 @@ codePathField=uieditfield(importTab,'text','Value','Path to Project Processing C
 % Button to open the project's importSettings file.
 openImportSettingsButton=uibutton(importTab,'push','Text','Create importSettings.m','Tag','OpenImportSettingsButton','ButtonPushedFcn',@(openImportSettingsButton,event) openImportSettingsButtonPushed(openImportSettingsButton,projectNameField.Value));
 % Button to open the project's specifyTrials to select which trials to load/import
-openSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton,projectNameField.Value));
+openGroupSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton,projectNameField.Value));
 % Checkbox to redo import (overwrites all existing data files)
 redoImportCheckbox=uicheckbox(importTab,'Text','Redo (Overwrite) Import','Value',0,'Tag','RedoImportCheckbox','ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
 % Checkbox to add new data types to existing files
@@ -92,37 +92,78 @@ targetTrialIDFormatField=uieditfield(importTab,'text','Value','T','Tag','TargetT
 % Save all trials button
 saveAllButton=uibutton(importTab,'push','Text','Save Struct','Tag','SaveAllButton');
 % Load which data label
-selectDataPanel=uipanel(importTab,'Title','Select Groups'' Data to Load','Tag','SelectDataPanel');
+selectDataPanel=uipanel(importTab,'Title','Select Groups'' Data to Load','Tag','SelectDataPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
 % Need to read the groups text file to get group names. Create
 % corresponding number of checkboxes & their labels.
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
     'ProjectNameField',projectNameField,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
-    'OpenImportSettingsButton',openImportSettingsButton,'OpenSpecifyTrialsButton',openSpecifyTrialsButton,'SwitchProjectsDropDown',switchProjectsDropDown,'RedoImportCheckBox',redoImportCheckbox,...
+    'OpenImportSettingsButton',openImportSettingsButton,'OpenSpecifyTrialsButton',openGroupSpecifyTrialsButton,'SwitchProjectsDropDown',switchProjectsDropDown,'RedoImportCheckBox',redoImportCheckbox,...
     'UpdateMetadataCheckBox',updateMetadataCheckbox,'RunImportButton',runImportButton,'LogsheetLabel',logsheetLabel,'NumHeaderRowsLabel',numHeaderRowsLabel,'NumHeaderRowsField',numHeaderRowsField,...
     'SubjectIDColHeaderLabel',subjIDColHeaderLabel,'SubjectIDColHeaderField',subjIDColHeaderField,'TrialIDColHeaderLabel',trialIDColHeaderLabel,'TrialIDColHeaderField',trialIDColHeaderField,...
     'TrialIDFormatLabel',trialIDFormatLabel,'TrialIDFormatField',trialIDFormatField,'TargetTrialIDFormatLabel',targetTrialIDFormatLabel,'TargetTrialIDFormatField',targetTrialIDFormatField,...
     'SaveAllButton',saveAllButton,'SelectDataPanel',selectDataPanel);
 
-importResize(importTab); % Run the importResize to set all components' positions to their correct positions
+@importResize; % Run the importResize to set all components' positions to their correct positions
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the process tab.
-tabGroupProcess=uitabgroup(processTab,'Tag','ProcessTabGroup','Position',[0 0 figSize],'AutoResizeChildren','off');
-processTab.UserData=struct('ProcessTabGroup',tabGroupProcess);
-processSetupTab=uitab(tabGroupProcess,'Title','Setup','Tag','Setup','AutoResizeChildren','off','SizeChangedFcn',@(processSetupTab,event) processSetupResize(processSetupTab)); % Create the process > setup tab
-processRunTab=uitab(tabGroupProcess,'Title','Run','Tag','Run','AutoResizeChildren','off','SizeChangedFcn',@(processRunTab,event) processRunResize(processRunTab)); % Create the process > run tab
-
-processTab.UserData=struct('ProcessSetupTab',processSetupTab,'ProcessRunTab',processRunTab); % Store the components to the process tab.
-processResize(processTab);
+processTabGroup=uitabgroup(processTab,'Tag','ProcessTabGroup','AutoResizeChildren','off');
+processSetupTab=uitab(processTabGroup,'Title','Setup','Tag','Setup','AutoResizeChildren','off'); % Create the process > setup tab
+processRunTab=uitab(processTabGroup,'Title','Run','Tag','Run','AutoResizeChildren','off'); % Create the process > run tab
 
 % Create the Process > Setup tab
-processSetupResize(processSetupTab); % Place the components in the Process > Setup tab.
+% Function Group Name Label
+setupGroupNameLabel=uilabel(processSetupTab,'Text','Function Group Name','Tag','SetupGroupNameLabel');
+setupGroupNameDropDown=uidropdown(processSetupTab,'Items',{'Test1'},'Editable','On','Tag','SetupGroupNameDropDown');
+setupFunctionNamesLabel=uilabel(processSetupTab,'Text','Function Names','Tag','SetupFunctionNamesLabel');
+setupFunctionNamesField=uitextarea(processSetupTab,'Value','Function Names','Tag','SetupFunctionNamesField','Editable','on','Visible','on');
+newFunctionPanel=uipanel(processSetupTab,'Title','New Function','Tag','NewFunctionPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
+saveGroupButton=uibutton(processSetupTab,'push','Text','Save Group To File','Tag','SaveGroupButton');
+inputsLabel=uilabel(processSetupTab,'Text','Inputs','Tag','InputsLabel');
+outputsLabel=uilabel(processSetupTab,'Text','Outputs','Tag','OutputsLabel');
+inputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','InputCheckboxProject');
+inputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','InputCheckboxSubject');
+inputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','InputCheckboxTrial');
+outputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','OutputCheckboxProject');
+outputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','OutputCheckboxSubject');
+outputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','OutputCheckboxTrial');
+newFunctionButton=uibutton(processSetupTab,'push','Text','Create New Function','Tag','NewFunctionButton');
+openGroupSpecifyTrialsButton=uibutton(processSetupTab,'push','Text','Open Group specifyTrials','Tag','OpenGroupSpecifyTrialsButton');
+selectFunctionSpecifyTrialsDropDown=uidropdown(processSetupTab,'Items',{'Function1'},'Editable','Off','Tag','SelectFunctionSpecifyTrialsDropDown');
 
 % Create the Process > Run tab
+runGroupNameLabel=uilabel(processRunTab,'Text','Group Name','Tag','RunGroupNameLabel');
+runGroupNameDropDown=uidropdown(processRunTab,'Items',{'Test1'},'Editable','off','Tag','RunGroupNameDropDown');
+runFunctionNamesLabel=uilabel(processRunTab,'Text','Function Names','Tag','RunFunctionNamesLabel');
+groupRunCheckboxLabel=uilabel(processRunTab,'Text','Run','Tag','GroupRunCheckboxLabel');
+groupArgsCheckboxLabel=uilabel(processRunTab,'Text','Args','Tag','GroupArgsCheckboxLabel');
+runGroupButton=uibutton(processRunTab,'push','Text','Run Group','Tag','RunGroupButton');
+runAllButton=uibutton(processRunTab,'push','Text','Run All','Tag','RunAllButton');
+runFunctionsPanel=uipanel(processRunTab,'Title','','Tag','RunFunctionsPanel','BackGroundColor',[0.92 0.92 0.92]);
+% NEED TO: PROGRAMMATICALLY GENERATE FUNCTION NAMES BUTTONS THAT OPEN THE CORRESPONDING FUNCTION FILE (FROM TEXT FILE?)
+
+% NEED TO: PROGRAMMATICALLY GENERATE ARGS BUTTONS THAT OPEN THE CORRESPONDING ARGS FILE (FROM TEXT FILE?)
+
+% NEED TO: PROGRAMMATICALLY GENERATE RUN CHECKBOXES THAT DICTATE WHETHER A FUNCTION WILL BE RUN OR NOT.
+
+% NEED TO: PROGRAMMATICALLY GENERATE ARGS CHECKBOXES THAT INDICATE WHETHER THE GROUP-LEVEL OR FUNCTION-LEVEL ARGS WILL BE USED.
 
 
-processRunResize(processRunTab); % Place the components in the Process > Run tab.
+processTab.UserData=struct('SetupGroupNameLabel',setupGroupNameLabel,'SetupGroupNameDropDown',setupGroupNameDropDown,'SetupFunctionNamesLabel',setupFunctionNamesLabel,'SetupFunctionNamesField',setupFunctionNamesField,...
+    'NewFunctionPanel',newFunctionPanel,'SaveGroupButton',saveGroupButton,'InputsLabel',inputsLabel,'OutputsLabel',outputsLabel,'InputCheckboxProject',inputCheckboxP,'InputCheckboxSubject',inputCheckboxS,'InputCheckboxTrial',inputCheckboxT,...
+    'OutputCheckboxProject',outputCheckboxP,'OutputCheckboxSubject',outputCheckboxS,'OutputCheckboxTrial',outputCheckboxT,'NewFunctionButton',newFunctionButton,'OpenGroupSpecifyTrialsButton',openGroupSpecifyTrialsButton,...
+    'RunGroupNameLabel',runGroupNameLabel,'RunGroupNameDropDown',runGroupNameDropDown,'RunFunctionNamesLabel',runFunctionNamesLabel,'GroupRunCheckboxLabel',groupRunCheckboxLabel,'GroupArgsCheckboxLabel',groupArgsCheckboxLabel,...
+    'RunGroupButton',runGroupButton,'RunAllButton',runAllButton,'RunFunctionsPanel',runFunctionsPanel,'SelectFunctionSpecifyTrialsDropDown',selectFunctionSpecifyTrialsDropDown);
+
+% Resize all objects in each subtab.
+hProcessRun=findobj(fig,'Tag','Run');
+processTabGroup.SelectedTab=hProcessRun;
+@processResize;
+hProcessSetup=findobj(fig,'Tag','Setup');
+processTabGroup.SelectedTab=hProcessSetup;
+@processResize;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the plot tab

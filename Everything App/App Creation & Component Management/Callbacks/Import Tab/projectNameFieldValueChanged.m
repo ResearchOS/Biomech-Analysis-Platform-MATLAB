@@ -143,16 +143,6 @@ else
 end
 h.Text=[prefix ' specifyTrials_Import' projectName '.m'];
 
-h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyVarsButton');
-% Check if the new project's specifyVars file exists. If not, label it
-% 'Create'. If so, label it 'Open'
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'specifyVars_Import' projectName '.m'],'file')==2 % This file exists.
-    prefix='Open';
-else
-    prefix='Create';
-end
-h.Text=[prefix ' specifyVars_Import' projectName '.m'];
-
 %% Set the entered project name as the most recently used project at the end of the file.
 if saveFile==1 % Indicates to save the file
     mostRecentProjPrefix='Most Recent Project Name:';

@@ -1,4 +1,4 @@
-function [fontSizeRelToHeight]=importResize(src)
+function [fontSizeRelToHeight]=importResize(src, event)
 
 %% PURPOSE: RESIZE THE COMPONENTS WITHIN THE IMPORT TAB
 
@@ -65,7 +65,7 @@ trialIDFormatFieldRelPos=[0.7 0.4];
 targetTrialIDFormatLabelRelPos=[0.5 0.35];
 targetTrialIDFormatFieldRelPos=[0.7 0.35];
 saveAllButtonRelPos=[0.75 0.25];
-selectDataPanelRelPos=[0.1 0.55];
+selectDataPanelRelPos=[0.05 0.05];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -80,7 +80,7 @@ dataPathEditFieldSize=[0.4 compHeight];
 codePathEditFieldSize=[0.4 compHeight];
 openImportSettingsButtonSize=[0.4 compHeight];
 openSpecifyTrialsButtonSize=[0.4 compHeight];
-projectDropDownSize=[0.25 compHeight];
+projectDropDownSize=[0.35 compHeight];
 runImportButtonSize=[0.2 compHeight];
 redoImportCheckboxSize=[0.3 compHeight];
 updateMetadataCheckboxSize=[0.3 compHeight];
@@ -97,7 +97,7 @@ trialIDFormatFieldSize=[0.2 compHeight];
 targetTrialIDFormatLabelSize=[0.2 compHeight];
 targetTrialIDFormatFieldSize=[0.2 compHeight];
 saveAllButtonSize=[0.15 compHeight];
-selectDataPanelSize=[0.3 0.25];
+selectDataPanelSize=[0.4 0.55*figSize(2)];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
@@ -158,7 +158,7 @@ data.TrialIDFormatField.Position=trialIDFormatFieldPos;
 data.TargetTrialIDFormatLabel.Position=targetTrialIDFormatLabelPos;
 data.TargetTrialIDFormatField.Position=targetTrialIDFormatFieldPos;
 data.SaveAllButton.Position=saveAllButtonPos;
-data.selectDataPanel.Position=selectDataPanelPos;
+data.SelectDataPanel.Position=selectDataPanelPos;
 
 % Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;

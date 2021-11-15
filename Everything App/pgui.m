@@ -43,7 +43,7 @@ settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChild
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.
-projectNameLabel=uilabel(importTab,'Text','Project Name');
+projectNameLabel=uilabel(importTab,'Text','Project Name','FontWeight','bold');
 logsheetPathButton=uibutton(importTab,'push','Text','Logsheet Path','Tag','LogsheetPathButton','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
 dataPathButton=uibutton(importTab,'push','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
 codePathButton=uibutton(importTab,'push','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
@@ -57,8 +57,6 @@ openImportSettingsButton=uibutton(importTab,'push','Text','Create importSettings
 openGroupSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton,projectNameField.Value));
 % Checkbox to redo import (overwrites all existing data files)
 redoImportCheckbox=uicheckbox(importTab,'Text','Redo (Overwrite) Import','Value',0,'Tag','RedoImportCheckbox','ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
-% Checkbox to add new data types to existing files
-% addDataTypesCheckbox=uicheckbox(importTab,'Text','Add Data Types','Value',0,'Tag','AddDataTypesCheckbox','ValueChangedFcn',@(addDataTypesCheckbox,event) addDataTypesCheckboxValueChanged(addDataTypesCheckbox));
 % Checkbox to update metadata only in existing files
 updateMetadataCheckbox=uicheckbox(importTab,'Text','Update Metadata Only','Value',0','Tag','UpdateMetadataCheckbox','ValueChangedFcn',@(updateMetadataCheckbox,event) updateMetadataCheckboxValueChanged(updateMetadataCheckbox));
 % Button to run the import/load procedure
@@ -68,29 +66,29 @@ switchProjectsDropDown=uidropdown(importTab,'Items',{'New Project'},'Editable','
 % Drop down to specify & open a new data type's importSettings
 dataTypeImportSettingsDropDown=uidropdown(importTab,'Items',{'MOCAP','FP','EMG','IMU'},'Editable','on','Tag','DataTypeImportSettingsDropDown','ValueChangedFcn',@(dataTypeImportSettingsDropDown,event) dataTypeImportSettingsDropDownValueChanged(dataTypeImportSettingsDropDown));
 % Logsheet label
-logsheetLabel=uilabel(importTab,'Text','Logsheet:');
+logsheetLabel=uilabel(importTab,'Text','Logsheet:','FontWeight','bold');
 % Number of header rows label
 numHeaderRowsLabel=uilabel(importTab,'Text','# of Header Rows','Tag','NumHeaderRowsLabel');
 % Number of header rows text box
-numHeaderRowsField=uieditfield(importTab,'numeric','Value',1,'Tag','NumHeaderRowsField');
+numHeaderRowsField=uieditfield(importTab,'numeric','Value',1,'Tag','NumHeaderRowsField','ValueChangedFcn',@(numHeaderRowsField,event) numHeaderRowsFieldValueChanged(numHeaderRowsField));
 % Subject ID column header label
 subjIDColHeaderLabel=uilabel(importTab,'Text','Subject ID Column Header','Tag','SubjectIDColumnHeaderLabel');
 % Subject ID column header text box
-subjIDColHeaderField=uieditfield(importTab,'text','Value','Subject ID Column Header','Tag','SubjIDColumnHeaderField');
+subjIDColHeaderField=uieditfield(importTab,'text','Value','Subject ID Column Header','Tag','SubjIDColumnHeaderField','ValueChangedFcn',@(subjIDColHeaderField,event) subjIDColHeaderFieldValueChanged(subjIDColHeaderField));
 % Trial ID column header label
 trialIDColHeaderLabel=uilabel(importTab,'Text','Trial ID Column Header');
 % Trial ID column header text box
-trialIDColHeaderField=uieditfield(importTab,'text','Value','Trial ID Column Header','Tag','TrialIDColumnHeaderField');
+trialIDColHeaderField=uieditfield(importTab,'text','Value','Trial ID Column Header','Tag','TrialIDColumnHeaderField','ValueChangedFcn',@(trialIDColHeaderField,event) trialIDColHeaderFieldValueChanged(trialIDColHeaderField));
 % Trial ID format label
 trialIDFormatLabel=uilabel(importTab,'Text','Trial ID Format','Tag','TrialIDFormatLabel');
 % Trial ID format field
-trialIDFormatField=uieditfield(importTab,'text','Value','S T','Tag','TrialIDFormatField');
+trialIDFormatField=uieditfield(importTab,'text','Value','S T','Tag','TrialIDFormatField','ValueChangedFcn',@(trialIDFormatField,event) trialIDFormatFieldValueChanged(trialIDFormatField));
 % Target Trial ID format label
 targetTrialIDFormatLabel=uilabel(importTab,'Text','Target Trial ID Format','Tag','TargetTrialIDFormatLabel');
 % Target Trial ID format field
-targetTrialIDFormatField=uieditfield(importTab,'text','Value','T','Tag','TargetTrialIDFormatField');
+targetTrialIDFormatField=uieditfield(importTab,'text','Value','T','Tag','TargetTrialIDFormatField','ValueChangedFcn',@(targetTrialIDFormatField,event) targetTrialIDFormatFieldValueChanged(targetTrialIDFormatField));
 % Save all trials button
-saveAllButton=uibutton(importTab,'push','Text','Save Struct','Tag','SaveAllButton');
+saveAllButton=uibutton(importTab,'push','Text','Save All In Struct','Tag','SaveAllButton','ButtonPushedFcn',@(saveAllButton,event) saveAllButtonPushed(saveAllButton));
 % Load which data label
 selectDataPanel=uipanel(importTab,'Title','Select Groups'' Data to Load','Tag','SelectDataPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
 % Need to read the groups text file to get group names. Create
@@ -172,8 +170,8 @@ rootSavePlotPathField=uieditfield(plotTab,'text','Value','Root Folder to Save Pl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% AFTER COMPONENT INITIALIZATION
 %% Read any existing projects' info (path names, etc.), store them, and display them.
-[A,allProjectsTxt]=readAllProjects(getappdata(fig,'everythingPath')); % Return the text of the 'allProjects_ProjectNamesPaths.txt' file
-setappdata(fig,'allProjectsTxtPath',allProjectsTxt); % Store the address of the 'allProjects_ProjectNamesPaths.txt' file
+[A,allProjectsTxtPath]=readAllProjects(getappdata(fig,'everythingPath')); % Return the text of the 'allProjects_ProjectNamesPaths.txt' file
+setappdata(fig,'allProjectsTxtPath',allProjectsTxtPath); % Store the address of the 'allProjects_ProjectNamesPaths.txt' file
 if iscell(A) % The file exists and has a pre-existing project in it.
     allProjectsList=getAllProjectNames(A);
 else
@@ -191,32 +189,57 @@ if ~isempty(allProjectsList) % Ensure that there are project names present.
     end
     setappdata(fig,'projectName',mostRecentProjectName); % projectName always begins empty.
     projectNameField.Value=getappdata(fig,'projectName');
-    projectNamePaths=isolateProjectNamesPaths(A,mostRecentProjectName); % Return the path names associated with the specified project name.
-    
-    % Set those path names into the figure's app data.
-    if isfield(projectNamePaths,'LogsheetPath')
-        setappdata(fig,'logsheetPath',projectNamePaths.LogsheetPath);
-        logsheetPathField.Value=getappdata(fig,'logsheetPath');
-    end
-    if isfield(projectNamePaths,'DataPath')
-        setappdata(fig,'dataPath',projectNamePaths.DataPath);
-        dataPathField.Value=getappdata(fig,'dataPath');
-    end
-    if isfield(projectNamePaths,'CodePath')
-        setappdata(fig,'codePath',projectNamePaths.CodePath);
-        codePathField.Value=getappdata(fig,'codePath');
-    end
-    if isfield(projectNamePaths,'RootSavePlotPath')
-        setappdata(fig,'rootSavePlotPath',projectNamePaths.RootSavePlotPath);
-        rootSavePlotPathField.Value=getappdata(fig,'rootSavePlotPath');
-    end
-    
-    % Display the project info in the text edit fields.
-    switchProjectsDropDown.Items=allProjectsList;
-    switchProjectsDropDown.Value=getappdata(fig,'projectName');
-else % The file does not exist, or exists and has nothing in it.
-    
 end
+
+% @projectNameFieldValueChanged; % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
+projectNameInfo=isolateProjectNamesInfo(A,mostRecentProjectName); % Return the path names associated with the specified project name.
+
+% Set those path names into the figure's app data.
+if isfield(projectNameInfo,'LogsheetPath')
+    setappdata(fig,'logsheetPath',projectNameInfo.LogsheetPath);
+    logsheetPathField.Value=getappdata(fig,'logsheetPath');
+end
+if isfield(projectNameInfo,'DataPath')
+    setappdata(fig,'dataPath',projectNameInfo.DataPath);
+    dataPathField.Value=getappdata(fig,'dataPath');
+end
+if isfield(projectNameInfo,'CodePath')
+    setappdata(fig,'codePath',projectNameInfo.CodePath);
+    codePathField.Value=getappdata(fig,'codePath');
+end
+if isfield(projectNameInfo,'RootSavePlotPath')
+    setappdata(fig,'rootSavePlotPath',projectNameInfo.RootSavePlotPath);
+    rootSavePlotPathField.Value=getappdata(fig,'rootSavePlotPath');
+end
+if isfield(projectNameInfo,'NumHeaderRows')
+    setappdata(fig,'numHeaderRows',projectNameInfo.NumHeaderRows);
+    numHeaderRowsField.Value=getappdata(fig,'numHeaderRows');
+end
+if isfield(projectNameInfo,'SubjIDColHeader')
+    setappdata(fig,'subjIDColHeader',projectNameInfo.SubjIDColHeader);
+    subjIDColHeaderField.Value=getappdata(fig,'subjIDColHeader');
+end
+if isfield(projectNameInfo,'TrialIDColHeader')
+    setappdata(fig,'trialIDColHeader',projectNameInfo.TrialIDColHeader);
+    trialIDColHeaderField.Value=getappdata(fig,'trialIDColHeader');
+end
+if isfield(projectNameInfo,'TrialIDFormat')
+    setappdata(fig,'trialIDFormat',projectNameInfo.TrialIDFormat);
+    trialIDFormatField.Value=getappdata(fig,'trialIDFormat');
+end
+if isfield(projectNameInfo,'TargetTrialIDFormat')
+    setappdata(fig,'targetTrialIDFormat',projectNameInfo.TargetTrialIDFormat);
+    targetTrialIDFormatField.Value=getappdata(fig,'targetTrialIDFormat');
+end
+if isfield(projectNameInfo,'GroupsDataToLoad')
+    setappdata(fig,'groupsDataToLoad',projectNameInfo.GroupsDataToLoad);
+else
+    setappdata(fig,'groupsDataToLoad','');
+end
+
+% Display the project info in the text edit fields.
+switchProjectsDropDown.Items=allProjectsList;
+switchProjectsDropDown.Value=getappdata(fig,'projectName');
 
 % Make everything invisible until the project name is entered!
 if isempty(getappdata(fig,'projectName'))
@@ -244,18 +267,18 @@ if ~isempty(codePath) && ~isempty(projectName) % Code path and project name are 
                 specifyTrialsFile=1;
             end
         end
-    end    
+    end
 end
 
 % 'Create' new project-specific templates.
 % h=findobj(fig,'Type','uibutton');
-if importSettingsFile==0 % Make the button function to create a new project-specific importSettings    
+if importSettingsFile==0 % Make the button function to create a new project-specific importSettings
     h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
     h.Text=['Create importSettings_' projectName '.m'];
 end
 if specifyTrialsFile==0 % Make the button function to create a new project-specific specifyTrials
     h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
-    h.Text=['Create specifyTrials_Import' projectName '.m'];   
+    h.Text=['Create specifyTrials_Import' projectName '.m'];
 end
 
 % 'Open' the project-specific files.

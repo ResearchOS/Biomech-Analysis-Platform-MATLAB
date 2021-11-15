@@ -96,7 +96,7 @@ trialIDFormatLabelSize=[0.2 compHeight];
 trialIDFormatFieldSize=[0.2 compHeight];
 targetTrialIDFormatLabelSize=[0.2 compHeight];
 targetTrialIDFormatFieldSize=[0.2 compHeight];
-saveAllButtonSize=[0.15 compHeight];
+saveAllButtonSize=[0.2 compHeight];
 selectDataPanelSize=[0.4 0.55*figSize(2)];
 
 % Multiply the relative positions by the figure size to get the actual position.
@@ -188,6 +188,6 @@ data.TrialIDFormatField.FontSize=newFontSize;
 data.TargetTrialIDFormatLabel.FontSize=newFontSize;
 data.TargetTrialIDFormatField.FontSize=newFontSize;
 data.SaveAllButton.FontSize=newFontSize;
-data.selectDataPanel.FontSize=newFontSize;
+data.SelectDataPanel.FontSize=newFontSize;
 
 % Restore component visibility

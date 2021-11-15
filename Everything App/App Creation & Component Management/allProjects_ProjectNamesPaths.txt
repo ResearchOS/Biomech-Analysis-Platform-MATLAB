@@ -11,6 +11,11 @@ Code Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Biomech-Analysis-Platf
 Save Plot Root Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Plots\
 
 Project Name: Pitching
+Target Trial ID Format: GGGG
+Trial ID Format: GGG
+Trial ID Column Header: Trial Name/Number
+Subject ID Column Header: Subject CodenameP
+Number of Header Rows: 2
 Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\20210817_PitchingLogsheet_TOKYO.xlsx
 Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\
 Code Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App/App Creation & Component Management/

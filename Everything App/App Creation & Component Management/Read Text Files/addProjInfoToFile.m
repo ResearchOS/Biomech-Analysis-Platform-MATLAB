@@ -34,7 +34,7 @@ for i=1:length(text)
         end
     end
     
-    if projectFound==0 && isequal(text{i}(length(projNamePrefix)+2:length(projNamePrefix)+1+length(projectName)),projectName)
+    if projectFound==0 && length(text{i})>=length(projNamePrefix)+1+length(projectName) && isequal(text{i}(length(projNamePrefix)+2:length(projNamePrefix)+1+length(projectName)),projectName)
         projectFound=1;
         projectNameLine=i;
         continue;

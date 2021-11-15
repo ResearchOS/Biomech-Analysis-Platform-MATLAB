@@ -135,7 +135,7 @@ if existingProject==1
         hTrialIDColHeader.Value=getappdata(fig,'trialIDColHeader');
     else
         hTrialIDColHeader.Value='Set Trial ID Column Header';
-        setappdata(fig,'trialIDColHeader');
+        setappdata(fig,'trialIDColHeader','');
     end
     
     % Trial ID Format
@@ -166,6 +166,16 @@ if existingProject==1
     end    
     
     saveFile=0; % Indicates to not save the file again.
+    for i=length(A):-1:1 % Go through each line of A, looking for the 'Most Recent Project Name'
+        if length(A{i})>=length('Most Recent Project Name:') && isequal(A{i}(1:length('Most Recent Project Name:')),'Most Recent Project Name:')
+            A{i}=['Most Recent Project Name: ' projectName];
+            break;
+        end
+    end
+    fid=fopen(fileName,'w');
+    fprintf(fid,'%s\n',A{1:end-1});
+    fprintf(fid,'%s',A{end});
+    fclose(fid);
 elseif existingProject==0
     % If not already existing, check if the allProjects file exists and/or make a new entry in the 'allProjects_ProjectNamesPaths.txt' file and save it.
     if exist(fileName,'file')~=2 % File does not exist.

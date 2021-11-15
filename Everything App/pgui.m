@@ -43,11 +43,11 @@ settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChild
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.
-projectNameLabel=uilabel(importTab,'Text','Project Name','FontWeight','bold');
+projectNameLabel=uilabel(importTab,'Text','Project Name','Tag','ProjectNameLabel','FontWeight','bold');
 logsheetPathButton=uibutton(importTab,'push','Text','Logsheet Path','Tag','LogsheetPathButton','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
 dataPathButton=uibutton(importTab,'push','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
 codePathButton=uibutton(importTab,'push','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
-projectNameField=uieditfield(importTab,'text','Value','Project Name','Tag','ProjectNameField','ValueChangedFcn',@(projectNameField,event) projectNameFieldValueChanged(projectNameField)); % Project name edit field
+projectNameField=uieditfield(importTab,'text','Value','Enter Project Name','Tag','ProjectNameField','ValueChangedFcn',@(projectNameField,event) projectNameFieldValueChanged(projectNameField)); % Project name edit field
 logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .xlsx)','Tag','LogsheetPathField','ValueChangedFcn',@(logsheetPathField,event) logsheetPathFieldValueChanged(logsheetPathField));
 dataPathField=uieditfield(importTab,'text','Value','Data Path (contains ''Subject Data'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 codePathField=uieditfield(importTab,'text','Value','Path to Project Processing Code Folder','Tag','CodePathField','ValueChangedFcn',@(codePathField,event) codePathFieldValueChanged(codePathField)); % Code path name edit field (to the folder containing all code for this project).
@@ -70,7 +70,7 @@ logsheetLabel=uilabel(importTab,'Text','Logsheet:','FontWeight','bold');
 % Number of header rows label
 numHeaderRowsLabel=uilabel(importTab,'Text','# of Header Rows','Tag','NumHeaderRowsLabel');
 % Number of header rows text box
-numHeaderRowsField=uieditfield(importTab,'numeric','Value',1,'Tag','NumHeaderRowsField','ValueChangedFcn',@(numHeaderRowsField,event) numHeaderRowsFieldValueChanged(numHeaderRowsField));
+numHeaderRowsField=uieditfield(importTab,'numeric','Value',0,'Tag','NumHeaderRowsField','ValueChangedFcn',@(numHeaderRowsField,event) numHeaderRowsFieldValueChanged(numHeaderRowsField));
 % Subject ID column header label
 subjIDColHeaderLabel=uilabel(importTab,'Text','Subject ID Column Header','Tag','SubjectIDColumnHeaderLabel');
 % Subject ID column header text box
@@ -165,11 +165,11 @@ processTabGroup.SelectedTab=hProcessSetup;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the plot tab
-rootSavePlotPathField=uieditfield(plotTab,'text','Value','Root Folder to Save Plots');
+rootSavePlotPathField=uieditfield(plotTab,'text','Value','Root Folder to Save Plots','Tag','RootSavePlotPathField');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% AFTER COMPONENT INITIALIZATION
-%% Read any existing projects' info (path names, etc.), store them, and display them.
+%% IMPORT: Initialize the project name from file.
 [A,allProjectsTxtPath]=readAllProjects(getappdata(fig,'everythingPath')); % Return the text of the 'allProjects_ProjectNamesPaths.txt' file
 setappdata(fig,'allProjectsTxtPath',allProjectsTxtPath); % Store the address of the 'allProjects_ProjectNamesPaths.txt' file
 if iscell(A) % The file exists and has a pre-existing project in it.
@@ -189,106 +189,11 @@ if ~isempty(allProjectsList) % Ensure that there are project names present.
     end
     setappdata(fig,'projectName',mostRecentProjectName); % projectName always begins empty.
     projectNameField.Value=getappdata(fig,'projectName');
-end
-
-% @projectNameFieldValueChanged; % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
-projectNameInfo=isolateProjectNamesInfo(A,mostRecentProjectName); % Return the path names associated with the specified project name.
-
-% Set those path names into the figure's app data.
-if isfield(projectNameInfo,'LogsheetPath')
-    setappdata(fig,'logsheetPath',projectNameInfo.LogsheetPath);
-    logsheetPathField.Value=getappdata(fig,'logsheetPath');
-end
-if isfield(projectNameInfo,'DataPath')
-    setappdata(fig,'dataPath',projectNameInfo.DataPath);
-    dataPathField.Value=getappdata(fig,'dataPath');
-end
-if isfield(projectNameInfo,'CodePath')
-    setappdata(fig,'codePath',projectNameInfo.CodePath);
-    codePathField.Value=getappdata(fig,'codePath');
-end
-if isfield(projectNameInfo,'RootSavePlotPath')
-    setappdata(fig,'rootSavePlotPath',projectNameInfo.RootSavePlotPath);
-    rootSavePlotPathField.Value=getappdata(fig,'rootSavePlotPath');
-end
-if isfield(projectNameInfo,'NumHeaderRows')
-    setappdata(fig,'numHeaderRows',projectNameInfo.NumHeaderRows);
-    numHeaderRowsField.Value=getappdata(fig,'numHeaderRows');
-end
-if isfield(projectNameInfo,'SubjIDColHeader')
-    setappdata(fig,'subjIDColHeader',projectNameInfo.SubjIDColHeader);
-    subjIDColHeaderField.Value=getappdata(fig,'subjIDColHeader');
-end
-if isfield(projectNameInfo,'TrialIDColHeader')
-    setappdata(fig,'trialIDColHeader',projectNameInfo.TrialIDColHeader);
-    trialIDColHeaderField.Value=getappdata(fig,'trialIDColHeader');
-end
-if isfield(projectNameInfo,'TrialIDFormat')
-    setappdata(fig,'trialIDFormat',projectNameInfo.TrialIDFormat);
-    trialIDFormatField.Value=getappdata(fig,'trialIDFormat');
-end
-if isfield(projectNameInfo,'TargetTrialIDFormat')
-    setappdata(fig,'targetTrialIDFormat',projectNameInfo.TargetTrialIDFormat);
-    targetTrialIDFormatField.Value=getappdata(fig,'targetTrialIDFormat');
-end
-if isfield(projectNameInfo,'GroupsDataToLoad')
-    setappdata(fig,'groupsDataToLoad',projectNameInfo.GroupsDataToLoad);
 else
-    setappdata(fig,'groupsDataToLoad','');
+    setappdata(fig,'projectName',''); % If no projects present in file or file doesn't exist yet, make projectName empty.
 end
 
-% Display the project info in the text edit fields.
-switchProjectsDropDown.Items=allProjectsList;
-switchProjectsDropDown.Value=getappdata(fig,'projectName');
-
-% Make everything invisible until the project name is entered!
-if isempty(getappdata(fig,'projectName'))
-    h=findall(fig.Children.Children(1,1)); % The import tab and all of its components.
-    for i=1:length(h)
-        if i~=1 && i~=13 && i~=17 % Ignore the project name textbox and label.
-            h(i).Visible='off';
-        end
-    end
-end
-
-% Change the text on the importSettings, specifyTrials, and specifyVars buttons  based on what paths/files are present.
-% This will change their behavior.
-codePath=getappdata(fig,'codePath');
-projectName=getappdata(fig,'projectName');
-importSettingsFile=0; % Initialize that the project-specific user customized importSettings is found.
-specifyTrialsFile=0; % Initialize that the project-specific user customized specifyTrials is found.
-if ~isempty(codePath) && ~isempty(projectName) % Code path and project name are both present, look for the project-specific templates.
-    if isfolder([codePath 'Import_' projectName slash]) % Project-specific user customized files stored in Import subfolder of project-specific codePath
-        listing=dir([codePath 'Import_' projectName slash]);
-        for i=1:length(listing)
-            if isequal(listing(i).name,['importSettings_' projectName '.m'])
-                importSettingsFile=1;
-            elseif isequal(listing(i).name,['specifyTrials_Import' projectName '.m'])
-                specifyTrialsFile=1;
-            end
-        end
-    end
-end
-
-% 'Create' new project-specific templates.
-% h=findobj(fig,'Type','uibutton');
-if importSettingsFile==0 % Make the button function to create a new project-specific importSettings
-    h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
-    h.Text=['Create importSettings_' projectName '.m'];
-end
-if specifyTrialsFile==0 % Make the button function to create a new project-specific specifyTrials
-    h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
-    h.Text=['Create specifyTrials_Import' projectName '.m'];
-end
-
-% 'Open' the project-specific files.
-if importSettingsFile==1
-    h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
-    h.Text=['Open importSettings_' projectName '.m'];
-end
-if specifyTrialsFile==1
-    h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
-    h.Text=['Open specifyTrials_Import' projectName '.m'];
-end
+% Whether the project name was found in the file or not, run the callback to set up the app properly.
+projectNameFieldValueChanged(projectNameField); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
 
 assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected

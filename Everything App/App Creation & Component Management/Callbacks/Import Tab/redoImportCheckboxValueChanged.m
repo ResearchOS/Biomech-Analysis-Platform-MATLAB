@@ -1,0 +1,5 @@
+function []=redoImportCheckboxValueChanged(src)
+
+%% PURPOSE: INDICATE WHETHER TO REDO (OVERWRITE) IMPORT. PROPAGATE THAT SELECTION TO THE RUN TIME VARS
+
+data=src.UserData;

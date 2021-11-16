@@ -1,0 +1,5 @@
+function []=runImportButtonPushed(src)
+
+%% PURPOSE: START THE IMPORT/LOADING PROCESS AFTER THE RUN IMPORT/LOAD BUTTON ON THE IMPORT TAB IS PUSHED
+
+data=src.UserData;

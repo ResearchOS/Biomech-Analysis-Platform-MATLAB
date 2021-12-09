@@ -46,7 +46,8 @@ for i=1:length(text)
     
     % Now have found the project, checking if the prefix was found.
     if length(text{i})>=length(prefix) && isequal(text{i}(1:length(prefix)),prefix)
-        text{i}(length(prefix)+2:length(prefix)+1+length(data))=data;
+        text{i}=[prefix ' ' data];
+%         text{i}(length(prefix)+2:length(prefix)+1+length(data))=data;
         return; % After modifying an existing data, stop this function.
     end
     

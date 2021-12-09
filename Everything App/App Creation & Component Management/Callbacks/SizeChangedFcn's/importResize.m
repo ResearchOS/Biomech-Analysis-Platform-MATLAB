@@ -66,6 +66,7 @@ targetTrialIDFormatLabelRelPos=[0.5 0.35];
 targetTrialIDFormatFieldRelPos=[0.7 0.35];
 saveAllButtonRelPos=[0.75 0.25];
 selectDataPanelRelPos=[0.05 0.05];
+dataTypeImportMethodFieldRelPos=[0.93 0.75];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -98,6 +99,7 @@ targetTrialIDFormatLabelSize=[0.2 compHeight];
 targetTrialIDFormatFieldSize=[0.2 compHeight];
 saveAllButtonSize=[0.2 compHeight];
 selectDataPanelSize=[0.4 0.55*figSize(2)];
+dataTypeImportMethodFieldSize=[0.05 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
@@ -129,6 +131,7 @@ targetTrialIDFormatLabelPos=round([targetTrialIDFormatLabelRelPos.*figSize targe
 targetTrialIDFormatFieldPos=round([targetTrialIDFormatFieldRelPos.*figSize targetTrialIDFormatFieldSize(1)*figSize(1) targetTrialIDFormatFieldSize(2)]);
 saveAllButtonPos=round([saveAllButtonRelPos.*figSize saveAllButtonSize(1)*figSize(1) saveAllButtonSize(2)]);
 selectDataPanelPos=round([selectDataPanelRelPos.*figSize selectDataPanelSize(1)*figSize(1) selectDataPanelSize(2)]);
+dataTypeImportMethodFieldPos=round([dataTypeImportMethodFieldRelPos.*figSize dataTypeImportMethodFieldSize(1)*figSize(1) dataTypeImportMethodFieldSize(2)]);
 
 % Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
@@ -159,6 +162,7 @@ data.TargetTrialIDFormatLabel.Position=targetTrialIDFormatLabelPos;
 data.TargetTrialIDFormatField.Position=targetTrialIDFormatFieldPos;
 data.SaveAllButton.Position=saveAllButtonPos;
 data.SelectDataPanel.Position=selectDataPanelPos;
+data.DataTypeImportMethodField.Position=dataTypeImportMethodFieldPos;
 
 % Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
@@ -189,5 +193,6 @@ data.TargetTrialIDFormatLabel.FontSize=newFontSize;
 data.TargetTrialIDFormatField.FontSize=newFontSize;
 data.SaveAllButton.FontSize=newFontSize;
 data.SelectDataPanel.FontSize=newFontSize;
+data.DataTypeImportMethodField.FontSize=newFontSize;
 
 % Restore component visibility

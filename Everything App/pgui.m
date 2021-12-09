@@ -64,7 +64,7 @@ runImportButton=uibutton(importTab,'push','Text','Run Import/Load','Tag','RunImp
 % Drop down to switch between active projects.
 switchProjectsDropDown=uidropdown(importTab,'Items',{'New Project'},'Editable','off','Tag','SwitchProjectsDropDown','ValueChangedFcn',@(switchProjectsDropDown,event) switchProjectsDropDownValueChanged(switchProjectsDropDown));
 % Drop down to specify & open a new data type's importSettings
-dataTypeImportSettingsDropDown=uidropdown(importTab,'Items',{'MOCAP','FP','EMG','IMU'},'Editable','on','Tag','DataTypeImportSettingsDropDown','ValueChangedFcn',@(dataTypeImportSettingsDropDown,event) dataTypeImportSettingsDropDownValueChanged(dataTypeImportSettingsDropDown));
+dataTypeImportSettingsDropDown=uidropdown(importTab,'Items',{'MOCAP','FP'},'Editable','on','Tag','DataTypeImportSettingsDropDown','ValueChangedFcn',@(dataTypeImportSettingsDropDown,event) dataTypeImportSettingsDropDownValueChanged(dataTypeImportSettingsDropDown));
 % Logsheet label
 logsheetLabel=uilabel(importTab,'Text','Logsheet:','FontWeight','bold');
 % Number of header rows label
@@ -94,13 +94,16 @@ selectDataPanel=uipanel(importTab,'Title','Select Groups'' Data to Load','Tag','
 % Need to read the groups text file to get group names. Create
 % corresponding number of checkboxes & their labels.
 
+% Data types import method number field
+dataTypeImportMethodField=uieditfield(importTab,'numeric','Value',0,'Tag','DataTypeNumField','ValueChangedFcn',@(dataTypeImportMethodField,event) dataTypeImportMethodFieldValueChanged(dataTypeImportMethodField));
+
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
     'ProjectNameField',projectNameField,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
     'OpenImportSettingsButton',openImportSettingsButton,'OpenSpecifyTrialsButton',openGroupSpecifyTrialsButton,'SwitchProjectsDropDown',switchProjectsDropDown,'RedoImportCheckBox',redoImportCheckbox,...
     'UpdateMetadataCheckBox',updateMetadataCheckbox,'RunImportButton',runImportButton,'LogsheetLabel',logsheetLabel,'NumHeaderRowsLabel',numHeaderRowsLabel,'NumHeaderRowsField',numHeaderRowsField,...
     'SubjectIDColHeaderLabel',subjIDColHeaderLabel,'SubjectIDColHeaderField',subjIDColHeaderField,'TrialIDColHeaderLabel',trialIDColHeaderLabel,'TrialIDColHeaderField',trialIDColHeaderField,...
     'TrialIDFormatLabel',trialIDFormatLabel,'TrialIDFormatField',trialIDFormatField,'TargetTrialIDFormatLabel',targetTrialIDFormatLabel,'TargetTrialIDFormatField',targetTrialIDFormatField,...
-    'SaveAllButton',saveAllButton,'SelectDataPanel',selectDataPanel);
+    'SaveAllButton',saveAllButton,'SelectDataPanel',selectDataPanel,'DataTypeImportMethodField',dataTypeImportMethodField);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 

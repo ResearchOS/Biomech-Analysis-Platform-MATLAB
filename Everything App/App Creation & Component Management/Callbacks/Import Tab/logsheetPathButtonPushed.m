@@ -14,7 +14,7 @@ end
 
 logsheetPath=[path file];
 setappdata(fig,'logsheetPath',logsheetPath);
-disp(logsheetPath);
+disp(['Logsheet Path: ' logsheetPath]);
 
 % Set the logsheetPathField to display the new path
 h=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');

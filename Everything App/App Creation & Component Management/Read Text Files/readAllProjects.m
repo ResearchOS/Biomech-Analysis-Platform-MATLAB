@@ -13,6 +13,9 @@ if exist(fullFileName,'file')==2 % If the file exists.
     if length(text)==1 && isequal(text{1},'') % File exists but is empty, return empty char.
         text='';
     end
+    if length(text)==3 && isequal(text{1},'Project Name: Enter Project Name') && isequal(text{3},'Most Recent Project Name: Enter Project Name') && isempty(text{2})
+        text='';
+    end
 else % If the file does not exist.
     text='';
 end

@@ -16,6 +16,7 @@ function [projectNamesInfo]=isolateProjectNamesInfo(text,projectName)
 % Trial ID Format:
 % Target Trial ID Format:
 % Groups' Data To Load:
+% Data Types:
 
 numLines=length(text);
 foundProject=0; % Initialize the project name to not be found.
@@ -29,6 +30,8 @@ trialIDColHeaderPrefix='Trial ID Column Header:';
 trialIDFormatPrefix='Trial ID Format:';
 targetTrialIDFormatPrefix='Target Trial ID Format:';
 groupsDataToLoadPrefix='Groups Data To Load:';
+dataTypesPrefix='Data Types:';
+dataTypesNum=0;
 for i=1:numLines
     
     if isempty(text{i})
@@ -66,6 +69,22 @@ for i=1:numLines
         projectNamesInfo.TargetTrialIDFormat=text{i}(length(targetTrialIDFormatPrefix)+2:length(text{i}));
     elseif length(text{i})>=length(groupsDataToLoadPrefix) && isequal(text{i}(1:length(groupsDataToLoadPrefix)),groupsDataToLoadPrefix) % Groups' data to load.
         projectNamesInfo.GroupsDataToLoad=text{i}(length(groupsDataToLoadPrefix)+2:length(text{i}));
+    end
+    
+    % Iterate through all data types
+    % Each data type entry is of the form: "dataTypes: FP1"
+    % Where the char is the data type (entries in the drop down list) and
+    % the number is the import method associated with it (where various numbers are e.g. forceplate
+    % type for FP, file format for mocap, etc.)
+    
+    if length(text{i})>=length(dataTypesPrefix) && isequal(text{i}(1:length(dataTypesPrefix)),dataTypesPrefix)
+        if ~isletter(text{i}(end-1)) % 2 digits
+            methodNum=text{i}(end-1:end);
+        else
+            methodNum=text{i}(end);
+        end
+        dataTypesNum=dataTypesNum+1;
+        projectNamesInfo.DataTypes.(text{i}(length(dataTypesPrefix)+2:length(text{i}))).MethodNum=methodNum;
     end
     
 end

@@ -4,34 +4,38 @@ function []=projectNameFieldValueChanged(src)
 % After the project is specified, there will always be a 'allProjects_ProjectNamesPaths.txt' file (unless deleted)
 
 projectName=src.Value;
+if isequal(projectName,'Enter Project Name')
+    projectName='';
+end
 
 fig=ancestor(src,'figure','toplevel');
 if isempty(projectName)
-    src.Value=getappdata(fig,'projectName');
-    if isempty(src.Value) % Because there was no prior projectName stored
-        src.Value='Project Name';
-    end
-    return;
+	visStat='off';
+    setappdata(fig,'EmptyProjectName',1); % Indicates that the project name field is empty when the app was initialized.
+else
+    visStat='on';
+    setappdata(fig,'EmptyProjectName',0);
 end
 
 % Once a project name has been created, make everything visible!
 projNameLabel=findobj(fig,'Type','uilabel','Tag','ProjectNameLabel');
-projNameField=findobj(fig,'Type','uilabel','Tag','ProjectNameField');
-if isempty(getappdata(fig,'projectName'))
-    visStat='off';
-else
-    visStat='on';
-end
+projNameField=findobj(fig,'Type','uieditfield','Tag','ProjectNameField');
 
 h=findall(fig.Children.Children(1,1));
 for i=1:length(h)
     if ismember(h(i),[projNameLabel projNameField]) % Ignore the project name textbox and label.
         h(i).Visible='on';
     else
-        if isfield(h(i),'Visible')
+        try
             h(i).Visible=visStat;
+        catch
+        
         end
     end
+end
+
+if getappdata(fig,'EmptyProjectName')==1
+    return;
 end
 
 fileName=getappdata(fig,'allProjectsTxtPath'); % Get the 'allProjects_ProjectNamesPaths.txt' path.
@@ -59,6 +63,10 @@ if existingProject==1
         end
     end
 end
+% else
+%     hDropdown.Items={projectName};
+%     hDropdown.Value=projectName;
+% end
 
 hLog=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
 hData=findobj(fig,'Type','uieditfield','Tag','DataPathField');
@@ -71,19 +79,19 @@ hTrialIDFormat=findobj(fig,'Type','uieditfield','Tag','TrialIDFormatField');
 hTargetTrialIDFormat=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDFormatField');
 hGroupsDataToLoad=findobj(fig,'Type','uipanel','Tag','SelectDataPanel');
 % If the project was pre-existing
-if existingProject==1    
+if existingProject==1
     projectNameInfo=isolateProjectNamesInfo(A,projectName); % Return the path names associated with the specified project name.
     
-    % Set those path names into the figure's app data, & update the displays   
+    % Set those path names into the figure's app data, & update the displays
     % Logsheet Path
     if isfield(projectNameInfo,'LogsheetPath')
-        setappdata(fig,'logsheetPath',projectNameInfo.LogsheetPath);        
+        setappdata(fig,'logsheetPath',projectNameInfo.LogsheetPath);
         hLog.Value=getappdata(fig,'logsheetPath');
     else% Set to default
         setappdata(fig,'logsheetPath','');
         hLog.Value='Set Logsheet Path';
     end
-        
+    
     % Data Path
     if isfield(projectNameInfo,'DataPath')
         setappdata(fig,'dataPath',projectNameInfo.DataPath);
@@ -92,7 +100,7 @@ if existingProject==1
         setappdata(fig,'dataPath','');
         hData.Value='Data Path (contains ''Subject Data'' folder)';
     end
-        
+    
     % Code Path
     if isfield(projectNameInfo,'CodePath')
         setappdata(fig,'codePath',projectNameInfo.CodePath);
@@ -159,11 +167,11 @@ if existingProject==1
     % Groups Data to Load
     if isfield(projectNameInfo,'GroupsDataToLoad')
         setappdata(fig,'groupsDataToLoad',projectNameInfo.GroupsDataToLoad);
-%         hGroupsDataToLoad.Value=getappdata(fig,'groupsDataToLoad');
+        %         hGroupsDataToLoad.Value=getappdata(fig,'groupsDataToLoad');
     else
-%         hGroupsDataToLoad.Value='Set Data To Load';
+        %         hGroupsDataToLoad.Value='Set Data To Load';
         setappdata(fig,'groupsDataToLoad','');
-    end    
+    end
     
     saveFile=0; % Indicates to not save the file again.
     for i=length(A):-1:1 % Go through each line of A, looking for the 'Most Recent Project Name'
@@ -190,15 +198,22 @@ elseif existingProject==0
     else % If file already exists, put new project at the end
         saveFile=1; % Indicates to save the file.
         A=readAllProjects(everythingPath);
-        mostRecent=A(end-1:end); % Isolate last two lines (empty & most recent project name)
-        A(end)={['Project Name: ' projectName]}; % Replace last line with project name
-        A(length(A)+1:length(A)+2)=mostRecent; % Add two more lines
+        if iscell(A)
+            mostRecent=A(end-1:end); % Isolate last two lines (empty & most recent project name)
+            A(end)={['Project Name: ' projectName]}; % Replace last line with project name
+            A(length(A)+1:length(A)+2)=mostRecent; % Add two more lines
+        end
     end
     allProjectsList=getAllProjectNames(A);
     
     % Update the drop down list, and put the new project name as the current value.
-    hDropdown.Items=allProjectsList;
-    hDropdown.Value=projectName;
+    if ~isempty(allProjectsList)
+        hDropdown.Items=allProjectsList;
+        hDropdown.Value=projectName;
+    else
+        hDropdown.Items={'New Project'};
+        hDropdown.Value='New Project';
+    end
     
     % Set the other fields to their default values
     setappdata(fig,'logsheetPath','');
@@ -241,14 +256,45 @@ h.Text=[prefix ' specifyTrials_Import' projectName '.m'];
 %% Set the entered project name as the most recently used project at the end of the file.
 if saveFile==1 % Indicates to save the file
     mostRecentProjPrefix='Most Recent Project Name:';
-    for i=length(A):-1:1
-        if length(A{i})>length(mostRecentProjPrefix) && isequal(A{i}(1:length(mostRecentProjPrefix)),mostRecentProjPrefix)
-            A{i}=[mostRecentProjPrefix ' ' projectName];
-            break;
+    if iscell(A)
+        for i=length(A):-1:1
+            if length(A{i})>length(mostRecentProjPrefix) && isequal(A{i}(1:length(mostRecentProjPrefix)),mostRecentProjPrefix)
+                A{i}=[mostRecentProjPrefix ' ' projectName];
+                break;
+            end
         end
+        fid=fopen(fileName,'w');
+        fprintf(fid,'%s\n',A{1:end-1});
+        fprintf(fid,'%s',A{end});
+        fclose(fid);
     end
-    fid=fopen(fileName,'w');
-    fprintf(fid,'%s\n',A{1:end-1});
-    fprintf(fid,'%s',A{end});
-    fclose(fid);
+end
+
+%% Update the data types dropdown list from file.
+h=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
+[projectNamesInfo]=isolateProjectNamesInfo(A,projectName);
+if isfield(projectNamesInfo,'DataTypes')    
+    h.Items=strsplit(projectNamesInfo.DataTypes,', ');        
+else
+    h.Items={''};
+end
+
+%% Update the import method number for the current drop down selection
+if ~isempty(h.Items{1})
+    projectNamesInfo=isolateProjectNamesInfo(A,projectName);
+    if isfield(projectNamesInfo,'DataTypes')
+        for i=1:length(projectNamesInfo.DataTypes)
+            if isequal(h.Value,projectNamesInfo.DataTypes{i})
+                dataTypes=projectNamesInfo.DataTypes;
+                break;
+            end
+        end
+        h=findobj(fig,'Type','uieditfield','Tag','DataTypeNumField');
+        if ~isletter(dataTypes(end-1)) % 2 digits
+            numDigsOffset=1;
+        else 
+            numDigsOffset=0;
+        end
+        h.Value=str2double(dataTypes(end-numDigsOffset:end));
+    end
 end

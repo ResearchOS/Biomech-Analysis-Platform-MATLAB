@@ -12,7 +12,7 @@ end
 
 dataPath=path;
 setappdata(fig,'dataPath',dataPath);
-disp(dataPath);
+disp(['Data Path:' dataPath]);
 
 % Set the dataPathField to display the new path.
 h=findobj(fig,'Type','uieditfield','Tag','DataPathField');

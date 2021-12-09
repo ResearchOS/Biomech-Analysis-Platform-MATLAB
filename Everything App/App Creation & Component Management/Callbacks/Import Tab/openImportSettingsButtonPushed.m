@@ -6,10 +6,12 @@ fig=ancestor(src,'figure','toplevel');
 codePath=getappdata(fig,'codePath');
 if isempty(codePath)
     warning('Need to enter the code path!');
+    beep;
     return;
 end
 if exist(codePath,'dir')~=7
     warning(['Fix the code path: ' codePath]);
+    beep;
     return;
 end
 

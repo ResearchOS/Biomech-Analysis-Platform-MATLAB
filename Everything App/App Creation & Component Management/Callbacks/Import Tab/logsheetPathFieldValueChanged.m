@@ -8,7 +8,8 @@ if isempty(data)
 end
 
 if exist(data,'file')~=2
-    warning(['Incorrect path: ' data]);
+    beep;
+    warning(['Incorrect logsheet path: ' data]);
     return;
 end
 if ispc==1 % On PC

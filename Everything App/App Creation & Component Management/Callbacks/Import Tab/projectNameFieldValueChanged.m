@@ -63,10 +63,6 @@ if existingProject==1
         end
     end
 end
-% else
-%     hDropdown.Items={projectName};
-%     hDropdown.Value=projectName;
-% end
 
 hLog=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
 hData=findobj(fig,'Type','uieditfield','Tag','DataPathField');
@@ -232,16 +228,16 @@ elseif ispc==1
     slash='\';
 end
 
-% Change the project suffix for the importSettings, specifyTrials, and specifyVars buttons.
-h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
-% Check if the new project's importSettings file exists. If not, label it
-% 'Create'. If so, label it 'Open'
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'importSettings_' projectName '.m'],'file')==2 % This file exists.
-    prefix='Open';
-else
-    prefix='Create';
-end
-h.Text=[prefix ' importSettings_' projectName '.m'];
+% Change the project suffix for the specifyTrials button
+% h=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
+% % Check if the new project's importSettings file exists. If not, label it
+% % 'Create'. If so, label it 'Open'
+% if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'importSettings_' projectName '.m'],'file')==2 % This file exists.
+%     prefix='Open';
+% else
+%     prefix='Create';
+% end
+% h.Text=[prefix ' importSettings_' projectName '.m'];
 
 h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 % Check if the new project's specifyTrials file exists. If not, label it
@@ -272,29 +268,24 @@ end
 
 %% Update the data types dropdown list from file.
 h=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
+hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
 [projectNamesInfo]=isolateProjectNamesInfo(A,projectName);
-if isfield(projectNamesInfo,'DataTypes')    
-    h.Items=strsplit(projectNamesInfo.DataTypes,', ');        
+if isfield(projectNamesInfo,'DataTypes')        
+    itemsOrig=strsplit(projectNamesInfo.DataTypes,', '); 
+    for i=1:length(itemsOrig)
+        if ~isletter(itemsOrig{i}(end-2)) % If 3rd to last character is not a letter (i.e. is number), use it as part of the Method number
+            h.Items{i}=itemsOrig{i}(1:end-3); % 2 digit method number
+            hText.Value=itemsOrig{i}(end-2:end); % 2 digit method number, one char method letter
+        else
+            h.Items{i}=itemsOrig{i}(1:end-2); % Single digit method number
+            hText.Value=itemsOrig{i}(end-1:end); % Single digit method number, one char method letter
+        end
+        if i==1
+            h.Value=h.Items{i}; % By default, set the drop down to the first data type entry            
+        end
+    end    
 else
-    h.Items={''};
-end
-
-%% Update the import method number for the current drop down selection
-if ~isempty(h.Items{1})
-    projectNamesInfo=isolateProjectNamesInfo(A,projectName);
-    if isfield(projectNamesInfo,'DataTypes')
-        for i=1:length(projectNamesInfo.DataTypes)
-            if isequal(h.Value,projectNamesInfo.DataTypes{i})
-                dataTypes=projectNamesInfo.DataTypes;
-                break;
-            end
-        end
-        h=findobj(fig,'Type','uieditfield','Tag','DataTypeNumField');
-        if ~isletter(dataTypes(end-1)) % 2 digits
-            numDigsOffset=1;
-        else 
-            numDigsOffset=0;
-        end
-        h.Value=str2double(dataTypes(end-numDigsOffset:end));
-    end
+    h.Items={'No Data Types to Import'};
+    hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
+    hText.Value='';
 end

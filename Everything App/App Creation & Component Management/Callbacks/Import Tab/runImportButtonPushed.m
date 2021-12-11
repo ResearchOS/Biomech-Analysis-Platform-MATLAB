@@ -1,4 +1,4 @@
-function []=runImportButtonPushed(src)
+function [projectStruct]=runImportButtonPushed(src)
 
 %% PURPOSE: START THE IMPORT/LOADING PROCESS AFTER THE RUN IMPORT/LOAD BUTTON ON THE IMPORT TAB IS PUSHED
 % Imports bare bones data.
@@ -79,7 +79,31 @@ if isempty(hDataTypesDropDownNum.Value) || hDataTypesDropDownNum.Value<0 || mod(
     return;
 end
 
+if ismac
+    slash='/';
+elseif ispc
+    slash='\';
+end
+
 %% Identify which data types are being imported.
-% Identify them by which files are present
+% Identify them by which data types are present in the drop down list
+dataTypes=hDataTypesDropDown.Items;
 
 %% For each data type present, import the associated data
+% Assumes that all data types' folders are all in the same root directory
+% For convenience, for now also assumes that all trials across all data types have the
+% exact same names. This should be changed in the future after
+% functionality has been established
+
+% Run specifyTrials
+% Run getValidTrialNames
+for i=1:length(dataTypes)
+    cd([getappdata(fig,'dataPath') slash 'Subject Data' slash dataTypes{i}]); % In each data types subfolder now
+    
+    % Iterate through all subjects, all trials
+    for sub=1:nSubs
+        for trialNum=1:nTrials
+            projectStruct.(subject).(trialName)=feval();
+        end
+    end
+end

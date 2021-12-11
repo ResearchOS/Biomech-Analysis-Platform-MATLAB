@@ -1,4 +1,4 @@
-function []=openImportSettingsButtonPushed(src, projectName)
+function []=openImportMetadataButtonPushed(src, projectName)
 
 %% PURPOSE: ON IMPORT TAB, IF OPEN IMPORT SETTINGS BUTTON PUSHED, OPEN THE IMPORT SETTINGS FILE FOR THE PROJECT.
 
@@ -30,7 +30,7 @@ end
 
 importSettingsName=['importSettings_' projectName '.m'];
 
-h=findobj(fig,'Type','uibutton','Tag','OpenImportSettingsButton');
+h=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
 if isequal(h.Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it.   
     everythingPath=getappdata(fig,'everythingPath');
     templatePath=[everythingPath 'App Creation & Component Management' everythingPath(end) 'Project-Independent Templates' everythingPath(end) 'importSettingsTemplate.m'];

@@ -46,12 +46,12 @@ projectNameEditFieldRelPos=[0.2 0.9]; % Width (relative) by height (relative)
 logsheetNameEditFieldRelPos=[0.2 0.85];
 dataPathEditFieldRelPos=[0.2 0.8];
 codePathEditFieldRelPos=[0.2 0.75];
-openImportSettingsButtonRelPos=[0.08 0.7];
+openImportMetadataButtonRelPos=[0.65 0.7];
 openSpecifyTrialsButtonRelPos=[0.08 0.65];
 projectDropDownRelPos=[0.65 0.9];
 runImportButtonRelPos=[0.75 0.2];
 redoImportCheckboxRelPos=[0.7 0.85];
-updateMetadataCheckboxRelPos=[0.7 0.8];
+% updateMetadataCheckboxRelPos=[0.7 0.8];
 dataTypeImportSettingsDropDownRelPos=[0.65 0.75];
 logsheetLabelRelPos=[0.5 0.6];
 numHeaderRowsLabelRelPos=[0.5 0.55];
@@ -67,6 +67,8 @@ targetTrialIDFormatFieldRelPos=[0.7 0.35];
 saveAllButtonRelPos=[0.75 0.25];
 selectDataPanelRelPos=[0.05 0.05];
 dataTypeImportMethodFieldRelPos=[0.93 0.75];
+addDataTypeButtonRelPos=[0.65 0.8];
+openImportFcnButtonRelPos=[0.65 0.65];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -79,12 +81,12 @@ projectNameEditFieldSize=[0.25 compHeight]; % Width (relative) by height (absolu
 logsheetNameEditFieldSize=[0.4 compHeight];
 dataPathEditFieldSize=[0.4 compHeight];
 codePathEditFieldSize=[0.4 compHeight];
-openImportSettingsButtonSize=[0.4 compHeight];
+openImportMetadataButtonSize=[0.2 compHeight];
 openSpecifyTrialsButtonSize=[0.4 compHeight];
 projectDropDownSize=[0.35 compHeight];
 runImportButtonSize=[0.2 compHeight];
 redoImportCheckboxSize=[0.3 compHeight];
-updateMetadataCheckboxSize=[0.3 compHeight];
+% updateMetadataCheckboxSize=[0.3 compHeight];
 dataTypeImportSettingsDropDownSize=[0.25 compHeight];
 logsheetLabelSize=[0.2 compHeight];
 numHeaderRowsLabelSize=[0.2 compHeight];
@@ -100,6 +102,8 @@ targetTrialIDFormatFieldSize=[0.2 compHeight];
 saveAllButtonSize=[0.2 compHeight];
 selectDataPanelSize=[0.4 0.55*figSize(2)];
 dataTypeImportMethodFieldSize=[0.05 compHeight];
+addDataTypeButtonSize=[0.2 compHeight];
+openImportFcnButtonSize=[0.2 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
@@ -110,12 +114,12 @@ projectNameEditFieldPos=round([projectNameEditFieldRelPos.*figSize projectNameEd
 logsheetNameEditFieldPos=round([logsheetNameEditFieldRelPos.*figSize logsheetNameEditFieldSize(1)*figSize(1) logsheetNameEditFieldSize(2)]);
 dataPathEditFieldPos=round([dataPathEditFieldRelPos.*figSize dataPathEditFieldSize(1)*figSize(1) dataPathEditFieldSize(2)]);
 codePathEditFieldPos=round([codePathEditFieldRelPos.*figSize codePathEditFieldSize(1)*figSize(1) codePathEditFieldSize(2)]);
-openImportSettingsButtonPos=round([openImportSettingsButtonRelPos.*figSize openImportSettingsButtonSize(1)*figSize(1) openImportSettingsButtonSize(2)]);
+openImportMetadataButtonPos=round([openImportMetadataButtonRelPos.*figSize openImportMetadataButtonSize(1)*figSize(1) openImportMetadataButtonSize(2)]);
 openSpecifyTrialsButtonPos=round([openSpecifyTrialsButtonRelPos.*figSize openSpecifyTrialsButtonSize(1)*figSize(1) openSpecifyTrialsButtonSize(2)]);
 projectDropDownPos=round([projectDropDownRelPos.*figSize projectDropDownSize(1)*figSize(1) projectDropDownSize(2)]);
 runImportButtonPos=round([runImportButtonRelPos.*figSize runImportButtonSize(1)*figSize(1) runImportButtonSize(2)]);
 redoImportCheckboxPos=round([redoImportCheckboxRelPos.*figSize redoImportCheckboxSize(1)*figSize(1) redoImportCheckboxSize(2)]);
-updateMetadataCheckBoxPos=round([updateMetadataCheckboxRelPos.*figSize updateMetadataCheckboxSize(1)*figSize(1) updateMetadataCheckboxSize(2)]);
+% updateMetadataCheckBoxPos=round([updateMetadataCheckboxRelPos.*figSize updateMetadataCheckboxSize(1)*figSize(1) updateMetadataCheckboxSize(2)]);
 dataTypeImportSettingsDropDownPos=round([dataTypeImportSettingsDropDownRelPos.*figSize dataTypeImportSettingsDropDownSize(1)*figSize(1) dataTypeImportSettingsDropDownSize(2)]);
 
 logsheetLabelPos=round([logsheetLabelRelPos.*figSize logsheetLabelSize(1)*figSize(1) logsheetLabelSize(2)]);
@@ -132,6 +136,8 @@ targetTrialIDFormatFieldPos=round([targetTrialIDFormatFieldRelPos.*figSize targe
 saveAllButtonPos=round([saveAllButtonRelPos.*figSize saveAllButtonSize(1)*figSize(1) saveAllButtonSize(2)]);
 selectDataPanelPos=round([selectDataPanelRelPos.*figSize selectDataPanelSize(1)*figSize(1) selectDataPanelSize(2)]);
 dataTypeImportMethodFieldPos=round([dataTypeImportMethodFieldRelPos.*figSize dataTypeImportMethodFieldSize(1)*figSize(1) dataTypeImportMethodFieldSize(2)]);
+addDataTypeButtonPos=round([addDataTypeButtonRelPos.*figSize addDataTypeButtonSize(1)*figSize(1) addDataTypeButtonSize(2)]);
+openImportFcnButtonPos=round([openImportFcnButtonRelPos.*figSize openImportFcnButtonSize(1)*figSize(1) openImportFcnButtonSize(2)]);
 
 % Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
@@ -142,12 +148,12 @@ data.ProjectNameField.Position=projectNameEditFieldPos;
 data.LogsheetPathField.Position=logsheetNameEditFieldPos;
 data.DataPathField.Position=dataPathEditFieldPos;
 data.CodePathField.Position=codePathEditFieldPos;
-data.OpenImportSettingsButton.Position=openImportSettingsButtonPos;
+data.OpenImportMetadataButton.Position=openImportMetadataButtonPos;
 data.OpenSpecifyTrialsButton.Position=openSpecifyTrialsButtonPos;
 data.SwitchProjectsDropDown.Position=projectDropDownPos;
 data.RunImportButton.Position=runImportButtonPos;
 data.RedoImportCheckBox.Position=redoImportCheckboxPos;
-data.UpdateMetadataCheckBox.Position=updateMetadataCheckBoxPos;
+% data.UpdateMetadataCheckBox.Position=updateMetadataCheckBoxPos;
 data.DataTypeImportSettingsDropDown.Position=dataTypeImportSettingsDropDownPos;
 data.LogsheetLabel.Position=logsheetLabelPos;
 data.NumHeaderRowsLabel.Position=numHeaderRowsLabelPos;
@@ -163,6 +169,8 @@ data.TargetTrialIDFormatField.Position=targetTrialIDFormatFieldPos;
 data.SaveAllButton.Position=saveAllButtonPos;
 data.SelectDataPanel.Position=selectDataPanelPos;
 data.DataTypeImportMethodField.Position=dataTypeImportMethodFieldPos;
+data.AddDataTypeButton.Position=addDataTypeButtonPos;
+data.OpenImportFcnButton.Position=openImportFcnButtonPos;
 
 % Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
@@ -173,12 +181,12 @@ data.ProjectNameField.FontSize=newFontSize;
 data.LogsheetPathField.FontSize=newFontSize;
 data.DataPathField.FontSize=newFontSize;
 data.CodePathField.FontSize=newFontSize;
-data.OpenImportSettingsButton.FontSize=newFontSize;
+data.OpenImportMetadataButton.FontSize=newFontSize;
 data.OpenSpecifyTrialsButton.FontSize=newFontSize;
 data.SwitchProjectsDropDown.FontSize=newFontSize;
 data.RunImportButton.FontSize=newFontSize;
 data.RedoImportCheckBox.FontSize=newFontSize;
-data.UpdateMetadataCheckBox.FontSize=newFontSize;
+% data.UpdateMetadataCheckBox.FontSize=newFontSize;
 data.DataTypeImportSettingsDropDown.FontSize=newFontSize;
 data.LogsheetLabel.FontSize=newFontSize;
 data.NumHeaderRowsLabel.FontSize=newFontSize;
@@ -194,5 +202,7 @@ data.TargetTrialIDFormatField.FontSize=newFontSize;
 data.SaveAllButton.FontSize=newFontSize;
 data.SelectDataPanel.FontSize=newFontSize;
 data.DataTypeImportMethodField.FontSize=newFontSize;
+data.AddDataTypeButton.FontSize=newFontSize;
+data.OpenImportFcnButton.FontSize=newFontSize;
 
 % Restore component visibility

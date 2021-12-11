@@ -1,4 +1,4 @@
-function [projectNamesInfo]=isolateProjectNamesInfo(text,projectName)
+function [projectNamesInfo,lineNums]=isolateProjectNamesInfo(text,projectName)
 
 %% PURPOSE: READ AN EXISTING TEXT FILE VARIABLE TO ISOLATE THE SPECIFIED PROJECT NAME & ASSOCIATED INFO
 % Inputs:
@@ -31,7 +31,6 @@ trialIDFormatPrefix='Trial ID Format:';
 targetTrialIDFormatPrefix='Target Trial ID Format:';
 groupsDataToLoadPrefix='Groups Data To Load:';
 dataTypesPrefix='Data Types:';
-dataTypesNum=0;
 for i=1:numLines
     
     if isempty(text{i})
@@ -51,41 +50,38 @@ for i=1:numLines
     % Now working in the correct project's lines of text
     if length(text{i})>=length(logsheetPathPrefix) && isequal(text{i}(1:length(logsheetPathPrefix)),logsheetPathPrefix) % Logsheet path
         projectNamesInfo.LogsheetPath=text{i}(length(logsheetPathPrefix)+2:length(text{i}));
+        lineNums.LogsheetPath=i;
     elseif length(text{i})>=length(dataPathPrefix) && isequal(text{i}(1:length(dataPathPrefix)),dataPathPrefix) % Data path
         projectNamesInfo.DataPath=text{i}(length(dataPathPrefix)+2:length(text{i}));
+        lineNums.DataPath=i;
     elseif length(text{i})>=length(codePathPrefix) && isequal(text{i}(1:length(codePathPrefix)),codePathPrefix) % Code path
         projectNamesInfo.CodePath=text{i}(length(codePathPrefix)+2:length(text{i}));
+        lineNums.CodePath=i;
     elseif length(text{i})>=length(rootSavePlotPathPrefix) && isequal(text{i}(1:length(rootSavePlotPathPrefix)),rootSavePlotPathPrefix) % Save plot root folder path.
         projectNamesInfo.RootSavePlotPath=text{i}(length(rootSavePlotPathPrefix)+2:length(text{i}));
+        lineNums.RootSavePlotPath=i;
     elseif length(text{i})>=length(numHeaderRowsPrefix) && isequal(text{i}(1:length(numHeaderRowsPrefix)),numHeaderRowsPrefix) % Number of header rows in logsheet
         projectNamesInfo.NumHeaderRows=str2double(text{i}(length(numHeaderRowsPrefix)+2:length(text{i})));
+        lineNums.NumHeaderRows=i;
     elseif length(text{i})>=length(subjIDColHeaderPrefix) && isequal(text{i}(1:length(subjIDColHeaderPrefix)),subjIDColHeaderPrefix) % Subject ID column header
         projectNamesInfo.SubjIDColHeader=text{i}(length(subjIDColHeaderPrefix)+2:length(text{i}));
+        lineNums.SubjIDColHeader=i;
     elseif length(text{i})>=length(trialIDColHeaderPrefix) && isequal(text{i}(1:length(trialIDColHeaderPrefix)),trialIDColHeaderPrefix) % Trial ID column header
         projectNamesInfo.TrialIDColHeader=text{i}(length(trialIDColHeaderPrefix)+2:length(text{i}));
+        lineNums.TrialIDColHeader=i;
     elseif length(text{i})>=length(trialIDFormatPrefix) && isequal(text{i}(1:length(trialIDFormatPrefix)),trialIDFormatPrefix) % Trial ID format
         projectNamesInfo.TrialIDFormat=text{i}(length(trialIDFormatPrefix)+2:length(text{i}));
+        lineNums.TrialIDFormat=i;
     elseif length(text{i})>=length(targetTrialIDFormatPrefix) && isequal(text{i}(1:length(targetTrialIDFormatPrefix)),targetTrialIDFormatPrefix) % Target trial ID format
         projectNamesInfo.TargetTrialIDFormat=text{i}(length(targetTrialIDFormatPrefix)+2:length(text{i}));
+        lineNums.TargetTrialIDFormat=i;
     elseif length(text{i})>=length(groupsDataToLoadPrefix) && isequal(text{i}(1:length(groupsDataToLoadPrefix)),groupsDataToLoadPrefix) % Groups' data to load.
         projectNamesInfo.GroupsDataToLoad=text{i}(length(groupsDataToLoadPrefix)+2:length(text{i}));
-    end
-    
-    % Iterate through all data types
-    % Each data type entry is of the form: "dataTypes: FP1"
-    % Where the char is the data type (entries in the drop down list) and
-    % the number is the import method associated with it (where various numbers are e.g. forceplate
-    % type for FP, file format for mocap, etc.)
-    
-    if length(text{i})>=length(dataTypesPrefix) && isequal(text{i}(1:length(dataTypesPrefix)),dataTypesPrefix)
-        if ~isletter(text{i}(end-1)) % 2 digits
-            methodNum=text{i}(end-1:end);
-        else
-            methodNum=text{i}(end);
-        end
-        dataTypesNum=dataTypesNum+1;
-        projectNamesInfo.DataTypes.(text{i}(length(dataTypesPrefix)+2:length(text{i}))).MethodNum=methodNum;
-    end
+        lineNums.GroupsDataToLoad=i;
+    elseif length(text{i})>=length(dataTypesPrefix) && isequal(text{i}(1:length(dataTypesPrefix)),dataTypesPrefix) % Data types to import
+        projectNamesInfo.DataTypes=text{i}(length(dataTypesPrefix)+2:length(text{i}));
+        lineNums.DataTypes=i;
+    end    
     
 end
 

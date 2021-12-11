@@ -5,6 +5,7 @@ function []=dataTypeImportMethodFieldValueChanged(src)
 fig=ancestor(src,'figure','toplevel');
 hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
 methodNum=upper(hText.Value); % Always capital letters
+hText.Value=methodNum;
 
 hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
 currType=hDataTypesDropDown.Value;

@@ -228,17 +228,6 @@ elseif ispc==1
     slash='\';
 end
 
-% Change the project suffix for the specifyTrials button
-% h=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
-% % Check if the new project's importSettings file exists. If not, label it
-% % 'Create'. If so, label it 'Open'
-% if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'importSettings_' projectName '.m'],'file')==2 % This file exists.
-%     prefix='Open';
-% else
-%     prefix='Create';
-% end
-% h.Text=[prefix ' importSettings_' projectName '.m'];
-
 h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 % Check if the new project's specifyTrials file exists. If not, label it
 % 'Create'. If so, label it 'Open'
@@ -289,3 +278,34 @@ else
     hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
     hText.Value='';
 end
+
+% Change the project suffix for the open importMetadata button
+hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
+% Check if the new project's importSettings file exists. If not, label it
+% 'Create'. If so, label it 'Open'
+if isequal(h.Value,'No Data Types to Import')
+    dataType='aaa';
+    methodLetter='a';
+    methodNumber='0';
+else
+    dataType=lower(h.Value);
+    methodLetter=h.Value(isletter(h.Value));
+    methodNumber=h.Value(~isletter(h.Value));
+end
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'ImportMetadata' methodLetter '_' projectName '.m'],'file')==2 % This file exists.
+    prefix='Open';
+else
+    prefix='Create';
+end
+hButton.Text=[prefix ' importMetadata'];
+
+% Change the project suffix for the open Import button
+hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
+% Check if the new project's importSettings file exists. If not, label it
+% 'Create'. If so, label it 'Open'
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'Import' methodNumber '_' projectName '.m'],'file')==2 % This file exists.
+    prefix='Open';
+else
+    prefix='Create';
+end
+hButton.Text=[prefix ' Import Fcn'];

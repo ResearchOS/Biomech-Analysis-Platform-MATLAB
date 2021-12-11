@@ -52,7 +52,7 @@ logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .
 dataPathField=uieditfield(importTab,'text','Value','Data Path (contains ''Subject Data'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 codePathField=uieditfield(importTab,'text','Value','Path to Project Processing Code Folder','Tag','CodePathField','ValueChangedFcn',@(codePathField,event) codePathFieldValueChanged(codePathField)); % Code path name edit field (to the folder containing all code for this project).
 % Button to open the project's importSettings file.
-openImportMetadataButton=uibutton(importTab,'push','Text','Open Metadata','Tag','OpenImportMetadataButton','ButtonPushedFcn',@(openImportMetadataButton,event) openImportMetadataButtonPushed(openImportMetadataButton,projectNameField.Value));
+openImportMetadataButton=uibutton(importTab,'push','Text','Create importMetadata','Tag','OpenImportMetadataButton','ButtonPushedFcn',@(openImportMetadataButton,event) openImportMetadataButtonPushed(openImportMetadataButton,projectNameField.Value));
 % Button to open the project's specifyTrials to select which trials to load/import
 openGroupSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton,projectNameField.Value));
 % Checkbox to redo import (overwrites all existing data files)
@@ -99,7 +99,7 @@ dataTypeImportMethodField=uieditfield(importTab,'text','Value','1A','Tag','DataT
 % Add new data type to drop down
 addDataTypeButton=uibutton(importTab,'push','Text','New Data Type','Tag','AddDataTypeButton','ButtonPushedFcn',@(addDataTypeButton,event) addDataTypeButtonPushed(addDataTypeButton));
 % Create new import function
-openImportFcnButton=uibutton(importTab,'push','Text','Open Import','Tag','OpenImportFcnButton','ButtonPushedFcn',@(openImportFcnButton,event) openImportFcnButtonPushed(openImportFcnButton));
+openImportFcnButton=uibutton(importTab,'push','Text','Create Import','Tag','OpenImportFcnButton','ButtonPushedFcn',@(openImportFcnButton,event) openImportFcnButtonPushed(openImportFcnButton));
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
     'ProjectNameField',projectNameField,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...

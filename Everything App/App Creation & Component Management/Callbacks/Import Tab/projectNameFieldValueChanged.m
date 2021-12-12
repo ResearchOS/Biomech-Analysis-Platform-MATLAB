@@ -264,13 +264,14 @@ if isfield(projectNamesInfo,'DataTypes')
     for i=1:length(itemsOrig)
         if ~isletter(itemsOrig{i}(end-2)) % If 3rd to last character is not a letter (i.e. is number), use it as part of the Method number
             h.Items{i}=itemsOrig{i}(1:end-3); % 2 digit method number
-            hText.Value=itemsOrig{i}(end-2:end); % 2 digit method number, one char method letter
+            doVal=itemsOrig{i}(end-2:end); % 2 digit method number, one char method letter
         else
             h.Items{i}=itemsOrig{i}(1:end-2); % Single digit method number
-            hText.Value=itemsOrig{i}(end-1:end); % Single digit method number, one char method letter
+            doVal=itemsOrig{i}(end-1:end); % Single digit method number, one char method letter
         end
         if i==1
-            h.Value=h.Items{i}; % By default, set the drop down to the first data type entry            
+            h.Value=h.Items{i}; % By default, set the drop down to the first data type entry   
+            hText.Value=doVal;
         end
     end    
 else

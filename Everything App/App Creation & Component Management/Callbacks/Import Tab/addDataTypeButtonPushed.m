@@ -5,6 +5,10 @@ fig=ancestor(src,'figure','toplevel');
 % Open a text box with the name of the new data type
 dataType=inputdlg('Enter new data type to import');
 
+if isempty(dataType)
+    return;
+end
+
 % Ensure the entry is stored all in caps
 dataType=upper(dataType);
 

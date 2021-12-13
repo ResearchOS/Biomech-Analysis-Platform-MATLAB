@@ -18,6 +18,7 @@ elseif ismac==1 % On Mac
 end
 if ~isequal(data(end),slash)
     data=[data slash];
+    src.Value=data;
 end
 fig=ancestor(src,'figure','toplevel');
 
@@ -36,7 +37,7 @@ text=regexp(fileread(allProjectsPathTxt),'\n','split'); % Read in the file, wher
 foundProject=0; % Initialize that the project has not been found yet.
 projectPrefix='Project Name:';
 codePrefix='Code Path:';
-codePathExists=0; % Initialize that the logsheet path does not yet exist for this project.
+codePathExists=0; % Initialize that the code path does not yet exist for this project.
 for i=1:length(text)
     
     if length(text{i})>=length(projectPrefix)+length(projectName) && isequal(text{i}(1:length(projectPrefix)),projectPrefix) && isequal(text{i}(length(projectPrefix)+2:end),projectName)

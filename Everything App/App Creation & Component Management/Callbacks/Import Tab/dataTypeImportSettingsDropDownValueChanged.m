@@ -24,3 +24,28 @@ end
 % 3. Set the dataTypeImportMethodField to be that number & letter
 hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
 hText.Value=method;
+
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
+% Change the button prefix to be either 'Create' or 'Open'
+% importMetadata
+hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
+if exist([getappdata(fig,'codepath') 'Import_' projectName slash dataType 'ImportMetadata' method(isletter(method)) '_' projectName '.m'],'file')==2
+    prefix='Open';
+else
+    prefix='Create';
+end
+hButton.Text=[prefix ' importMetadata'];
+
+% Import Fcn
+hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'Import' method(~isletter(method)) '_' projectName '.m'],'file')==2
+    prefix='Open';
+else
+    prefix='Create';
+end
+hButton.Text=[prefix ' Import Fcn'];

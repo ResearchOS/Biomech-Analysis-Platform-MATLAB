@@ -6,19 +6,25 @@ function [projectStruct]=runImportButtonPushed(src)
 % data=src.UserData;
 fig=ancestor(src,'figure','toplevel');
 
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
 %% Check that all required fields have been completed satisfactorily
 % Logsheet path
 hLog=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
 if exist(hLog.Value,'file')~=2
     beep;
-    warning(['Incorrect logsheet path: ' data]);
+    warning(['Incorrect logsheet path: ' hLog.Value]);
     return;
 end
 % Data path
 hData=findobj(fig,'Type','uieditfield','Tag','DataPathField');
 if exist(hData.Value,'dir')~=7
     beep;
-    warning(['Incorrect data path: ' data]);
+    warning(['Incorrect data path: ' hData.Value]);
     return;
 end
 % Code path
@@ -72,17 +78,19 @@ if isempty(hDataTypesDropDown.Value)
     return;
 end
 % Data types import method
-hDataTypesDropDownNum=findobj(fig,'Type','uieditfield','Tag','DataTypeNumField');
-if isempty(hDataTypesDropDownNum.Value) || hDataTypesDropDownNum.Value<0 || mod(hDataTypesDropDownNum.Value,1)<1
+% Need to check this for every data type entered
+hDataTypesDropDownNum=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
+if isempty(hDataTypesDropDownNum.Value) || ...
+        exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2 || ...
+        exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
     beep;
-    warning(['Missing ' hDataTypesDropDown.Value ' number']);
+    if exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
+        warning(['Missing ' lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m']);
+    elseif exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
+        warning(['Missing ' lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m']);
+    end
+    
     return;
-end
-
-if ismac
-    slash='/';
-elseif ispc
-    slash='\';
 end
 
 %% Identify which data types are being imported.
@@ -98,11 +106,21 @@ dataTypes=hDataTypesDropDown.Items;
 % Run specifyTrials
 % Run getValidTrialNames
 for i=1:length(dataTypes)
-    cd([getappdata(fig,'dataPath') slash 'Subject Data' slash dataTypes{i}]); % In each data types subfolder now
+    cd([getappdata(fig,'dataPath') slash 'Subject Data' slash dataTypes{i}]); % In each data types subfolder now (from the same root folder)
+    
+    % Get the method number & letter for this data type's import
     
     % Iterate through all subjects, all trials
     for sub=1:nSubs
         for trialNum=1:nTrials
+            % All data from one file will be packaged together into one "Trial" name, per the logsheet.
+            % e.g. data from all N markers (mocap), EMG/IMU sensors (EMG/IMU), or FP's (FP) will all be returned as one variable (one struct) from the
+            % import fcn (method number)
+            % The method letter indicates which metadata is specified (of course, this must match what's expected by the Import fcn (method number)).
+            
+            % Run importMetadata function for this data type (data type & import letter specific)
+            
+            % Run Import Fcn for this data type (data type & import number specific)
             projectStruct.(subject).(trialName)=feval();
         end
     end

@@ -290,8 +290,8 @@ if isequal(h.Value,'No Data Types to Import')
     methodNumber='0';
 else
     dataType=lower(h.Value);
-    methodLetter=h.Value(isletter(h.Value));
-    methodNumber=h.Value(~isletter(h.Value));
+    methodLetter=hText.Value(isletter(hText.Value));
+    methodNumber=hText.Value(~isletter(hText.Value));
 end
 if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'ImportMetadata' methodLetter '_' projectName '.m'],'file')==2 % This file exists.
     prefix='Open';

@@ -11,6 +11,13 @@ hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettings
 currType=hDataTypesDropDown.Value;
 % setappdata(fig,[currType 'ImportNum'],methodNum);
 
+% Check that there are only letters and numbers here, no spaces or special characters
+try
+    assert(isequal(length(hText.Value),sum(isstrprop(hText.Value,'alpha'))+sum(isstrprop(hText.Value,'digit'))));
+catch
+    warning('Only numbers + letters allowed in the data type import method field!');
+end
+
 %% Save this to file
 % Format: 'Data Types: FP1A, MOCAP2B'
 

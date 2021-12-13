@@ -18,6 +18,7 @@ elseif ismac==1 % On Mac
 end
 if ~isequal(data(end),slash)
     data=[data slash];
+    src.Value=data;
 end
 fig=ancestor(src,'figure','toplevel');
 

@@ -11,6 +11,14 @@ if isequal(path,0) % 'Cancel' or 'Close' button was clicked.
 end
 
 codePath=path;
+if ispc==1 % On PC
+    slash='\';
+elseif ismac==1 % On Mac
+    slash='/';
+end
+if ~isequal(codePath(end),slash)
+    codePath=[codePath slash];
+end
 setappdata(fig,'codePath',codePath);
 disp(['Code Path: ' codePath]);
 

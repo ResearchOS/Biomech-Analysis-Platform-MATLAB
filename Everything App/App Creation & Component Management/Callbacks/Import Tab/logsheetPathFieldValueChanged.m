@@ -12,14 +12,7 @@ if exist(data,'file')~=2
     warning(['Incorrect logsheet path: ' data]);
     return;
 end
-if ispc==1 % On PC
-    slash='\';
-elseif ismac==1 % On Mac
-    slash='/';
-end
-if ~isequal(data(end),slash)
-    data=[data slash];
-end
+
 fig=ancestor(src,'figure','toplevel');
 
 setappdata(fig,'logsheetPath',data); % Store the logsheet path name to the figure variable.

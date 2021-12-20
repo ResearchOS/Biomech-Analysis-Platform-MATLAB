@@ -47,14 +47,14 @@ projectNameLabel=uilabel(importTab,'Text','Project Name','Tag','ProjectNameLabel
 logsheetPathButton=uibutton(importTab,'push','Text','Logsheet Path','Tag','LogsheetPathButton','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
 dataPathButton=uibutton(importTab,'push','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
 codePathButton=uibutton(importTab,'push','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
-projectNameField=uieditfield(importTab,'text','Value','Enter Project Name','Tag','ProjectNameField','ValueChangedFcn',@(projectNameField,event) projectNameFieldValueChanged(projectNameField)); % Project name edit field
+% projectNameField=uieditfield(importTab,'text','Value','Enter Project Name','Tag','ProjectNameField','ValueChangedFcn',@(projectNameField,event) projectNameFieldValueChanged(projectNameField)); % Project name edit field
 logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .xlsx)','Tag','LogsheetPathField','ValueChangedFcn',@(logsheetPathField,event) logsheetPathFieldValueChanged(logsheetPathField));
 dataPathField=uieditfield(importTab,'text','Value','Data Path (contains ''Subject Data'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 codePathField=uieditfield(importTab,'text','Value','Path to Project Processing Code Folder','Tag','CodePathField','ValueChangedFcn',@(codePathField,event) codePathFieldValueChanged(codePathField)); % Code path name edit field (to the folder containing all code for this project).
 % Button to open the project's importSettings file.
-openImportMetadataButton=uibutton(importTab,'push','Text','Create importMetadata','Tag','OpenImportMetadataButton','ButtonPushedFcn',@(openImportMetadataButton,event) openImportMetadataButtonPushed(openImportMetadataButton,projectNameField.Value));
+openImportMetadataButton=uibutton(importTab,'push','Text','Create importMetadata','Tag','OpenImportMetadataButton','ButtonPushedFcn',@(openImportMetadataButton,event) openImportMetadataButtonPushed(openImportMetadataButton));
 % Button to open the project's specifyTrials to select which trials to load/import
-openGroupSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton,projectNameField.Value));
+openGroupSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton));
 % Checkbox to redo import (overwrites all existing data files)
 redoImportCheckbox=uicheckbox(importTab,'Text','Redo (Overwrite) Import','Value',0,'Tag','RedoImportCheckbox','ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
 % Checkbox to update metadata only in existing files
@@ -100,9 +100,11 @@ dataTypeImportMethodField=uieditfield(importTab,'text','Value','1A','Tag','DataT
 addDataTypeButton=uibutton(importTab,'push','Text','New Data Type','Tag','AddDataTypeButton','ButtonPushedFcn',@(addDataTypeButton,event) addDataTypeButtonPushed(addDataTypeButton));
 % Create new import function
 openImportFcnButton=uibutton(importTab,'push','Text','Create Import','Tag','OpenImportFcnButton','ButtonPushedFcn',@(openImportFcnButton,event) openImportFcnButtonPushed(openImportFcnButton));
+% Add new project button
+addProjectButton=uibutton(importTab,'push','Text','Create New Project','Tag','AddProjectButton','ButtonPushedFcn',@(addProjectButton,event) addProjectButtonPushed(addProjectButton));
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
-    'ProjectNameField',projectNameField,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
+    'AddProjectButton',addProjectButton,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
     'OpenImportMetadataButton',openImportMetadataButton,'OpenSpecifyTrialsButton',openGroupSpecifyTrialsButton,'SwitchProjectsDropDown',switchProjectsDropDown,'RedoImportCheckBox',redoImportCheckbox,...
     'RunImportButton',runImportButton,'LogsheetLabel',logsheetLabel,'NumHeaderRowsLabel',numHeaderRowsLabel,'NumHeaderRowsField',numHeaderRowsField,...
     'SubjectIDColHeaderLabel',subjIDColHeaderLabel,'SubjectIDColHeaderField',subjIDColHeaderField,'TrialIDColHeaderLabel',trialIDColHeaderLabel,'TrialIDColHeaderField',trialIDColHeaderField,...
@@ -195,12 +197,13 @@ if ~isempty(allProjectsList) % Ensure that there are project names present.
         break;
     end
     setappdata(fig,'projectName',mostRecentProjectName); % projectName always begins empty.
-    projectNameField.Value=getappdata(fig,'projectName');
+    switchProjectsDropDown.Items=allProjectsList;       
+    switchProjectsDropDown.Value=mostRecentProjectName;    
 else
     setappdata(fig,'projectName',''); % If no projects present in file or file doesn't exist yet, make projectName empty.
 end
 
 % Whether the project name was found in the file or not, run the callback to set up the app properly.
-projectNameFieldValueChanged(projectNameField); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
+switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
 
 assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected

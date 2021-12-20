@@ -1,4 +1,4 @@
-function [inclStruct]=specifyTrials_Template(logsheetPath,processingPath,projectName)
+function [inclStruct]=specifyTrials_Template(logsheetPath,codePath,projectName)
 
 %% PURPOSE: To specify metadata describing which trials to import/analyze.
 % NOTE: DOES NOT ALLOW FOR OVERLAPPING TRIAL NAMES BETWEEN CONDITIONS WHEN STRATIFYING BY CONDITION
@@ -20,7 +20,7 @@ function [inclStruct]=specifyTrials_Template(logsheetPath,processingPath,project
     
 %% Project-level attributes.
 inclStruct.Project.LogsheetPath=logsheetPath;
-inclStruct.Project.ProcessingPath=processingPath;
+inclStruct.Project.CodePath=codePath;
 inclStruct.Project.ProjectName=projectName;
 
 %% Subject Names: (should match folder & logsheet names)

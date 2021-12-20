@@ -10,10 +10,10 @@ end
 
 fig=ancestor(src,'figure','toplevel');
 if isempty(projectName)
-	visStat='off';
+	visState='off';
     setappdata(fig,'EmptyProjectName',1); % Indicates that the project name field is empty when the app was initialized.
 else
-    visStat='on';
+    visState='on';
     setappdata(fig,'EmptyProjectName',0);
 end
 
@@ -27,7 +27,7 @@ for i=1:length(h)
         h(i).Visible='on';
     else
         try
-            h(i).Visible=visStat;
+            h(i).Visible=visState;
         catch
         
         end

@@ -1,8 +1,9 @@
-function []=openImportMetadataButtonPushed(src, projectName)
+function []=openImportMetadataButtonPushed(src)
 
 %% PURPOSE: ON IMPORT TAB, IF OPEN IMPORT METADATA BUTTON PUSHED, OPEN THE IMPORT SETTINGS FILE FOR THE DATA TYPE.
 
 fig=ancestor(src,'figure','toplevel');
+projectName=getappdata(fig,'projectName');
 codePath=getappdata(fig,'codePath');
 if isempty(codePath)
     warning('Need to enter the code path!');

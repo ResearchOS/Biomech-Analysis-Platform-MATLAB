@@ -21,7 +21,7 @@ if isequal(ancSize,defaultPos(3:4)) % If currently in default figure size
     if ~isempty(getappdata(fig,'fontSizeRelToHeight')) % If the figure has been restored to default size after previously being resized.
         fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight'); % Get the original ratio.
     else % Figure initialized as default size
-        initFontSize=get(data.ProjectNameField,'FontSize'); % Get the initial font size
+        initFontSize=get(data.LogsheetPathField,'FontSize'); % Get the initial font size
         fontSizeRelToHeight=initFontSize/ancSize(2); % Font size relative to figure height.
         setappdata(fig,'fontSizeRelToHeight',fontSizeRelToHeight); % Store the font size relative to figure height.
     end    
@@ -42,13 +42,13 @@ projectNameLabelRelPos=[0.02 0.9];
 logsheetNameButtonRelPos=[0.02 0.85];
 dataPathButtonRelPos=[0.02 0.8];
 codePathButtonRelPos=[0.02 0.75];
-projectNameEditFieldRelPos=[0.2 0.9]; % Width (relative) by height (relative)
+% projectNameEditFieldRelPos=[0.2 0.9]; % Width (relative) by height (relative)
 logsheetNameEditFieldRelPos=[0.2 0.85];
 dataPathEditFieldRelPos=[0.2 0.8];
 codePathEditFieldRelPos=[0.2 0.75];
 openImportMetadataButtonRelPos=[0.65 0.7];
 openSpecifyTrialsButtonRelPos=[0.08 0.65];
-projectDropDownRelPos=[0.65 0.9];
+projectDropDownRelPos=[0.2 0.9];
 runImportButtonRelPos=[0.75 0.2];
 redoImportCheckboxRelPos=[0.7 0.85];
 % updateMetadataCheckboxRelPos=[0.7 0.8];
@@ -69,6 +69,7 @@ selectDataPanelRelPos=[0.05 0.05];
 dataTypeImportMethodFieldRelPos=[0.93 0.75];
 addDataTypeButtonRelPos=[0.65 0.8];
 openImportFcnButtonRelPos=[0.65 0.65];
+addProjectButtonRelPos=[0.55 0.9];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -77,7 +78,7 @@ projectNameLabelSize=[0.18 compHeight];
 logsheetNameButtonSize=[0.17 compHeight];
 dataPathButtonSize=[0.15 compHeight];
 codePathButtonSize=[0.15 compHeight];
-projectNameEditFieldSize=[0.25 compHeight]; % Width (relative) by height (absolute)
+% projectNameEditFieldSize=[0.25 compHeight]; % Width (relative) by height (absolute)
 logsheetNameEditFieldSize=[0.4 compHeight];
 dataPathEditFieldSize=[0.4 compHeight];
 codePathEditFieldSize=[0.4 compHeight];
@@ -104,13 +105,14 @@ selectDataPanelSize=[0.4 0.55*figSize(2)];
 dataTypeImportMethodFieldSize=[0.05 compHeight];
 addDataTypeButtonSize=[0.2 compHeight];
 openImportFcnButtonSize=[0.2 compHeight];
+addProjectButtonSize=[0.2 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
 logsheetNameButtonPos=round([logsheetNameButtonRelPos.*figSize logsheetNameButtonSize(1)*figSize(1) logsheetNameButtonSize(2)]);
 dataPathButtonPos=round([dataPathButtonRelPos.*figSize dataPathButtonSize(1)*figSize(1) dataPathButtonSize(2)]);
 codePathButtonPos=round([codePathButtonRelPos.*figSize codePathButtonSize(1)*figSize(1) codePathButtonSize(2)]);
-projectNameEditFieldPos=round([projectNameEditFieldRelPos.*figSize projectNameEditFieldSize(1)*figSize(1) projectNameEditFieldSize(2)]);
+% projectNameEditFieldPos=round([projectNameEditFieldRelPos.*figSize projectNameEditFieldSize(1)*figSize(1) projectNameEditFieldSize(2)]);
 logsheetNameEditFieldPos=round([logsheetNameEditFieldRelPos.*figSize logsheetNameEditFieldSize(1)*figSize(1) logsheetNameEditFieldSize(2)]);
 dataPathEditFieldPos=round([dataPathEditFieldRelPos.*figSize dataPathEditFieldSize(1)*figSize(1) dataPathEditFieldSize(2)]);
 codePathEditFieldPos=round([codePathEditFieldRelPos.*figSize codePathEditFieldSize(1)*figSize(1) codePathEditFieldSize(2)]);
@@ -138,13 +140,14 @@ selectDataPanelPos=round([selectDataPanelRelPos.*figSize selectDataPanelSize(1)*
 dataTypeImportMethodFieldPos=round([dataTypeImportMethodFieldRelPos.*figSize dataTypeImportMethodFieldSize(1)*figSize(1) dataTypeImportMethodFieldSize(2)]);
 addDataTypeButtonPos=round([addDataTypeButtonRelPos.*figSize addDataTypeButtonSize(1)*figSize(1) addDataTypeButtonSize(2)]);
 openImportFcnButtonPos=round([openImportFcnButtonRelPos.*figSize openImportFcnButtonSize(1)*figSize(1) openImportFcnButtonSize(2)]);
+addProjectButtonPos=round([addProjectButtonRelPos.*figSize addProjectButtonSize(1)*figSize(1) addProjectButtonSize(2)]);
 
 % Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
 data.LogsheetPathButton.Position=logsheetNameButtonPos;
 data.DataPathButton.Position=dataPathButtonPos;
 data.CodePathButton.Position=codePathButtonPos;
-data.ProjectNameField.Position=projectNameEditFieldPos;
+% data.ProjectNameField.Position=projectNameEditFieldPos;
 data.LogsheetPathField.Position=logsheetNameEditFieldPos;
 data.DataPathField.Position=dataPathEditFieldPos;
 data.CodePathField.Position=codePathEditFieldPos;
@@ -171,13 +174,14 @@ data.SelectDataPanel.Position=selectDataPanelPos;
 data.DataTypeImportMethodField.Position=dataTypeImportMethodFieldPos;
 data.AddDataTypeButton.Position=addDataTypeButtonPos;
 data.OpenImportFcnButton.Position=openImportFcnButtonPos;
+data.AddProjectButton.Position=addProjectButtonPos;
 
 % Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
 data.LogsheetPathButton.FontSize=newFontSize;
 data.DataPathButton.FontSize=newFontSize;
 data.CodePathButton.FontSize=newFontSize;
-data.ProjectNameField.FontSize=newFontSize;
+% data.ProjectNameField.FontSize=newFontSize;
 data.LogsheetPathField.FontSize=newFontSize;
 data.DataPathField.FontSize=newFontSize;
 data.CodePathField.FontSize=newFontSize;
@@ -204,5 +208,6 @@ data.SelectDataPanel.FontSize=newFontSize;
 data.DataTypeImportMethodField.FontSize=newFontSize;
 data.AddDataTypeButton.FontSize=newFontSize;
 data.OpenImportFcnButton.FontSize=newFontSize;
+data.AddProjectButton.FontSize=newFontSize;
 
 % Restore component visibility

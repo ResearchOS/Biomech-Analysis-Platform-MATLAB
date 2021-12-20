@@ -14,8 +14,10 @@ dataType=upper(dataType);
 
 % Add it to the list of items in the dropdown list
 h=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
-if contains(h.Items,dataType)
+if ismember(dataType,h.Items)
     disp([dataType ' Already Exists in Project ' getappdata(fig,'projectName')]);
+    h.Value=dataType;
+    % Need to also change the method number & letter when this happens
     return;
 else
     if length(h.Items)==1 && isequal(h.Items{1},'No Data Types to Import')

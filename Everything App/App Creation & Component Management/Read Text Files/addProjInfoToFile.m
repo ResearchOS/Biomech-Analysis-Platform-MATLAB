@@ -12,7 +12,7 @@ function [text]=addProjInfoToFile(text,projectName,prefix,data,appendBool)
 % newText: The new text file, either with the data modified (if previously existing) or added (if new metadata field for the project)
 
 if ~exist('appendBool','var')
-    appendBool=0;
+    appendBool=0; % Default behavior is to overwrite the entire line
 end
 
 % Check if the current project name is in the text file

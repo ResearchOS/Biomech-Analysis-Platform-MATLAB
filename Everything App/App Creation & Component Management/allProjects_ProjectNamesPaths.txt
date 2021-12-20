@@ -1,5 +1,5 @@
 Project Name: Spr21TWWBiomechanics
-Data Types: FP1C, MOCAP2A, EMG1F
+Data Types: MOCAP & FP2G, FP1A
 Number of Header Rows: 3
 Trial ID Column Header: Trial Name/Number
 Target Trial ID Format: 'TRIAL_'###

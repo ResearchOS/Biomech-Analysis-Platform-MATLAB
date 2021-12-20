@@ -11,7 +11,7 @@ end
 setappdata(fig,'projectName',projectName{1});
 
 h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
-if ~contains(h.Items,projectName)
+if ~ismember(projectName,h.Items)
     h.Items=[h.Items; projectName];
 end
 h.Value=projectName;

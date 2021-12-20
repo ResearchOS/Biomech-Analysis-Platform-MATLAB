@@ -14,6 +14,21 @@ projectName=getappdata(fig,'projectName');
 [projectNamesInfo,lineNums]=isolateProjectNamesInfo(text,projectName);
 lineNum=lineNums.DataTypes;
 dataTypeEndIdx=strfind(text{lineNum},dataType)+length(dataType)-1;
+for i=1:length(dataTypeEndIdx)
+    currEndIdx=dataTypeEndIdx(i); % If multiple, check which match is exact.
+    commaIdx=strfind(text{lineNum}(currEndIdx:end),', ')+currEndIdx-1;
+    if isempty(commaIdx)
+        commaIdx=length(text{lineNum})-2;
+    else
+        commaIdx=commaIdx(1)-3;
+    end
+    if isequal(text{lineNum}(currEndIdx-length(dataType)+1:commaIdx),dataType) && any(ismember(text{lineNum}(currEndIdx-length(dataType)+1),{',',':'}))
+        dataTypeEndIdx=currEndIdx;
+        break;
+    end
+%     if ~ismember(strfind(text{lineNum},dataType)-2,{',',':'}) % Checks if the beginning char is the same.
+end
+
 commaIdx=strfind(text{lineNum}(dataTypeEndIdx:end),', ')+dataTypeEndIdx-1;
 if isempty(commaIdx)
     method=text{lineNum}(dataTypeEndIdx+1:end);

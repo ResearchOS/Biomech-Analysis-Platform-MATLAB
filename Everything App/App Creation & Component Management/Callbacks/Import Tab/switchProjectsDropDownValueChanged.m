@@ -240,8 +240,13 @@ elseif existingProject==0
     hData.Value='Data Path (contains ''Subject Data'' folder)';
     setappdata(fig,'codePath','');
     hCode.Value='Path to Project Processing Code Folder';
-    setappdata(fig,'rootSavePlotPath','');
+    setappdata(fig,'rootSavePlotPath','');        
     
+end
+
+if ~exist('startVal','var')
+    startVal='0'; % Just to allow the search for a folder to fail when naming the buttons
+    startLetter='0';
 end
 
 if ismac==1

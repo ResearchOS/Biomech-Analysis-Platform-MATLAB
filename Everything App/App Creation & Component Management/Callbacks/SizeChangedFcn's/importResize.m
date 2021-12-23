@@ -105,7 +105,7 @@ selectDataPanelSize=[0.4 0.55*figSize(2)];
 dataTypeImportMethodFieldSize=[0.05 compHeight];
 addDataTypeButtonSize=[0.2 compHeight];
 openImportFcnButtonSize=[0.2 compHeight];
-addProjectButtonSize=[0.2 compHeight];
+addProjectButtonSize=[0.05 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);

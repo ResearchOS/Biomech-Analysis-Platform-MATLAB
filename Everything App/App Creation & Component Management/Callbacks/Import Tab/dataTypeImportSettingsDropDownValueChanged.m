@@ -5,40 +5,78 @@ function []=dataTypeImportSettingsDropDownValueChanged(src)
 fig=ancestor(src,'figure','toplevel');
 
 % 1. Get the value of the drop down
-dataType=src.Value;
+currType=src.Value;
+
+hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
 
 % 2. Read from the allProjects txt file the method number & letter currently
 % associated with that data type
-text=readAllProjects(getappdata(fig,'everythingPath'));
-projectName=getappdata(fig,'projectName');
-[projectNamesInfo,lineNums]=isolateProjectNamesInfo(text,projectName);
+text=readAllProjects(getappdata(fig,'everythingPath')); % Read the text file in
+projectName=getappdata(fig,'projectName'); % Get the project name
+[projectNamesInfo,lineNums]=isolateProjectNamesInfo(text,projectName); % Read the info associated with that project.
+
+if ~isfield(projectNamesInfo,'DataTypes')
+    warning('Issue with text file');
+    return;
+end
+prefix='Data Types:';
+itemsOrig=strsplit(projectNamesInfo.DataTypes,', ');
 lineNum=lineNums.DataTypes;
-dataTypeEndIdx=strfind(text{lineNum},dataType)+length(dataType)-1;
-for i=1:length(dataTypeEndIdx)
-    currEndIdx=dataTypeEndIdx(i); % If multiple, check which match is exact.
-    commaIdx=strfind(text{lineNum}(currEndIdx:end),', ')+currEndIdx-1;
-    if isempty(commaIdx)
-        commaIdx=length(text{lineNum})-2;
+% Check all existing data types to see if they just 'contain' the
+% current data type, or if they exactly match it.
+
+prevExist=0; % Initialize that the data type was not previously existing.
+for i=1:length(itemsOrig)
+    currItem=strsplit(itemsOrig{i},' ');
+    currItemType='';
+    for j=1:length(currItem)-1
+        if j>=2
+            mid=' ';
+        else
+            mid='';
+        end
+        currItemType=[currItemType mid currItem{j}];
+    end
+    if isempty(currItemType) && length(currItem)==2
+        currItemType=currItem{1};
+    end
+    if isequal(currItemType,currType)
+        method=currItem{end}; % Always capital letters
+        hText.Value=method;
+        prevExist=1; % Exact match
+        itemNum=i;
+        break; % Because that data type (and method number/letter) can only be present once in the list.
+    end
+end
+
+% Reconstitute the line of text, putting the current data type first.
+if prevExist==1
+    newText=[prefix ' '];
+    if length(itemsOrig)>1
+        suffix=', ';
     else
-        commaIdx=commaIdx(1)-3;
+        suffix='';
     end
-    if isequal(text{lineNum}(currEndIdx-length(dataType)+1:commaIdx),dataType) && any(ismember(text{lineNum}(currEndIdx-length(dataType)+1),{',',':'}))
-        dataTypeEndIdx=currEndIdx;
-        break;
+    newText=[newText currType ' ' method suffix];
+    itemsNew=itemsOrig(~ismember(itemsOrig,itemsOrig{itemNum}));
+    for i=1:length(itemsNew)
+        if i==length(itemsNew) % End of line
+            suffix='';
+        else
+            suffix=', ';
+        end
+        newText=[newText itemsNew{i} suffix];
     end
-%     if ~ismember(strfind(text{lineNum},dataType)-2,{',',':'}) % Checks if the beginning char is the same.
-end
-
-commaIdx=strfind(text{lineNum}(dataTypeEndIdx:end),', ')+dataTypeEndIdx-1;
-if isempty(commaIdx)
-    method=text{lineNum}(dataTypeEndIdx+1:end);
+    text{lineNum}=newText;
 else
-    method=text{lineNum}(dataTypeEndIdx+1:commaIdx-1); % Number & letter
+    [text]=addProjInfoToFile(text,projectName,prefix,[', ' currType ' ' method],1);
 end
 
-% 3. Set the dataTypeImportMethodField to be that number & letter
-hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
-hText.Value=method;
+% Save the text file
+fid=fopen(getappdata(fig,'allProjectsTxtPath'),'w');
+fprintf(fid,'%s\n',text{1:end-1});
+fprintf(fid,'%s',text{end});
+fclose(fid);
 
 if ismac==1
     slash='/';
@@ -49,7 +87,7 @@ end
 % Change the button prefix to be either 'Create' or 'Open'
 % importMetadata
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
-if exist([getappdata(fig,'codepath') 'Import_' projectName slash dataType 'ImportMetadata' method(isletter(method)) '_' projectName '.m'],'file')==2
+if exist([getappdata(fig,'codepath') 'Import_' projectName slash currType 'ImportMetadata' method(isletter(method)) '_' projectName '.m'],'file')==2
     prefix='Open';
 else
     prefix='Create';
@@ -58,7 +96,7 @@ hButton.Text=[prefix ' importMetadata'];
 
 % Import Fcn
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'Import' method(~isletter(method)) '_' projectName '.m'],'file')==2
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash currType 'Import' method(~isletter(method)) '_' projectName '.m'],'file')==2
     prefix='Open';
 else
     prefix='Create';

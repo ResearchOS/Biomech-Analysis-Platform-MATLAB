@@ -12,7 +12,7 @@ currType=hDataTypesDropDown.Value;
 
 % Check that there are only letters and numbers here, no spaces or special characters
 try
-    assert(isequal(length(hText.Value),sum(isstrprop(hText.Value,'alpha'))+sum(isstrprop(hText.Value,'digit'))));    
+    assert(isequal(length(hText.Value),sum(isstrprop(hText.Value,'alpha'))+sum(isstrprop(hText.Value,'digit'))));
 catch
     warning('Only numbers + letters allowed in the data type import method field!');
     return;
@@ -25,6 +25,11 @@ catch
     return;
 end
 hText.Value=methodNum;
+
+if isequal(currType,'No Data Types to Import')
+    warning('Add a Data Type First!');
+    return;
+end
 
 %% Save this to file
 % Format: 'Data Types: FP1A, MOCAP2B'
@@ -39,35 +44,57 @@ prefix='Data Types:';
 if isfield(projectNamesInfo,'DataTypes')
     % Need to check whether the current data type has been entered before.
     % If so, just modify method number & letter
-    itemsOrig=strsplit(projectNamesInfo.DataTypes,', '); 
+    itemsOrig=strsplit(projectNamesInfo.DataTypes,', ');
     lineNum=lineNums.DataTypes;
     % Check all existing data types to see if they just 'contain' the
     % current data type, or if they exactly match it.
+        
     prevExist=0; % Initialize that the data type was not previously existing.
     for i=1:length(itemsOrig)
-        currItem=itemsOrig{i};
-        if isequal(currItem(1:end-2),currType)
-            prevExist=1;
+        currItem=strsplit(itemsOrig{i},' ');
+        currItemType='';
+        for j=1:length(currItem)-1
+            if j>=2
+                mid=' ';
+            else
+                mid='';
+            end
+            currItemType=[currItemType mid currItem{j}];
+        end
+        if isempty(currItemType) && length(currItem)==2
+            currItemType=currItem{1};
+        end
+        if isequal(currItemType,currType)
+            prevExist=1; % Exact match
+            itemNum=i;
+            break; % Because that data type (and method number/letter) can only be present once in the list.
         end
     end
-    if contains(text{lineNum},itemsOrig) && prevExist==1
-        endDataTypeIdx=strfind(text{lineNum},currType)+length(currType)-1;
-        % If endDataTypeCommaIdx is empty, it means this data type is the last
-        % one in the line
-        endDataTypeCommaIdx=strfind(text{lineNum}(endDataTypeIdx:end),', ')+endDataTypeIdx-1;
-        newText=text{lineNum}(1:endDataTypeIdx); % Get the data type label again.
-        if isempty(endDataTypeCommaIdx)
-            newText(endDataTypeIdx+1:length(text{lineNum}))=methodNum;            
+    
+    % Reconstitute the line of text, putting the current data type first.
+    if prevExist==1
+        newText=[prefix ' '];
+        if length(itemsOrig)>1
+            suffix=', ';
         else
-            newText(endDataTypeIdx+1:endDataTypeCommaIdx-1)=methodNum;
-            newText(endDataTypeCommaIdx:endDataTypeCommaIdx+length(text{lineNum}(endDataTypeCommaIdx:end))-1)=text{lineNum}(endDataTypeCommaIdx:end);
+            suffix='';
+        end
+        newText=[newText currType ' ' methodNum suffix];
+        itemsNew=itemsOrig(~ismember(itemsOrig,itemsOrig{itemNum}));
+        for i=1:length(itemsNew)
+            if i==length(itemsNew) % End of line
+                suffix='';
+            else
+                suffix=', ';
+            end
+            newText=[newText itemsNew{i} suffix];
         end
         text{lineNum}=newText;
-    else % This data type does not yet exist.
-        [text]=addProjInfoToFile(text,projectName,prefix,[', ' currType methodNum],1);
+    else
+        [text]=addProjInfoToFile(text,projectName,prefix,[', ' currType ' ' methodNum],1);        
     end
 else
-    [text]=addProjInfoToFile(text,projectName,prefix,[currType methodNum],0);
+    [text]=addProjInfoToFile(text,projectName,prefix,[currType ' ' methodNum],0);
 end
 
 % Save the text file
@@ -75,3 +102,7 @@ fid=fopen(getappdata(fig,'allProjectsTxtPath'),'w');
 fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
 fclose(fid);
+
+if prevExist==0
+    dataTypeImportMethodFieldValueChanged(hText); % Lazy way of having a new data type moved to the front.
+end

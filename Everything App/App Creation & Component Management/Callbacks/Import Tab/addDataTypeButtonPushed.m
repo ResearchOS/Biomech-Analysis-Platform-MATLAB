@@ -15,8 +15,9 @@ dataType=upper(dataType);
 % Add it to the list of items in the dropdown list
 h=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
 if ismember(dataType,h.Items)
-    disp([dataType ' Already Exists in Project ' getappdata(fig,'projectName')]);
+    disp(['Data Type ''' dataType{1} ''' Already Exists in Project: ' getappdata(fig,'projectName')]);
     h.Value=dataType;
+    dataTypeImportSettingsDropDownValueChanged(h);
     % Need to also change the method number & letter when this happens
     return;
 else

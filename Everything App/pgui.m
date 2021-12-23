@@ -101,7 +101,7 @@ addDataTypeButton=uibutton(importTab,'push','Text','New Data Type','Tag','AddDat
 % Create new import function
 openImportFcnButton=uibutton(importTab,'push','Text','Create Import','Tag','OpenImportFcnButton','ButtonPushedFcn',@(openImportFcnButton,event) openImportFcnButtonPushed(openImportFcnButton));
 % Add new project button
-addProjectButton=uibutton(importTab,'push','Text','Create New Project','Tag','AddProjectButton','ButtonPushedFcn',@(addProjectButton,event) addProjectButtonPushed(addProjectButton));
+addProjectButton=uibutton(importTab,'push','Text','+','Tag','AddProjectButton','ButtonPushedFcn',@(addProjectButton,event) addProjectButtonPushed(addProjectButton));
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
     'AddProjectButton',addProjectButton,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
@@ -201,6 +201,8 @@ if ~isempty(allProjectsList) % Ensure that there are project names present.
     switchProjectsDropDown.Value=mostRecentProjectName;    
 else
     setappdata(fig,'projectName',''); % If no projects present in file or file doesn't exist yet, make projectName empty.
+    [y, Fs]=audioread([getappdata(fig,'everythingPath') slash 'App Creation & Component Management' slash 'Fun Audio File' slash 'Lets get ready to rumble  Sound Effect.mp3']);
+    sound(y,Fs);
 end
 
 % Whether the project name was found in the file or not, run the callback to set up the app properly.

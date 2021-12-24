@@ -7,10 +7,11 @@ function []=switchProjectsDropDownValueChanged(src)
 fig=ancestor(src,'figure','toplevel');
 
 % Set the project name field according to the current drop down selection
-% h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
+h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
 % h.Value=getappdata(fig,'projectName');
 
-projectName=getappdata(fig,'projectName');
+projectName=h.Value;
+setappdata(fig,'projectName',projectName)
 
 if isempty(projectName)
 	visState='off';
@@ -59,10 +60,9 @@ hCode=findobj(fig,'Type','uieditfield','Tag','CodePathField');
 hRootSave=findobj(fig,'Type','uieditfield','Tag','RootSavePlotPathField');
 hNumHeaderRows=findobj(fig,'Type','uinumericeditfield','Tag','NumHeaderRowsField');
 hSubjIDColHeader=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
-hTrialIDColHeader=findobj(fig,'Type','uieditfield','Tag','TrialIDColumnHeaderField');
-hTrialIDFormat=findobj(fig,'Type','uieditfield','Tag','TrialIDFormatField');
-hTargetTrialIDFormat=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDFormatField');
-hDataTypeDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown'); % Data types drop down
+hTrialIDColHeaderDataType=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+hTargetTrialColHeader=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
+hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown'); % Data types drop down
 hDataTypeMethodField=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField'); % Data types method number & letter edit field
 hGroupsDataToLoad=findobj(fig,'Type','uipanel','Tag','SelectDataPanel'); % Panel encompassing the groups' data to load
 % If the project was pre-existing
@@ -125,29 +125,31 @@ if existingProject==1
     end
     
     % Trial ID Col Header
-    if isfield(projectNameInfo,'TrialIDColHeader')
-        setappdata(fig,'trialIDColHeader',projectNameInfo.TrialIDColHeader);
-        hTrialIDColHeader.Value=getappdata(fig,'trialIDColHeader');
+    if ~isempty(projectNameInfo)
+        fldNames=fieldnames(projectNameInfo);
+        for i=1:length(fldNames)
+            if contains(fldNames{i},'TrialIDColHeader')
+                fldName=fldNames{i};
+                break;
+            end
+        end
+    end
+    if ~exist('fldName','var')
+        fldName='aaa';
+    end
+    if isfield(projectNameInfo,fldName)
+        hTrialIDColHeaderDataType.Value=projectNameInfo.(fldName);
     else
-        hTrialIDColHeader.Value='Set Trial ID Column Header';
+        hTrialIDColHeaderDataType.Value='Set Trial ID Column Header';
         setappdata(fig,'trialIDColHeader','');
     end
     
-    % Trial ID Format
-    if isfield(projectNameInfo,'TrialIDFormat')
-        setappdata(fig,'trialIDFormat',projectNameInfo.TrialIDFormat);
-        hTrialIDFormat.Value=getappdata(fig,'trialIDFormat');
-    else
-        hTrialIDFormat.Value='Set Trial ID Format';
-        setappdata(fig,'trialIDFormat','');
-    end
-    
-    % Target Trial ID Format
+    % Target Trial ID Col Header
     if isfield(projectNameInfo,'TargetTrialIDFormat')
         setappdata(fig,'targetTrialIDFormat',projectNameInfo.TargetTrialIDFormat);
-        hTargetTrialIDFormat.Value=getappdata(fig,'targetTrialIDFormat');
+        hTargetTrialColHeader.Value=getappdata(fig,'targetTrialIDFormat');
     else
-        hTargetTrialIDFormat.Value='Set Target Trial ID Format';
+        hTargetTrialColHeader.Value='Set Target Trial ID Col Header';
         setappdata(fig,'targetTrialIDFormat','');
     end
     
@@ -171,15 +173,17 @@ if existingProject==1
                 startLetter=currType{end};
                 startLetter=startLetter(isletter(startLetter));
                 hDataTypeMethodField.Value=currType{end};
-                hDataTypeDropDown.Items={currTypeChar};
+                hDataTypesDropDown.Items={currTypeChar};
             else
-                hDataTypeDropDown.Items=[hDataTypeDropDown.Items {currTypeChar}];
+                hDataTypesDropDown.Items=[hDataTypesDropDown.Items {currTypeChar}];
             end
         end
-        hDataTypeDropDown.Items=sort(hDataTypeDropDown.Items);
-        hDataTypeDropDown.Value=startVal;
+        hDataTypesDropDown.Items=sort(hDataTypesDropDown.Items);
+        hDataTypesDropDown.Value=startVal;
     else
-        
+        hTrialIDColHeaderDataTypeField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+        hTrialIDColHeaderDataTypeField.Visible='off';
+        hDataTypesDropDown.Items={'No Data Types to Import'};
     end
     
     % Groups Data to Load
@@ -224,14 +228,10 @@ elseif existingProject==0
     end
     allProjectsList=getAllProjectNames(A);
     
-    % Update the drop down list, and put the new project name as the current value.
-%     if ~isempty(allProjectsList)
-%         hDropdown.Items=allProjectsList;
-%         hDropdown.Value=projectName;
-%     else
-%         hDropdown.Items={'New Project'};
-%         hDropdown.Value='New Project';
-%     end
+    hTrialIDColHeaderDataTypesField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+    hTrialIDColHeaderDataTypesField.Visible='off';
+        
+    hDataTypesDropDown.Items={'No Data Types to Import'};
     
     % Set the other fields to their default values
     setappdata(fig,'logsheetPath','');

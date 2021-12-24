@@ -1,23 +1,15 @@
 Project Name: Spr21TWWBiomechanics
-Data Types: EMG 1A, FP 2B, MOCAP & FP 1A
+Data Types: MOCAP & FP 1A
 Number of Header Rows: 3
-Trial ID Column Header: Trial Name/Number
-Target Trial ID Format: 'TRIAL_'###
-Trial ID Format: *S*'_'###
-Subject ID Column Header: Subject Codename
-Logsheet Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/Subject Data/Spr21TWW_AllSubjects.xlsx
-Data Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/
+Target Trial ID Format: Trial Name/Number
 Code Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/
-Save Plot Root Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Plots\
+Logsheet Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/Subject Data/Spr21TWW_AllSubjects.xlsx
+Data Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/Subject Data/
 
 Project Name: Pitching
-Target Trial ID Format: GGGG
-Trial ID Format: GGG
-Trial ID Column Header: Trial Name/Number
-Subject ID Column Header: Subject CodenameP
-Number of Header Rows: 2
-Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\20210817_PitchingLogsheet_TOKYO.xlsx
-Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Pitching-Test\
-Code Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App/App Creation & Component Management/
+Trial ID Column Header For BK: kk
+Data Types: BK 1A
+Data Path: /
+Code Path: /Users/
 
 Most Recent Project Name: Spr21TWWBiomechanics

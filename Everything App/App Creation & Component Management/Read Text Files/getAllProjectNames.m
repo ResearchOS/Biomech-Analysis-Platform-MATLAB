@@ -8,7 +8,7 @@ for i=1:length(text)
     
     if length(text{i})>length(projNamePrefix) && isequal(text{i}(1:length(projNamePrefix)),projNamePrefix) && ~contains(text{i},'Enter Project Name')
         count=count+1;
-        allProjectsList{count}=text{i}(length(projNamePrefix)+2:length(text{i})); % Isolate each project name.        
+        allProjectsList{1,count}=text{i}(length(projNamePrefix)+2:length(text{i})); % Isolate each project name.        
     end
     
 end

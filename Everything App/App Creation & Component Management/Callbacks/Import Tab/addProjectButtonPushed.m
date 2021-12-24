@@ -8,12 +8,40 @@ if isempty(projectName) || isempty(projectName{1})
     return; % Pressed Cancel, or did not enter anything.
 end
 
-setappdata(fig,'projectName',projectName{1});
+projectName=projectName{1};
+
+setappdata(fig,'projectName',projectName);
+
+text=readAllProjects(getappdata(fig,'everythingPath'));
+projectList=getAllProjectNames(text);
 
 h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
-if ~ismember(projectName,h.Items)
-    h.Items=[h.Items; projectName];
+if ~ismember(projectName,projectList)
+    h.Items=[projectList projectName];
 end
+h.Items=h.Items(~ismember(h.Items,'New Project'));
+h.Items=sort(h.Items);
 h.Value=projectName;
+
+%% Add the project name to the bottom of the text file.
+numLines=length(text);
+recProjNamePrefix='Most Recent Project Name:';
+for i=numLines:-1:1    
+    if isequal(text{i}(1:length(recProjNamePrefix)),recProjNamePrefix)        
+        lastLine=i-2;
+        break;
+    end    
+end
+
+newText(1:lastLine)=text(1:lastLine);
+newText{lastLine+1}='';
+newText{lastLine+2}=['Project Name: ' projectName];
+newText{lastLine+3}='';
+newText{lastLine+4}=[recProjNamePrefix ' ' projectName];
+
+fid=fopen(getappdata(fig,'allProjectsTxtPath'),'w');
+fprintf(fid,'%s\n',newText{1:end-1});
+fprintf(fid,'%s',newText{end});
+fclose(fid);
 
 switchProjectsDropDownValueChanged(fig)

@@ -16,4 +16,4 @@ for i=1:length(spaceSplit)
     newPath=[newPath mid spaceSplit{i}];
 end
 
-system(['open ' getappdata(fig,'logsheetPath')])
+system(['open ' newPath]);

@@ -78,6 +78,23 @@ fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
 fclose(fid);
 
+%% Change the data type-specific column header name
+[projectNamesInfo,lineNums]=isolateProjectNamesInfo(text,projectName); % Read the info associated with that project.
+fldNames=fieldnames(projectNamesInfo);
+foundType=0; % Indicates that the data type was not found and the trial ID col header was not set.
+hText=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+for i=1:length(fldNames)
+    currField=fldNames{i};
+    if contains(currField,'TrialIDColHeader')        
+        hText.Value=projectNamesInfo.(currField);
+        foundType=1; % Indicates that the data type was found and the trial ID col header properly set.
+        break;
+    end
+end
+if foundType==0
+    hText.Value='Set Trial ID Col Header';
+end
+
 if ismac==1
     slash='/';
 elseif ispc==1

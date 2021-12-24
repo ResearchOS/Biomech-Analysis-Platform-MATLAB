@@ -23,6 +23,8 @@ if ismember(dataType,h.Items)
 else
     if length(h.Items)==1 && isequal(h.Items{1},'No Data Types to Import')
         h.Items=dataType;
+        hTrialIDColHeaderDataTypes=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+        hTrialIDColHeaderDataTypes.Visible='on';
     else
         h.Items=[h.Items dataType];
     end
@@ -32,6 +34,10 @@ end
 % Populate the text box with a '1A'
 hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
 hText.Value='1A';
+
+% Reset this to its original value
+hTrialIDColHeaderDataTypesField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+hTrialIDColHeaderDataTypesField.Value='Data Type: Trial ID Column Header';
 
 % Call the text field's ValueChangedFcn to write the new data type & method
 % number & letter in to the allProjects.txt file

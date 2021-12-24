@@ -41,6 +41,7 @@ text=readAllProjects(getappdata(fig,'everythingPath'));
 projectName=getappdata(fig,'projectName');
 [projectNamesInfo,lineNums]=isolateProjectNamesInfo(text,projectName);
 prefix='Data Types:';
+prevExist=0; % Initialize that the data type was not previously existing.
 if isfield(projectNamesInfo,'DataTypes')
     % Need to check whether the current data type has been entered before.
     % If so, just modify method number & letter
@@ -48,8 +49,7 @@ if isfield(projectNamesInfo,'DataTypes')
     lineNum=lineNums.DataTypes;
     % Check all existing data types to see if they just 'contain' the
     % current data type, or if they exactly match it.
-        
-    prevExist=0; % Initialize that the data type was not previously existing.
+            
     for i=1:length(itemsOrig)
         currItem=strsplit(itemsOrig{i},' ');
         currItemType='';

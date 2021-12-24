@@ -1,4 +1,4 @@
-function []=trialIDColHeaderFieldValueChanged(src)
+function []=trialIDColHeaderDataTypeFieldValueChanged(src)
 
 %% PURPOSE: STORE THE SUBJECT ID COLUMN HEADER IN THE LOGSHEET TO A FILE AND TO THE APP DATA
 
@@ -27,7 +27,10 @@ end
 
 text=regexp(fileread(allProjectsPathTxt),'\n','split'); % Read in the file, where each line is one cell.
 
-prefix='Trial ID Column Header:';
+% Get data type from dropdown
+hDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
+
+prefix=['Trial ID Column Header For ' hDropDown.Value ':'];
 text=addProjInfoToFile(text,projectName,prefix,data);
 fid=fopen(allProjectsPathTxt,'w');
 fprintf(fid,'%s\n',text{1:end-1});

@@ -6,6 +6,8 @@ fig=ancestor(src,'figure','toplevel');
 
 % 1. Get the value of the drop down
 currType=src.Value;
+alphaNumericIdx=isstrprop(currType,'alpha') | isstrprop(currType,'digit');
+dataType=currType(alphaNumericIdx);
 
 hText=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
 
@@ -104,7 +106,7 @@ end
 % Change the button prefix to be either 'Create' or 'Open'
 % importMetadata
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
-if exist([getappdata(fig,'codepath') 'Import_' projectName slash currType 'ImportMetadata' method(isletter(method)) '_' projectName '.m'],'file')==2
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'ImportMetadata' method(isletter(method)) '_' projectName '.m'],'file')==2
     prefix='Open';
 else
     prefix='Create';
@@ -113,7 +115,7 @@ hButton.Text=[prefix ' importMetadata'];
 
 % Import Fcn
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash currType 'Import' method(~isletter(method)) '_' projectName '.m'],'file')==2
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'Import' method(~isletter(method)) '_' projectName '.m'],'file')==2
     prefix='Open';
 else
     prefix='Create';

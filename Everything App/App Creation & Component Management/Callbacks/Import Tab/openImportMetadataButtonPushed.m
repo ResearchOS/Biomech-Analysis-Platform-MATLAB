@@ -35,6 +35,8 @@ end
 
 h=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
 dataType=lower(h.Value); % Always capital letters
+alphaNumericIdx=isstrprop(dataType,'alpha') | isstrprop(dataType,'digit');
+dataType=dataType(alphaNumericIdx);
 
 importMetadataName=[dataType 'ImportMetadata' methodLetter '_' projectName '.m'];
 

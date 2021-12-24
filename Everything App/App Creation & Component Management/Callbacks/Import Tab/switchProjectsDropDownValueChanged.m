@@ -169,7 +169,8 @@ if existingProject==1
                 currTypeChar=[currTypeChar mid currType{j}];
             end            
             if i==1
-                startVal=currTypeChar;
+                alphaNumericIdx=isstrprop(currTypeChar,'alpha') | isstrprop(currTypeChar,'digit');
+                startVal=currTypeChar(alphaNumericIdx);                
                 startLetter=currType{end};
                 startLetter=startLetter(isletter(startLetter));
                 hDataTypeMethodField.Value=currType{end};
@@ -179,7 +180,7 @@ if existingProject==1
             end
         end
         hDataTypesDropDown.Items=sort(hDataTypesDropDown.Items);
-        hDataTypesDropDown.Value=startVal;
+        hDataTypesDropDown.Value=currTypeChar;
     else
         hTrialIDColHeaderDataTypeField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
         hTrialIDColHeaderDataTypeField.Visible='off';
@@ -301,3 +302,13 @@ else
     prefix='Create';
 end
 hButton.Text=[prefix ' Import Fcn'];
+
+% Change the prefix for the logsheet2Struct button
+hButton=findobj(fig,'Type','uibutton','Tag','OpenLogsheet2StructButton');
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Logsheet2Struct_' projectName '.m'],'file')==2
+    prefix='Open';
+else
+    prefix='Create';
+end
+hButton.Text=[prefix ' Logsheet2Struct_' projectName];
+    

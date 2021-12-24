@@ -8,6 +8,8 @@ methodNum=upper(hText.Value); % Always capital letters
 
 hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
 currType=hDataTypesDropDown.Value;
+alphaNumericIdx=isstrprop(currType,'alpha') | isstrprop(currType,'digit');
+dataType=lower(currType(alphaNumericIdx));
 % setappdata(fig,[currType 'ImportNum'],methodNum);
 
 % Check that there are only letters and numbers here, no spaces or special characters
@@ -19,7 +21,7 @@ catch
 end
 
 try
-    assert(regexp(methodNum(1),'[1-9]') && regexp(methodNum(2),'[A-Z]'));
+    assert(isequal(length(methodNum),sum(isstrprop(methodNum,'alpha'))+sum(isstrprop(methodNum,'digit'))));    
 catch
     warning('Must have first one number followed by one letter');
     return;
@@ -105,4 +107,33 @@ fclose(fid);
 
 if prevExist==0
     dataTypeImportMethodFieldValueChanged(hText); % Lazy way of having a new data type moved to the front.
+end
+
+% Change the importMetadata and importFcn labels based on the file
+% existence
+if prevExist==1
+    hImportMetadataButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
+    hImportFcnButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
+    
+    if ismac==1
+        slash='/';
+    elseif ispc==1
+        slash='\';
+    end    
+    
+    if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'ImportMetadata' methodNum(isletter(methodNum)) '_' projectName '.m'],'file')==2
+        prefix='Open';
+    else
+        prefix='Create';
+    end
+    hImportMetadataButton.Text=[prefix ' importMetadata'];
+    
+    if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'Import' methodNum(~isletter(methodNum)) '_' projectName '.m'],'file')==2
+        prefix='Open';
+    else
+        prefix='Create';
+    end
+    hImportFcnButton.Text=[prefix ' Import Fcn'];
+    
+    
 end

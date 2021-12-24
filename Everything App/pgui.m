@@ -108,6 +108,8 @@ openLogsheetButton=uibutton(importTab,'push','Text','O','Tag','OpenLogsheetButto
 openDataPathButton=uibutton(importTab,'push','Text','O','Tag','OpenDataPathButton','ButtonPushedFcn',@(openDataPathButton,event) openDataPathButtonPushed(openDataPathButton));
 % Open code path button
 openCodePathButton=uibutton(importTab,'push','Text','O','Tag','OpenCodePathButton','ButtonPushedFcn',@(openCodePathButton,event) openCodePathButtonPushed(openCodePathButton));
+% Open logsheet2Struct button
+openLogsheet2StructButton=uibutton(importTab,'push','Text','Create logsheet2Struct','Tag','OpenLogsheet2StructButton','ButtonPushedFcn',@(openLogsheet2StructButton,event) openLogsheet2StructButtonPushed(openLogsheet2StructButton));
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
     'AddProjectButton',addProjectButton,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
@@ -116,7 +118,7 @@ importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButto
     'SubjectIDColHeaderLabel',subjIDColHeaderLabel,'SubjectIDColHeaderField',subjIDColHeaderField,'TrialIDColHeaderDataTypeLabel',trialIDColHeaderDataTypeLabel,'TrialIDColHeaderDataTypeField',trialIDColHeaderDataTypeField,...
     'TargetTrialIDColHeaderLabel',targetTrialIDColHeaderLabel,'TargetTrialIDColHeaderField',targetTrialIDColHeaderField,...
     'SaveAllButton',saveAllButton,'SelectDataPanel',selectDataPanel,'DataTypeImportMethodField',dataTypeImportMethodField,'AddDataTypeButton',addDataTypeButton,'OpenImportFcnButton',openImportFcnButton,...
-    'OpenLogsheetButton',openLogsheetButton,'OpenDataPathButton',openDataPathButton','OpenCodePathButton',openCodePathButton);
+    'OpenLogsheetButton',openLogsheetButton,'OpenDataPathButton',openDataPathButton','OpenCodePathButton',openCodePathButton,'OpenLogsheet2StructButton',openLogsheet2StructButton);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 

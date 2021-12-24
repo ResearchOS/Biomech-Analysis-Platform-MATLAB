@@ -73,6 +73,7 @@ addProjectButtonRelPos=[0.55 0.9];
 openLogsheetButtonRelPos=[0.55 0.85];
 openDataPathButtonRelPos=[0.55 0.8];
 openCodePathButtonRelPos=[0.55 0.75];
+openLogsheet2StructButtonRelPos=[0.65 0.9];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -112,6 +113,7 @@ addProjectButtonSize=[0.05 compHeight];
 openLogsheetButtonSize=[0.05 compHeight];
 openDataPathButtonSize=[0.05 compHeight];
 openCodePathButtonSize=[0.05 compHeight];
+openLogsheet2StructButtonSize=[0.3 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
@@ -150,6 +152,7 @@ addProjectButtonPos=round([addProjectButtonRelPos.*figSize addProjectButtonSize(
 openLogsheetButtonPos=round([openLogsheetButtonRelPos.*figSize openLogsheetButtonSize(1)*figSize(1) openLogsheetButtonSize(2)]);
 openDataPathButtonPos=round([openDataPathButtonRelPos.*figSize openDataPathButtonSize(1)*figSize(1) openDataPathButtonSize(2)]);
 openCodePathButtonPos=round([openCodePathButtonRelPos.*figSize openCodePathButtonSize(1)*figSize(1) openCodePathButtonSize(2)]);
+openLogsheet2StructButtonPos=round([openLogsheet2StructButtonRelPos.*figSize openLogsheet2StructButtonSize(1)*figSize(1) openLogsheet2StructButtonSize(2)]);
 
 % Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
@@ -187,6 +190,7 @@ data.AddProjectButton.Position=addProjectButtonPos;
 data.OpenLogsheetButton.Position=openLogsheetButtonPos;
 data.OpenDataPathButton.Position=openDataPathButtonPos;
 data.OpenCodePathButton.Position=openCodePathButtonPos;
+data.OpenLogsheet2StructButton.Position=openLogsheet2StructButtonPos;
 
 % Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
@@ -224,5 +228,6 @@ data.AddProjectButton.FontSize=newFontSize;
 data.OpenLogsheetButton.FontSize=newFontSize;
 data.OpenDataPathButton.FontSize=newFontSize;
 data.OpenCodePathButton.FontSize=newFontSize;
+data.OpenLogsheet2StructButton.FontSize=newFontSize;
 
 % Restore component visibility

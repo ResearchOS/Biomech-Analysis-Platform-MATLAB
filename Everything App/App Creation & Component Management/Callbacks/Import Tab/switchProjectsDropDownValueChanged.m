@@ -312,3 +312,9 @@ else
 end
 hButton.Text=[prefix ' Logsheet2Struct_' projectName];
     
+%% Set up the entries in the uipanel
+% Each entry gets two boxes: one to load that data, one to remove it.
+% At the top is the data types, one entry per data type
+addDataTypeEntry2Panel(fig);
+
+% After that, is each function group. One entry=all data for one group

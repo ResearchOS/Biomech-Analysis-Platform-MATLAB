@@ -27,10 +27,10 @@ codePathPrefix='Code Path:';
 rootSavePlotPathPrefix='Save Plot Root Path:';
 numHeaderRowsPrefix='Number of Header Rows:';
 subjIDColHeaderPrefix='Subject ID Column Header:';
-% trialIDFormatPrefix='Trial ID Format:';
 targetTrialIDFormatPrefix='Target Trial ID Format:';
 groupsDataToLoadPrefix='Groups Data To Load:';
 dataTypesPrefix='Data Types:';
+dataPanelPrefixNoColon='Data Panel';
 
 %% Find the project name
 for i=1:numLines
@@ -70,15 +70,22 @@ for i=projectLine+1:numLines
         
         % Parse which data type is first
         allTypes=strsplit(text{i}(length('Data Types:')+2:end),', ');
-        firstType=strsplit(allTypes{1},' ');
-        dataType='';
-        for j=1:length(firstType)-1
-            if j>1
-                mid=' ';
-            else
-                mid='';
+%         firstType=strsplit(allTypes{1},' ');
+        dataTypes=cell(length(allTypes),1);
+        for k=1:length(allTypes) % Get all data types
+            dataTypes{k}='';
+            currType=strsplit(allTypes{k},' ');
+            for j=1:length(currType)-1
+                if j>1
+                    mid=' ';
+                else
+                    mid='';
+                end
+                dataTypes{k}=[dataTypes{k} mid currType{j}]; % The current data type, because switching to a data type always puts its name first in the list.
+                if k==1
+                    dataType=dataTypes{k};
+                end
             end
-            dataType=[dataType mid firstType{j}]; % The current data type, because switching to a data type always puts its name first in the list.
         end
     end  
     
@@ -121,7 +128,14 @@ for i=projectLine+1:numLines
     elseif length(text{i})>=length(groupsDataToLoadPrefix) && isequal(text{i}(1:length(groupsDataToLoadPrefix)),groupsDataToLoadPrefix) % Groups' data to load.
         projectNamesInfo.GroupsDataToLoad=text{i}(length(groupsDataToLoadPrefix)+2:length(text{i}));
         lineNums.GroupsDataToLoad=i;
-    end  
+    elseif length(text{i})>=length(dataPanelPrefixNoColon) && isequal(text{i}(1:length(dataPanelPrefixNoColon)),dataPanelPrefixNoColon) % Data panel entry
+        colonIdx=strfind(text{i},':');
+        currType=text{i}(12:colonIdx-1);
+        alphaNumericIdx=isstrprop(currType,'alpha') | isstrprop(currType,'digit');
+        val=text{i}(colonIdx+2:length(text{i}));
+        projectNamesInfo.(['DataPanel' currType(alphaNumericIdx)])=val;
+        lineNums.(['DataPanel' currType(alphaNumericIdx)])=i;
+    end
     
     if exist('dataType','var')        
         if length(text{i})>=length(trialIDColHeaderDataTypesPrefix) && isequal(text{i}(1:length(trialIDColHeaderDataTypesPrefix)),trialIDColHeaderDataTypesPrefix) % Trial ID column header

@@ -90,9 +90,12 @@ targetTrialIDColHeaderField=uieditfield(importTab,'text','Value','T','Tag','Targ
 % Save all trials button
 saveAllButton=uibutton(importTab,'push','Text','Save All In Struct','Tag','SaveAllButton','ButtonPushedFcn',@(saveAllButton,event) saveAllButtonPushed(saveAllButton));
 % Load which data label
-selectDataPanel=uipanel(importTab,'Title','Select Groups'' Data to Load','Tag','SelectDataPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
+selectDataPanel=uipanel(importTab,'Title','Select Groups'' Data to Load','Tag','SelectDataPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop','AutoResizeChildren','off','SizeChangedFcn',@dataSelectPanelResize);
 % Need to read the groups text file to get group names. Create
 % corresponding number of checkboxes & their labels.
+loadLabel=uilabel(importTab,'Text','Load','Tag','LoadLabel');
+offloadLabel=uilabel(importTab,'Text','Offload','Tag','OffloadLabel');
+dataLabel=uilabel(importTab,'Text','Data','Tag','DataLabel');
 
 % Data types import method number field
 dataTypeImportMethodField=uieditfield(importTab,'text','Value','1A','Tag','DataTypeImportMethodField','ValueChangedFcn',@(dataTypeImportMethodField,event) dataTypeImportMethodFieldValueChanged(dataTypeImportMethodField));
@@ -118,7 +121,8 @@ importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButto
     'SubjectIDColHeaderLabel',subjIDColHeaderLabel,'SubjectIDColHeaderField',subjIDColHeaderField,'TrialIDColHeaderDataTypeLabel',trialIDColHeaderDataTypeLabel,'TrialIDColHeaderDataTypeField',trialIDColHeaderDataTypeField,...
     'TargetTrialIDColHeaderLabel',targetTrialIDColHeaderLabel,'TargetTrialIDColHeaderField',targetTrialIDColHeaderField,...
     'SaveAllButton',saveAllButton,'SelectDataPanel',selectDataPanel,'DataTypeImportMethodField',dataTypeImportMethodField,'AddDataTypeButton',addDataTypeButton,'OpenImportFcnButton',openImportFcnButton,...
-    'OpenLogsheetButton',openLogsheetButton,'OpenDataPathButton',openDataPathButton','OpenCodePathButton',openCodePathButton,'OpenLogsheet2StructButton',openLogsheet2StructButton);
+    'OpenLogsheetButton',openLogsheetButton,'OpenDataPathButton',openDataPathButton','OpenCodePathButton',openCodePathButton,'OpenLogsheet2StructButton',openLogsheet2StructButton,...
+    'LoadLabel',loadLabel,'OffloadLabel',offloadLabel,'DataLabel',dataLabel);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 

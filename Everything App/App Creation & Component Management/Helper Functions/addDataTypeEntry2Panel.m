@@ -17,6 +17,25 @@ dataTypes=hDropdown.Items;
 text=readAllProjects(getappdata(fig,'everythingPath'));
 projectNamesInfo=isolateProjectNamesInfo(text,projectName);
 
+%% NOTE: WHEN SWITCHING PROJECTS, NEED TO DELETE THE OLD BOXES AND THEN CREATE/DISPLAY THE NEW.
+allEntries=0;
+elemNum=0;
+while allEntries==0
+    
+    elemNum=elemNum+1;
+    currLabel=findobj(fig,'Type','uilabel','Tag',['Import Tab Data Label ' num2str(elemNum)]);
+    currLoadBox=findobj(fig,'Type','uicheckbox','Tag',['Import Tab Load Box ' num2str(elemNum)]);
+    currOffloadBox=findobj(fig,'Type','uicheckbox','Tag',['Import Tab Offload Box ' num2str(elemNum)]);
+    if ~isempty(currLabel) && ~isempty(currLoadBox) && ~isempty(currOffloadBox)
+        delete(currLabel);
+        delete(currLoadBox);
+        delete(currOffloadBox);
+    else
+        allEntries=1;
+    end
+    
+end
+
 elemNum=0;
 for i=1:length(dataTypes)    
     

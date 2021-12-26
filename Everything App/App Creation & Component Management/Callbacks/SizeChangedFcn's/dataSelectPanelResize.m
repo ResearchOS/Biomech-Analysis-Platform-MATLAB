@@ -44,6 +44,9 @@ offloadBoxCount=0;
 for i=1:length(fldNames)
     
     currH=data.(fldNames{i});
+    if isempty(currH)
+        continue;
+    end
     currTag=currH.Tag;
     
     if contains(currTag,'Import Tab Data Label')

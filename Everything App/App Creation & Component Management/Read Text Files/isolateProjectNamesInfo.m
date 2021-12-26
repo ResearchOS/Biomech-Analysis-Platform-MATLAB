@@ -31,6 +31,7 @@ targetTrialIDFormatPrefix='Target Trial ID Format:';
 groupsDataToLoadPrefix='Groups Data To Load:';
 dataTypesPrefix='Data Types:';
 dataPanelPrefixNoColon='Data Panel';
+trialIDColHeaderDataTypesPrefixNoColon='Trial ID Column Header';
 
 %% Find the project name
 for i=1:numLines
@@ -92,8 +93,8 @@ for i=projectLine+1:numLines
 end
 
 %% Initialize data type-specific prefixes
-if exist('dataType','var')
-    trialIDColHeaderDataTypesPrefix=['Trial ID Column Header For ' dataType ':']; % Data type-specific
+if exist('dataTypes','var')
+%      For ' dataType ':']; % Data type-specific
 end
 
 %% Isolate the rest of the project info
@@ -137,12 +138,19 @@ for i=projectLine+1:numLines
         lineNums.(['DataPanel' currType(alphaNumericIdx)])=i;
     end
     
-    if exist('dataType','var')        
-        if length(text{i})>=length(trialIDColHeaderDataTypesPrefix) && isequal(text{i}(1:length(trialIDColHeaderDataTypesPrefix)),trialIDColHeaderDataTypesPrefix) % Trial ID column header
-            alphaNumericIdx=isstrprop(dataType,'alpha') | isstrprop(dataType,'digit');
-            projectNamesInfo.(['TrialIDColHeader' dataType(alphaNumericIdx)])=text{i}(length(trialIDColHeaderDataTypesPrefix)+2:length(text{i}));
-            lineNums.TrialIDColHeader=i;
-        end        
+    if exist('dataTypes','var')
+        if length(text{i})>=length(trialIDColHeaderDataTypesPrefixNoColon) && isequal(text{i}(1:length(trialIDColHeaderDataTypesPrefixNoColon)),trialIDColHeaderDataTypesPrefixNoColon)
+            for k=1:length(dataTypes)
+                dataType=dataTypes{k};
+                colonIdx=strfind(text{i},':');
+                alphaNumericIdx=isstrprop(dataType,'alpha') | isstrprop(dataType,'digit');
+                fullPrefix=['Trial ID Column Header For ' dataType ':'];
+                if length(text{i})>length(fullPrefix) && isequal(text{i}(1:length(fullPrefix)),fullPrefix)
+                    projectNamesInfo.(['TrialIDColHeader' dataType(alphaNumericIdx)])=text{i}(colonIdx+2:length(text{i}));
+                    lineNums.(['TrialIDColHeader' dataType(alphaNumericIdx)])=i;
+                end
+            end
+        end
     end
     
 end

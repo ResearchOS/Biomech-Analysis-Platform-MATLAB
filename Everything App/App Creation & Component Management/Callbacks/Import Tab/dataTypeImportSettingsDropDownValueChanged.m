@@ -87,7 +87,7 @@ foundType=0; % Indicates that the data type was not found and the trial ID col h
 hText=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
 for i=1:length(fldNames)
     currField=fldNames{i};
-    if contains(currField,'TrialIDColHeader')        
+    if isequal(currField,['TrialIDColHeader' dataType])        
         hText.Value=projectNamesInfo.(currField);
         foundType=1; % Indicates that the data type was found and the trial ID col header properly set.
         break;

@@ -122,27 +122,7 @@ if existingProject==1
     else
         hSubjIDColHeader.Value='Set Subject ID Column Header';
         setappdata(fig,'subjIDColHeader','');
-    end
-    
-    % Trial ID Col Header
-    if ~isempty(projectNameInfo)
-        fldNames=fieldnames(projectNameInfo);
-        for i=1:length(fldNames)
-            if contains(fldNames{i},'TrialIDColHeader')
-                fldName=fldNames{i};
-                break;
-            end
-        end
-    end
-    if ~exist('fldName','var')
-        fldName='aaa';
-    end
-    if isfield(projectNameInfo,fldName)
-        hTrialIDColHeaderDataType.Value=projectNameInfo.(fldName);
-    else
-        hTrialIDColHeaderDataType.Value='Set Trial ID Column Header';
-        setappdata(fig,'trialIDColHeader','');
-    end
+    end        
     
     % Target Trial ID Col Header
     if isfield(projectNameInfo,'TargetTrialIDFormat')
@@ -175,16 +155,33 @@ if existingProject==1
                 startLetter=startLetter(isletter(startLetter));
                 hDataTypeMethodField.Value=currType{end};
                 hDataTypesDropDown.Items={currTypeChar};
+                hDataTypesDropDown.Value=currTypeChar;
             else
                 hDataTypesDropDown.Items=[hDataTypesDropDown.Items {currTypeChar}];
             end
         end
-        hDataTypesDropDown.Items=sort(hDataTypesDropDown.Items);
-        hDataTypesDropDown.Value=currTypeChar;
+        hDataTypesDropDown.Items=sort(hDataTypesDropDown.Items);        
     else
         hTrialIDColHeaderDataTypeField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
         hTrialIDColHeaderDataTypeField.Visible='off';
         hDataTypesDropDown.Items={'No Data Types to Import'};
+    end
+    
+    % Trial ID Col Header
+    dataType=hDataTypesDropDown.Value;
+    alphaNumericIdx=isstrprop(dataType,'alpha') | isstrprop(dataType,'digit');
+    dataType=dataType(alphaNumericIdx);
+    if ~isempty(projectNameInfo)
+        fldNames=fieldnames(projectNameInfo);
+        for i=1:length(fldNames)
+            if contains(fldNames{i},'TrialIDColHeader')
+                fldName=fldNames{i};                                                    
+                if isequal(fldName,['TrialIDColHeader' dataType])
+                    hTrialIDColHeaderDataType.Value=projectNameInfo.(fldName);
+                    break;
+                end
+            end
+        end
     end
     
     % Groups Data to Load

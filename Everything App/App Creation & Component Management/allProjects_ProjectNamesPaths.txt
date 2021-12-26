@@ -12,6 +12,7 @@ Logsheet Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Co
 Data Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/Subject Data/
 
 Project Name: Pitching
+Data Panel BK: None
 Trial ID Column Header For BK: kk
 Data Types: BK 1A
 Data Path: /

@@ -150,8 +150,9 @@ if existingProject==1
             end            
             if i==1
                 alphaNumericIdx=isstrprop(currTypeChar,'alpha') | isstrprop(currTypeChar,'digit');
-                startVal=currTypeChar(alphaNumericIdx);                
+                startVal=lower(currTypeChar(alphaNumericIdx));                
                 startLetter=currType{end};
+                startNumber=startLetter(~isletter(startLetter));
                 startLetter=startLetter(isletter(startLetter));
                 hDataTypeMethodField.Value=currType{end};
                 hDataTypesDropDown.Items={currTypeChar};
@@ -293,7 +294,7 @@ hButton.Text=[prefix ' importMetadata'];
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
 % Check if the new project's importSettings file exists. If not, label it
 % 'Create'. If so, label it 'Open'
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash startVal 'Import' startLetter '_' projectName '.m'],'file')==2 % This file exists.
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash startVal 'Import' startNumber '_' projectName '.m'],'file')==2 % This file exists.
     prefix='Open';
 else
     prefix='Create';

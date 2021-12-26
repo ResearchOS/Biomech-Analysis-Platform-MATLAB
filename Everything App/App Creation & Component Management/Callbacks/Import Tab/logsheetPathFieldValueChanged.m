@@ -64,3 +64,24 @@ fid=fopen(allProjectsPathTxt,'w');
 fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
 fclose(fid);
+
+%% Read the logsheet, save the .mat file to the same location
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
+logPath=getappdata(fig,'logsheetPath');
+allParts=strsplit(logPath,slash);
+lastPart=strsplit(allParts{length(allParts)},'.');
+ext=lastPart{end}; % The file extension used for the logsheet.
+
+if contains(ext,'xls') % .xls or .xlsx
+    [~,~,logVar]=xlsread(logPath,1);
+else
+    
+end
+matLogPath=[logPath(1:length(logPath)-length(ext)-1) '.mat'];
+setappdata(fig,'LogsheetMatPath',matLogPath);
+save(matLogPath,'logVar');

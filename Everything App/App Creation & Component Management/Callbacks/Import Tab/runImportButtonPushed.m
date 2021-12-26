@@ -97,31 +97,5 @@ end
 % Identify them by which data types are present in the drop down list
 dataTypes=hDataTypesDropDown.Items;
 
-%% For each data type present, import the associated data
-% Assumes that all data types' folders are all in the same root directory
-% For convenience, for now also assumes that all trials across all data types have the
-% exact same names. This should be changed in the future after
-% functionality has been established
-
-% Run specifyTrials
-% Run getValidTrialNames
-for i=1:length(dataTypes)
-    cd([getappdata(fig,'dataPath') slash 'Subject Data' slash dataTypes{i}]); % In each data types subfolder now (from the same root folder)
-    
-    % Get the method number & letter for this data type's import
-    
-    % Iterate through all subjects, all trials
-    for sub=1:nSubs
-        for trialNum=1:nTrials
-            % All data from one file will be packaged together into one "Trial" name, per the logsheet.
-            % e.g. data from all N markers (mocap), EMG/IMU sensors (EMG/IMU), or FP's (FP) will all be returned as one variable (one struct) from the
-            % import fcn (method number)
-            % The method letter indicates which metadata is specified (of course, this must match what's expected by the Import fcn (method number)).
-            
-            % Run importMetadata function for this data type (data type & import letter specific)
-            
-            % Run Import Fcn for this data type (data type & import number specific)
-            projectStruct.(subject).(trialName)=feval();
-        end
-    end
-end
+%% FROM HERE DOWN, ASSUME THAT ALL NECESSARY CONDITIONS HAVE BEEN CHECKED & MET TO PERFORM THE IMPORT
+runImport(fig)

@@ -1,10 +1,8 @@
 Project Name: Spr21TWWBiomechanics
 Subject ID Column Header: Subject Codename
-Trial ID Column Header For MOCAP & FP: kk
-Data Panel MOCAP & FP: None
-Data Panel FP: None
-Trial ID Column Header For FP: hh
-Data Types: MOCAP & FP 1B, FP 1A
+Trial ID Column Header For MOCAP & FP: Trial Name/Number
+Data Panel MOCAP & FP: Load
+Data Types: MOCAP & FP 1A
 Number of Header Rows: 3
 Target Trial ID Format: Trial Name/Number
 Code Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/

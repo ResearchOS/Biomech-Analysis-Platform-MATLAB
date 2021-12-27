@@ -22,7 +22,14 @@ if ~isequal(data(end),slash)
 end
 fig=ancestor(src,'figure','toplevel');
 
+if ~isempty(getappdata(fig,'codePath'))
+    rmpath(genpath(getappdata(fig,'codePath')));
+end
+
 setappdata(fig,'codePath',data); % Store the code path name to the figure variable.
+
+addpath(genpath(getappdata(fig,'codePath')));
+
 projectName=getappdata(fig,'projectName'); % Get the current project name.
 allProjectsPathTxt=getappdata(fig,'allProjectsTxtPath'); % The full file name of the text file with all projects path names
 

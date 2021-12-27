@@ -49,22 +49,8 @@ if isempty(hSubjIDColHeader.Value)
     warning(['Missing subject ID column header']);
     return;
 end
-% Trial ID column header
-hTrialIDColHeader=findobj(fig,'Type','uieditfield','Tag','TrialIDColumnHeaderField');
-if isempty(hTrialIDColHeader.Value)
-    beep;
-    warning(['Missing trial ID column header']);
-    return;
-end
-% % Trial ID format
-hTrialIDFormat=findobj(fig,'Type','uieditfield','Tag','TrialIDFormatField');
-if isempty(hTrialIDFormat.Value) % There are chars besides the allowable chars
-    beep;
-    warning(['Missing trial ID']);
-    return;
-end
-% % Target trial ID format
-hTargetTrialIDFormat=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDFormatField');
+% % Target trial ID header
+hTargetTrialIDFormat=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
 if isempty(hTargetTrialIDFormat.Value) % There are chars besides the allowable chars
     beep;
     warning(['Missing target trial ID']);
@@ -79,19 +65,19 @@ if isempty(hDataTypesDropDown.Value)
 end
 % Data types import method
 % Need to check this for every data type entered
-hDataTypesDropDownNum=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
-if isempty(hDataTypesDropDownNum.Value) || ...
-        exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2 || ...
-        exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
-    beep;
-    if exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
-        warning(['Missing ' lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m']);
-    elseif exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
-        warning(['Missing ' lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m']);
-    end
-    
-    return;
-end
+% hDataTypesDropDownNum=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
+% if isempty(hDataTypesDropDownNum.Value) || ...
+%         exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2 || ...
+%         exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
+%     beep;
+%     if exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
+%         warning(['Missing ' lower(hDataTypesDropDown.Value) 'ImportMetadata' hDataTypesDropDownNum.Value(isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m']);
+%     elseif exist([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m'],'file')~=2
+%         warning(['Missing ' lower(hDataTypesDropDown.Value) 'Import' hDataTypesDropDownNum.Value(~isletter(hDataTypesDropDownNum.Value)) '_' getappdata(fig,'projectName') '.m']);
+%     end
+%     
+%     return;
+% end
 
 %% Identify which data types are being imported.
 % Identify them by which data types are present in the drop down list

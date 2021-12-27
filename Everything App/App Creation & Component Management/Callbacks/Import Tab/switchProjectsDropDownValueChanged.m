@@ -74,7 +74,8 @@ if existingProject==1
     if isfield(projectNameInfo,'LogsheetPath')
         setappdata(fig,'logsheetPath',projectNameInfo.LogsheetPath);
         hLog.Value=getappdata(fig,'logsheetPath');
-    else% Set to default
+        logsheetPathFieldValueChanged(hLog);
+    else % Set to default
         setappdata(fig,'logsheetPath','');
         hLog.Value='Set Logsheet Path';
     end
@@ -83,6 +84,7 @@ if existingProject==1
     if isfield(projectNameInfo,'DataPath')
         setappdata(fig,'dataPath',projectNameInfo.DataPath);
         hData.Value=getappdata(fig,'dataPath');
+        dataPathFieldValueChanged(hData);
     else
         setappdata(fig,'dataPath','');
         hData.Value='Data Path (contains ''Subject Data'' folder)';
@@ -92,6 +94,7 @@ if existingProject==1
     if isfield(projectNameInfo,'CodePath')
         setappdata(fig,'codePath',projectNameInfo.CodePath);
         hCode.Value=getappdata(fig,'codePath');
+        codePathFieldValueChanged(hCode);
     else
         setappdata(fig,'codePath','');
         hCode.Value='Path to Project Processing Code Folder';

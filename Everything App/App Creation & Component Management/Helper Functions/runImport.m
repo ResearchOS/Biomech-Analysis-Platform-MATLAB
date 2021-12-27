@@ -4,8 +4,27 @@ function []=runImport(src)
 
 fig=ancestor(src,'figure','toplevel');
 
+text=readAllProjects(getappdata(fig,'everythingPath'));
+projectNamesInfo=isolateProjectNamesInfo(text,getappdata(fig,'projectName'));
+
 hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
 dataTypes=hDataTypesDropDown.Items;
+
+% Get the method number & letter for each data type
+dataTypeText=projectNamesInfo.DataTypes;
+dataTypeSplit=strsplit(dataTypeText,', ');
+for i=1:length(dataTypeSplit)
+    
+    dataType=dataTypes{i};
+    alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
+    dataField=dataType(alphaNumericIdx);
+    currSplit=strsplit(dataTypeSplit{i},' ');
+    methodLetterNumber=currSplit{end};
+    methodLetter.(dataField)=methodLetterNumber(isletter(methodLetterNumber));
+    methodNumber.(dataField)=methodLetterNumber(~isletter(methodLetterNumber));
+    dataTypeAction.(dataField)=projectNamesInfo.(['DataPanel' dataField]);
+    
+end
 
 if ismac==1
     slash='/';
@@ -27,13 +46,27 @@ inclStruct=feval(['specifyTrials_Import' projectName]); % Return the inclusion c
 %% For each data type present, import the associated data
 % Assumes that all data types' folders are all in the same root directory (the data path)
 
+% Get target trial ID column header field
 targetTrialIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
 targetTrialIDColHeaderName=targetTrialIDColHeaderField.Value;
 [~,targetTrialIDColNum]=find(strcmp(logVar(1,:),targetTrialIDColHeaderName));
 
+% Get subject ID column header field
 subjIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
 subjIDHeaderName=subjIDColHeaderField.Value;
 [~,subjIDColNum]=find(strcmp(logVar(1,:),subjIDHeaderName));
+
+% Get data types' trial ID column headers
+for i=1:length(dataTypes)
+    
+    alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
+    dataField=dataTypes{i}(alphaNumericIdx);
+    fieldName=['TrialIDColHeader' dataField];
+    headerName=projectNamesInfo.(fieldName);
+    colNum.(dataField)=find(strcmp(logVar(1,:),headerName));
+    
+end
+
 
 % Iterate through subject names in trialNames variable
 subNames=fieldnames(allTrialNames);
@@ -47,9 +80,7 @@ for subNum=1:length(subNames)
         
         trialName=trialNames{trialNum};
         
-        % Find the logsheet row number of that trial name
-%         matchIdxs=find(ismember(trialNames,trialName)); % The trial name indices matching the current trial name
-        
+        % Find the logsheet row numbers of that trial name
         subRowIdx=strcmp(logVar(:,subjIDColNum),subName);
         rowNums=find(strcmp(logVar(subRowIdx,targetTrialIDColNum),trialName))+find(subRowIdx==1,1,'first')-1; % The row numbers with that name.
         
@@ -57,41 +88,42 @@ for subNum=1:length(subNames)
             
             rowNum=rowNums(repNum);
             
+            % For that logsheet row, check which data types have trial names filled
+            % out. Then, read the allProjects text file for which method number &
+            % letter is associated with that data type, & execute that function.
+            for i=1:length(dataTypes)
+                alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
+                dataField=dataTypes{i}(alphaNumericIdx);
+                dataTypeTrialColNum=colNum.(dataField);
+                letter=methodLetter.(dataField);
+                number=methodNumber.(dataField);
+                
+                fileName=logVar{rowNum,dataTypeTrialColNum};
+                
+                fullPath=[getappdata(fig,'dataPath') dataTypes{i} slash subName slash fileName]; % Does not contain the file name extension
+                
+                %% CHECK THE CHECKBOXES
+                if isequal(dataTypeAction,'Load')
+                    
+                    % Call the appropriate Import fcn (& the appropriate importMetadata fcn)
+                    dataTypeStruct=feval([lower(dataField) 'Import' number '_' getappdata(fig,'projectName')],fullPath);
+                    
+                    % Store the data type struct
+                    projectStruct.(subName).(trialName).Data=dataTypeStruct;
+                    
+                elseif isequal(dataTypeAction,'Offload')
+                    if isfield(projectStruct.(subName).(trialName).Data,dataTypeField)
+                        projectStruct.(subName).(trialName).Data=rmfield(projectStruct.(subName).(trialName).Data,dataTypeField);
+                    end
+                end
+                
+                
+            end                                                
             
-            
-            projectStruct.(subName).(trialName).Data.(dataType)=dataTypeStruct;
-            
-        end
-        
-%         rowNum=rowNums(matchIdxs); % Isolate the proper row number
-        
-        % For that logsheet row, check which data types have trial names filled
-        % out. Then, read the allProjects text file for which method number &
-        % letter is associated with that data type, & execute that function.
+        end                        
         
     end    
     
 end
 
 %% NOTE: DON'T FORGET TO TAKE INTO ACCOUNT THE CHECKBOXES
-
-for i=1:length(dataTypes)
-    cd([getappdata(fig,'dataPath') slash 'Subject Data' slash dataTypes{i}]); % In each data types subfolder now (from the same root folder)
-    
-    % Get the method number & letter for this data type's import
-    
-    % Iterate through all subjects, all trials
-    for sub=1:nSubs
-        for trialNum=1:nTrials
-            % All data from one file will be packaged together into one "Trial" name, per the logsheet.
-            % e.g. data from all N markers (mocap), EMG/IMU sensors (EMG/IMU), or FP's (FP) will all be returned as one variable (one struct) from the
-            % import fcn (method number)
-            % The method letter indicates which metadata is specified (of course, this must match what's expected by the Import fcn (method number)).
-            
-            % Run importMetadata function for this data type (data type & import letter specific)
-            
-            % Run Import Fcn for this data type (data type & import number specific)
-            projectStruct.(subject).(trialName)=feval();
-        end
-    end
-end

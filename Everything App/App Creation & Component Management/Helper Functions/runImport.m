@@ -102,21 +102,24 @@ for subNum=1:length(subNames)
                 
                 fullPath=[getappdata(fig,'dataPath') dataTypes{i} slash subName slash fileName]; % Does not contain the file name extension
                 
-                %% CHECK THE CHECKBOXES
-                if isequal(dataTypeAction,'Load')
+                % Check the checkboxes
+                if isequal(dataTypeAction.(dataField),'Load')
                     
                     % Call the appropriate Import fcn (& the appropriate importMetadata fcn)
                     dataTypeStruct=feval([lower(dataField) 'Import' number '_' getappdata(fig,'projectName')],fullPath);
                     
                     % Store the data type struct
-                    projectStruct.(subName).(trialName).Data=dataTypeStruct;
+                    returnedTypes=fieldnames(dataTypeStruct);
+                    for kk=1:length(returnedTypes) % If multiple data types were included in the one data type function call
+                        returnedType=returnedTypes{kk};
+                        projectStruct.(subName).(trialName).Data.(returnedType)=dataTypeStruct.(returnedType);
+                    end
                     
-                elseif isequal(dataTypeAction,'Offload')
+                elseif isequal(dataTypeAction.(dataField),'Offload')
                     if isfield(projectStruct.(subName).(trialName).Data,dataTypeField)
                         projectStruct.(subName).(trialName).Data=rmfield(projectStruct.(subName).(trialName).Data,dataTypeField);
                     end
-                end
-                
+                end                
                 
             end                                                
             
@@ -126,4 +129,4 @@ for subNum=1:length(subNames)
     
 end
 
-%% NOTE: DON'T FORGET TO TAKE INTO ACCOUNT THE CHECKBOXES
+assignin('base','projectStruct',projectStruct);

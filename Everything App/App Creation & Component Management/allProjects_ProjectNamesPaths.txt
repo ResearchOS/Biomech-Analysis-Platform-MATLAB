@@ -5,9 +5,9 @@ Data Panel MOCAP & FP: Load
 Data Types: MOCAP & FP 1A
 Number of Header Rows: 3
 Target Trial ID Format: Trial Name/Number
-Code Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/
-Logsheet Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/Subject Data/Spr21TWW_AllSubjects.xlsx
-Data Path: /Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/Subject Data/
+Code Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
+Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Subject Data\Spr21TWW_AllSubjects.xlsx
+Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Subject Data\
 
 Project Name: Pitching
 Data Panel BK: None

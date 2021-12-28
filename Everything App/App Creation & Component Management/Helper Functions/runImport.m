@@ -75,6 +75,10 @@ for subNum=1:length(subNames)
     subName=subNames{subNum};
     trialNames=allTrialNames.(subName);
     
+    if ~isfolder([getappdata(fig,'dataPath') subName slash dataTypes{i} 'Mat Data Files' slash])
+        mkdir([getappdata(fig,'dataPath') subName slash dataTypes{i} 'Mat Data Files' slash])
+    end
+    
     % Iterate through all trial names in that subject (matches Target Trial ID logsheet column)
     for trialNum=1:length(trialNames)
         
@@ -100,19 +104,26 @@ for subNum=1:length(subNames)
                 
                 fileName=logVar{rowNum,dataTypeTrialColNum};
                 
-                fullPath=[getappdata(fig,'dataPath') dataTypes{i} slash subName slash fileName]; % Does not contain the file name extension
+                fullPath=[getappdata(fig,'dataPath') subName slash dataTypes{i} slash fileName]; % Does not contain the file name extension
                 
                 % Check the checkboxes
                 if isequal(dataTypeAction.(dataField),'Load')
                     
+                    % NEED TO HANDLE LOADING TOO, NOT JUST IMPORTING. CHECK FOR THE FILES' EXISTENCE
+                    
+                    disp(['Now Importing ' subName ' Trial ' trialName ' & Logsheet Row ' num2str(rowNum)]);
+                    
                     % Call the appropriate Import fcn (& the appropriate importMetadata fcn)
-                    dataTypeStruct=feval([lower(dataField) 'Import' number '_' getappdata(fig,'projectName')],fullPath);
+                    [dataTypeArgs]=feval([lower(dataField) 'ImportMetadata' letter '_' getappdata(fig,'projectName')]);
+                    
+                    [dataTypeDataStruct,dataTypeInfoStruct]=feval([lower(dataField) 'Import' number '_' getappdata(fig,'projectName')],dataTypeArgs,fullPath,logVar,rowNum);
                     
                     % Store the data type struct
-                    returnedTypes=fieldnames(dataTypeStruct);
+                    returnedTypes=fieldnames(dataTypeDataStruct);
                     for kk=1:length(returnedTypes) % If multiple data types were included in the one data type function call
                         returnedType=returnedTypes{kk};
-                        projectStruct.(subName).(trialName).Data.(returnedType)=dataTypeStruct.(returnedType);
+                        projectStruct.(subName).(trialName).Data.(returnedType)=dataTypeDataStruct.(returnedType);
+                        projectStruct.(subName).(trialName).Info.(returnedType)=dataTypeInfoStruct.(returnedType);
                     end
                     
                 elseif isequal(dataTypeAction.(dataField),'Offload')

@@ -63,6 +63,7 @@ runGroupButtonRelPos=[0.5 0.05];
 runAllButtonRelPos=[0.8 0.05];
 runFunctionsPanelRelPos=[0.02 0.1];
 selectFunctionSpecifyTrialsDropDownRelPos=[0.65 0.85];
+addFunctionGroupButtonRelPos=[0.6 0.9];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -92,6 +93,7 @@ runGroupButtonSize=[0.2 compHeight];
 runAllButtonSize=[0.2 compHeight];
 runFunctionsPanelSize=[0.95 0.75*figSize(2)];
 selectFunctionSpecifyTrialsDropDownSize=[0.3 compHeight];
+addFunctionGroupButtonSize=[0.05 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 setupGroupNameLabelPos=round([setupGroupNameLabelRelPos.*figSize setupGroupNameLabelSize(1)*figSize(1) setupGroupNameLabelSize(2)]);
@@ -119,6 +121,7 @@ runGroupButtonPos=round([runGroupButtonRelPos.*figSize runGroupButtonSize(1)*fig
 runAllButtonPos=round([runAllButtonRelPos.*figSize runAllButtonSize(1)*figSize(1) runAllButtonSize(2)]);
 runFunctionsPanelPos=round([runFunctionsPanelRelPos.*figSize runFunctionsPanelSize(1)*figSize(1) runFunctionsPanelSize(2)]);
 selectFunctionSpecifyTrialsDropDownPos=round([selectFunctionSpecifyTrialsDropDownRelPos.*figSize selectFunctionSpecifyTrialsDropDownSize(1)*figSize(1) selectFunctionSpecifyTrialsDropDownSize(2)]);
+addFunctionGroupButtonPos=round([addFunctionGroupButtonRelPos.*figSize addFunctionGroupButtonSize(1)*figSize(1) addFunctionGroupButtonSize(2)]);
 
 % Set the actual positions for each component
 data.SetupGroupNameLabel.Position=setupGroupNameLabelPos;
@@ -146,6 +149,7 @@ data.RunGroupButton.Position=runGroupButtonPos;
 data.RunAllButton.Position=runAllButtonPos;
 data.RunFunctionsPanel.Position=runFunctionsPanelPos;
 data.SelectFunctionSpecifyTrialsDropDown.Position=selectFunctionSpecifyTrialsDropDownPos;
+data.AddFunctionGroupButton.Position=addFunctionGroupButtonPos;
 
 % Set the font sizes for all components that use text
 data.SetupGroupNameLabel.FontSize=newFontSize;
@@ -173,5 +177,6 @@ data.RunGroupButton.FontSize=newFontSize;
 data.RunAllButton.FontSize=newFontSize;
 data.RunFunctionsPanel.FontSize=newFontSize;
 data.SelectFunctionSpecifyTrialsDropDown.FontSize=newFontSize;
+data.AddFunctionGroupButton.FontSize=newFontSize;
 
 % Restore component visibility

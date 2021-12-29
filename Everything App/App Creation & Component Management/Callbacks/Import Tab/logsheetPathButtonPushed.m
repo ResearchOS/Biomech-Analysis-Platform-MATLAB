@@ -9,6 +9,7 @@ dataPath=getappdata(fig,'dataPath'); % dataPath always begins empty.
 % codePath=getappdata(fig,'codePath'); % codePath always begins empty.
 [file,path]=uigetfile({'*.xlsx';'*.xls'},'Select the logsheet file',dataPath);
 if isequal(file,0) && isequal(path,0) % 'Cancel' or 'Close' button was clicked
+    figure(fig);
     return;
 end
 

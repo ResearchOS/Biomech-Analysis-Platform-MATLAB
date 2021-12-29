@@ -4,6 +4,11 @@ fig=ancestor(src,'figure','toplevel');
 
 path=getappdata(fig,'codePath');
 
+if ispc==1
+    winopen(path);
+    return;
+end
+
 spaceSplit=strsplit(path,' ');
 
 newPath='';

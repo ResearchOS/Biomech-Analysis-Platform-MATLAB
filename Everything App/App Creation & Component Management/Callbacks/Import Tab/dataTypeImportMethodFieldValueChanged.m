@@ -28,6 +28,18 @@ catch
 end
 hText.Value=methodNum;
 
+try
+    assert(sum(isstrprop(hText.Value,'alpha'))>0);
+catch
+    warning(['Need to have a letter!']);
+end
+
+try
+    assert(sum(isstrprop(hText.Value,'digit'))>0);
+catch
+    warning(['Need to have a number!']);
+end
+
 if isequal(currType,'No Data Types to Import')
     warning('Add a Data Type First!');
     return;

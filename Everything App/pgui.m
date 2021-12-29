@@ -31,6 +31,8 @@ setappdata(fig,'logsheetPath',''); % logsheetPath always begins empty.
 setappdata(fig,'dataPath',''); % dataPath always begins empty.
 setappdata(fig,'codePath',''); % codePath always begins empty.
 setappdata(fig,'rootSavePlotPath',''); % rootSavePlotPath always begins empty.
+setappdata(fig,'functionNames',''); % functionNames always begins empty.
+setappdata(fig,'fcnNamesFilePath',''); % Function names file path always begins empty
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off'); % Create the tab group for the four stages of data processing
@@ -135,11 +137,11 @@ processRunTab=uitab(processTabGroup,'Title','Run','Tag','Run','AutoResizeChildre
 % Create the Process > Setup tab
 % Function Group Name Label
 setupGroupNameLabel=uilabel(processSetupTab,'Text','Group Name','Tag','SetupGroupNameLabel');
-setupGroupNameDropDown=uidropdown(processSetupTab,'Items',{'Create Function Group'},'Editable','Off','Tag','SetupGroupNameDropDown');
+setupGroupNameDropDown=uidropdown(processSetupTab,'Items',{'Create Function Group'},'Editable','Off','Tag','SetupGroupNameDropDown','ValueChangedFcn',@(setupGroupNameDropDown,event) setupGroupNamesDropDownValueChanged(setupGroupNameDropDown));
 setupFunctionNamesLabel=uilabel(processSetupTab,'Text','Function Names','Tag','SetupFunctionNamesLabel');
-setupFunctionNamesField=uitextarea(processSetupTab,'Value','Function Names','Tag','SetupFunctionNamesField','Editable','on','Visible','on');
+setupFunctionNamesField=uitextarea(processSetupTab,'Value','Function Names','Tag','SetupFunctionNamesField','Editable','on','Visible','on','ValueChangedFcn',@(setupFunctionNamesField,event) setupFunctionNamesFieldValueChanged(setupFunctionNamesField));
 newFunctionPanel=uipanel(processSetupTab,'Title','New Function','Tag','NewFunctionPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
-saveGroupButton=uibutton(processSetupTab,'push','Text','Save Group To File','Tag','SaveGroupButton');
+saveGroupButton=uibutton(processSetupTab,'push','Text','Save Group To File','Tag','SaveGroupButton','ButtonPushedFcn',@(saveGroupButton,event) saveGroupButtonPushed(saveGroupButton));
 inputsLabel=uilabel(processSetupTab,'Text','Inputs','Tag','InputsLabel');
 outputsLabel=uilabel(processSetupTab,'Text','Outputs','Tag','OutputsLabel');
 inputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','InputCheckboxProject');
@@ -153,7 +155,7 @@ addFunctionGroupButton=uibutton(processSetupTab,'push','Text','+','Tag','AddFunc
 
 % Create the Process > Run tab
 runGroupNameLabel=uilabel(processRunTab,'Text','Group Name','Tag','RunGroupNameLabel');
-runGroupNameDropDown=uidropdown(processRunTab,'Items',{'Test1'},'Editable','off','Tag','RunGroupNameDropDown');
+runGroupNameDropDown=uidropdown(processRunTab,'Items',{'Test1'},'Editable','off','Tag','RunGroupNameDropDown','ValueChangedFcn',@(runGroupNameDropDown,event) runGroupNameDropDownValueChanged(runGroupNameDropDown));
 runFunctionNamesLabel=uilabel(processRunTab,'Text','Function Names','Tag','RunFunctionNamesLabel');
 groupRunCheckboxLabel=uilabel(processRunTab,'Text','Run','Tag','GroupRunCheckboxLabel');
 groupArgsCheckboxLabel=uilabel(processRunTab,'Text','Args','Tag','GroupArgsCheckboxLabel');

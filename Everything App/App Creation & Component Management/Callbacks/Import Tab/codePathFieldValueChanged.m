@@ -23,7 +23,9 @@ end
 fig=ancestor(src,'figure','toplevel');
 
 if ~isempty(getappdata(fig,'codePath'))
+    warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
     rmpath(genpath(getappdata(fig,'codePath')));
+    warning on MATLAB:rmpath:DirNotFound; % Turn the warning back on.
 end
 
 setappdata(fig,'codePath',data); % Store the code path name to the figure variable.
@@ -78,3 +80,6 @@ fid=fopen(allProjectsPathTxt,'w');
 fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
 fclose(fid);
+
+fcnNamesFilePath=[getappdata(fig,'codePath') 'functionNames_' getappdata(fig,'projectName') '.txt']; % Set the current project's function names path
+setappdata(fig,'fcnNamesFilePath',fcnNamesFilePath);

@@ -23,7 +23,9 @@ end
 fig=ancestor(src,'figure','toplevel');
 
 if ~isempty(getappdata(fig,'dataPath'))
+    warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
     rmpath(genpath(getappdata(fig,'dataPath')));
+    warning on MATLAB:rmpath:DirNotFound; % Turn the warning back on.
 end
 
 setappdata(fig,'dataPath',data); % Store the data path name to the figure variable.

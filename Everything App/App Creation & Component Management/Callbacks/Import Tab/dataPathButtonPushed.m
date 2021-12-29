@@ -7,6 +7,7 @@ fig=ancestor(src,'figure','toplevel');
 dataPath=getappdata(fig,'dataPath'); % dataPath always begins empty
 path=uigetdir(dataPath,'Select the data folder');
 if isequal(path,0) % 'Cancel' or 'Close' button was clicked.
+    figure(fig);
     return;
 end
 

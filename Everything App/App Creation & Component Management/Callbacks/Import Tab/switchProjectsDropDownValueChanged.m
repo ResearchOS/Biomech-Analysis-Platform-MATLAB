@@ -14,7 +14,7 @@ projectName=h.Value;
 setappdata(fig,'projectName',projectName)
 
 if isempty(projectName)
-	visState='off';
+    visState='off';
     setappdata(fig,'EmptyProjectName',1); % Indicates that the project name field is empty when the app was initialized.
 else
     visState='on';
@@ -34,7 +34,7 @@ for i=1:length(h)
         try
             h(i).Visible=visState;
         catch
-        
+            
         end
     end
 end
@@ -65,7 +65,7 @@ hTargetTrialColHeader=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHe
 hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown'); % Data types drop down
 hDataTypeMethodField=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField'); % Data types method number & letter edit field
 hGroupsDataToLoad=findobj(fig,'Type','uipanel','Tag','SelectDataPanel'); % Panel encompassing the groups' data to load
-% If the project was pre-existing
+% If the project was pre-existing in the all projects file
 if existingProject==1
     projectNameInfo=isolateProjectNamesInfo(A,projectName); % Return the path names associated with the specified project name.
     
@@ -125,7 +125,7 @@ if existingProject==1
     else
         hSubjIDColHeader.Value='Set Subject ID Column Header';
         setappdata(fig,'subjIDColHeader','');
-    end        
+    end
     
     % Target Trial ID Col Header
     if isfield(projectNameInfo,'TargetTrialIDFormat')
@@ -139,7 +139,7 @@ if existingProject==1
     % Data Types
     if isfield(projectNameInfo,'DataTypes')
         % Isolate the first data type and put that into the drop down and text box
-        allTypes=strsplit(projectNameInfo.DataTypes,', ');                
+        allTypes=strsplit(projectNameInfo.DataTypes,', ');
         for i=1:length(allTypes) % For each data type
             currType=strsplit(allTypes{i},' ');
             currTypeChar='';
@@ -150,10 +150,10 @@ if existingProject==1
                     mid='';
                 end
                 currTypeChar=[currTypeChar mid currType{j}];
-            end            
+            end
             if i==1
                 alphaNumericIdx=isstrprop(currTypeChar,'alpha') | isstrprop(currTypeChar,'digit');
-                startVal=lower(currTypeChar(alphaNumericIdx));                
+                startVal=lower(currTypeChar(alphaNumericIdx));
                 startLetter=currType{end};
                 startNumber=startLetter(~isletter(startLetter));
                 startLetter=startLetter(isletter(startLetter));
@@ -164,7 +164,7 @@ if existingProject==1
                 hDataTypesDropDown.Items=[hDataTypesDropDown.Items {currTypeChar}];
             end
         end
-        hDataTypesDropDown.Items=sort(hDataTypesDropDown.Items);        
+        hDataTypesDropDown.Items=sort(hDataTypesDropDown.Items);
     else
         hTrialIDColHeaderDataTypeField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
         hTrialIDColHeaderDataTypeField.Visible='off';
@@ -179,7 +179,7 @@ if existingProject==1
         fldNames=fieldnames(projectNameInfo);
         for i=1:length(fldNames)
             if contains(fldNames{i},'TrialIDColHeader')
-                fldName=fldNames{i};                                                    
+                fldName=fldNames{i};
                 if isequal(fldName,['TrialIDColHeader' dataType])
                     hTrialIDColHeaderDataType.Value=projectNameInfo.(fldName);
                     break;
@@ -232,7 +232,7 @@ elseif existingProject==0
     
     hTrialIDColHeaderDataTypesField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
     hTrialIDColHeaderDataTypesField.Visible='off';
-        
+    
     hDataTypesDropDown.Items={'No Data Types to Import'};
     
     % Set the other fields to their default values
@@ -242,7 +242,7 @@ elseif existingProject==0
     hData.Value='Data Path (contains ''Subject Data'' folder)';
     setappdata(fig,'codePath','');
     hCode.Value='Path to Project Processing Code Folder';
-    setappdata(fig,'rootSavePlotPath','');        
+    setappdata(fig,'rootSavePlotPath','');
     
 end
 
@@ -284,7 +284,7 @@ if saveFile==1 % Indicates to save the file
     end
 end
 
-% Change the prefix for the importMetadata button 
+% Change the prefix for the importMetadata button
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
 if exist([getappdata(fig,'codePath') 'Import_' projectName slash startVal 'ImportMetadata' startLetter '_' projectName '.m'],'file')==2 % This file exists.
     prefix='Open';
@@ -312,10 +312,31 @@ else
     prefix='Create';
 end
 hButton.Text=[prefix ' Logsheet2Struct_' projectName];
-    
+
 %% Set up the entries in the uipanel
 % Each entry gets two boxes: one to load that data, one to remove it.
 % At the top is the data types, one entry per data type
 addDataTypeEntry2Panel(fig);
 
 % After that, is each function group. One entry=all data for one group
+
+%% Read the function names file for this project. Set the Process > Setup group names drop-down items, value, and the function names text area.
+[text]=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
+[groupNames,~,mostRecentSetupGroupName,mostRecentRunGroupName]=getGroupNames(text);
+hGroupNamesDropDown=findobj(fig,'Type','uidropdown','Tag','SetupGroupNameDropDown');
+hGroupNamesDropDown.Items=groupNames;
+if ~isempty(mostRecentSetupGroupName)
+    hGroupNamesDropDown.Value=mostRecentSetupGroupName;
+end
+setupGroupNamesDropDownValueChanged(hGroupNamesDropDown);
+
+%% Set the Process > Run group names drop-down items
+hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
+hGroupNamesRunDropDown.Items=groupNames;
+
+%% Set the Process > Run group names drop-down value
+if ~isempty(mostRecentRunGroupName)
+    hGroupNamesRunDropDown.Value=mostRecentRunGroupName;
+end
+
+runGroupNameDropDownValueChanged(hGroupNamesRunDropDown);

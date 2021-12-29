@@ -14,6 +14,11 @@ for i=1:length(currNames)
         return;
     end
     
+    if exist([a{1} a{2}(~isletter(a{2}))],'file')~=2
+        disp(['Function ' a{1} a{2}(~isletter(a{2})) ' Does Not Exist']);
+        return;
+    end
+    
 end
 
 setappdata(fig,'functionNames',currNames);

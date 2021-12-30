@@ -20,13 +20,15 @@ fcnNames={''};
 for i=currLineNum+1:length(text)
     
     if isempty(text{i})
-        break; % The function names in this group
+        break; % Finished iterating through the function names in this group
     end
     
-    if i==currLineNum+1
-        fcnNames=text(i);
-    else
-        fcnNames=[fcnNames; text(i)];
+    colonIdx=strfind(text{i},':'); % Get the index of the colon in each line
+    
+    if i==currLineNum+1 % First function name in this group
+        fcnNames={text{i}(1:colonIdx-1)};
+    else % Functions 2+ in this group
+        fcnNames=[fcnNames; {text{i}(1:colonIdx-1)}];
     end
     
 end

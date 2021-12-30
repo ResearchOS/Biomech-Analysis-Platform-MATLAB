@@ -3,17 +3,21 @@ function []=dataTypeCheckboxValueChanged(src)
 fig=ancestor(src,'figure','toplevel');
 
 currTag=src.Tag;
-currNum=strsplit(currTag,' ');
-currNum=str2double(currNum{end});
+
+if ~isletter(currTag(end-1)) % 2 digits
+    currNum=str2double(currTag(end-1:end));
+else % 1 digit
+    currNum=str2double(currTag(end));
+end
 
 % Find the other of the load & offload box objects
 if contains(currTag,'Offload') % offload box was clicked
-    currLoad=findobj(fig,'Type','uicheckbox','Tag',['Import Tab Load Box ' num2str(currNum)]);
+    currLoad=findobj(fig,'Type','uicheckbox','Tag',['ImportTabLoadBox' num2str(currNum)]);
     currOffload=src;
     loadClicked=0;
 else % Load box was clicked
     currLoad=src;
-    currOffload=findobj(fig,'Type','uicheckbox','Tag',['Import Tab Offload Box ' num2str(currNum)]);
+    currOffload=findobj(fig,'Type','uicheckbox','Tag',['ImportTabOffloadBox' num2str(currNum)]);
     loadClicked=1;
 end
 
@@ -35,7 +39,7 @@ else
     data='None';
 end
 
-currLabel=findobj(fig,'Type','uilabel','Tag',['Import Tab Data Label ' num2str(currNum)]);
+currLabel=findobj(fig,'Type','uilabel','Tag',['ImportTabDataLabel' num2str(currNum)]);
 prefix=['Data Panel ' currLabel.Text ':'];
 
 %% Store the data to the text file

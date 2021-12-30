@@ -29,14 +29,10 @@ for i=1:length(origText)
     end
     
     if groupNameFound==1
-        
         if isempty(origText{i}) % The current group is over
-            
-            endLineNum=i; % The line number of the space between the end of the current group and 
+            endLineNum=i; % The line number of the space after the current group
             break;
-            
         end
-        
     end
     
 end
@@ -44,8 +40,32 @@ end
 fcnNames=getappdata(fig,'functionNames');
 
 text=origText(1:groupNameLineNum); % Everything up to the current group's name
-text(groupNameLineNum+1:groupNameLineNum+length(fcnNames))=fcnNames;
-text(groupNameLineNum+1+length(fcnNames):length(origText(endLineNum:length(origText)))+length(fcnNames)+groupNameLineNum)=origText(endLineNum:length(origText));
+for i=1:length(fcnNames)
+    
+    % Check if the function name & number/letter already existed in the text file
+    fcnName=fcnNames{i}; % The current function name & number/letter
+    fcnFound=0; % By default the function was not found in the existing text file
+    for j=groupNameLineNum+1:endLineNum-1 % Iterate over each function name in the group
+        currLineText=origText{j};
+        if isequal(fcnName,currLineText(1:length(fcnName))) % The function name & method number/letter is found in this line
+            fcnFound=1; % The function was found in the existing text file
+            fcnFoundLineNum=j;
+            break;
+        end
+    end
+    
+    if fcnFound==1 % If the function name & number/letter already existed
+        currLine=strsplit(origText{fcnFoundLineNum},':'); % The text of the current line, split by the colon
+        afterColon=strtrim(currLine{2});
+        runAndSpecifyTrials=strsplit(afterColon,' ');
+        fcnNamesText{i}=[fcnNames{i} ': Run' runAndSpecifyTrials{1}(end) ' SpecifyTrials' runAndSpecifyTrials{2}(end)];
+    else
+        fcnNamesText{i}=[fcnNames{i} ': Run1 SpecifyTrials0']; % Add a colon right after the function name & number/letter
+    end
+    
+end
+text(groupNameLineNum+1:groupNameLineNum+length(fcnNamesText))=fcnNamesText;
+text(groupNameLineNum+1+length(fcnNamesText):length(origText(endLineNum:length(origText)))+length(fcnNames)+groupNameLineNum)=origText(endLineNum:length(origText));
 
 % Save the text file
 fid=fopen(fcnNamesFilePath,'w');
@@ -54,7 +74,7 @@ fprintf(fid,'%s',text{end});
 fclose(fid);
 
 %% Display that the functions were saved to the group
-disp(['Functions Staged to Group: ' groupName]);
+disp(['Functions Saved to Group: ' groupName]);
 for i=1:length(fcnNames)
     disp([fcnNames{i}]);
 end
@@ -62,5 +82,5 @@ end
 %% If the Process > Setup drop down value is equal to the Process > Run drop down value, change the display on the Process > Run tab
 hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
 if isequal(hGroupNamesDropDown.Value,hGroupNamesRunDropDown.Value)
-    runGroupNameDropDownValueChanged();
+    runGroupNameDropDownValueChanged(hGroupNamesRunDropDown);
 end

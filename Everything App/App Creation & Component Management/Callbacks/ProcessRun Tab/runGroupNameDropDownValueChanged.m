@@ -35,8 +35,12 @@ end
 % RUN FUNCTION CHECKBOXES
 % FUNCTION LEVEL SPECIFY TRIALS CHECKBOXES
 
+[groupNames,lineNums]=getGroupNames(text);
+groupNum=ismember(groupNames,groupName);
+lineNum=lineNums(groupNum);
+
 fcnNames=getappdata(fig,'functionNames');
-processRunPanel=findobj(fig,'Tag','Run');
+% processRunPanel=findobj(fig,'Tag','Run');
 processRunPanel=findobj(fig,'Type','uipanel','Tag','RunFunctionsPanel');
 
 % Delete the components first
@@ -72,8 +76,18 @@ for i=1:length(fcnNames)
     tagName=[tagNameCell{1} tagNameCell{2}(~isletter(tagNameCell{2}))];
     fullName=[tagName tagNameCell{2}(isletter(tagNameCell{2}))];
     
+    currLine=text{lineNum+i};
+    afterColon=strsplit(currLine,':');
+    runAndSpecifyTrials=strsplit(strtrim(afterColon{2}),' ');
+    
+    % Check the 'Run' checkbox status in the text file
+    runStatus=str2double(runAndSpecifyTrials{1}(end));
+    
+    % Check the 'SpecifyTrials' checkbox status in the text file
+    specifyTrialsStatus=str2double(runAndSpecifyTrials{2}(end));
+    
     % Run function checkboxes
-    runFcnCheckbox=uicheckbox(processRunPanel,'Text','','Value',0,'Tag',['RunFcnCheckbox' num2str(elemNum)]);
+    runFcnCheckbox=uicheckbox(processRunPanel,'Text','','Value',runStatus,'Tag',['RunFcnCheckbox' num2str(elemNum)]);
     
     % Function names button
     fcnNamesButton=uibutton(processRunPanel,'Text',tagName,'Tag',['OpenFcnButton' num2str(elemNum)]);
@@ -82,7 +96,7 @@ for i=1:length(fcnNames)
     fcnArgsButton=uibutton(processRunPanel,'Text',tagNameCell{2}(isletter(tagNameCell{2})),'Tag',['FcnArgsButton' num2str(elemNum)]);
     
     % Specify trials checkbox
-    specifyTrialsCheckbox=uicheckbox(processRunPanel,'Text','','Tag',['SpecifyTrialsCheckbox' num2str(elemNum)]);
+    specifyTrialsCheckbox=uicheckbox(processRunPanel,'Text','','Value',specifyTrialsStatus,'Tag',['SpecifyTrialsCheckbox' num2str(elemNum)]);
     
     % Specify trials button
     specifyTrialsButton=uibutton(processRunPanel,'push','Text','Specify Trials','Tag',['SpecifyTrialsButton' num2str(elemNum)]);

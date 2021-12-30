@@ -163,7 +163,7 @@ runGroupButton=uibutton(processRunTab,'push','Text','Run Group','Tag','RunGroupB
 runAllButton=uibutton(processRunTab,'push','Text','Run All','Tag','RunAllButton');
 runFunctionsPanel=uipanel(processRunTab,'Title','','Tag','RunFunctionsPanel','BackGroundColor',[0.92 0.92 0.92],'AutoResizeChildren','off','SizeChangedFcn',@processRunPanelResize);
 specifyTrialsGroupButton=uibutton(processRunTab,'push','Text','Group specifyTrials','Tag','SpecifyTrialsGroupButton');
-specifyTrialsCheckboxLabel=uilabel(processRunTab,'Text','Specify Trials','Tag','SpecifyTrialsCheckboxLabel');
+specifyTrialsCheckboxLabel=uilabel(processRunTab,'Text','Function-Specific Specify Trials','Tag','SpecifyTrialsCheckboxLabel');
 % specifyTrialsGroupCheckbox=uicheckbox(processRunTab,'Text','','Value',0,'Tag','SpecifyTrialsGroupCheckbox');
 
 % NEED TO: PROGRAMMATICALLY GENERATE FUNCTION NAMES BUTTONS THAT OPEN THE CORRESPONDING FUNCTION FILE (FROM TEXT FILE?)

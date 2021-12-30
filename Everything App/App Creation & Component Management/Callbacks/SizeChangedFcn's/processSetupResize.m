@@ -56,16 +56,16 @@ newFunctionButtonRelPos=[0.65 0.25];
 openGroupSpecifyTrialsButtonRelPos=[0.65 0.9];
 runGroupNameLabelRelPos=[0.02 0.9];
 runGroupNameDropDownRelPos=[0.2 0.9];
-runFunctionNamesLabelRelPos=[0.15 0.85];
+runFunctionNamesLabelRelPos=[0.2 0.85];
 groupRunCheckboxLabelRelPos=[0.05 0.85];
-groupArgsCheckboxLabelRelPos=[0.5 0.85];
+groupArgsCheckboxLabelRelPos=[0.53 0.85];
 runGroupButtonRelPos=[0.5 0.05];
 runAllButtonRelPos=[0.8 0.05];
 runFunctionsPanelRelPos=[0.02 0.1];
 selectFunctionSpecifyTrialsDropDownRelPos=[0.65 0.85];
 addFunctionGroupButtonRelPos=[0.6 0.9];
 specifyTrialsGroupButtonRelPos=[0.65 0.9];
-specifyTrialsCheckboxLabelRelPos=[0.8 0.85];
+specifyTrialsCheckboxLabelRelPos=[0.7 0.85];
 % specifyTrialsGroupCheckboxRelPos=[0.9 0.9];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).

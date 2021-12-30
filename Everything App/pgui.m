@@ -33,6 +33,7 @@ setappdata(fig,'codePath',''); % codePath always begins empty.
 setappdata(fig,'rootSavePlotPath',''); % rootSavePlotPath always begins empty.
 setappdata(fig,'functionNames',''); % functionNames always begins empty.
 setappdata(fig,'fcnNamesFilePath',''); % Function names file path always begins empty
+setappdata(fig,'processRunArrowCount',0); % The Process > Run tab arrow count always begins at 0.
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off'); % Create the tab group for the four stages of data processing
@@ -165,21 +166,16 @@ runFunctionsPanel=uipanel(processRunTab,'Title','','Tag','RunFunctionsPanel','Ba
 specifyTrialsGroupButton=uibutton(processRunTab,'push','Text','Group specifyTrials','Tag','SpecifyTrialsGroupButton');
 specifyTrialsCheckboxLabel=uilabel(processRunTab,'Text','Function-Specific Specify Trials','Tag','SpecifyTrialsCheckboxLabel');
 % specifyTrialsGroupCheckbox=uicheckbox(processRunTab,'Text','','Value',0,'Tag','SpecifyTrialsGroupCheckbox');
-
-% NEED TO: PROGRAMMATICALLY GENERATE FUNCTION NAMES BUTTONS THAT OPEN THE CORRESPONDING FUNCTION FILE (FROM TEXT FILE?)
-
-% NEED TO: PROGRAMMATICALLY GENERATE ARGS BUTTONS THAT OPEN THE CORRESPONDING ARGS FILE (FROM TEXT FILE?)
-
-% NEED TO: PROGRAMMATICALLY GENERATE RUN CHECKBOXES THAT DICTATE WHETHER A FUNCTION WILL BE RUN OR NOT.
-
-% NEED TO: PROGRAMMATICALLY GENERATE ARGS CHECKBOXES THAT INDICATE WHETHER THE GROUP-LEVEL OR FUNCTION-LEVEL ARGS WILL BE USED.
+processRunUpArrowButton=uibutton(processRunTab,'Text',{'/\';'||'},'Tag','ProcessRunUpArrowButton','ButtonPushedFcn',@(processRunUpArrowButton,event) processRunUpArrowButtonPushed(processRunUpArrowButton));
+processRunDownArrowButton=uibutton(processRunTab,'Text',{'||';'\/'},'Tag','ProcessRunDownArrowButton','ButtonPushedFcn',@(processRunDownArrowButton,event) processRunDownArrowButtonPushed(processRunDownArrowButton));
 
 
 processTab.UserData=struct('SetupGroupNameLabel',setupGroupNameLabel,'SetupGroupNameDropDown',setupGroupNameDropDown,'SetupFunctionNamesLabel',setupFunctionNamesLabel,'SetupFunctionNamesField',setupFunctionNamesField,...
     'NewFunctionPanel',newFunctionPanel,'SaveGroupButton',saveGroupButton,'InputsLabel',inputsLabel,'OutputsLabel',outputsLabel,'InputCheckboxProject',inputCheckboxP,'InputCheckboxSubject',inputCheckboxS,'InputCheckboxTrial',inputCheckboxT,...
     'OutputCheckboxProject',outputCheckboxP,'OutputCheckboxSubject',outputCheckboxS,'OutputCheckboxTrial',outputCheckboxT,'NewFunctionButton',newFunctionButton,'AddFunctionGroupButton',addFunctionGroupButton,...
     'RunGroupNameLabel',runGroupNameLabel,'RunGroupNameDropDown',runGroupNameDropDown,'RunFunctionNamesLabel',runFunctionNamesLabel,'GroupRunCheckboxLabel',groupRunCheckboxLabel,'GroupArgsCheckboxLabel',groupArgsCheckboxLabel,...
-    'RunGroupButton',runGroupButton,'RunAllButton',runAllButton,'RunFunctionsPanel',runFunctionsPanel,'SpecifyTrialsGroupButton',specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',specifyTrialsCheckboxLabel);
+    'RunGroupButton',runGroupButton,'RunAllButton',runAllButton,'RunFunctionsPanel',runFunctionsPanel,'SpecifyTrialsGroupButton',specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',specifyTrialsCheckboxLabel,...
+    'ProcessRunUpArrowButton',processRunUpArrowButton,'ProcessRunDownArrowButton',processRunDownArrowButton);
 
 % Resize all objects in each subtab.
 hProcessRun=findobj(fig,'Tag','Run');

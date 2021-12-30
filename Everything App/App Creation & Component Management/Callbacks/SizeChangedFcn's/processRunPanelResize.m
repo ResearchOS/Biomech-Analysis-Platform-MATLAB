@@ -42,7 +42,7 @@ specifyTrialsButtonCount=0;
 for i=1:length(fldNames)
     
     currH=data.(fldNames{i});
-    if isempty(currH)
+    if isempty(currH) || ~isvalid(currH)
         continue;
     end
     currTag=currH.Tag;
@@ -70,14 +70,28 @@ for i=1:length(fldNames)
     
 end
 
+fcnRowCount=getappdata(fig,'processRunArrowCount');
+processRunUpArrowButton=findobj(fig,'Type','uibutton','Tag','ProcessRunUpArrowButton');
+processRunUpArrowButton.Visible='on';
+processRunDownArrowButton=findobj(fig,'Type','uibutton','Tag','ProcessRunDownArrowButton');
+processRunDownArrowButton.Visible='on';
+
+if fcnRowCount>0
+    fcnRowCount=0; % Protect against clicking up too quickly before the Up arrow visibility is removed.
+    setappdata(fig,'processRunArrowCount',0);
+elseif fcnRowCount<-1*specifyTrialsButtonCount+9 % Protect against clicking down too quickly before the Down arrow visibility is removed.
+    fcnRowCount=-1*specifyTrialsButtonCount+9;
+    setappdata(fig,'processRunArrowCount',fcnRowCount);
+end
+
 for i=1:specifyTrialsButtonCount
     
     % Relative position
-    runFcnCheckboxRelPos=[0.03 (1-i*0.1)];
-    openFcnButtonRelPos=[0.08 (1-i*0.1)];
-    fcnArgsButtonRelPos=[0.5 (1-i*0.1)];
-    specifyTrialsCheckboxRelPos=[0.7 (1-i*0.1)];
-    specifyTrialsButtonRelPos=[0.75 (1-i*0.1)];
+    runFcnCheckboxRelPos=[0.03 (1-(i+fcnRowCount)*0.1)];
+    openFcnButtonRelPos=[0.08 (1-(i+fcnRowCount)*0.1)];
+    fcnArgsButtonRelPos=[0.5 (1-(i+fcnRowCount)*0.1)];
+    specifyTrialsCheckboxRelPos=[0.7 (1-(i+fcnRowCount)*0.1)];
+    specifyTrialsButtonRelPos=[0.75 (1-(i+fcnRowCount)*0.1)];
     
     % Size
     runFcnCheckboxSize=[0.05 compHeight];
@@ -106,5 +120,27 @@ for i=1:specifyTrialsButtonCount
     fcnArgsButton(i).FontSize=newFontSize;
     specifyTrialsCheckbox(i).FontSize=newFontSize;
     specifyTrialsButton(i).FontSize=newFontSize;
+    
+    % Set Visibility
+    runFcnCheckbox(i).Visible='on';
+    openFcnButton(i).Visible='on';
+    fcnArgsButton(i).Visible='on';
+    specifyTrialsCheckbox(i).Visible='on';
+    specifyTrialsButton(i).Visible='on';
+    
+    if (1-(i+fcnRowCount)*0.1)>=1 || (1-(i+fcnRowCount)*0.1)<=0 % Outside of the bounds of the panel
+        runFcnCheckbox(i).Visible='off';
+        openFcnButton(i).Visible='off';
+        fcnArgsButton(i).Visible='off';
+        specifyTrialsCheckbox(i).Visible='off';
+        specifyTrialsButton(i).Visible='off';
+    end
+    
+    if i==1 && (1-(i+fcnRowCount)*0.1)<1 % Turn off visibility for 'Up' arrow
+        processRunUpArrowButton.Visible='off';
+    end
+    if i==specifyTrialsButtonCount && (1-(i+fcnRowCount)*0.1)>0 % Turn off visiiblity for 'Down' arrow
+        processRunDownArrowButton.Visible='off';
+    end
     
 end

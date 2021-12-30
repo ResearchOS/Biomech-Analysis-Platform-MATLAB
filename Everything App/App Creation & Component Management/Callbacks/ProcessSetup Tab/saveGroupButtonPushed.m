@@ -38,6 +38,7 @@ for i=1:length(origText)
 end
 
 fcnNames=getappdata(fig,'functionNames');
+setappdata(fig,'processRunArrowCount',0); % Reset the function names display when saving new function names
 
 text=origText(1:groupNameLineNum); % Everything up to the current group's name
 for i=1:length(fcnNames)

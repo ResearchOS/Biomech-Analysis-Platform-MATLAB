@@ -119,4 +119,6 @@ end
 hLogsheetPathField=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
 processRunPanel.UserData.LogsheetPathField=hLogsheetPathField;
 
+setappdata(fig,'processRunArrowCount',0); % Reset the function row scrolling
+
 processRunPanelResize(processRunPanel);

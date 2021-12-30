@@ -6,6 +6,8 @@ fig=ancestor(src,'figure','toplevel');
 
 currNames=src.Value;
 
+% NEED TO: CHECK THAT THERE ARE NOT TWO IDENTICAL FUNCTION NAMES & METHOD NUMBER/LETTERS
+
 for i=1:length(currNames)
     
     a=strsplit(currNames{i},' ');

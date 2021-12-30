@@ -56,7 +56,7 @@ for i=1:length(dataTypes)
     end
     
     % Create & position the data type label    
-    dataLabels{i}=uilabel(panel,'Text',dataTypes{i},'Tag',['Import Tab Data Label ' num2str(elemNum)],'Position',[round(panelWidth*0.4) round(panelHeight*(0.8-i*0.1)) 100 22]);
+    dataLabels{i}=uilabel(panel,'Text',dataTypes{i},'Tag',['ImportTabDataLabel' num2str(elemNum)],'Position',[round(panelWidth*0.4) round(panelHeight*(0.8-i*0.1)) 100 22]);
     
     % Create & position the 'Load' & 'Offload' checkbox
     if isequal(data,'Load')
@@ -69,8 +69,8 @@ for i=1:length(dataTypes)
         loadVal=0;
         offloadVal=0;
     end
-    loadBox{i}=uicheckbox(panel,'Text','','Tag',['Import Tab Load Box ' num2str(elemNum)],'Position',[round(panelWidth*0.05) round(panelHeight*(0.8-i*0.1)) 22 22],'Value',loadVal);
-    offloadBox{i}=uicheckbox(panel,'Text','','Tag',['Import Tab Offload Box ' num2str(elemNum)],'Position',[round(panelWidth*0.2) round(panelHeight*(0.8-i*0.1)) 100 22],'Value',offloadVal,'ValueChangedFcn','');
+    loadBox{i}=uicheckbox(panel,'Text','','Tag',['ImportTabLoadBox' num2str(elemNum)],'Position',[round(panelWidth*0.05) round(panelHeight*(0.8-i*0.1)) 22 22],'Value',loadVal);
+    offloadBox{i}=uicheckbox(panel,'Text','','Tag',['ImportTabOffloadBox' num2str(elemNum)],'Position',[round(panelWidth*0.2) round(panelHeight*(0.8-i*0.1)) 100 22],'Value',offloadVal,'ValueChangedFcn','');
     currLoad=loadBox{i};
     currOffload=offloadBox{i};
     set(currLoad,'ValueChangedFcn',@(currLoad,event) dataTypeCheckboxValueChanged(currLoad));

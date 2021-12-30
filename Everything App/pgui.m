@@ -161,7 +161,11 @@ groupRunCheckboxLabel=uilabel(processRunTab,'Text','Run','Tag','GroupRunCheckbox
 groupArgsCheckboxLabel=uilabel(processRunTab,'Text','Args','Tag','GroupArgsCheckboxLabel');
 runGroupButton=uibutton(processRunTab,'push','Text','Run Group','Tag','RunGroupButton');
 runAllButton=uibutton(processRunTab,'push','Text','Run All','Tag','RunAllButton');
-runFunctionsPanel=uipanel(processRunTab,'Title','','Tag','RunFunctionsPanel','BackGroundColor',[0.92 0.92 0.92]);
+runFunctionsPanel=uipanel(processRunTab,'Title','','Tag','RunFunctionsPanel','BackGroundColor',[0.92 0.92 0.92],'AutoResizeChildren','off','SizeChangedFcn',@processRunPanelResize);
+specifyTrialsGroupButton=uibutton(processRunTab,'push','Text','Group specifyTrials','Tag','SpecifyTrialsGroupButton');
+specifyTrialsCheckboxLabel=uilabel(processRunTab,'Text','Specify Trials','Tag','SpecifyTrialsCheckboxLabel');
+% specifyTrialsGroupCheckbox=uicheckbox(processRunTab,'Text','','Value',0,'Tag','SpecifyTrialsGroupCheckbox');
+
 % NEED TO: PROGRAMMATICALLY GENERATE FUNCTION NAMES BUTTONS THAT OPEN THE CORRESPONDING FUNCTION FILE (FROM TEXT FILE?)
 
 % NEED TO: PROGRAMMATICALLY GENERATE ARGS BUTTONS THAT OPEN THE CORRESPONDING ARGS FILE (FROM TEXT FILE?)
@@ -175,7 +179,7 @@ processTab.UserData=struct('SetupGroupNameLabel',setupGroupNameLabel,'SetupGroup
     'NewFunctionPanel',newFunctionPanel,'SaveGroupButton',saveGroupButton,'InputsLabel',inputsLabel,'OutputsLabel',outputsLabel,'InputCheckboxProject',inputCheckboxP,'InputCheckboxSubject',inputCheckboxS,'InputCheckboxTrial',inputCheckboxT,...
     'OutputCheckboxProject',outputCheckboxP,'OutputCheckboxSubject',outputCheckboxS,'OutputCheckboxTrial',outputCheckboxT,'NewFunctionButton',newFunctionButton,'AddFunctionGroupButton',addFunctionGroupButton,...
     'RunGroupNameLabel',runGroupNameLabel,'RunGroupNameDropDown',runGroupNameDropDown,'RunFunctionNamesLabel',runFunctionNamesLabel,'GroupRunCheckboxLabel',groupRunCheckboxLabel,'GroupArgsCheckboxLabel',groupArgsCheckboxLabel,...
-    'RunGroupButton',runGroupButton,'RunAllButton',runAllButton,'RunFunctionsPanel',runFunctionsPanel);
+    'RunGroupButton',runGroupButton,'RunAllButton',runAllButton,'RunFunctionsPanel',runFunctionsPanel,'SpecifyTrialsGroupButton',specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',specifyTrialsCheckboxLabel);
 
 % Resize all objects in each subtab.
 hProcessRun=findobj(fig,'Tag','Run');

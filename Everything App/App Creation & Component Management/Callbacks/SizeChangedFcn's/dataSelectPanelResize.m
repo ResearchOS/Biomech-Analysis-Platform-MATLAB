@@ -49,15 +49,15 @@ for i=1:length(fldNames)
     end
     currTag=currH.Tag;
     
-    if contains(currTag,'Import Tab Data Label')
+    if contains(currTag,'ImportTabDataLabel')
         labelCount=labelCount+1;
         labels{labelCount}=currH;
     end
-    if contains(currTag,'Import Tab Load Box')
+    if contains(currTag,'ImportTabLoadBox')
         loadBoxCount=loadBoxCount+1;
         loadBoxes{loadBoxCount}=currH;
     end
-    if contains(currTag,'Import Tab Offload Box')
+    if contains(currTag,'ImportTabOffloadBox')
         offloadBoxCount=offloadBoxCount+1;
         offloadBoxes{offloadBoxCount}=currH;
     end

@@ -33,6 +33,7 @@ end
 
 hTextArea=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
 hTextArea.Value=fcnNames;
+setappdata(fig,'functionNames',fcnNames);
 
 % Set the most recent group name in the text file
 for i=length(text):-1:1

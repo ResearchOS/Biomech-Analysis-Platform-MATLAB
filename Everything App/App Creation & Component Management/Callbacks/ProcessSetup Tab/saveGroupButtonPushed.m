@@ -22,7 +22,7 @@ groupName=hGroupNamesDropDown.Value;
 groupNameFound=0; % Initialize that the group name was not found.
 for i=1:length(origText)
     
-    if length(origText{i})>length('Group Name:') && isequal(origText{i}(1:length(['Group Name: ' groupName])),['Group Name: ' groupName])
+    if length(origText{i})>=length(['Group Name: ' groupName]) && isequal(origText{i}(1:length(['Group Name: ' groupName])),['Group Name: ' groupName])
         groupNameFound=1;
         groupNameLineNum=i;
         continue;
@@ -52,3 +52,15 @@ fid=fopen(fcnNamesFilePath,'w');
 fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
 fclose(fid);
+
+%% Display that the functions were saved to the group
+disp(['Functions Staged to Group: ' groupName]);
+for i=1:length(fcnNames)
+    disp([fcnNames{i}]);
+end
+
+%% If the Process > Setup drop down value is equal to the Process > Run drop down value, change the display on the Process > Run tab
+hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
+if isequal(hGroupNamesDropDown.Value,hGroupNamesRunDropDown.Value)
+    runGroupNameDropDownValueChanged();
+end

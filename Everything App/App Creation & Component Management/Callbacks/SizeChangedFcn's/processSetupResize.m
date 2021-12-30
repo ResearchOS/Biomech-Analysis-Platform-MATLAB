@@ -57,13 +57,16 @@ openGroupSpecifyTrialsButtonRelPos=[0.65 0.9];
 runGroupNameLabelRelPos=[0.02 0.9];
 runGroupNameDropDownRelPos=[0.2 0.9];
 runFunctionNamesLabelRelPos=[0.15 0.85];
-groupRunCheckboxLabelRelPos=[0.7 0.85];
-groupArgsCheckboxLabelRelPos=[0.8 0.85];
+groupRunCheckboxLabelRelPos=[0.05 0.85];
+groupArgsCheckboxLabelRelPos=[0.5 0.85];
 runGroupButtonRelPos=[0.5 0.05];
 runAllButtonRelPos=[0.8 0.05];
 runFunctionsPanelRelPos=[0.02 0.1];
 selectFunctionSpecifyTrialsDropDownRelPos=[0.65 0.85];
 addFunctionGroupButtonRelPos=[0.6 0.9];
+specifyTrialsGroupButtonRelPos=[0.65 0.9];
+specifyTrialsCheckboxLabelRelPos=[0.8 0.85];
+% specifyTrialsGroupCheckboxRelPos=[0.9 0.9];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -94,6 +97,9 @@ runAllButtonSize=[0.2 compHeight];
 runFunctionsPanelSize=[0.95 0.75*figSize(2)];
 selectFunctionSpecifyTrialsDropDownSize=[0.3 compHeight];
 addFunctionGroupButtonSize=[0.05 compHeight];
+specifyTrialsGroupButtonSize=[0.2 compHeight];
+specifyTrialsCheckboxLabelSize=[0.2 compHeight];
+% specifyTrialsGroupCheckboxSize=[0.05 compHeight];
 
 % Multiply the relative positions by the figure size to get the actual position.
 setupGroupNameLabelPos=round([setupGroupNameLabelRelPos.*figSize setupGroupNameLabelSize(1)*figSize(1) setupGroupNameLabelSize(2)]);
@@ -122,6 +128,9 @@ runAllButtonPos=round([runAllButtonRelPos.*figSize runAllButtonSize(1)*figSize(1
 runFunctionsPanelPos=round([runFunctionsPanelRelPos.*figSize runFunctionsPanelSize(1)*figSize(1) runFunctionsPanelSize(2)]);
 selectFunctionSpecifyTrialsDropDownPos=round([selectFunctionSpecifyTrialsDropDownRelPos.*figSize selectFunctionSpecifyTrialsDropDownSize(1)*figSize(1) selectFunctionSpecifyTrialsDropDownSize(2)]);
 addFunctionGroupButtonPos=round([addFunctionGroupButtonRelPos.*figSize addFunctionGroupButtonSize(1)*figSize(1) addFunctionGroupButtonSize(2)]);
+specifyTrialsGroupButtonPos=round([specifyTrialsGroupButtonRelPos.*figSize specifyTrialsGroupButtonSize(1)*figSize(1) specifyTrialsGroupButtonSize(2)]);
+specifyTrialsCheckboxLabelPos=round([specifyTrialsCheckboxLabelRelPos.*figSize specifyTrialsCheckboxLabelSize(1)*figSize(1) specifyTrialsCheckboxLabelSize(2)]);
+% specifyTrialsGroupCheckboxPos=round([specifyTrialsGroupCheckboxRelPos.*figSize specifyTrialsGroupCheckboxSize(1)*figSize(1) specifyTrialsGroupCheckboxSize(2)]);
 
 % Set the actual positions for each component
 data.SetupGroupNameLabel.Position=setupGroupNameLabelPos;
@@ -150,6 +159,9 @@ data.RunAllButton.Position=runAllButtonPos;
 data.RunFunctionsPanel.Position=runFunctionsPanelPos;
 data.SelectFunctionSpecifyTrialsDropDown.Position=selectFunctionSpecifyTrialsDropDownPos;
 data.AddFunctionGroupButton.Position=addFunctionGroupButtonPos;
+data.SpecifyTrialsGroupButton.Position=specifyTrialsGroupButtonPos;
+data.SpecifyTrialsCheckboxLabel.Position=specifyTrialsCheckboxLabelPos;
+% data.SpecifyTrialsGroupCheckbox.Position=specifyTrialsGroupCheckboxPos;
 
 % Set the font sizes for all components that use text
 data.SetupGroupNameLabel.FontSize=newFontSize;
@@ -178,5 +190,8 @@ data.RunAllButton.FontSize=newFontSize;
 data.RunFunctionsPanel.FontSize=newFontSize;
 data.SelectFunctionSpecifyTrialsDropDown.FontSize=newFontSize;
 data.AddFunctionGroupButton.FontSize=newFontSize;
+data.SpecifyTrialsGroupButton.FontSize=newFontSize;
+data.SpecifyTrialsCheckboxLabel.FontSize=newFontSize;
+% data.SpecifyTrialsGroupCheckbox.FontSize=newFontSize;
 
 % Restore component visibility

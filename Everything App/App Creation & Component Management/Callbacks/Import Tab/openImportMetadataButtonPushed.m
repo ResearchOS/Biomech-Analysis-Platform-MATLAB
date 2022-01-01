@@ -38,13 +38,13 @@ dataType=lower(h.Value); % Always capital letters
 alphaNumericIdx=isstrprop(dataType,'alpha') | isstrprop(dataType,'digit');
 dataType=dataType(alphaNumericIdx);
 
-importMetadataName=[dataType 'ImportMetadata' methodLetter '_' projectName '.m'];
+importMetadataName=[dataType '_Import' methodLetter '.m'];
 
 h=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
 if isequal(h.Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it.   
     everythingPath=getappdata(fig,'everythingPath');
     templatePath=[everythingPath 'App Creation & Component Management' everythingPath(end) 'Project-Independent Templates' everythingPath(end) 'importMetadataTemplate.m'];
-    copyfile(templatePath,[importPath importMetadataName]); % Copy the project-independent template to the new location. Makes the Import folder if it doesn't already exist.
+    copyfile(templatePath,[importPath 'Arguments' slash importMetadataName]); % Copy the project-independent template to the new location. Makes the Import folder if it doesn't already exist.
     A=regexp(fileread([importPath importMetadataName]),'\n','split'); % Open the newly created importSettings file.
     A{1}=['function [' lower(dataType) 'Helper]=' importMetadataName(1:end-2) '()'];
     fid=fopen([importPath importMetadataName],'w');

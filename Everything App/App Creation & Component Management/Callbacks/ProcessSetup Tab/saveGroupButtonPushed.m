@@ -4,7 +4,8 @@ function []=saveGroupButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 
-fcnNames=getappdata(fig,'functionNames');
+hTextArea=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
+fcnNames=hTextArea.Value;
 
 if isempty(fcnNames)
     return; % Do nothing if the function names is empty
@@ -37,8 +38,14 @@ for i=1:length(origText)
     
 end
 
-fcnNames=getappdata(fig,'functionNames');
 setappdata(fig,'processRunArrowCount',0); % Reset the function names display when saving new function names
+
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+listing=dir([getappdata(fig,'everythingPath') 'm File Library' slash 'Process' slash]); % All elements are folders, where folder names are function names (without number or letter)
 
 text=origText(1:groupNameLineNum); % Everything up to the current group's name
 for i=1:length(fcnNames)
@@ -55,13 +62,39 @@ for i=1:length(fcnNames)
         end
     end
     
-    if fcnFound==1 % If the function name & number/letter already existed
+    if fcnFound==1 % If the function name & number/letter already existed in the text file
         currLine=strsplit(origText{fcnFoundLineNum},':'); % The text of the current line, split by the colon
         afterColon=strtrim(currLine{2});
         runAndSpecifyTrials=strsplit(afterColon,' ');
         fcnNamesText{i}=[fcnNames{i} ': Run' runAndSpecifyTrials{1}(end) ' SpecifyTrials' runAndSpecifyTrials{2}(end)];
     else
         fcnNamesText{i}=[fcnNames{i} ': Run1 SpecifyTrials0']; % Add a colon right after the function name & number/letter
+    end
+    
+    fcnNameText=strsplit(fcnName,' ');
+    currFcnFileName=[fcnNameText{1} fcnNameText{2}(~isletter(fcnNameText{2})) '.m'];
+    
+    % Check if the function names exist in the GitHub repo. If so, copy it to the Process > Existing functions folder within the codePath
+    for j=1:length(listing) % Search through every folder in the Process folder
+        
+        currFolder=listing(j).name; % The current folder name
+        currFolderListing=dir([getappdata(fig,'everythingPath') 'm File Library' slash 'Process' slash currFolder]);
+        if isequal(currFolder,'.') || isequal(currFolder,'..') % Ignore the weird empty results that dir() returns
+            continue;
+        end
+        for k=1:length(currFolderListing) % Search through every file in the current file's folder
+            
+            currMethodFcnName=currFolderListing(k).name;
+            if isequal(currMethodFcnName,'.') || isequal(currMethodFcnName,'..') % Ignore the weird empty results that dir() returns
+                continue;
+            end
+            if isequal(currMethodFcnName,currFcnFileName) % If the function number was found in the folder, copy it to the code path.
+                copyfile([getappdata(fig,'everythingPath') 'm File Library' slash 'Process' slash currFolder slash currMethodFcnName],...
+                    [getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash currFcnFileName]);
+            end
+            
+        end
+        
     end
     
 end
@@ -79,6 +112,7 @@ disp(['Functions Saved to Group: ' groupName]);
 for i=1:length(fcnNames)
     disp([fcnNames{i}]);
 end
+disp(''); % Put a space at the end of the function names
 
 %% If the Process > Setup drop down value is equal to the Process > Run drop down value, change the display on the Process > Run tab
 hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');

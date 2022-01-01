@@ -5,6 +5,7 @@ function []=fcnArgsButtonPushed(src)
 fig=ancestor(src,'figure','toplevel');
 
 currTag=src.Tag;
+currLetter=src.Text;
 
 if ~isletter(currTag(end-1)) % 2 digits
     currNum=str2double(currTag(end-1:end));
@@ -15,6 +16,9 @@ end
 % Get the handle for the function names button
 hNameButton=findobj(fig,'Type','uibutton','Tag',['OpenFcnButton' num2str(currNum)]);
 
-fcnName=hNameButton.Text;
+fcnName=hNameButton.Text; % Button text is: 'fcnName_#'
 
-edit();
+preFcnName=strsplit(fcnName,'_');
+fcnName=preFcnName{1};
+
+edit([fcnName '_Process' currLetter]);

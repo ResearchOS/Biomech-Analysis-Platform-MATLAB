@@ -39,7 +39,7 @@ projectName=getappdata(fig,'projectName');
 logVar=load(getappdata(fig,'LogsheetMatPath'),'logVar'); % Loads in as 'logVar' variable.
 logVar=logVar.logVar; % Convert struct to cell array
 % Run specifyTrials
-inclStruct=feval(['specifyTrials_Import' projectName]); % Return the inclusion criteria
+inclStruct=feval('specifyTrials_Import'); % Return the inclusion criteria
 % Run getValidTrialNames
 [allTrialNames,logVar]=getTrialNames(inclStruct,logVar,fig,0);
 
@@ -55,6 +55,10 @@ targetTrialIDColHeaderName=targetTrialIDColHeaderField.Value;
 subjIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
 subjIDHeaderName=subjIDColHeaderField.Value;
 [~,subjIDColNum]=find(strcmp(logVar(1,:),subjIDHeaderName));
+
+% Get Redo checkbox value
+redoCheckbox=findobj(fig,'Type','uicheckbox','Tag','RedoImportCheckbox');
+redoVal=redoCheckbox.Value;
 
 % Get data types' trial ID column headers
 for i=1:length(dataTypes)
@@ -75,18 +79,26 @@ for subNum=1:length(subNames)
     subName=subNames{subNum};
     trialNames=allTrialNames.(subName);
     
-    if ~isfolder([getappdata(fig,'dataPath') subName slash dataTypes{i} 'Mat Data Files' slash])
-        mkdir([getappdata(fig,'dataPath') subName slash dataTypes{i} 'Mat Data Files' slash])
-    end
-    
     % Iterate through all trial names in that subject (matches Target Trial ID logsheet column)
     for trialNum=1:length(trialNames)
         
         trialName=trialNames{trialNum};
         
         % Find the logsheet row numbers of that trial name
-        subRowIdx=strcmp(logVar(:,subjIDColNum),subName);
-        rowNums=find(strcmp(logVar(subRowIdx,targetTrialIDColNum),trialName))+find(subRowIdx==1,1,'first')-1; % The row numbers with that name.
+        subRowIdx=find(strcmp(logVar(:,subjIDColNum),subName));
+        rowNums=[]; validCount=0;
+        for i=1:length(subRowIdx)
+            
+            if isequal(strtrim(logVar(subRowIdx(i),targetTrialIDColNum)),{trialName})
+                validCount=validCount+1;
+                if validCount==1
+                    rowNums=subRowIdx(i);
+                else
+                    rowNums=[rowNums; subRowIdx(i)];
+                end
+            end
+            
+        end
         
         for repNum=1:length(rowNums)
             
@@ -104,32 +116,94 @@ for subNum=1:length(subNames)
                 
                 fileName=logVar{rowNum,dataTypeTrialColNum};
                 
-                fullPath=[getappdata(fig,'dataPath') subName slash dataTypes{i} slash fileName]; % Does not contain the file name extension
+                fullPathRaw=[getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i} slash fileName]; % Does not contain the file name extension
+                fullPathDataMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Data' slash dataTypes{i} slash 'Method' number letter '.mat'];
+                fullPathInfoMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Info' slash dataTypes{i} slash 'Method' number letter '.mat'];
+                
+                % Get the file extension of fullPathRaw, because it could be anything.
+                listing=dir([getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}]);
+                for k=1:length(listing)
+                    if length(listing(k).name)>=length(fileName) && isequal(listing(k).name(1:length(fileName)),fileName)
+                        ext=listing(k).name(length(fileName)+1:end);
+                        break;
+                    end
+                end
+                
+                fullPathRaw=[fullPathRaw ext]; % Add the extension to the raw data file path
                 
                 % Check the checkboxes
                 if isequal(dataTypeAction.(dataField),'Load')
                     
-                    % NEED TO HANDLE LOADING TOO, NOT JUST IMPORTING. CHECK FOR THE FILES' EXISTENCE
-                    
-                    disp(['Now Importing ' subName ' Trial ' trialName ' & Logsheet Row ' num2str(rowNum)]);
-                    
-                    % Call the appropriate Import fcn (& the appropriate importMetadata fcn)
-                    [dataTypeArgs]=feval([lower(dataField) 'ImportMetadata' letter '_' getappdata(fig,'projectName')]);
-                    
-                    [dataTypeDataStruct,dataTypeInfoStruct]=feval([lower(dataField) 'Import' number '_' getappdata(fig,'projectName')],dataTypeArgs,fullPath,logVar,rowNum);
-                    
-                    % Store the data type struct
+                    if exist(fullPathDataMat,'file')==2 && exist(fullPathInfoMat,'file')==2 && redoVal==0 % File exists, and redo is not selected.
+                        
+                        disp(['Now Loading ' subName ' Trial ' trialName ' Data Type ' dataTypes{i}]);
+                        
+                        % Load that data
+                        load(fullPathDataMat,'dataTypeDataStruct');
+                        load(fullPathInfoMat,'dataTypeInfoStruct');
+                        
+                    else % File does not exist, import the data.
+                        
+                        if exist(fullPathRaw,'file')~=2
+                            error(['Missing file: ' fullPathRaw]);
+                        end
+                        
+                        disp(['Now Importing ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' & Logsheet Row ' num2str(rowNum)]);
+                        
+                        % Call the appropriate Import args (letter)
+                        [dataTypeArgs]=feval([lower(dataField) '_Import' letter]);
+                        
+                        % Call the appropriate Import fcn (number)
+                        [dataTypeDataStruct,dataTypeInfoStruct]=feval([lower(dataField) '_Import' number],dataTypeArgs,fullPathRaw,logVar,rowNum);
+                        
+                        % If the data type folder does not exist, create it
+                        currMatDataTypeFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Data' slash dataTypes{i} slash];
+                        currMatDataTypeInfoFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Info' slash dataTypes{i} slash];
+                        if ~isfolder(currMatDataTypeFolder)
+                            mkdir(currMatDataTypeFolder);
+                        end
+                        if ~isfolder(currMatDataTypeInfoFolder)
+                            mkdir(currMatDataTypeInfoFolder);
+                        end
+                        
+                        % Save the data to the file
+                        save(fullPathDataMat,'dataTypeDataStruct');
+                        
+                        % Save the info to the file
+                        save(fullPathInfoMat,'dataTypeInfoStruct');
+                        
+                    end
+
+                    % Store the data type struct to the projectStruct
                     returnedTypes=fieldnames(dataTypeDataStruct);
                     for kk=1:length(returnedTypes) % If multiple data types were included in the one data type function call
                         returnedType=returnedTypes{kk};
-                        projectStruct.(subName).(trialName).Data.(returnedType)=dataTypeDataStruct.(returnedType);
-                        projectStruct.(subName).(trialName).Info.(returnedType)=dataTypeInfoStruct.(returnedType);
+                        tempDataStruct=dataTypeDataStruct.(returnedType);
+                        tempInfoStruct=dataTypeInfoStruct.(returnedType);
+                        assignin('base','subName',subName);
+                        assignin('base','trialName',trialName);
+                        assignin('base','dataField',returnedType);
+                        assignin('base','tempDataStruct',tempDataStruct);
+                        assignin('base','tempInfoStruct',tempInfoStruct);
+                        evalin('base','projectStruct.(subName).(trialName).Data.(dataField)=tempDataStruct;');
+                        evalin('base','projectStruct.(subName).(trialName).Info.(dataField)=tempInfoStruct;');
                     end
                     
                 elseif isequal(dataTypeAction.(dataField),'Offload')
-                    if isfield(projectStruct.(subName).(trialName).Data,dataTypeField)
-                        projectStruct.(subName).(trialName).Data=rmfield(projectStruct.(subName).(trialName).Data,dataTypeField);
+                    
+                    dataFldNames=feval([lower(dataField) '_Import' number]); % The data type field names returned by this function
+                    
+                    assignin('base','subName',subName);
+                    assignin('base','trialName',trialName);
+                    for kk=1:length(dataFldNames)
+                        assignin('base','dataField',dataFldNames{kk});
+                        if evalin('base','isfield(projectStruct,subName)') && evalin('base','isfield(projectStruct.(subName),(trialName))') ...
+                                && evalin('base',"isfield(projectStruct.(subName).(trialName),'Data')")
+                            disp(['Now Removing ' subName ' Trial ' trialName ' Data Structure Field: ' dataFldNames{kk}]);
+                            evalin('base','projectStruct.(subName).(trialName).Data=rmfield(projectStruct.(subName).(trialName).Data,dataField);')
+                        end
                     end
+
                 end                
                 
             end                                                
@@ -139,5 +213,3 @@ for subNum=1:length(subNames)
     end    
     
 end
-
-assignin('base','projectStruct',projectStruct);

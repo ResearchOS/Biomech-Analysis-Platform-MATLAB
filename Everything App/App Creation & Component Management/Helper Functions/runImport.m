@@ -2,6 +2,7 @@ function []=runImport(src)
 
 %% PURPOSE: CALLED BY THE "RUNIMPORTBUTTONPUSHED" CALLBACK FUNCTION
 
+tic;
 fig=ancestor(src,'figure','toplevel');
 
 text=readAllProjects(getappdata(fig,'everythingPath'));
@@ -213,3 +214,5 @@ for subNum=1:length(subNames)
     end    
     
 end
+
+toc;

@@ -41,7 +41,25 @@ lineNum=lineNums(groupNum);
 
 fcnNames=getappdata(fig,'processFcnNames');
 argsNames=getappdata(fig,'processArgsNames');
-% processRunPanel=findobj(fig,'Tag','Run');
+fcnCount=0;
+
+if isempty(fcnNames) && isempty(argsNames) % The function names were not entered into Process>Setup because they already exist in the text file
+    for i=lineNum+1:length(text) % Start with first function name
+        
+        if isempty(text{i})
+            break;
+        end
+        
+        currLine=strsplit(text{i},':');
+        currFcn=strsplit(currLine{1},' ');
+        
+        fcnCount=fcnCount+1;
+        fcnNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}(~isletter(currFcn{2}))];
+        argsNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}(isletter(currFcn{2}))];
+        
+    end
+end
+
 processRunPanel=findobj(fig,'Type','uipanel','Tag','RunFunctionsPanel');
 
 % Delete the components first

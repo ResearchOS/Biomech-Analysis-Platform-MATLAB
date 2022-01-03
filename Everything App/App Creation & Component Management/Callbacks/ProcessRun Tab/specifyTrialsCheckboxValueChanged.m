@@ -14,6 +14,10 @@ currNum=str2double(currTag(length('SpecifyTrialsCheckbox')+1:end)); % char
 % Get the current checkbox value
 currVal=src.Value;
 
+% If now unchecked, turn off visibility of specify trials button
+hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag',['SpecifyTrialsButton' num2str(currNum)]);
+hSpecifyTrialsButton.Visible=currVal;
+
 % Get current function name
 currFcnButton=findobj(fig,'Type','uibutton','Tag',['OpenFcnButton' num2str(currNum)]);
 currFcnName=currFcnButton.Text;

@@ -1,32 +1,24 @@
-function []=specifyTrialsButtonPushed(src)
+function []=specifyTrialsGroupButtonPushed(src,event)
 
-%% PURPOSE: OPEN THE FUNCTION'S SPECIFY TRIALS FILE
+%% PURPOSE: OPEN THE GROUP LEVEL SPECIFY TRIALS, OR CREATE IT FROM TEMPLATE IF IT DOES NOT YET EXIST.
 
 fig=ancestor(src,'figure','toplevel');
 
-currTag=src.Tag;
+hRunGroupDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
+groupName=hRunGroupDropDown.Value;
 
-if ~isletter(currTag(end-1)) % 2 digits
-    currRow=str2double(currTag(end-1:end));
-else % 1 digit
-    currRow=str2double(currTag(end));
-end
+groupFcnName=groupName(isstrprop(groupName,'alpha') | isstrprop(groupName,'digit'));
 
-hArgsButton=findobj(fig,'Type','uibutton','Tag',['FcnArgsButton' num2str(currRow)]);
-
-fcnNames=getappdata(fig,'processFcnNames');
-fcnName=fcnNames{currRow}; % Format: 'fcnName_Process#'
-fcnNameClean=strsplit(fcnName,'_Process');
-
-specifyTrialsName=[fcnNameClean{1} '_Process' fcnNameClean{2} hArgsButton.Text '_SpecifyTrials.m'];
+specifyTrialsName=[groupFcnName '_Process_SpecifyTrials.m']; % The group level specify trials function name.
 
 if ismac==1 
     slash='/';
-else
+elseif ispc==1
     slash='\';
 end
 
 specifyTrialsPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash specifyTrialsName];
+
 if exist(specifyTrialsPath,'file')==2
     edit(specifyTrialsPath);
     return;

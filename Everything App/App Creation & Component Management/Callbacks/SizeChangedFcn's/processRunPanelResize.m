@@ -143,4 +143,18 @@ for i=1:specifyTrialsButtonCount
         processRunDownArrowButton.Visible='off';
     end
     
+    % Set Visibility
+    if runFcnCheckbox(i).Value==0 % If not checked, turn off specify trials checkbox & button visibility
+        specifyTrialsCheckbox(i).Visible='off';
+        specifyTrialsButton(i).Visible='off';
+    elseif isequal(runFcnCheckbox(i).Visible,'on')
+        specifyTrialsCheckbox(i).Visible='on';
+        specifyTrialsButton(i).Visible='on';
+    end
+    if specifyTrialsCheckbox(i).Value==1 && specifyTrialsCheckbox(i).Visible==1 % If not checked, turn off specify trials button visibility
+        specifyTrialsButton(i).Visible='on';
+    else
+        specifyTrialsButton(i).Visible='off';
+    end
+    
 end

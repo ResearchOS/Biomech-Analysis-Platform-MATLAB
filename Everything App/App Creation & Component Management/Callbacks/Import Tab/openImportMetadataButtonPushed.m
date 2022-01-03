@@ -42,7 +42,7 @@ importArgsName=[dataType '_Import' methodLetter '.m'];
 
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
 
-if isequal(hButton.Text(1:6),'Create') && exist([importPath 'User-Created Functions' slash importArgsName],'file')==2
+if isequal(hButton.Text(1:6),'Create') && exist([importPath 'Arguments' slash importArgsName],'file')==2
     error('Button says ''Create'' but the file already exists');
 end
 
@@ -56,7 +56,7 @@ if isequal(hButton.Text(1:6),'Create') % Creating the project's importSetting fi
     fprintf(fid,'%s\n',A{1:end-1});
     fprintf(fid,'%s',A{end});
     fclose(fid);    
-    hButton.Text=['Open Import Fcn ' hDropDown.Value];
+    hButton.Text=['Open Import Args ' hDropDown.Value];
 end
 
 edit([importPath 'Arguments' slash importArgsName]); % Always open the file.

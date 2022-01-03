@@ -161,5 +161,4 @@ if prevExist==1
     end
     hImportFcnButton.Text=[prefix ' Import Fcn'];
     
-    
 end

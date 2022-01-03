@@ -34,6 +34,8 @@ elseif ispc==1
 end
 
 projectName=getappdata(fig,'projectName');
+codePath=getappdata(fig,'codePath');
+
 
 %% INDEPENDENT OF DATA TYPE
 % Load the logsheet Excel file (first tab only).
@@ -71,7 +73,6 @@ for i=1:length(dataTypes)
     colNum.(dataField)=find(strcmp(logVar(1,:),headerName));
     
 end
-
 
 % Iterate through subject names in trialNames variable
 subNames=fieldnames(allTrialNames);
@@ -114,6 +115,13 @@ for subNum=1:length(subNames)
                 dataTypeTrialColNum=colNum.(dataField);
                 letter=methodLetter.(dataField);
                 number=methodNumber.(dataField);
+
+                % See if the import function is in the existing functions folder or the user-created folder.
+                if exist([codePath 'Import_' projectName slash 'Existing Functions' slash lower(dataField) '_Import' number '.m'],'file')==2
+                    existType='Existing Functions';
+                elseif exist([codePath 'Import_' projectName slash 'User-Created Functions' slash lower(dataField) '_Import' number '.m'],'file')==2
+                    existType='User-Created Functions';
+                end
                 
                 fileName=logVar{rowNum,dataTypeTrialColNum};
                 
@@ -152,10 +160,15 @@ for subNum=1:length(subNames)
                         disp(['Now Importing ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' & Logsheet Row ' num2str(rowNum)]);
                         
                         % Call the appropriate Import args (letter)
+                        currDir=pwd; % Get current directory
+                        cd([codePath 'Import_' projectName slash 'Arguments']); % Navigate to directory of import arguments file, to ensure that the proper one is selected.
                         [dataTypeArgs]=feval([lower(dataField) '_Import' letter]);
                         
                         % Call the appropriate Import fcn (number)
+                        cd([codePath 'Import_' projectName slash existType]); % Navigate to the directory of import function, to ensure that the proper one is selected.
                         [dataTypeDataStruct,dataTypeInfoStruct]=feval([lower(dataField) '_Import' number],dataTypeArgs,fullPathRaw,logVar,rowNum);
+
+                        cd(currDir); % Go back to the current directory.
                         
                         % If the data type folder does not exist, create it
                         currMatDataTypeFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Data' slash dataTypes{i} slash];

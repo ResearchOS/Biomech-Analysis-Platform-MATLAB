@@ -79,9 +79,9 @@ end
 %     return;
 % end
 
-%% Identify which data types are being imported.
-% Identify them by which data types are present in the drop down list
-dataTypes=hDataTypesDropDown.Items;
+% %% Identify which data types are being imported.
+% % Identify them by which data types are present in the drop down list
+% dataTypes=hDataTypesDropDown.Items;
 
 %% FROM HERE DOWN, ASSUME THAT ALL NECESSARY CONDITIONS HAVE BEEN CHECKED & MET TO PERFORM THE IMPORT
 runImport(fig)

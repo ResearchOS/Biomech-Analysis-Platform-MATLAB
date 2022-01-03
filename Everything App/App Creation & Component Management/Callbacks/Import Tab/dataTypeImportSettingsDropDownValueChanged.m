@@ -112,18 +112,26 @@ end
 % Change the button prefix to be either 'Create' or 'Open'
 % importMetadata
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'ImportMetadata' method(isletter(method)) '_' projectName '.m'],'file')==2
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash lower(dataType) '_Import' method(isletter(method)) '.m'],'file')==2
     prefix='Open';
 else
     prefix='Create';
 end
-hButton.Text=[prefix ' importMetadata'];
+hButton.Text=[prefix ' Import Args ' currType];
+
+%% NEED TO CHECK IF THE IMPORT FCN EXISTS IN THE LIBRARY, 'EXISTING FUNCTIONS' FOLDER, OR 'USER-CREATED' FOLDER
+importPath=[getappdata(fig,'codePath') 'Import_' projectName slash];
+importFcnName=[lower(dataType) '_Import' method(~isletter(method)) '.m'];
 
 % Import Fcn
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'Import' method(~isletter(method)) '_' projectName '.m'],'file')==2
+if exist([importPath 'User-Created Functions' slash importFcnName],'file')==2 || ... % User-created
+        exist([importPath 'Existing Functions' slash importFcnName],'file')==2 || ... % Existing from library
+        exist([getappdata(fig,'everythingPath') 'm File Library' slash 'Import' slash currType slash importFcnName],'file')==2
     prefix='Open';
 else
     prefix='Create';
 end
-hButton.Text=[prefix ' Import Fcn'];
+hButton.Text=[prefix ' Import Fcn ' currType];
+
+addDataTypeEntry2Panel(fig);

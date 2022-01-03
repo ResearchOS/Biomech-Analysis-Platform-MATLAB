@@ -28,9 +28,9 @@ elemNum=0;
 while allEntries==0
     
     elemNum=elemNum+1;
-    currLabel=findobj(fig,'Type','uilabel','Tag',['Import Tab Data Label ' num2str(elemNum)]);
-    currLoadBox=findobj(fig,'Type','uicheckbox','Tag',['Import Tab Load Box ' num2str(elemNum)]);
-    currOffloadBox=findobj(fig,'Type','uicheckbox','Tag',['Import Tab Offload Box ' num2str(elemNum)]);
+    currLabel=findobj(fig,'Type','uilabel','Tag',['ImportTabDataLabel' num2str(elemNum)]);
+    currLoadBox=findobj(fig,'Type','uicheckbox','Tag',['ImportTabLoadBox' num2str(elemNum)]);
+    currOffloadBox=findobj(fig,'Type','uicheckbox','Tag',['ImportTabOffloadBox' num2str(elemNum)]);
     if ~isempty(currLabel) && ~isempty(currLoadBox) && ~isempty(currOffloadBox)
         delete(currLabel);
         delete(currLoadBox);

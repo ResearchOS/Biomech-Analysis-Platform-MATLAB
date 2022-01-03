@@ -2,13 +2,6 @@ function []=addDataTypeButtonPushed(src)
 
 fig=ancestor(src,'figure','toplevel');
 
-% Open a text box with the name of the new data type
-dataType=inputdlg('Enter new data type to import');
-
-if isempty(dataType)
-    return;
-end
-
 if isempty(getappdata(fig,'codePath'))
     beep;
     warning('Need to enter the code path!');
@@ -18,6 +11,13 @@ end
 if isempty(getappdata(fig,'dataPath'))
     beep;
     warning('Need to enter the data path!');
+    return;
+end
+
+% Open a text box with the name of the new data type
+dataType=inputdlg('Enter new data type to import');
+
+if isempty(dataType)
     return;
 end
 
@@ -54,3 +54,6 @@ hTrialIDColHeaderDataTypesField.Value='Data Type: Trial ID Column Header';
 % Call the text field's ValueChangedFcn to write the new data type & method
 % number & letter in to the allProjects.txt file
 dataTypeImportMethodFieldValueChanged(src);
+
+% Call the dropdown's ValueChangedFcn to create data type checkboxes in the data load panel
+dataTypeImportSettingsDropDownValueChanged(h);

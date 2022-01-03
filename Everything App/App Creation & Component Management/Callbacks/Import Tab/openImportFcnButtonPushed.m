@@ -76,10 +76,10 @@ else
         
     end
     
-    % If it exists in the 'Existing Functions' folder already, just open that file.
+    % If it exists in the 'Existing Functions' folder now, open that file.
     if exist([importPath 'Existing Functions' slash importFcnName],'file')==2
         openPath=[importPath 'Existing Functions' slash importFcnName];
-    elseif exist([importPath 'User-Created Functions' slash importFcnName],'file')==2
+    elseif exist([importPath 'User-Created Functions' slash importFcnName],'file')==2 % If in the 'User-Created' folder, open that one.
         openPath=[importPath 'User-Created Functions' slash importFcnName];
     else
         error('Function missing when it should not be');

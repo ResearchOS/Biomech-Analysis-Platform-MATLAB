@@ -8,17 +8,29 @@ currTag=src.Tag;
 currLetter=src.Text;
 
 if ~isletter(currTag(end-1)) % 2 digits
-    currNum=str2double(currTag(end-1:end));
+    elemNum=str2double(currTag(end-1:end));
 else % 1 digit
-    currNum=str2double(currTag(end));
+    elemNum=str2double(currTag(end));
 end
 
-% Get the handle for the function names button
-hNameButton=findobj(fig,'Type','uibutton','Tag',['OpenFcnButton' num2str(currNum)]);
+fcnNames=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
+fcnNames=fcnNames.Value;
 
-fcnName=hNameButton.Text; % Button text is: 'fcnName_#'
+currFcn=fcnNames{elemNum};
 
-preFcnName=strsplit(fcnName,'_');
-fcnName=preFcnName{1};
+fcnElems=strsplit(currFcn,' ');
+fcnName=[fcnElems{1} '_Process' fcnElems{2}(isletter(fcnElems{2}))];
 
-edit([fcnName '_Process' currLetter]);
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
+argsPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash fcnName '.m'];
+
+try
+    edit(argsPath);
+catch % If the arguments file does not exist, create it from the template.
+    
+end

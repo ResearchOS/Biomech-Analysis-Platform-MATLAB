@@ -40,7 +40,7 @@ projectName=getappdata(fig,'projectName');
 logVar=load(getappdata(fig,'LogsheetMatPath'),'logVar'); % Loads in as 'logVar' variable.
 logVar=logVar.logVar; % Convert struct to cell array
 % Run specifyTrials
-inclStruct=feval('specifyTrials_Import'); % Return the inclusion criteria
+inclStruct=specifyTrials_Import; % Return the inclusion criteria
 % Run getValidTrialNames
 [allTrialNames,logVar]=getTrialNames(inclStruct,logVar,fig,0);
 

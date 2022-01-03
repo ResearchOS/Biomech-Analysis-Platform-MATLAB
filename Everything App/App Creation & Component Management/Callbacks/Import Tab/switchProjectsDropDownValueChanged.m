@@ -260,12 +260,12 @@ end
 h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 % Check if the new project's specifyTrials file exists. If not, label it
 % 'Create'. If so, label it 'Open'
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'specifyTrials_Import' projectName '.m'],'file')==2 % This file exists.
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Specify Trials' slash 'specifyTrials_Import.m'],'file')==2 % This file exists.
     prefix='Open';
 else
     prefix='Create';
 end
-h.Text=[prefix ' specifyTrials_Import' projectName '.m'];
+h.Text=[prefix ' specifyTrials_Import.m'];
 
 %% Set the entered project name as the most recently used project at the end of the file.
 if saveFile==1 % Indicates to save the file
@@ -284,34 +284,37 @@ if saveFile==1 % Indicates to save the file
     end
 end
 
+dataType=hDataTypesDropDown.Value;
+
 % Change the prefix for the importMetadata button
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash startVal 'ImportMetadata' startLetter '_' projectName '.m'],'file')==2 % This file exists.
+% Need to get the data type for the file name
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataType '_Import' startLetter '.m'],'file')==2 % This file exists.
     prefix='Open';
 else
     prefix='Create';
 end
-hButton.Text=[prefix ' importMetadata'];
+hButton.Text=[prefix ' Import Args ' dataType];
 
-% Change the prefix for the Import button
+% Change the prefix for the Import fcn button
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
 % Check if the new project's importSettings file exists. If not, label it
 % 'Create'. If so, label it 'Open'
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash startVal 'Import' startNumber '_' projectName '.m'],'file')==2 % This file exists.
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'User-Created Functions' slash dataType '_Import' startNumber '.m'],'file')==2 % This file exists.
     prefix='Open';
 else
     prefix='Create';
 end
-hButton.Text=[prefix ' Import Fcn'];
+hButton.Text=[prefix ' Import Fcn ' dataType];
 
 % Change the prefix for the logsheet2Struct button
-hButton=findobj(fig,'Type','uibutton','Tag','OpenLogsheet2StructButton');
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Logsheet2Struct_' projectName '.m'],'file')==2
-    prefix='Open';
-else
-    prefix='Create';
-end
-hButton.Text=[prefix ' Logsheet2Struct_' projectName];
+% hButton=findobj(fig,'Type','uibutton','Tag','OpenLogsheet2StructButton');
+% if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Logsheet2Struct_' projectName '.m'],'file')==2
+%     prefix='Open';
+% else
+%     prefix='Create';
+% end
+% hButton.Text=[prefix ' Logsheet2Struct_' projectName];
 
 %% Set up the entries in the uipanel
 % Each entry gets two boxes: one to load that data, one to remove it.

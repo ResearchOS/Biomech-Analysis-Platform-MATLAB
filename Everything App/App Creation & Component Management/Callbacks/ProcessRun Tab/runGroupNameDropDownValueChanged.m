@@ -67,6 +67,12 @@ while allEntries==0
     
 end
 
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
 % Create the components after deleting them
 elemNum=0;
 for i=1:length(fcnNames)
@@ -74,11 +80,22 @@ for i=1:length(fcnNames)
     elemNum=elemNum+1;
     tagNameCell=strsplit(fcnNames{i},' ');
     tagName=[tagNameCell{1} tagNameCell{2}(~isletter(tagNameCell{2}))];
-    fullName=[tagName tagNameCell{2}(isletter(tagNameCell{2}))];
+%     fullName=[tagName tagNameCell{2}(isletter(tagNameCell{2}))];
     
     currLine=text{lineNum+i};
     afterColon=strsplit(currLine,':');
     runAndSpecifyTrials=strsplit(strtrim(afterColon{2}),' ');
+    
+    % Check that the function exists. If not, stop execution
+    fcnName=strsplit(afterColon{1},' ');
+    fullName=[fcnName{1} '_Process' tagNameCell{2}(~isletter(tagNameCell{2}))];
+    fullExistPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash fullName '.m'];
+    fullUserPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash fullName '.m'];
+    
+    if exist(fullExistPath,'file')~=2 && exist(fullUserPath,'file')~=2
+        disp([fullName ' Not Found']);
+        return;
+    end
     
     % Check the 'Run' checkbox status in the text file
     runStatus=str2double(runAndSpecifyTrials{1}(end));

@@ -29,7 +29,7 @@ if ~isfolder(importPath)
     mkdir(importPath);
 end
 
-specifyTrialsName=['specifyTrials_Import.m'];
+specifyTrialsName='specifyTrials_Import.m';
 
 h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 if isequal(h.Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it. 
@@ -45,4 +45,4 @@ if isequal(h.Text(1:6),'Create') % Creating the project's importSetting file for
     h.Text=['Open ' specifyTrialsName];
 end
 
-edit([importPath specifyTrialsName]); % Always open the file.
+edit([importPath 'Specify Trials' slash specifyTrialsName]); % Always open the file.

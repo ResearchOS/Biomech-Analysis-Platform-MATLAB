@@ -12,6 +12,12 @@ currNames=src.Value;
 processFcnNames=cell(length(currNames),1);
 processArgsNames=cell(length(currNames),1);
 
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
 for i=1:length(currNames)
     
     a=strsplit(strtrim(currNames{i}),' ');
@@ -20,8 +26,12 @@ for i=1:length(currNames)
         return;
     end
     
-    if exist([a{1} a{2}(~isletter(a{2}))],'file')~=2
-        disp(['Function ' a{1} a{2}(~isletter(a{2})) ' Does Not Exist']);
+    % Check if the function exists, in 'Existing Functions' or 'User-Created Functions' folder
+    existPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash a{1} '_Process' a{2}(~isletter(a{2}))];
+    userPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash a{1} '_Process' a{2}(~isletter(a{2}))];
+    
+    if exist(existPath,'file')~=2 && exist(userPath,'file')~=2
+        disp(['Function ' a{1} '_Process' a{2}(~isletter(a{2})) ' Does Not Exist']);
         return;
     end
     

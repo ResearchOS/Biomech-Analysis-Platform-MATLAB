@@ -4,6 +4,14 @@ function []=addFunctionGroupButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 
+fcnNamesFilePath=getappdata(fig,'fcnNamesFilePath');
+
+if isempty(fcnNamesFilePath)
+    beep;
+    warning('Enter code path first!');
+    return;
+end
+
 hGroupNamesDropDown=findobj(fig,'Type','uidropdown','Tag','SetupGroupNameDropDown');
 
 groupName=inputdlg('Enter Group Name','New Group Name');
@@ -13,8 +21,6 @@ if isempty(groupName)
 end
 
 groupName=groupName{1}; % Convert cell to char
-
-fcnNamesFilePath=getappdata(fig,'fcnNamesFilePath');
 
 if exist(fcnNamesFilePath,'file')~=2 % Check if the project's group names text file exists.
     

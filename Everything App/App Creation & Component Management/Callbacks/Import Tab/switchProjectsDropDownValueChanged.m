@@ -13,7 +13,7 @@ h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
 projectName=h.Value;
 setappdata(fig,'projectName',projectName)
 
-if isempty(projectName)
+if isequal(projectName,'New Project')
     visState='off';
     setappdata(fig,'EmptyProjectName',1); % Indicates that the project name field is empty when the app was initialized.
 else
@@ -26,15 +26,14 @@ projNameLabel=findobj(fig,'Type','uilabel','Tag','ProjectNameLabel');
 projNameDropDown=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
 addProjButton=findobj(fig,'Type','uibutton','Tag','AddProjectButton');
 
-h=findall(fig.Children.Children(1,1));
+% h=findall(fig.Children.Children(1,1));
+h=findall(fig);
 for i=1:length(h)
-    if ismember(h(i),[projNameLabel projNameDropDown addProjButton]) % Ignore the project name textbox and label.
+    if ismember(h(i),[projNameLabel projNameDropDown addProjButton fig]) % Ignore the project name textbox and label.
         h(i).Visible='on';
     else
-        try
+        if ~ismember(h(i).Type,{'uitab','uitabgroup'}) % Because these components don't have a Visible property.
             h(i).Visible=visState;
-        catch
-            
         end
     end
 end
@@ -64,7 +63,7 @@ hTrialIDColHeaderDataType=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialI
 hTargetTrialColHeader=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
 hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown'); % Data types drop down
 hDataTypeMethodField=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField'); % Data types method number & letter edit field
-hGroupsDataToLoad=findobj(fig,'Type','uipanel','Tag','SelectDataPanel'); % Panel encompassing the groups' data to load
+% hGroupsDataToLoad=findobj(fig,'Type','uipanel','Tag','SelectDataPanel'); % Panel encompassing the groups' data to load
 % If the project was pre-existing in the all projects file
 if existingProject==1
     projectNameInfo=isolateProjectNamesInfo(A,projectName); % Return the path names associated with the specified project name.
@@ -247,8 +246,9 @@ elseif existingProject==0
 end
 
 if ~exist('startVal','var')
-    startVal='0'; % Just to allow the search for a folder to fail when naming the buttons
-    startLetter='0';
+    startVal='0';
+    startLetter='0'; % Just to allow the search for a folder to fail when naming the buttons
+    startNumber='0';
 end
 
 if ismac==1
@@ -285,11 +285,12 @@ if saveFile==1 % Indicates to save the file
 end
 
 dataType=hDataTypesDropDown.Value;
+dataField=lower(dataType(isstrprop(dataType,'alpha') | isstrprop(dataType,'digit')));
 
 % Change the prefix for the importMetadata button
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
 % Need to get the data type for the file name
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataType '_Import' startLetter '.m'],'file')==2 % This file exists.
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataField '_Import' startLetter '.m'],'file')==2 % This file exists.
     prefix='Open';
 else
     prefix='Create';
@@ -298,23 +299,17 @@ hButton.Text=[prefix ' Import Args ' dataType];
 
 % Change the prefix for the Import fcn button
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
-% Check if the new project's importSettings file exists. If not, label it
-% 'Create'. If so, label it 'Open'
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'User-Created Functions' slash dataType '_Import' startNumber '.m'],'file')==2 % This file exists.
+
+% If the file exists in the library, the Existing Functions folder, or the user-created functions folder, label the button with 'Open', otherwise
+% 'Create'
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'User-Created Functions' slash dataField '_Import' startNumber '.m'],'file')==2 || ...
+        exist([getappdata(fig,'everythingPath') 'm File Library' slash 'Import' slash dataType slash dataField '_Import' startNumber '.m'],'file')==2 || ...
+        exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Existing Functions' slash dataField '_Import' startNumber '.m'],'file')==2 % This file exists.
     prefix='Open';
 else
     prefix='Create';
 end
 hButton.Text=[prefix ' Import Fcn ' dataType];
-
-% Change the prefix for the logsheet2Struct button
-% hButton=findobj(fig,'Type','uibutton','Tag','OpenLogsheet2StructButton');
-% if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Logsheet2Struct_' projectName '.m'],'file')==2
-%     prefix='Open';
-% else
-%     prefix='Create';
-% end
-% hButton.Text=[prefix ' Logsheet2Struct_' projectName];
 
 %% Set up the entries in the uipanel
 % Each entry gets two boxes: one to load that data, one to remove it.

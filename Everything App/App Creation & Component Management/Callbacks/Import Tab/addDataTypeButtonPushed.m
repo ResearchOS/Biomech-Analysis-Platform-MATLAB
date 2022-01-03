@@ -9,6 +9,18 @@ if isempty(dataType)
     return;
 end
 
+if isempty(getappdata(fig,'codePath'))
+    beep;
+    warning('Need to enter the code path!');
+    return;
+end
+
+if isempty(getappdata(fig,'dataPath'))
+    beep;
+    warning('Need to enter the data path!');
+    return;
+end
+
 % Ensure the entry is stored all in caps
 dataType=upper(dataType);
 

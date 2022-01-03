@@ -33,25 +33,30 @@ if ~isfolder(importPath)
     mkdir(importPath);
 end
 
-h=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
-dataType=lower(h.Value); % Always capital letters
+hDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
+dataType=lower(hDropDown.Value); % Always capital letters
 alphaNumericIdx=isstrprop(dataType,'alpha') | isstrprop(dataType,'digit');
 dataType=dataType(alphaNumericIdx);
 
-importMetadataName=[dataType '_Import' methodLetter '.m'];
+importArgsName=[dataType '_Import' methodLetter '.m'];
 
-h=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
-if isequal(h.Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it.   
+hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
+
+if isequal(hButton.Text(1:6),'Create') && exist([importPath 'User-Created Functions' slash importArgsName],'file')==2
+    error('Button says ''Create'' but the file already exists');
+end
+
+if isequal(hButton.Text(1:6),'Create') % Creating the project's importSetting file for the first time. Also open it.   
     everythingPath=getappdata(fig,'everythingPath');
-    templatePath=[everythingPath 'App Creation & Component Management' everythingPath(end) 'Project-Independent Templates' everythingPath(end) 'importMetadataTemplate.m'];
-    copyfile(templatePath,[importPath 'Arguments' slash importMetadataName]); % Copy the project-independent template to the new location. Makes the Import folder if it doesn't already exist.
-    A=regexp(fileread([importPath importMetadataName]),'\n','split'); % Open the newly created importSettings file.
-    A{1}=['function [' lower(dataType) 'Helper]=' importMetadataName(1:end-2) '()'];
-    fid=fopen([importPath importMetadataName],'w');
+    templatePath=[everythingPath 'App Creation & Component Management' everythingPath(end) 'Project-Independent Templates' everythingPath(end) 'Import_argsTemplate.m'];
+    copyfile(templatePath,[importPath 'Arguments' slash importArgsName]); % Copy the project-independent template to the new location. Makes the Import folder if it doesn't already exist.
+    A=regexp(fileread([importPath 'Arguments' slash importArgsName]),'\n','split'); % Open the newly created importSettings file.
+    A{1}=['function [' lower(dataType) 'Helper]=' importArgsName(1:end-2) '()'];
+    fid=fopen([importPath 'Arguments' slash importArgsName],'w');
     fprintf(fid,'%s\n',A{1:end-1});
     fprintf(fid,'%s',A{end});
     fclose(fid);    
-    h.Text='Open importMetadata';
+    hButton.Text=['Open Import Fcn ' hDropDown.Value];
 end
 
-edit([importPath importMetadataName]); % Always open the file.
+edit([importPath 'Arguments' slash importArgsName]); % Always open the file.

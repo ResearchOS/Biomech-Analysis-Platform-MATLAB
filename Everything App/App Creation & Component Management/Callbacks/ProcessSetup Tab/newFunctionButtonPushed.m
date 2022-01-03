@@ -16,6 +16,12 @@ if hTrialCheckbox.Value==0 && hSubjectCheckbox.Value==0 && hProjectCheckbox.Valu
     return;
 end
 
+if isempty(getappdata(fig,'codePath'))
+    beep;
+    warning('Enter the code path first!');
+    return;
+end
+
 name=inputdlg('Enter Function Name, Format: ''fcnName #''');
 if isempty(name) || isempty(name{1})
     return; % If Cancel or 'X' was clicked, or OK was clicked while the dialog box was empty

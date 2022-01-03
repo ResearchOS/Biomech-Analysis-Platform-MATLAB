@@ -26,6 +26,7 @@ figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax:
 
 %% Initialize app data
 setappdata(fig,'everythingPath',[fileparts(mfilename('fullpath')) slash]); % Path to the 'Everything App' folder.
+rmpath(genpath([getappdata(fig,'everythingPath') slash 'm File Library'])); % Ensure that the function library files are not on the path, because I don't want to run those files, I want to copy them to my local project.
 setappdata(fig,'projectName',''); % projectName always begins empty.
 setappdata(fig,'logsheetPath',''); % logsheetPath always begins empty.
 setappdata(fig,'dataPath',''); % dataPath always begins empty.

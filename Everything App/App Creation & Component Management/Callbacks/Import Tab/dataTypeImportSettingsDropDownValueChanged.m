@@ -4,6 +4,12 @@ function []=dataTypeImportSettingsDropDownValueChanged(src)
 
 fig=ancestor(src,'figure','toplevel');
 
+if isempty(getappdata(fig,'codePath'))
+    beep;
+    warning('Need to enter the code path!');
+    return;
+end
+
 % 1. Get the value of the drop down
 currType=src.Value;
 alphaNumericIdx=isstrprop(currType,'alpha') | isstrprop(currType,'digit');
@@ -18,7 +24,7 @@ projectName=getappdata(fig,'projectName'); % Get the project name
 [projectNamesInfo,lineNums]=isolateProjectNamesInfo(text,projectName); % Read the info associated with that project.
 
 if ~isfield(projectNamesInfo,'DataTypes')
-    warning('Issue with text file');
+    warning('Issue with data types in text file');
     return;
 end
 prefix='Data Types:';

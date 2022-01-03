@@ -21,7 +21,7 @@ if ~isequal(dataPath(end),slash)
     dataPath=[dataPath slash];
 end
 setappdata(fig,'dataPath',dataPath);
-disp(['Data Path:' dataPath]);
+disp(['Data Path: ' dataPath]);
 
 % Set the dataPathField to display the new path.
 h=findobj(fig,'Type','uieditfield','Tag','DataPathField');

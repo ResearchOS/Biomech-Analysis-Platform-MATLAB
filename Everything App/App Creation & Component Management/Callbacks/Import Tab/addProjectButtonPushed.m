@@ -17,7 +17,11 @@ projectList=getAllProjectNames(text);
 
 h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
 if ~ismember(projectName,projectList)
-    h.Items=[projectList projectName];
+    if ~isempty(projectList)
+        h.Items=[projectList projectName];
+    else
+        h.Items={projectName};
+    end
 end
 h.Items=h.Items(~ismember(h.Items,'New Project'));
 h.Items=sort(h.Items);
@@ -26,15 +30,19 @@ h.Value=projectName;
 %% Add the project name to the bottom of the text file.
 numLines=length(text);
 recProjNamePrefix='Most Recent Project Name:';
-for i=numLines:-1:1    
-    if isequal(text{i}(1:length(recProjNamePrefix)),recProjNamePrefix)        
-        lastLine=i-2;
-        break;
-    end    
+if ~isempty(text)
+    for i=numLines:-1:1
+        if isequal(text{i}(1:length(recProjNamePrefix)),recProjNamePrefix)
+            lastLine=i-2;
+            break;
+        end
+    end
+    
+    newText(1:lastLine)=text(1:lastLine);
+    newText{lastLine+1}='';
+else
+    lastLine=-1;
 end
-
-newText(1:lastLine)=text(1:lastLine);
-newText{lastLine+1}='';
 newText{lastLine+2}=['Project Name: ' projectName];
 newText{lastLine+3}='';
 newText{lastLine+4}=[recProjNamePrefix ' ' projectName];

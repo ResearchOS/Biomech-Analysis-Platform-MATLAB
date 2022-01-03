@@ -13,6 +13,11 @@ panelHeight=allPos(4);
 panelWidth=allPos(3);
 
 dataTypes=hDropdown.Items;
+dataTypes=dataTypes(~ismember(dataTypes,{'No Data Types to Import'}));
+
+if isempty(dataTypes)
+    return;
+end
 
 text=readAllProjects(getappdata(fig,'everythingPath'));
 projectNamesInfo=isolateProjectNamesInfo(text,projectName);

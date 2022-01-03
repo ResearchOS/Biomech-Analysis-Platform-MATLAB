@@ -4,6 +4,12 @@ fig=ancestor(src,'figure','toplevel');
 
 path=getappdata(fig,'dataPath');
 
+if isempty(path) || exist(path,'dir')~=7
+    beep;
+    warning('Need to enter the data path!');
+    return;
+end
+
 if ispc==1
     winopen(path);
     return;

@@ -10,7 +10,20 @@ hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettings
 currType=hDataTypesDropDown.Value;
 alphaNumericIdx=isstrprop(currType,'alpha') | isstrprop(currType,'digit');
 dataType=lower(currType(alphaNumericIdx));
-% setappdata(fig,[currType 'ImportNum'],methodNum);
+
+if isempty(getappdata(fig,'codePath'))
+    beep;
+    warning('Need to enter the code path!');
+    hText.Value='1A';
+    return;
+end
+
+if isempty(getappdata(fig,'dataPath'))
+    beep;
+    warning('Need to enter the data path!');
+    hText.Value='1A';
+    return;
+end
 
 % Check that there are only letters and numbers here, no spaces or special characters
 try
@@ -42,6 +55,7 @@ end
 
 if isequal(currType,'No Data Types to Import')
     warning('Add a Data Type First!');
+    hText.Value='1A';
     return;
 end
 

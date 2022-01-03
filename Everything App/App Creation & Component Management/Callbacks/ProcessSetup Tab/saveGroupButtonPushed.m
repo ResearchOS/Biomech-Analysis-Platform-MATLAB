@@ -14,7 +14,19 @@ end
 % Read the project's group names text file
 fcnNamesFilePath=getappdata(fig,'fcnNamesFilePath');
 
+if isempty(fcnNamesFilePath)
+    beep;
+    warning('Enter the code path first!');
+    return;
+end
+
 origText=readFcnNames(fcnNamesFilePath);
+
+if isempty(origText)
+    beep;
+    warning('The function names file does not exist!');
+    return;
+end
 
 hGroupNamesDropDown=findobj(fig,'Type','uidropdown','Tag','SetupGroupNameDropDown');
 groupName=hGroupNamesDropDown.Value;

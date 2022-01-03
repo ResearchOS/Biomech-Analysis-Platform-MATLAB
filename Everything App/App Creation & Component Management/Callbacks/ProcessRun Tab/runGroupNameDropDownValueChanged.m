@@ -7,6 +7,10 @@ fig=ancestor(src,'figure','toplevel');
 groupName=src.Value;
 text=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
 
+if isempty(text)
+    return;
+end
+
 for i=length(text):-1:1
     
     if length(text{i})>length('Most Recent Run Group Name:') && isequal(text{i}(1:length('Most Recent Run Group Name:')),'Most Recent Run Group Name:')

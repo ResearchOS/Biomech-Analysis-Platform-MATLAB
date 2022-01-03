@@ -9,6 +9,10 @@ fig=ancestor(src,'figure','toplevel');
 
 currNames=src.Value;
 
+if isempty(currNames{1})
+    return;
+end
+
 processFcnNames=cell(length(currNames),1);
 processArgsNames=cell(length(currNames),1);
 
@@ -26,9 +30,17 @@ for i=1:length(currNames)
         return;
     end
     
+    if ~any(isletter(a{2}))
+        disp(['Missing args letter in: ' currNames{i}]);
+    end
+    
+    if ~any(~isletter(a{2}))
+        disp(['Missing fcn number in: ' currNames{i}]);
+    end
+    
     % Check if the function exists, in 'Existing Functions' or 'User-Created Functions' folder
-    existPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash a{1} '_Process' a{2}(~isletter(a{2}))];
-    userPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash a{1} '_Process' a{2}(~isletter(a{2}))];
+    existPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash a{1} '_Process' a{2}(~isletter(a{2})) '.m'];
+    userPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash a{1} '_Process' a{2}(~isletter(a{2})) '.m'];
     
     if exist(existPath,'file')~=2 && exist(userPath,'file')~=2
         disp(['Function ' a{1} '_Process' a{2}(~isletter(a{2})) ' Does Not Exist']);
@@ -40,7 +52,7 @@ for i=1:length(currNames)
     for j=1:length(currNames)
         
         checkCurrName=currNames{j};
-        if isequal(currName,checkCurrName)
+        if isequal(currName,checkCurrName) && ~isequal(i,j)
             disp(['Function ' checkCurrName ' Is a Multiple. Exists On Lines ' num2str(i) ' & ' num2str(j)]);
             return;
         end
@@ -56,7 +68,7 @@ end
 setappdata(fig,'processFcnNames',processFcnNames); % The processing function file names 
 setappdata(fig,'processArgsNames',processArgsNames); % The processing function arguments file names
 
-disp(['Functions Staged:']);
+disp('Functions Staged:');
 for i=1:length(currNames)
     
     disp(currNames{i});

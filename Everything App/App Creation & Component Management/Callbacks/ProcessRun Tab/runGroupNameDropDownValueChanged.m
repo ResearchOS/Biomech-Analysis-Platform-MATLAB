@@ -39,7 +39,8 @@ end
 groupNum=ismember(groupNames,groupName);
 lineNum=lineNums(groupNum);
 
-fcnNames=getappdata(fig,'functionNames');
+fcnNames=getappdata(fig,'processFcnNames');
+argsNames=getappdata(fig,'processArgsNames');
 % processRunPanel=findobj(fig,'Tag','Run');
 processRunPanel=findobj(fig,'Type','uipanel','Tag','RunFunctionsPanel');
 
@@ -61,6 +62,12 @@ while allEntries==0
         delete(currFcnArgsButton);
         delete(currSpecifyTrialsCheckbox);
         delete(currSpecifyTrialsButton);
+        
+        processRunPanel.UserData=rmfield(processRunPanel.UserData,['RunFcnCheckbox' num2str(elemNum)]);
+        processRunPanel.UserData=rmfield(processRunPanel.UserData,['OpenFcnButton' num2str(elemNum)]);
+        processRunPanel.UserData=rmfield(processRunPanel.UserData,['FcnArgsButton' num2str(elemNum)]);
+        processRunPanel.UserData=rmfield(processRunPanel.UserData,['SpecifyTrialsCheckbox' num2str(elemNum)]);
+        processRunPanel.UserData=rmfield(processRunPanel.UserData,['SpecifyTrialsButton' num2str(elemNum)]);
     else
         allEntries=1;
     end
@@ -78,9 +85,10 @@ elemNum=0;
 for i=1:length(fcnNames)
     
     elemNum=elemNum+1;
-    tagNameCell=strsplit(fcnNames{i},' ');
-    tagName=[tagNameCell{1} tagNameCell{2}(~isletter(tagNameCell{2}))];
-%     fullName=[tagName tagNameCell{2}(isletter(tagNameCell{2}))];
+    tagNameCell=strsplit(fcnNames{i},'_Process');
+    tagName=[tagNameCell{1} tagNameCell{2}];
+    argsName=strsplit(argsNames{i},'_Process');
+    argLetter=argsName{2};
     
     currLine=text{lineNum+i};
     afterColon=strsplit(currLine,':');
@@ -110,7 +118,7 @@ for i=1:length(fcnNames)
     fcnNamesButton=uibutton(processRunPanel,'Text',tagName,'Tag',['OpenFcnButton' num2str(elemNum)]);
     
     % Function args button
-    fcnArgsButton=uibutton(processRunPanel,'Text',tagNameCell{2}(isletter(tagNameCell{2})),'Tag',['FcnArgsButton' num2str(elemNum)]);
+    fcnArgsButton=uibutton(processRunPanel,'Text',argLetter,'Tag',['FcnArgsButton' num2str(elemNum)]);
     
     % Specify trials checkbox
     specifyTrialsCheckbox=uicheckbox(processRunPanel,'Text','','Value',specifyTrialsStatus,'Tag',['SpecifyTrialsCheckbox' num2str(elemNum)]);

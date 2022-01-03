@@ -144,14 +144,14 @@ setupFunctionNamesField=uitextarea(processSetupTab,'Value','Function Names','Tag
 newFunctionPanel=uipanel(processSetupTab,'Title','New Function','Tag','NewFunctionPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
 saveGroupButton=uibutton(processSetupTab,'push','Text','Save Group To File','Tag','SaveGroupButton','ButtonPushedFcn',@(saveGroupButton,event) saveGroupButtonPushed(saveGroupButton));
 inputsLabel=uilabel(processSetupTab,'Text','Inputs','Tag','InputsLabel');
-outputsLabel=uilabel(processSetupTab,'Text','Outputs','Tag','OutputsLabel');
+% outputsLabel=uilabel(processSetupTab,'Text','Outputs','Tag','OutputsLabel');
 inputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','InputCheckboxProject');
 inputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','InputCheckboxSubject');
 inputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','InputCheckboxTrial');
-outputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','OutputCheckboxProject');
-outputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','OutputCheckboxSubject');
-outputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','OutputCheckboxTrial');
-newFunctionButton=uibutton(processSetupTab,'push','Text','Create New Function','Tag','NewFunctionButton');
+% outputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','OutputCheckboxProject');
+% outputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','OutputCheckboxSubject');
+% outputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','OutputCheckboxTrial');
+newFunctionButton=uibutton(processSetupTab,'push','Text','Create New Function','Tag','NewFunctionButton','ButtonPushedFcn',@(newFunctionButton,event) newFunctionButtonPushed(newFunctionButton));
 addFunctionGroupButton=uibutton(processSetupTab,'push','Text','+','Tag','AddFunctionGroupButton','ButtonPushedFcn',@(addFunctionGroupButton,event) addFunctionGroupButtonPushed(addFunctionGroupButton));
 
 % Create the Process > Run tab
@@ -171,11 +171,10 @@ processRunDownArrowButton=uibutton(processRunTab,'Text',{'||';'\/'},'Tag','Proce
 
 
 processTab.UserData=struct('SetupGroupNameLabel',setupGroupNameLabel,'SetupGroupNameDropDown',setupGroupNameDropDown,'SetupFunctionNamesLabel',setupFunctionNamesLabel,'SetupFunctionNamesField',setupFunctionNamesField,...
-    'NewFunctionPanel',newFunctionPanel,'SaveGroupButton',saveGroupButton,'InputsLabel',inputsLabel,'OutputsLabel',outputsLabel,'InputCheckboxProject',inputCheckboxP,'InputCheckboxSubject',inputCheckboxS,'InputCheckboxTrial',inputCheckboxT,...
-    'OutputCheckboxProject',outputCheckboxP,'OutputCheckboxSubject',outputCheckboxS,'OutputCheckboxTrial',outputCheckboxT,'NewFunctionButton',newFunctionButton,'AddFunctionGroupButton',addFunctionGroupButton,...
-    'RunGroupNameLabel',runGroupNameLabel,'RunGroupNameDropDown',runGroupNameDropDown,'RunFunctionNamesLabel',runFunctionNamesLabel,'GroupRunCheckboxLabel',groupRunCheckboxLabel,'GroupArgsCheckboxLabel',groupArgsCheckboxLabel,...
-    'RunGroupButton',runGroupButton,'RunAllButton',runAllButton,'RunFunctionsPanel',runFunctionsPanel,'SpecifyTrialsGroupButton',specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',specifyTrialsCheckboxLabel,...
-    'ProcessRunUpArrowButton',processRunUpArrowButton,'ProcessRunDownArrowButton',processRunDownArrowButton);
+    'NewFunctionPanel',newFunctionPanel,'SaveGroupButton',saveGroupButton,'InputsLabel',inputsLabel,'InputCheckboxProject',inputCheckboxP,'InputCheckboxSubject',inputCheckboxS,'InputCheckboxTrial',inputCheckboxT,...
+    'NewFunctionButton',newFunctionButton,'AddFunctionGroupButton',addFunctionGroupButton,'RunGroupNameLabel',runGroupNameLabel,'RunGroupNameDropDown',runGroupNameDropDown,'RunFunctionNamesLabel',runFunctionNamesLabel,...
+    'GroupRunCheckboxLabel',groupRunCheckboxLabel,'GroupArgsCheckboxLabel',groupArgsCheckboxLabel,'RunGroupButton',runGroupButton,'RunAllButton',runAllButton,'RunFunctionsPanel',runFunctionsPanel,...
+    'SpecifyTrialsGroupButton',specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',specifyTrialsCheckboxLabel,'ProcessRunUpArrowButton',processRunUpArrowButton,'ProcessRunDownArrowButton',processRunDownArrowButton);
 
 % Resize all objects in each subtab.
 hProcessRun=findobj(fig,'Tag','Run');

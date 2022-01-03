@@ -79,7 +79,7 @@ processRunDownArrowButton.Visible='on';
 if fcnRowCount>0
     fcnRowCount=0; % Protect against clicking up too quickly before the Up arrow visibility is removed.
     setappdata(fig,'processRunArrowCount',0);
-elseif fcnRowCount<-1*specifyTrialsButtonCount+9 % Protect against clicking down too quickly before the Down arrow visibility is removed.
+elseif fcnRowCount<-1*specifyTrialsButtonCount+9 && specifyTrialsButtonCount>=9 % Protect against clicking down too quickly before the Down arrow visibility is removed.
     fcnRowCount=-1*specifyTrialsButtonCount+9;
     setappdata(fig,'processRunArrowCount',fcnRowCount);
 end

@@ -72,29 +72,11 @@ for i=1:length(fcnNames)
     end
     
     fcnNameText=strsplit(fcnName,' ');
-    currFcnFileName=[fcnNameText{1} fcnNameText{2}(~isletter(fcnNameText{2})) '.m'];
+    currFcnFileName=[fcnNameText{1} '_Process' fcnNameText{2}(~isletter(fcnNameText{2})) '.m'];
     
     % Check if the function names exist in the GitHub repo. If so, copy it to the Process > Existing functions folder within the codePath
-    for j=1:length(listing) % Search through every folder in the Process folder
-        
-        currFolder=listing(j).name; % The current folder name
-        currFolderListing=dir([getappdata(fig,'everythingPath') 'm File Library' slash 'Process' slash currFolder]);
-        if isequal(currFolder,'.') || isequal(currFolder,'..') % Ignore the weird empty results that dir() returns
-            continue;
-        end
-        for k=1:length(currFolderListing) % Search through every file in the current file's folder
-            
-            currMethodFcnName=currFolderListing(k).name;
-            if isequal(currMethodFcnName,'.') || isequal(currMethodFcnName,'..') % Ignore the weird empty results that dir() returns
-                continue;
-            end
-            if isequal(currMethodFcnName,currFcnFileName) % If the function number was found in the folder, copy it to the code path.
-                copyfile([getappdata(fig,'everythingPath') 'm File Library' slash 'Process' slash currFolder slash currMethodFcnName],...
-                    [getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash currFcnFileName]);
-            end
-            
-        end
-        
+    if exist([getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash currFcnFileName],'file')~=2
+        copied=copyFileFromLib(fig,'Process',currFcnFileName);
     end
     
 end

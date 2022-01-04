@@ -115,7 +115,7 @@ for i=1:length(fcnNames)
     argsName=argsNames{i};
     runFunc=runFuncs(i);
     specTrials=funcSpecifyTrials(fcnCount);
-    level=levels{i};    
+    level=levels{i};
     methodLetter=strsplit(argsName,'_Process');
     methodLetter=methodLetter{2};
     
@@ -148,13 +148,39 @@ for i=1:length(fcnNames)
             cd(argsFolder);
             argsIn=feval(argsName,projectStruct); % No arguments below project level allowed
             
+            % Evaluate the arguments.
+            argsNames=fieldnames(argsInPaths);
+            for argNum=1:length(argsNames)
+                argName=argsNames{argNum};
+                if ~iscell(argsInPaths.(argName)) % Character vector or double entered, e.g. numMethods will be one.
+                    argsInPaths.(argName)={argsInPaths.(argName)};
+                end
+                numMethods=length(argsInPaths.(argName)); % Number of elements in cell array of paths
+                
+                for methodNum=1:length(numMethods)
+                    
+                    % Need to clean up handling of projectStruct addresses as inputs vs. inputting direct values (e.g. chars and doubles)
+                    if existField(projectStruct,argsInPaths.(argName){methodNum})
+                        try
+                            argsIn.(argName){methodNum}=eval(argsInPaths.(argName){methodNum}); % projectStruct address that needs to be evaluated to obtain the data
+                        catch
+                            argsIn.(argName){methodNum}=argsInPaths.(argName){methodNum}; % data directly entered, e.g. a number or character vector
+                        end
+                    else % Display a warning that the argument was not found?
+                        
+                    end
+                    
+                end
+                
+            end
+            
             % Run the processing function
             cd(fcnFolder{i});
             argsOut=feval(fcnName,argsIn);
             cd(currDir);
             
             % Save all of the arguments from the argsOut to file, and store them all to the projectStruct.
-            
+            saveAndStoreVars(argsOut,dataPath);
             
         case {'S','PS'} % Subject is the lowest level of processing.
             for subNum=1:length(subNames)
@@ -162,23 +188,52 @@ for i=1:length(fcnNames)
                 
                 % Run the processing arguments function
                 cd(argsFolder);
-                argsIn=feval(argsName,projectStruct,subName); % No arguments below subject-level allowed
+                argsInPaths=feval(argsName,projectStruct,subName); % No arguments below subject-level allowed
+                
+                % Evaluate the arguments.
+                argsNames=fieldnames(argsInPaths);
+                for argNum=1:length(argsNames)
+                    argName=argsNames{argNum};
+                    if ~iscell(argsInPaths.(argName)) % Character vector or double entered, e.g. numMethods will be one.
+                        argsInPaths.(argName)={argsInPaths.(argName)};
+                    end
+                    numMethods=length(argsInPaths.(argName)); % Number of elements in cell array of paths
+                    
+                    for methodNum=1:length(numMethods)
+                        
+                        % Need to clean up handling of projectStruct addresses as inputs vs. inputting direct values (e.g. chars and doubles)
+                        if existField(projectStruct,argsInPaths.(argName){methodNum})
+                            try
+                                argsIn.(argName){methodNum}=eval(argsInPaths.(argName){methodNum}); % projectStruct address that needs to be evaluated to obtain the data
+                            catch
+                                argsIn.(argName){methodNum}=argsInPaths.(argName){methodNum}; % data directly entered, e.g. a number or character vector
+                            end
+                        else % Display a warning that the argument was not found?
+                            
+                        end
+                        
+                    end
+                    
+                end
                 
                 % Run the processing function
                 cd(fcnFolder{i});
-                argsOut=feval(fcnName,argsIn);
+                argsOut=feval(fcnName,argsIn,methodLetter,subName);
                 cd(currDir);
                 
                 % Save all of the arguments from the argsOut to file, and store them all to the projectStruct.
+                saveAndStoreVars(argsOut,dataPath);
                 
-            end            
+            end
             
-        case {'T','PT','PST'} % Trial is the lowest level of processing
+        case {'T','PT','PST','ST'} % Trial is the lowest level of processing
             for subNum=1:length(subNames)
                 subName=subNames{subNum};
                 subTrialNames=trialNames.(subName);
                 for trialNum=1:length(subTrialNames)
                     trialName=subTrialNames{trialNum};
+                    
+                    % How to handle multiple repetitions within one trial?
                     
                     % Run the processing arguments function
                     cd(argsFolder);
@@ -194,12 +249,12 @@ for i=1:length(fcnNames)
                         numMethods=length(argsInPaths.(argName)); % Number of elements in cell array of paths
                         
                         for methodNum=1:length(numMethods)
-                        
+                            
                             % Need to clean up handling of projectStruct addresses as inputs vs. inputting direct values (e.g. chars and doubles)
                             if existField(projectStruct,argsInPaths.(argName){methodNum})
-                                try 
+                                try
                                     argsIn.(argName){methodNum}=eval(argsInPaths.(argName){methodNum}); % projectStruct address that needs to be evaluated to obtain the data
-                                catch 
+                                catch
                                     argsIn.(argName){methodNum}=argsInPaths.(argName){methodNum}; % data directly entered, e.g. a number or character vector
                                 end
                             else % Display a warning that the argument was not found?
@@ -217,7 +272,7 @@ for i=1:length(fcnNames)
                     cd(currDir);
                     
                     % Save all of the arguments from the argsOut to file, and also store them all to the projectStruct.
-                    saveAndStoreVars(outVar,dataPath);
+                    saveAndStoreVars(argsOut,dataPath);
                     
                 end
             end

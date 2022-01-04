@@ -3,7 +3,11 @@ function []=codePathFieldValueChanged(src)
 %% PURPOSE: STORE THE CODE PATH TO THE CODEPATHFIELD, AND STORE IT TO THE FIG.
 
 data=src.Value;
-if isempty(data)
+fig=ancestor(src,'figure','toplevel');
+
+if isempty(data) || isequal(data,'Path to Project Processing Code Folder')
+    setappdata(fig,'fcnNamesFilePath','');
+    setappdata(fig,'codePath','');
     return;
 end
 
@@ -20,24 +24,24 @@ if ~isequal(data(end),slash)
     data=[data slash];
     src.Value=data;
 end
-fig=ancestor(src,'figure','toplevel');
+
 
 if ~isempty(getappdata(fig,'codePath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
-    rmpath(genpath(getappdata(fig,'codePath')));
+    rmpath(genpath(getappdata(fig,'codePath'))); % Remove the old code path from the matlab path
     warning on MATLAB:rmpath:DirNotFound; % Turn the warning back on.
 end
 
 setappdata(fig,'codePath',data); % Store the code path name to the figure variable.
 
-addpath(genpath(getappdata(fig,'codePath')));
+addpath(genpath(getappdata(fig,'codePath'))); % Add the new code path to the matlab path
 
 projectName=getappdata(fig,'projectName'); % Get the current project name.
 allProjectsPathTxt=getappdata(fig,'allProjectsTxtPath'); % The full file name of the text file with all projects path names
 
 % The project name should ALWAYS be in this file at this point. If not, it's because it's the first time and they've never entered a project name before.
 if exist(allProjectsPathTxt,'file')~=2
-    warning('ENTER A PROJECT NAME!');
+    warning('Enter a project name!');
     return;
 end
 
@@ -67,6 +71,7 @@ for i=1:length(text)
     if length(text{i})>=length(codePrefix) && isequal(text{i}(1:length(codePrefix)),codePrefix) % Case 1
         codePathExists=1;
         text{i}=[codePrefix ' ' data];
+        break; % Finished iterating through text file
     end
     
 end

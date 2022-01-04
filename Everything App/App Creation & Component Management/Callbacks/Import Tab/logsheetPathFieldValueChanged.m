@@ -3,7 +3,10 @@ function []=logsheetPathFieldValueChanged(src)
 %% PURPOSE: WHEN THE LOGSHEET PATH FIELD VALUE CHANGES IN THE IMPORT TAB, UPDATE ITS STORED VALUE AND CHANGE THE DISPLAY.
 
 data=src.Value;
-if isempty(data)
+fig=ancestor(src,'figure','toplevel');
+
+if isempty(data) || isequal(data,'Set Logsheet Path')
+    setappdata(fig,'logsheetPath','');
     return;
 end
 
@@ -12,8 +15,6 @@ if exist(data,'file')~=2
     warning(['Incorrect logsheet path: ' data]);
     return;
 end
-
-fig=ancestor(src,'figure','toplevel');
 
 setappdata(fig,'logsheetPath',data); % Store the logsheet path name to the figure variable.
 projectName=getappdata(fig,'projectName'); % Get the current project name.

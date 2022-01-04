@@ -9,12 +9,22 @@ fig=ancestor(src,'figure','toplevel');
 
 currNames=src.Value;
 
-if isempty(currNames{1})
+if isempty(getappdata(fig,'codePath'))
+    beep;
+    warning('Enter the code path first!');
     return;
 end
 
-processFcnNames=cell(length(currNames),1);
-processArgsNames=cell(length(currNames),1);
+if isempty(currNames{1})
+    return; % Do nothing if the text area is empty
+end
+
+hGroupNamesDropDown=findobj(fig,'Type','uidropdown','Tag','SetupGroupNameDropDown');
+
+if isequal(hGroupNamesDropDown.Value,'Create Group Name')
+    disp('Create a group name first!');
+    return;
+end
 
 if ismac==1
     slash='/';
@@ -59,14 +69,7 @@ for i=1:length(currNames)
         
     end
     
-    % Convert the text area function names to function file names
-    processFcnNames{i}=[a{1} '_Process' a{2}(~isletter(a{2}))];
-    processArgsNames{i}=[a{1} '_Process' a{2}(isletter(a{2}))];
-    
 end
-
-setappdata(fig,'processFcnNames',processFcnNames); % The processing function file names 
-setappdata(fig,'processArgsNames',processArgsNames); % The processing function arguments file names
 
 disp('Functions Staged:');
 for i=1:length(currNames)

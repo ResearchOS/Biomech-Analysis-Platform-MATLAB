@@ -72,32 +72,29 @@ if existingProject==1
     % Logsheet Path
     if isfield(projectNameInfo,'LogsheetPath')
         setappdata(fig,'logsheetPath',projectNameInfo.LogsheetPath);
-        hLog.Value=getappdata(fig,'logsheetPath');
-        logsheetPathFieldValueChanged(hLog);
+        hLog.Value=getappdata(fig,'logsheetPath');        
     else % Set to default
         setappdata(fig,'logsheetPath','');
         hLog.Value='Set Logsheet Path';
-    end
+    end    
     
     % Data Path
     if isfield(projectNameInfo,'DataPath')
         setappdata(fig,'dataPath',projectNameInfo.DataPath);
-        hData.Value=getappdata(fig,'dataPath');
-        dataPathFieldValueChanged(hData);
+        hData.Value=getappdata(fig,'dataPath');        
     else
         setappdata(fig,'dataPath','');
         hData.Value='Data Path (contains ''Subject Data'' folder)';
-    end
+    end    
     
     % Code Path
     if isfield(projectNameInfo,'CodePath')
         setappdata(fig,'codePath',projectNameInfo.CodePath);
-        hCode.Value=getappdata(fig,'codePath');
-        codePathFieldValueChanged(hCode);
+        hCode.Value=getappdata(fig,'codePath');        
     else
         setappdata(fig,'codePath','');
         hCode.Value='Path to Project Processing Code Folder';
-    end
+    end    
     
     % Root Save Plot Path
     if isfield(projectNameInfo,'RootSavePlotPath')
@@ -245,6 +242,11 @@ elseif existingProject==0
     
 end
 
+% Run the callbacks to propagate changes
+logsheetPathFieldValueChanged(hLog);
+dataPathFieldValueChanged(hData);
+codePathFieldValueChanged(hCode);
+
 if ~exist('startVal','var')
     startVal='0';
     startLetter='0'; % Just to allow the search for a folder to fail when naming the buttons
@@ -320,21 +322,32 @@ addDataTypeEntry2Panel(fig);
 
 %% Read the function names file for this project. Set the Process > Setup group names drop-down items, value, and the function names text area.
 [text]=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
-[groupNames,~,mostRecentSetupGroupName,mostRecentRunGroupName]=getGroupNames(text);
 hGroupNamesDropDown=findobj(fig,'Type','uidropdown','Tag','SetupGroupNameDropDown');
-hGroupNamesDropDown.Items=groupNames;
-if ~isempty(mostRecentSetupGroupName)
-    hGroupNamesDropDown.Value=mostRecentSetupGroupName;
-end
-setupGroupNamesDropDownValueChanged(hGroupNamesDropDown);
-
-%% Set the Process > Run group names drop-down items
 hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
-hGroupNamesRunDropDown.Items=groupNames;
 
-%% Set the Process > Run group names drop-down value
-if ~isempty(mostRecentRunGroupName)
-    hGroupNamesRunDropDown.Value=mostRecentRunGroupName;
+if ~isempty(text)
+    [groupNames,~,mostRecentSetupGroupName,mostRecentRunGroupName]=getGroupNames(text);
+    
+    hGroupNamesDropDown.Items=groupNames;
+    if ~isempty(mostRecentSetupGroupName)
+        hGroupNamesDropDown.Value=mostRecentSetupGroupName;
+    end
+    setupGroupNamesDropDownValueChanged(hGroupNamesDropDown);
+    
+    %% Set the Process > Run group names drop-down items
+    
+    hGroupNamesRunDropDown.Items=groupNames;
+    
+    %% Set the Process > Run group names drop-down value
+    if ~isempty(mostRecentRunGroupName)
+        hGroupNamesRunDropDown.Value=mostRecentRunGroupName;
+    end
+    
+    runGroupNameDropDownValueChanged(hGroupNamesRunDropDown);
+else % If the text file is empty.
+    hGroupNamesDropDown.Items={'Create Function Group'};
+    setupGroupNamesDropDownValueChanged(hGroupNamesDropDown);
+    
+    hGroupNamesRunDropDown.Items={'Create Function Group'};
+    runGroupNameDropDownValueChanged(hGroupNamesRunDropDown);
 end
-
-runGroupNameDropDownValueChanged(hGroupNamesRunDropDown);

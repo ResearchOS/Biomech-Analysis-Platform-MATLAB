@@ -157,7 +157,7 @@ addFunctionGroupButton=uibutton(processSetupTab,'push','Text','+','Tag','AddFunc
 
 % Create the Process > Run tab
 runGroupNameLabel=uilabel(processRunTab,'Text','Group Name','Tag','RunGroupNameLabel');
-runGroupNameDropDown=uidropdown(processRunTab,'Items',{'Test1'},'Editable','off','Tag','RunGroupNameDropDown','ValueChangedFcn',@(runGroupNameDropDown,event) runGroupNameDropDownValueChanged(runGroupNameDropDown));
+runGroupNameDropDown=uidropdown(processRunTab,'Items',{'Create Function Group'},'Editable','off','Tag','RunGroupNameDropDown','ValueChangedFcn',@(runGroupNameDropDown,event) runGroupNameDropDownValueChanged(runGroupNameDropDown));
 runFunctionNamesLabel=uilabel(processRunTab,'Text','Function Names','Tag','RunFunctionNamesLabel');
 groupRunCheckboxLabel=uilabel(processRunTab,'Text','Run','Tag','GroupRunCheckboxLabel');
 groupArgsCheckboxLabel=uilabel(processRunTab,'Text','Args','Tag','GroupArgsCheckboxLabel');

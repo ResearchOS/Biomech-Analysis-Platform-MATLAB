@@ -3,7 +3,10 @@ function []=dataPathFieldValueChanged(src)
 %% PURPOSE: STORE THE DATA PATH TO THE FIGURE VARIABLE
 
 data=src.Value;
-if isempty(data)
+fig=ancestor(src,'figure','toplevel');
+
+if isempty(data) || isequal(data,'Data Path (contains ''Subject Data'' folder)')
+setappdata(fig,'dataPath','');
     return;
 end
 
@@ -20,7 +23,6 @@ if ~isequal(data(end),slash)
     data=[data slash];
     src.Value=data;
 end
-fig=ancestor(src,'figure','toplevel');
 
 if ~isempty(getappdata(fig,'dataPath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.

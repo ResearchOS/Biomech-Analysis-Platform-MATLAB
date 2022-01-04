@@ -15,10 +15,6 @@ panelWidth=allPos(3);
 dataTypes=hDropdown.Items;
 dataTypes=dataTypes(~ismember(dataTypes,{'No Data Types to Import'}));
 
-if isempty(dataTypes)
-    return;
-end
-
 text=readAllProjects(getappdata(fig,'everythingPath'));
 projectNamesInfo=isolateProjectNamesInfo(text,projectName);
 
@@ -39,6 +35,10 @@ while allEntries==0
         allEntries=1;
     end
     
+end
+
+if isempty(dataTypes)
+    return; % Stop processing after deleting all rows if there are no data types.
 end
 
 elemNum=0;

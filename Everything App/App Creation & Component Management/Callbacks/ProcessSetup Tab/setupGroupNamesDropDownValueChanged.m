@@ -9,6 +9,8 @@ fcnNamesFilePath=getappdata(fig,'fcnNamesFilePath');
 [groupNames,lineNums,mostRecentGroupName]=getGroupNames(text);
 
 if isempty(mostRecentGroupName)
+    hTextArea=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
+    hTextArea.Value='Function Names';
     return;
 end
 

@@ -7,10 +7,6 @@ fig=ancestor(src,'figure','toplevel');
 groupName=src.Value;
 text=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
 
-if isempty(text)
-    return;
-end
-
 for i=length(text):-1:1
     
     if length(text{i})>length('Most Recent Run Group Name:') && isequal(text{i}(1:length('Most Recent Run Group Name:')),'Most Recent Run Group Name:')
@@ -43,25 +39,20 @@ end
 groupNum=ismember(groupNames,groupName);
 lineNum=lineNums(groupNum);
 
-fcnNames=getappdata(fig,'processFcnNames');
-argsNames=getappdata(fig,'processArgsNames');
 fcnCount=0;
-
-if isempty(fcnNames) && isempty(argsNames) % The function names were not entered into Process>Setup because they already exist in the text file
-    for i=lineNum+1:length(text) % Start with first function name
-        
-        if isempty(text{i})
-            break;
-        end
-        
-        currLine=strsplit(text{i},':');
-        currFcn=strsplit(currLine{1},' ');
-        
-        fcnCount=fcnCount+1;
-        fcnNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}(~isletter(currFcn{2}))];
-        argsNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}(isletter(currFcn{2}))];
-        
+for i=lineNum+1:length(text) % Start with first function name
+    
+    if isempty(text{i})
+        break;
     end
+    
+    currLine=strsplit(text{i},':');
+    currFcn=strsplit(currLine{1},' ');
+    
+    fcnCount=fcnCount+1;
+    fcnNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}(~isletter(currFcn{2}))];
+    argsNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}(isletter(currFcn{2}))];
+    
 end
 
 processRunPanel=findobj(fig,'Type','uipanel','Tag','RunFunctionsPanel');
@@ -94,6 +85,10 @@ while allEntries==0
         allEntries=1;
     end
     
+end
+
+if isempty(text)
+    return;
 end
 
 if ismac==1

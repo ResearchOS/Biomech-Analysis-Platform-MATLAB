@@ -129,6 +129,11 @@ for subNum=1:length(subNames)
                 fullPathDataMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Data' slash dataTypes{i} slash 'Method' number letter '.mat'];
                 fullPathInfoMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Info' slash dataTypes{i} slash 'Method' number letter '.mat'];
                 
+                % Check if the data types folder exists.
+                if exist([getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}],'dir')~=7
+                    error([dataTypes{i} ' Folder Does Not Exist. Should Be At: ' getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}]);
+                end
+
                 % Get the file extension of fullPathRaw, because it could be anything.
                 listing=dir([getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}]);
                 for k=1:length(listing)

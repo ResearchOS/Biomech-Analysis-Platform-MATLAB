@@ -14,26 +14,54 @@ end
 
 hArgsButton=findobj(fig,'Type','uibutton','Tag',['FcnArgsButton' num2str(currRow)]);
 
-fcnNames=getappdata(fig,'processFcnNames');
-fcnName=fcnNames{currRow}; % Format: 'fcnName_Process#'
-fcnNameClean=strsplit(fcnName,'_Process');
+fcnButton=findobj(fig,'Type','uibutton','Tag',['OpenFcnButton' num2str(currRow)]);
+fcnName=fcnButton.Text;
 
-specifyTrialsName=[fcnNameClean{1} '_Process' fcnNameClean{2} hArgsButton.Text '_SpecifyTrials.m'];
+% Get the list of function names in this group so that I can most accurately get the number & letter
+hRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
+groupName=hRunDropDown.Value;
 
-if ismac==1 
+% Read the text file
+[text]=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
+[groupNames,lineNums]=getGroupNames(text);
+groupIdx=ismember(groupNames,groupName);
+lineNum=lineNums(groupIdx);
+
+% Get the list of function names in the group
+fcnCount=0;
+for i=lineNum+1:length(text)
+    
+    if isempty(text{i})
+        break; % Finished with this group
+    end
+
+    a=strsplit(text{i},':');
+    fcnNameCell=strsplit(a{1},' ');
+    fcnCount=fcnCount+1;
+    if isequal(fcnCount,currRow)
+        fcnName=[fcnNameCell{1} '_Process' fcnNameCell{2}(~isletter(fcnNameCell{2}))];
+        break;
+    end
+    
+end
+
+
+specifyTrialsName=[fcnName hArgsButton.Text '_SpecifyTrials.m']; % fcnName_Process#Letter_SpecifyTrials
+
+if ismac==1
     slash='/';
 else
     slash='\';
 end
 
-specifyTrialsPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash specifyTrialsName];
+if exist([getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Function'],'dir')~=7
+    mkdir([getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Function']);
+end
+
+specifyTrialsPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Function' slash specifyTrialsName];
 if exist(specifyTrialsPath,'file')==2
     edit(specifyTrialsPath);
     return;
-end
-
-if exist([getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Specify Trials'],'dir')~=7
-    mkdir([getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Specify Trials']);
 end
 
 % If the file does not exist yet, create it from the template.

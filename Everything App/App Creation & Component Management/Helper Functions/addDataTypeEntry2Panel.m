@@ -48,8 +48,7 @@ for i=1:length(dataTypes)
     alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
     dataTypeField=dataTypes{i}(alphaNumericIdx);
     
-    % Check if in the allProjects text file there's a line for the 'offload' & 'load' for each data
-    % type
+    % Check if in the allProjects text file there's a line for the 'offload' & 'load' for each data type
     if isfield(projectNamesInfo,['DataPanel' dataTypeField])
         % If so, set the boxes' values accordingly.
         data=projectNamesInfo.(['DataPanel' dataTypeField]);
@@ -75,7 +74,7 @@ for i=1:length(dataTypes)
         offloadVal=0;
     end
     loadBox{i}=uicheckbox(panel,'Text','','Tag',['ImportTabLoadBox' num2str(elemNum)],'Position',[round(panelWidth*0.05) round(panelHeight*(0.8-i*0.1)) 22 22],'Value',loadVal);
-    offloadBox{i}=uicheckbox(panel,'Text','','Tag',['ImportTabOffloadBox' num2str(elemNum)],'Position',[round(panelWidth*0.2) round(panelHeight*(0.8-i*0.1)) 100 22],'Value',offloadVal,'ValueChangedFcn','');
+    offloadBox{i}=uicheckbox(panel,'Text','','Tag',['ImportTabOffloadBox' num2str(elemNum)],'Position',[round(panelWidth*0.2) round(panelHeight*(0.8-i*0.1)) 100 22],'Value',offloadVal);
     currLoad=loadBox{i};
     currOffload=offloadBox{i};
     set(currLoad,'ValueChangedFcn',@(currLoad,event) dataTypeCheckboxValueChanged(currLoad));
@@ -88,16 +87,67 @@ for i=1:length(dataTypes)
 end
 
 %% Add the checkboxes & labels for all processing groups
-% Check that the text file exists
-
 % Read the text file for this project
+groupText=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
 
 % Get the list of group names
+[groupNames,lineNums]=getGroupNames(groupText);
 
-% Put the checkboxes & labels onto the panel
+for i=1:length(groupNames)
+    
+    elemNum=elemNum+1;
+    alphaNumericIdx=isstrprop(groupNames{i},'alpha') | isstrprop(groupNames{i},'digit');
+    groupNameField=groupNames{i}(alphaNumericIdx);
+    
+    % Check if in the allProjects text file there's a line for the 'offload' & 'load' for each data type
+    if isfield(projectNamesInfo,['DataPanel' groupNameField])
+        % If so, set the boxes' values accordingly.
+        data=projectNamesInfo.(['DataPanel' groupNameField]);
+        text=addProjInfoToFile(text,projectName,['Data Panel ' groupNames{i} ':'],data,0);
+    else
+        % If not, create that line.
+        text=addProjInfoToFile(text,projectName,['Data Panel ' groupNames{i} ':'],'Load',0);
+        data='Load';
+    end
+    
+    % Put the label onto the panel
+    groupNameLabels(i)=uilabel(panel,'Text',groupNames{i},'Tag',['ImportTabDataLabel' num2str(elemNum)],'Position',[round(panelWidth*0.4) round(panelHeight*(0.8-i*0.1)) 100 22]);
+    
+    % Create & position the 'Load' & 'Offload' checkbox
+    if isequal(data,'Load')
+        loadVal=1;
+        offloadVal=0;                
+    elseif isequal(data,'Offload')
+        loadVal=0;
+        offloadVal=1;        
+    elseif isequal(data,'None')
+        loadVal=0;
+        offloadVal=0;
+    end
+    
+    loadBox{i}=uicheckbox(panel,'Text','','Tag',['ImportTabLoadBox' num2str(elemNum)],'Position',[round(panelWidth*0.05) round(panelHeight*(0.8-elemNum*0.1)) 22 22],'Value',loadVal);
+    offloadBox{i}=uicheckbox(panel,'Text','','Tag',['ImportTabOffloadBox' num2str(elemNum)],'Position',[round(panelWidth*0.2) round(panelHeight*(0.8-elemNum*0.1)) 100 22],'Value',offloadVal);
+    currLoad=loadBox{i};
+    currOffload=offloadBox{i};
+    
+    % Set the callback function to enable the load & offload
+    set(currLoad,'ValueChangedFcn',@(currLoad,event) dataTypeCheckboxValueChanged(currLoad));
+    set(currOffload,'ValueChangedFcn',@(currOffload,event) dataTypeCheckboxValueChanged(currOffload));    
+    
+    panel.UserData.(['ImportTabDataLabel' num2str(elemNum)])=groupNameLabels(i);
+    panel.UserData.(['ImportTabLoadBox' num2str(elemNum)])=loadBox{i};
+    panel.UserData.(['ImportTabOffloadBox' num2str(elemNum)])=offloadBox{i};
+            
+end
 
-%% Save the text file
+%% Save the all projects text file
 fid=fopen(getappdata(fig,'allProjectsTxtPath'),'w');
 fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
+fclose(fid);
+
+%% Save the group names text file
+fid=fopen(getappdata(fig,'fcnNamesFilePath'),'w');
+fprintf(fid,'%s\n',groupText{1:end-1});
+fprintf(fid,'%s',groupText{end});
 fclose(fid);

@@ -38,7 +38,7 @@ else
         hTrialIDColHeaderDataTypes=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
         hTrialIDColHeaderDataTypes.Visible='on';
     else
-        h.Items=[h.Items dataType];
+        h.Items=sort([h.Items dataType]);
     end
     h.Value=dataType;
 end

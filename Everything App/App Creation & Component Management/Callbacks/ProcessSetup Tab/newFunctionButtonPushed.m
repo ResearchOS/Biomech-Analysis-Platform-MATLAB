@@ -42,10 +42,10 @@ elseif ispc==1
     slash='\';
 end
 
-wholeName=[fcnName '_Process' fcnNum '.m'];
+relativeName=[fcnName '_Process' fcnNum '.m'];
 
 % Check if the function names exist in the GitHub repo. If so, copy it to the Process > Existing functions folder within the codePath
-copied=copyFileFromLib(fig,'Process',wholeName);
+copied=copyFileFromLib(fig,'Process',relativeName);
 
 if copied==1 % Function did exist in the library
     filePathExist=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash fcnName '_Process' fcnNum '.m'];
@@ -57,19 +57,17 @@ end
 % Function did not exist in the library, create a new one from template.
 filePathUser=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash fcnName '_Process' fcnNum '.m'];
 
-if hProjectCheckbox.Value==1 % Has inputs that change only once per project
-    level='project';
-end
-if hProjectCheckbox.Value==0 && hSubjectCheckbox.Value==1 % Has inputs that change only once per subject
-    level='subject';
-end
-if hTrialCheckbox.Value==1 && hSubjectCheckbox.Value==0 && hProjectCheckbox.Value==0 % Has inputs that change only once per trial
-    level='trial';
+if hProjectCheckbox.Value==1 % Has inputs that change once per project
+    level='P';
+elseif hSubjectCheckbox.Value==1 % Has inputs that change once per subject
+    level='S';
+elseif hTrialCheckbox.Value==1 % Has inputs that change once per trial
+    level='T';
 end
 
-templatePath=[getappdata(fig,'everythingPath') 'Project-Independent-Templates' slash 'Process_' level 'Template'];
+templatePath=[getappdata(fig,'everythingPath') 'Project-Independent-Templates' slash 'Process_Template' level '.m'];
 
-firstLine=['function [argsOut]=' fcnName '_Process' fcnNum '(argsIn)'];
+firstLine=['function [dataOut]=' fcnName '_Process' fcnNum '(methodLetter,subName,trialName,varargin)'];
 
 % Create the new file
 createFileFromTemplate(templatePath,filePathUser,firstLine);

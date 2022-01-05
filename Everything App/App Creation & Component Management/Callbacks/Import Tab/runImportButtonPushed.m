@@ -58,7 +58,7 @@ if isempty(hTargetTrialIDFormat.Value) % There are chars besides the allowable c
 end
 % Data types drop down
 hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
-if isempty(hDataTypesDropDown.Value)
+if isempty(hDataTypesDropDown.Value) || isequal(hDataTypesDropDown.Value,'No Data Types to Import')
     beep;
     warning(['Missing data types to import']);
     return;
@@ -84,4 +84,7 @@ end
 % dataTypes=hDataTypesDropDown.Items;
 
 %% FROM HERE DOWN, ASSUME THAT ALL NECESSARY CONDITIONS HAVE BEEN CHECKED & MET TO PERFORM THE IMPORT
-runImport(fig)
+tic;
+runImport(fig); % Import and/or load/offload the data from raw data files
+runLoad(fig); % Load processed data within each individual function group
+toc;

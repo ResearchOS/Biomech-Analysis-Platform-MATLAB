@@ -1,7 +1,7 @@
 Project Name: Spr21TWWBiomechanics
 Data Panel Group1: Load
 Trial ID Column Header For MOCAP & FP: Trial Name/Number
-Data Panel MOCAP & FP: Load
+Data Panel MOCAP & FP: None
 Data Types: MOCAP & FP 1A
 Target Trial ID Format: Trial Name/Number
 Subject ID Column Header: Subject Codename

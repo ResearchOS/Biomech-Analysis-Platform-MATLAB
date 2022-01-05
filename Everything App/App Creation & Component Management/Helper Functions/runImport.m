@@ -1,8 +1,7 @@
 function []=runImport(src)
 
-%% PURPOSE: CALLED BY THE "RUNIMPORTBUTTONPUSHED" CALLBACK FUNCTION
+%% PURPOSE: CALLED BY THE "RUNIMPORTBUTTONPUSHED" CALLBACK FUNCTION. EITHER IMPORTS OR LOADS THE DATA FROM RAW DATA FILES
 
-tic;
 fig=ancestor(src,'figure','toplevel');
 
 text=readAllProjects(getappdata(fig,'everythingPath'));
@@ -65,13 +64,11 @@ redoVal=redoCheckbox.Value;
 
 % Get data types' trial ID column headers
 for i=1:length(dataTypes)
-    
     alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
     dataField=dataTypes{i}(alphaNumericIdx);
     fieldName=['TrialIDColHeader' dataField];
     headerName=projectNamesInfo.(fieldName);
     colNum.(dataField)=find(strcmp(logVar(1,:),headerName));
-    
 end
 
 % Iterate through subject names in trialNames variable
@@ -232,5 +229,3 @@ for subNum=1:length(subNames)
     end    
     
 end
-
-toc;

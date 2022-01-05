@@ -147,18 +147,19 @@ if prevExist==1
         slash='\';
     end    
     
-    if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'ImportMetadata' methodNum(isletter(methodNum)) '_' projectName '.m'],'file')==2
+    if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataType '_Import' methodNum(isletter(methodNum)) '.m'],'file')==2
         prefix='Open';
     else
         prefix='Create';
     end
-    hImportMetadataButton.Text=[prefix ' importMetadata'];
+    hImportMetadataButton.Text=[prefix ' Import Args ' currType];
     
-    if exist([getappdata(fig,'codePath') 'Import_' projectName slash dataType 'Import' methodNum(~isletter(methodNum)) '_' projectName '.m'],'file')==2
+    if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Existing Functions' slash dataType '_Import' methodNum(~isletter(methodNum)) '.m'],'file')==2 || ...
+            exist([getappdata(fig,'codePath') 'Import_' projectName slash 'User-Created Functions' slash dataType '_Import' methodNum(~isletter(methodNum)) '.m'],'file')==2
         prefix='Open';
     else
         prefix='Create';
     end
-    hImportFcnButton.Text=[prefix ' Import Fcn'];
+    hImportFcnButton.Text=[prefix ' Import Fcn ' currType];
     
 end

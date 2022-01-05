@@ -35,6 +35,7 @@ setappdata(fig,'rootSavePlotPath',''); % rootSavePlotPath always begins empty.
 setappdata(fig,'functionNames',''); % functionNames always begins empty.
 setappdata(fig,'fcnNamesFilePath',''); % Function names file path always begins empty
 setappdata(fig,'processRunArrowCount',0); % The Process > Run tab arrow count always begins at 0.
+setappdata(fig,'dataPanelArrowCount',0); % The Import tab data select panel arrow count always begins at 0.
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off'); % Create the tab group for the four stages of data processing
@@ -115,8 +116,10 @@ openLogsheetButton=uibutton(importTab,'push','Text','O','Tag','OpenLogsheetButto
 openDataPathButton=uibutton(importTab,'push','Text','O','Tag','OpenDataPathButton','ButtonPushedFcn',@(openDataPathButton,event) openDataPathButtonPushed(openDataPathButton));
 % Open code path button
 openCodePathButton=uibutton(importTab,'push','Text','O','Tag','OpenCodePathButton','ButtonPushedFcn',@(openCodePathButton,event) openCodePathButtonPushed(openCodePathButton));
-% Open logsheet2Struct button
-% openLogsheet2StructButton=uibutton(importTab,'push','Text','Create logsheet2Struct','Tag','OpenLogsheet2StructButton','ButtonPushedFcn',@(openLogsheet2StructButton,event) openLogsheet2StructButtonPushed(openLogsheet2StructButton));
+% Data panel up arrow button
+dataPanelUpArrowButton=uibutton(importTab,'push','Text',{'/\';'||'},'Tag','DataPanelUpArrowButton','ButtonPushedFcn',@(dataPanelUpArrowButton,event) dataPanelUpArrowButtonPushed(dataPanelUpArrowButton));
+% Data panel down arrow button
+dataPanelDownArrowButton=uibutton(importTab,'push','Text',{'||';'\/'},'Tag','DataPanelDownArrowButton','ButtonPushedFcn',@(dataPanelDownArrowButton,event) dataPanelDownArrowButtonPushed(dataPanelDownArrowButton));
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
     'AddProjectButton',addProjectButton,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
@@ -126,7 +129,7 @@ importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButto
     'TargetTrialIDColHeaderLabel',targetTrialIDColHeaderLabel,'TargetTrialIDColHeaderField',targetTrialIDColHeaderField,...
     'SaveAllButton',saveAllButton,'SelectDataPanel',selectDataPanel,'DataTypeImportMethodField',dataTypeImportMethodField,'AddDataTypeButton',addDataTypeButton,'OpenImportFcnButton',openImportFcnButton,...
     'OpenLogsheetButton',openLogsheetButton,'OpenDataPathButton',openDataPathButton','OpenCodePathButton',openCodePathButton,...
-    'LoadLabel',loadLabel,'OffloadLabel',offloadLabel,'DataLabel',dataLabel);
+    'LoadLabel',loadLabel,'OffloadLabel',offloadLabel,'DataLabel',dataLabel,'DataPanelUpArrowButton',dataPanelUpArrowButton,'DataPanelDownArrowButton',dataPanelDownArrowButton);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 

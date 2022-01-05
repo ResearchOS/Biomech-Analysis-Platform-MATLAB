@@ -42,7 +42,7 @@ if isempty(dataTypes)
 end
 
 elemNum=0;
-for i=1:length(dataTypes)    
+for i=1:length(dataTypes)
     
     elemNum=elemNum+1;
     alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
@@ -59,16 +59,16 @@ for i=1:length(dataTypes)
         data='Load';
     end
     
-    % Create & position the data type label    
+    % Create & position the data type label
     dataLabels{i}=uilabel(panel,'Text',dataTypes{i},'Tag',['ImportTabDataLabel' num2str(elemNum)],'Position',[round(panelWidth*0.4) round(panelHeight*(0.8-i*0.1)) 100 22]);
     
     % Create & position the 'Load' & 'Offload' checkbox
     if isequal(data,'Load')
         loadVal=1;
-        offloadVal=0;                
+        offloadVal=0;
     elseif isequal(data,'Offload')
         loadVal=0;
-        offloadVal=1;        
+        offloadVal=1;
     elseif isequal(data,'None')
         loadVal=0;
         offloadVal=0;
@@ -78,11 +78,11 @@ for i=1:length(dataTypes)
     currLoad=loadBox{i};
     currOffload=offloadBox{i};
     set(currLoad,'ValueChangedFcn',@(currLoad,event) dataTypeCheckboxValueChanged(currLoad));
-    set(currOffload,'ValueChangedFcn',@(currOffload,event) dataTypeCheckboxValueChanged(currOffload));    
+    set(currOffload,'ValueChangedFcn',@(currOffload,event) dataTypeCheckboxValueChanged(currOffload));
     
     panel.UserData.(['ImportTabDataLabel' num2str(elemNum)])=dataLabels{i};
     panel.UserData.(['ImportTabLoadBox' num2str(elemNum)])=loadBox{i};
-    panel.UserData.(['ImportTabOffloadBox' num2str(elemNum)])=offloadBox{i};    
+    panel.UserData.(['ImportTabOffloadBox' num2str(elemNum)])=offloadBox{i};
     
 end
 
@@ -94,6 +94,10 @@ groupText=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
 [groupNames,lineNums]=getGroupNames(groupText);
 
 for i=1:length(groupNames)
+    
+    if isequal(groupNames{i},'Create Group Name') && length(groupNames)==1
+        break;
+    end
     
     elemNum=elemNum+1;
     alphaNumericIdx=isstrprop(groupNames{i},'alpha') | isstrprop(groupNames{i},'digit');
@@ -116,10 +120,10 @@ for i=1:length(groupNames)
     % Create & position the 'Load' & 'Offload' checkbox
     if isequal(data,'Load')
         loadVal=1;
-        offloadVal=0;                
+        offloadVal=0;
     elseif isequal(data,'Offload')
         loadVal=0;
-        offloadVal=1;        
+        offloadVal=1;
     elseif isequal(data,'None')
         loadVal=0;
         offloadVal=0;
@@ -132,12 +136,12 @@ for i=1:length(groupNames)
     
     % Set the callback function to enable the load & offload
     set(currLoad,'ValueChangedFcn',@(currLoad,event) dataTypeCheckboxValueChanged(currLoad));
-    set(currOffload,'ValueChangedFcn',@(currOffload,event) dataTypeCheckboxValueChanged(currOffload));    
+    set(currOffload,'ValueChangedFcn',@(currOffload,event) dataTypeCheckboxValueChanged(currOffload));
     
     panel.UserData.(['ImportTabDataLabel' num2str(elemNum)])=groupNameLabels(i);
     panel.UserData.(['ImportTabLoadBox' num2str(elemNum)])=loadBox{i};
     panel.UserData.(['ImportTabOffloadBox' num2str(elemNum)])=offloadBox{i};
-            
+    
 end
 
 %% Save the all projects text file
@@ -147,7 +151,13 @@ fprintf(fid,'%s',text{end});
 fclose(fid);
 
 %% Save the group names text file
-fid=fopen(getappdata(fig,'fcnNamesFilePath'),'w');
-fprintf(fid,'%s\n',groupText{1:end-1});
-fprintf(fid,'%s',groupText{end});
-fclose(fid);
+if ~isempty(getappdata(fig,'fcnNamesFilePath')) && ~isempty(groupText)
+    fid=fopen(getappdata(fig,'fcnNamesFilePath'),'w');
+    fprintf(fid,'%s\n',groupText{1:end-1});
+    fprintf(fid,'%s',groupText{end});
+    fclose(fid);
+end
+
+panel.UserData.LogsheetPathField=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
+
+dataSelectPanelResize(panel);

@@ -22,7 +22,12 @@ end
 
 groupName=groupName{1}; % Convert cell to char
 
-if exist(fcnNamesFilePath,'file')~=2 % Check if the project's group names text file exists.
+if exist(fcnNamesFilePath,'file')==2
+    % Read text file
+    origText=readFcnNames(fcnNamesFilePath);
+end
+
+if exist(fcnNamesFilePath,'file')~=2 || isempty(origText) % Check if the project's group names text file exists.
     
     text{1}=['Group Name: ' groupName];
     text{2}='';
@@ -38,10 +43,7 @@ else % If the project's group names text file does exist.
     if any(ismember(hGroupNamesDropDown.Items,{groupName}))
         setupGroupNamesDropDownValueChanged(hGroupNamesDropDown);
         return;
-    end
-    
-    % Read text file
-    origText=readFcnNames(fcnNamesFilePath);
+    end        
     
     for lineNum=length(origText):-1:1
         
@@ -72,3 +74,5 @@ fclose(fid);
 % Set the run tab drop down list to have the same group names as the setup tab
 hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
 hGroupNamesRunDropDown.Items=hGroupNamesDropDown.Items;
+
+addDataTypeEntry2Panel(fig);

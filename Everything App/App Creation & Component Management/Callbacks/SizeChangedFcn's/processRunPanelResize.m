@@ -128,6 +128,7 @@ for i=1:specifyTrialsButtonCount
     specifyTrialsCheckbox(i).Visible='on';
     specifyTrialsButton(i).Visible='on';
     
+    % Set Visibility by Position
     if (1-(i+fcnRowCount)*0.1)>=1 || (1-(i+fcnRowCount)*0.1)<=0 % Outside of the bounds of the panel
         runFcnCheckbox(i).Visible='off';
         openFcnButton(i).Visible='off';
@@ -143,7 +144,7 @@ for i=1:specifyTrialsButtonCount
         processRunDownArrowButton.Visible='off';
     end
     
-    % Set Visibility
+    % Set Visibility by Checkboxes
     if runFcnCheckbox(i).Value==0 % If not checked, turn off specify trials checkbox & button visibility
         specifyTrialsCheckbox(i).Visible='off';
         specifyTrialsButton(i).Visible='off';

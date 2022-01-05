@@ -64,21 +64,26 @@ for i=1:length(fldNames)
     
 end
 
-% % Get the set of data label objects
-% labels=findobj(src,'-regexp','Tag','ImportTabDataLabel');
-% 
-% % Get the set of load checkbox objects
-% loadBoxes=findobj(src,'-regexp','Tag','ImportTabLoadBox');
-% 
-% % Get the set of offload checkbox objects
-% offloadBoxes=findobj(src,'-regexp','Tag','ImportTabOffloadBox');
+dataRowCount=getappdata(fig,'dataPanelArrowCount');
+dataPanelUpArrowButton=findobj(fig,'Type','uibutton','Tag','DataPanelUpArrowButton');
+dataPanelUpArrowButton.Visible='on';
+dataPanelDownArrowButton=findobj(fig,'Type','uibutton','Tag','DataPanelDownArrowButton');
+dataPanelDownArrowButton.Visible='on';
+
+if dataRowCount>0
+    dataRowCount=0; % Protect against clicking up too quickly before the Up arrow visibility is removed.
+    setappdata(fig,'dataPanelArrowCount',0);
+elseif dataRowCount<-1*loadBoxCount+8 && loadBoxCount>=8 % Protect against clicking down too quickly before the Down arrow visibility is removed.
+    dataRowCount=-1*loadBoxCount+8;
+    setappdata(fig,'dataPanelArrowCount',dataRowCount);
+end
 
 for i=1:length(labels)
     
     % Relative position
-    labelRelPos=[0.4 (0.8-i*0.1)];
-    loadBoxRelPos=[0.05 (0.8-i*0.1)];
-    offloadBoxRelPos=[0.2 (0.8-i*0.1)];
+    labelRelPos=[0.4 (0.8-(i+dataRowCount)*0.1)];
+    loadBoxRelPos=[0.05 (0.8-(i+dataRowCount)*0.1)];
+    offloadBoxRelPos=[0.2 (0.8-(i+dataRowCount)*0.1)];
     
     % Size
     labelSize=[0.3 compHeight];
@@ -99,5 +104,24 @@ for i=1:length(labels)
     labels{i}.FontSize=newFontSize;
     loadBoxes{i}.FontSize=newFontSize;
     offloadBoxes{i}.FontSize=newFontSize;
+    
+    % Set Visibility
+    labels{i}.Visible='on';
+    loadBoxes{i}.Visible='on';
+    offloadBoxes{i}.Visible='on';
+    
+    % Set Visibility by Position
+    if (0.8-(i+dataRowCount)*0.1)>=0.8 || (0.8-(i+dataRowCount)*0.1)<0 % Outside of the bounds of the panel
+        labels{i}.Visible='off';
+        loadBoxes{i}.Visible='off';
+        offloadBoxes{i}.Visible='off';
+    end
+    
+    if i==1 && (0.8-(i+dataRowCount)*0.1)<0.8 % Turn off visibility for the 'Up' arrow
+        dataPanelUpArrowButton.Visible='off';
+    end
+    if i==loadBoxCount && (0.8-(i+dataRowCount)*0.1)>=0 % Turn off visibility for the 'Down' arrow
+        dataPanelDownArrowButton.Visible='off';
+    end
     
 end

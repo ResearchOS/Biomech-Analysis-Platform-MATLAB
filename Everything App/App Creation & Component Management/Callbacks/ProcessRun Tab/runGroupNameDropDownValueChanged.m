@@ -98,69 +98,71 @@ elseif ispc==1
 end
 
 % Create the components after deleting them
-elemNum=0;
-for i=1:length(fcnNames)
-    
-    elemNum=elemNum+1;
-    tagNameCell=strsplit(fcnNames{i},'_Process');
-    tagName=[tagNameCell{1} tagNameCell{2}];
-    argsName=strsplit(argsNames{i},'_Process');
-    argLetter=argsName{2};
-    
-    currLine=text{lineNum+i};
-    afterColon=strsplit(currLine,':');
-    runAndSpecifyTrials=strsplit(strtrim(afterColon{2}),' ');
-    
-    % Check that the function exists. If not, stop execution
-    fcnName=strsplit(afterColon{1},' ');
-    fullName=[fcnName{1} '_Process' tagNameCell{2}(~isletter(tagNameCell{2}))];
-    fullExistPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash fullName '.m'];
-    fullUserPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash fullName '.m'];
-    
-    if exist(fullExistPath,'file')~=2 && exist(fullUserPath,'file')~=2
-        disp([fullName ' Not Found']);
-        return;
+if exist('fcnNames','var')==1
+    elemNum=0;
+    for i=1:length(fcnNames)
+        
+        elemNum=elemNum+1;
+        tagNameCell=strsplit(fcnNames{i},'_Process');
+        tagName=[tagNameCell{1} tagNameCell{2}];
+        argsName=strsplit(argsNames{i},'_Process');
+        argLetter=argsName{2};
+        
+        currLine=text{lineNum+i};
+        afterColon=strsplit(currLine,':');
+        runAndSpecifyTrials=strsplit(strtrim(afterColon{2}),' ');
+        
+        % Check that the function exists. If not, stop execution
+        fcnName=strsplit(afterColon{1},' ');
+        fullName=[fcnName{1} '_Process' tagNameCell{2}(~isletter(tagNameCell{2}))];
+        fullExistPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash fullName '.m'];
+        fullUserPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash fullName '.m'];
+        
+        if exist(fullExistPath,'file')~=2 && exist(fullUserPath,'file')~=2
+            disp([fullName ' Not Found']);
+            return;
+        end
+        
+        % Check the 'Run' checkbox status in the text file
+        runStatus=str2double(runAndSpecifyTrials{1}(end));
+        
+        % Check the 'SpecifyTrials' checkbox status in the text file
+        specifyTrialsStatus=str2double(runAndSpecifyTrials{2}(end));
+        
+        % Run function checkboxes
+        runFcnCheckbox=uicheckbox(processRunPanel,'Text','','Value',runStatus,'Tag',['RunFcnCheckbox' num2str(elemNum)]);
+        
+        % Function names button
+        fcnNamesButton=uibutton(processRunPanel,'Text',tagName,'Tag',['OpenFcnButton' num2str(elemNum)]);
+        
+        % Function args button
+        fcnArgsButton=uibutton(processRunPanel,'Text',argLetter,'Tag',['FcnArgsButton' num2str(elemNum)]);
+        
+        % Specify trials checkbox
+        specifyTrialsCheckbox=uicheckbox(processRunPanel,'Text','','Value',specifyTrialsStatus,'Tag',['SpecifyTrialsCheckbox' num2str(elemNum)]);
+        
+        % Specify trials button
+        specifyTrialsButton=uibutton(processRunPanel,'push','Text','Specify Trials','Tag',['SpecifyTrialsButton' num2str(elemNum)]);
+        
+        % Set the ValueChangedFcn
+        set(runFcnCheckbox,'ValueChangedFcn',@(runFcnCheckbox,event) runFcnCheckboxValueChanged(runFcnCheckbox));
+        set(fcnNamesButton,'ButtonPushedFcn',@(fcnNamesButton,event) fcnNamesButtonPushed(fcnNamesButton));
+        set(fcnArgsButton,'ButtonPushedFcn',@(fcnArgsButton,event) fcnArgsButtonPushed(fcnArgsButton));
+        set(specifyTrialsCheckbox,'ValueChangedFcn',@(specifyTrialsCheckbox,event) specifyTrialsCheckboxValueChanged(specifyTrialsCheckbox));
+        set(specifyTrialsButton,'ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushed(specifyTrialsButton));
+        
+        processRunPanel.UserData.(['RunFcnCheckbox' num2str(elemNum)])=runFcnCheckbox;
+        processRunPanel.UserData.(['OpenFcnButton' num2str(elemNum)])=fcnNamesButton;
+        processRunPanel.UserData.(['FcnArgsButton' num2str(elemNum)])=fcnArgsButton;
+        processRunPanel.UserData.(['SpecifyTrialsCheckbox' num2str(elemNum)])=specifyTrialsCheckbox;
+        processRunPanel.UserData.(['SpecifyTrialsButton' num2str(elemNum)])=specifyTrialsButton;
+        
     end
     
-    % Check the 'Run' checkbox status in the text file
-    runStatus=str2double(runAndSpecifyTrials{1}(end));
+    hLogsheetPathField=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
+    processRunPanel.UserData.LogsheetPathField=hLogsheetPathField;
     
-    % Check the 'SpecifyTrials' checkbox status in the text file
-    specifyTrialsStatus=str2double(runAndSpecifyTrials{2}(end));
+    setappdata(fig,'processRunArrowCount',0); % Reset the function row scrolling
     
-    % Run function checkboxes
-    runFcnCheckbox=uicheckbox(processRunPanel,'Text','','Value',runStatus,'Tag',['RunFcnCheckbox' num2str(elemNum)]);
-    
-    % Function names button
-    fcnNamesButton=uibutton(processRunPanel,'Text',tagName,'Tag',['OpenFcnButton' num2str(elemNum)]);
-    
-    % Function args button
-    fcnArgsButton=uibutton(processRunPanel,'Text',argLetter,'Tag',['FcnArgsButton' num2str(elemNum)]);
-    
-    % Specify trials checkbox
-    specifyTrialsCheckbox=uicheckbox(processRunPanel,'Text','','Value',specifyTrialsStatus,'Tag',['SpecifyTrialsCheckbox' num2str(elemNum)]);
-    
-    % Specify trials button
-    specifyTrialsButton=uibutton(processRunPanel,'push','Text','Specify Trials','Tag',['SpecifyTrialsButton' num2str(elemNum)]);
-    
-    % Set the ValueChangedFcn
-    set(runFcnCheckbox,'ValueChangedFcn',@(runFcnCheckbox,event) runFcnCheckboxValueChanged(runFcnCheckbox));
-    set(fcnNamesButton,'ButtonPushedFcn',@(fcnNamesButton,event) fcnNamesButtonPushed(fcnNamesButton));
-    set(fcnArgsButton,'ButtonPushedFcn',@(fcnArgsButton,event) fcnArgsButtonPushed(fcnArgsButton));
-    set(specifyTrialsCheckbox,'ValueChangedFcn',@(specifyTrialsCheckbox,event) specifyTrialsCheckboxValueChanged(specifyTrialsCheckbox));
-    set(specifyTrialsButton,'ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushed(specifyTrialsButton));
-    
-    processRunPanel.UserData.(['RunFcnCheckbox' num2str(elemNum)])=runFcnCheckbox;
-    processRunPanel.UserData.(['OpenFcnButton' num2str(elemNum)])=fcnNamesButton;
-    processRunPanel.UserData.(['FcnArgsButton' num2str(elemNum)])=fcnArgsButton;
-    processRunPanel.UserData.(['SpecifyTrialsCheckbox' num2str(elemNum)])=specifyTrialsCheckbox;
-    processRunPanel.UserData.(['SpecifyTrialsButton' num2str(elemNum)])=specifyTrialsButton;
-    
+    processRunPanelResize(processRunPanel);
 end
-
-hLogsheetPathField=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
-processRunPanel.UserData.LogsheetPathField=hLogsheetPathField;
-
-setappdata(fig,'processRunArrowCount',0); % Reset the function row scrolling
-
-processRunPanelResize(processRunPanel);

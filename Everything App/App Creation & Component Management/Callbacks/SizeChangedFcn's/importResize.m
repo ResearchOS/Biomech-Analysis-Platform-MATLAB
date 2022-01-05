@@ -74,6 +74,8 @@ openCodePathButtonRelPos=[0.55 0.75];
 loadLabelRelPos=[0.07 0.5];
 offloadLabelRelPos=[0.13 0.5];
 dataLabelRelPos=[0.25 0.5];
+dataPanelUpArrowButtonRelPos=[0.4 0.49];
+dataPanelDownArrowButtonRelPos=[0.4 0.05];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -114,6 +116,8 @@ openCodePathButtonSize=[0.05 compHeight];
 loadLabelSize=[0.05 compHeight];
 offloadLabelSize=[0.1 compHeight];
 dataLabelSize=[0.05 compHeight];
+dataPanelUpArrowButtonSize=[0.05 compHeight*1.67];
+dataPanelDownArrowButtonSize=[0.05 compHeight*1.67];
 
 %% Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
@@ -151,7 +155,8 @@ openCodePathButtonPos=round([openCodePathButtonRelPos.*figSize openCodePathButto
 loadLabelPos=round([loadLabelRelPos.*figSize loadLabelSize(1)*figSize(1) loadLabelSize(2)]);
 offloadLabelPos=round([offloadLabelRelPos.*figSize offloadLabelSize(1)*figSize(1) offloadLabelSize(2)]);
 dataLabelPos=round([dataLabelRelPos.*figSize dataLabelSize(1)*figSize(1) dataLabelSize(2)]);
-
+dataPanelUpArrowButtonPos=round([dataPanelUpArrowButtonRelPos.*figSize dataPanelUpArrowButtonSize(1)*figSize(1) dataPanelUpArrowButtonSize(2)]);
+dataPanelDownArrowButtonPos=round([dataPanelDownArrowButtonRelPos.*figSize dataPanelDownArrowButtonSize(1)*figSize(1) dataPanelDownArrowButtonSize(2)]);
 
 %% Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
@@ -189,6 +194,8 @@ data.OpenCodePathButton.Position=openCodePathButtonPos;
 data.LoadLabel.Position=loadLabelPos;
 data.OffloadLabel.Position=offloadLabelPos;
 data.DataLabel.Position=dataLabelPos;
+data.DataPanelUpArrowButton.Position=dataPanelUpArrowButtonPos;
+data.DataPanelDownArrowButton.Position=dataPanelDownArrowButtonPos;
 
 %% Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
@@ -226,5 +233,7 @@ data.OpenCodePathButton.FontSize=newFontSize;
 data.LoadLabel.FontSize=newFontSize;
 data.OffloadLabel.FontSize=newFontSize;
 data.DataLabel.FontSize=newFontSize;
+data.DataPanelUpArrowButton.FontSize=newFontSize;
+data.DataPanelDownArrowButton.FontSize=newFontSize;
 
 % Restore component visibility

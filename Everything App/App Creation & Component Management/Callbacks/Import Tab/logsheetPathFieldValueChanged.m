@@ -86,3 +86,5 @@ end
 matLogPath=[logPath(1:length(logPath)-length(ext)-1) '.mat'];
 setappdata(fig,'LogsheetMatPath',matLogPath);
 save(matLogPath,'logVar');
+
+figure(fig);

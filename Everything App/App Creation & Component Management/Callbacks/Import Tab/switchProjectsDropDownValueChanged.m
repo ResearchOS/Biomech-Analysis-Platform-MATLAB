@@ -316,7 +316,16 @@ hButton.Text=[prefix ' Import Fcn ' dataType];
 %% Set up the entries in the uipanel
 % Each entry gets two boxes: one to load that data, one to remove it.
 % At the top is the data types, one entry per data type
+hUpArrowDataPanelButton=findobj(fig,'Type','uibutton','Tag','DataPanelUpArrowButton');
+hUpArrowDataPanelButton.Visible='off';
+hDownArrowDataPanelButton=findobj(fig,'Type','uibutton','Tag','DataPanelDownArrowButton');
+hDownArrowDataPanelButton.Visible='off';
 addDataTypeEntry2Panel(fig);
+
+hUpArrowProcessRunButton=findobj(fig,'Type','uibutton','Tag','ProcessRunUpArrowButton');
+hUpArrowProcessRunButton.Visible='off';
+hDownArrowProcessRunButton=findobj(fig,'Type','uibutton','Tag','ProcessRunDownArrowButton');
+hDownArrowProcessRunButton.Visible='off';
 
 % After that, is each function group. One entry=all data for one group
 

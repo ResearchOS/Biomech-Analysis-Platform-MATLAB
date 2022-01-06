@@ -88,3 +88,5 @@ fclose(fid);
 
 fcnNamesFilePath=[getappdata(fig,'codePath') 'functionNames_' getappdata(fig,'projectName') '.txt']; % Set the current project's function names path
 setappdata(fig,'fcnNamesFilePath',fcnNamesFilePath);
+
+figure(fig);

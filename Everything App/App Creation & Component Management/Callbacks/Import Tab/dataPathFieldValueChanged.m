@@ -82,3 +82,5 @@ fid=fopen(allProjectsPathTxt,'w');
 fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
 fclose(fid);
+
+figure(fig);

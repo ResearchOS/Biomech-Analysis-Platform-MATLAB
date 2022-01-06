@@ -217,8 +217,9 @@ for subNum=1:length(subNames)
                     assignin('base','importLetter',letter);
                     for kk=1:length(dataFldNames)
                         assignin('base','dataField',dataFldNames{kk});
-                        if evalin('base','isfield(projectStruct,subName)') && evalin('base','isfield(projectStruct.(subName),(trialName))') ...
-                                && evalin('base',"isfield(projectStruct.(subName).(trialName),'Data')")
+                        if evalin('base','existField(projectStruct,[''projectStruct.'' subName ''.'' trialName ''.Data.'' dataField ''.Method'' importNum importLetter]);')
+%                         if evalin('base','isfield(projectStruct,subName)') && evalin('base','isfield(projectStruct.(subName),(trialName))') ...
+%                                 && evalin('base',"isfield(projectStruct.(subName).(trialName),'Data')")
                             disp(['Now Removing ' subName ' Trial ' trialName ' Data Structure Field: ' dataFldNames{kk} number letter]);
                             evalin('base','projectStruct.(subName).(trialName).Data.(dataField)=rmfield(projectStruct.(subName).(trialName).Data.(dataField),[''Method'' importNum importLetter]);')
                         end

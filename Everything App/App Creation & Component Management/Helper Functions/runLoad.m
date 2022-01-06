@@ -36,6 +36,10 @@ projectNamesInfo=isolateProjectNamesInfo(text,getappdata(fig,'projectName'));
 groupText=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
 [groupNames,lineNums]=getGroupNames(groupText);
 
+if isequal(groupNames{1},'Create Group Name') && length(groupNames)==1
+    return; % Check that some group name(s) exist
+end
+
 % Get the method number & letter for each function name in each group. Also get whether to load or offload it
 for i=1:length(groupNames)
     

@@ -51,6 +51,6 @@ for i=1:length(outVar)
     end
     
     % Save the data
-    save(filePath,evalin('base','currDataVar'));
+    save(filePath,evalin('base','currDataVar'),'-v6');
     
 end

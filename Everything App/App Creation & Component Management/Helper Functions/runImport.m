@@ -147,7 +147,7 @@ for subNum=1:length(subNames)
                     
                     if exist(fullPathDataMat,'file')==2 && exist(fullPathInfoMat,'file')==2 && redoVal==0 % File exists, and redo is not selected.
                         
-                        disp(['Now Loading ' subName ' Trial ' trialName ' Data Type ' dataTypes{i}]);
+                        disp(['Now Loading ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' ' number letter]);
                         
                         % Load that data
                         load(fullPathDataMat,'dataTypeDataStruct');
@@ -183,10 +183,10 @@ for subNum=1:length(subNames)
                         end
                         
                         % Save the data to the file
-                        save(fullPathDataMat,'dataTypeDataStruct');
+                        save(fullPathDataMat,'dataTypeDataStruct','-v6');
                         
                         % Save the info to the file
-                        save(fullPathInfoMat,'dataTypeInfoStruct');
+                        save(fullPathInfoMat,'dataTypeInfoStruct','-v6');
                         
                     end
 
@@ -201,8 +201,10 @@ for subNum=1:length(subNames)
                         assignin('base','dataField',returnedType);
                         assignin('base','tempDataStruct',tempDataStruct);
                         assignin('base','tempInfoStruct',tempInfoStruct);
-                        evalin('base','projectStruct.(subName).(trialName).Data.(dataField)=tempDataStruct;');
-                        evalin('base','projectStruct.(subName).(trialName).Info.(dataField)=tempInfoStruct;');
+                        assignin('base','importNum',number);
+                        assignin('base','importLetter',letter);
+                        evalin('base','projectStruct.(subName).(trialName).Data.(dataField).([''Method'' importNum importLetter])=tempDataStruct;');
+                        evalin('base','projectStruct.(subName).(trialName).Info.(dataField).([''Method'' importNum importLetter])=tempInfoStruct;');
                     end
                     
                 elseif isequal(dataTypeAction.(dataField),'Offload')
@@ -211,12 +213,14 @@ for subNum=1:length(subNames)
                     
                     assignin('base','subName',subName);
                     assignin('base','trialName',trialName);
+                    assignin('base','importNum',number);
+                    assignin('base','importLetter',letter);
                     for kk=1:length(dataFldNames)
                         assignin('base','dataField',dataFldNames{kk});
                         if evalin('base','isfield(projectStruct,subName)') && evalin('base','isfield(projectStruct.(subName),(trialName))') ...
                                 && evalin('base',"isfield(projectStruct.(subName).(trialName),'Data')")
-                            disp(['Now Removing ' subName ' Trial ' trialName ' Data Structure Field: ' dataFldNames{kk}]);
-                            evalin('base','projectStruct.(subName).(trialName).Data=rmfield(projectStruct.(subName).(trialName).Data,dataField);')
+                            disp(['Now Removing ' subName ' Trial ' trialName ' Data Structure Field: ' dataFldNames{kk} number letter]);
+                            evalin('base','projectStruct.(subName).(trialName).Data.(dataField)=rmfield(projectStruct.(subName).(trialName).Data.(dataField),[''Method'' importNum importLetter]);')
                         end
                     end
 

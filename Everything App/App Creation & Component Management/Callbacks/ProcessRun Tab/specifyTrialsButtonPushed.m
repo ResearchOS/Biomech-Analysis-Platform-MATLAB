@@ -39,7 +39,7 @@ for i=lineNum+1:length(text)
     fcnNameCell=strsplit(a{1},' ');
     fcnCount=fcnCount+1;
     if isequal(fcnCount,currRow)
-        fcnName=[fcnNameCell{1} '_Process' fcnNameCell{2}(~isletter(fcnNameCell{2}))];
+        fcnName=[fcnNameCell{1} '_Process'];
         break;
     end
     

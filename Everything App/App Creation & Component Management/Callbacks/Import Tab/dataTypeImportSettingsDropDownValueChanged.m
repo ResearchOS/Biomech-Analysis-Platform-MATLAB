@@ -112,7 +112,7 @@ end
 % Change the button prefix to be either 'Create' or 'Open'
 % importMetadata
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash lower(dataType) '_Import' method(isletter(method)) '.m'],'file')==2
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash lower(dataType) '_Import' method '.m'],'file')==2
     prefix='Open';
 else
     prefix='Create';

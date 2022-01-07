@@ -51,7 +51,7 @@ for i=lineNum+1:length(text) % Start with first function name
     
     fcnCount=fcnCount+1;
     fcnNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}(~isletter(currFcn{2}))];
-    argsNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}(isletter(currFcn{2}))];
+    argsNames{fcnCount}=[currFcn{1} '_Process' currFcn{2}];
     
 end
 

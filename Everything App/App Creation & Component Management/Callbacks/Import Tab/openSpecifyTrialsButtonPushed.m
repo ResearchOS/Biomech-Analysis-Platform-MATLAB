@@ -23,7 +23,7 @@ elseif ismac==1
     slash='/';
 end
 
-importPath=[codePath 'Import_' projectName slash];
+importPath=[codePath 'Import_' projectName slash 'Specify Trials' slash];
 
 if ~isfolder(importPath)
     mkdir(importPath);
@@ -45,4 +45,4 @@ if isequal(h.Text(1:6),'Create') % Creating the project's importSetting file for
     h.Text=['Open ' specifyTrialsName];
 end
 
-edit([importPath 'Specify Trials' slash specifyTrialsName]); % Always open the file.
+edit([importPath specifyTrialsName]); % Always open the file.

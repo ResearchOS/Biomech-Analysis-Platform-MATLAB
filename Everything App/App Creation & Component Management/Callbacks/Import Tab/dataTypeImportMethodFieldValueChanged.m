@@ -147,7 +147,7 @@ if prevExist==1
         slash='\';
     end    
     
-    if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataType '_Import' methodNum(isletter(methodNum)) '.m'],'file')==2
+    if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataType '_Import' methodNum '.m'],'file')==2
         prefix='Open';
     else
         prefix='Create';

@@ -164,7 +164,7 @@ for subNum=1:length(subNames)
                         % Call the appropriate Import args (letter)
                         currDir=pwd; % Get current directory
                         cd([codePath 'Import_' projectName slash 'Arguments']); % Navigate to directory of import arguments file, to ensure that the proper one is selected.
-                        [dataTypeArgs]=feval([lower(dataField) '_Import' letter]);
+                        [dataTypeArgs]=feval([lower(dataField) '_Import' number letter]);
                         
                         % Call the appropriate Import fcn (number)
                         cd([codePath 'Import_' projectName slash existType]); % Navigate to the directory of import function, to ensure that the proper one is selected.

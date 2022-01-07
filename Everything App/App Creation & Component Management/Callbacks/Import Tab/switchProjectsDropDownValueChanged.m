@@ -292,7 +292,7 @@ dataField=lower(dataType(isstrprop(dataType,'alpha') | isstrprop(dataType,'digit
 % Change the prefix for the importMetadata button
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
 % Need to get the data type for the file name
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataField '_Import' startLetter '.m'],'file')==2 % This file exists.
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataField '_Import' startNumber startLetter '.m'],'file')==2 % This file exists.
     prefix='Open';
 else
     prefix='Create';

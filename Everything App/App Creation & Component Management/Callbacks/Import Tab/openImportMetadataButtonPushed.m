@@ -27,7 +27,7 @@ importPath=[codePath 'Import_' projectName slash];
 
 % Get the letter of the method.
 hMethod=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');
-methodLetter=hMethod.Value(isletter(hMethod.Value)); % Always capital letters
+method=hMethod.Value; % Always capital letters (number & letter both)
 
 if ~isfolder(importPath)
     mkdir(importPath);
@@ -38,7 +38,7 @@ dataType=lower(hDropDown.Value); % Always capital letters
 alphaNumericIdx=isstrprop(dataType,'alpha') | isstrprop(dataType,'digit');
 dataType=dataType(alphaNumericIdx);
 
-importArgsName=[dataType '_Import' methodLetter '.m'];
+importArgsName=[dataType '_Import' method '.m'];
 
 hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
 

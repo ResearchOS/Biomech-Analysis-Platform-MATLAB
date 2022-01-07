@@ -88,7 +88,7 @@ for i=1:length(fcnNames)
     
     % Check if the function names exist in the GitHub repo. If so, copy it to the Process > Existing functions folder within the codePath
     if exist([getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Existing Functions' slash currFcnFileName],'file')~=2
-        copied=copyFileFromLib(fig,'Process',currFcnFileName);
+        copied=copyFileFromLib(fig,'Process',currFcnFileName); % Won't copy the file if it doesn't exist.
     end
     
 end

@@ -19,7 +19,7 @@ fcnNames=fcnNames.Value;
 currFcn=fcnNames{elemNum};
 
 fcnElems=strsplit(currFcn,' ');
-fcnName=[fcnElems{1} '_Process' fcnElems{2}(isletter(fcnElems{2}))];
+fcnName=[fcnElems{1} '_Process' fcnElems{2}]; % Number & letter
 
 if ismac==1
     slash='/';

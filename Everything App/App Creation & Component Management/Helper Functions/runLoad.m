@@ -72,7 +72,7 @@ for i=1:length(groupNames)
         allGroups.(groupNameField).FunctionLetter{i}=fcnLetter;
         allGroups.(groupNameField).FunctionNumber{i}=fcnNum;
         allGroups.(groupNameField).ProcessFcnNames{i}=[fcnName '_Process' fcnNum];
-        allGroups.(groupNameField).ProcessArgsNames{i}=[fcnName '_Process' fcnLetter];
+        allGroups.(groupNameField).ProcessArgsNames{i}=[fcnName '_Process' fcnNum fcnLetter];
         
     end
     

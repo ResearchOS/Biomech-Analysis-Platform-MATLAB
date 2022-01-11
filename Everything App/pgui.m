@@ -120,6 +120,8 @@ openCodePathButton=uibutton(importTab,'push','Text','O','Tag','OpenCodePathButto
 dataPanelUpArrowButton=uibutton(importTab,'push','Text',{'/\';'||'},'Tag','DataPanelUpArrowButton','ButtonPushedFcn',@(dataPanelUpArrowButton,event) dataPanelUpArrowButtonPushed(dataPanelUpArrowButton));
 % Data panel down arrow button
 dataPanelDownArrowButton=uibutton(importTab,'push','Text',{'||';'\/'},'Tag','DataPanelDownArrowButton','ButtonPushedFcn',@(dataPanelDownArrowButton,event) dataPanelDownArrowButtonPushed(dataPanelDownArrowButton));
+% Specify trials number field
+specifyTrialsNumberField=uieditfield(importTab,'text','Value','1','Tag','SpecifyTrialsNumberField','ValueChangedFcn',@(specifyTrialsNumberField,event) specifyTrialsNumberFieldValueChanged(specifyTrialsNumberField));
 
 importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButton',logsheetPathButton,'DataPathButton',dataPathButton,'CodePathButton',codePathButton,...
     'AddProjectButton',addProjectButton,'LogsheetPathField',logsheetPathField,'DataPathField',dataPathField,'CodePathField',codePathField,'DataTypeImportSettingsDropDown',dataTypeImportSettingsDropDown,...
@@ -129,7 +131,7 @@ importTab.UserData=struct('ProjectNameLabel',projectNameLabel,'LogsheetPathButto
     'TargetTrialIDColHeaderLabel',targetTrialIDColHeaderLabel,'TargetTrialIDColHeaderField',targetTrialIDColHeaderField,...
     'SaveAllButton',saveAllButton,'SelectDataPanel',selectDataPanel,'DataTypeImportMethodField',dataTypeImportMethodField,'AddDataTypeButton',addDataTypeButton,'OpenImportFcnButton',openImportFcnButton,...
     'OpenLogsheetButton',openLogsheetButton,'OpenDataPathButton',openDataPathButton','OpenCodePathButton',openCodePathButton,...
-    'LoadLabel',loadLabel,'OffloadLabel',offloadLabel,'DataLabel',dataLabel,'DataPanelUpArrowButton',dataPanelUpArrowButton,'DataPanelDownArrowButton',dataPanelDownArrowButton);
+    'LoadLabel',loadLabel,'OffloadLabel',offloadLabel,'DataLabel',dataLabel,'DataPanelUpArrowButton',dataPanelUpArrowButton,'DataPanelDownArrowButton',dataPanelDownArrowButton,'SpecifyTrialsNumberField',specifyTrialsNumberField);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 

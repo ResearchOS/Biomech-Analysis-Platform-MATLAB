@@ -32,6 +32,7 @@ groupsDataToLoadPrefix='Groups Data To Load:';
 dataTypesPrefix='Data Types:';
 dataPanelPrefixNoColon='Data Panel';
 trialIDColHeaderDataTypesPrefixNoColon='Trial ID Column Header';
+specifyTrialsNumber='Specify Trials Number';
 
 %% Find the project name
 for i=1:numLines
@@ -136,6 +137,9 @@ for i=projectLine+1:numLines
         val=text{i}(colonIdx+2:length(text{i}));
         projectNamesInfo.(['DataPanel' currType(alphaNumericIdx)])=val;
         lineNums.(['DataPanel' currType(alphaNumericIdx)])=i;
+    elseif length(text{i})>=length(specifyTrialsNumber) && isequal(text{i}(1:length(specifyTrialsNumber)),specifyTrialsNumber) % Specify trials number
+        colonIdx=strfind(text{i},':');
+        projectNamesInfo.SpecifyTrialsNumber=text{i}(colonIdx+2:length(text{i}));        
     end
     
     if exist('dataTypes','var')

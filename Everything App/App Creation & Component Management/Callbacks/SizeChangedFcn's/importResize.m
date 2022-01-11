@@ -76,6 +76,7 @@ offloadLabelRelPos=[0.13 0.5];
 dataLabelRelPos=[0.25 0.5];
 dataPanelUpArrowButtonRelPos=[0.4 0.49];
 dataPanelDownArrowButtonRelPos=[0.4 0.05];
+specifyTrialsNumberFieldRelPos=[0.5 0.65];
     
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -118,6 +119,7 @@ offloadLabelSize=[0.1 compHeight];
 dataLabelSize=[0.05 compHeight];
 dataPanelUpArrowButtonSize=[0.05 compHeight*1.67];
 dataPanelDownArrowButtonSize=[0.05 compHeight*1.67];
+specifyTrialsNumberFieldSize=[0.05 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.
 projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
@@ -157,6 +159,7 @@ offloadLabelPos=round([offloadLabelRelPos.*figSize offloadLabelSize(1)*figSize(1
 dataLabelPos=round([dataLabelRelPos.*figSize dataLabelSize(1)*figSize(1) dataLabelSize(2)]);
 dataPanelUpArrowButtonPos=round([dataPanelUpArrowButtonRelPos.*figSize dataPanelUpArrowButtonSize(1)*figSize(1) dataPanelUpArrowButtonSize(2)]);
 dataPanelDownArrowButtonPos=round([dataPanelDownArrowButtonRelPos.*figSize dataPanelDownArrowButtonSize(1)*figSize(1) dataPanelDownArrowButtonSize(2)]);
+specifyTrialsNumberFieldPos=round([specifyTrialsNumberFieldRelPos.*figSize specifyTrialsNumberFieldSize(1)*figSize(1) specifyTrialsNumberFieldSize(2)]);
 
 %% Set the actual positions for each component
 data.ProjectNameLabel.Position=projectNameLabelPos;
@@ -196,6 +199,7 @@ data.OffloadLabel.Position=offloadLabelPos;
 data.DataLabel.Position=dataLabelPos;
 data.DataPanelUpArrowButton.Position=dataPanelUpArrowButtonPos;
 data.DataPanelDownArrowButton.Position=dataPanelDownArrowButtonPos;
+data.SpecifyTrialsNumberField.Position=specifyTrialsNumberFieldPos;
 
 %% Set the font sizes for all components that use text
 data.ProjectNameLabel.FontSize=newFontSize;
@@ -235,5 +239,6 @@ data.OffloadLabel.FontSize=newFontSize;
 data.DataLabel.FontSize=newFontSize;
 data.DataPanelUpArrowButton.FontSize=newFontSize;
 data.DataPanelDownArrowButton.FontSize=newFontSize;
+data.SpecifyTrialsNumberField.FontSize=newFontSize;
 
 % Restore component visibility

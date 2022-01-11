@@ -63,6 +63,7 @@ hTrialIDColHeaderDataType=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialI
 hTargetTrialColHeader=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
 hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown'); % Data types drop down
 hDataTypeMethodField=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField'); % Data types method number & letter edit field
+hSpecifyTrialsNumberField=findobj(fig,'Type','uieditfield','Tag','SpecifyTrialsNumberField');
 % hGroupsDataToLoad=findobj(fig,'Type','uipanel','Tag','SelectDataPanel'); % Panel encompassing the groups' data to load
 % If the project was pre-existing in the all projects file
 if existingProject==1
@@ -193,6 +194,15 @@ if existingProject==1
         setappdata(fig,'groupsDataToLoad','');
     end
     
+    % Specify Trials Number
+    if isfield(projectNameInfo,'SpecifyTrialsNumber')
+%         setappdata(fig,'',projectNameInfo.SpecifyTrialsNumber);
+        hSpecifyTrialsNumberField.Value=projectNameInfo.SpecifyTrialsNumber;
+    else
+        hSpecifyTrialsNumberField.Value='1';
+%         setappdata(fig,'',0);
+    end
+    
     saveFile=0; % Indicates to not save the file again.
     for i=length(A):-1:1 % Go through each line of A, looking for the 'Most Recent Project Name'
         if length(A{i})>=length('Most Recent Project Name:') && isequal(A{i}(1:length('Most Recent Project Name:')),'Most Recent Project Name:')
@@ -262,12 +272,12 @@ end
 h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 % Check if the new project's specifyTrials file exists. If not, label it
 % 'Create'. If so, label it 'Open'
-if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Specify Trials' slash 'specifyTrials_Import.m'],'file')==2 % This file exists.
+if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Specify Trials' slash 'specifyTrials_Import' hSpecifyTrialsNumberField.Value '.m'],'file')==2 % This file exists.
     prefix='Open';
 else
     prefix='Create';
 end
-h.Text=[prefix ' specifyTrials_Import.m'];
+h.Text=[prefix ' specifyTrials_Import' hSpecifyTrialsNumberField.Value '.m'];
 
 %% Set the entered project name as the most recently used project at the end of the file.
 if saveFile==1 % Indicates to save the file

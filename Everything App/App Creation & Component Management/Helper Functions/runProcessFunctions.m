@@ -91,15 +91,13 @@ for i=lineNum+1:length(text)
 end
 
 %% Iterate over all processing functions to get their processing level (project, subject, and trial)
-for i=1:length(fcnNames)
-    currDir=pwd;
+currDir=pwd;
+for i=1:length(fcnNames)    
     fcnName=fcnNames{i};
     cd(fcnFolder{i});
     feval(fcnName); % nargin=0 returns the processing level for inputs for each function
     levelsIn{i}=evalin('base','levelIn;'); % The levels of the input arguments
-    levelsOut{i}=evalin('base','levelOut;'); % The levels of the output arguments
-%     levelsProc{i}=levels.Proc; % The levels to be processed.
-    cd(currDir); % Go back to original directory.
+    levelsOut{i}=evalin('base','levelOut;'); % The levels of the output arguments    
     
     if any(~ismember(levelsIn{i},{'P','S','T','PS','PST','ST','PT'})) || any(~ismember(levelsOut{i},{'P','S','T','PS','PST','ST','PT'}))
         beep;
@@ -109,11 +107,14 @@ for i=1:length(fcnNames)
     
 end
 
+cd(currDir); % Go back to original directory.
+
 %% Iterate over all processing functions to run them.
 argsFolder=[codePath 'Process_' projectName slash 'Arguments'];
 for i=1:length(fcnNames)
     
-    projectStruct=evalin('base','projectStruct;'); % Bring the projectStruct from the base workspace into this one. This incorporates results of any previously finished functions.
+    % Bring the projectStruct from the base workspace into this one. Doing this for each function incorporates results of any previously finished functions.
+    projectStruct=evalin('base','projectStruct;');
     
     fcnName=fcnNames{i};
     argsName=argsNames{i};
@@ -121,7 +122,6 @@ for i=1:length(fcnNames)
     specTrials=funcSpecifyTrials(fcnCount);
     levelIn=levelsIn{i};
     levelOut=levelsOut{i};
-%     levelProc=levelsProc{i};
     methodLetter=strsplit(argsName,'_Process');
     methodLetter=methodLetter{2};
     
@@ -138,7 +138,6 @@ for i=1:length(fcnNames)
         specTrialsFolder=[codePath 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Group'];
         specTrialsName=groupSpecifyTrialsName;
     end
-    currDir=pwd;
     cd(specTrialsFolder); % Ensure that the wrong function is not accidentally used
     inclStruct=feval(specTrialsName); % No input arguments
     cd(currDir);
@@ -176,14 +175,8 @@ for i=1:length(fcnNames)
         currTrials=trialNames.(subName);
         
         if any(ismember(levelIn,'S')) || any(ismember(levelOut,'S')) % Run things at the subject or trial level but NOT at the project level.
-            clear subjData;
-            subjFldNames=fieldnames(projectStruct.(subName));
-            subjFldNames=subjFldNames(~ismember(subjFldNames,trialNames.(subName))); % Exclude the trial names from the subject field names. ISSUE: SPECIFY TRIALS WON'T REMOVE ALL TRIAL NAMES
-            for fldNum=1:length(subjFldNames)
-                subjData.(subjFldNames{fldNum})=projectStruct.(subName).(subjFldNames{fldNum});
-            end
             cd(argsFolder);            
-            [~,subjArgs,~]=feval(argsName,'S',subjData);
+            [~,subjArgs,~]=feval(argsName,'S',projectStruct);
             
             cd(fcnFolder{i});
             if ismember(levelIn,'T')
@@ -201,7 +194,7 @@ for i=1:length(fcnNames)
             trialData=projectStruct.(subName).(trialName); % Nothing to exclude
             
             cd(argsFolder);
-            [~,~,trialArgs]=feval(argsName,'T',trialData);
+            [~,~,trialArgs]=feval(argsName,'T',projectStruct);
             
             cd(fcnFolder{i});
             feval(fcnName,methodLetter,trialData,trialArgs); % Saving to file & storing to base workspace is done in the processing functions.            

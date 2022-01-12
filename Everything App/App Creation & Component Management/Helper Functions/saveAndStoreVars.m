@@ -1,5 +1,10 @@
 function []=saveAndStoreVars(outVar,dataPath)
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%% OUTDATED 01/12/22 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% PURPOSE: SAVE TO FILE AND STORE TO PROJECTSTRUCT THE OUTPUT VARIABLES FROM EACH ITERATION OF A PROCESSING FUNCTION
 % Inputs:
 % outVar: The output from one iteration of one processing function (struct)

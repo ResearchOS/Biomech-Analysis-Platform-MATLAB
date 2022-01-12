@@ -163,7 +163,7 @@ for i=1:length(fcnNames)
             feval(fcnName,projectStruct,methodLetter,trialNames,projData,projArgs); % Saving to file & storing to base workspace is done in the processing functions.
         elseif ismember(levelIn,'S') % Provide subject names only
             feval(fcnName,projectStruct,methodLetter,subNames,projData,projArgs); % Saving to file & storing to base workspace is done in the processing functions.
-        else
+        else % Project only.
             feval(fcnName,projectStruct,methodLetter,projData,projArgs); % Saving to file & storing to base workspace is done in the processing functions.
         end
         continue; % Don't iterate through subjects
@@ -175,13 +175,15 @@ for i=1:length(fcnNames)
         currTrials=trialNames.(subName);
         
         if any(ismember(levelIn,'S')) || any(ismember(levelOut,'S')) % Run things at the subject or trial level but NOT at the project level.
-            cd(argsFolder);            
-            [~,subjArgs,~]=feval(argsName,'S',projectStruct);
+            cd(argsFolder);         
+            if any(ismember(levelIn,'S'))
+                [~,subjArgs,~]=feval(argsName,'S',projectStruct);
+            end
             
             cd(fcnFolder{i});
-            if ismember(levelIn,'T')
+            if ismember(levelIn,'T') % Subject & trials
                 feval(fcnName,methodLetter,currTrials,subjData,subjArgs); % Saving to file & storing to base workspace is done in the processing functions.      
-            else
+            else % Subject only
                 feval(fcnName,methodLetter,subjData,subjArgs); % Saving to file & storing to base workspace is done in the processing functions.
             end
             continue; % Don't iterate through trials

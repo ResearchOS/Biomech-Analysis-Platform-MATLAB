@@ -96,10 +96,13 @@ for i=1:length(fcnNames)
     currDir=pwd;
     fcnName=fcnNames{i};
     cd(fcnFolder{i});
-    levels{i}=feval(fcnName); % nargin=0 returns the processing level for each function
+    levels=feval(fcnName); % nargin=0 returns the processing level for inputs for each function
+    levelsIn{i}=levels.In; % The levels of the input arguments
+    levelsOut{i}=levels.Out; % The levels of the output arguments
+    levelsProc{i}=levels.Proc; % The levels to be processed.
     cd(currDir); % Go back to original directory.
     
-    if ~ismember(levels{i},{'P','S','T'})
+    if ~ismember(levels{i},{'P','S','T','PS','PST','ST','PT'})
         beep;
         warning(['Function does not properly specify the processing level: ' fcnName]);
         return;
@@ -115,7 +118,9 @@ for i=1:length(fcnNames)
     argsName=argsNames{i};
     runFunc=runFuncs(i);
     specTrials=funcSpecifyTrials(fcnCount);
-    level=levels{i};
+    levelIn=levelsIn{i};
+    levelOut=levelsOut{i};
+    levelProc=levelsProc{i};
     methodLetter=strsplit(argsName,'_Process');
     methodLetter=methodLetter{2};
     
@@ -141,7 +146,78 @@ for i=1:length(fcnNames)
     trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
     subNames=fieldnames(trialNames);
     
+    projFldNames=fieldnames(projectStruct);
+    projFldNames=projFldNames(~ismember(projFldNames,subNames)); % Exclude the subject names from the project field names.    
+        
     % Run the processing function
+    if ismember(levelIn,'P') % Get the project level input arguments
+        clear projData;
+        for fldNum=1:length(projFldNames)
+            projData.(projFldNames{fldNum})=projectStruct.(projFldNames{fldNum}); % Project level data only.
+        end
+        cd(argsFolder);
+        [projArgs,~,~]=feval(argsName,level,projData);
+    end
+    
+    if ismember(levelProc,'P') % Processing is done at project, subject, and/or trial level
+        % Isolate project level data only.
+        cd(fcnFolder{i});
+        argsOut=feval(fcnName,methodLetter,projData,projArgs);
+        continue; % No need to iterate through subjects & trials
+    end
+    
+    for sub=1:length(subNames)
+        subName=subNames{sub};
+        
+        if ismember(levelIn,'S') % Get the subject level input arguments
+            clear subjData;
+            subjFldNames=fieldnames(projectStruct.(subName));
+            subjFldNames=subjFldNames(~ismember(subjFldNames,trialNames.(subName))); % Exclude the trial names from the subject field names. ISSUE: SPECIFY TRIALS WON'T REMOVE ALL TRIAL NAMES
+            for fldNum=1:length(subjFldNames)
+                subjData.(subjFldNames{fldNum})=projectStruct.(subName).(subjFldNames{fldNum});
+            end
+            cd(argsFolder);
+            [~,subjArgs,~]=feval(argsName,level,subjData,subName);
+        end
+        
+        if ismember(levelProc,'S') % Processing is done at the subject and/or trial level.
+            cd(fcnFolder{i});
+            if isequal(levelIn,'S') && ismember(levelProc,'S') % Subject level inputs & processing only
+                argsOut=feval(fcnName,methodLetter,subjData,subjArgs);
+            elseif all(ismember(levelIn,'PS')) && ismember(levelProc,'S') % Project & subject level inputs, subject level processing
+                argsOut=feval(fcnName,methodLetter,projData,subjData,projArgs,subjArgs);
+            end
+            
+            continue; % No need to iterate through trials if no processing done there
+        end
+        
+        currTrials=trialNames.(subName);
+        for trialNum=1:length(currTrials)
+            trialName=currTrials{trialNum};
+            trialData=projectStruct.(subName).(trialName); % Nothing to exclude
+            
+            cd(argsFolder);
+            [~,~,trialArgs]=feval(argsName,level,projectStruct,subName,trialName);
+            
+            cd(fcnFolder{i});
+            argsOut=feval(fcnName,methodLetter,projectStruct,projArgs,subjArgs,trialArgs);
+            
+            
+        end
+        
+    end
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     switch level
         case 'P' % Project
             % Run the processing arguments function

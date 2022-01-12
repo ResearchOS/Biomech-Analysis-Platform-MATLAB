@@ -65,7 +65,7 @@ elseif hTrialCheckbox.Value==1 % Has inputs that change once per trial
     level='T';
 end
 
-templatePath=[getappdata(fig,'everythingPath') 'Project-Independent-Templates' slash 'Process_Template' level '.m'];
+templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'Process_Template' level '.m'];
 
 firstLine=['function [dataOut]=' fcnName '_Process' fcnNum '(methodLetter,subName,trialName,varargin)'];
 

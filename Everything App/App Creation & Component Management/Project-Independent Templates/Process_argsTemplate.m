@@ -1,27 +1,49 @@
-function [argsVars,argsPaths]=Process_argsTemplate(projectStruct,subName,trialName,repNum)
+function [projArgs,subjArgs,trialArgs]=Process_argsTemplate(level,projectStruct,subName,trialName,repNum)
 
 %% PURPOSE: SPECIFY THE INPUT ARGUMENTS FOR A PROCESSING FUNCTION
 % Inputs:
+% level: The level to return arguments from (char)
 % projectStruct: The whole structure containing all data (struct)
 % subName: The current subject's name (char)
 % trialName: The current trial's name within the subject (char)
 % repNum: The current repetition number within the trial (double)
 
-% Outputs: Two types of input arguments to the processing functions:
-% 1: Argument variables: These are the actual data that will go into the function itself
-% 2: Argument paths: These are the paths within the projectStruct for each argument, so that they can be loaded & offloaded individually.
-% If the paths and the variables can not match exactly, for whatever reason, then the paths should be more inclusive (i.e. load extra stuff).
-% If the variables are more inclusive, then the processing may not work when loading data individually.
+% Outputs:
+% projArgs: The project-level input arguments to the processing function (cell array)
+% subjArgs: The subject-level input arguments to the processing function (cell array)
+% trialArgs: The trial-level input arguments to the processing function (cell array)
 
-%% Specify argsPaths here
-if nargin==0
-   argsPaths{1}='projectStruct.(subName).(trialName).Results.Mocap.Cardinal.COMPosition.Method1A'; % Example
-   argsPaths{2}='projectStruct.(subName).(trialName).Info.Mocap.StartFrame.Method1A'; % Example
-   argsPaths{3}='projectStruct.(subName).(trialName).Info.Mocap.EndFrame.Method1A'; % Example
-    return;
+%% Specify arguments here
+% Trial-level arguments here
+if ismember(level,'T') 
+    
+    trialArgs{1}=projectStruct.(subName).(trialName).Results.Mocap.Cardinal.COMPosition.Method1A; % Example
+    trialArgs{2}=projectStruct.(subName).(trialName).Info.Mocap.StartFrame.Method1A; % Example
+    trialArgs{3}=projectStruct.(subName).(trialName).Info.Mocap.EndFrame.Method1A; % Example
+    
 end
 
-%% Specify argsVars here
-argsVars.COMPosition.Method1A=projectStruct.(subName).(trialName).Results.Mocap.Cardinal.COMPosition.Method1A; % Example
-argsVars.StartFrame.Method1A=projectStruct.(subName).(trialName).Info.Mocap.StartFrame.Method1A; % Example
-argsVars.EndFrame.Method1A=projectStruct.(subName).(trialName).Info.Mocap.EndFrame.Method1A; % Example
+% Subject-level arguments here
+if ismember(level,'S') 
+    
+    
+    
+end
+
+% Per-project arguments here
+if ismember(level,'P') 
+   
+    
+    
+end
+
+%% Create vars that don't exist just to have something to output
+if ~exist('trialArgs','var')
+    trialArgs=0;
+end
+if ~exist('subjArgs','var')
+    subjArgs=0;
+end
+if ~exist('projArgs','var')
+    projArgs=0;
+end

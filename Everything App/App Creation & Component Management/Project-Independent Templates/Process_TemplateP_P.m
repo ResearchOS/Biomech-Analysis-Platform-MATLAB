@@ -1,4 +1,4 @@
-function Process_TemplateP_P(projStruct,methodLetter,projData,projArgs)
+function Process_TemplateP_P(methodLetter,projData,projArgs)
 
 %% PURPOSE: TEMPLATE FOR TRIAL-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
 % Inputs:
@@ -6,11 +6,14 @@ function Process_TemplateP_P(projStruct,methodLetter,projData,projArgs)
 % methodLetter: The method letter for all output arguments. Matches the letter of the current input arguments function. (char)
 % varargin: The input variables from the input arguments function (cell array, each element is one variable)
 
-%% Setup to establish processing level
+%% Setup to establish processing level & output arguments
 if nargin==0
     assignin('base','levelIn','P'); % Indicates project level function inputs
     assignin('base','levelOut','P'); % Indicates project level function outputs
     return;
+else
+    st=dbstack('-completenames'); % Get the current function name.
+    [fcnOutputs]=getFcnOutputs(st(1).file,methodLetter); % Get the list of output paths from this file
 end
 
 %% TODO: Assign input arguments to variable names
@@ -24,4 +27,4 @@ collectionSite=['Zaferiou Lab' roomNum];
 projStruct.Info.CollectionSite.(['Method1' methodLetter])=collectionSite;
 
 % Store the projectStruct to the base workspace and saves project-level data to file.
-storeAndSaveVars(projStruct,'P'); % Char here indicates output level
+storeAndSaveVars(projStruct,'P',fcnOutputs); % Char here indicates output level

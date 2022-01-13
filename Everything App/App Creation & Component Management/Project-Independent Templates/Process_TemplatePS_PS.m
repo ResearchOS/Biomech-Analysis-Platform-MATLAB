@@ -1,4 +1,4 @@
-function Process_TemplatePS_PS(projectStruct,methodLetter,subNames,projData,projArgs)
+function Process_TemplatePS_PS(methodLetter,subNames,projData,projArgs)
 
 %% PURPOSE: TEMPLATE FOR TRIAL-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
 % Inputs:
@@ -22,8 +22,8 @@ constant=projArgs{2};
 sumHeights=0; % Example
 
 for sub=1:length(subNames)
-    subName=subNames{sub}; % Current subject name        
-    subjArgs=getSubjArgs(subName); % Get the subject-specific input arguments from the input arguments function.
+    subName=subNames{sub}; % Current subject name    
+    [subjArgs,subjData]=getSubjArgs_Data(subName); % Get the subject-specific input arguments from the input arguments function.
     
     %% TODO: Assign subject-level input arguments to variable names
     % Code here
@@ -35,7 +35,7 @@ for sub=1:length(subNames)
     
     %% TODO: Store subject-level computed variable(s) data to the projectStruct.
     subjData.Info.NormHeight=normHeight;
-    storeAndSaveVars(subjData,'S');
+    storeAndSaveVars(subjData,'S',fcnOutputs);
     
 end
 
@@ -48,4 +48,4 @@ projData.Info.CollectionSite.(['Method1' methodLetter])=collectionSite; % Exampl
 projData.Info.MeanHeight=mean(sumHeights); % Example
 
 % Store the projectStruct to the base workspace and saves project-level data to file.
-storeAndSaveVars(projData,'P'); % Char here indicates output level
+storeAndSaveVars(projData,'P',fcnOutputs); % Char here indicates output level

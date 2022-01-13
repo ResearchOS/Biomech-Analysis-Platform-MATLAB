@@ -30,6 +30,9 @@ end
 for i=1:length(fcnOutputs)
     
     assignin('base','currData',eval(fcnOutputs{i})); % Assign the current output variable to the base workspace.
+    if isnumeric(eval(fcnOutputs{i}))
+        evalin('base','currData=single(currData);'); % Convert data to be singles
+    end
     
     if isequal(level,'P')
         fcnOutputsFullPaths=['projectStruct.' fcnOutputs{i}(12:end)]; % Replace the dataStruct part of the path with projectStruct

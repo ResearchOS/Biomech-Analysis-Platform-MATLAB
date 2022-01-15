@@ -11,16 +11,7 @@ hInputCheckboxP=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxProject');
 hInputCheckboxS=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxSubject');
 hInputCheckboxT=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxTrial');
 
-hOutputCheckboxP=findobj(fig,'Type','uicheckbox','Tag','OutputCheckboxProject');
-hOutputCheckboxS=findobj(fig,'Type','uicheckbox','Tag','OutputCheckboxSubject');
-hOutputCheckboxT=findobj(fig,'Type','uicheckbox','Tag','OutputCheckboxTrial');
-
 if hInputCheckboxT.Value==0 && hInputCheckboxS.Value==0 && hInputCheckboxP.Value==0
-    disp(['Need to specify some level of input argument with the checkboxes!']);
-    return;
-end
-
-if hOutputCheckboxT.Value==0 && hOutputCheckboxS.Value==0 && hOutputCheckboxP.Value==0
     disp(['Need to specify some level of input argument with the checkboxes!']);
     return;
 end
@@ -75,22 +66,14 @@ if hInputCheckboxS.Value==1 % Has inputs that change once per subject
     levelsIn=[levelsIn 'S'];
 end
 if hInputCheckboxT.Value==1 % Has inputs that change once per trial
-    levelsIn=[levelsIn 'T'];
+    if hInputCheckboxS.Value==0 && hInputCheckboxP.Value==1
+        levelsIn=[levelsIn 'ST']; % Even if the subject checkbox wasn't checked, need to iterate over subjects anyways to iterate over trials when project level is used.
+    else
+        levelsIn=[levelsIn 'T'];
+    end
 end
 
-% Assign outputs levels
-levelsOut='';
-if hOutputCheckboxP.Value==1 % Has inputs that change once per project
-    levelsOut='P';
-end
-if hOutputCheckboxS.Value==1 % Has inputs that change once per subject
-    levelsOut=[levelsOut 'S'];
-end
-if hOutputCheckboxT.Value==1 % Has inputs that change once per trial
-    levelsOut=[levelsOut 'T'];
-end
-
-templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'Process_Template' levelsIn '_' levelsOut '.m'];
+templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'Process_Template' levelsIn '.m'];
 
 wholeFcnName=[fcnName '_Process' fcnNum];
 

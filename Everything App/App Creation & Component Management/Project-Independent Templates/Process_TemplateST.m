@@ -1,4 +1,4 @@
-function Process_TemplateP_P(methodLetter,projData,projArgs)
+function Process_TemplateST(projectStruct,subName,trialNames)
 
 %% PURPOSE: TEMPLATE FOR TRIAL-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
 % Inputs:
@@ -8,23 +8,25 @@ function Process_TemplateP_P(methodLetter,projData,projArgs)
 
 %% Setup to establish processing level & output arguments
 if nargin==0
-    assignin('base','levelIn','P'); % Indicates project level function inputs
-    assignin('base','levelOut','P'); % Indicates project level function outputs
+    assignin('base','levels','ST'); % Indicates project level function inputs
     return;
-else
-    st=dbstack('-completenames'); % Get the current function name.
-    [fcnOutputs]=getFcnOutputs(st(1).file,methodLetter); % Get the list of output paths from this file
 end
 
 %% TODO: Assign input arguments to variable names
-roomNum=projArgs{1};
+roomNum=getArg('roomNum',subName);
+
+for trialNum=1:length(trialNames)
+    trialName=trialNames{trialNum};
+    
+    comPos=getArg('trialArg',subName,trialName);
+    
+    setArg('comPos',comPos,subName,trialName);
+    
+end
 
 %% TODO: Biomechanical operations for the whole project.
 % Code here.
 collectionSite=['Zaferiou Lab' roomNum];
 
 %% TODO: Store the computed variable(s) data to the projectStruct
-projStruct.Info.CollectionSite.(['Method1' methodLetter])=collectionSite;
-
-% Store the projectStruct to the base workspace and saves project-level data to file.
-storeAndSaveVars(projStruct,'P',fcnOutputs); % Char here indicates output level
+setArg('roomNum',subName);

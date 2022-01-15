@@ -15,7 +15,7 @@ elseif ispc==1
 end
 
 codePath=getappdata(fig,'codePath');
-dataPath=getappdata(fig,'dataPath');
+% dataPath=getappdata(fig,'dataPath');
 projectName=getappdata(fig,'projectName');
 
 % Check for existence of projectStruct
@@ -103,15 +103,13 @@ end
 cd(currDir);
 
 %% Iterate over all processing functions to get their processing level (project, subject, and trial)
-currDir=pwd;
 for i=1:length(fcnNames)    
     fcnName=fcnNames{i};
     cd(fcnFolder{i});
     feval(fcnName); % nargin=0 returns the processing level for inputs for each function
-    levelsIn{i}=evalin('base','levelIn;'); % The levels of the input arguments
-    levelsOut{i}=evalin('base','levelOut;'); % The levels of the output arguments    
+    levels=evalin('base','levels;'); % The levels of the input arguments  
     
-    if any(~ismember(levelsIn{i},{'P','S','T','PS','PST','ST','PT'})) || any(~ismember(levelsOut{i},{'P','S','T','PS','PST','ST','PT'}))
+    if any(~ismember(levels{i},{'P','S','T','PS','PST','ST','PT'}))
         beep;
         warning(['Function does not properly specify the processing level: ' fcnName]);
         return;
@@ -131,10 +129,10 @@ for i=1:length(fcnNames)
     argsName=argsNames{i};
     runFunc=runFuncs(i);
     specTrials=funcSpecifyTrials(fcnCount);
-    levelIn=levelsIn{i};
-    levelOut=levelsOut{i};
+    currLevels=levels{i};
     methodLetter=strsplit(argsName,'_Process');
     methodLetter=methodLetter{2}(isletter(methodLetter{2}));
+    assignin('base','methodLetter',methodLetter); % Send the method letter to the base workspace
     
     if runFunc==0
         disp(['SKIPPING ' fcnName ' BECAUSE IT WAS UNCHECKED IN THE GUI']);
@@ -155,64 +153,38 @@ for i=1:length(fcnNames)
     
     % Run getTrialNames
     trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
-    subNames=fieldnames(trialNames);    
-        
+    subNames=fieldnames(trialNames);
+    
     % Run the processing function
-    if any(ismember(levelIn,'P')) || any(ismember(levelOut,'P')) % % Run things at the project, subject, or trial level
-        [projArgs,projData]=getArgs(methodLetter,0,0,fcnName);
-        if isequal(projArgs,0) && isequal(projData,0)
-            return; % Because there was no project level data
+    if any(ismember(currLevels,'P'))
+        if any(ismember(currLevels,'T'))
+            feval(fcnName,projectStruct,trialNames); % projectStruct is an input argument for convenience of viewing the data only    
+        elseif any(ismember(currLevels,'S'))
+            feval(fcnName,projectStruct,fieldnames(trialNames));
+        else
+            feval(fcnName,projectStruct);
         end
-        
-        cd(fcnFolder{i});
-        if any(ismember(levelIn,'T')) || any(ismember(levelOut,'T')) % Provide subject & trial names
-            feval(fcnName,methodLetter,projData,projArgs,trialNames); % Saving to file & storing to base workspace is done in the processing functions.
-        elseif any(ismember(levelIn,'S')) || any(ismember(levelOut,'S')) % Provide subject names only
-            feval(fcnName,methodLetter,projData,projArgs,subNames); % Saving to file & storing to base workspace is done in the processing functions.
-        else % Project only.
-            feval(fcnName,methodLetter,projData,projArgs); % Saving to file & storing to base workspace is done in the processing functions.
-        end
-        continue; % Don't iterate through subjects
+        continue; % Don't iterate through subjects, that's done within the processing function if necessary
     end
     
     for sub=1:length(subNames)
         subName=subNames{sub};
-        assignin('base','subName',subName);
-        currTrials=trialNames.(subName);
+        currTrials=trialNames.(subName); % The list of trial names in the current subject
         
-        if any(ismember(levelIn,'S')) || any(ismember(levelOut,'S')) % Run things at the subject or trial level but NOT at the project level.
-            cd(argsFolder);         
-            if any(ismember(levelIn,'S'))
-                [subjArgs,subjData]=getArgs(methodLetter,subName,0,fcnName);
-                if isequal(subjArgs,0) && isequal(subjData,0)
-                    return; % Because there was no subject level data.
-                end
+        if any(ismember(currLevels,'S'))
+            if any(ismember(currLevels,'T'))
+                feval(fcnName,projectStruct,subName,currTrials); % projectStruct is an input argument for convenience of viewing the data only
+            else
+               feval(fcnName,projectStruct,subName); 
             end
-            
-            cd(fcnFolder{i});
-            if any(ismember(levelIn,'T')) || any(ismember(levelOut,'T')) % Subject & trials
-                feval(fcnName,methodLetter,subjData,subjArgs,currTrials); % Saving to file & storing to base workspace is done in the processing functions.      
-            else % Subject only
-                feval(fcnName,methodLetter,subjData,subjArgs); % Saving to file & storing to base workspace is done in the processing functions.
-            end
-            continue; % Don't iterate through trials
+            continue; % Don't iterate through trials, that's done within the processing function if necessary
         end
         
-        % Have reached this point because there are only trial level inputs & outputs (& processing) in this function.        
         for trialNum=1:length(currTrials)
             trialName=currTrials{trialNum};
-            assignin('base','trialName',trialName);
-            
-            [trialArgs,trialData]=getArgs(methodLetter,subName,trialName,fcnName);
-            if isequal(trialArgs,0) && isequal(trialData,0)
-                return; % Because there was no trial level data.
-            end
-            
-            cd(fcnFolder{i});
-            feval(fcnName,methodLetter,trialData,trialArgs); % Saving to file & storing to base workspace is done in the processing functions.            
-            
-        end
+            feval(fcnName,projectStruct,subName,trialName); % projectStruct is an input argument for convenience of viewing the data only            
+        end        
         
-    end
+    end    
     
 end

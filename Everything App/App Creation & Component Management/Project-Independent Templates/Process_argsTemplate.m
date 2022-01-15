@@ -1,49 +1,16 @@
-function [projArgs,subjArgs,trialArgs]=Process_argsTemplate(level,projectStruct,subName,trialName,repNum)
+function Process_argsTemplate()
 
-%% PURPOSE: SPECIFY THE INPUT ARGUMENTS FOR A PROCESSING FUNCTION
-% Inputs:
-% level: The level to return arguments from (char)
-% projectStruct: The whole structure containing all data (struct)
-% subName: The current subject's name (char)
-% trialName: The current trial's name within the subject (char)
-% repNum: The current repetition number within the trial (double)
+%% PURPOSE: SPECIFY THE INPUT ARGUMENTS FOR A PROCESSING FUNCTION. THIS FUNCTION'S TEXT IS READ BY PROCESSRUNFUNCTIONS.M, THIS FUNCTION IS NEVER ACTUALLY RUN.
+% Inputs: None
 
-% Outputs:
-% projArgs: The project-level input arguments to the processing function (cell array)
-% subjArgs: The subject-level input arguments to the processing function (cell array)
-% trialArgs: The trial-level input arguments to the processing function (cell array)
+% Outputs: None
+% The method ID is not specified in the outputs because that will be automatically assigned based on the current processing function's number & this
+% argument's letter
 
-%% Specify arguments here
-% Trial-level arguments here
-if ismember(level,'T') 
-    
-    trialArgs{1}=projectStruct.(subName).(trialName).Results.Mocap.Cardinal.COMPosition.Method1A; % Example
-    trialArgs{2}=projectStruct.(subName).(trialName).Info.Mocap.StartFrame.Method1A; % Example
-    trialArgs{3}=projectStruct.(subName).(trialName).Info.Mocap.EndFrame.Method1A; % Example
-    
-end
+%% Input arguments
+startFrame=projectStruct.(subName).(trialName).Mocap.Info.StartFrame.Method1A; % Example
+endFrame=projectStruct.(subName).(trialName).Mocap.Info.EndFrame.Method1A; % Example
+comPos=projectStruct.(subName).(trialName).Mocap.Results.COMPosition.Method1A; % Example
 
-% Subject-level arguments here
-if ismember(level,'S') 
-    
-    
-    
-end
-
-% Per-project arguments here
-if ismember(level,'P') 
-   
-    
-    
-end
-
-%% Create vars that don't exist just to have something to output
-if ~exist('trialArgs','var')
-    trialArgs=0;
-end
-if ~exist('subjArgs','var')
-    subjArgs=0;
-end
-if ~exist('projArgs','var')
-    projArgs=0;
-end
+%% Output arguments
+projectStruct.(subName).(trialName).Mocap.Results.COMVelocity=comVeloc; % Example

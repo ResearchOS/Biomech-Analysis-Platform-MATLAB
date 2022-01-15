@@ -87,4 +87,33 @@ matLogPath=[logPath(1:length(logPath)-length(ext)-1) '.mat'];
 setappdata(fig,'LogsheetMatPath',matLogPath);
 save(matLogPath,'logVar');
 
+% Get all of the subject names from the logsheet variable (if the 'Subject ID Column Header' field has been entered)
+hSubjHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
+subjHeader=hSubjHeaderField.Value;
+numHeaderRowsField=findobj(fig,'Type','uinumericeditfield','Tag','NumHeaderRowsField');
+numHeaderRows=numHeaderRowsField.Value;
+if ~isequal(subjHeader,'Subject ID Column Header') % Has been modified from the default
+    subjColNum=ismember(logVar(1,:),{subjHeader}); % The column number for the subject codename
+    subjNames=logVar(numHeaderRows+1:end,subjColNum); % All subject names
+    subjNames=unique(subjNames); % Remove all duplicates (NOTE: WILL BE THROWN OFF BY NAN)
+    for i=1:length(subjNames)
+        if ~isvarname(subjNames{i})
+            subjNames{i}=['S' subjNames{i}];
+        end
+        if ~isvarname(subjNames{i})
+            error(['Subject Name In Logsheet is Not Valid: ' subjNames{i}]);
+        end
+    end
+    setappdata(fig,'subjectNames',subjNames); % All subject names
+setappdata(fig,'subjectCodenameColumnNum',subjColNum); % Column number for subject codenames
+end
+
+trialIDHeaderField=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
+if ~isequal(trialIDHeaderField.Value,'')
+    trialIDHeaderColNum=trialIDHeaderField.Value;
+    
+    
+    setappdata(fig,'trialNameColumnNum',trialIDHeaderColNum); % The column number for trial names
+end
+
 figure(fig);

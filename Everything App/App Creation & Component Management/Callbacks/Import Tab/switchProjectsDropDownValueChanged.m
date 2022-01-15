@@ -77,6 +77,7 @@ if existingProject==1
     else % Set to default
         setappdata(fig,'logsheetPath','');
         hLog.Value='Set Logsheet Path';
+        setappdata(fig,'subjectCodenameColumnNum',0);
     end    
     
     % Data Path
@@ -112,7 +113,7 @@ if existingProject==1
         hNumHeaderRows.Value=getappdata(fig,'numHeaderRows');
     else
         hNumHeaderRows.Value=0;
-        setappdata(fig,'numHeaderRows','');
+        setappdata(fig,'numHeaderRows',0);
     end
     
     % Subject ID Col Header
@@ -122,6 +123,7 @@ if existingProject==1
     else
         hSubjIDColHeader.Value='Set Subject ID Column Header';
         setappdata(fig,'subjIDColHeader','');
+        setappdata(fig,'subjectCodenameColumnNum',0);
     end
     
     % Target Trial ID Col Header

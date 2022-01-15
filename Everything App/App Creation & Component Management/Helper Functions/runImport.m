@@ -41,7 +41,9 @@ codePath=getappdata(fig,'codePath');
 logVar=load(getappdata(fig,'LogsheetMatPath'),'logVar'); % Loads in as 'logVar' variable.
 logVar=logVar.logVar; % Convert struct to cell array
 % Run specifyTrials
-inclStruct=specifyTrials_Import; % Return the inclusion criteria
+hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
+specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
+inclStruct=feval(['specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNumIdx)]); % Return the inclusion criteria
 % Run getValidTrialNames
 [allTrialNames,logVar]=getTrialNames(inclStruct,logVar,fig,0);
 

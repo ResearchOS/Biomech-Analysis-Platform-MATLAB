@@ -52,6 +52,7 @@ end
 % IF CHECKBOX CHECKED TO SAVE ALL DATA OF ONE LEVEL AT THE SAME TIME, THEN DO THAT
 % IF CHECKBOX UNCHECKED, SAVE ONLY THE MODIFIED DATA TO A TEMPORARY FILE, THEN IN THE BACKGROUND PUSH THAT TEMPORARY DATA INTO THE PERMANENT STORAGE.
 % Save the modified data to a temporary file, then use the Background Pool to save that data to the permanent files in the background.
+saveModified=0; % Placeholder until the Settings checkbox is written.
 if saveModified==0 % Save all data at this level to the file
     switch level
         case 'P' % Save project data

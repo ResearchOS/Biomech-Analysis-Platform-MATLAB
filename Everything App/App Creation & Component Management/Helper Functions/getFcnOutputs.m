@@ -8,7 +8,7 @@ function [fcnOutputs]=getFcnOutputs(filePath,methodLetter)
 % Outputs:
 % fcnOutputs: Contains all path names to the output variables in the struct, in generic form (struct of cell arrays of chars)
 
-text=regexp(fileread(filePath),'\n','split'); % Read in the file, where each line is one element of a cell array
+text=regexp(fileread(filePath),'\n','split'); % Read in the .m file, where each line is one element of a cell array
 outCount.P=0;
 outCount.S=0;
 outCount.T=0;
@@ -21,11 +21,11 @@ for lineNum=1:length(text)
         continue; % Skip comment lines
     end
     
-    if ~any(contains(currLine,'.')) 
+    if ~any(contains(currLine,'.'))
         continue; % If there is no dot indexing in this line, skip it.
     end
     
-%     currLine=strtrim(currLine); % Remove leading & trailing white spaces    
+    %     currLine=strtrim(currLine); % Remove leading & trailing white spaces
     
     if isequal(currLine(1:8),'projData')
         level='P';
@@ -38,7 +38,7 @@ for lineNum=1:length(text)
     end
     
     currLine=currLine(~isspace(currLine)); % Remove significant white spaces
-        
+    
     equalsIdx=strfind(currLine,'='); % Find index of equals sign
     
     if isempty(equalsIdx)
@@ -47,25 +47,25 @@ for lineNum=1:length(text)
     
     currStructPath=strsplit(currLine(1:equalsIdx-1),'.'); % Split the struct path up by the dots
     
-%     if isequal(level,'P')
-%         newStructPath='projectStruct';
-%     elseif isequal(level,'S')
-%         newStructPath='projectStruct.(subName)';
-%     elseif isequal(level,'T')
-%         newStructPath='projectStruct.(subName).(trialName)';
-%     end
+    %     if isequal(level,'P')
+    %         newStructPath='projectStruct';
+    %     elseif isequal(level,'S')
+    %         newStructPath='projectStruct.(subName)';
+    %     elseif isequal(level,'T')
+    %         newStructPath='projectStruct.(subName).(trialName)';
+    %     end
     newStructPath='dataStruct'; % To match the storeAndSaveVars.m
     for i=2:length(currStructPath)
-                
+        
         newStructPath=[newStructPath '.' currStructPath{i}]; % Generic format (i.e. projectStruct.(subName).(trialName)...)
         
-%         if isequal(currStructPath{i}([1 end]),'()')
-%             if i==2
-%                 level='S';
-%             elseif i==3
-%                 level='T';
-%             end
-%         end
+        %         if isequal(currStructPath{i}([1 end]),'()')
+        %             if i==2
+        %                 level='S';
+        %             elseif i==3
+        %                 level='T';
+        %             end
+        %         end
         
         if contains(currStructPath{i},'Method') && contains(currStructPath{i},'methodLetter')
             numIdx=isstrprop(currStructPath{i},'digit'); % Get the idx of the method number
@@ -75,16 +75,8 @@ for lineNum=1:length(text)
         
     end
     
-    switch level
-        case 'P'
-            outCount.P=outCount.P+1;
-            fcnOutputs.P{outCount.P}=newStructPath;
-        case 'S'
-            outCount.S=outCount.S+1;
-            fcnOutputs.S{outCount.S}=newStructPath;
-        case 'T'
-            outCount.T=outCount.T+1;
-            fcnOutputs.T{outCount.T}=newStructPath;
-    end
+    % Store the function names
+    outCount.(level)=outCount.(level)+1;
+    fcnOutputs.(level){outCounts.(level)}=newStructPath;
     
 end

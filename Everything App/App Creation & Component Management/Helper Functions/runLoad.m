@@ -16,7 +16,9 @@ projectStruct=evalin('base','projectStruct;'); % Bring the entire projectStruct 
 % cd into the directory with this project's import, then back out.
 currDir=pwd;
 cd([getappdata(fig,'codePath') 'Import_' getappdata(fig,'projectName') slash 'Specify Trials']);
-inclStruct=specifyTrials_Import;
+hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
+specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
+inclStruct=feval(['specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNumIdx)]); % Return the inclusion criteria
 cd(currDir);
 
 logPath=getappdata(fig,'logsheetPath');

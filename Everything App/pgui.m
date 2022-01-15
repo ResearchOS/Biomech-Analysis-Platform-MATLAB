@@ -36,6 +36,10 @@ setappdata(fig,'functionNames',''); % functionNames always begins empty.
 setappdata(fig,'fcnNamesFilePath',''); % Function names file path always begins empty
 setappdata(fig,'processRunArrowCount',0); % The Process > Run tab arrow count always begins at 0.
 setappdata(fig,'dataPanelArrowCount',0); % The Import tab data select panel arrow count always begins at 0.
+setappdata(fig,'subjectNames',''); % subjectNames always begins empty.
+setappdata(fig,'subjectCodenameColumnNum',0); % The column number in the logsheet for the subject codenames
+setappdata(fig,'numHeaderRows',0); % The number of header rows in the logsheet
+setappdata(fig,'trialNameColumnNum',0); % The column number in the logsheet for the trial names to be stored in the struct.
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off'); % Create the tab group for the four stages of data processing
@@ -62,8 +66,6 @@ openImportMetadataButton=uibutton(importTab,'push','Text','Create importMetadata
 openGroupSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton));
 % Checkbox to redo import (overwrites all existing data files)
 redoImportCheckbox=uicheckbox(importTab,'Text','Redo (Overwrite) Import','Value',0,'Tag','RedoImportCheckbox','ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
-% Checkbox to update metadata only in existing files
-% updateMetadataCheckbox=uicheckbox(importTab,'Text','Update Metadata Only','Value',0','Tag','UpdateMetadataCheckbox','ValueChangedFcn',@(updateMetadataCheckbox,event) updateMetadataCheckboxValueChanged(updateMetadataCheckbox));
 % Button to run the import/load procedure
 runImportButton=uibutton(importTab,'push','Text','Run Import/Load','Tag','RunImportButton','ButtonPushedFcn',@(runImportButton,event) runImportButtonPushed(runImportButton));
 % Drop down to switch between active projects.
@@ -84,10 +86,6 @@ subjIDColHeaderField=uieditfield(importTab,'text','Value','Subject ID Column Hea
 trialIDColHeaderDataTypeLabel=uilabel(importTab,'Text','Data Type: Trial ID Column Header');
 % Trial ID column header text box
 trialIDColHeaderDataTypeField=uieditfield(importTab,'text','Value','Data Type: Trial ID Column Header','Tag','DataTypeTrialIDColumnHeaderField','ValueChangedFcn',@(trialIDColHeaderField,event) trialIDColHeaderDataTypeFieldValueChanged(trialIDColHeaderField));
-% Trial ID format label
-% trialIDFormatLabel=uilabel(importTab,'Text','Trial ID Format','Tag','TrialIDFormatLabel');
-% % Trial ID format field
-% trialIDFormatField=uieditfield(importTab,'text','Value','S T','Tag','TrialIDFormatField','ValueChangedFcn',@(trialIDFormatField,event) trialIDFormatFieldValueChanged(trialIDFormatField));
 % Target Trial ID format label
 targetTrialIDColHeaderLabel=uilabel(importTab,'Text','Target Trial ID Column Header','Tag','TargetTrialIDColHeaderLabel');
 % Target Trial ID format field
@@ -149,14 +147,14 @@ setupFunctionNamesLabel=uilabel(processSetupTab,'Text','Function Names','Tag','S
 setupFunctionNamesField=uitextarea(processSetupTab,'Value','Function Names','Tag','SetupFunctionNamesField','Editable','on','Visible','on','ValueChangedFcn',@(setupFunctionNamesField,event) setupFunctionNamesFieldValueChanged(setupFunctionNamesField));
 newFunctionPanel=uipanel(processSetupTab,'Title','New Function','Tag','NewFunctionPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
 saveGroupButton=uibutton(processSetupTab,'push','Text','Save Group To File','Tag','SaveGroupButton','ButtonPushedFcn',@(saveGroupButton,event) saveGroupButtonPushed(saveGroupButton));
-inputsLabel=uilabel(processSetupTab,'Text','Processing Levels','Tag','InputsLabel');
-% outputsLabel=uilabel(processSetupTab,'Text','Outputs','Tag','OutputsLabel');
+inputsLabel=uilabel(processSetupTab,'Text','Input Levels','Tag','InputsLabel');
+outputsLabel=uilabel(processSetupTab,'Text','Output Levels','Tag','OutputsLabel');
 inputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','InputCheckboxProject');
 inputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','InputCheckboxSubject');
 inputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','InputCheckboxTrial');
-% outputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','OutputCheckboxProject');
-% outputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','OutputCheckboxSubject');
-% outputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','OutputCheckboxTrial');
+outputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','OutputCheckboxProject');
+outputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','OutputCheckboxSubject');
+outputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','OutputCheckboxTrial');
 newFunctionButton=uibutton(processSetupTab,'push','Text','Create New Function','Tag','NewFunctionButton','ButtonPushedFcn',@(newFunctionButton,event) newFunctionButtonPushed(newFunctionButton));
 addFunctionGroupButton=uibutton(processSetupTab,'push','Text','+','Tag','AddFunctionGroupButton','ButtonPushedFcn',@(addFunctionGroupButton,event) addFunctionGroupButtonPushed(addFunctionGroupButton));
 
@@ -175,9 +173,9 @@ specifyTrialsCheckboxLabel=uilabel(processRunTab,'Text','Function-Specific Speci
 processRunUpArrowButton=uibutton(processRunTab,'Text',{'/\';'||'},'Tag','ProcessRunUpArrowButton','ButtonPushedFcn',@(processRunUpArrowButton,event) processRunUpArrowButtonPushed(processRunUpArrowButton));
 processRunDownArrowButton=uibutton(processRunTab,'Text',{'||';'\/'},'Tag','ProcessRunDownArrowButton','ButtonPushedFcn',@(processRunDownArrowButton,event) processRunDownArrowButtonPushed(processRunDownArrowButton));
 
-
 processTab.UserData=struct('SetupGroupNameLabel',setupGroupNameLabel,'SetupGroupNameDropDown',setupGroupNameDropDown,'SetupFunctionNamesLabel',setupFunctionNamesLabel,'SetupFunctionNamesField',setupFunctionNamesField,...
     'NewFunctionPanel',newFunctionPanel,'SaveGroupButton',saveGroupButton,'InputsLabel',inputsLabel,'InputCheckboxProject',inputCheckboxP,'InputCheckboxSubject',inputCheckboxS,'InputCheckboxTrial',inputCheckboxT,...
+    'OutputsLabel',outputsLabel,'OutputCheckboxProject',outputCheckboxP,'OutputCheckboxSubject',outputCheckboxS,'OutputCheckboxTrial',outputCheckboxT,...
     'NewFunctionButton',newFunctionButton,'AddFunctionGroupButton',addFunctionGroupButton,'RunGroupNameLabel',runGroupNameLabel,'RunGroupNameDropDown',runGroupNameDropDown,'RunFunctionNamesLabel',runFunctionNamesLabel,...
     'GroupRunCheckboxLabel',groupRunCheckboxLabel,'GroupArgsCheckboxLabel',groupArgsCheckboxLabel,'RunGroupButton',runGroupButton,'RunAllButton',runAllButton,'RunFunctionsPanel',runFunctionsPanel,...
     'SpecifyTrialsGroupButton',specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',specifyTrialsCheckboxLabel,'ProcessRunUpArrowButton',processRunUpArrowButton,'ProcessRunDownArrowButton',processRunDownArrowButton);

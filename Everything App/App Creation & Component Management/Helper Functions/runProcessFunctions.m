@@ -19,9 +19,7 @@ dataPath=getappdata(fig,'dataPath');
 projectName=getappdata(fig,'projectName');
 
 % Check for existence of projectStruct
-if evalin('base','exist(''projectStruct'',''var'')==1')==1
-    projectStruct=evalin('base','projectStruct;'); % Load the projectStruct into the current workspace from the base workspace.
-else
+if evalin('base','exist(''projectStruct'',''var'')==1')==0
     beep;
     warning('Load the data into the projectStruct first!');
     return;
@@ -67,7 +65,7 @@ for i=lineNum+1:length(text)
     number=fcnNameCell{2}(~isletter(fcnNameCell{2}));
     letter=fcnNameCell{2}(isletter(fcnNameCell{2}));
     fcnNames{fcnCount}=[fcnNameCell{1} '_Process' number]; % All the function names, in order
-    argsNames{fcnCount}=[fcnNameCell{1} '_Process' letter]; % All the argument function names, in order
+    argsNames{fcnCount}=[fcnNameCell{1} '_Process' number letter]; % All the argument function names, in order
     runAndSpecifyTrialsCell=strsplit(strtrim(a{2}),' ');
     runFuncs(fcnCount)=str2double(runAndSpecifyTrialsCell{1}(end));
     funcSpecifyTrials(fcnCount)=str2double(runAndSpecifyTrialsCell{2}(end));
@@ -90,6 +88,20 @@ for i=lineNum+1:length(text)
     
 end
 
+%% Check existence of all input arguments functions
+argsFolder=[codePath 'Process_' projectName slash 'Arguments'];
+currDir=cd(argsFolder);
+for i=1:length(fcnNames)
+    
+    if exist([argsNames{i} '.m'],'file')~=2
+        beep;
+        warning(['Input Argument Function Does Not Exist: ' argsNames{i}]);
+        return;
+    end
+    
+end
+cd(currDir);
+
 %% Iterate over all processing functions to get their processing level (project, subject, and trial)
 currDir=pwd;
 for i=1:length(fcnNames)    
@@ -109,8 +121,7 @@ end
 
 cd(currDir); % Go back to original directory.
 
-%% Iterate over all processing functions to run them.
-argsFolder=[codePath 'Process_' projectName slash 'Arguments'];
+%% Iterate over all processing functions in the group to run them.
 for i=1:length(fcnNames)
     
     % Bring the projectStruct from the base workspace into this one. Doing this for each function incorporates results of any previously finished functions.
@@ -123,7 +134,7 @@ for i=1:length(fcnNames)
     levelIn=levelsIn{i};
     levelOut=levelsOut{i};
     methodLetter=strsplit(argsName,'_Process');
-    methodLetter=methodLetter{2};
+    methodLetter=methodLetter{2}(isletter(methodLetter{2}));
     
     if runFunc==0
         disp(['SKIPPING ' fcnName ' BECAUSE IT WAS UNCHECKED IN THE GUI']);
@@ -144,27 +155,22 @@ for i=1:length(fcnNames)
     
     % Run getTrialNames
     trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
-    subNames=fieldnames(trialNames);
-    
-    projFldNames=fieldnames(projectStruct);
-    projFldNames=projFldNames(~ismember(projFldNames,subNames)); % Exclude the subject names from the project field names.    
+    subNames=fieldnames(trialNames);    
         
     % Run the processing function
-    if ismember(levelIn,'P') || ismember(levelOut,'P') % % Run things at the project, subject, or trial level
-        clear projData;
-        for fldNum=1:length(projFldNames)
-            projData.(projFldNames{fldNum})=projectStruct.(projFldNames{fldNum}); % Project level data only.
+    if any(ismember(levelIn,'P')) || any(ismember(levelOut,'P')) % % Run things at the project, subject, or trial level
+        [projArgs,projData]=getArgs(methodLetter,0,0,fcnName);
+        if isequal(projArgs,0) && isequal(projData,0)
+            return; % Because there was no project level data
         end
-        cd(argsFolder);
-        [projArgs,~,~]=feval(argsName,'P',projData);
         
         cd(fcnFolder{i});
-        if ismember(levelIn,'T') % Provide subject & trial names
-            feval(fcnName,projectStruct,methodLetter,trialNames,projData,projArgs); % Saving to file & storing to base workspace is done in the processing functions.
-        elseif ismember(levelIn,'S') % Provide subject names only
-            feval(fcnName,projectStruct,methodLetter,subNames,projData,projArgs); % Saving to file & storing to base workspace is done in the processing functions.
+        if any(ismember(levelIn,'T')) || any(ismember(levelOut,'T')) % Provide subject & trial names
+            feval(fcnName,methodLetter,projData,projArgs,trialNames); % Saving to file & storing to base workspace is done in the processing functions.
+        elseif any(ismember(levelIn,'S')) || any(ismember(levelOut,'S')) % Provide subject names only
+            feval(fcnName,methodLetter,projData,projArgs,subNames); % Saving to file & storing to base workspace is done in the processing functions.
         else % Project only.
-            feval(fcnName,projectStruct,methodLetter,projData,projArgs); % Saving to file & storing to base workspace is done in the processing functions.
+            feval(fcnName,methodLetter,projData,projArgs); % Saving to file & storing to base workspace is done in the processing functions.
         end
         continue; % Don't iterate through subjects
     end
@@ -177,12 +183,15 @@ for i=1:length(fcnNames)
         if any(ismember(levelIn,'S')) || any(ismember(levelOut,'S')) % Run things at the subject or trial level but NOT at the project level.
             cd(argsFolder);         
             if any(ismember(levelIn,'S'))
-                [~,subjArgs,~]=feval(argsName,'S',projectStruct);
+                [subjArgs,subjData]=getArgs(methodLetter,subName,0,fcnName);
+                if isequal(subjArgs,0) && isequal(subjData,0)
+                    return; % Because there was no subject level data.
+                end
             end
             
             cd(fcnFolder{i});
-            if ismember(levelIn,'T') % Subject & trials
-                feval(fcnName,methodLetter,currTrials,subjData,subjArgs); % Saving to file & storing to base workspace is done in the processing functions.      
+            if any(ismember(levelIn,'T')) || any(ismember(levelOut,'T')) % Subject & trials
+                feval(fcnName,methodLetter,subjData,subjArgs,currTrials); % Saving to file & storing to base workspace is done in the processing functions.      
             else % Subject only
                 feval(fcnName,methodLetter,subjData,subjArgs); % Saving to file & storing to base workspace is done in the processing functions.
             end
@@ -193,10 +202,11 @@ for i=1:length(fcnNames)
         for trialNum=1:length(currTrials)
             trialName=currTrials{trialNum};
             assignin('base','trialName',trialName);
-            trialData=projectStruct.(subName).(trialName); % Nothing to exclude
             
-            cd(argsFolder);
-            [~,~,trialArgs]=feval(argsName,'T',projectStruct);
+            [trialArgs,trialData]=getArgs(methodLetter,subName,trialName,fcnName);
+            if isequal(trialArgs,0) && isequal(trialData,0)
+                return; % Because there was no trial level data.
+            end
             
             cd(fcnFolder{i});
             feval(fcnName,methodLetter,trialData,trialArgs); % Saving to file & storing to base workspace is done in the processing functions.            

@@ -63,6 +63,14 @@ if isempty(hDataTypesDropDown.Value) || isequal(hDataTypesDropDown.Value,'No Dat
     warning(['Missing data types to import']);
     return;
 end
+% specifyTrials button
+hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
+if ~isequal(hSpecifyTrialsButton.Text(1:4),'Open')
+    beep;
+    specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
+    warning(['Missing specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNumIdx) '.m']);
+    return;
+end
 % Data types import method
 % Need to check this for every data type entered
 % hDataTypesDropDownNum=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField');

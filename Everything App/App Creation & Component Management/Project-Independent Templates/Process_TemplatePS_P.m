@@ -23,7 +23,7 @@ sumHeights=0;
 
 for sub=1:length(subNames)
     subName=subNames{sub}; % Current subject name        
-    subjArgs=getSubjArgs(subName); % Get the subject-specific input arguments from the input arguments function.
+    subjArgs=getArgs(methodLetter,subName); % Get the subject-specific input arguments from the input arguments function.
     
     %% TODO: Assign subject-level input arguments to variable names
     % Code here

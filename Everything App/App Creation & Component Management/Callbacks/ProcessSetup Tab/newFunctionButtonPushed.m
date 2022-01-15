@@ -7,11 +7,20 @@ function []=newFunctionButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 
 % Decide which template to copy from, based on the level of inputs selected. Use the lowest level selected (total of 3 templates)
-hProjectCheckbox=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxProject');
-hSubjectCheckbox=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxSubject');
-hTrialCheckbox=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxTrial');
+hInputCheckboxP=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxProject');
+hInputCheckboxS=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxSubject');
+hInputCheckboxT=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxTrial');
 
-if hTrialCheckbox.Value==0 && hSubjectCheckbox.Value==0 && hProjectCheckbox.Value==0
+hOutputCheckboxP=findobj(fig,'Type','uicheckbox','Tag','OutputCheckboxProject');
+hOutputCheckboxS=findobj(fig,'Type','uicheckbox','Tag','OutputCheckboxSubject');
+hOutputCheckboxT=findobj(fig,'Type','uicheckbox','Tag','OutputCheckboxTrial');
+
+if hInputCheckboxT.Value==0 && hInputCheckboxS.Value==0 && hInputCheckboxP.Value==0
+    disp(['Need to specify some level of input argument with the checkboxes!']);
+    return;
+end
+
+if hOutputCheckboxT.Value==0 && hOutputCheckboxS.Value==0 && hOutputCheckboxP.Value==0
     disp(['Need to specify some level of input argument with the checkboxes!']);
     return;
 end
@@ -57,17 +66,35 @@ end
 % Function did not exist in the library, create a new one from template.
 filePathUser=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash fcnName '_Process' fcnNum '.m'];
 
-if hProjectCheckbox.Value==1 % Has inputs that change once per project
-    level='P';
-elseif hSubjectCheckbox.Value==1 % Has inputs that change once per subject
-    level='S';
-elseif hTrialCheckbox.Value==1 % Has inputs that change once per trial
-    level='T';
+% Assign inputs levels
+levelsIn='';
+if hInputCheckboxP.Value==1 % Has inputs that change once per project
+    levelsIn='P';
+end
+if hInputCheckboxS.Value==1 % Has inputs that change once per subject
+    levelsIn=[levelsIn 'S'];
+end
+if hInputCheckboxT.Value==1 % Has inputs that change once per trial
+    levelsIn=[levelsIn 'T'];
 end
 
-templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'Process_Template' level '.m'];
+% Assign outputs levels
+levelsOut='';
+if hOutputCheckboxP.Value==1 % Has inputs that change once per project
+    levelsOut='P';
+end
+if hOutputCheckboxS.Value==1 % Has inputs that change once per subject
+    levelsOut=[levelsOut 'S'];
+end
+if hOutputCheckboxT.Value==1 % Has inputs that change once per trial
+    levelsOut=[levelsOut 'T'];
+end
 
-firstLine=['function [dataOut]=' fcnName '_Process' fcnNum '(methodLetter,subName,trialName,varargin)'];
+templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'Process_Template' levelsIn '_' levelsOut '.m'];
+
+wholeFcnName=[fcnName '_Process' fcnNum];
+
+% firstLine=['function [dataOut]=' fcnName '_Process' fcnNum '(methodLetter,subName,trialName,varargin)'];
 
 % Create the new file
-createFileFromTemplate(templatePath,filePathUser,firstLine);
+createFileFromTemplate(templatePath,filePathUser,wholeFcnName);

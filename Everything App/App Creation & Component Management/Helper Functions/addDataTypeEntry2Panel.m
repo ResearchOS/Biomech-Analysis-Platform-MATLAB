@@ -95,7 +95,7 @@ groupText=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
 
 for i=1:length(groupNames)
     
-    if isequal(groupNames{i},'Create Group Name') && length(groupNames)==1
+    if (isequal(groupNames{i},'Create Group Name') && length(groupNames)==1) || (isempty(groupNames{1}) && length(groupNames)==1)
         break;
     end
     

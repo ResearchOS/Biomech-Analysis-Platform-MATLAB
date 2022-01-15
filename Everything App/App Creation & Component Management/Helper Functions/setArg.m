@@ -123,7 +123,7 @@ saveModifiedOnly=0; % Flag to save only the data that has been modified. This va
 if saveModifiedOnly==0 % Save all data
     switch level
         case 'P'
-            savePath=savePathRoot;
+            savePath=[savePathRoot slash projectName '.mat'];
             subNames=getappdata(fig,'subjectNames');
             fldNames=evalin('base','fieldnames(projectStruct);');
             fldNames=fldNames(~ismember(fldNames,subNames)); % Exclude subject names from field names
@@ -131,7 +131,7 @@ if saveModifiedOnly==0 % Save all data
                 data.(fldNames{i})=evalin('base',['projectStruct.(' fldNames{i} ')']);
             end
         case 'S'
-            savePath=[savePathRoot slash subName];
+            savePath=[savePathRoot slash subName slash subName '.mat'];
             trialNameColNum=getappdata(fig,'trialNameColumnNum');
             subjNameColNum=getappdata(fig,'subjectCodenameColumnNum');
             logVar=evalin('base','logVar');
@@ -143,7 +143,7 @@ if saveModifiedOnly==0 % Save all data
                 data.(fldNames{i})=evalin('base',['projectStruct.' subName '.(' fldNames{i} ')']);
             end
         case 'T'
-            savePath=[savePathRoot slash subName slash trialName];
+            savePath=[savePathRoot slash subName slash trialName '.mat'];
             data=evalin('base',['projectStruct.' subName '.' trialName]);
     end
     

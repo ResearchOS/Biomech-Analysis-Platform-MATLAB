@@ -36,6 +36,7 @@ argsName=[argsPath slash fcnName methodLetter '.m']; % The full path to the argu
 text=regexp(fileread(argsName),'\n','split'); % Read in the text of the input arguments function
 
 argFound=0; % Initialize that the input argument was not found
+structArg=0; % Initialize that the argument is not in the structure
 for i=1:length(text)
     currLine=strtrim(text{i}(~isspace(text{i}))); % The current line, with all spaces removed.
     
@@ -56,30 +57,34 @@ for i=1:length(text)
         argFound=1;
         structPath=currLine(equalsIdx+1:semicolonIdx-1); % The structure path. Need to ensure it ends at the method number
         splitPath=strsplit(structPath,'.'); % Split the struct path by dots
-        assert(isequal(splitPath{1},'projectStruct')); % Check that the projectStruct is the first part of the path
-        newPath=splitPath{1};
-        for j=2:length(splitPath)
-            % 3. Replace (subName) and (trialName) in the input argument paths with the values passed in to this function
-            if j==2 && isequal(splitPath{j}([1 length(splitPath{j})]),'()')
-                newPath=[newPath '.' subName];
-            elseif j==3 && isequal(splitPath{j}([1 length(splitPath{j})]),'()')
-                newPath=[newPath '.' trialName];
-            else
-                newPath=[newPath '.' splitPath{j}];
-            end
-            
-            % Ensure that the method ID is the entirety of this field name
-            if isequal(splitPath{j}(1:6),'Method') && (6+sum(isstrprop(splitPath{j},'digit'))+sum(isstrprop(splitPath{j},'alpha')))==length(splitPath{j})
-                if length(splitPath)>j
-                    warning(['Omitted field names of data path in structure after method ID field. Arg: ' argName]);
+        if isequal(splitPath{1},'projectStruct') % Check if the projectStruct is the first part of the path
+            structArg=1; % The argument is within the structure
+            newPath=splitPath{1};
+            for j=2:length(splitPath)
+                % 3. Replace (subName) and (trialName) in the input argument paths with the values passed in to this function
+                if j==2 && isequal(splitPath{j}([1 length(splitPath{j})]),'()')
+                    newPath=[newPath '.' subName];
+                elseif j==3 && isequal(splitPath{j}([1 length(splitPath{j})]),'()')
+                    newPath=[newPath '.' trialName];
+                else
+                    newPath=[newPath '.' splitPath{j}];
                 end
-                break; % Stop parsing the path after the method ID, even if more was specified.
-            elseif length(splitPath)==j % The end of the path name has been reached, but no method ID was specified.
-                error(['No method ID field found for argument ' argName ' in: ' argsName]);
+                
+                % Ensure that the method ID is the entirety of this field name
+                if isequal(splitPath{j}(1:6),'Method') && (6+sum(isstrprop(splitPath{j},'digit'))+sum(isstrprop(splitPath{j},'alpha')))==length(splitPath{j})
+                    if length(splitPath)>j
+                        warning(['Omitted field names of data path in structure after method ID field. Arg: ' argName]);
+                    end
+                    break; % Stop parsing the path after the method ID, even if more was specified.
+                elseif length(splitPath)==j % The end of the path name has been reached, but no method ID was specified.
+                    error(['No method ID field found for argument ' argName ' in: ' argsName]);
+                end
+                
             end
-            
+            assignin('base','structPath',newPath); % Put the structure path in to the base workspace
+        else % This argument is not in the projectStruct, it is something manually specified.
+            argIn=eval(structPath);
         end
-        assignin('base','structPath',newPath); % Put the structure path in to the base workspace
         break; % Don't look through any more lines
     end
     
@@ -90,8 +95,12 @@ if argFound==0
     beep;
     error(['The argument ' argName ' was not found in the args function ' fcnName methodLetter]);
 end
-if evalin('base','existField(projectStruct,structPath)')==1 % Check that the specified argument field actually exists in the structure.
-    argIn=evalin('base','argIn=eval(''structPath'')'); % Evaluate the structure path in the base workspace, and it is returned here.
-else
-    error(['The argument ' argName ' was not found in the projectStruct at the path: ' newPath]);
+if structArg==1
+    if evalin('base','existField(projectStruct,structPath)')==1 % Check that the specified argument field actually exists in the structure.
+        argIn=evalin('base',['argIn=' structPath ';']); % Evaluate the structure path in the base workspace, and it is returned here.
+    else
+        error(['The argument ' argName ' was not found in the projectStruct at the path: ' newPath]);
+    end
+elseif structArg==0
+    
 end

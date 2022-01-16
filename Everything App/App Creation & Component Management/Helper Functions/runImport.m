@@ -73,6 +73,9 @@ for i=1:length(dataTypes)
     colNum.(dataField)=find(strcmp(logVar(1,:),headerName));
 end
 
+% If the projectStruct exists in the base workspace, bring it into the current workspace.
+% projectStruct=evalin('base','projectStruct;');
+
 % Iterate through subject names in trialNames variable
 subNames=fieldnames(allTrialNames);
 for subNum=1:length(subNames)
@@ -137,7 +140,7 @@ for subNum=1:length(subNames)
                 listing=dir([getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}]);
                 for k=1:length(listing)
                     if length(listing(k).name)>=length(fileName) && isequal(listing(k).name(1:length(fileName)),fileName)
-                        ext=listing(k).name(length(fileName)+1:end);
+                        ext=listing(k).name(length(fileName)+1:end); % Get the extension from the first file that meets these criteria. Assumes all files here have same extension
                         break;
                     end
                 end
@@ -170,25 +173,25 @@ for subNum=1:length(subNames)
                         
                         % Call the appropriate Import fcn (number)
                         cd([codePath 'Import_' projectName slash existType]); % Navigate to the directory of import function, to ensure that the proper one is selected.
-                        [dataTypeDataStruct,dataTypeInfoStruct]=feval([lower(dataField) '_Import' number],dataTypeArgs,fullPathRaw,logVar,rowNum);
+                        [dataTypeStruct]=feval([lower(dataField) '_Import' number],dataTypeArgs,fullPathRaw,logVar,rowNum,subName,trialName);
+                        
+                        assignin('base','trialImportStruct',dataTypeStruct); % Put the imported data into the base workspace.
+                        evalin('base',['projectStruct.' subName '.' trialName '']);
 
                         cd(currDir); % Go back to the current directory.
                         
                         % If the data type folder does not exist, create it
-                        currMatDataTypeFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Data' slash dataTypes{i} slash];
-                        currMatDataTypeInfoFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Info' slash dataTypes{i} slash];
+                        currMatDataTypeFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash];
+%                         currMatDataTypeInfoFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Info' slash dataTypes{i} slash];
                         if ~isfolder(currMatDataTypeFolder)
                             mkdir(currMatDataTypeFolder);
                         end
-                        if ~isfolder(currMatDataTypeInfoFolder)
-                            mkdir(currMatDataTypeInfoFolder);
-                        end
+%                         if ~isfolder(currMatDataTypeInfoFolder)
+%                             mkdir(currMatDataTypeInfoFolder);
+%                         end
                         
                         % Save the data to the file
-                        save(fullPathDataMat,'dataTypeDataStruct','-v6');
-                        
-                        % Save the info to the file
-                        save(fullPathInfoMat,'dataTypeInfoStruct','-v6');
+                        save(fullPathDataMat,'dataTypeStruct','-v6');
                         
                     end
 

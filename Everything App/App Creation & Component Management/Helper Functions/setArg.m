@@ -69,8 +69,8 @@ for argNum=1:nArgs
             continue;
         end
         
-        assert(length(semicolonIdx)==1);
-        assert(length(equalsIdx)==1);
+        assert(length(semicolonIdx)==1,['Should only be 1 equals sign in line: ' num2str(i)]);
+        assert(length(equalsIdx)==1,['Should only be 1 semicolon in line: ' num2str(i)]);
         
         % At this point, there is a equals sign & semicolon in this line
         if ~isequal(currLine(equalsIdx+1:semicolonIdx-1),argName)

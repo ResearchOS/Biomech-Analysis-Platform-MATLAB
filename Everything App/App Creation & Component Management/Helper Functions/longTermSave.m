@@ -88,3 +88,12 @@ end
 if any(ismember(levels,{'T'}))
     save(trialPath,'trialData','-v6');
 end
+
+%% Delete the temporary files
+for i=1:length(argPaths)
+    
+    delete(argPaths{i}); % Delete the mat file with the temporary data
+    [~,name]=fileparts(argPaths{i});
+    disp(['Saved to long term storage: ' name]);
+    
+end

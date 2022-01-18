@@ -26,10 +26,13 @@ end
 fig=evalin('base','gui;'); % Get the gui from the base workspace.
 st=dbstack;
 fcnName=st(2).name; % The name of the calling function.
+underscoreIdx=strfind(fcnName,'_');
+firstDigitIdx=find(isstrprop(fcnName(underscoreIdx:end),'digit')==1,1,'first')+underscoreIdx-1;
+fcnType=fcnName(underscoreIdx+1:firstDigitIdx-1); % Whether the function is Import, Process, or Plot
 methodLetter=evalin('base','methodLetter;'); % Get the method letter from the base workspace
 codePath=getappdata(fig,'codePath'); % The folder path for the code
 projectName=getappdata(fig,'projectName'); % The project name
-argsFolder=[codePath 'Process_' projectName slash 'Arguments']; % The folder path of the arguments file
+argsFolder=[codePath fcnType '_' projectName slash 'Arguments']; % The folder path of the arguments file
 argsName=[argsFolder slash fcnName methodLetter '.m']; % The full path to the arguments file
 
 % 2. Read the input argument file to find the address of the corresponding input variable
@@ -39,13 +42,17 @@ argFound=0; % Initialize that the input argument was not found
 projectStructArg=0; % Initialize that the argument is not in the structure
 breakFlag=0; % Indicates whether to stop looking through all lines. Stop looking if found arg is a scalar, otherwise keep looking.
 for i=1:length(text)
-    currLine=strtrim(text{i}(~isspace(text{i}))); % The current line, with all spaces removed.
+    currLine=strtrim(text{i}); % The current line, with all leading & trailing spaces removed.
+    
+    if isempty(currLine) || isequal(double(currLine(1)),13)
+        continue; % There is nothing in this line.
+    end
     
     if isequal(currLine(1),'%')
         continue; % Ignore comment lines
     end
     
-    if ~isequal(currLine(1:length(argName)),argName)
+    if length(currLine)<=length(argName) || ~isequal(currLine(1:length(argName)),argName)
         continue; % This is not the line with the input argument
     end
     
@@ -53,19 +60,20 @@ for i=1:length(text)
     assert(length(equalsIdx)==1,['Should only be 1 equals sign in line: ' num2str(i)]); % There is only one equals sign in this line
     semicolonIdx=strfind(currLine,';');
     assert(length(semicolonIdx)==1,['Should only be 1 semicolon in line: ' num2str(i)]); % There is only one semicolon in this line
-    if ~ismember({currLine(length(argName)+1)},{'=','.'}) % The next character must be either an '=' or a '.' (if struct)
-        continue; % Make sure that the full argument name was found, not just a subset of one.
-    end    
     argFound=1; % Flag that the argument has been found
-    newArgName=currLine(1:equalsIdx-1); % If the argument is a structure, captures the entire structure path
+    newArgName=strtrim(currLine(1:equalsIdx-1)); % If the argument is non-scalar, captures the entire input argument
     if isequal(newArgName,argName)
         breakFlag=1;
     else % The argument is not a scalar (could be struct, cell, or other array)
         argIdx=currLine(length(argName)+1:equalsIdx-1); % The indexing of the arg.
     end
     
-    structPath=currLine(equalsIdx+1:semicolonIdx-1); % The structure path. Need to ensure it ends at the method number
-    splitPath=strsplit(structPath,'.'); % Split the struct path by dots
+    argVal=strtrim(currLine(equalsIdx+1:semicolonIdx-1)); % The structure path. Need to ensure it ends at the method number
+    if length(argVal)>=length('projectStruct') && isequal(argVal(1:length('projectStruct')),'projectStruct')
+        splitPath=strsplit(argVal,'.'); % Split the struct path by dots
+    else
+        splitPath={argVal};
+    end
     if isequal(splitPath{1},'projectStruct') % Check if the projectStruct is the first part of the path
         projectStructArg=1; % The argument is within the structure
         newPath=splitPath{1};
@@ -90,27 +98,34 @@ for i=1:length(text)
             end
             
         end
-%         assignin('base','structPath',newPath); % Put the structure path in to the base workspace
-    else % This argument is not in the projectStruct, it is something manually specified.
-        argIn=eval(structPath);
+
     end
     
     % For a scalar input argument
     if breakFlag==1
         if projectStructArg==1
-            if evalin('base','existField(projectStruct,structPath)')==1 % Check that the specified argument field actually exists in the structure.
+            if evalin('base','existField(projectStruct,argVal)')==1 % Check that the specified argument field actually exists in the structure.
                 argIn=eval([newPath ';']); % Evaluate the structure path in the base workspace, and it is returned here.
             else
                 error(['The argument ' argName ' was not found in the projectStruct at the path: ' newPath]);
             end
+        else
+            argIn=eval(argVal);            
+        end
+        % Check for all data types to facilitate conversion from single to double, not just numeric arrays
+        if isnumeric(argIn)
+            argIn=double(argIn);
         end
         break; % Don't look through any more lines
-    end
+    end    
     
     % For non-scalar args, do the indexing here.
-    % FIGURE OUT THIS LOGIC
-    argName=eval([argName argIdx '=' argIn ';']);
-    argIn=argName
+    if isnumeric(eval(argVal))
+        evalChar=[argName argIdx '=double(' argVal ');']; % If numeric, make it a double precision number
+    else
+        evalChar=[argName argIdx '=' argVal ';'];
+    end
+    eval(evalChar); % Assign the value to the input arg
     
 end
 
@@ -118,4 +133,8 @@ end
 if argFound==0
     beep;
     error(['The argument ' argName ' was not found in the args function ' fcnName methodLetter]);
+elseif argFound==1
+    if breakFlag==0
+        argIn=eval(argName); % Assign the non-scalar argument to the argIn variable.
+    end
 end

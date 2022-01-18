@@ -116,6 +116,7 @@ for subNum=1:length(subNames)
                 dataField=dataTypes{i}(alphaNumericIdx);
                 dataTypeTrialColNum=colNum.(dataField);
                 letter=methodLetter.(dataField);
+                assignin('base','methodLetter',letter);
                 number=methodNumber.(dataField);
 
                 % See if the import function is in the existing functions folder or the user-created folder.
@@ -128,8 +129,7 @@ for subNum=1:length(subNames)
                 fileName=logVar{rowNum,dataTypeTrialColNum};
                 
                 fullPathRaw=[getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i} slash fileName]; % Does not contain the file name extension
-                fullPathDataMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Data' slash dataTypes{i} slash 'Method' number letter '.mat'];
-                fullPathInfoMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Info' slash dataTypes{i} slash 'Method' number letter '.mat'];
+                fullPathMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];                
                 
                 % Check if the data types folder exists.
                 if exist([getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}],'dir')~=7
@@ -150,13 +150,12 @@ for subNum=1:length(subNames)
                 % Check the checkboxes
                 if isequal(dataTypeAction.(dataField),'Load')
                     
-                    if exist(fullPathDataMat,'file')==2 && exist(fullPathInfoMat,'file')==2 && redoVal==0 % File exists, and redo is not selected.
+                    if exist(fullPathMat,'file')==2 && redoVal==0 % File exists, and redo is not selected.
                         
                         disp(['Now Loading ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' ' number letter]);
                         
                         % Load that data
-                        load(fullPathDataMat,'dataTypeDataStruct');
-                        load(fullPathInfoMat,'dataTypeInfoStruct');
+                        load(fullPathMat);
                         
                     else % File does not exist, import the data.
                         
@@ -168,12 +167,12 @@ for subNum=1:length(subNames)
                         
                         % Call the appropriate Import args (letter)
                         currDir=pwd; % Get current directory
-                        cd([codePath 'Import_' projectName slash 'Arguments']); % Navigate to directory of import arguments file, to ensure that the proper one is selected.
-                        [dataTypeArgs]=feval([lower(dataField) '_Import' number letter]);
+%                         cd([codePath 'Import_' projectName slash 'Arguments']); % Navigate to directory of import arguments file, to ensure that the proper one is selected.
+%                         [dataTypeArgs]=feval([lower(dataField) '_Import' number letter]);
                         
                         % Call the appropriate Import fcn (number)
                         cd([codePath 'Import_' projectName slash existType]); % Navigate to the directory of import function, to ensure that the proper one is selected.
-                        [dataTypeStruct]=feval([lower(dataField) '_Import' number],dataTypeArgs,fullPathRaw,logVar,rowNum,subName,trialName);
+                        [dataTypeStruct]=feval([lower(dataField) '_Import' number],fullPathRaw,logVar,rowNum,subName,trialName);
                         
                         assignin('base','trialImportStruct',dataTypeStruct); % Put the imported data into the base workspace.
                         evalin('base',['projectStruct.' subName '.' trialName '']);
@@ -191,7 +190,7 @@ for subNum=1:length(subNames)
 %                         end
                         
                         % Save the data to the file
-                        save(fullPathDataMat,'dataTypeStruct','-v6');
+                        save(fullPathMat,'dataTypeStruct','-v6');
                         
                     end
 

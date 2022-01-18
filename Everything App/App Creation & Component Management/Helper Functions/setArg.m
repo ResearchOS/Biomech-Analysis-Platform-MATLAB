@@ -6,17 +6,19 @@ function setArg(subName,trialName,varargin)
 % trialName: The trial name, if accessing trial data. If subject or project level data, not inputted (char)
 % varargin: The value of each output argument. The name passed in to this function must exactly match what is in the input arguments function (any data type)
 
-saveModifiedOnly=0; % Flag to save only the data that has been modified. This value will be obtained from the check box in the Settings tab.
+% persistent c;
+
+saveModifiedOnly=1; % Flag to save only the data that has been modified. This value will be obtained from the check box in the Settings tab.
 
 st=dbstack;
 fcnName=st(2).name; % The name of the calling function.
 
 argNames=cell(length(varargin),1);
 nArgs=length(varargin);
-for i=1:nArgs
-    argNames{i}=inputname(i); % NOTE THE LIMITATION THAT THERE CAN BE NO INDEXING USED IN THE INPUT VARIABLE NAMES
-    if isempty(argNames{i})
-        error(['Argument ' num2str(i+2) ' (output variable ' num2str(i) ') is not a scalar name']);
+for i=3:nArgs+2
+    argNames{i-2}=inputname(i); % NOTE THE LIMITATION THAT THERE CAN BE NO INDEXING USED IN THE INPUT VARIABLE NAMES
+    if isempty(argNames{i-2})
+        error(['Argument ' num2str(i) ' (output variable ' num2str(i-2) ') is not a scalar name']);
     end
 end
 
@@ -32,16 +34,19 @@ methodLetter=evalin('base','methodLetter;'); % Get the method letter from the ba
 codePath=getappdata(fig,'codePath'); % The folder path for the code
 dataPath=getappdata(fig,'dataPath'); % The folder path for the data
 projectName=getappdata(fig,'projectName'); % The project name
-argsFolder=[codePath 'Process_' projectName slash 'Arguments']; % The folder path of the arguments file
+underscoreIdx=strfind(fcnName,'_');
+firstDigitIdx=find(isstrprop(fcnName(underscoreIdx:end),'digit')==1,1,'first')+underscoreIdx-1;
+fcnType=fcnName(underscoreIdx+1:firstDigitIdx-1); % Whether the function is Import, Process, or Plot
+argsFolder=[codePath fcnType '_' projectName slash 'Arguments']; % The folder path of the arguments file
 argsFile=[argsFolder slash fcnName methodLetter '.m']; % The full path to the arguments file
-methodNum=strsplit(fcnName,'_Process');
+methodNum=strsplit(fcnName,['_' fcnType]);
 methodNum=methodNum{2}; % The method number
 tempDataPath=[dataPath 'MAT Data Files' slash 'Temp Saved' slash]; % Location to save the temporary files when saving only the data that has been modified.
-if saveModified==1 && exist(tempDataPath,'dir')~=7
+if saveModifiedOnly==1 && exist(tempDataPath,'dir')~=7
     mkdir(tempDataPath); % Create the temporary data path directory if it does not exist yet
 end
 
-if saveModified==1
+if saveModifiedOnly==1
     tempSaveNames=cell(nArgs,1);    
 end
 
@@ -55,6 +60,10 @@ for argNum=1:nArgs
     
     for i=1:length(text)
         currLine=strtrim(text{i}(~isspace(text{i}))); % The current line, with all spaces removed.
+        
+        if isempty(currLine) || isequal(double(currLine(1)),13)
+            continue; % There is nothing in this line.
+        end
         
         if isequal(currLine(1),'%')
             continue; % A comment line
@@ -92,7 +101,7 @@ for argNum=1:nArgs
             elseif j==3 && isequal(splitPath{j}([1 length(splitPath{j})]),'()')
                 newPath=[newPath '.' trialName];
                 level{argNum}='T';
-            elseif isequal(splitPath{j}(1:6),'Method') && (6+sum(isstrprop(splitPath{j},'digit'))+sum(isstrprop(splitPath{j},'alpha')))==length(splitPath{j})
+            elseif length(splitPath{j})>=6 && isequal(splitPath{j}(1:6),'Method') && (6+sum(isstrprop(splitPath{j},'digit'))+sum(isstrprop(splitPath{j},'alpha')))==length(splitPath{j})
                 warning(['Due to automatic method ID assignment, method ID field in output structure paths excluded in ' argName ' in ' argsFile]);
                 break; % Don't include the method ID
             else
@@ -117,8 +126,14 @@ for argNum=1:nArgs
     
     newPath=[newPath '.Method' methodNum methodLetter]; % Add the method ID to the path name
     assignin('base','structPath',newPath); % The whole structure path for the output variable
+    
     % Store the data to the projectStruct
-    assignin('base','argOut',varargin{argNum});
+    % Check for all data types to facilitate conversion from single to double, not just numeric arrays
+    if isnumeric(varargin{argNum}) && max(abs(varargin{argNum}),[],'all','omitnan')<realmax('single')
+        assignin('base','argOut',single(varargin{argNum})); % Everything that can be saved as a single, is saved as a single.
+    else
+        assignin('base','argOut',varargin{argNum});
+    end
     evalin('base',[newPath '=argOut;']);
     
     allStructPaths{argNum}=newPath;
@@ -126,7 +141,8 @@ for argNum=1:nArgs
     if saveModifiedOnly==1
         disp(['Saving ' argName ' to temporary file in data path']);
         tempSaveNames{argNum}=[tempDataPath newPath '.mat']; % The full path name of the temporary save file for this argument
-        save(tempSaveNames{argNum},varargin{argNum},'-v6'); % Save just that data to the file.        
+        tempVar=varargin{argNum};
+        save(tempSaveNames{argNum},'tempVar','-v6'); % Save just that data to the file.        
     end
     
 end
@@ -140,6 +156,7 @@ end
 if ~isvarname(trialName)
     trialName=['T' trialName];
 end
+
 if saveModifiedOnly==0 % Save all data
     if any(ismember(level,{'P'}))
         savePath.P=[savePathRoot slash projectName '.mat'];
@@ -160,27 +177,51 @@ if saveModifiedOnly==0 % Save all data
         fldNames=evalin('base',['fieldnames(projectStruct.' subName ');']);
         fldNames=fldNames(~ismember(fldNames,trialNames)); % Exclude trial names from field names
         for i=1:length(fldNames)
-            subjData.(subName).(fldNames{i})=evalin('base',['projectStruct.' subName '.(' fldNames{i} ')']);
+            subjData.(fldNames{i})=evalin('base',['projectStruct.' subName '.(' fldNames{i} ')']);
         end
     end
     if any(ismember(level,{'T'}))
         savePath.T=[savePathRoot slash subName slash trialName '_' subName '_' projectName '.mat'];
-        trialData.(subName).(trialName)=evalin('base',['projectStruct.' subName '.' trialName]);
+        trialData=evalin('base',['projectStruct.' subName '.' trialName]);
     end
     
     % Save the data to file
     if any(ismember(level,'P'))
-        save(savePath.P,projData,'-v6'); 
+        save(savePath.P,'projData','-v6'); 
     end
     if any(ismember(level,'S'))
-       save(savePath.S,subjData,'-v6');  
+       save(savePath.S,'subjData','-v6');  
     end
     if any(ismember(level,'T'))
-       save(savePath.T,trialData,'-v6'); 
+       save(savePath.T,'trialData','-v6'); 
     end        
 elseif saveModifiedOnly==1 % Save only the data that has been modified, save the modified data to a temporary file, and use a background pool to then save the temporary files to the long-term storage files.
-    p=backgroundPool; % Get the background pool
-    f=parfeval(p,@longTermSave,0,tempSaveNames,dataPath,level,projectName);
-%     afterEach(f,disp([argName ' moved to long term save file']),0);
+    %     p=backgroundPool;
+    [folder,name]=fileparts(which('pathdef'));
+    currDir=cd(folder);
+    if ismac==1
+        save(['/Users/' getenv('username') '/Downloads/TempSaveNames.mat'],'tempSaveNames','dataPath','level','projectName','-v6');
+    elseif ispc==1
+        save(['C:\Users\' getenv('username') '\Documents\TempSaveNames.mat'],'tempSaveNames','dataPath','level','projectName','-v6');
+    end        
+    [~,result] = system('tasklist /FI "imagename eq matlab.exe" /fo table /nh');
+    if length(strsplit(result,'MATLAB'))==2
+        !matlab -noFigureWindows -r longTermSave &
+        c=actxserver('Matlab.Application'); % Create COM server for another instance of Matlab.
+        assignin('base','MatlabCOMServer',c);
+    elseif evalin('base','exist(''MatlabCOMServer'',''var'')==1')==1
+        c=evalin('base','MatlabCOMServer;');
+    else
+        error('Missing 2nd Matlab instance, and no COM server is present in the base workspace.');
+    end
+    cd(currDir);
+    currDir=cd([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Helper Functions']);
+    command='longTermSave';
+    Execute(c,command);
+    cd(currDir);
+    
+%     matlab -noFigureWindows -nosplash -batch longTermSave(tempSaveNames,dataPath,level,projectName);
+%     f=parfeval(@longTermSave,0,tempSaveNames,dataPath,level,projectName);
+    %     afterEach(f,disp([argName ' moved to long term save file']),0);
     
 end

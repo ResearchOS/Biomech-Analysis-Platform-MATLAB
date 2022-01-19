@@ -196,29 +196,44 @@ if saveModifiedOnly==0 % Save all data
        save(savePath.T,'trialData','-v6'); 
     end        
 elseif saveModifiedOnly==1 % Save only the data that has been modified, save the modified data to a temporary file, and use a background pool to then save the temporary files to the long-term storage files.
-    %     p=backgroundPool;
-    [folder,name]=fileparts(which('pathdef'));
-    currDir=cd(folder);
-    if ismac==1
-        save(['/Users/' getenv('username') '/Downloads/TempSaveNames.mat'],'tempSaveNames','dataPath','level','projectName','-v6');
-    elseif ispc==1
-        save(['C:\Users\' getenv('username') '\Documents\TempSaveNames.mat'],'tempSaveNames','dataPath','level','projectName','-v6');
-    end        
-    [~,result] = system('tasklist /FI "imagename eq matlab.exe" /fo table /nh');
-    if length(strsplit(result,'MATLAB'))==2
-        !matlab -noFigureWindows -r longTermSave &
-        c=actxserver('Matlab.Application'); % Create COM server for another instance of Matlab.
-        assignin('base','MatlabCOMServer',c);
-    elseif evalin('base','exist(''MatlabCOMServer'',''var'')==1')==1
-        c=evalin('base','MatlabCOMServer;');
-    else
-        error('Missing 2nd Matlab instance, and no COM server is present in the base workspace.');
+    verInfo=ver;
+    for i=1:length(verInfo)
+        if isequal(verInfo(i).name,'MATLAB')
+            if (str2double(verInfo.Release(2:5))==2021 && isequal(verInfo.Release(6),'b')) || str2double(verInfo.Release(2:5))>2021 % The current version supports the background pool
+                if exist('backgroundPool','builtin')==5 % Alternative way to check release number
+                    p=backgroundPool;
+                    parfeval(p,longTermSave,0,tempSaveNames,dataPath,level,projectName);
+                end
+            else
+                error('This version of MATLAB is not compatible with backgroundPool. Must be 2021b or later');
+            end
+            break;
+        end       
     end
-    cd(currDir);
-    currDir=cd([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Helper Functions']);
-    command='longTermSave';
-    Execute(c,command);
-    cd(currDir);
+    
+    %     p=backgroundPool;
+%     [folder,name]=fileparts(which('pathdef'));
+%     currDir=cd(folder);
+%     if ismac==1
+%         save(['/Users/' getenv('username') '/Downloads/TempSaveNames.mat'],'tempSaveNames','dataPath','level','projectName','-v6');
+%     elseif ispc==1
+%         save(['C:\Users\' getenv('username') '\Documents\TempSaveNames.mat'],'tempSaveNames','dataPath','level','projectName','-v6');
+%     end        
+%     [~,result] = system('tasklist /FI "imagename eq matlab.exe" /fo table /nh');
+%     if length(strsplit(result,'MATLAB'))==2
+%         !matlab -noFigureWindows -r longTermSave &
+%         c=actxserver('Matlab.Application'); % Create COM server for another instance of Matlab.
+%         assignin('base','MatlabCOMServer',c);
+%     elseif evalin('base','exist(''MatlabCOMServer'',''var'')==1')==1
+%         c=evalin('base','MatlabCOMServer;');
+%     else
+%         error('Missing 2nd Matlab instance, and no COM server is present in the base workspace.');
+%     end
+%     cd(currDir);
+%     currDir=cd([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Helper Functions']);
+%     command='longTermSave';
+%     Execute(c,command);
+%     cd(currDir);
     
 %     matlab -noFigureWindows -nosplash -batch longTermSave(tempSaveNames,dataPath,level,projectName);
 %     f=parfeval(@longTermSave,0,tempSaveNames,dataPath,level,projectName);

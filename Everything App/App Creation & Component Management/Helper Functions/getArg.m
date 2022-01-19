@@ -35,6 +35,24 @@ projectName=getappdata(fig,'projectName'); % The project name
 argsFolder=[codePath fcnType '_' projectName slash 'Arguments']; % The folder path of the arguments file
 argsName=[argsFolder slash fcnName methodLetter '.m']; % The full path to the arguments file
 
+currDir=cd(argsFolder);
+argIn=feval([fcnName methodLetter],projectStruct,argName,subName,trialName);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 % 2. Read the input argument file to find the address of the corresponding input variable
 text=regexp(fileread(argsName),'\n','split'); % Read in the text of the input arguments function
 

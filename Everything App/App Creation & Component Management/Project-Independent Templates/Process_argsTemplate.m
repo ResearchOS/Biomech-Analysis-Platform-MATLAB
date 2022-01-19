@@ -1,4 +1,4 @@
-function Process_argsTemplate()
+function [argIn]=Process_argsTemplate(projectStruct,argName,subName,trialName)
 
 %% PURPOSE: SPECIFY THE INPUT ARGUMENTS FOR A PROCESSING FUNCTION. THIS FUNCTION'S TEXT IS READ BY PROCESSRUNFUNCTIONS.M, THIS FUNCTION IS NEVER ACTUALLY RUN.
 % Inputs: None

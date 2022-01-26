@@ -84,6 +84,20 @@ for i=1:length(fcnNames)
     end
     
     fcnNameText=strsplit(fcnName,' ');
+    if length(fcnNameText)==1
+        beep;
+        warning(['Missing space in ' fcnNameText{1}]);
+        return;
+    end
+    if ~any(isletter(fcnNameText{2}))
+        beep;
+        warning(['Missing letter in argument ID of ' fcnNameText{1}]);
+        return;
+    end
+    if ~any(~isletter(fcnNameText{2}))
+        beep;
+        warning(['Missing number in argument ID of ' fcnNameText{1}]);
+    end
     currFcnFileName=[fcnNameText{1} '_Process' fcnNameText{2}(~isletter(fcnNameText{2})) '.m'];
     
     % Check if the function names exist in the GitHub repo. If so, copy it to the Process > Existing functions folder within the codePath

@@ -61,6 +61,10 @@ else % If the project's group names text file does exist.
         
     end
     
+    if exist('text','var')~=1
+        error(['The function names file is incorrect: ' fcnNamesFilePath]);
+    end
+    
     hGroupNamesDropDown.Items=[hGroupNamesDropDown.Items {groupName}];
     hGroupNamesDropDown.Value=groupName;
     

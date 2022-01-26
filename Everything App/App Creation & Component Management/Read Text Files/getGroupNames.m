@@ -46,3 +46,17 @@ for i=1:length(text)
     end
     
 end
+
+% groupNames,lineNums,mostRecentSetupGroupName,mostRecentRunGroupName
+if ~exist('groupNames','var')
+    groupNames='';
+end
+if ~exist('lineNums','var')
+    lineNums='';
+end
+if ~exist('mostRecentSetupGroupName','var')
+    mostRecentSetupGroupName='';
+end
+if ~exist('mostRecentRunGroupName','var')
+    mostRecentRunGroupName='';
+end

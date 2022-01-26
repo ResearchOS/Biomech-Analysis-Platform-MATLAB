@@ -36,6 +36,9 @@ end
 % FUNCTION LEVEL SPECIFY TRIALS CHECKBOXES
 
 [groupNames,lineNums]=getGroupNames(text);
+if isempty(groupNames{1})
+    error(['Function names file is incorrect: ' getappdata(fig,'fcnNamesFilePath')]);
+end
 groupNum=ismember(groupNames,groupName);
 lineNum=lineNums(groupNum);
 

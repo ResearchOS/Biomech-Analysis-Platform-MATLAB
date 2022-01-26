@@ -349,6 +349,10 @@ hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDo
 if ~isempty(text)
     [groupNames,~,mostRecentSetupGroupName,mostRecentRunGroupName]=getGroupNames(text);
     
+    if ~isempty(groupNames{1})
+        error(['Function names file is incorrect: ' getappdata(fig,'fcnNamesFilePath')]);
+    end
+    
     hGroupNamesDropDown.Items=groupNames;
     if ~isempty(mostRecentSetupGroupName)
         hGroupNamesDropDown.Value=mostRecentSetupGroupName;

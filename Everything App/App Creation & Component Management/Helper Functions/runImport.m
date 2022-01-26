@@ -4,6 +4,15 @@ function []=runImport(src)
 
 fig=ancestor(src,'figure','toplevel');
 
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
+projectName=getappdata(fig,'projectName');
+codePath=getappdata(fig,'codePath');
+
 text=readAllProjects(getappdata(fig,'everythingPath'));
 projectNamesInfo=isolateProjectNamesInfo(text,getappdata(fig,'projectName'));
 
@@ -24,17 +33,18 @@ for i=1:length(dataTypeSplit)
     methodNumber.(dataField)=methodLetterNumber(~isletter(methodLetterNumber));
     dataTypeAction.(dataField)=projectNamesInfo.(['DataPanel' dataField]);
     
+    % Delete the temporary arguments functions folder
+    if exist([codePath 'Import_' projectName slash 'Arguments' slash 'Temp Args Files'],'dir')==7
+        rmdir([codePath 'Import_' projectName slash 'Arguments' slash 'Temp Args Files']);
+    end        
+    
+    % Create the temporary input & output arguments functions
+    if isequal(dataTypeAction.(dataField),'Load')        
+        argsFilePath=[codePath 'Import_' projectName slash 'Arguments' lower(dataField) '_Import' methodLetterNumber '.m'];
+        createTempArgsFiles(argsFilePath);
+    end
+    
 end
-
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
-
-projectName=getappdata(fig,'projectName');
-codePath=getappdata(fig,'codePath');
-
 
 %% INDEPENDENT OF DATA TYPE
 % Load the logsheet Excel file (first tab only).

@@ -1,0 +1,12 @@
+Project Name: Spr21TWWBiomechanics
+Target Trial ID Format: Trial Name/Number
+Trial ID Column Header For MOCAP & FP: Trial Name/Number
+Subject ID Column Header: Subject Codename
+Number of Header Rows: 3
+Data Panel MOCAP & FP: Load
+Data Types: MOCAP & FP 1A
+Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Subject Data\Spr21TWW_AllSubjects.xlsx
+Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
+Code Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
+
+Most Recent Project Name: Spr21TWWBiomechanics

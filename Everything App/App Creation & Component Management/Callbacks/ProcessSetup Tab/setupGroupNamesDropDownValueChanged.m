@@ -3,13 +3,15 @@ function []=setupGroupNamesDropDownValueChanged(src,event)
 %% PURPOSE: CHANGE THE FUNCTION NAMES IN THE FUNCTION NAMES TEXT AREA WHEN THE CURRENT GROUP DROP DOWN IS CHANGED
 
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 fcnNamesFilePath=getappdata(fig,'fcnNamesFilePath');
 [text]=readFcnNames(fcnNamesFilePath);
 [groupNames,lineNums,mostRecentGroupName]=getGroupNames(text);
 
 if isempty(mostRecentGroupName)
-    hTextArea=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
+    hTextArea=handles.ProcessSetup.setupFunctionNamesField;
+%     hTextArea=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
     hTextArea.Value='Function Names';
     return;
 end
@@ -35,7 +37,8 @@ for i=currLineNum+1:length(text)
     
 end
 
-hTextArea=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
+hTextArea=handles.ProcessSetup.setupFunctionNamesField;
+% hTextArea=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
 hTextArea.Value=fcnNames;
 setappdata(fig,'functionNames',fcnNames);
 

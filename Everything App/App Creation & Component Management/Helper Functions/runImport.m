@@ -3,6 +3,7 @@ function []=runImport(src)
 %% PURPOSE: CALLED BY THE "RUNIMPORTBUTTONPUSHED" CALLBACK FUNCTION. EITHER IMPORTS OR LOADS THE DATA FROM RAW DATA FILES
 
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 if ismac==1
     slash='/';
@@ -16,7 +17,8 @@ codePath=getappdata(fig,'codePath');
 text=readAllProjects(getappdata(fig,'everythingPath'));
 projectNamesInfo=isolateProjectNamesInfo(text,getappdata(fig,'projectName'));
 
-hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
+hDataTypesDropDown=handles.Import.dataTypeImportSettingsDropDown;
+% hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
 dataTypes=hDataTypesDropDown.Items;
 
 % Get the method number & letter for each data type
@@ -51,7 +53,8 @@ end
 logVar=load(getappdata(fig,'LogsheetMatPath'),'logVar'); % Loads in as 'logVar' variable.
 logVar=logVar.logVar; % Convert struct to cell array
 % Run specifyTrials
-hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
+hSpecifyTrialsButton=handles.Import.openSpecifyTrialsButton;
+% hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
 inclStruct=feval(['specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNumIdx)]); % Return the inclusion criteria
 % Run getValidTrialNames
@@ -61,17 +64,20 @@ inclStruct=feval(['specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNum
 % Assumes that all data types' folders are all in the same root directory (the data path)
 
 % Get target trial ID column header field
-targetTrialIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
+targetTrialIDColHeaderField=handles.Import.targetTrialIDColHeaderField;
+% targetTrialIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
 targetTrialIDColHeaderName=targetTrialIDColHeaderField.Value;
 [~,targetTrialIDColNum]=find(strcmp(logVar(1,:),targetTrialIDColHeaderName));
 
 % Get subject ID column header field
-subjIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
+subjIDColHeaderField=handles.Import.subjIDColHeaderField;
+% subjIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
 subjIDHeaderName=subjIDColHeaderField.Value;
 [~,subjIDColNum]=find(strcmp(logVar(1,:),subjIDHeaderName));
 
 % Get Redo checkbox value
-redoCheckbox=findobj(fig,'Type','uicheckbox','Tag','RedoImportCheckbox');
+redoCheckbox=handles.Import.redoImportCheckbox;
+% redoCheckbox=findobj(fig,'Type','uicheckbox','Tag','RedoImportCheckbox');
 redoVal=redoCheckbox.Value;
 
 % Get data types' trial ID column headers

@@ -3,6 +3,7 @@ function []=runGroupNameDropDownValueChanged(src,event)
 %% PURPOSE: WRITE THE NEW RUN GROUP NAME TO THE TEXT FILE, AND CHANGE THE DISPLAY TO THE NEW FUNCTION GROUP
 
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 groupName=src.Value;
 text=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
@@ -58,7 +59,8 @@ for i=lineNum+1:length(text) % Start with first function name
     
 end
 
-processRunPanel=findobj(fig,'Type','uipanel','Tag','RunFunctionsPanel');
+processRunPanel=handles.ProcessRun.runFunctionsPanel;
+% processRunPanel=findobj(fig,'Type','uipanel','Tag','RunFunctionsPanel');
 
 % Delete the components first
 elemNum=0;
@@ -162,7 +164,8 @@ if exist('fcnNames','var')==1
         
     end
     
-    hLogsheetPathField=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
+    hLogsheetPathField=handles.Import.logsheetPathField;
+%     hLogsheetPathField=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
     processRunPanel.UserData.LogsheetPathField=hLogsheetPathField;
     
     setappdata(fig,'processRunArrowCount',0); % Reset the function row scrolling

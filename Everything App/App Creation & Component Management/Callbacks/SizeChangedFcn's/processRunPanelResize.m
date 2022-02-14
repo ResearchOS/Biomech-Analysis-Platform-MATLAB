@@ -3,6 +3,8 @@ function []=processRunPanelResize(src, event)
 %% PURPOSE: RESIZE THE PANEL IN THE PROCESS > RUN PANEL
 
 data=src.UserData;
+fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 if isempty(data)
     return; % Called on uifigure creation
@@ -71,9 +73,11 @@ for i=1:length(fldNames)
 end
 
 fcnRowCount=getappdata(fig,'processRunArrowCount');
-processRunUpArrowButton=findobj(fig,'Type','uibutton','Tag','ProcessRunUpArrowButton');
+processRunUpArrowButton=handles.ProcessRun.processRunUpArrowButton;
+% processRunUpArrowButton=findobj(fig,'Type','uibutton','Tag','ProcessRunUpArrowButton');
 processRunUpArrowButton.Visible='on';
-processRunDownArrowButton=findobj(fig,'Type','uibutton','Tag','ProcessRunDownArrowButton');
+processRunDownArrowButton=handles.ProcessRun.processRunDownArrowButton;
+% processRunDownArrowButton=findobj(fig,'Type','uibutton','Tag','ProcessRunDownArrowButton');
 processRunDownArrowButton.Visible='on';
 
 if fcnRowCount>0

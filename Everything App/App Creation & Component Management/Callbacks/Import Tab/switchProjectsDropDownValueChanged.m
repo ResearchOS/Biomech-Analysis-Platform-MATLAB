@@ -5,12 +5,15 @@ function []=switchProjectsDropDownValueChanged(src)
 % data=src.Value;
 
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 % Set the project name field according to the current drop down selection
-h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
+% h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
+h=handles.Import.switchProjectsDropDown;
 % h.Value=getappdata(fig,'projectName');
 
 projectName=h.Value;
+% projectName=handles.Import.switchProjectsDropDown;
 setappdata(fig,'projectName',projectName)
 
 if isequal(projectName,'New Project')
@@ -22,9 +25,12 @@ else
 end
 
 % Once a project name has been created, make everything visible!
-projNameLabel=findobj(fig,'Type','uilabel','Tag','ProjectNameLabel');
-projNameDropDown=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
-addProjButton=findobj(fig,'Type','uibutton','Tag','AddProjectButton');
+projNameLabel=handles.Import.projectNameLabel;
+projNameDropDown=handles.Import.switchProjectsDropDown;
+addProjButton=handles.Import.addProjectButton;
+% projNameLabel=findobj(fig,'Type','uilabel','Tag','ProjectNameLabel');
+% projNameDropDown=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
+% addProjButton=findobj(fig,'Type','uibutton','Tag','AddProjectButton');
 
 % h=findall(fig.Children.Children(1,1));
 h=findall(fig);
@@ -53,17 +59,30 @@ else
     existingProject=0;
 end
 
-hLog=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
-hData=findobj(fig,'Type','uieditfield','Tag','DataPathField');
-hCode=findobj(fig,'Type','uieditfield','Tag','CodePathField');
-hRootSave=findobj(fig,'Type','uieditfield','Tag','RootSavePlotPathField');
-hNumHeaderRows=findobj(fig,'Type','uinumericeditfield','Tag','NumHeaderRowsField');
-hSubjIDColHeader=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
-hTrialIDColHeaderDataType=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
-hTargetTrialColHeader=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
-hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown'); % Data types drop down
-hDataTypeMethodField=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField'); % Data types method number & letter edit field
-hSpecifyTrialsNumberField=findobj(fig,'Type','uieditfield','Tag','SpecifyTrialsNumberField');
+
+hLog=handles.Import.logsheetPathField;
+hData=handles.Import.dataPathField;
+hCode=handles.Import.codePathField;
+hRootSave=handles.Plot.rootSavePlotPathField;
+hNumHeaderRows=handles.Import.numHeaderRowsField;
+hSubjIDColHeader=handles.Import.subjIDColHeaderField;
+hTrialIDColHeaderDataType=handles.Import.trialIDColHeaderDataTypeField;
+hTargetTrialColHeader=handles.Import.targetTrialIDColHeaderField;
+hDataTypesDropDown=handles.Import.dataTypeImportSettingsDropDown;
+hDataTypeMethodField=handles.Import.dataTypeImportMethodField;
+hSpecifyTrialsNumberField=handles.Import.specifyTrialsNumberField;
+
+% hLog=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
+% hData=findobj(fig,'Type','uieditfield','Tag','DataPathField');
+% hCode=findobj(fig,'Type','uieditfield','Tag','CodePathField');
+% hRootSave=findobj(fig,'Type','uieditfield','Tag','RootSavePlotPathField');
+% hNumHeaderRows=findobj(fig,'Type','uinumericeditfield','Tag','NumHeaderRowsField');
+% hSubjIDColHeader=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
+% hTrialIDColHeaderDataType=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+% hTargetTrialColHeader=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
+% hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown'); % Data types drop down
+% hDataTypeMethodField=findobj(fig,'Type','uieditfield','Tag','DataTypeImportMethodField'); % Data types method number & letter edit field
+% hSpecifyTrialsNumberField=findobj(fig,'Type','uieditfield','Tag','SpecifyTrialsNumberField');
 % hGroupsDataToLoad=findobj(fig,'Type','uipanel','Tag','SelectDataPanel'); % Panel encompassing the groups' data to load
 % If the project was pre-existing in the all projects file
 if existingProject==1
@@ -165,7 +184,8 @@ if existingProject==1
         end
         hDataTypesDropDown.Items=sort(hDataTypesDropDown.Items);
     else
-        hTrialIDColHeaderDataTypeField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+%         hTrialIDColHeaderDataTypeField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+        hTrialIDColHeaderDataTypeField=handles.Import.dataTypeTrialIDColHeaderField;
         hTrialIDColHeaderDataTypeField.Visible='off';
         hDataTypesDropDown.Items={'No Data Types to Import'};
     end
@@ -238,7 +258,8 @@ elseif existingProject==0
     end
     allProjectsList=getAllProjectNames(A);
     
-    hTrialIDColHeaderDataTypesField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
+    hTrialIDColHeaderDataTypesField=handles.Import.dataTypeTrialIDColumnHeaderField;
+%     hTrialIDColHeaderDataTypesField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
     hTrialIDColHeaderDataTypesField.Visible='off';
     
     hDataTypesDropDown.Items={'No Data Types to Import'};
@@ -271,7 +292,8 @@ elseif ispc==1
     slash='\';
 end
 
-h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
+h=handles.Import.openGroupSpecifyTrialsButton;
+% h=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 % Check if the new project's specifyTrials file exists. If not, label it
 % 'Create'. If so, label it 'Open'
 if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Specify Trials' slash 'specifyTrials_Import' hSpecifyTrialsNumberField.Value '.m'],'file')==2 % This file exists.
@@ -302,7 +324,8 @@ dataType=hDataTypesDropDown.Value;
 dataField=lower(dataType(isstrprop(dataType,'alpha') | isstrprop(dataType,'digit')));
 
 % Change the prefix for the importMetadata button
-hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
+hButton=handles.Import.openImportMetadataButton;
+% hButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
 % Need to get the data type for the file name
 if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataField '_Import' startNumber startLetter '.m'],'file')==2 % This file exists.
     prefix='Open';
@@ -312,7 +335,8 @@ end
 hButton.Text=[prefix ' Import Args ' dataType];
 
 % Change the prefix for the Import fcn button
-hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
+hButton=handles.Import.openImportFcnButton;
+% hButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
 
 % If the file exists in the library, the Existing Functions folder, or the user-created functions folder, label the button with 'Open', otherwise
 % 'Create'
@@ -328,23 +352,29 @@ hButton.Text=[prefix ' Import Fcn ' dataType];
 %% Set up the entries in the uipanel
 % Each entry gets two boxes: one to load that data, one to remove it.
 % At the top is the data types, one entry per data type
-hUpArrowDataPanelButton=findobj(fig,'Type','uibutton','Tag','DataPanelUpArrowButton');
+hUpArrowDataPanelButton=handles.Import.dataPanelUpArrowButton;
+% hUpArrowDataPanelButton=findobj(fig,'Type','uibutton','Tag','DataPanelUpArrowButton');
 hUpArrowDataPanelButton.Visible='off';
-hDownArrowDataPanelButton=findobj(fig,'Type','uibutton','Tag','DataPanelDownArrowButton');
+hDownArrowDataPanelButton=handles.Import.dataPanelDownArrowButton;
+% hDownArrowDataPanelButton=findobj(fig,'Type','uibutton','Tag','DataPanelDownArrowButton');
 hDownArrowDataPanelButton.Visible='off';
 addDataTypeEntry2Panel(fig);
 
-hUpArrowProcessRunButton=findobj(fig,'Type','uibutton','Tag','ProcessRunUpArrowButton');
+hUpArrowProcessRunButton=handles.ProcessRun.processRunUpArrowButton;
+% hUpArrowProcessRunButton=findobj(fig,'Type','uibutton','Tag','ProcessRunUpArrowButton');
 hUpArrowProcessRunButton.Visible='off';
-hDownArrowProcessRunButton=findobj(fig,'Type','uibutton','Tag','ProcessRunDownArrowButton');
+hDownArrowProcessRunButton=handles.ProcessRun.processRunDownArrowButton;
+% hDownArrowProcessRunButton=findobj(fig,'Type','uibutton','Tag','ProcessRunDownArrowButton');
 hDownArrowProcessRunButton.Visible='off';
 
 % After that, is each function group. One entry=all data for one group
 
 %% Read the function names file for this project. Set the Process > Setup group names drop-down items, value, and the function names text area.
 [text]=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
-hGroupNamesDropDown=findobj(fig,'Type','uidropdown','Tag','SetupGroupNameDropDown');
-hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
+hGroupNamesDropDown=handles.ProcessSetup.setupGroupNameDropDown;
+hGroupNamesRunDropDown=handles.ProcessRun.runGroupNameDropDown;
+% hGroupNamesDropDown=findobj(fig,'Type','uidropdown','Tag','SetupGroupNameDropDown');
+% hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
 
 if ~isempty(text)
     [groupNames,~,mostRecentSetupGroupName,mostRecentRunGroupName]=getGroupNames(text);
@@ -376,3 +406,5 @@ else % If the text file is empty.
     hGroupNamesRunDropDown.Items={'Create Function Group'};
     runGroupNameDropDownValueChanged(hGroupNamesRunDropDown);
 end
+
+setappdata(fig,'handles',handles);

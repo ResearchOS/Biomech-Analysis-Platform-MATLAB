@@ -1,6 +1,6 @@
-function []=runImport(src)
+function []=runImport_Prev(src)
 
-%% PURPOSE: CALLED BY THE "RUNIMPORTBUTTONPUSHED" CALLBACK FUNCTION. EITHER IMPORTS OR LOADS THE DATA FROM RAW DATA FILES.
+%% PURPOSE: CALLED BY THE "RUNIMPORTBUTTONPUSHED" CALLBACK FUNCTION. EITHER IMPORTS OR LOADS THE DATA FROM RAW DATA FILES
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -11,22 +11,17 @@ elseif ispc==1
     slash='\';
 end
 
-if evalin('base','exist(''projectStruct'',''var'') && isstruct(''projectStruct'')')
-    projectStruct=evalin('base','projectStruct;');
-else
-    projectStruct=''; % If the projectStruct does not exist in the base workspace.
-end
-
 projectName=getappdata(fig,'projectName');
 codePath=getappdata(fig,'codePath');
 
 text=readAllProjects(getappdata(fig,'everythingPath'));
-projectNamesInfo=isolateProjectNamesInfo(text,projectName);
+projectNamesInfo=isolateProjectNamesInfo(text,getappdata(fig,'projectName'));
 
 hDataTypesDropDown=handles.Import.dataTypeImportSettingsDropDown;
-dataTypes=hDataTypesDropDown.Items; % List of data types
+% hDataTypesDropDown=findobj(fig,'Type','uidropdown','Tag','DataTypeImportSettingsDropDown');
+dataTypes=hDataTypesDropDown.Items;
 
-%% Get the method number & letter for each data type
+% Get the method number & letter for each data type
 dataTypeText=projectNamesInfo.DataTypes;
 dataTypeSplit=strsplit(dataTypeText,', ');
 for i=1:length(dataTypeSplit)
@@ -38,7 +33,18 @@ for i=1:length(dataTypeSplit)
     methodLetterNumber=currSplit{end};
     methodLetter.(dataField)=methodLetterNumber(isletter(methodLetterNumber));
     methodNumber.(dataField)=methodLetterNumber(~isletter(methodLetterNumber));
-    dataTypeAction.(dataField)=projectNamesInfo.(['DataPanel' dataField]);        
+    dataTypeAction.(dataField)=projectNamesInfo.(['DataPanel' dataField]);
+    
+    % Delete the temporary arguments functions folder
+    if exist([codePath 'Import_' projectName slash 'Arguments' slash 'Temp Args Files'],'dir')==7
+        rmdir([codePath 'Import_' projectName slash 'Arguments' slash 'Temp Args Files']);
+    end        
+    
+    % Create the temporary input & output arguments functions
+    if isequal(dataTypeAction.(dataField),'Load')        
+        argsFilePath=[codePath 'Import_' projectName slash 'Arguments' lower(dataField) '_Import' methodLetterNumber '.m'];
+        createTempArgsFiles(argsFilePath);
+    end
     
 end
 
@@ -47,7 +53,7 @@ end
 logVar=load(getappdata(fig,'LogsheetMatPath'),'logVar'); % Loads in as 'logVar' variable.
 logVar=logVar.logVar; % Convert struct to cell array
 % Run specifyTrials
-hSpecifyTrialsButton=handles.Import.openGroupSpecifyTrialsButton;
+hSpecifyTrialsButton=handles.Import.openSpecifyTrialsButton;
 % hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
 inclStruct=feval(['specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNumIdx)]); % Return the inclusion criteria
@@ -59,16 +65,19 @@ inclStruct=feval(['specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNum
 
 % Get target trial ID column header field
 targetTrialIDColHeaderField=handles.Import.targetTrialIDColHeaderField;
+% targetTrialIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
 targetTrialIDColHeaderName=targetTrialIDColHeaderField.Value;
 [~,targetTrialIDColNum]=find(strcmp(logVar(1,:),targetTrialIDColHeaderName));
 
 % Get subject ID column header field
 subjIDColHeaderField=handles.Import.subjIDColHeaderField;
+% subjIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
 subjIDHeaderName=subjIDColHeaderField.Value;
 [~,subjIDColNum]=find(strcmp(logVar(1,:),subjIDHeaderName));
 
 % Get Redo checkbox value
 redoCheckbox=handles.Import.redoImportCheckbox;
+% redoCheckbox=findobj(fig,'Type','uicheckbox','Tag','RedoImportCheckbox');
 redoVal=redoCheckbox.Value;
 
 % Get data types' trial ID column headers
@@ -79,6 +88,9 @@ for i=1:length(dataTypes)
     headerName=projectNamesInfo.(fieldName);
     colNum.(dataField)=find(strcmp(logVar(1,:),headerName));
 end
+
+% If the projectStruct exists in the base workspace, bring it into the current workspace.
+% projectStruct=evalin('base','projectStruct;');
 
 % Iterate through subject names in trialNames variable
 subNames=fieldnames(allTrialNames);
@@ -122,7 +134,7 @@ for subNum=1:length(subNames)
                 letter=methodLetter.(dataField);
                 assignin('base','methodLetter',letter);
                 number=methodNumber.(dataField);
-                
+
                 % See if the import function is in the existing functions folder or the user-created folder.
                 if exist([codePath 'Import_' projectName slash 'Existing Functions' slash lower(dataField) '_Import' number '.m'],'file')==2
                     existType='Existing Functions';
@@ -169,19 +181,53 @@ for subNum=1:length(subNames)
                         
                         disp(['Now Importing ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' & Logsheet Row ' num2str(rowNum)]);
                         
-                        currMatDataTypeFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash];
+                        % Call the appropriate Import args (letter)
+                        currDir=pwd; % Get current directory
+%                         cd([codePath 'Import_' projectName slash 'Arguments']); % Navigate to directory of import arguments file, to ensure that the proper one is selected.
+%                         [dataTypeArgs]=feval([lower(dataField) '_Import' number letter]);
+                        
+                        % Call the appropriate Import fcn (number)
+                        cd([codePath 'Import_' projectName slash existType]); % Navigate to the directory of import function, to ensure that the proper one is selected.
+                        [dataTypeStruct]=feval([lower(dataField) '_Import' number],fullPathRaw,logVar,rowNum,subName,trialName);
+                        
+                        assignin('base','trialImportStruct',dataTypeStruct); % Put the imported data into the base workspace.
+                        evalin('base',['projectStruct.' subName '.' trialName '']);
+
+                        cd(currDir); % Go back to the current directory.
+                        
+                        % If the data type folder does not exist, create it
+                        currMatDataTypeFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash];
+%                         currMatDataTypeInfoFolder=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName slash 'Info' slash dataTypes{i} slash];
                         if ~isfolder(currMatDataTypeFolder)
                             mkdir(currMatDataTypeFolder);
                         end
+%                         if ~isfolder(currMatDataTypeInfoFolder)
+%                             mkdir(currMatDataTypeInfoFolder);
+%                         end
                         
-                        % Import, store, & save the data.
-                        feval([lower(dataField) '_Import' number],fullPathRaw,logVar,rowNum,projectStruct,subName,trialName);
+                        % Save the data to the file
+                        save(fullPathMat,'dataTypeStruct','-v6');
                         
-                    end                                        
+                    end
+
+                    % Store the data type struct to the projectStruct
+                    returnedTypes=fieldnames(dataTypeDataStruct);
+                    for kk=1:length(returnedTypes) % If multiple data types were included in the one data type function call
+                        returnedType=returnedTypes{kk};
+                        tempDataStruct=dataTypeDataStruct.(returnedType);
+                        tempInfoStruct=dataTypeInfoStruct.(returnedType);
+                        assignin('base','subName',subName);
+                        assignin('base','trialName',trialName);
+                        assignin('base','dataField',returnedType);
+                        assignin('base','tempDataStruct',tempDataStruct);
+                        assignin('base','tempInfoStruct',tempInfoStruct);
+                        assignin('base','importNum',number);
+                        assignin('base','importLetter',letter);
+                        evalin('base','projectStruct.(subName).(trialName).Data.(dataField).([''Method'' importNum importLetter])=tempDataStruct;');
+                        evalin('base','projectStruct.(subName).(trialName).Info.(dataField).([''Method'' importNum importLetter])=tempInfoStruct;');
+                    end
                     
                 elseif isequal(dataTypeAction.(dataField),'Offload')
-                    
-                    % Remove the unwanted data & associated field.
                     
                     dataFldNames=feval([lower(dataField) '_Import' number]); % The data type field names returned by this function
                     
@@ -192,17 +238,19 @@ for subNum=1:length(subNames)
                     for kk=1:length(dataFldNames)
                         assignin('base','dataField',dataFldNames{kk});
                         if evalin('base','existField(projectStruct,[''projectStruct.'' subName ''.'' trialName ''.Data.'' dataField ''.Method'' importNum importLetter]);')
+%                         if evalin('base','isfield(projectStruct,subName)') && evalin('base','isfield(projectStruct.(subName),(trialName))') ...
+%                                 && evalin('base',"isfield(projectStruct.(subName).(trialName),'Data')")
                             disp(['Now Removing ' subName ' Trial ' trialName ' Data Structure Field: ' dataFldNames{kk} number letter]);
                             evalin('base','projectStruct.(subName).(trialName).Data.(dataField)=rmfield(projectStruct.(subName).(trialName).Data.(dataField),[''Method'' importNum importLetter]);')
                         end
                     end
-                    
-                end
+
+                end                
                 
-            end
+            end                                                
             
-        end
+        end                        
         
-    end
+    end    
     
 end

@@ -42,10 +42,27 @@ for i=1:length(argNames)
     argIn=feval(argsFuncName,argName,projectStruct,subName,trialName);
     
     % Resolve the path names (i.e. subName & trialName)
-    
+    splitPath=strsplit(argIn,'.');
+    resPath=splitPath{1};
+    for j=2:length(splitPath)
+        if ismember(j,[2 3]) && isequal(splitPath{j}([1 end]),'()') % Dynamic subject or trial name
+            dynamicName=splitPath{j}([2 end-1]);
+            if any(ismember('()',dynamicName)) % There is an index in this field name
+                % error? Or ok for trial names?
+            else
+                if j==2
+                    resPath=[resPath '.' subName];
+                elseif j==3
+                    resPath=[resPath '.' trialName];
+                end
+            end
+        else
+            resPath=[resPath '.' splitPath{j}];
+        end
+    end
     
     % Store the data to the appropriate path
-    
+    eval([resPath '=varargin{' num2str(i) '};']);
     
 end
 

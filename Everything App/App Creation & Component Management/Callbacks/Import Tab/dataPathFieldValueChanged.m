@@ -83,4 +83,6 @@ fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
 fclose(fid);
 
+disp(['Data Path: ' data]);
+
 figure(fig);

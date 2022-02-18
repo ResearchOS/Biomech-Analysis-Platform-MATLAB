@@ -91,4 +91,5 @@ setappdata(fig,'fcnNamesFilePath',fcnNamesFilePath);
 
 % switchProjectsDropDownValueChanged(fig); % Update the values of everything, because so much hinges on the code path.
 
+disp(['Code Path: ' data]);
 figure(fig);

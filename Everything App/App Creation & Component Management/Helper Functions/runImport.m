@@ -4,6 +4,7 @@ function []=runImport(src)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+assignin('base','gui',fig);
 
 if ismac==1
     slash='/';
@@ -159,7 +160,7 @@ for subNum=1:length(subNames)
                         disp(['Now Loading ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' ' number letter]);
                         
                         % Load that data
-                        load(fullPathMat);
+                        projectStruct.(subName).(trialName)=load(fullPathMat);
                         
                     else % File does not exist, import the data.
                         

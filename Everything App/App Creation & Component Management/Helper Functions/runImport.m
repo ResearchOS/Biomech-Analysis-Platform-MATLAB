@@ -39,7 +39,7 @@ for i=1:length(dataTypeSplit)
     methodLetterNumber=currSplit{end};
     methodLetter.(dataField)=methodLetterNumber(isletter(methodLetterNumber));
     methodNumber.(dataField)=methodLetterNumber(~isletter(methodLetterNumber));
-    dataTypeAction.(dataField)=projectNamesInfo.(['DataPanel' dataField]);        
+    dataTypeAction.(dataField)=projectNamesInfo.(['DataPanel' dataField]);
     
 end
 
@@ -54,6 +54,162 @@ specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
 inclStruct=feval(['specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNumIdx)]); % Return the inclusion criteria
 % Run getValidTrialNames
 [allTrialNames,logVar]=getTrialNames(inclStruct,logVar,fig,0);
+
+% Read the text file containing whether to load or offload the group data.
+text=readAllProjects(getappdata(fig,'everythingPath'));
+projectNamesInfo=isolateProjectNamesInfo(text,getappdata(fig,'projectName'));
+
+% Read the group names groupText file
+groupText=readFcnNames(getappdata(fig,'fcnNamesFilePath'));
+[groupNames,lineNums]=getGroupNames(groupText);
+
+loadList={''};
+loadCount=0;
+offloadList={''};
+offloadCount=0;
+
+if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
+    
+    % Get the method number & letter for each function name in each group. Also get whether to load or offload it
+    for i=1:length(groupNames)
+        
+        % Get the group name as valid field name
+        idx=isstrprop(groupNames{i},'alpha') | isstrprop(groupNames{i},'digit');
+        groupNameField=groupNames{i}(idx);
+        
+        assert(isvarname(groupNameField)); % Check that it's a valid variable name.
+        
+        % Get whether to load or offload the group's data, or do nothing.
+        action=projectNamesInfo.(['DataPanel' groupNameField]);
+        
+        allGroups.(groupNameField).Action=action; % Store the action to take (Load, Offload, or None)
+        
+        % Iterate over all function names in that group
+        for j=lineNums(i)+1:length(groupText)
+            currLine=groupText{j};
+            
+            if isempty(currLine)
+                break;
+            end
+            
+            colonSplit=strsplit(currLine,':');
+            beforeColon=strsplit(colonSplit{1},' ');
+            fcnName=beforeColon{1};
+            fcnLetter=beforeColon{2}(isletter(beforeColon{2}));
+            fcnNum=beforeColon{2}(~isletter(beforeColon{2}));
+            
+            allGroups.(groupNameField).FunctionNames{i}=fcnName;
+            allGroups.(groupNameField).FunctionLetter{i}=fcnLetter;
+            allGroups.(groupNameField).FunctionNumber{i}=fcnNum;
+            allGroups.(groupNameField).ProcessFcnNames{i}=[fcnName '_Process' fcnNum];
+            allGroups.(groupNameField).ProcessArgsNames{i}=[fcnName '_Process' fcnNum fcnLetter];
+            
+        end
+        
+    end
+    
+    %% Get all the arguments and aggregate them into one long list to load, and one to offload.
+    groupNamesField=fieldnames(allGroups);
+    subNames=fieldnames(allTrialNames);
+    for i=1:length(groupNamesField)
+        groupNameField=groupNamesField{i};
+        
+        currGroup=allGroups.(groupNameField);
+        currAction=currGroup.Action;
+        
+        if isequal(currAction,'None')
+            continue; % Don't process the groups that don't need loading or offloading
+        end
+        
+        varNum=0; % Reset the number of variables for each function group
+        
+        for j=1:length(currGroup.ProcessFcnNames) % Iterate through all functions in this group
+            fcnName=currGroup.ProcessFcnNames{i};
+            argName=currGroup.ProcessArgsNames{i};
+            argLetter=currGroup.FunctionLetter{i};
+            
+            
+            argFilePath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash argName '.m'];
+            
+            % Call the processing function to determine what processing level to call it and the args at.
+            level=feval(fcnName); % nargin=0
+            %         level=level{1}; % Convert from cell to char
+            
+            if contains(level,'P') && ~contains(level,'S') && ~contains(level,'T')
+                % Project level call
+                callLevel='P';
+            elseif contains(level,'S') && ~contains(level,'T')
+                % Subject level call
+                callLevel='S';
+            elseif contains(level,'T')
+                % Trial level call
+                callLevel='T';
+            end
+            
+            %% At each level:
+            % Call the processing function, returns the path for all output vars
+            % Call the args function, return the path for all input vars
+            % Having the first input argument be 1 indicates to the processing function to return only the variable paths, not the data.
+            if callLevel=='P'
+                varNum=varNum+1;
+                varPaths{varNum}=readArgsFcn(argFilePath); % Read the arguments function
+                varNum=varNum+1;
+                varPaths{varNum}=feval(fcnName,1,argLetter); % Call the processing function
+                continue; % Go to the next function.
+            end
+            
+            for sub=1:length(subNames)
+                subName=subNames{sub};
+                if callLevel=='S'
+                    varNum=varNum+1;
+                    varPaths{varNum}=readArgsFcn(argFilePath,subName); % Read the arguments function
+                    varNum=varNum+1;
+                    varPaths{varNum}=feval(fcnName,1,argLetter,subName); % Call the processing function
+                    continue;
+                end
+                
+                trialNames=allTrialNames.(subName);
+                for trialNum=1:length(trialNames) % If I have gotten here, it must be because the callLevel is 'T'
+                    trialName=trialNames{trialNum};
+                    varNum=varNum+1;
+                    varPaths{varNum}=readArgsFcn(argFilePath,subName,trialName); % Read the arguments function
+                    varNum=varNum+1;
+                    varPaths{varNum}=feval(fcnName,argLetter,subName,trialName); % Call the processing function
+                end
+                
+            end
+            
+        end
+        
+        % For each group, aggregate them all into one list, instead of a list of lists.
+        currGroupList={''}; % Reset the current group list variable.
+        for k=1:length(varPaths)
+            if k==1
+                currGroupList=varPaths{k};
+            else
+                currGroupList=[currGroupList; varPaths{k}];
+            end
+        end
+        
+        if isequal(currAction,'Load')
+            loadCount=loadCount+1;
+            if loadCount==1
+                loadList=currGroupList;
+            else
+                loadList=[loadList; currGroupList];
+            end
+        elseif isequal(currAction,'Offload')
+            offloadCount=offloadCount+1;
+            if offloadCount==1
+                offloadList=currGroupList;
+            else
+                offloadList=[offloadList; currGroupList];
+            end
+        end
+        
+    end
+    
+end
 
 %% For each data type present, import the associated data
 % Assumes that all data types' folders are all in the same root directory (the data path)
@@ -84,7 +240,7 @@ end
 % Iterate through subject names in trialNames variable
 subNames=fieldnames(allTrialNames);
 for subNum=1:length(subNames)
-        
+    
     subName=subNames{subNum};
     trialNames=allTrialNames.(subName);
     
@@ -134,13 +290,13 @@ for subNum=1:length(subNames)
                 fileName=logVar{rowNum,dataTypeTrialColNum};
                 
                 fullPathRaw=[getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i} slash fileName]; % Does not contain the file name extension
-                fullPathMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];                
+                fullPathMat=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
                 
                 % Check if the data types folder exists.
                 if exist([getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}],'dir')~=7
                     error([dataTypes{i} ' Folder Does Not Exist. Should Be At: ' getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}]);
                 end
-
+                
                 % Get the file extension of fullPathRaw, because it could be anything.
                 listing=dir([getappdata(fig,'dataPath') 'Raw Data Files' slash subName slash dataTypes{i}]);
                 for k=1:length(listing)
@@ -160,7 +316,14 @@ for subNum=1:length(subNames)
                         disp(['Now Loading ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' ' number letter]);
                         
                         % Load that data
-                        projectStruct.(subName).(trialName)=load(fullPathMat);
+                        if ~isstruct(projectStruct)
+                            clear projectStruct;
+                        end
+                        currData=load(fullPathMat);
+                        currData=currData.currData;
+                        
+                        % Isolate the specific fields of interest.
+                        projectStruct.(subName).(trialName)=currData.currData;
                         
                     else % File does not exist, import the data.
                         
@@ -178,7 +341,7 @@ for subNum=1:length(subNames)
                         % Import, store, & save the data.
                         feval([lower(dataField) '_Import' number],fullPathRaw,logVar,rowNum,projectStruct,subName,trialName);
                         
-                    end                                        
+                    end
                     
                 elseif isequal(dataTypeAction.(dataField),'Offload')
                     

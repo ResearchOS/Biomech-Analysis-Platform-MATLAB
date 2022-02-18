@@ -3,16 +3,33 @@ function []=saveDataToFile(backgroundToggle,projectStruct,subName,trialName)
 %% PURPOSE: SAVE THE CURRENT DATA TO THE APPROPRIATE FILE.
 % If background toggle is 1, save data off in the background. If 0, save the data in the serial thread.
 
+fig=evalin('base','gui;');
+projectName=getappdata(fig,'projectName');
+
 if exist('trialName','var') && ~isempty(trialName) % Save trial level
     currData=projectStruct.(subName).(trialName);
     level='T';
 elseif exist('subName','var') && ~isempty(subName) % Save subject level
     % Exclude trial names fieldnames
-    
+    trialNameColNum=getappdata(fig,'trialNameColumnNum');
+    subjNameColNum=getappdata(fig,'subjectCodenameColumnNum');
+    logVar=evalin('base','logVar');
+    rowNums=ismember(logVar(:,subjNameColNum),subName); % The row numbers for the current subject
+    trialNames=logVars(rowNums,trialNameColNum); % The trial names for the current subject
+    fldNames=fieldnames(projectStruct.(subName));
+    fldNames=fldNames(~ismember(fldNames,trialNames)); % Exclude trial names from field names
+    for i=1:length(fldNames)
+        currData.(fldNames{i})=projectStruct.(subName).(fldNames{i});
+    end
     level='S';
 else % Save to project level
     % Exclude subject names fieldnames
-    
+    subNames=getappdata(fig,'subjectNames');
+    fldNames=fieldnames(projectStruct);
+    fldNames=fldNames(~ismember(fldNames,subNames)); % Exclude subject names from field names
+    for i=1:length(fldNames)
+        currData.(fldNames{i})=projectStruct.(fldNames{i});
+    end
     level='P';
 end
 
@@ -23,18 +40,20 @@ elseif ispc==1
     slash='\';
 end
 
-fig=evalin('base','gui;');
-
 dataPath=getappdata(fig,'dataPath');
 
 savePath=[dataPath 'MAT Data Files'];
 
-if ismember(level,{'S','T'})
-    savePath=[savePath slash subName];
+if isequal(level,'S')
+    savePath=[savePath slash subName slash subName '_' projectName];
 end
 
 if isequal(level,'T')
-    savePath=[savePath slash trialName];
+    savePath=[savePath slash subName slash trialName '_' subName '_' projectName];
+end
+
+if isequal(level,'P')
+    savePath=[savePath slash projectName];
 end
 
 savePath=[savePath '.mat'];

@@ -379,7 +379,7 @@ hGroupNamesRunDropDown=handles.ProcessRun.runGroupNameDropDown;
 if ~isempty(text)
     [groupNames,~,mostRecentSetupGroupName,mostRecentRunGroupName]=getGroupNames(text);
     
-    if ~isempty(groupNames{1})
+    if ~isempty(groupNames{1}) && isequal(groupNames{1},'Create Group Name')
         error(['Function names file is incorrect: ' getappdata(fig,'fcnNamesFilePath')]);
     end
     

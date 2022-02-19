@@ -80,7 +80,7 @@ evalin('base','clear currData;');
 
 % Save the data to the appropriate file. If R2021b or later, use the
 % backgroundPool to save the data to files.
-if exist('backgroundPool','builtin')
+if exist('backgroundPool','builtin')==5
     p=backgroundPool;
     f=parfeval(p,@saveDataToFile,0,1,projectStruct,subName,trialName);
 else

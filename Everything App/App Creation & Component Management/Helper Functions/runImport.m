@@ -127,21 +127,20 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
             fcnName=currGroup.ProcessFcnNames{i};
             argName=currGroup.ProcessArgsNames{i};
             argLetter=currGroup.FunctionLetter{i};
-            
-            
+                        
             argFilePath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash argName '.m'];
             
             % Call the processing function to determine what processing level to call it and the args at.
             level=feval(fcnName); % nargin=0
             %         level=level{1}; % Convert from cell to char
             
-            if contains(level,'P') && ~contains(level,'S') && ~contains(level,'T')
+            if contains(level.In,'P') && ~contains(level.In,'S') && ~contains(level.In,'T')
                 % Project level call
                 callLevel='P';
-            elseif contains(level,'S') && ~contains(level,'T')
+            elseif contains(level.In,'S') && ~contains(level.In,'T')
                 % Subject level call
                 callLevel='S';
-            elseif contains(level,'T')
+            elseif contains(level.In,'T')
                 % Trial level call
                 callLevel='T';
             end

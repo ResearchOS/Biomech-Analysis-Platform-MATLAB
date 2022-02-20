@@ -45,8 +45,7 @@ end
 %% Output argument. Do not include Method ID field, as that will be automatically assigned.
 function [argOut]=comVeloc(~,subName,trialName)
     
-    % projectStruct path can be provided in one of 2 formats.
-    argOut=['projectStruct.' subName '.' trialName '.Results.Mocap.Cardinal.COMVelocity']; % Format 1
-    argOut='projectStruct.(subName).(trialName).Results.Mocap.Cardinal.COMVelocity'; % Format 2
+    % projectStruct path can be provided in this format only.   
+    argOut='projectStruct.(subName).(trialName).Results.Mocap.Cardinal.COMVelocity';
 
 end

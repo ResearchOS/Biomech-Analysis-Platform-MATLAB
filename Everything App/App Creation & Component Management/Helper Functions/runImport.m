@@ -32,6 +32,10 @@ loadAnyTrial=0; % Initialize that no trial-level data will be loaded.
 loadAnySubj=0; % Initialize that no subject-level data will be loaded.
 loadAnyProj=0; % Initialize that no project-level data will be loaded.
 
+trialCount=0;
+subjCount=0;
+projCount=0;
+
 %% Get the method number & letter for each data type
 dataTypeText=projectNamesInfo.DataTypes;
 dataTypeSplit=strsplit(dataTypeText,', ');
@@ -60,6 +64,22 @@ for i=1:length(dataTypeSplit)
     % paths
     argsPaths.(dataField)=readArgsFcn(dataImportArgsFcnNames{i});
 
+    % Split the argsPaths by project, subject, and trial level.
+    for j=1:length(argsPaths.(dataField))
+        currPath=argsPaths.(dataField){j};
+        currPathSplit=strsplit(currPath,'.');
+        if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')
+            trialCount=trialCount+1;
+            pathsByLevel.(dataField).Trial{trialCount,1}=currPath;
+        elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')
+            subjCount=subjCount+1;
+            pathsByLevel.(dataField).Subject{subjCount,1}=currPath;
+        else
+            projCount=projCount+1;
+            pathsByLevel.(dataField).Project{projCount,1}=currPath;
+        end
+    end    
+
     dataFieldNames{i}=dataField; % List of argsPaths field names for importing data.
 
 end
@@ -83,6 +103,10 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
         action=projectNamesInfo.(['DataPanel' groupNameField]);
 
         allGroups.(groupNameField).Action=action; % Store the action to take (Load, Offload, or None)
+
+        trialCount=0;
+        subjCount=0;
+        projCount=0;
 
         % Iterate over all function names in that group
         for j=lineNums(i)+1:length(groupText)
@@ -112,6 +136,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
 
             for k=1:length(argsPaths.([fcnName fcnNum]))
 
+                currPath=argsPaths.([fcnName fcnNum]){k};
                 currPathSplit=strsplit(argsPaths.([fcnName fcnNum]){k},'.');
                 if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()') % Dynamic trial name
                     loadAnyTrial=1;
@@ -119,6 +144,18 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
                     loadAnySubj=1;
                 elseif length(currPathSplit)>=2
                     loadAnyProj=1;
+                end
+
+                % Split the argsPaths by project, subject, and trial level.                
+                if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')
+                    trialCount=trialCount+1;
+                    pathsByLevel.([fcnName fcnNum]).Trial{trialCount,1}=currPath;
+                elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')
+                    subjCount=subjCount+1;
+                    pathsByLevel.([fcnName fcnNum]).Subject{subjCount,1}=currPath;
+                else
+                    projCount=projCount+1;
+                    pathsByLevel.([fcnName fcnNum]).Project{projCount,1}=currPath;
                 end
 
             end
@@ -178,8 +215,24 @@ subNames=fieldnames(allTrialNames);
 fullPathProjMat=[dataPath 'MAT Data Files' slash projectName '.mat'];
 
 if loadAnyProj==1 && exist(fullPathProjMat,'file')==2
-    % Load project level MAT file, if it exists.
+    % Load project level MAT file, if it exists. Assumes that there are no raw data files at the project level.
     projData=load(fullPathProjMat);
+    fldName=fieldnames(projData);
+    assert(length(fldName)==1);
+    projData=projData.(fldName{1});
+    assignin('base','projData');
+
+    %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' PROJECT-LEVEL DATA
+    fldNames=fieldnames(pathsByLevel);
+    for i=1:length(fldNames) % For each data type or processing function
+        if isfield(pathsByLevel.(fldNames{i}),'Project') % If thre is project level data to be loaded or offloaded.
+            projPaths=pathsByLevel.(fldNames{i}).Project; % Get the path names
+            for j=1:length(projPaths) % For each path name, load or offload it.
+
+            end
+        end
+    end
+
 end
 
 for subNum=1:length(subNames)
@@ -192,6 +245,19 @@ for subNum=1:length(subNames)
     if loadAnySubj==1 && exist(fullPathSubjMat,'file')==2
         % Load subject level MAT file, if it exists.
         subjData=load(fullPathSubjMat);
+        subjData=subjData.subjData;
+        assignin('base','subjData');
+
+        %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' SUBJECT-LEVEL DATA
+        fldNames=fieldnames(pathsByLevel);
+        for i=1:length(fldNames) % For each data type or processing function
+            if isfield(pathsByLevel.(fldNames{i}),'Project') % If thre is project level data to be loaded or offloaded.
+                projPaths=pathsByLevel.(fldNames{i}).Project; % Get the path names
+                for j=1:length(projPaths) % For each path name, load or offload it.
+
+                end
+            end
+        end
     end
 
     % Iterate through all trial names in that subject (matches Target Trial ID logsheet column)
@@ -203,6 +269,8 @@ for subNum=1:length(subNames)
 
         if loadAnyTrial==1 && exist(fullPathMat,'file')==2
             trialData=load(fullPathMat); % Load the trial's MAT file.
+            trialData=trialData.trialData;
+            assignin('base','trialData',trialData);
         end
 
         % Find the logsheet row numbers of that trial name
@@ -279,8 +347,23 @@ for subNum=1:length(subNames)
                         % eval doesn't throw an inscrutable error here.
                         for k=1:length(argsPaths.(dataField))
                             dotIdx=strfind(argsPaths.(dataField){k},'.');
-                            trialPath=argsPaths.(dataField){k}(dotIdx(3)+1:end);                                                        
-                            evalin('base',[argsPaths.(dataField){k} '=trialData.' trialPath ';']);                                                        
+                            trialPath=argsPaths.(dataField){k}(dotIdx(3)+1:end);
+                            newPathSplit=strsplit(argsPaths.(dataField){k},'.');
+                            for l=1:length(newPathSplit)
+                                if l==1
+                                    newPath=newPathSplit{1};
+                                else
+                                    if l==2 && isequal(newPathSplit{l}([1 end]),'()')
+                                        newPath=[newPath '.' subName];
+                                    elseif l==3 && isequal(newPathSplit{l}([1 end]),'()')
+                                        newPath=[newPath '.' trialName];
+                                    else
+                                        newPath=[newPath '.' newPathSplit{l}];
+                                    end
+                                end
+                            end
+                            evalin('base',[newPath '=trialData.' trialPath ';']);  
+
                         end
 
                     else % File does not exist, import the data.
@@ -292,12 +375,16 @@ for subNum=1:length(subNames)
                         disp(['Now Importing ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' & Logsheet Row ' num2str(rowNum)]);
 
                         currMatDataTypeFolder=[dataPath 'MAT Data Files' slash subName slash];
-                        if exist(currMatDataTypeFolder,'folder')~=7
+                        if exist(currMatDataTypeFolder,'dir')~=7
                             mkdir(currMatDataTypeFolder);
                         end
 
                         % Import, store, & save the data.
-                        projectStruct=evalin('base','projectStruct;');
+                        if evalin('base','exist(''projectStruct'',''var'')')
+                            projectStruct=evalin('base','projectStruct;');
+                        else
+                            projectStruct='';
+                        end
                         feval([lower(dataField) '_Import' number],fullPathRaw,logVar,rowNum,projectStruct,subName,trialName);
 
                     end
@@ -305,6 +392,8 @@ for subNum=1:length(subNames)
                 elseif isequal(dataTypeAction.(dataField),'Offload')
 
                     % Remove the unwanted data & associated field.
+
+                    disp(['Now Offloading ' subName ' Trial ' trialName ' Data Type ' dataTypes{i} ' ' number letter]);
 
                     if evalin('base','exist(''projectStruct'',''var'') && ~isstruct(projectStruct)')
                         continue; % Skip this offloading if projectStruct does not exist
@@ -328,12 +417,16 @@ for subNum=1:length(subNames)
                                 end
                             end
                         end
-                        evalin('base',[rmdPath '=rmfield(' rmdPath ', ''' argsPaths.(dataField){k}(dotIdx(end)+1:end) ''');']);
-                        if evalin('base',['isempty(fieldnames(' rmdPath '))'])
-                            dotIdx=strfind(rmdPath,'.');
-                            newRmdPath=rmdPath(1:dotIdx(end)-1); % Remove the variable field name if empty
-                            evalin('base',[newRmdPath '=rmfield(' newRmdPath ', ''' rmdPath(dotIdx(end)+1:end) ''');']);
+                        assignin('base','newPath',rmdPath);
+                        if evalin('base',['existField(projectStruct,newPath)'])==1
+                            evalin('base',[rmdPath '=rmfield(' rmdPath ', ''' argsPaths.(dataField){k}(dotIdx(end)+1:end) ''');']);
+                            if evalin('base',['isempty(fieldnames(' rmdPath '))'])
+                                dotIdx=strfind(rmdPath,'.');
+                                newRmdPath=rmdPath(1:dotIdx(end)-1); % Remove the variable field name if empty
+                                evalin('base',[newRmdPath '=rmfield(' newRmdPath ', ''' rmdPath(dotIdx(end)+1:end) ''');']);
+                            end
                         end
+                        evalin('base','clear newPath;');
                     end
 
                 end
@@ -349,33 +442,45 @@ for subNum=1:length(subNames)
                     groupFldName=groupFldNames{i};                    
 
                     if isequal(allGroups.(groupFldName).Action,'Load')
-                        currFcns=allGroups.(groupFldName).FunctionNames;
-                        for j=1:length(currFcns)
-                            currFcn=[currFcns{j} allGroups.(groupFldName).FunctionNumber{j}];
-                            currPaths=argsPaths.(currFcn);
-                            for k=1:length(currPaths)                                
-                                dotIdx=strfind(argsPaths.(dataField){k},'.');
-                                trialPath=argsPaths.(dataField){k}(dotIdx(3)+1:end); 
-                                newPathSplit=strsplit(argsPaths.(dataField){k},'.');
-                                for l=1:length(newPathSplit)
-                                    if l==1
-                                        newPath=newPathSplit{1};
-                                    else
-                                        if l==2 && isequal(newPathSplit{l}([1 end]),'()')
-                                            newPath=[newPath '.' subName];
-                                        elseif l==3 && isequal(newPathSplit{l}([1 end]),'()')
-                                            newPath=[newPath '.' trialName];
+
+                        disp(['Now Loading ' subName ' Trial ' trialName ' Group ' groupFldName]);
+
+                        if exist(fullPathMat,'file')==2
+                            currFcns=allGroups.(groupFldName).FunctionNames;
+                            for j=1:length(currFcns)
+                                currFcn=[currFcns{j} allGroups.(groupFldName).FunctionNumber{j}];
+                                currPaths=argsPaths.(currFcn);
+                                for k=1:length(currPaths)
+                                    dotIdx=strfind(currPaths{k},'.');
+                                    trialPath=currPaths{k}(dotIdx(3)+1:end);
+                                    newPathSplit=strsplit(currPaths{k},'.');
+                                    for l=1:length(newPathSplit)
+                                        if l==1
+                                            newPath=newPathSplit{1};
                                         else
-                                            newPath=[newPath '.' newPathSplit{l}];
+                                            if l==2 && isequal(newPathSplit{l}([1 end]),'()')
+                                                newPath=[newPath '.' subName];
+                                            elseif l==3 && isequal(newPathSplit{l}([1 end]),'()')
+                                                newPath=[newPath '.' trialName];
+                                            else
+                                                newPath=[newPath '.' newPathSplit{l}];
+                                            end
                                         end
                                     end
+                                    assignin('base','newPath',newPath);
+                                    if evalin('base',['existField(projectStruct,newPath)'])==1
+                                        evalin('base',[currPaths{k} '=trialData.' trialPath ';']);
+                                    end
+                                    evalin('base','clear newPath;');
                                 end
-                                evalin('base',[currPaths{k} '=trialData.' trialPath ';']);                                
-                            end
 
-                        end                                                
+                            end
+                        end
 
                     elseif isequal(allGroups.(groupFldName).Action,'Offload')
+
+                        disp(['Now Offloading ' subName ' Trial ' trialName ' Group ' groupFldName]);
+
                         currFcns=allGroups.(groupFldName).FunctionNames;
                         for j=1:length(currFcns)
                             currFcn=[currFcns{j} allGroups.(groupFldName).FunctionNumber{j}];
@@ -398,12 +503,16 @@ for subNum=1:length(subNames)
                                         end
                                     end
                                 end
-                                evalin('base',[argPath '=rmfield(' argPath ', ''' currPaths{k}(dotIdx(end)+1:end) ''');']);
-                                if evalin('base',['isempty(fieldnames(' argPath '))'])
-                                    dotIdx=strfind(argPath,'.');
-                                    newArgPath=argPath(1:dotIdx(end)-1); % Remove the variable field name if empty
-                                    evalin('base',[newArgPath '=rmfield(' newArgPath ', ''' argPath(dotIdx(end)+1:end) ''');']);
+                                assignin('base','newPath',argPath);
+                                if evalin('base',['existField(projectStruct,newPath)'])==1
+                                    evalin('base',[argPath '=rmfield(' argPath ', ''' currPaths{k}(dotIdx(end)+1:end) ''');']);
+                                    if evalin('base',['isempty(fieldnames(' argPath '))'])
+                                        dotIdx=strfind(argPath,'.');
+                                        newArgPath=argPath(1:dotIdx(end)-1); % Remove the variable field name if empty
+                                        evalin('base',[newArgPath '=rmfield(' newArgPath ', ''' argPath(dotIdx(end)+1:end) ''');']);
+                                    end
                                 end
+                                evalin('base','clear newPath;');
                             end
 
                         end  
@@ -416,6 +525,12 @@ for subNum=1:length(subNames)
 
         end
 
+        evalin('base','clear trialData;');
+
     end
 
+    evalin('base','clear subjData;');
+
 end
+
+evalin('base','clear projData');

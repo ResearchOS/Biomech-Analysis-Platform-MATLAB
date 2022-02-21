@@ -1,13 +1,13 @@
-function []=saveDataToFile(backgroundToggle,projectStruct,subName,trialName)
+function []=saveDataToFile(fig,projectStruct,subName,trialName)
 
 %% PURPOSE: SAVE THE CURRENT DATA TO THE APPROPRIATE FILE.
 % If background toggle is 1, save data off in the background. If 0, save the data in the serial thread.
 
-fig=evalin('base','gui;');
+
 projectName=getappdata(fig,'projectName');
 
 if exist('trialName','var') && ~isempty(trialName) % Save trial level
-    currData=projectStruct.(subName).(trialName);
+    trialData=projectStruct.(subName).(trialName);
     level='T';
 elseif exist('subName','var') && ~isempty(subName) % Save subject level
     % Exclude trial names fieldnames
@@ -19,7 +19,7 @@ elseif exist('subName','var') && ~isempty(subName) % Save subject level
     fldNames=fieldnames(projectStruct.(subName));
     fldNames=fldNames(~ismember(fldNames,trialNames)); % Exclude trial names from field names
     for i=1:length(fldNames)
-        currData.(fldNames{i})=projectStruct.(subName).(fldNames{i});
+        subjData.(fldNames{i})=projectStruct.(subName).(fldNames{i});
     end
     level='S';
 else % Save to project level
@@ -28,7 +28,7 @@ else % Save to project level
     fldNames=fieldnames(projectStruct);
     fldNames=fldNames(~ismember(fldNames,subNames)); % Exclude subject names from field names
     for i=1:length(fldNames)
-        currData.(fldNames{i})=projectStruct.(fldNames{i});
+        projData.(fldNames{i})=projectStruct.(fldNames{i});
     end
     level='P';
 end
@@ -58,4 +58,11 @@ end
 
 savePath=[savePath '.mat'];
 
-save(savePath,'currData','-v6');
+switch level
+    case 'T'
+        save(savePath,'trialData','-v6');
+    case 'S'
+        save(savePath,'subjData','-v6');
+    case 'P'
+        save(savePath,'projData','-v6');
+end

@@ -94,5 +94,5 @@ end
 %% FROM HERE DOWN, ASSUME THAT ALL NECESSARY CONDITIONS HAVE BEEN CHECKED & MET TO PERFORM THE IMPORT
 tic;
 runImport(fig); % Import and/or load/offload the data from raw data files
-runLoad(fig); % Load processed data within each individual function group
+% runLoad(fig); % Load processed data within each individual function group
 toc;

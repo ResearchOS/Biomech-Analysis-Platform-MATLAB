@@ -6,7 +6,7 @@ function setArg(projectStruct,subName,trialName,varargin)
 % trialName: The trial name, if accessing trial data. If subject or project level data, not inputted (char)
 % varargin: The value of each output argument. The name passed in to this function must exactly match what is in the input arguments function (any data type)
 
-persistent p;
+% persistent p;
 
 st=dbstack;
 fcnName=st(2).name; % The name of the calling function.
@@ -77,12 +77,13 @@ for i=1:length(argNames)
 end
 
 evalin('base','clear currData;');
+fig=evalin('base','gui;');
 
 % Save the data to the appropriate file. If R2021b or later, use the
 % backgroundPool to save the data to files.
-if exist('backgroundPool','builtin')==5
-    p=backgroundPool;
-    f=parfeval(p,@saveDataToFile,0,1,projectStruct,subName,trialName);
-else
-    saveDataToFile(0,projectStruct,subName,trialName);
+p=gcp('nocreate');
+if isempty(p)
+    p=parpool('local',1);
 end
+f=parfeval(p,@saveDataToFile,0,fig,projectStruct,subName,trialName);
+% saveDataToFile(0,projectStruct,subName,trialName);

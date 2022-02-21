@@ -218,113 +218,129 @@ end
 % Iterate through subject names in trialNames variable
 subNames=fieldnames(allTrialNames);
 
-for subNum=1:length(subNames)
+for kk=1:2 % First offload everything, then load everything. This accounts for any overlap between groups and ensures that all data will be present as needed.
 
-    subName=subNames{subNum};
-    trialNames=allTrialNames.(subName);
+    for subNum=1:length(subNames)
 
-    fullPathSubjMat=[dataPath 'MAT Data Files' slash subName slash subName '_' projectName '.mat'];    
+        subName=subNames{subNum};
+        trialNames=allTrialNames.(subName);
 
-    % Iterate through all trial names in that subject (matches Target Trial ID logsheet column)
-    for trialNum=1:length(trialNames)
+        fullPathSubjMat=[dataPath 'MAT Data Files' slash subName slash subName '_' projectName '.mat'];
 
-        trialName=trialNames{trialNum}; % Trial name as it will be stored in the struct.
+        % Iterate through all trial names in that subject (matches Target Trial ID logsheet column)
+        for trialNum=1:length(trialNames)
 
-        fullPathMat=[dataPath 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
+            trialName=trialNames{trialNum}; % Trial name as it will be stored in the struct.
 
-%         if loadAnyTrial==1 && exist(fullPathMat,'file')==2
-%             trialData=load(fullPathMat); % Load the trial's MAT file.
-%             fldName=fieldnames(trialData);
-%             assert(length(fldName)==1);
-%             trialData=trialData.(fldName{1});
-%             assignin('base','trialData',trialData);
-%         end
+            fullPathMat=[dataPath 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
 
-        % Find the logsheet row numbers of that trial name
-        subRowIdx=find(strcmp(logVar(:,subjIDColNum),subName));
-        rowNums=[]; validCount=0;
-        for i=1:length(subRowIdx)
+            %         if loadAnyTrial==1 && exist(fullPathMat,'file')==2
+            %             trialData=load(fullPathMat); % Load the trial's MAT file.
+            %             fldName=fieldnames(trialData);
+            %             assert(length(fldName)==1);
+            %             trialData=trialData.(fldName{1});
+            %             assignin('base','trialData',trialData);
+            %         end
 
-            if isequal(strtrim(logVar(subRowIdx(i),targetTrialIDColNum)),{trialName})
-                validCount=validCount+1;
-                if validCount==1
-                    rowNums=subRowIdx(i);
-                else
-                    rowNums=[rowNums; subRowIdx(i)];
-                end
-            end
+            % Find the logsheet row numbers of that trial name
+            subRowIdx=find(strcmp(logVar(:,subjIDColNum),subName));
+            rowNums=[]; validCount=0;
+            for i=1:length(subRowIdx)
 
-        end
-
-        for repNum=1:length(rowNums)
-
-            rowNum=rowNums(repNum);
-
-            for i=1:length(dataTypes)
-                alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
-                dataField=dataTypes{i}(alphaNumericIdx);
-                dataTypeTrialColNum=colNum.(dataField);
-                letter=methodLetter.(dataField);
-                setappdata(fig,'methodLetter',letter);
-                number=methodNumber.(dataField);
-
-                fileName=logVar{rowNum,dataTypeTrialColNum};
-
-                if isempty(fileName) || all(isnan(fileName))
-                    continue; % For trials that don't have all data present, ignore them for those data types.
-                end
-
-                fullPathRaw=[dataPath 'Raw Data Files' slash subName slash dataTypes{i} slash fileName];
-
-                % Check if the data types folder exists.
-                if exist([dataPath 'Raw Data Files' slash subName slash dataTypes{i}],'dir')~=7
-                    error([dataTypes{i} ' Folder Does Not Exist. Should Be At: ' dataPath 'Raw Data Files' slash subName slash dataTypes{i}]);
-                end
-
-                % Get the file extension of fullPathRaw, because it could be anything.
-                listing=dir([dataPath 'Raw Data Files' slash subName slash dataTypes{i}]);
-                for k=1:length(listing)
-                    if length(listing(k).name)>=length(fileName) && isequal(listing(k).name(1:length(fileName)),fileName)
-                        ext=listing(k).name(length(fileName)+1:end); % Get the extension from the first file that meets these criteria. Assumes all files here have same extension
-                        break;
+                if isequal(strtrim(logVar(subRowIdx(i),targetTrialIDColNum)),{trialName})
+                    validCount=validCount+1;
+                    if validCount==1
+                        rowNums=subRowIdx(i);
+                    else
+                        rowNums=[rowNums; subRowIdx(i)];
                     end
                 end
 
-                fullPathRaw=[fullPathRaw ext]; % Add the extension to the raw data file path
+            end
 
-                rawDataFileNames.(dataField)=fullPathRaw;
+            for repNum=1:length(rowNums)
 
-                pathsByLevel.(dataField).MethodNum=number; 
-                pathsByLevel.(dataField).MethodLetter=letter;
+                rowNum=rowNums(repNum);
+
+                for i=1:length(dataTypes)
+                    alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
+                    dataField=dataTypes{i}(alphaNumericIdx);
+                    dataTypeTrialColNum=colNum.(dataField);
+                    letter=methodLetter.(dataField);
+                    setappdata(fig,'methodLetter',letter);
+                    number=methodNumber.(dataField);
+
+                    fileName=logVar{rowNum,dataTypeTrialColNum};
+
+                    if isempty(fileName) || all(isnan(fileName))
+                        continue; % For trials that don't have all data present, ignore them for those data types.
+                    end
+
+                    fullPathRaw=[dataPath 'Raw Data Files' slash subName slash dataTypes{i} slash fileName];
+
+                    % Check if the data types folder exists.
+                    if exist([dataPath 'Raw Data Files' slash subName slash dataTypes{i}],'dir')~=7
+                        error([dataTypes{i} ' Folder Does Not Exist. Should Be At: ' dataPath 'Raw Data Files' slash subName slash dataTypes{i}]);
+                    end
+
+                    % Get the file extension of fullPathRaw, because it could be anything.
+                    listing=dir([dataPath 'Raw Data Files' slash subName slash dataTypes{i}]);
+                    for k=1:length(listing)
+                        if length(listing(k).name)>=length(fileName) && isequal(listing(k).name(1:length(fileName)),fileName)
+                            ext=listing(k).name(length(fileName)+1:end); % Get the extension from the first file that meets these criteria. Assumes all files here have same extension
+                            break;
+                        end
+                    end
+
+                    fullPathRaw=[fullPathRaw ext]; % Add the extension to the raw data file path
+
+                    rawDataFileNames.(dataField)=fullPathRaw;
+
+                    pathsByLevel.(dataField).MethodNum=number;
+                    pathsByLevel.(dataField).MethodLetter=letter;
+
+                end
+
+                logRow=logVar(rowNum,:);
+                logHeaders=logVar(1,:);
+
+                %% INSERT SOMETHING HERE TO NOT REDUNDANTLY ADDRESS EACH DATA TYPE & PROCESSING GROUP?
+                switch kk
+                    case 1
+                        offloadData(pathsByLevel,'Trial',subName,trialName);
+                    case 2
+                        loadData(fullPathMat,redoVal,pathsByLevel,'Trial',subName,trialName,rawDataFileNames,logRow,logHeaders);
+                end
 
             end
 
-            logRow=logVar(rowNum,:);
-            logHeaders=logVar(1,:);
-
-            %% INSERT SOMETHING HERE TO NOT REDUNDANTLY ADDRESS EACH DATA TYPE & PROCESSING GROUP?
-            offloadData(pathsByLevel,'Trial',subName,trialName);
-            loadData(fullPathMat,redoVal,pathsByLevel,'Trial',subName,trialName,rawDataFileNames,logRow,logHeaders);            
+            evalin('base','clear trialData;');
 
         end
 
-        evalin('base','clear trialData;');
+        if loadAnySubj==1 && exist(fullPathSubjMat,'file')==2
+            %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' SUBJECT-LEVEL DATA
+            switch kk
+                case 1
+                    offloadData(pathsByLevel,'Subject',subName);
+                case 2
+                    loadData(fullPathSubjMat,redoVal,pathsByLevel,'Subject',subName);
+            end
+        end
 
     end
 
-    if loadAnySubj==1 && exist(fullPathSubjMat,'file')==2
-        %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' SUBJECT-LEVEL DATA
-        offloadData(pathsByLevel,'Subject',subName);
-        loadData(fullPathSubjMat,redoVal,pathsByLevel,'Subject',subName);
+    fullPathProjMat=[dataPath 'MAT Data Files' slash projectName '.mat'];
+
+    if loadAnyProj==1 && exist(fullPathProjMat,'file')==2
+        %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' PROJECT-LEVEL DATA
+        switch kk
+            case 1
+                offloadData(pathsByLevel,'Project');
+            case 2
+                loadData(fullPathProjMat,redoVal,pathsByLevel,'Project');
+        end
+
     end
-
-end
-
-fullPathProjMat=[dataPath 'MAT Data Files' slash projectName '.mat'];
-
-if loadAnyProj==1 && exist(fullPathProjMat,'file')==2
-    %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' PROJECT-LEVEL DATA
-    offloadData(pathsByLevel,'Project');
-    loadData(fullPathProjMat,redoVal,pathsByLevel,'Project');
 
 end

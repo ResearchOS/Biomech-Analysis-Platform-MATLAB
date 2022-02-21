@@ -1,4 +1,4 @@
-function [argIn]=getArg(argName,projectStruct,subName,trialName)
+function [argIn]=getArg(argName,subName,trialName)
 
 %% PURPOSE: RETURN ONE INPUT ARGUMENT TO A PROCESSING FUNCTION AT EITHER THE PROJECT, SUBJECT, OR TRIAL LEVEL
 % Inputs:
@@ -8,6 +8,8 @@ function [argIn]=getArg(argName,projectStruct,subName,trialName)
 
 % Outputs:
 % argIn: The argument to pass in to the processing function
+
+fig=evalin('base','gui;');
 
 if nargin<=2 % Subject level data
     trialName='';
@@ -26,15 +28,7 @@ end
 % fig=evalin('base','gui;'); % Get the gui from the base workspace.
 st=dbstack;
 fcnName=st(2).name; % The name of the calling function.
-% underscoreIdx=strfind(fcnName,'_');
-% firstDigitIdx=find(isstrprop(fcnName(underscoreIdx:end),'digit')==1,1,'first')+underscoreIdx-1;
-% fcnType=fcnName(underscoreIdx+1:firstDigitIdx-1); % Whether the function is Import, Process, or Plot
-methodLetter=evalin('base','methodLetter;'); % Get the method letter from the base workspace
-% codePath=getappdata(fig,'codePath'); % The folder path for the code
-% projectName=getappdata(fig,'projectName'); % The project name
-
-% Need to check whether I should be using the function-specific or group level arguments function.
-% argsFolder=[codePath fcnType '_' projectName slash 'Arguments']; % The folder path of the arguments file
+methodLetter=getappdata(fig,'methodLetter'); % Get the method letter from the base workspace
 
 useGroupArgs=0; % 1 to use group args, 0 not to. This will be replaced by GUI checkbox value later.
 if useGroupArgs==1 % Group level arguments
@@ -44,4 +38,8 @@ else
     argsFuncName=[fcnName methodLetter];
 end
 
-argIn=feval(argsFuncName,argName,projectStruct,subName,trialName);
+if evalin('base','exist(''projectStruct'',''var'')~=1')
+    evalin('base','projectStruct=''''');
+end
+
+argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName);

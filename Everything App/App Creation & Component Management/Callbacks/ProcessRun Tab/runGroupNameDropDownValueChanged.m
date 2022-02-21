@@ -38,7 +38,7 @@ end
 
 [groupNames,lineNums]=getGroupNames(text);
 if isempty(groupNames{1})
-    error(['Function names file is incorrect: ' getappdata(fig,'fcnNamesFilePath')]);
+    error(['Function names file is incorrect or missing: ' getappdata(fig,'fcnNamesFilePath')]);
 end
 groupNum=ismember(groupNames,groupName);
 lineNum=lineNums(groupNum);

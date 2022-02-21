@@ -1,4 +1,4 @@
-function setArg(projectStruct,subName,trialName,varargin)
+function setArg(subName,trialName,varargin)
 
 %% PURPOSE: RETURN ONE INPUT ARGUMENT TO A PROCESSING FUNCTION AT EITHER THE PROJECT, SUBJECT, OR TRIAL LEVEL
 % Inputs:
@@ -13,17 +13,11 @@ fcnName=st(2).name; % The name of the calling function.
 
 argNames=cell(length(varargin),1);
 nArgs=length(varargin);
-for i=4:nArgs+3
-    argNames{i-3}=inputname(i); % NOTE THE LIMITATION THAT THERE CAN BE NO INDEXING USED IN THE INPUT VARIABLE NAMES
-    if isempty(argNames{i-3})
+for i=3:nArgs+2
+    argNames{i-2}=inputname(i); % NOTE THE LIMITATION THAT THERE CAN BE NO INDEXING USED IN THE INPUT VARIABLE NAMES
+    if isempty(argNames{i-2})
         error(['Argument #' num2str(i) ' (output variable #' num2str(i-2) ') is not a scalar name in ' fcnName ' line #' num2str(st(2).line)]);
     end
-end
-
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
 end
 
 st=dbstack;
@@ -41,7 +35,7 @@ end
 
 for i=1:length(argNames)
     argName=argNames{i};
-    argIn=feval(argsFuncName,argName,projectStruct,subName,trialName);
+    argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName);
     
     % Resolve the path names (i.e. subName & trialName)
     splitPath=strsplit(argIn,'.');
@@ -66,10 +60,10 @@ for i=1:length(argNames)
     resPath=[resPath '.Method' methodNum methodLetter]; % Automatically assign the method ID
     
     % Store the data to the appropriate path
-    if ~isstruct(projectStruct)
-        clear projectStruct;
-    end
-    eval([resPath '=varargin{' num2str(i) '};']); % Store the data to the projectStruct in this workspace
+%     if ~isstruct(projectStruct)
+%         clear projectStruct;
+%     end
+%     eval([resPath '=varargin{' num2str(i) '};']); % Store the data to the projectStruct in this workspace
 %     assignin('base','currPath',resPath); % Store the path to the current data in the base workspace
     assignin('base','currData',varargin{i}); % Store the data to the base workspace.
     evalin('base',[resPath '=currData;']); % Store the data to the projectStruct in the base workspace.
@@ -79,8 +73,7 @@ end
 evalin('base','clear currData;');
 fig=evalin('base','gui;');
 
-% Save the data to the appropriate file. If R2021b or later, use the
-% backgroundPool to save the data to files.
+% Save the data to the appropriate file. Use parallel pool if desired.
 p=gcp('nocreate');
 if isempty(p)
     p=parpool('local',1);

@@ -22,7 +22,8 @@ end
 
 st=dbstack;
 fcnName=st(2).name;
-methodLetter=evalin('base','methodLetter;');
+fig=evalin('base','gui;');
+methodLetter=getappdata(fig,'methodLetter');
 splitName=strsplit(fcnName,'_');
 methodNum=splitName{2}(isstrprop(splitName{2},'digit'));
 
@@ -33,9 +34,13 @@ else
     argsFuncName=[fcnName methodLetter];
 end
 
+saveLevels=cell(length(argNames),1);
+
 for i=1:length(argNames)
     argName=argNames{i};
     argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName);
+
+    saveLevels{i}='Project';
     
     % Resolve the path names (i.e. subName & trialName)
     splitPath=strsplit(argIn,'.');
@@ -48,35 +53,30 @@ for i=1:length(argNames)
             else
                 if j==2 && isequal(dynamicName,'subName')
                     resPath=[resPath '.' subName];
+                    saveLevels{i}='Subject';
                 elseif j==3 && isequal(dynamicName,'trialName')
                     resPath=[resPath '.' trialName];
+                    saveLevels{i}='Trial';
                 end
             end
         else
             resPath=[resPath '.' splitPath{j}];
         end
-    end
+    end   
     
     resPath=[resPath '.Method' methodNum methodLetter]; % Automatically assign the method ID
     
-    % Store the data to the appropriate path
-%     if ~isstruct(projectStruct)
-%         clear projectStruct;
-%     end
-%     eval([resPath '=varargin{' num2str(i) '};']); % Store the data to the projectStruct in this workspace
-%     assignin('base','currPath',resPath); % Store the path to the current data in the base workspace
     assignin('base','currData',varargin{i}); % Store the data to the base workspace.
     evalin('base',[resPath '=currData;']); % Store the data to the projectStruct in the base workspace.
     
 end
 
 evalin('base','clear currData;');
-fig=evalin('base','gui;');
 
 % Save the data to the appropriate file. Use parallel pool if desired.
 p=gcp('nocreate');
 if isempty(p)
     p=parpool('local',1);
 end
-f=parfeval(p,@saveDataToFile,0,fig,projectStruct,subName,trialName);
-% saveDataToFile(0,projectStruct,subName,trialName);
+f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));
+% saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));

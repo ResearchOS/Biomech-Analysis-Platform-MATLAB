@@ -51,7 +51,7 @@ for i=1:length(fldNames)
 
         for j=1:length(paths)
             dotIdx=strfind(paths{j},'.');
-            dotNum=fismember({'Project','Subject','Trial'},level);
+            dotNum=ismember({'Project','Subject','Trial'},level);
             path=paths{j}(dotIdx(dotNum)+1:end);
             newPathSplit=strsplit(paths{j},'.');
             for k=1:length(newPathSplit)

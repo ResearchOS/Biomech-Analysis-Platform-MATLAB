@@ -32,7 +32,21 @@ for i=1:length(fldNames)
 
         if loadedFile==0 && exist(matFilePath,'file')==2 % File exists but has not been loaded yet.
             loadedFile=1; 
-            disp(['Now Loading ' subName ' Trial ' trialName ' ' fldNames{i} ' ' pathsByLevel.(fldNames{i}).MethodNum pathsByLevel.(fldNames{i}).MethodLetter]);
+
+            switch level
+                case 'Project'
+                    prefix='Project ';
+                case 'Subject'
+                    prefix=[subName ' '];
+                case 'Trial'
+                    prefix=[subName ' Trial ' trialName ' '];
+            end
+
+            if isfield(pathsByLevel.(fldNames{i}),'ImportFcnName')
+                disp(['Now Loading ' prefix fldNames{i} ' ' pathsByLevel.(fldNames{i}).MethodNum pathsByLevel.(fldNames{i}).MethodLetter]);
+            else
+                disp(['Now Loading ' prefix fldNames{i}]);
+            end
             currData=load(matFilePath);
             fldName=fieldnames(currData);
             assert(length(fldName)==1);

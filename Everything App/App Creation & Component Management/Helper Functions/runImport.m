@@ -134,7 +134,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
 
             argsPaths.([fcnName fcnNum])=readArgsFcn(argsFcnName);
 
-            pathsByLevel.([fcnName fcnNum]).Action=action;
+            pathsByLevel.([fcnName fcnNum fcnLetter]).Action=action;
 
             if ~isequal(action,'Load')
                 continue; % If not loading the argsPaths, ignore the below code specifying which level of data to load.
@@ -155,13 +155,13 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
                 % Split the argsPaths by project, subject, and trial level.
                 if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')
                     trialCount=trialCount+1;
-                    pathsByLevel.([fcnName fcnNum]).Trial{trialCount,1}=currPath;
+                    pathsByLevel.([fcnName fcnNum fcnLetter]).Trial{trialCount,1}=currPath;
                 elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')
                     subjCount=subjCount+1;
-                    pathsByLevel.([fcnName fcnNum]).Subject{subjCount,1}=currPath;
+                    pathsByLevel.([fcnName fcnNum fcnLetter]).Subject{subjCount,1}=currPath;
                 else
                     projCount=projCount+1;
-                    pathsByLevel.([fcnName fcnNum]).Project{projCount,1}=currPath;
+                    pathsByLevel.([fcnName fcnNum fcnLetter]).Project{projCount,1}=currPath;
                 end
 
             end

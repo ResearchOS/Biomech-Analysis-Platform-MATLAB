@@ -22,6 +22,21 @@ for i=1:length(fldNames)
     if isfield(pathsByLevel.(fldNames{i}),level) && isequal(pathsByLevel.(fldNames{i}).Action,'Offload')
         paths=pathsByLevel.(fldNames{i}).(level);
 
+        switch level
+            case 'Project'
+                prefix='Project ';
+            case 'Subject'
+                prefix=[subName ' '];
+            case 'Trial'
+                prefix=[subName ' Trial ' trialName ' '];
+        end
+
+        if isfield(pathsByLevel.(fldNames{i}),'ImportFcnName')
+            disp(['Now Offloading ' prefix fldNames{i} ' ' pathsByLevel.(fldNames{i}).MethodNum pathsByLevel.(fldNames{i}).MethodLetter]);
+        else
+            disp(['Now Offloading ' prefix fldNames{i}]);
+        end
+
         for j=1:length(paths)
 
             rmdPath=paths{j};

@@ -51,6 +51,7 @@ idx=ismember(groupNames,groupName);
 lineNum=lineNums(idx); % The line number in the text file of the current group
 
 groupSpecifyTrialsName=[groupName '_Process_SpecifyTrials'];
+groupArgsName=[groupName '_Process_Args'];
 
 fcnCount=0;
 for i=lineNum+1:length(text)
@@ -61,15 +62,26 @@ for i=lineNum+1:length(text)
     
     fcnCount=fcnCount+1;
     a=strsplit(text{i},':');
+    runAndSpecifyTrialsCell=strsplit(strtrim(a{2}),' ');
     fcnNameCell=strsplit(a{1},' ');
     number=fcnNameCell{2}(~isletter(fcnNameCell{2}));
     letter=fcnNameCell{2}(isletter(fcnNameCell{2}));
     fcnNames{fcnCount}=[fcnNameCell{1} '_Process' number]; % All the function names, in order
-    argsNames{fcnCount}=[fcnNameCell{1} '_Process' number letter]; % All the argument function names, in order
-    runAndSpecifyTrialsCell=strsplit(strtrim(a{2}),' ');
+    if isequal(runAndSpecifyTrialsCell{3}(end),'1') % if using function-specific argument function
+        argsNames{fcnCount}=[fcnNameCell{1} '_Process' number letter]; % All the argument function names, in order
+    else % if using group level argument function
+        argsNames{fcnCount}=groupArgsName;
+    end
+    
     runFuncs(fcnCount)=str2double(runAndSpecifyTrialsCell{1}(end));
     funcSpecifyTrials(fcnCount)=str2double(runAndSpecifyTrialsCell{2}(end));
-    funcSpecifyTrialsName{fcnCount}=[fcnNameCell{1} '_Process' number letter '_SpecifyTrials'];
+    funcArgs(fcnCount)=str2double(runAndSpecifyTrialsCell{3}(end));
+
+    if isequal(runAndSpecifyTrialsCell{2}(end),'1')
+        funcSpecifyTrialsName{fcnCount}=[fcnNameCell{1} '_Process' number letter '_SpecifyTrials'];
+    else
+        funcSpecifyTrialsName{fcnCount}=groupSpecifyTrialsName;
+    end
     
     % Get the full path name of the fcnNames (i.e. if in User-Created Functions or Existing Functions folder)
     userFolder=[codePath 'Process_' projectName slash 'User-Created Functions'];
@@ -88,7 +100,7 @@ for i=lineNum+1:length(text)
     
 end
 
-%% Check existence of all input arguments functions
+%% Check existence of all input arguments functions, and identify their highest processing level.
 argsFolder=[codePath 'Process_' projectName slash 'Arguments'];
 currDir=cd(argsFolder);
 for i=1:length(fcnNames)
@@ -98,25 +110,26 @@ for i=1:length(fcnNames)
         warning(['Input Argument Function Does Not Exist: ' argsNames{i}]);
         return;
     end
-    
-end
-cd(currDir);
 
-%% Iterate over all processing functions to get their processing level (project, subject, and trial)
-for i=1:length(fcnNames)    
-    fcnName=fcnNames{i};
-    cd(fcnFolder{i});
-    feval(fcnName); % nargin=0 returns the processing level for inputs for each function
-    levels=evalin('base','levels;'); % The levels of the input arguments  
-    
-    if any(~ismember(levels{i},{'P','S','T','PS','PST','ST','PT'}))
-        beep;
-        warning(['Function does not properly specify the processing level: ' fcnName]);
-        return;
+    paths{i}=readArgsFcn([argsFolder slash argsNames{i} '.m']);
+    funcLevels{i}='';
+    for j=1:length(paths{i})
+        currPathSplit=strsplit(paths{i}{j},'.');        
+        if length(currPathSplit)>=4 && isequal(currPathSplit{3}([1 end]),'()')
+            funcLevels{i}=[funcLevels{i}; {'Trial'}];
+        elseif length(currPathSplit)>=3 && isequal(currPathSplit{2}([1 end]),'()')
+            funcLevels{i}=[funcLevels{i}; {'Subject'}]   ;        
+        else
+            funcLevels{i}=[funcLevels{i}; {'Project'}];
+            break;
+        end
+
     end
+
+    funcLevels{i}=sort(unique(funcLevels{i}));
+    
     
 end
-
 cd(currDir); % Go back to original directory.
 
 %% Iterate over all processing functions in the group to run them.
@@ -129,10 +142,11 @@ for i=1:length(fcnNames)
     argsName=argsNames{i};
     runFunc=runFuncs(i);
     specTrials=funcSpecifyTrials(fcnCount);
-    currLevels=levels{i};
+    currLevels=funcLevels{i};
     methodLetter=strsplit(argsName,'_Process');
     methodLetter=methodLetter{2}(isletter(methodLetter{2}));
-    assignin('base','methodLetter',methodLetter); % Send the method letter to the base workspace
+    setappdata(fig,'methodLetter',methodLetter)
+%     assignin('base','methodLetter',methodLetter); % Send the method letter to the base workspace
     
     if runFunc==0
         disp(['SKIPPING ' fcnName ' BECAUSE IT WAS UNCHECKED IN THE GUI']);
@@ -152,15 +166,15 @@ for i=1:length(fcnNames)
     cd(currDir);
     
     % Run getTrialNames
-    trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
+    trialNames=getTrialNames(inclStruct,logVar,fig,0,evalin('base','projectStruct;'));
     subNames=fieldnames(trialNames);
     
     % Run the processing function
-    if any(ismember(currLevels,'P'))
-        if any(ismember(currLevels,'T'))
+    if ismember('Project',currLevels)
+        if ismember('Trial',currLevels)
             feval(fcnName,projectStruct,trialNames); % projectStruct is an input argument for convenience of viewing the data only    
-        elseif any(ismember(currLevels,'S'))
-            feval(fcnName,projectStruct,fieldnames(trialNames));
+        elseif ismember('Subject',currLevels)
+            feval(fcnName,projectStruct,subNames);
         else
             feval(fcnName,projectStruct);
         end
@@ -171,8 +185,8 @@ for i=1:length(fcnNames)
         subName=subNames{sub};
         currTrials=trialNames.(subName); % The list of trial names in the current subject
         
-        if any(ismember(currLevels,'S'))
-            if any(ismember(currLevels,'T'))
+        if ismember('Subject',currLevels)
+            if ismember('Trial',currLevels)
                 feval(fcnName,projectStruct,subName,currTrials); % projectStruct is an input argument for convenience of viewing the data only
             else
                feval(fcnName,projectStruct,subName); 

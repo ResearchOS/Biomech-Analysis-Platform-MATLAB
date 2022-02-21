@@ -78,9 +78,9 @@ for i=1:length(fcnNames)
         currLine=strsplit(origText{fcnFoundLineNum},':'); % The text of the current line, split by the colon
         afterColon=strtrim(currLine{2});
         runAndSpecifyTrials=strsplit(afterColon,' ');
-        fcnNamesText{i}=[fcnNames{i} ': Run' runAndSpecifyTrials{1}(end) ' SpecifyTrials' runAndSpecifyTrials{2}(end)];
+        fcnNamesText{i}=[fcnNames{i} ': Run' runAndSpecifyTrials{1}(end) ' SpecifyTrials' runAndSpecifyTrials{2}(end) ' Args' runAndSpecifyTrials{3}(end)];
     else
-        fcnNamesText{i}=[fcnNames{i} ': Run1 SpecifyTrials0']; % Add a colon right after the function name & number/letter
+        fcnNamesText{i}=[fcnNames{i} ': Run1 SpecifyTrials0 Args0']; % Add a colon right after the function name & number/letter
     end
     
     fcnNameText=strsplit(fcnName,' ');

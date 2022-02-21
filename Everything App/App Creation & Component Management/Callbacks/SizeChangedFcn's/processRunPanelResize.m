@@ -41,6 +41,7 @@ openFcnButtonCount=0;
 fcnArgsButtonCount=0;
 specifyTrialsCheckboxCount=0;
 specifyTrialsButtonCount=0;
+fcnArgsCheckboxCount=0;
 for i=1:length(fldNames)
     
     currH=data.(fldNames{i});
@@ -60,6 +61,10 @@ for i=1:length(fldNames)
     if contains(currTag,'FcnArgsButton')
         fcnArgsButtonCount=fcnArgsButtonCount+1;
         fcnArgsButton(fcnArgsButtonCount)=currH;
+    end
+    if contains(currTag,'FcnArgsCheckbox')
+        fcnArgsCheckboxCount=fcnArgsCheckboxCount+1;
+        fcnArgsCheckbox(fcnArgsCheckboxCount)=currH;
     end
     if contains(currTag,'SpecifyTrialsCheckbox')
         specifyTrialsCheckboxCount=specifyTrialsCheckboxCount+1;
@@ -96,6 +101,7 @@ for i=1:specifyTrialsButtonCount
     fcnArgsButtonRelPos=[0.5 (1-(i+fcnRowCount)*0.1)];
     specifyTrialsCheckboxRelPos=[0.7 (1-(i+fcnRowCount)*0.1)];
     specifyTrialsButtonRelPos=[0.75 (1-(i+fcnRowCount)*0.1)];
+    fcnArgsCheckboxRelPos=[0.45 (1-(i+fcnRowCount)*0.1)];
     
     % Size
     runFcnCheckboxSize=[0.05 compHeight];
@@ -103,6 +109,7 @@ for i=1:specifyTrialsButtonCount
     fcnArgsButtonSize=[0.1 compHeight];
     specifyTrialsCheckboxSize=[0.05 compHeight];
     specifyTrialsButtonSize=[0.2 compHeight];
+    fcnArgsCheckboxSize=[0.05 compHeight];
     
     % Position
     runFcnCheckboxPos=round([runFcnCheckboxRelPos.*figSize runFcnCheckboxSize(1)*figSize(1) runFcnCheckboxSize(2)]);
@@ -110,6 +117,7 @@ for i=1:specifyTrialsButtonCount
     fcnArgsButtonPos=round([fcnArgsButtonRelPos.*figSize fcnArgsButtonSize(1)*figSize(1) fcnArgsButtonSize(2)]);
     specifyTrialsCheckboxPos=round([specifyTrialsCheckboxRelPos.*figSize specifyTrialsCheckboxSize(1)*figSize(1) specifyTrialsCheckboxSize(2)]);
     specifyTrialsButtonPos=round([specifyTrialsButtonRelPos.*figSize specifyTrialsButtonSize(1)*figSize(1) specifyTrialsButtonSize(2)]);
+    fcnArgsCheckboxPos=round([fcnArgsCheckboxRelPos.*figSize fcnArgsCheckboxSize(1)*figSize(1) fcnArgsCheckboxSize(2)]);
     
     % Set Position
     runFcnCheckbox(i).Position=runFcnCheckboxPos;
@@ -117,6 +125,7 @@ for i=1:specifyTrialsButtonCount
     fcnArgsButton(i).Position=fcnArgsButtonPos;
     specifyTrialsCheckbox(i).Position=specifyTrialsCheckboxPos;
     specifyTrialsButton(i).Position=specifyTrialsButtonPos;
+    fcnArgsCheckbox(i).Position=fcnArgsCheckboxPos;
     
     % Set Font Size
     runFcnCheckbox(i).FontSize=newFontSize;
@@ -124,6 +133,7 @@ for i=1:specifyTrialsButtonCount
     fcnArgsButton(i).FontSize=newFontSize;
     specifyTrialsCheckbox(i).FontSize=newFontSize;
     specifyTrialsButton(i).FontSize=newFontSize;
+    fcnArgsCheckbox(i).FontSize=newFontSize;
     
     % Set Visibility
     runFcnCheckbox(i).Visible='on';
@@ -131,6 +141,7 @@ for i=1:specifyTrialsButtonCount
     fcnArgsButton(i).Visible='on';
     specifyTrialsCheckbox(i).Visible='on';
     specifyTrialsButton(i).Visible='on';
+    fcnArgsCheckbox(i).Visible='on';
     
     % Set Visibility by Position
     if (1-(i+fcnRowCount)*0.1)>=1 || (1-(i+fcnRowCount)*0.1)<=0 % Outside of the bounds of the panel
@@ -139,6 +150,7 @@ for i=1:specifyTrialsButtonCount
         fcnArgsButton(i).Visible='off';
         specifyTrialsCheckbox(i).Visible='off';
         specifyTrialsButton(i).Visible='off';
+        fcnArgsCheckbox(i).Visible='off';
     end
     
     if i==1 && (1-(i+fcnRowCount)*0.1)<1 % Turn off visibility for 'Up' arrow
@@ -160,6 +172,11 @@ for i=1:specifyTrialsButtonCount
         specifyTrialsButton(i).Visible='on';
     else
         specifyTrialsButton(i).Visible='off';
+    end
+    if fcnArgsCheckbox(i).Value==0 % If not checked, turn off args button visibility
+        fcnArgsButton(i).Visible='off';
+    elseif fcnArgsCheckbox(i).Value==1
+        fcnArgsButton(i).Visible='on';
     end
     
 end

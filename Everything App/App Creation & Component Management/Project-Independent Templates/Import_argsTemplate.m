@@ -16,7 +16,7 @@ function [argVal]=Import_argsTemplate(argName,projectStruct,subName,trialName)
 localFcns=localfunctions; % Get the handles of all function names in the args file, to explicitly ensure that only these functions are called.
 fcnExist=0; % Initialize that the local function does not exist in this file
 for i=1:length(localFcns)
-    currFcn=func2str(fh); % Get the name of each local function in this file
+    currFcn=func2str(localFcns{i}); % Get the name of each local function in this file
     if isequal(currFcn,argName)
         fcnExist=1; % Indicates that the function is found in this file.
         break;
@@ -27,7 +27,16 @@ if fcnExist==0
 end
 
 % Run the appropriate input arguments function. Local functions take precedence over all others besides nested functions.
-argVal=feval(argName,projectStruct,subName,trialName);
+try
+    argVal=feval(argName,projectStruct,subName,trialName);
+catch
+    err.message=['Arg ' argName ' Not Found in projectStruct at Subject: ' subName ' Trial: ' trialName];
+    err.stack.file='';
+    err.stack.name=argName;
+    err.identifier='';
+    err.stack.line=1;
+    error(err);
+end
 
 end
 

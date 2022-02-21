@@ -17,14 +17,18 @@ currVal=src.Value;
 % If now unchecked, turn off visibility of specify trials checkbox & button
 hSpecifyTrialsCheckbox=findobj(fig,'Type','uicheckbox','Tag',['SpecifyTrialsCheckbox' num2str(currNum)]);
 hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag',['SpecifyTrialsButton' num2str(currNum)]);
+hFcnArgsCheckbox=findobj(fig,'Type','uicheckbox','Tag',['FcnArgsCheckbox' num2str(currNum)]);
+hFcnArgsCheckbox.Visible=currVal;
 hSpecifyTrialsCheckbox.Visible=currVal;
-hSpecifyTrialsButton.Visible=currVal;
+if hSpecifyTrialsCheckbox.Value==1
+    hSpecifyTrialsButton.Visible=1;
+end
 
 % Get current function name
 currFcnButton=findobj(fig,'Type','uibutton','Tag',['OpenFcnButton' num2str(currNum)]);
 currFcnName=currFcnButton.Text;
 currFcnArgsButton=findobj(fig,'Type','uibutton','Tag',['FcnArgsButton' num2str(currNum)]);
-currFcnArg=currFcnArgsButton.Text;
+currFcnArg=currFcnArgsButton.Text(isstrprop(currFcnArgsButton.Text,'alpha'));
 
 currFullName=[currFcnName currFcnArg]; % The function name & method number & letter
 
@@ -42,7 +46,7 @@ beforeColon=strsplit(currText,':');
 beforeColon=beforeColon{1}(~isspace(beforeColon{1}));
 if isequal(beforeColon,currFullName)
     colonIdx=strfind(currText,':');
-    text{lineNum+currNum}=[currText(1:colonIdx) ' Run' num2str(currVal) ' ' currText(end-length('SpecifyTrials0')+1:end)];
+    text{lineNum+currNum}=[currText(1:colonIdx) ' Run' num2str(currVal) ' ' currText(colonIdx+7:end)];
 end
 
 % Save the text file

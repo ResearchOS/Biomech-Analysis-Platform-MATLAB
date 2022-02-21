@@ -1,22 +1,21 @@
-function []=specifyTrialsCheckboxValueChanged(src)
+function []=fcnArgsCheckboxValueChanged(src)
 
-%% PURPOSE: INDICATE WHETHER TO USE THE INDIVIDUAL FUNCTION'S SPECIFY TRIALS FUNCTION. IF UNCHECKED, USE THE GROUP LEVEL SPECIFY TRIALS
+%% PURPOSE: INDICATE WHETHER TO USE THE INDIVIDUAL FUNCTION'S ARGUMENTS FUNCTION. IF UNCHECKED, USE THE GROUP LEVEL ARGUMENTS FUNCTION
 
 fig=ancestor(src,'figure','toplevel');
 
 hRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
 groupName=hRunDropDown.Value;
 
-% Get current tag
 currTag=src.Tag;
-currNum=str2double(currTag(length('SpecifyTrialsCheckbox')+1:end)); % char
+currNum=str2double(currTag(length('FcnArgsCheckbox')+1:end));
 
 % Get the current checkbox value
 currVal=src.Value;
 
-% If now unchecked, turn off visibility of specify trials button
-hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag',['SpecifyTrialsButton' num2str(currNum)]);
-hSpecifyTrialsButton.Visible=currVal;
+% If now unchecked, turn off visibility of args button
+hArgsButton=findobj(fig,'Type','uibutton','Tag',['FcnArgsButton' num2str(currNum)]);
+hArgsButton.Visible=currVal;
 
 % Get current function name
 currFcnButton=findobj(fig,'Type','uibutton','Tag',['OpenFcnButton' num2str(currNum)]);
@@ -40,7 +39,7 @@ beforeColon=strsplit(currText,':');
 beforeColon=beforeColon{1}(~isspace(beforeColon{1}));
 if isequal(beforeColon,currFullName)
     colonIdx=strfind(currText,':');
-    text{lineNum+currNum}=[currText(1:colonIdx+5) ' SpecifyTrials' num2str(currVal) currText(colonIdx+21:end)];
+    text{lineNum+currNum}=[currText(1:colonIdx+20) ' Args' num2str(currVal)];
 end
 
 % Save the text file

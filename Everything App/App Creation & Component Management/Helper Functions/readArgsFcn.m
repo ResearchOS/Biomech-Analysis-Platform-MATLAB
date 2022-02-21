@@ -1,4 +1,4 @@
-function [paths]=readArgsFcn(filePath,subName,trialName)
+function [paths]=readArgsFcn(filePath)
 
 %% PURPOSE: READ THE TEXT OF THE ARGUMENTS FUNCTION TO ISOLATE THE PATH NAMES OF ALL INPUT VARIABLES
 % Inputs:

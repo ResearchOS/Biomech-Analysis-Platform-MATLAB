@@ -74,18 +74,22 @@ while allEntries==0
     currFcnArgsButton=findobj(processRunPanel,'Type','uibutton','Tag',['FcnArgsButton' num2str(elemNum)]);
     currSpecifyTrialsCheckbox=findobj(processRunPanel,'Type','uicheckbox','Tag',['SpecifyTrialsCheckbox' num2str(elemNum)]);
     currSpecifyTrialsButton=findobj(processRunPanel,'Type','uibutton','Tag',['SpecifyTrialsButton' num2str(elemNum)]);
+    currFcnArgsCheckbox=findobj(processRunPanel,'Type','uicheckbox','Tag',['FcnArgsCheckbox' num2str(elemNum)]);
     if ~isempty(currRunFcnCheckbox) && ~isempty(currFcnNamesButton) && ~isempty(currFcnArgsButton) && ~isempty(currSpecifyTrialsCheckbox) && ~isempty(currSpecifyTrialsButton)
         delete(currRunFcnCheckbox);
         delete(currFcnNamesButton);
         delete(currFcnArgsButton);
         delete(currSpecifyTrialsCheckbox);
         delete(currSpecifyTrialsButton);
+        delete(currFcnArgsCheckbox);
         
         processRunPanel.UserData=rmfield(processRunPanel.UserData,['RunFcnCheckbox' num2str(elemNum)]);
         processRunPanel.UserData=rmfield(processRunPanel.UserData,['OpenFcnButton' num2str(elemNum)]);
         processRunPanel.UserData=rmfield(processRunPanel.UserData,['FcnArgsButton' num2str(elemNum)]);
         processRunPanel.UserData=rmfield(processRunPanel.UserData,['SpecifyTrialsCheckbox' num2str(elemNum)]);
         processRunPanel.UserData=rmfield(processRunPanel.UserData,['SpecifyTrialsButton' num2str(elemNum)]);
+        processRunPanel.UserData=rmfield(processRunPanel.UserData,['FcnArgsCheckbox' num2str(elemNum)]);
+
     else
         allEntries=1;
     end
@@ -133,6 +137,9 @@ if exist('fcnNames','var')==1
         
         % Check the 'SpecifyTrials' checkbox status in the text file
         specifyTrialsStatus=str2double(runAndSpecifyTrials{2}(end));
+
+        % Check the 'Args' checkbox status in the text file
+        argStatus=str2double(runAndSpecifyTrials{3}(end));
         
         % Run function checkboxes
         runFcnCheckbox=uicheckbox(processRunPanel,'Text','','Value',runStatus,'Tag',['RunFcnCheckbox' num2str(elemNum)]);
@@ -142,6 +149,9 @@ if exist('fcnNames','var')==1
         
         % Function args button
         fcnArgsButton=uibutton(processRunPanel,'Text',argLetter,'Tag',['FcnArgsButton' num2str(elemNum)]);
+
+        % Function args checkbox
+        fcnArgsCheckbox=uicheckbox(processRunPanel,'Text','','Value',argStatus,'Tag',['FcnArgsCheckbox' num2str(elemNum)]);
         
         % Specify trials checkbox
         specifyTrialsCheckbox=uicheckbox(processRunPanel,'Text','','Value',specifyTrialsStatus,'Tag',['SpecifyTrialsCheckbox' num2str(elemNum)]);
@@ -155,12 +165,14 @@ if exist('fcnNames','var')==1
         set(fcnArgsButton,'ButtonPushedFcn',@(fcnArgsButton,event) fcnArgsButtonPushed(fcnArgsButton));
         set(specifyTrialsCheckbox,'ValueChangedFcn',@(specifyTrialsCheckbox,event) specifyTrialsCheckboxValueChanged(specifyTrialsCheckbox));
         set(specifyTrialsButton,'ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushed(specifyTrialsButton));
+        set(fcnArgsCheckbox,'ValueChangedFcn',@(fcnArgsCheckbox,event) fcnArgsCheckboxValueChanged(fcnArgsCheckbox));
         
         processRunPanel.UserData.(['RunFcnCheckbox' num2str(elemNum)])=runFcnCheckbox;
         processRunPanel.UserData.(['OpenFcnButton' num2str(elemNum)])=fcnNamesButton;
         processRunPanel.UserData.(['FcnArgsButton' num2str(elemNum)])=fcnArgsButton;
         processRunPanel.UserData.(['SpecifyTrialsCheckbox' num2str(elemNum)])=specifyTrialsCheckbox;
         processRunPanel.UserData.(['SpecifyTrialsButton' num2str(elemNum)])=specifyTrialsButton;
+        processRunPanel.UserData.(['FcnArgsCheckbox' num2str(elemNum)])=fcnArgsCheckbox;
         
     end
     

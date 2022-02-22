@@ -6,18 +6,12 @@ function Process_TemplateT(projectStruct,subName,trialName)
 % methodLetter: The method letter for all output arguments. Matches the letter of the current input arguments function. (char)
 % varargin: The input variables from the input arguments function (cell array, each element is one variable)
 
-%% Setup to establish processing level & output arguments
-if nargin==0
-    assignin('base','levels','T'); % Indicates project level function inputs
-    return;
-end
-
 %% TODO: Assign input arguments to variable names
-roomNum=getArg('roomNum',subName,trialName);
+roomNum=getArg('roomNum',subName,trialName); % Get trial level variable
 
 %% TODO: Biomechanical operations for the whole project.
 % Code here.
 collectionSite=['Zaferiou Lab' roomNum];
 
 %% TODO: Store the computed variable(s) data to the projectStruct
-setArg('roomNum',roomNum,subName,trialName);
+setArg(subName,trialName,collectionSite); % Set trial level variable

@@ -12,7 +12,7 @@ hInputCheckboxS=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxSubject');
 hInputCheckboxT=findobj(fig,'Type','uicheckbox','Tag','InputCheckboxTrial');
 
 if hInputCheckboxT.Value==0 && hInputCheckboxS.Value==0 && hInputCheckboxP.Value==0
-    disp(['Need to specify some level of input argument with the checkboxes!']);
+    disp(['Need to specify the level of the input & output arguments with the checkboxes!']);
     return;
 end
 
@@ -35,6 +35,14 @@ if length(nameCell)~=2 || ~isvarname(nameCell{1}) % Check entry
 end
 fcnName=nameCell{1}; % Function name
 fcnNum=nameCell{2}; % Method number
+
+if any(isstrprop(fcnNum,'alpha'))
+    error('No letters in the function number!');
+end
+
+if any(isstrprop(fcnNum,'digit'))
+    error('Need numbers in the function number!');
+end
 
 if ismac==1
     slash='/';

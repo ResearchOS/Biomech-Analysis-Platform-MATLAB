@@ -6,31 +6,25 @@ function Process_TemplatePST(projectStruct,allTrialNames)
 % methodLetter: The method letter for all output arguments. Matches the letter of the current input arguments function. (char)
 % varargin: The input variables from the input arguments function (cell array, each element is one variable)
 
-%% Setup to establish processing level & output arguments
-if nargin==0
-    assignin('base','levels','PST'); % Indicates project level function inputs
-    return;
-end
-
 %% TODO: Assign input arguments to variable names
-roomNum=getArg('roomNum');
+roomNum=getArg('roomNum'); % Get project level variable
 
 subNames=fieldnames(allTrialNames); % The subject names of interest
 for subNum=1:length(subNames)
     subName=subNames{subNum};
     currTrials=allTrialNames.(subName);
+
+    height=getArg('height',subName); % Get subject level variable
     
     for trialNum=1:length(currTrials)
         
-        trialArg=getArg('comPos',subName,trialName);
+        trialArg=getArg('comPos',subName,trialName); % Get trial level variable
         
-        setArg('trialArg',trialArg,subName,trialName);
+        setArg(subName,trialName,trialArg); % Set trial level variable
         
     end
-    
-    height=getArg('height',subName);
-    
-    setArg('height',height,subName);
+
+    setArg(subName,[],height); % Set subject level variable
     
 end
 
@@ -39,4 +33,4 @@ end
 collectionSite=['Zaferiou Lab' roomNum];
 
 %% TODO: Store the computed variable(s) data to the projectStruct
-setArg('roomNum',roomNum);
+setArg([],[],collectionSite); % Set project level variable

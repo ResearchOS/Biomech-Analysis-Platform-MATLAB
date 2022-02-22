@@ -53,7 +53,7 @@ for i=1:length(currNames)
     userPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'User-Created Functions' slash a{1} '_Process' a{2}(~isletter(a{2})) '.m'];
     
     if exist(existPath,'file')~=2 && exist(userPath,'file')~=2
-        disp(['Function ' a{1} '_Process' a{2}(~isletter(a{2})) ' Does Not Exist']);
+        disp(['Function ' a{1} '_Process' a{2} ' Does Not Exist']);
         return;
     end
     

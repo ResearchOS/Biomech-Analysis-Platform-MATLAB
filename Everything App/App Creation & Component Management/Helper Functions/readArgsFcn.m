@@ -110,7 +110,10 @@ for i=1:length(text)
         end        
     end    
     if isOutput==0 && methodIDFound==0
-        error(['projectStruct input paths should have method ID field! Line ' num2str(i) ' in function: ' filePath]);
+        warning('projectStruct input paths should have method ID field!'); 
+        disp(['Line ' num2str(i) ' in function: ' filePath]);
+        paths='';
+        return;
     elseif isOutput==1 && methodIDFound==0 % This is correct. Now insert the method ID field.
         paths{argCount,1}=[paths{argCount} '.Method' methodID];
     end
@@ -122,5 +125,7 @@ if ~exist('paths','var')
 end
 
 if length(paths)>length(unique(paths))
-    error('Multiple arguments specified exactly the same. Beware of overwriting data!');
+    warning('Multiple arguments specified exactly the same. Beware of overwriting data!');
+    [~,ia]=unique(paths,'stable');
+    disp(paths(ia));
 end

@@ -60,9 +60,14 @@ for i=lineNum+1:length(text)
         break; % Finished with this group
     end
     
-    fcnCount=fcnCount+1;
+    
     a=strsplit(text{i},':');
     runAndSpecifyTrialsCell=strsplit(strtrim(a{2}),' ');
+    if isequal(runAndSpecifyTrialsCell{1}(end),'0')
+        continue;
+    end
+
+    fcnCount=fcnCount+1;
     fcnNameCell=strsplit(a{1},' ');
     number=fcnNameCell{2}(~isletter(fcnNameCell{2}));
     letter=fcnNameCell{2}(isletter(fcnNameCell{2}));
@@ -101,17 +106,24 @@ for i=lineNum+1:length(text)
 end
 
 %% Check existence of all input arguments functions, and identify their highest processing level.
-argsFolder=[codePath 'Process_' projectName slash 'Arguments'];
-currDir=cd(argsFolder);
+argsFolderFcn=[codePath 'Process_' projectName slash 'Arguments' slash 'Per Function' slash];
+argsFolderGroup=[codePath 'Process_' projectName slash 'Arguments' slash 'Per Group' slash];
+currDir=cd([codePath 'Process_' projectName slash 'Arguments']);
 for i=1:length(fcnNames)
-    
+
     if exist([argsNames{i} '.m'],'file')~=2
         beep;
         warning(['Input Argument Function Does Not Exist: ' argsNames{i}]);
         return;
     end
 
-    paths{i}=readArgsFcn([argsFolder slash argsNames{i} '.m']);
+    if exist([argsFolderFcn argsNames{i} '.m'],'file')==2
+        argPath{i}=[argsFolderFcn argsNames{i} '.m'];
+    elseif exist([argsFolderGroup argsNames{i} '.m'],'file')==2
+        argPath{i}=[argsFolderGroup argsNames{i} '.m'];
+    end        
+
+    paths{i}=readArgsFcn(argPath{i});
     if ~iscell(paths{i})
         return;
     end
@@ -181,15 +193,12 @@ for i=1:length(fcnNames)
     % 2. Check the contents of the projectStruct, at the project, subject, and/or trial level to ensure that the desired paths (specified in the args
     % function) are present using the existField function. If not, throw an error and don't run the function.
     processFile=[fcnFolder{i} slash fcnName '.m'];
-    argsFile=[codePath 'Process_' projectName slash 'Arguments' slash argsName '.m'];
+    argsFile=argPath{i};
     if ~checkArgsMatch(processFile,argsFile) || ~checkAllPaths(paths{i},projectStruct,trialNames,argsFile)
         % checkArgsMatch reads the two files for matching called args.
         % checkAllPaths uses existField on all paths at all levels to ensure that there won't be an error with getArg. If a field does not exist, throws an error.
         return;
     end
-
-    
-    checkAllPaths(paths{i},projectStruct,trialNames);
 
     % Run the processing function
     if ismember('Project',currLevels)

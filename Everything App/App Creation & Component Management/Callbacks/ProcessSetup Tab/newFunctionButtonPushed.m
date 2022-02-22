@@ -40,7 +40,7 @@ if any(isstrprop(fcnNum,'alpha'))
     error('No letters in the function number!');
 end
 
-if any(isstrprop(fcnNum,'digit'))
+if ~any(isstrprop(fcnNum,'digit'))
     error('Need numbers in the function number!');
 end
 

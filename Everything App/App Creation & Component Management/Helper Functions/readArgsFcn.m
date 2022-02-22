@@ -126,6 +126,16 @@ end
 
 if length(paths)>length(unique(paths))
     warning('Multiple arguments specified exactly the same. Beware of overwriting data!');
-    [~,ia]=unique(paths,'stable');
-    disp(paths(ia));
+%     uPaths=unique(paths,'stable');
+    nonUniqueCount=0;
+    for i=1:length(paths)
+
+        if sum(ismember(paths,paths{i}))>1
+            nonUniqueCount=nonUniqueCount+1;
+            nonUPaths{nonUniqueCount,1}=paths{i};
+        end
+
+    end
+%     [~,ia]=unique(paths,'stable');
+    disp(unique(nonUPaths,'stable'));
 end

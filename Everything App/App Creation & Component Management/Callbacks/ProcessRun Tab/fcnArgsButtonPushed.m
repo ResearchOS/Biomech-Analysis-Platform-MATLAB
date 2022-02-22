@@ -28,6 +28,8 @@ elseif ispc==1
 end
 
 argsFolder=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function'];
+addpath(argsFolder);
+
 if exist(argsFolder,'dir')~=7
     mkdir(argsFolder);
 end

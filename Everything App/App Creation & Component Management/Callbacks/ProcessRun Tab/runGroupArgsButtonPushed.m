@@ -6,7 +6,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 runGroupDropDown=handles.ProcessRun.runGroupNameDropDown;
-groupName=[runGroupDropDown.Value '_Args'];
+groupName=[runGroupDropDown.Value '_Process_Args'];
 
 if ismac==1
     slash='/';
@@ -15,6 +15,8 @@ elseif ispc==1
 end
 
 argsFolder=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Group'];
+addpath(argsFolder);
+
 if exist(argsFolder,'dir')~=7
     mkdir(argsFolder);
 end

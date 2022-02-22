@@ -18,12 +18,6 @@ if nargin==1 % Project level data
     subName='';
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
-
 % 1. Get the name of the corresponding input argument file
 % fig=evalin('base','gui;'); % Get the gui from the base workspace.
 st=dbstack;

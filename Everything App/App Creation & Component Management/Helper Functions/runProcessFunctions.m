@@ -168,10 +168,23 @@ for i=1:length(fcnNames)
     % Run getTrialNames
     trialNames=getTrialNames(inclStruct,logVar,fig,0,evalin('base','projectStruct;'));
     subNames=fieldnames(trialNames);
-    
+
+    %% CHECK HERE (IN EACH SECTION) THAT THE PROJECTSTRUCT PATHS EXIST BEFORE CALLING THEM?
+    % 1. Check the process file and the args file to ensure that all argNames passed to getArg are found in the args function (replaces localfunctions
+    % check)
+    processFile=[fcnFolder{i} slash fcnName '.m'];
+    argsFile=[codePath 'Process_' projectName slash 'Arguments' slash argsName '.m'];
+    if ~checkArgsMatch(processFile,argsFile)
+        return;
+    end
+
+    % 2. Check the contents of the projectStruct, at the project, subject, and/or trial level to ensure that the desired paths (specified in the args
+    % function) are present using the existField function. If not, throw an error and don't run the function.
+    checkAllPaths(paths{i},projectStruct,trialNames); % Uses existField on all paths at all levels to ensure that there won't be an error with getArg. If a field does not exist, throws an error.
+
     % Run the processing function
     if ismember('Project',currLevels)
-        if ismember('Trial',currLevels)
+        if ismember('Trial',currLevels)            
             feval(fcnName,projectStruct,trialNames); % projectStruct is an input argument for convenience of viewing the data only    
         elseif ismember('Subject',currLevels)
             feval(fcnName,projectStruct,subNames);

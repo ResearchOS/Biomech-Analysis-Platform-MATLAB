@@ -167,17 +167,19 @@ handles.ProcessRun.groupArgsCheckboxLabel=uilabel(processRunTab,'Text','Args','T
 handles.ProcessRun.runGroupButton=uibutton(processRunTab,'push','Text','Run Group','Tag','RunGroupButton','ButtonPushedFcn',@(runGroupButton,event) runGroupButtonPushed(runGroupButton));
 handles.ProcessRun.runAllButton=uibutton(processRunTab,'push','Text','Run All','Tag','RunAllButton','ButtonPushedFcn',@(runAllButton,event) runAllButtonPushed(runAllButton));
 handles.ProcessRun.runFunctionsPanel=uipanel(processRunTab,'Title','','Tag','RunFunctionsPanel','BackGroundColor',[0.92 0.92 0.92],'AutoResizeChildren','off','SizeChangedFcn',@processRunPanelResize);
-handles.ProcessRun.specifyTrialsGroupButton=uibutton(processRunTab,'push','Text','Group specifyTrials','Tag','SpecifyTrialsGroupButton','ButtonPushedFcn',@(specifyTrialsGroupButton,event) specifyTrialsGroupButtonPushed(specifyTrialsGroupButton));
+handles.ProcessRun.specifyTrialsGroupButton=uibutton(processRunTab,'push','Text','Specify Trials','Tag','SpecifyTrialsGroupButton','ButtonPushedFcn',@(specifyTrialsGroupButton,event) specifyTrialsGroupButtonPushed(specifyTrialsGroupButton));
 handles.ProcessRun.specifyTrialsCheckboxLabel=uilabel(processRunTab,'Text','Specify Trials','Tag','SpecifyTrialsCheckboxLabel');
 % specifyTrialsGroupCheckbox=uicheckbox(processRunTab,'Text','','Value',0,'Tag','SpecifyTrialsGroupCheckbox');
 handles.ProcessRun.processRunUpArrowButton=uibutton(processRunTab,'Text',{'/\';'||'},'Tag','ProcessRunUpArrowButton','ButtonPushedFcn',@(processRunUpArrowButton,event) processRunUpArrowButtonPushed(processRunUpArrowButton));
 handles.ProcessRun.processRunDownArrowButton=uibutton(processRunTab,'Text',{'||';'\/'},'Tag','ProcessRunDownArrowButton','ButtonPushedFcn',@(processRunDownArrowButton,event) processRunDownArrowButtonPushed(processRunDownArrowButton));
+handles.ProcessRun.runGroupArgsButton=uibutton(processRunTab,'Text','Args','Tag','RunGroupArgsButton','ButtonPushedFcn',@(runGroupArgsButton,event) runGroupArgsButtonPushed(runGroupArgsButton));
 
 processTab.UserData=struct('SetupGroupNameLabel',handles.ProcessSetup.setupGroupNameLabel,'SetupGroupNameDropDown',handles.ProcessSetup.setupGroupNameDropDown,'SetupFunctionNamesLabel',handles.ProcessSetup.setupFunctionNamesLabel,'SetupFunctionNamesField',handles.ProcessSetup.setupFunctionNamesField,...
     'NewFunctionPanel',handles.ProcessSetup.newFunctionPanel,'SaveGroupButton',handles.ProcessSetup.saveGroupButton,'InputsLabel',handles.ProcessSetup.inputsLabel,'InputCheckboxProject',handles.ProcessSetup.inputCheckboxP,'InputCheckboxSubject',handles.ProcessSetup.inputCheckboxS,'InputCheckboxTrial',handles.ProcessSetup.inputCheckboxT,...
     'NewFunctionButton',handles.ProcessSetup.newFunctionButton,'AddFunctionGroupButton',handles.ProcessSetup.addFunctionGroupButton,'RunGroupNameLabel',handles.ProcessRun.runGroupNameLabel,'RunGroupNameDropDown',handles.ProcessRun.runGroupNameDropDown,'RunFunctionNamesLabel',handles.ProcessRun.runFunctionNamesLabel,...
     'GroupRunCheckboxLabel',handles.ProcessRun.groupRunCheckboxLabel,'GroupArgsCheckboxLabel',handles.ProcessRun.groupArgsCheckboxLabel,'RunGroupButton',handles.ProcessRun.runGroupButton,'RunAllButton',handles.ProcessRun.runAllButton,'RunFunctionsPanel',handles.ProcessRun.runFunctionsPanel,...
-    'SpecifyTrialsGroupButton',handles.ProcessRun.specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',handles.ProcessRun.specifyTrialsCheckboxLabel,'ProcessRunUpArrowButton',handles.ProcessRun.processRunUpArrowButton,'ProcessRunDownArrowButton',handles.ProcessRun.processRunDownArrowButton);
+    'SpecifyTrialsGroupButton',handles.ProcessRun.specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',handles.ProcessRun.specifyTrialsCheckboxLabel,'ProcessRunUpArrowButton',handles.ProcessRun.processRunUpArrowButton,'ProcessRunDownArrowButton',handles.ProcessRun.processRunDownArrowButton,...
+    'RunGroupArgsButton',handles.ProcessRun.runGroupArgsButton);
 %     'OutputsLabel',outputsLabel,'OutputCheckboxProject',outputCheckboxP,'OutputCheckboxSubject',outputCheckboxS,'OutputCheckboxTrial',outputCheckboxT,...
 
 % Resize all objects in each subtab.

@@ -27,7 +27,12 @@ elseif ispc==1
     slash='\';
 end
 
-argsPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash fcnName '.m'];
+argsFolder=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function'];
+if exist(argsFolder,'dir')~=7
+    mkdir(argsFolder);
+end
+
+argsPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '.m'];
 
 if exist(argsPath,'file')==2
     edit(argsPath);

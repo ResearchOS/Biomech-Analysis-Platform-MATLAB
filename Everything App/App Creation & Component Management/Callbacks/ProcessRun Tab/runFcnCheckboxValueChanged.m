@@ -23,12 +23,13 @@ if hFcnArgsCheckbox.Value==1 && currVal==1
     hFcnArgsButton.Visible=currVal;
 elseif currVal==0
     hFcnArgsButton.Visible=currVal;
+    hSpecifyTrialsButton.Visible=currVal;
 end
 hSpecifyTrialsButton.Visible=currVal;
 hFcnArgsCheckbox.Visible=currVal;
 hSpecifyTrialsCheckbox.Visible=currVal;
 % if ==1 && currVal==1
-hSpecifyTrialsButton.Visible=hSpecifyTrialsCheckbox.Value;
+% hSpecifyTrialsButton.Visible=hSpecifyTrialsCheckbox.Value;
 % elseif currVal==0
 %     hSpecifyTrialsButton.Visible=currVal;
 % end

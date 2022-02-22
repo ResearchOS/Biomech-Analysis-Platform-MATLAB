@@ -67,5 +67,5 @@ end
 % If the file does not exist yet, create it from the template.
 templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'specifyTrials_Template.m'];
 
-firstLine=['function [inclStruct]=' specifyTrialsName(1:end-2) '()'];
+firstLine=[specifyTrialsName(1:end-2)];
 createFileFromTemplate(templatePath,specifyTrialsPath,firstLine)

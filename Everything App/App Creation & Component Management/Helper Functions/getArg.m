@@ -1,4 +1,4 @@
-function [argIn]=getArg(argName,subName,trialName)
+function [argIn]=getArg(argName,subName,trialName,repNum)
 
 %% PURPOSE: RETURN ONE INPUT ARGUMENT TO A PROCESSING FUNCTION AT EITHER THE PROJECT, SUBJECT, OR TRIAL LEVEL
 % Inputs:
@@ -11,6 +11,9 @@ function [argIn]=getArg(argName,subName,trialName)
 
 fig=evalin('base','gui;');
 
+if nargin<=3 % Trial level data. No repetitions
+    repNum=1;
+end
 if nargin<=2 % Subject level data
     trialName='';
 end
@@ -36,4 +39,8 @@ if evalin('base','exist(''projectStruct'',''var'')~=1')
     evalin('base','projectStruct=''''');
 end
 
-argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName);
+% if repNum==0
+%     argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName);    
+% else
+argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName,repNum);
+% end

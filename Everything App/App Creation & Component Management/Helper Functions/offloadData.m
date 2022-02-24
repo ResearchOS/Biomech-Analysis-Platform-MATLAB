@@ -1,4 +1,4 @@
-function []=offloadData(pathsByLevel,level,subName,trialName)
+function []=offloadData(pathsByLevel,level,subName,trialName,repNum)
 
 %% PURPOSE: LOAD DATA TO THE PROJECTSTRUCT AT EITHER THE PROJECT, SUBJECT, OR TRIAL LEVEL.
 % Inputs:
@@ -51,6 +51,8 @@ for i=1:length(fldNames)
                         rmdPath=[rmdPath '.' subName];
                     elseif ismember(level,{'Trial'}) && k==3 && isequal(rmdPathSplit{k}([1 end]),'()')
                         rmdPath=[rmdPath '.' trialName];
+                    elseif k==4 && all(ismember('()',rmdPathSplit{k})) && ~isequal(rmdPathSplit{k}([1 end]),'()')
+                        rmdPath=[rmdPath '.' rmdPathSplit{j} '(' num2str(repNum) ')'];
                     else
                         rmdPath=[rmdPath '.' rmdPathSplit{k}];
                     end
@@ -58,11 +60,12 @@ for i=1:length(fldNames)
             end
 
             assignin('base','newPath',rmdPath);
-            if evalin('base',['existField(projectStruct,newPath)'])==1
+            assignin('base','repNum',repNum);
+            if evalin('base',['existField(projectStruct,newPath,repNum)'])==1
                 evalin('base',[rmdPath '=rmfield(' rmdPath ', ''' paths{j}(dotIdx(end)+1:end) ''');']);
                 % Option to recursively remove fieldnames for all fields that are empty.
             end
-            evalin('base','clear newPath;');
+            evalin('base','clear newPath repNum;');
 
         end
 

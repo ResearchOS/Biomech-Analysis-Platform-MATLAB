@@ -1,4 +1,4 @@
-function [argVal]=Import_argsTemplate(argName,projectStruct,subName,trialName)
+function [argVal]=Import_argsTemplate(argName,projectStruct,subName,trialName,repNum)
 
 %% PURPOSE: TEMPLATE FOR IMPORT ARGUMENTS FUNCTIONS
 
@@ -11,7 +11,7 @@ function [argVal]=Import_argsTemplate(argName,projectStruct,subName,trialName)
 % Outputs:
 % argVal: The input argument value (any data type), or the path to store the output argument (char)
 
-argVal=feval(argName,projectStruct,subName,trialName);
+argVal=feval(argName,projectStruct,subName,trialName,repNum);
 
 end
 
@@ -20,12 +20,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Input argument
-function [argIn]=comPos(projectStruct,subName,trialName)
+function [argIn]=comPos(projectStruct,subName,trialName,repNum)
 argIn=projectStruct.(subName).(trialName).Results.Mocap.Cardinal.COMPosition.Method1A;
 end
 
 %% Output argument. Do not include Method ID field, as that will be automatically assigned.
-function [argOut]=comVeloc(projectStruct,subName,trialName)
+function [argOut]=comVeloc(projectStruct,subName,trialName,repNum)
 % projectStruct path can be provided in this format only.
 argOut='projectStruct.(subName).(trialName).Results.Mocap.Cardinal.COMVelocity';
 end

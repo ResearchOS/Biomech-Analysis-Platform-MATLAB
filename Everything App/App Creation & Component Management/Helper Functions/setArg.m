@@ -1,22 +1,21 @@
-function setArg(subName,trialName,varargin)
+function setArg(subName,trialName,repNum,varargin)
 
 %% PURPOSE: RETURN ONE INPUT ARGUMENT TO A PROCESSING FUNCTION AT EITHER THE PROJECT, SUBJECT, OR TRIAL LEVEL
 % Inputs:
 % subName: The subject name, if accessing subject or trial level data. If project level data, not inputted. (char)
 % trialName: The trial name, if accessing trial data. If subject or project level data, not inputted (char)
+% repNum: The repetition number for the current trial (double)
 % varargin: The value of each output argument. The name passed in to this function must exactly match what is in the input arguments function (any data type)
-
-% persistent p;
 
 st=dbstack;
 fcnName=st(2).name; % The name of the calling function.
 
 argNames=cell(length(varargin),1);
 nArgs=length(varargin);
-for i=3:nArgs+2
-    argNames{i-2}=inputname(i); % NOTE THE LIMITATION THAT THERE CAN BE NO INDEXING USED IN THE INPUT VARIABLE NAMES
-    if isempty(argNames{i-2})
-        error(['Argument #' num2str(i) ' (output variable #' num2str(i-2) ') is not a scalar name in ' fcnName ' line #' num2str(st(2).line)]);
+for i=4:nArgs+3
+    argNames{i-3}=inputname(i); % NOTE THE LIMITATION THAT THERE CAN BE NO INDEXING USED IN THE INPUT VARIABLE NAMES
+    if isempty(argNames{i-3})
+        error(['Argument #' num2str(i) ' (output variable #' num2str(i-3) ') is not a scalar name in ' fcnName ' line #' num2str(st(2).line)]);
     end
 end
 
@@ -38,7 +37,7 @@ saveLevels=cell(length(argNames),1);
 
 for i=1:length(argNames)
     argName=argNames{i};
-    argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName);
+    argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName,repNum);
 
     saveLevels{i}='Project';
     
@@ -56,11 +55,17 @@ for i=1:length(argNames)
                     saveLevels{i}='Subject';
                 elseif j==3 && isequal(dynamicName,'trialName')
                     resPath=[resPath '.' trialName];
-                    saveLevels{i}='Trial';
+                    saveLevels{i}='Trial';                    
                 end
             end
         else
-            resPath=[resPath '.' splitPath{j}];
+            if j==4 && all(ismember('()',splitPath{j})) && ~isequal(splitPath{j}([1 end]),'()') % There are parentheses in this field name, but it is not a dynamic field name.
+                % Check if there are multiple repetitions in this trial.
+                openParensIdx=strfind(splitPath{j},'(');
+                resPath=[resPath '.' splitPath{j}(1:openParensIdx-1) '(' num2str(repNum) ')'];
+            else
+                resPath=[resPath '.' splitPath{j}];
+            end
         end
     end   
     
@@ -78,5 +83,5 @@ p=gcp('nocreate');
 if isempty(p)
     p=parpool('local',1);
 end
-f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));
-% saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));
+% f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));
+saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));

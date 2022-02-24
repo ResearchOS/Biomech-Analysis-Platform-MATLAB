@@ -123,13 +123,13 @@ for i=1:length(fcnNames)
         argPath{i}=[argsFolderGroup argsNames{i} '.m'];
     end        
 
-    paths{i}=readArgsFcn(argPath{i});
-    if ~iscell(paths{i})
+    [inputPaths{i},outputPaths{i},allPaths{i}]=readArgsFcn(argPath{i});
+    if ~iscell(allPaths{i})
         return;
     end
     funcLevels{i}='';
-    for j=1:length(paths{i})
-        currPathSplit=strsplit(paths{i}{j},'.');        
+    for j=1:length(allPaths{i})
+        currPathSplit=strsplit(allPaths{i}{j},'.');        
         if length(currPathSplit)>=4 && isequal(currPathSplit{3}([1 end]),'()')
             funcLevels{i}=[funcLevels{i}; {'Trial'}];
         elseif length(currPathSplit)>=3 && isequal(currPathSplit{2}([1 end]),'()')
@@ -148,6 +148,7 @@ end
 cd(currDir); % Go back to original directory.
 
 %% Iterate over all processing functions in the group to run them.
+tic;
 for i=1:length(fcnNames)
     
     % Bring the projectStruct from the base workspace into this one. Doing this for each function incorporates results of any previously finished functions.
@@ -184,24 +185,27 @@ for i=1:length(fcnNames)
     trialNames=getTrialNames(inclStruct,logVar,fig,0,evalin('base','projectStruct;'));
     subNames=fieldnames(trialNames);
 
-    %% CHECK HERE (IN EACH SECTION) THAT THE PROJECTSTRUCT PATHS EXIST BEFORE CALLING THEM?
+    %% CHECK HERE (IN EACH SECTION) THAT THE PROJECTSTRUCT allPaths EXIST BEFORE CALLING THEM?
 
-%     checkAllPaths(paths{i},projectStruct,trialNames);
+%     checkAllPaths(allPaths{i},projectStruct,trialNames);
 
     % 1. Check the process file and the args file to ensure that all argNames passed to getArg are found in the args function (replaces localfunctions
     % check)
-    % 2. Check the contents of the projectStruct, at the project, subject, and/or trial level to ensure that the desired paths (specified in the args
+    % 2. Check the contents of the projectStruct, at the project, subject, and/or trial level to ensure that the desired allPaths (specified in the args
     % function) are present using the existField function. If not, throw an error and don't run the function.
     processFile=[fcnFolder{i} slash fcnName '.m'];
     argsFile=argPath{i};
-    if ~checkArgsMatch(processFile,argsFile) || ~checkAllPaths(paths{i},projectStruct,trialNames,argsFile)
+    if ~checkArgsMatch(processFile,argsFile) || ~checkAllPaths(inputPaths{i},projectStruct,trialNames,argsFile)
         % checkArgsMatch reads the two files for matching called args.
-        % checkAllPaths uses existField on all paths at all levels to ensure that there won't be an error with getArg. If a field does not exist, throws an error.
+        % checkAllPaths uses existField on all allPaths at all levels to ensure that there won't be an error with getArg. If a field does not exist, throws an error.
         return;
     end
 
     % Run the processing function
     if ismember('Project',currLevels)
+
+        disp(['Running ' fcnName]);
+
         if ismember('Trial',currLevels)            
             feval(fcnName,projectStruct,trialNames); % projectStruct is an input argument for convenience of viewing the data only    
         elseif ismember('Subject',currLevels)
@@ -217,6 +221,9 @@ for i=1:length(fcnNames)
         currTrials=trialNames.(subName); % The list of trial names in the current subject
         
         if ismember('Subject',currLevels)
+
+            disp(['Running ' fcnName ' Subject ' subName]);
+
             if ismember('Trial',currLevels)
                 feval(fcnName,projectStruct,subName,currTrials); % projectStruct is an input argument for convenience of viewing the data only
             else
@@ -227,9 +234,13 @@ for i=1:length(fcnNames)
         
         for trialNum=1:length(currTrials)
             trialName=currTrials{trialNum};
+
+            disp(['Running ' fcnName ' Subject ' subName ' Trial ' trialName]);
+
             feval(fcnName,projectStruct,subName,trialName); % projectStruct is an input argument for convenience of viewing the data only            
         end        
         
     end    
     
 end
+toc;

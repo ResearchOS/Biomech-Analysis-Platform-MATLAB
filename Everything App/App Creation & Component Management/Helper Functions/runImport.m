@@ -65,7 +65,7 @@ for i=1:length(dataTypeSplit)
 
     % Read through import function args and get all of the projectStruct
     % paths
-    argsPaths.(dataField)=readArgsFcn(dataImportArgsFcnNames{i});
+    [~,~,argsPaths.(dataField)]=readArgsFcn(dataImportArgsFcnNames{i});
 
     % Split the argsPaths by project, subject, and trial level.
     for j=1:length(argsPaths.(dataField))
@@ -105,15 +105,17 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
         % Get whether to load or offload the group's data, or do nothing.
         action=projectNamesInfo.(['DataPanel' groupNameField]);
 
-        %         allGroups.(groupNameField).Action=action; % Store the action to take (Load, Offload, or None)
-
-        trialCount=0; % The count of how many paths there are at the trial level, per data type or processing group
-        subjCount=0;
-        projCount=0;
+        if isequal(action,'None')
+            continue;
+        end        
 
         % Iterate over all function names in that group
         for j=lineNums(i)+1:length(groupText)
             currLine=groupText{j};
+
+            trialCount=0; % The count of how many paths there are at the trial level, per data type or processing group
+            subjCount=0;
+            projCount=0;
 
             if isempty(currLine)
                 break;
@@ -125,12 +127,14 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
             fcnLetter=beforeColon{2}(isletter(beforeColon{2}));
             fcnNum=beforeColon{2}(~isletter(beforeColon{2}));
 
-            %             allGroups.(groupNameField).FunctionNames{i}=fcnName;
-            %             allGroups.(groupNameField).FunctionLetter{i}=fcnLetter;
-            %             allGroups.(groupNameField).FunctionNumber{i}=fcnNum;
-            %             allGroups.(groupNameField).ProcessFcnNames{i}=[fcnName '_Process' fcnNum];
-            argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash fcnName '_Process' fcnNum fcnLetter '.m'];
-            %             allGroups.(groupNameField).ProcessArgsNames{i}=argsFcnName;
+            % Determine whether the function or group level args is specified.
+            spaceSplit=strsplit(colonSplit{2},' ');
+
+            if isequal(spaceSplit{4}(end),'1') % Function level args
+                argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '_Process' fcnNum fcnLetter '.m'];
+            elseif isequal(spaceSplit{4}(end),'0') % Group level args
+                argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Group' slash fcnName '_Process' fcnNum fcnLetter '.m'];
+            end           
 
             argsPaths.([fcnName fcnNum])=readArgsFcn(argsFcnName);
 
@@ -304,12 +308,11 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
                 logRow=logVar(rowNum,:);
                 logHeaders=logVar(1,:);
 
-                %% INSERT SOMETHING HERE TO NOT REDUNDANTLY ADDRESS EACH DATA TYPE & PROCESSING GROUP?
                 switch kk
                     case 1
                         offloadData(pathsByLevel,'Trial',subName,trialName);
                     case 2
-                        loadData(fullPathMat,redoVal,pathsByLevel,'Trial',subName,trialName,rawDataFileNames,logRow,logHeaders);
+                        loadData(fullPathMat,redoVal,pathsByLevel,'Trial',subName,trialName,repNum,rawDataFileNames,logRow,logHeaders);
                 end
 
             end

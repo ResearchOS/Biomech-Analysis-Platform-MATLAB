@@ -1,4 +1,4 @@
-function [paths]=readArgsFcn(filePath)
+function [pathsInputs,pathsOutputs,paths]=readArgsFcn(filePath)
 
 %% PURPOSE: READ THE TEXT OF THE ARGUMENTS FUNCTION TO ISOLATE THE PATH NAMES OF ALL INPUT VARIABLES
 % Inputs:
@@ -20,8 +20,8 @@ text=regexp(fileread(filePath),'\n','split'); % Each line is one element of the 
 % 5. In the end, will return one singular char array for each path.
 
 firstLineSplit=strsplit(text{1}(~isspace(text{1})),'('); % Removes spaces, isolates arguments from function name.
-args=strsplit(firstLineSplit{2},','); % Isolates subName, trialName, & repNum args as one block
-args{end}=args{end}(1:end-1); % Remove parentheses from last arg
+% args=strsplit(firstLineSplit{2},','); % Isolates subName, trialName, & repNum args as one block
+% args{end}=args{end}(1:end-1); % Remove parentheses from last arg
 
 % Parse the file path for the method ID
 if ismac==1
@@ -42,6 +42,8 @@ methodID=fileSuffix{2}(1:strfind(fileSuffix{2},'.')-1);
 
 argCount=0;
 fcnCount=0;
+outputCount=0;
+inputCount=0;
 for i=1:length(text)
     
     currLine=text{i}(~isspace(text{i})); % Remove all white space.
@@ -112,12 +114,29 @@ for i=1:length(text)
     if isOutput==0 && methodIDFound==0
         warning('projectStruct input paths should have method ID field!'); 
         disp(['Line ' num2str(i) ' in function: ' filePath]);
+        pathsInputs='';
+        pathsOutputs='';
         paths='';
         return;
     elseif isOutput==1 && methodIDFound==0 % This is correct. Now insert the method ID field.
         paths{argCount,1}=[paths{argCount} '.Method' methodID];
+        outputCount=outputCount+1;
+        pathsOutputs{outputCount,1}=[paths{argCount} '.Method' methodID];
+    elseif isOutput==0 && methodIDFound==1 % This is correct for inputs.
+        inputCount=inputCount+1;
+        pathsInputs{inputCount,1}=paths{argCount};
     end
     
+end
+
+if ~exist('pathsInputs','var')
+    pathsInputs='';
+end
+
+if ~exist('pathsOutputs','var')
+    warning('Missing output variables! Terminating processing.');
+    pathsOutputs='';
+    return;
 end
 
 if ~exist('paths','var')

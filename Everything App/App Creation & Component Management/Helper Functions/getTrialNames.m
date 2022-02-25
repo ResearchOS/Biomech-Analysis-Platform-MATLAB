@@ -45,6 +45,12 @@ saveLog=0; % Default not to resave the logsheet variable.
 
 % Inclusion
 for rowNum=numHeaderRows+1:size(logVar,1) % Iterate over each row, starting with first non-header entry
+
+    if isequal(logVar{rowNum,targetTrialIDColNum},logVar{rowNum-1,targetTrialIDColNum})
+        repNum=repNum+1; % Incremented when this row's trial name matches the previous row's
+    else
+        repNum=1; % Initialize that the repetition number is 1.
+    end
     
     for i=1:length(inclExcl)
         currInclExcl=inclStruct.(inclExcl{i});
@@ -68,14 +74,14 @@ for rowNum=numHeaderRows+1:size(logVar,1) % Iterate over each row, starting with
                         passAllSubConds=zeros(length(currSubCond),1);
                         for l=1:length(currSubCond) % Loop through subconditions
                             % Only ever 1 name, could be multiple values
-                            currNames=inclStruct.Include.Condition(k).Logsheet(l).Name;
+                            currName=inclStruct.Include.Condition(k).Logsheet(l).Name;
                             currVals=inclStruct.Include.Condition(k).Logsheet(l).Value;
                             
-                            [~,currColNum]=find(strcmp(logVar(1,:),currNames{1}));
+                            [~,currColNum]=find(strcmp(logVar(1,:),currName{1}));
                             try
                                 assert(~isempty(currColNum));
                             catch
-                                error(['Condition ' num2str(k) ' Logsheet Sub-Condition ' num2str(l) ' Name is Wrong: ' currNames{1}]);
+                                error(['Condition ' num2str(k) ' Logsheet Sub-Condition ' num2str(l) ' Name is Wrong: ' currName{1}]);
                             end
                             currLogElem=logVar{rowNum,currColNum};
                             
@@ -158,22 +164,24 @@ for rowNum=numHeaderRows+1:size(logVar,1) % Iterate over each row, starting with
                         end
                         
                         if org==0
-                            if ~exist('trialNames','var')
-                                trialNames.(subName)={trialName};
-                            elseif ~isfield(trialNames,subName)
-                                trialNames.(subName)={trialName};
+                            if ~exist('trialNames','var') || ~isfield(trialNames,subName)
+                                trialNames.(subName).(trialName)=repNum;
+                            elseif isfield(trialNames,subName) && ~isfield(trialNames.(subName),trialName)
+                                trialNames.(subName).(trialName)=repNum;
                             else
-                                trialNames.(subName)=[trialNames.(subName); {trialName}];
+                                trialNames.(subName).(trialName)=[trialNames.(subName).(trialName) repNum];
                             end
                         elseif org==1
                             if ~exist('trialNames','var')
-                                trialNames.Condition(k).(subName).TrialNames={trialName};
+                                trialNames.Condition(k).(subName).(trialName)=repNum;
                             elseif length(trialNames.Condition)<k
-                                trialNames.Condition(k).(subName).TrialNames={trialName};
+                                trialNames.Condition(k).(subName).(trialName)=repNum;
                             elseif ~isempty(trialNames.Condition(k)) && ~isfield(trialNames.Condition(k),subName)
-                                trialNames.Condition(k).(subName).TrialNames={trialName};
+                                trialNames.Condition(k).(subName).(trialName)=repNum;
+                            elseif isfield(trialNames.Condition(k),subName) && ~isfield(trialNames.Condition(k).(subName),trialName)
+                                trialNames.Condition(k).(subName).(trialName)=repNum;
                             else
-                                trialNames.Condition(k).(subName).TrialNames=[trialNames.Condition(k).(subName).TrialNames; {trialName}];
+                                trialNames.Condition(k).(subName).(trialName)=[trialNames.Condition(k).(subName).(trialName) repNum];
                             end
                         end
                         break;

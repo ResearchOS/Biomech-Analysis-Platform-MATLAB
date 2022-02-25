@@ -19,4 +19,6 @@ if isempty(getappdata(fig,'codePath'))
     return;
 end
 
+tic;
 runProcessFunctions(groupName,fig);
+toc;

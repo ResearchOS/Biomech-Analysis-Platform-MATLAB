@@ -19,15 +19,21 @@ hSpecifyTrialsCheckbox=findobj(fig,'Type','uicheckbox','Tag',['SpecifyTrialsChec
 hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag',['SpecifyTrialsButton' num2str(currNum)]);
 hFcnArgsCheckbox=findobj(fig,'Type','uicheckbox','Tag',['FcnArgsCheckbox' num2str(currNum)]);
 hFcnArgsButton=findobj(fig,'Type','uibutton','Tag',['FcnArgsButton' num2str(currNum)]);
+hFcnArgsCheckbox.Visible=currVal;
+hSpecifyTrialsCheckbox.Visible=currVal;
+
 if hFcnArgsCheckbox.Value==1 && currVal==1
     hFcnArgsButton.Visible=currVal;
-elseif currVal==0
+end
+if hSpecifyTrialsCheckbox.Value==1 && currVal==1
+    hSpecifyTrialsButton.Visible=currVal;
+end
+
+if currVal==0
     hFcnArgsButton.Visible=currVal;
     hSpecifyTrialsButton.Visible=currVal;
 end
-hSpecifyTrialsButton.Visible=currVal;
-hFcnArgsCheckbox.Visible=currVal;
-hSpecifyTrialsCheckbox.Visible=currVal;
+
 % if ==1 && currVal==1
 % hSpecifyTrialsButton.Visible=hSpecifyTrialsCheckbox.Value;
 % elseif currVal==0

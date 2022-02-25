@@ -11,11 +11,14 @@ roomNum=getArg('roomNum',subName); % Get subject level variable
 
 for trialNum=1:length(trialNames)
     trialName=trialNames{trialNum};
-    
-    comPos=getArg('comPos',subName,trialName); % Get trial level variable
-    
-    setArg(subName,trialName,comPos); % Set trial level variable
-    
+
+    for repNum=allTrialNames.(subName).(trialName)
+
+        trialArg=getArg('comPos',subName,trialName,repNum); % Get trial level variable
+        setArg(subName,trialName,repNum,trialArg); % Set trial level variable
+
+    end
+
 end
 
 %% TODO: Biomechanical operations for the whole project.
@@ -23,4 +26,4 @@ end
 collectionSite=['Zaferiou Lab ' roomNum];
 
 %% TODO: Store the computed variable(s) data to the projectStruct
-setArg(subName,[],collectionSite); % Set trial level variable
+setArg(subName,[],[],collectionSite); % Set trial level variable

@@ -32,10 +32,6 @@ loadAnyTrial=0; % Initialize that no trial-level data will be loaded.
 loadAnySubj=0; % Initialize that no subject-level data will be loaded.
 loadAnyProj=0; % Initialize that no project-level data will be loaded.
 
-trialCount=0; % The count of how many paths there are at the trial level, per data type or processing group
-subjCount=0;
-projCount=0;
-
 %% Get the method number & letter for each data type
 dataTypeText=projectNamesInfo.DataTypes;
 dataTypeSplit=strsplit(dataTypeText,', ');
@@ -50,7 +46,7 @@ for i=1:length(dataTypeSplit)
     methodNumber.(dataField)=methodLetterNumber(~isletter(methodLetterNumber));
     dataTypeAction.(dataField)=projectNamesInfo.(['DataPanel' dataField]);
 
-    pathsByLevel.(dataField).Action=dataTypeAction.(dataField);
+    pathsByLevel.Action.(dataField)=dataTypeAction.(dataField);
 
     if isequal(dataTypeAction.(dataField),'Load')
         loadAnyTrial=1; % Indicates that trial level MAT files should be loaded.
@@ -58,32 +54,74 @@ for i=1:length(dataTypeSplit)
 
     % Function names to import each data type
     %     dataImportFcnNames{i}=[lower(dataField) '_Import' methodNumber.(dataField)];
-    pathsByLevel.(dataField).ImportFcnName=[lower(dataField) '_Import' methodNumber.(dataField)];
+    pathsByLevel.ImportFcnName.(dataField)=[lower(dataField) '_Import' methodNumber.(dataField)];
 
     % Import function args paths to read through
     dataImportArgsFcnNames{i}=[codePath 'Import_' getappdata(fig,'projectName') slash 'Arguments' slash lower(dataField) '_Import' methodNumber.(dataField) methodLetter.(dataField) '.m'];
 
     % Read through import function args and get all of the projectStruct
     % paths
-    [~,~,argsPaths.(dataField)]=readArgsFcn(dataImportArgsFcnNames{i});
+    [argsPaths.Inputs.(dataField),argsPaths.Outputs.(dataField),argsPaths.All.(dataField)]=readArgsFcn(dataImportArgsFcnNames{i});
+
+    trialCount=0; % The count of how many inputs paths there are at the trial level, per data type or processing group
+    subjCount=0;
+    projCount=0;
 
     % Split the argsPaths by project, subject, and trial level.
-    for j=1:length(argsPaths.(dataField))
-        currPath=argsPaths.(dataField){j};
+    for j=1:length(argsPaths.Inputs.(dataField))
+        currPath=argsPaths.Inputs.(dataField){j};
         currPathSplit=strsplit(currPath,'.');
         if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')
             trialCount=trialCount+1;
-            pathsByLevel.(dataField).Trial{trialCount,1}=currPath;
+            pathsByLevel.Inputs.(dataField).Trial{trialCount,1}=currPath;
         elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')
             subjCount=subjCount+1;
-            pathsByLevel.(dataField).Subject{subjCount,1}=currPath;
+            pathsByLevel.Inputs.(dataField).Subject{subjCount,1}=currPath;
         else
             projCount=projCount+1;
-            pathsByLevel.(dataField).Project{projCount,1}=currPath;
+            pathsByLevel.Inputs.(dataField).Project{projCount,1}=currPath;
         end
     end
 
-    %     dataFieldNames{i}=dataField; % List of argsPaths field names for importing data.
+    trialCount=0; % The count of how many outputs paths there are at the trial level, per data type or processing group
+    subjCount=0;
+    projCount=0;
+
+    % Split the argsPaths by project, subject, and trial level.
+    for j=1:length(argsPaths.Outputs.(dataField))
+        currPath=argsPaths.Outputs.(dataField){j};
+        currPathSplit=strsplit(currPath,'.');
+        if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')
+            trialCount=trialCount+1;
+            pathsByLevel.Outputs.(dataField).Trial{trialCount,1}=currPath;
+        elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')
+            subjCount=subjCount+1;
+            pathsByLevel.Outputs.(dataField).Subject{subjCount,1}=currPath;
+        else
+            projCount=projCount+1;
+            pathsByLevel.Outputs.(dataField).Project{projCount,1}=currPath;
+        end
+    end
+
+    trialCount=0; % The count of how many paths there are at the trial level, per data type or processing group
+    subjCount=0;
+    projCount=0;
+
+    % Split the argsPaths by project, subject, and trial level.
+    for j=1:length(argsPaths.All.(dataField))
+        currPath=argsPaths.All.(dataField){j};
+        currPathSplit=strsplit(currPath,'.');
+        if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')
+            trialCount=trialCount+1;
+            pathsByLevel.All.(dataField).Trial{trialCount,1}=currPath;
+        elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')
+            subjCount=subjCount+1;
+            pathsByLevel.All.(dataField).Subject{subjCount,1}=currPath;
+        else
+            projCount=projCount+1;
+            pathsByLevel.All.(dataField).Project{projCount,1}=currPath;
+        end
+    end
 
 end
 
@@ -113,7 +151,15 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
         for j=lineNums(i)+1:length(groupText)
             currLine=groupText{j};
 
-            trialCount=0; % The count of how many paths there are at the trial level, per data type or processing group
+            trialCountIn=0; % The count of how many inputs paths there are at the trial level, per data type or processing group
+            subjCountIn=0;
+            projCountIn=0;
+
+            trialCountOut=0; % The count of how many outputs paths there are at the trial level, per data type or processing group
+            subjCountOut=0;
+            projCountOut=0;
+
+            trialCount=0;
             subjCount=0;
             projCount=0;
 
@@ -136,18 +182,18 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
                 argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Group' slash fcnName '_Process' fcnNum fcnLetter '.m'];
             end           
 
-            argsPaths.([fcnName fcnNum])=readArgsFcn(argsFcnName);
+            [argsPaths.Inputs.([fcnName fcnNum]),argsPaths.Outputs.([fcnName fcnNum]),argsPaths.All.([fcnName fcnNum])]=readArgsFcn(argsFcnName);
 
-            pathsByLevel.([fcnName fcnNum fcnLetter]).Action=action;
+            pathsByLevel.Action.([fcnName fcnNum fcnLetter])=action;
 
             if ~isequal(action,'Load')
                 continue; % If not loading the argsPaths, ignore the below code specifying which level of data to load.
             end
 
-            for k=1:length(argsPaths.([fcnName fcnNum]))
+            for k=1:length(argsPaths.All.([fcnName fcnNum]))
 
-                currPath=argsPaths.([fcnName fcnNum]){k};
-                currPathSplit=strsplit(argsPaths.([fcnName fcnNum]){k},'.');
+                currPath=argsPaths.All.([fcnName fcnNum]){k};
+                currPathSplit=strsplit(argsPaths.All.([fcnName fcnNum]){k},'.');
                 if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()') % Dynamic trial name
                     loadAnyTrial=1;
                 elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()') % Dynamic subject name
@@ -157,15 +203,39 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
                 end
 
                 % Split the argsPaths by project, subject, and trial level.
-                if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')
+                if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')                    
+                    if ismember(currPath,argsPaths.Inputs.([fcnName fcnNum]))
+                        trialCountIn=trialCountIn+1;
+                        pathsByLevel.Inputs.([fcnName fcnNum fcnLetter]).Trial{trialCountIn,1}=currPath;
+                    end
+                    if ismember(currPath,argsPaths.Outputs.([fcnName fcnNum]))
+                        trialCountOut=trialCountOut+1;
+                        pathsByLevel.Outputs.([fcnName fcnNum fcnLetter]).Trial{trialCountOut,1}=currPath;
+                    end
                     trialCount=trialCount+1;
-                    pathsByLevel.([fcnName fcnNum fcnLetter]).Trial{trialCount,1}=currPath;
-                elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')
+                    pathsByLevel.All.([fcnName fcnNum fcnLetter]).Trial{trialCount,1}=currPath;
+                elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')                    
+                    if ismember(currPath,argsPaths.Inputs.([fcnName fcnNum]))
+                        subjCountIn=subjCountIn+1;
+                        pathsByLevel.Inputs.([fcnName fcnNum fcnLetter]).Subject{subjCountIn,1}=currPath;
+                    end
+                    if ismember(currPath,argsPaths.Outputs.([fcnName fcnNum]))
+                        subjCountOut=subjCountOut+1;
+                        pathsByLevel.Outputs.([fcnName fcnNum fcnLetter]).Subject{subjCountOut,1}=currPath;
+                    end
                     subjCount=subjCount+1;
-                    pathsByLevel.([fcnName fcnNum fcnLetter]).Subject{subjCount,1}=currPath;
-                else
+                    pathsByLevel.All.([fcnName fcnNum fcnLetter]).Subject{subjCount,1}=currPath;
+                else                    
+                    if isequal(currPath,argsPaths.Inputs.([fcnName fcnNum]))
+                        projCountIn=projCountIn+1;
+                        pathsByLevel.Inputs.([fcnName fcnNum fcnLetter]).Project{projCountIn,1}=currPath;
+                    end
+                    if isequal(currPath,argsPaths.Outputs.([fcnName fcnNum]))
+                        projCountOut=projCountOut+1;
+                        pathsByLevel.Outputs.([fcnName fcnNum fcnLetter]).Project{projCountOut,1}=currPath;
+                    end
                     projCount=projCount+1;
-                    pathsByLevel.([fcnName fcnNum fcnLetter]).Project{projCount,1}=currPath;
+                    pathsByLevel.All.([fcnName fcnNum fcnLetter]).Project{projCount,1}=currPath;
                 end
 
             end
@@ -227,7 +297,7 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
     for subNum=1:length(subNames)
 
         subName=subNames{subNum};
-        trialNames=allTrialNames.(subName);
+        trialNames=fieldnames(allTrialNames.(subName));
 
         fullPathSubjMat=[dataPath 'MAT Data Files' slash subName slash subName '_' projectName '.mat'];
 
@@ -262,7 +332,9 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
 
             end
 
-            for repNum=1:length(rowNums)
+            repNums=allTrialNames.(subName).(trialName);
+
+            for repNum=repNums
 
                 rowNum=rowNums(repNum);
 
@@ -300,8 +372,8 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
 
                     rawDataFileNames.(dataField)=fullPathRaw;
 
-                    pathsByLevel.(dataField).MethodNum=number;
-                    pathsByLevel.(dataField).MethodLetter=letter;
+                    pathsByLevel.MethodNum.(dataField)=number;
+                    pathsByLevel.MethodLetter.(dataField)=letter;
 
                 end
 
@@ -310,7 +382,7 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
 
                 switch kk
                     case 1
-                        offloadData(pathsByLevel,'Trial',subName,trialName);
+                        offloadData(pathsByLevel,'Trial',subName,trialName,repNum);
                     case 2
                         loadData(fullPathMat,redoVal,pathsByLevel,'Trial',subName,trialName,repNum,rawDataFileNames,logRow,logHeaders);
                 end
@@ -347,3 +419,14 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
     end
 
 end
+
+for sub=1:length(subNames)
+
+    subName=subNames{sub};
+%     trialNames=fieldnames(allTrialNames.(subName));
+
+    evalin('base',['projectStruct.' subName '=orderfields(projectStruct.' subName ');' ]); % Rearrange trial names in alphabetical order.
+
+end
+
+evalin('base','projectStruct=orderfields(projectStruct);'); % Rearrange subject names in alphabetical order.

@@ -12,19 +12,23 @@ roomNum=getArg('roomNum'); % Get project level variable
 subNames=fieldnames(allTrialNames); % The subject names of interest
 for subNum=1:length(subNames)
     subName=subNames{subNum};
-    currTrials=allTrialNames.(subName);
+    currTrials=fieldnames(allTrialNames.(subName));
 
     height=getArg('height',subName); % Get subject level variable
     
     for trialNum=1:length(currTrials)
-        
-        trialArg=getArg('comPos',subName,trialName); % Get trial level variable
-        
-        setArg(subName,trialName,trialArg); % Set trial level variable
+        trialName=currTrials{trialNum};
+
+        for repNum=allTrialNames.(subName).(trialName)
+
+            trialArg=getArg('comPos',subName,trialName,repNum); % Get trial level variable
+            setArg(subName,trialName,repNum,trialArg); % Set trial level variable
+
+        end
         
     end
 
-    setArg(subName,[],height); % Set subject level variable
+    setArg(subName,[],[],height); % Set subject level variable
     
 end
 
@@ -33,4 +37,4 @@ end
 collectionSite=['Zaferiou Lab' roomNum];
 
 %% TODO: Store the computed variable(s) data to the projectStruct
-setArg([],[],collectionSite); % Set project level variable
+setArg([],[],[],collectionSite); % Set project level variable

@@ -15,12 +15,12 @@ if evalin('base','exist(''projectStruct'',''var'') && ~isstruct(projectStruct)')
     return; % Skip this offloading if projectStruct does not exist
 end
 
-fldNames=fieldnames(pathsByLevel); % Data types and individual processing function names
+fldNames=fieldnames(pathsByLevel.All); % Data types and individual processing function names
 
 for i=1:length(fldNames)
 
-    if isfield(pathsByLevel.(fldNames{i}),level) && isequal(pathsByLevel.(fldNames{i}).Action,'Offload')
-        paths=pathsByLevel.(fldNames{i}).(level);
+    if isfield(pathsByLevel.All.(fldNames{i}),level) && isequal(pathsByLevel.Action.(fldNames{i}),'Offload')
+        paths=pathsByLevel.All.(fldNames{i}).(level);
 
         switch level
             case 'Project'
@@ -28,11 +28,11 @@ for i=1:length(fldNames)
             case 'Subject'
                 prefix=[subName ' '];
             case 'Trial'
-                prefix=[subName ' Trial ' trialName ' '];
+                prefix=[subName ' Trial ' trialName ' Repetition ' num2str(repNum) ' '];
         end
 
-        if isfield(pathsByLevel.(fldNames{i}),'ImportFcnName')
-            disp(['Now Offloading ' prefix fldNames{i} ' ' pathsByLevel.(fldNames{i}).MethodNum pathsByLevel.(fldNames{i}).MethodLetter]);
+        if isfield(pathsByLevel,'ImportFcnName') && isfield(pathsByLevel.ImportFcnName,fldNames{i})
+            disp(['Now Offloading ' prefix fldNames{i} ' ' pathsByLevel.MethodNum.(fldNames{i}) pathsByLevel.MethodLetter.(fldNames{i})]);
         else
             disp(['Now Offloading ' prefix fldNames{i}]);
         end
@@ -52,7 +52,8 @@ for i=1:length(fldNames)
                     elseif ismember(level,{'Trial'}) && k==3 && isequal(rmdPathSplit{k}([1 end]),'()')
                         rmdPath=[rmdPath '.' trialName];
                     elseif k==4 && all(ismember('()',rmdPathSplit{k})) && ~isequal(rmdPathSplit{k}([1 end]),'()')
-                        rmdPath=[rmdPath '.' rmdPathSplit{j} '(' num2str(repNum) ')'];
+                        openParensIdx=strfind(rmdPathSplit{k},'(');
+                        rmdPath=[rmdPath '.' rmdPathSplit{k}(1:openParensIdx-1) '(' num2str(repNum) ')'];
                     else
                         rmdPath=[rmdPath '.' rmdPathSplit{k}];
                     end
@@ -61,7 +62,7 @@ for i=1:length(fldNames)
 
             assignin('base','newPath',rmdPath);
             assignin('base','repNum',repNum);
-            if evalin('base',['existField(projectStruct,newPath,repNum)'])==1
+            if evalin('base',['existField(projectStruct,newPath,repNum);'])==1
                 evalin('base',[rmdPath '=rmfield(' rmdPath ', ''' paths{j}(dotIdx(end)+1:end) ''');']);
                 % Option to recursively remove fieldnames for all fields that are empty.
             end

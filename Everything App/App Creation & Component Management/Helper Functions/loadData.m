@@ -13,17 +13,19 @@ function []=loadData(matFilePath,redoVal,pathsByLevel,level,subName,trialName,re
 % Outputs:
 % None: Data is assigned to the projectStruct in the base workspace.
 
-fldNames=fieldnames(pathsByLevel); % Data types and individual processing function names
+fldNames=fieldnames(pathsByLevel.Action); % Data types and individual processing function names
 
-loadedFile=0; % Initialize that the file has not been loaded yet.
+% loadedFile=0; % Initialize that the file has not been loaded yet.
 
 for i=1:length(fldNames)
 
-    if ~(isfield(pathsByLevel.(fldNames{i}),level) && isequal(pathsByLevel.(fldNames{i}).Action,'Load'))
+    if ~(isfield(pathsByLevel.All.(fldNames{i}),level) && isequal(pathsByLevel.Action.(fldNames{i}),'Load'))
         continue;
     end
 
-    paths=pathsByLevel.(fldNames{i}).(level);
+    inputPaths=pathsByLevel.Inputs.(fldNames{i}).(level);
+    outputPaths=pathsByLevel.Outputs.(fldNames{i}).(level);
+    allPaths=pathsByLevel.All.(fldNames{i}).(level);
 
     % If:
     % 1. the current field name is a data type to be imported, and
@@ -32,12 +34,11 @@ for i=1:length(fldNames)
     % 4. if redo is specified, or
     % run the import function.
 
-    if ~isfield(pathsByLevel.(fldNames{i}),'ImportFcnName')
-        continue; % Skip this field if it is not a data type to be imported.
-    end
+%     if ~isfield(pathsByLevel,'ImportFcnName') || ~isfield(pathsByLevel.ImportFcnName,fldNames{i})
+%         continue; % Skip this field if it is not a data type to be imported.
+%     end
 
-    if loadedFile==0 && exist(matFilePath,'file')==2 && redoVal==0 % File exists but has not been loaded yet and is not being re-imported.
-        loadedFile=1;
+    if exist(matFilePath,'file')==2 && redoVal==0 % File exists but has not been loaded yet and is not being re-imported.
 
         switch level
             case 'Project'
@@ -48,32 +49,26 @@ for i=1:length(fldNames)
                 prefix=[subName ' Trial ' trialName ' Repetition ' num2str(repNum) ' '];
         end
 
-        if isfield(pathsByLevel.(fldNames{i}),'ImportFcnName')
-            disp(['Now Loading ' prefix fldNames{i} ' ' pathsByLevel.(fldNames{i}).MethodNum pathsByLevel.(fldNames{i}).MethodLetter]);
+        if isfield(pathsByLevel,'ImportFcnName') && isfield(pathsByLevel.ImportFcnName,fldNames{i})
+            disp(['Now Loading ' prefix fldNames{i} ' ' pathsByLevel.MethodNum.(fldNames{i}) pathsByLevel.MethodLetter.(fldNames{i})]);
         else
             disp(['Now Loading ' prefix fldNames{i}]);
         end
-        currData=load(matFilePath);
-        fldName=fieldnames(currData);
-        assert(length(fldName)==1);
-        currData=currData.(fldName{1});
-    elseif exist(matFilePath,'file')~=2 && redoVal==0 % File does not exist and is not being re-imported.
-        switch level
-            case 'Project'
-                disp(['Project Data Does Not Exist To Load: ' matFilePath]);
-            case 'Subject'
-                disp(['Subject ' subName ' Data Does Not Exist To Load: ' matFilePath]);
-            case 'Trial'
-                disp(['Subject ' subName ' Trial ' trialName ' Repetition ' num2str(repNum) ' Data Does Not Exist To Load: ' matFilePath]);
+
+        if ~exist('currData','var')
+            currData=load(matFilePath);
+            fldName=fieldnames(currData);
+            assert(length(fldName)==1);
+            currData=currData.(fldName{1});
         end
-        return;
+
     end
 
-    for j=1:length(paths)
-        dotIdx=strfind(paths{j},'.');
+    for j=1:length(allPaths)
+        dotIdx=strfind(allPaths{j},'.');
         dotNum=ismember({'Project','Subject','Trial'},level);
-        path=paths{j}(dotIdx(dotNum)+1:end);
-        newPathSplit=strsplit(paths{j},'.');
+        path=allPaths{j}(dotIdx(dotNum)+1:end);
+        newPathSplit=strsplit(allPaths{j},'.');
         for k=1:length(newPathSplit)
             if k==1
                 newPath=newPathSplit{1};
@@ -92,19 +87,26 @@ for i=1:length(fldNames)
 
         end
 
-        if existField(currData,['currData.' path],repNum) && redoVal==0
+        if exist('currData','var') && existField(currData,['currData.' path],repNum) && redoVal==0
+
             path=['currData.' path];
-            newData=eval(path);
+            newData=eval(path); % Add repetition number to path.
             assignin('base','newData',newData);
             evalin('base',[newPath '=newData;']);
-        elseif isequal(level,'Trial')
 
-            disp(['Now Importing ' subName ' Trial ' trialName ' Repetition ' num2str(repNum) ' ' fldNames{i} ' ' pathsByLevel.(fldNames{i}).MethodNum pathsByLevel.(fldNames{i}).MethodLetter]);
+        elseif isequal(level,'Trial') && isfield(rawDataFileNames,fldNames{i}) && exist(rawDataFileNames.(fldNames{i}),'file')==2
 
+            disp(['Now Importing ' subName ' Trial ' trialName ' Repetition ' num2str(repNum) ' ' fldNames{i} ' ' pathsByLevel.MethodNum.(fldNames{i}) pathsByLevel.MethodLetter.(fldNames{i})]);
             feval(pathsByLevel.(fldNames{i}).ImportFcnName,rawDataFileNames.(fldNames{i}),logRow,logHeaders,subName,trialName,repNum);
-
             break;
+
+        elseif isfield(rawDataFileNames,fldNames{i}) && exist(rawDataFileNames.(fldNames{i}),'file')~=2
+
+            disp(['Missing raw data file: ' rawDataFileNames.(fldNames{i})]);
+            return;
+
         else
+
             % When can I really say that the data is missing? Certainly if this is not a trial level (i.e. no import). But when else?
             disp(['Data to be loaded from MAT is missing: ' newPath]);
 

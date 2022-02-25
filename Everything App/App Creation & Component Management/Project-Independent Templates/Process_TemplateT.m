@@ -1,4 +1,4 @@
-function Process_TemplateT(projectStruct,subName,trialName)
+function Process_TemplateT(projectStruct,subName,trialName,repNum)
 
 %% PURPOSE: TEMPLATE FOR TRIAL-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
 % Inputs:
@@ -7,11 +7,11 @@ function Process_TemplateT(projectStruct,subName,trialName)
 % varargin: The input variables from the input arguments function (cell array, each element is one variable)
 
 %% TODO: Assign input arguments to variable names
-roomNum=getArg('roomNum',subName,trialName); % Get trial level variable
+roomNum=getArg('roomNum',subName,trialName,repNum); % Get trial level variable
 
 %% TODO: Biomechanical operations for the whole project.
 % Code here.
 collectionSite=['Zaferiou Lab' roomNum];
 
 %% TODO: Store the computed variable(s) data to the projectStruct
-setArg(subName,trialName,collectionSite); % Set trial level variable
+setArg(subName,trialName,repNum,collectionSite); % Set trial level variable

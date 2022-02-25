@@ -109,6 +109,11 @@ end
 argsFolderFcn=[codePath 'Process_' projectName slash 'Arguments' slash 'Per Function' slash];
 argsFolderGroup=[codePath 'Process_' projectName slash 'Arguments' slash 'Per Group' slash];
 currDir=cd([codePath 'Process_' projectName slash 'Arguments']);
+
+if ~exist('fcnNames','var')
+    return;
+end
+
 for i=1:length(fcnNames)
 
     if exist([argsNames{i} '.m'],'file')~=2
@@ -148,7 +153,6 @@ end
 cd(currDir); % Go back to original directory.
 
 %% Iterate over all processing functions in the group to run them.
-tic;
 for i=1:length(fcnNames)
     
     % Bring the projectStruct from the base workspace into this one. Doing this for each function incorporates results of any previously finished functions.
@@ -218,7 +222,7 @@ for i=1:length(fcnNames)
     
     for sub=1:length(subNames)
         subName=subNames{sub};
-        currTrials=trialNames.(subName); % The list of trial names in the current subject
+        currTrials=fieldnames(trialNames.(subName)); % The list of trial names in the current subject
         
         if ismember('Subject',currLevels)
 
@@ -237,10 +241,13 @@ for i=1:length(fcnNames)
 
             disp(['Running ' fcnName ' Subject ' subName ' Trial ' trialName]);
 
-            feval(fcnName,projectStruct,subName,trialName); % projectStruct is an input argument for convenience of viewing the data only            
+            for repNum=trialNames.(subName).(trialName)
+
+                feval(fcnName,projectStruct,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only       
+
+            end
         end        
         
     end    
     
 end
-toc;

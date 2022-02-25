@@ -53,73 +53,73 @@ settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChild
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.
 handles.Import.projectNameLabel=uilabel(importTab,'Text','Project Name','Tag','ProjectNameLabel','FontWeight','bold');
-handles.Import.logsheetPathButton=uibutton(importTab,'push','Text','Logsheet Path','Tag','LogsheetPathButton','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
-handles.Import.dataPathButton=uibutton(importTab,'push','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
-handles.Import.codePathButton=uibutton(importTab,'push','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
+handles.Import.logsheetPathButton=uibutton(importTab,'push','Tooltip','Select Logsheet Path','Text','Logsheet Path','Tag','LogsheetPathButton','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
+handles.Import.dataPathButton=uibutton(importTab,'push','Tooltip','Select Data Path','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
+handles.Import.codePathButton=uibutton(importTab,'push','Tooltip','Select Code Path','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
 % projectNameField=uieditfield(importTab,'text','Value','Enter Project Name','Tag','ProjectNameField','ValueChangedFcn',@(projectNameField,event) projectNameFieldValueChanged(projectNameField)); % Project name edit field
 handles.Import.logsheetPathField=uieditfield(importTab,'text','Value','Logsheet Path (ends in .xlsx)','Tag','LogsheetPathField','ValueChangedFcn',@(logsheetPathField,event) logsheetPathFieldValueChanged(logsheetPathField));
 handles.Import.dataPathField=uieditfield(importTab,'text','Value','Data Path (contains ''Subject Data'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 handles.Import.codePathField=uieditfield(importTab,'text','Value','Path to Project Processing Code Folder','Tag','CodePathField','ValueChangedFcn',@(codePathField,event) codePathFieldValueChanged(codePathField)); % Code path name edit field (to the folder containing all code for this project).
 % Button to open the project's importSettings file.
-handles.Import.openImportMetadataButton=uibutton(importTab,'push','Text','Create importMetadata','Tag','OpenImportMetadataButton','ButtonPushedFcn',@(openImportMetadataButton,event) openImportMetadataButtonPushed(openImportMetadataButton));
+handles.Import.openImportMetadataButton=uibutton(importTab,'push','Text','Create importMetadata','Tooltip','Create or open data type-specific import arguments','Tag','OpenImportMetadataButton','ButtonPushedFcn',@(openImportMetadataButton,event) openImportMetadataButtonPushed(openImportMetadataButton));
 % Button to open the project's specifyTrials to select which trials to load/import
-handles.Import.openGroupSpecifyTrialsButton=uibutton(importTab,'push','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton));
+handles.Import.openGroupSpecifyTrialsButton=uibutton(importTab,'push','Tooltip','Open Import Specify Trials','Text','Create specifyTrials.m','Tag','OpenSpecifyTrialsButton','ButtonPushedFcn',@(openSpecifyTrialsButton,event) openSpecifyTrialsButtonPushed(openSpecifyTrialsButton));
 % Checkbox to redo import (overwrites all existing data files)
-handles.Import.redoImportCheckbox=uicheckbox(importTab,'Text','Redo (Overwrite) Import','Value',0,'Tag','RedoImportCheckbox','ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
+handles.Import.redoImportCheckbox=uicheckbox(importTab,'Tooltip','Check to Re-import Existing Data','Text','Redo (Overwrite) Import','Value',0,'Tag','RedoImportCheckbox','ValueChangedFcn',@(redoImportCheckbox,event) redoImportCheckboxValueChanged(redoImportCheckbox));
 % Button to run the import/load procedure
-handles.Import.runImportButton=uibutton(importTab,'push','Text','Run Import/Load','Tag','RunImportButton','ButtonPushedFcn',@(runImportButton,event) runImportButtonPushed(runImportButton));
+handles.Import.runImportButton=uibutton(importTab,'push','Tooltip','Run Import','Text','Run Import/Load','Tag','RunImportButton','ButtonPushedFcn',@(runImportButton,event) runImportButtonPushed(runImportButton));
 % Drop down to switch between active projects.
-handles.Import.switchProjectsDropDown=uidropdown(importTab,'Items',{'New Project'},'Editable','off','Tag','SwitchProjectsDropDown','ValueChangedFcn',@(switchProjectsDropDown,event) switchProjectsDropDownValueChanged(switchProjectsDropDown));
+handles.Import.switchProjectsDropDown=uidropdown(importTab,'Items',{'New Project'},'Tooltip','Select Project','Editable','off','Tag','SwitchProjectsDropDown','ValueChangedFcn',@(switchProjectsDropDown,event) switchProjectsDropDownValueChanged(switchProjectsDropDown));
 % Drop down to specify & open a new data type's importSettings
 handles.Import.dataTypeImportSettingsDropDown=uidropdown(importTab,'Items',{'No Data Types to Import'},'Editable','off','Tag','DataTypeImportSettingsDropDown','ValueChangedFcn',@(dataTypeImportSettingsDropDown,event) dataTypeImportSettingsDropDownValueChanged(dataTypeImportSettingsDropDown));
 % Logsheet label
 handles.Import.logsheetLabel=uilabel(importTab,'Text','Logsheet:','FontWeight','bold');
 % Number of header rows label
-handles.Import.numHeaderRowsLabel=uilabel(importTab,'Text','# of Header Rows','Tag','NumHeaderRowsLabel');
+handles.Import.numHeaderRowsLabel=uilabel(importTab,'Text','# of Header Rows','Tag','NumHeaderRowsLabel','Tooltip','Number of Header Rows in Logsheet');
 % Number of header rows text box
-handles.Import.numHeaderRowsField=uieditfield(importTab,'numeric','Value',0,'Tag','NumHeaderRowsField','ValueChangedFcn',@(numHeaderRowsField,event) numHeaderRowsFieldValueChanged(numHeaderRowsField));
+handles.Import.numHeaderRowsField=uieditfield(importTab,'numeric','Tooltip','Number of Header Rows in Logsheet','Value',0,'Tag','NumHeaderRowsField','ValueChangedFcn',@(numHeaderRowsField,event) numHeaderRowsFieldValueChanged(numHeaderRowsField));
 % Subject ID column header label
-handles.Import.subjIDColHeaderLabel=uilabel(importTab,'Text','Subject ID Column Header','Tag','SubjectIDColumnHeaderLabel');
+handles.Import.subjIDColHeaderLabel=uilabel(importTab,'Text','Subject ID Column Header','Tag','SubjectIDColumnHeaderLabel','Tooltip','Logsheet Column Header for Subject Codenames');
 % Subject ID column header text box
-handles.Import.subjIDColHeaderField=uieditfield(importTab,'text','Value','Subject ID Column Header','Tag','SubjIDColumnHeaderField','ValueChangedFcn',@(subjIDColHeaderField,event) subjIDColHeaderFieldValueChanged(subjIDColHeaderField));
+handles.Import.subjIDColHeaderField=uieditfield(importTab,'text','Value','Subject ID Column Header','Tooltip','Logsheet Column Header for Subject Codenames','Tag','SubjIDColumnHeaderField','ValueChangedFcn',@(subjIDColHeaderField,event) subjIDColHeaderFieldValueChanged(subjIDColHeaderField));
 % Trial ID column header label
-handles.Import.trialIDColHeaderDataTypeLabel=uilabel(importTab,'Text','Data Type: Trial ID Column Header');
+handles.Import.trialIDColHeaderDataTypeLabel=uilabel(importTab,'Text','Data Type: Trial ID Column Header','Tooltip','Logsheet Column Header for Data Type-Specific File Names');
 % Trial ID column header text box
-handles.Import.trialIDColHeaderDataTypeField=uieditfield(importTab,'text','Value','Data Type: Trial ID Column Header','Tag','DataTypeTrialIDColumnHeaderField','ValueChangedFcn',@(trialIDColHeaderField,event) trialIDColHeaderDataTypeFieldValueChanged(trialIDColHeaderField));
+handles.Import.trialIDColHeaderDataTypeField=uieditfield(importTab,'text','Value','Data Type: Trial ID Column Header','Tooltip','Logsheet Column Header for Data Type-Specific File Names','Tag','DataTypeTrialIDColumnHeaderField','ValueChangedFcn',@(trialIDColHeaderField,event) trialIDColHeaderDataTypeFieldValueChanged(trialIDColHeaderField));
 % Target Trial ID format label
-handles.Import.targetTrialIDColHeaderLabel=uilabel(importTab,'Text','Target Trial ID Column Header','Tag','TargetTrialIDColHeaderLabel');
+handles.Import.targetTrialIDColHeaderLabel=uilabel(importTab,'Text','Target Trial ID Column Header','Tag','TargetTrialIDColHeaderLabel','Tooltip','Logsheet Column Header for projectStruct Trial Names');
 % Target Trial ID format field
-handles.Import.targetTrialIDColHeaderField=uieditfield(importTab,'text','Value','T','Tag','TargetTrialIDColHeaderField','ValueChangedFcn',@(targetTrialIDFormatField,event) targetTrialIDFormatFieldValueChanged(targetTrialIDFormatField));
+handles.Import.targetTrialIDColHeaderField=uieditfield(importTab,'text','Value','T','Tag','TargetTrialIDColHeaderField','Tooltip','Logsheet Column Header for projectStruct Trial Names','ValueChangedFcn',@(targetTrialIDFormatField,event) targetTrialIDFormatFieldValueChanged(targetTrialIDFormatField));
 % Save all trials button
-handles.Import.saveAllButton=uibutton(importTab,'push','Text','Save All In Struct','Tag','SaveAllButton','ButtonPushedFcn',@(saveAllButton,event) saveAllButtonPushed(saveAllButton));
+% handles.Import.saveAllButton=uibutton(importTab,'push','Text','Save All In Struct','Tag','SaveAllButton','ButtonPushedFcn',@(saveAllButton,event) saveAllButtonPushed(saveAllButton));
 % Load which data label
 handles.Import.selectDataPanel=uipanel(importTab,'Title','Select Groups'' Data to Load','Tag','SelectDataPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop','AutoResizeChildren','off','SizeChangedFcn',@dataSelectPanelResize);
 % Need to read the groups text file to get group names. Create
 % corresponding number of checkboxes & their labels.
-handles.Import.loadLabel=uilabel(importTab,'Text','Load','Tag','LoadLabel');
-handles.Import.offloadLabel=uilabel(importTab,'Text','Offload','Tag','OffloadLabel');
+handles.Import.loadLabel=uilabel(importTab,'Text','Load','Tag','LoadLabel','Tooltip','Check Boxes to Load Data');
+handles.Import.offloadLabel=uilabel(importTab,'Text','Offload','Tag','OffloadLabel','Tooltip','Check Boxes to Offload Data');
 handles.Import.dataLabel=uilabel(importTab,'Text','Data','Tag','DataLabel');
 
 % Data types import method number field
-handles.Import.dataTypeImportMethodField=uieditfield(importTab,'text','Value','1A','Tag','DataTypeImportMethodField','ValueChangedFcn',@(dataTypeImportMethodField,event) dataTypeImportMethodFieldValueChanged(dataTypeImportMethodField));
+handles.Import.dataTypeImportMethodField=uieditfield(importTab,'text','Value','1A','Tag','DataTypeImportMethodField','Tooltip','Data type-specific import method ID','ValueChangedFcn',@(dataTypeImportMethodField,event) dataTypeImportMethodFieldValueChanged(dataTypeImportMethodField));
 % Add new data type to drop down
-handles.Import.addDataTypeButton=uibutton(importTab,'push','Text','New Data Type','Tag','AddDataTypeButton','ButtonPushedFcn',@(addDataTypeButton,event) addDataTypeButtonPushed(addDataTypeButton));
+handles.Import.addDataTypeButton=uibutton(importTab,'push','Text','New Data Type','Tag','AddDataTypeButton','Tooltip','Add new data type for import','ButtonPushedFcn',@(addDataTypeButton,event) addDataTypeButtonPushed(addDataTypeButton));
 % Create new import function
-handles.Import.openImportFcnButton=uibutton(importTab,'push','Text','Create Import Fcn','Tag','OpenImportFcnButton','ButtonPushedFcn',@(openImportFcnButton,event) openImportFcnButtonPushed(openImportFcnButton));
+handles.Import.openImportFcnButton=uibutton(importTab,'push','Text','Create Import Fcn','Tag','OpenImportFcnButton','Tooltip','Create or open data type-specific import function','ButtonPushedFcn',@(openImportFcnButton,event) openImportFcnButtonPushed(openImportFcnButton));
 % Add new project button
-handles.Import.addProjectButton=uibutton(importTab,'push','Text','+','Tag','AddProjectButton','ButtonPushedFcn',@(addProjectButton,event) addProjectButtonPushed(addProjectButton));
+handles.Import.addProjectButton=uibutton(importTab,'push','Text','+','Tag','AddProjectButton','Tooltip','Create new project','ButtonPushedFcn',@(addProjectButton,event) addProjectButtonPushed(addProjectButton));
 % Open logsheet button
-handles.Import.openLogsheetButton=uibutton(importTab,'push','Text','O','Tag','OpenLogsheetButton','ButtonPushedFcn',@(openLogsheetButton,event) openLogsheetButtonPushed(openLogsheetButton));
+handles.Import.openLogsheetButton=uibutton(importTab,'push','Text','O','Tag','OpenLogsheetButton','Tooltip','Open logsheet','ButtonPushedFcn',@(openLogsheetButton,event) openLogsheetButtonPushed(openLogsheetButton));
 % Open data path button
-handles.Import.openDataPathButton=uibutton(importTab,'push','Text','O','Tag','OpenDataPathButton','ButtonPushedFcn',@(openDataPathButton,event) openDataPathButtonPushed(openDataPathButton));
+handles.Import.openDataPathButton=uibutton(importTab,'push','Text','O','Tag','OpenDataPathButton','Tooltip','Open data folder','ButtonPushedFcn',@(openDataPathButton,event) openDataPathButtonPushed(openDataPathButton));
 % Open code path button
-handles.Import.openCodePathButton=uibutton(importTab,'push','Text','O','Tag','OpenCodePathButton','ButtonPushedFcn',@(openCodePathButton,event) openCodePathButtonPushed(openCodePathButton));
+handles.Import.openCodePathButton=uibutton(importTab,'push','Text','O','Tag','OpenCodePathButton','Tooltip','Open code folder','ButtonPushedFcn',@(openCodePathButton,event) openCodePathButtonPushed(openCodePathButton));
 % Data panel up arrow button
 handles.Import.dataPanelUpArrowButton=uibutton(importTab,'push','Text',{'/\';'||'},'Tag','DataPanelUpArrowButton','ButtonPushedFcn',@(dataPanelUpArrowButton,event) dataPanelUpArrowButtonPushed(dataPanelUpArrowButton));
 % Data panel down arrow button
 handles.Import.dataPanelDownArrowButton=uibutton(importTab,'push','Text',{'||';'\/'},'Tag','DataPanelDownArrowButton','ButtonPushedFcn',@(dataPanelDownArrowButton,event) dataPanelDownArrowButtonPushed(dataPanelDownArrowButton));
 % Specify trials number field
-handles.Import.specifyTrialsNumberField=uieditfield(importTab,'text','Value','1','Tag','SpecifyTrialsNumberField','ValueChangedFcn',@(specifyTrialsNumberField,event) specifyTrialsNumberFieldValueChanged(specifyTrialsNumberField));
+handles.Import.specifyTrialsNumberField=uieditfield(importTab,'text','Value','1','Tag','SpecifyTrialsNumberField','Tooltip','Specify trials method number','ValueChangedFcn',@(specifyTrialsNumberField,event) specifyTrialsNumberFieldValueChanged(specifyTrialsNumberField));
 
 importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'LogsheetPathButton',handles.Import.logsheetPathButton,'DataPathButton',handles.Import.dataPathButton,'CodePathButton',handles.Import.codePathButton,...
     'AddProjectButton',handles.Import.addProjectButton,'LogsheetPathField',handles.Import.logsheetPathField,'DataPathField',handles.Import.dataPathField,'CodePathField',handles.Import.codePathField,'DataTypeImportSettingsDropDown',handles.Import.dataTypeImportSettingsDropDown,...
@@ -127,7 +127,7 @@ importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'Lo
     'RunImportButton',handles.Import.runImportButton,'LogsheetLabel',handles.Import.logsheetLabel,'NumHeaderRowsLabel',handles.Import.numHeaderRowsLabel,'NumHeaderRowsField',handles.Import.numHeaderRowsField,...
     'SubjectIDColHeaderLabel',handles.Import.subjIDColHeaderLabel,'SubjectIDColHeaderField',handles.Import.subjIDColHeaderField,'TrialIDColHeaderDataTypeLabel',handles.Import.trialIDColHeaderDataTypeLabel,'TrialIDColHeaderDataTypeField',handles.Import.trialIDColHeaderDataTypeField,...
     'TargetTrialIDColHeaderLabel',handles.Import.targetTrialIDColHeaderLabel,'TargetTrialIDColHeaderField',handles.Import.targetTrialIDColHeaderField,...
-    'SaveAllButton',handles.Import.saveAllButton,'SelectDataPanel',handles.Import.selectDataPanel,'DataTypeImportMethodField',handles.Import.dataTypeImportMethodField,'AddDataTypeButton',handles.Import.addDataTypeButton,'OpenImportFcnButton',handles.Import.openImportFcnButton,...
+    'SelectDataPanel',handles.Import.selectDataPanel,'DataTypeImportMethodField',handles.Import.dataTypeImportMethodField,'AddDataTypeButton',handles.Import.addDataTypeButton,'OpenImportFcnButton',handles.Import.openImportFcnButton,...
     'OpenLogsheetButton',handles.Import.openLogsheetButton,'OpenDataPathButton',handles.Import.openDataPathButton','OpenCodePathButton',handles.Import.openCodePathButton,...
     'LoadLabel',handles.Import.loadLabel,'OffloadLabel',handles.Import.offloadLabel,'DataLabel',handles.Import.dataLabel,'DataPanelUpArrowButton',handles.Import.dataPanelUpArrowButton,'DataPanelDownArrowButton',handles.Import.dataPanelDownArrowButton,'SpecifyTrialsNumberField',handles.Import.specifyTrialsNumberField);
 
@@ -142,21 +142,21 @@ processRunTab=uitab(processTabGroup,'Title','Run','Tag','Run','AutoResizeChildre
 % Create the Process > Setup tab
 % Function Group Name Label
 handles.ProcessSetup.setupGroupNameLabel=uilabel(processSetupTab,'Text','Group Name','Tag','SetupGroupNameLabel');
-handles.ProcessSetup.setupGroupNameDropDown=uidropdown(processSetupTab,'Items',{'Create Function Group'},'Editable','Off','Tag','SetupGroupNameDropDown','ValueChangedFcn',@(setupGroupNameDropDown,event) setupGroupNamesDropDownValueChanged(setupGroupNameDropDown));
+handles.ProcessSetup.setupGroupNameDropDown=uidropdown(processSetupTab,'Items',{'Create Function Group'},'Editable','Off','Tooltip','Select processing function group','Tag','SetupGroupNameDropDown','ValueChangedFcn',@(setupGroupNameDropDown,event) setupGroupNamesDropDownValueChanged(setupGroupNameDropDown));
 handles.ProcessSetup.setupFunctionNamesLabel=uilabel(processSetupTab,'Text','Function Names','Tag','SetupFunctionNamesLabel');
 handles.ProcessSetup.setupFunctionNamesField=uitextarea(processSetupTab,'Value','Function Names','Tag','SetupFunctionNamesField','Editable','on','Visible','on','ValueChangedFcn',@(setupFunctionNamesField,event) setupFunctionNamesFieldValueChanged(setupFunctionNamesField));
 handles.ProcessSetup.newFunctionPanel=uipanel(processSetupTab,'Title','New Function','Tag','NewFunctionPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
 handles.ProcessSetup.saveGroupButton=uibutton(processSetupTab,'push','Text','Save Group To File','Tag','SaveGroupButton','ButtonPushedFcn',@(saveGroupButton,event) saveGroupButtonPushed(saveGroupButton));
 handles.ProcessSetup.inputsLabel=uilabel(processSetupTab,'Text','Function Levels','Tag','InputsLabel');
 % outputsLabel=uilabel(processSetupTab,'Text','Output Levels','Tag','OutputsLabel');
-handles.ProcessSetup.inputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','InputCheckboxProject');
-handles.ProcessSetup.inputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','InputCheckboxSubject');
-handles.ProcessSetup.inputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','InputCheckboxTrial');
+handles.ProcessSetup.inputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','InputCheckboxProject','Tooltip','New function contains project-level variables');
+handles.ProcessSetup.inputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','InputCheckboxSubject','Tooltip','New function contains subject-level variables');
+handles.ProcessSetup.inputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','InputCheckboxTrial','Tooltip','New function contains trial-level variables');
 % outputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','OutputCheckboxProject');
 % outputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','OutputCheckboxSubject');
 % outputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','OutputCheckboxTrial');
 handles.ProcessSetup.newFunctionButton=uibutton(processSetupTab,'push','Text','Create New Function','Tag','NewFunctionButton','ButtonPushedFcn',@(newFunctionButton,event) newFunctionButtonPushed(newFunctionButton));
-handles.ProcessSetup.addFunctionGroupButton=uibutton(processSetupTab,'push','Text','+','Tag','AddFunctionGroupButton','ButtonPushedFcn',@(addFunctionGroupButton,event) addFunctionGroupButtonPushed(addFunctionGroupButton));
+handles.ProcessSetup.addFunctionGroupButton=uibutton(processSetupTab,'push','Text','+','Tag','AddFunctionGroupButton','Tooltip','Create new processing function group','ButtonPushedFcn',@(addFunctionGroupButton,event) addFunctionGroupButtonPushed(addFunctionGroupButton));
 
 % Create the Process > Run tab
 handles.ProcessRun.runGroupNameLabel=uilabel(processRunTab,'Text','Group Name','Tag','RunGroupNameLabel');
@@ -164,15 +164,15 @@ handles.ProcessRun.runGroupNameDropDown=uidropdown(processRunTab,'Items',{'Creat
 handles.ProcessRun.runFunctionNamesLabel=uilabel(processRunTab,'Text','Function Names','Tag','RunFunctionNamesLabel');
 handles.ProcessRun.groupRunCheckboxLabel=uilabel(processRunTab,'Text','Run','Tag','GroupRunCheckboxLabel');
 handles.ProcessRun.groupArgsCheckboxLabel=uilabel(processRunTab,'Text','Args','Tag','GroupArgsCheckboxLabel');
-handles.ProcessRun.runGroupButton=uibutton(processRunTab,'push','Text','Run Group','Tag','RunGroupButton','ButtonPushedFcn',@(runGroupButton,event) runGroupButtonPushed(runGroupButton));
-handles.ProcessRun.runAllButton=uibutton(processRunTab,'push','Text','Run All','Tag','RunAllButton','ButtonPushedFcn',@(runAllButton,event) runAllButtonPushed(runAllButton));
+handles.ProcessRun.runGroupButton=uibutton(processRunTab,'push','Text','Run Group','Tag','RunGroupButton','Tooltip','Run the currently selected processing group functions','ButtonPushedFcn',@(runGroupButton,event) runGroupButtonPushed(runGroupButton));
+handles.ProcessRun.runAllButton=uibutton(processRunTab,'push','Text','Run All','Tag','RunAllButton','Tooltip','Run all processing function groups','ButtonPushedFcn',@(runAllButton,event) runAllButtonPushed(runAllButton));
 handles.ProcessRun.runFunctionsPanel=uipanel(processRunTab,'Title','','Tag','RunFunctionsPanel','BackGroundColor',[0.92 0.92 0.92],'AutoResizeChildren','off','SizeChangedFcn',@processRunPanelResize);
-handles.ProcessRun.specifyTrialsGroupButton=uibutton(processRunTab,'push','Text','Specify Trials','Tag','SpecifyTrialsGroupButton','ButtonPushedFcn',@(specifyTrialsGroupButton,event) specifyTrialsGroupButtonPushed(specifyTrialsGroupButton));
+handles.ProcessRun.specifyTrialsGroupButton=uibutton(processRunTab,'push','Text','Specify Trials','Tag','SpecifyTrialsGroupButton','Tooltip','Open group-level specify trials','ButtonPushedFcn',@(specifyTrialsGroupButton,event) specifyTrialsGroupButtonPushed(specifyTrialsGroupButton));
 handles.ProcessRun.specifyTrialsCheckboxLabel=uilabel(processRunTab,'Text','Specify Trials','Tag','SpecifyTrialsCheckboxLabel');
 % specifyTrialsGroupCheckbox=uicheckbox(processRunTab,'Text','','Value',0,'Tag','SpecifyTrialsGroupCheckbox');
 handles.ProcessRun.processRunUpArrowButton=uibutton(processRunTab,'Text',{'/\';'||'},'Tag','ProcessRunUpArrowButton','ButtonPushedFcn',@(processRunUpArrowButton,event) processRunUpArrowButtonPushed(processRunUpArrowButton));
 handles.ProcessRun.processRunDownArrowButton=uibutton(processRunTab,'Text',{'||';'\/'},'Tag','ProcessRunDownArrowButton','ButtonPushedFcn',@(processRunDownArrowButton,event) processRunDownArrowButtonPushed(processRunDownArrowButton));
-handles.ProcessRun.runGroupArgsButton=uibutton(processRunTab,'Text','Args','Tag','RunGroupArgsButton','ButtonPushedFcn',@(runGroupArgsButton,event) runGroupArgsButtonPushed(runGroupArgsButton));
+handles.ProcessRun.runGroupArgsButton=uibutton(processRunTab,'Text','Args','Tag','RunGroupArgsButton','Tooltip','Open group-level arguments','ButtonPushedFcn',@(runGroupArgsButton,event) runGroupArgsButtonPushed(runGroupArgsButton));
 
 processTab.UserData=struct('SetupGroupNameLabel',handles.ProcessSetup.setupGroupNameLabel,'SetupGroupNameDropDown',handles.ProcessSetup.setupGroupNameDropDown,'SetupFunctionNamesLabel',handles.ProcessSetup.setupFunctionNamesLabel,'SetupFunctionNamesField',handles.ProcessSetup.setupFunctionNamesField,...
     'NewFunctionPanel',handles.ProcessSetup.newFunctionPanel,'SaveGroupButton',handles.ProcessSetup.saveGroupButton,'InputsLabel',handles.ProcessSetup.inputsLabel,'InputCheckboxProject',handles.ProcessSetup.inputCheckboxP,'InputCheckboxSubject',handles.ProcessSetup.inputCheckboxS,'InputCheckboxTrial',handles.ProcessSetup.inputCheckboxT,...

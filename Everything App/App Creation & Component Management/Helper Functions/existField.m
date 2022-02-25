@@ -39,7 +39,12 @@ for i=2:length(structParts)
         if any(contains(structParts{i},'(')) % Handle indexed vars.     
             idxNum=idxNum+1;
 %             structName=[structName '.' structParts{i}(1:parenIdx) num2str(idx(idxNum)) ')'];
-            struct=struct.(structParts{i}(1:parenIdx-1))(varargin{idxNum});
+            if length(struct.(structParts{i}(1:parenIdx-1)))<varargin{idxNum}
+                bool=0;
+                return;
+            else
+                struct=struct.(structParts{i}(1:parenIdx-1))(varargin{idxNum});
+            end
         else
 %             structName=[structName '.' structParts{i}]; % The current struct address.
             struct=struct.(structParts{i});

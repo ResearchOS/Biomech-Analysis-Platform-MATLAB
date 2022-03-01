@@ -2,9 +2,12 @@ function []=logsheetTabResize(src)
 
 %% PURPOSE: RESIZE THE COMPONENTS IN THE LOGSHEET TAB (INCLUSION OR EXCLUSION). SIMILAR TO runGroupNameDropDownValueChanged IN PGUI
 
-data=src.UserData;
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+currInclExcl=handles.Top.includeExcludeTabGroup.SelectedTab.Title;
+logStructTab=handles.(currInclExcl).logStructTabGroup.SelectedTab;
+
+data=logStructTab.UserData;
 
 if isempty(data)
     return;
@@ -119,17 +122,25 @@ for i=1:length(labels)
     editfields(i).Visible='on';
 
     % Set Visibility by Position
-    if 0.75-(i-1)*0.1<=0
+    if 0.75-(i+currArrowCount)*0.1<=0
         labels(i).Visible='off';
         dropdowns(i).Visible='off';
         editfields(i).Visible='off';
     end
 
-    if i==1 && (0.75-(i+currArrowCount)*0.1)<0.75 % Turn off visibility for the 'Up' arrow
-        upArrow.Visible='off';
+    if i==1
+        if (0.75-(i+currArrowCount)*0.1)<0.75 % Turn off visibility for the 'Up' arrow
+            upArrow.Visible='off';
+        else
+            upArrow.Visible='on';
+        end
     end
-    if i==length(labels) && (0.75-(i+currArrowCount)*0.1)>0 % Turn off visibility for the 'Down' arrow
-        downArrow.Visible='off';
+    if i==length(labels)
+        if (0.75-(i+currArrowCount)*0.1)>0 % Turn off visibility for the 'Down' arrow
+            downArrow.Visible='off';
+        else
+            downArrow.Visible='on';
+        end
     end
 
 end

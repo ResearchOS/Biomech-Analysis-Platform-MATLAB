@@ -66,15 +66,25 @@ for i=1:numLines
 
 end
 
-assert(exist(specifyTrialsMPath,'file')==2);
+if exist(specifyTrialsMPath,'file')~=2 % If the file was deleted, re-create it with defaults.
+    assignin('base','vNameToAddSpecifyTrials',vName);
+    assignin('base','ignoreInputToAddSpecifyTrials',1);
+    specifyTrialsDropDownAddButtonPushed(fig);
+    evalin('base','clear vNameToAddSpecifyTrials ignoreInputToAddSpecifyTrials');
+end
 
-a='C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\Import_Spr21TWWBiomechanics\Specify Trials\specifyTrials_Import1.m';
-
-% [folder,name]=fileparts(specifyTrialsMPath);
-[folder,name]=fileparts(a);
+[folder,name]=fileparts(specifyTrialsMPath);
+% [folder,name]=fileparts(a);
 currCD=cd(folder);
+
+if exist(specifyTrialsMPath,'file')~=2
+    warning(['Please remove this version. The specify trials file was deleted: ' specifyTrialsMPath]);
+    return;
+end
+
 inclStruct=feval(name);
 setappdata(fig,'inclStruct',inclStruct);
+setappdata(fig,'specifyTrialsMPath',specifyTrialsMPath);
 cd(currCD);
 
 if ~isfield(inclStruct,'Include')
@@ -110,6 +120,6 @@ for inclExcl=1:2
     currCondDropDown.Items=condNames;
     currCondDropDown.Value=condNames{1};
 
-    conditionNameDropDownValueChanged(currCondDropDown,type); % Propagate the changes
+    conditionNameDropDownValueChanged(currCondDropDown); % Propagate the changes
 
 end

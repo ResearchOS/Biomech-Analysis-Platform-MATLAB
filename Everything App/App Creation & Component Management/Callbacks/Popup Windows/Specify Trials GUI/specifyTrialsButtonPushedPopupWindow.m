@@ -39,9 +39,9 @@ newHandles.Top.includeTab=uitab(newHandles.Top.includeExcludeTabGroup,'Title','I
 newHandles.Top.excludeTab=uitab(newHandles.Top.includeExcludeTabGroup,'Title','Exclude','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
 
 newHandles.Include.conditionLabel=uilabel(newHandles.Top.includeTab,'Text','Condition Name','Tag','IncludeConditionLabel');
-newHandles.Include.conditionDropDown=uidropdown(newHandles.Top.includeTab,'Items',{'Add Condition Name'},'Tag','IncludeConditionDropDown','ValueChangedFcn',@(includeConditionDropDown,event) includeConditionDropDownValueChanged(includeConditionDropDown));
-newHandles.Include.addConditionButton=uibutton(newHandles.Top.includeTab,'Text','+','Tag','IncludeAddConditionButton','Tooltip','Add New Inclusion Condition','ButtonPushedFcn',@(includeAddConditionButton,event) includeAddConditionButtonPushed(includeAddConditionButton));
-newHandles.Include.removeConditionButton=uibutton(newHandles.Top.includeTab,'Text','-','Tag','IncludeRemoveConditionButton','Tooltip','Remove Inclusion Condition','ButtonPushedFcn',@(includeRemoveConditionButton,event) includeRemoveConditionButtonPushed(includeRemoveConditionButton));
+newHandles.Include.conditionDropDown=uidropdown(newHandles.Top.includeTab,'Items',{'Add Condition Name'},'Tag','IncludeConditionDropDown','ValueChangedFcn',@(includeConditionDropDown,event) conditionNameDropDownValueChanged(includeConditionDropDown));
+newHandles.Include.addConditionButton=uibutton(newHandles.Top.includeTab,'Text','+','Tag','IncludeAddConditionButton','Tooltip','Add New Inclusion Condition','ButtonPushedFcn',@(includeAddConditionButton,event) addConditionNameButtonPushed(includeAddConditionButton));
+newHandles.Include.removeConditionButton=uibutton(newHandles.Top.includeTab,'Text','-','Tag','IncludeRemoveConditionButton','Tooltip','Remove Inclusion Condition','ButtonPushedFcn',@(includeRemoveConditionButton,event) removeConditionNameButtonPushed(includeRemoveConditionButton));
 newHandles.Include.logStructTabGroup=uitabgroup(newHandles.Top.includeTab,'AutoResizeChildren','off');
 newHandles.Include.LogTab=uitab(newHandles.Include.logStructTabGroup,'Title','Logsheet','Tag','IncludeLogsheetTab','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
 newHandles.Include.StructTab=uitab(newHandles.Include.logStructTabGroup,'Title','Structure','AutoResizeChildren','off','Tag','IncludeStructTab','SizeChangedFcn',@specifyTrialsResize);
@@ -49,9 +49,9 @@ newHandles.Include.UpArrowButton=uibutton(newHandles.Top.includeTab,'push','Text
 newHandles.Include.DownArrowButton=uibutton(newHandles.Top.includeTab,'push','Text',{'||';'\/'},'Tag','IncludeDownArrowButton','ButtonPushedFcn',@(includeDownArrowButton,event) includeDownArrowButtonPushed(includeDownArrowButton));
 
 newHandles.Exclude.conditionLabel=uilabel(newHandles.Top.excludeTab,'Text','Condition Name','Tag','ExcludeConditionLabel');
-newHandles.Exclude.conditionDropDown=uidropdown(newHandles.Top.excludeTab,'Items',{'Add Condition Name'},'Tag','ExcludeConditionDropDown','ValueChangedFcn',@(excludeConditionDropDown,event) excludeConditionDropDownValueChanged(excludeConditionDropDown));
-newHandles.Exclude.addConditionButton=uibutton(newHandles.Top.excludeTab,'Text','+','Tag','ExcludeAddConditionButton','Tooltip','Add New Exclusion Condition','ButtonPushedFcn',@(excludeAddConditionButton,event) excludeAddConditionButtonPushed(excludeAddConditionButton));
-newHandles.Exclude.removeConditionButton=uibutton(newHandles.Top.excludeTab,'Text','-','Tag','ExcludeRemoveConditionButton','Tooltip','Remove Exclusion Condition','ButtonPushedFcn',@(excludeRemoveConditionButton,event) excludeRemoveConditionButtonPushed(excludeRemoveConditionButton));
+newHandles.Exclude.conditionDropDown=uidropdown(newHandles.Top.excludeTab,'Items',{'Add Condition Name'},'Tag','ExcludeConditionDropDown','ValueChangedFcn',@(excludeConditionDropDown,event) conditionNameDropDownValueChanged(excludeConditionDropDown));
+newHandles.Exclude.addConditionButton=uibutton(newHandles.Top.excludeTab,'Text','+','Tag','ExcludeAddConditionButton','Tooltip','Add New Exclusion Condition','ButtonPushedFcn',@(excludeAddConditionButton,event) addConditionNameButtonPushed(excludeAddConditionButton));
+newHandles.Exclude.removeConditionButton=uibutton(newHandles.Top.excludeTab,'Text','-','Tag','ExcludeRemoveConditionButton','Tooltip','Remove Exclusion Condition','ButtonPushedFcn',@(excludeRemoveConditionButton,event) removeConditionNameButtonPushed(excludeRemoveConditionButton));
 newHandles.Exclude.logStructTabGroup=uitabgroup(newHandles.Top.excludeTab,'AutoResizeChildren','off');
 newHandles.Exclude.LogTab=uitab(newHandles.Exclude.logStructTabGroup,'Title','Logsheet','AutoResizeChildren','off','Tag','ExcludeLogsheetTab','SizeChangedFcn',@specifyTrialsResize);
 newHandles.Exclude.StructTab=uitab(newHandles.Exclude.logStructTabGroup,'Title','Structure','AutoResizeChildren','off','Tag','ExcludeStructTab','SizeChangedFcn',@specifyTrialsResize);

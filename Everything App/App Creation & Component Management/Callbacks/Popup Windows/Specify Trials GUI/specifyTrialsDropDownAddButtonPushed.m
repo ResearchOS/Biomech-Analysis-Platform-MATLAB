@@ -21,6 +21,10 @@ specifyTrialsPath=getappdata(fig,'allProjectsSpecifyTrialsPath');
 guiLocation=getappdata(fig,'guiLocation');
 
 a=0;
+if evalin('base','exist(''ignoreInputToAddSpecifyTrials'',''var'')')
+    a=1;
+    vName=evalin('base','vNameToAddSpecifyTrials;');
+end
 while a==0
     vName=inputdlg('Enter Specify Trials Version Name');
     if isempty(vName)
@@ -47,6 +51,7 @@ if exist(specifyTrialsPath,'file')~=2
     end
 
     fcnText{1}=['function [inclStruct]=' vName '_' projectName '_specifyTrials()'];
+    fcnText{2}='inclStruct=0;';
 
     % Save the .txt file.
     fid=fopen(specifyTrialsPath,'w');
@@ -56,8 +61,12 @@ if exist(specifyTrialsPath,'file')~=2
 
     % Save the .m file.
     fid=fopen(mName,'w');
-    fprintf(fid,'%s',fcnText{1});
+    fprintf(fid,'%s\n',fcnText{1:end-1});
+    fprintf(fid,'%s',fcnText{end});
     fclose(fid);
+
+    % Change the drop down items & value
+    handles.Top.specifyTrialsDropDown.Items={vName};
 
     return;
 
@@ -81,6 +90,7 @@ if ~ismember(projectName,projectList)
     end
 
     fcnText{1}=['function [inclStruct]=' vName '_' projectName '_specifyTrials()'];
+    fcnText{2}='inclStruct=0;';
 
     % Save the .txt file.
     fid=fopen(specifyTrialsPath,'w');
@@ -90,7 +100,8 @@ if ~ismember(projectName,projectList)
 
     % Save the .m file.
     fid=fopen(mName,'w');
-    fprintf(fid,'%s',fcnText{1});
+    fprintf(fid,'%s\n',fcnText{1:end-1});
+    fprintf(fid,'%s',fcnText{end});
     fclose(fid);
 
     return;
@@ -164,6 +175,7 @@ else
     newText=[newText; text(currLine:end)];
 
     fcnText{1}=['function [inclStruct]=' vName '_' projectName '_specifyTrials()'];
+    fcnText{2}='inclStruct=0;';
 
     % Save the .txt file.
     fid=fopen(specifyTrialsPath,'w');
@@ -173,7 +185,8 @@ else
 
     % Save the .m file.
     fid=fopen(mName,'w');
-    fprintf(fid,'%s',fcnText{1});
+    fprintf(fid,'%s\n',fcnText{1:end-1});
+    fprintf(fid,'%s',fcnText{end});
     fclose(fid);
 
 end
@@ -182,3 +195,5 @@ handles.Top.specifyTrialsDropDown.Items=[handles.Top.specifyTrialsDropDown.Items
 handles.Top.specifyTrialsDropDown.Value=vName;
 
 specifyTrialsVersionDropDownValueChanged(handles.Top.specifyTrialsDropDown);
+
+end % End function

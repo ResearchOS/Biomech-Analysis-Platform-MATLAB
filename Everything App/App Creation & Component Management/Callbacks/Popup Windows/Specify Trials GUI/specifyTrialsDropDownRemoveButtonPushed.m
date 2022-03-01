@@ -76,7 +76,7 @@ for i=1:numLines
     if isequal(vName,a{1})
         newText=text(1:i-1);
         if i<numLines
-            newText=[newText; text(i+1:end)];
+            newText=[newText text(i+1:end)];
         end
         break;
     end

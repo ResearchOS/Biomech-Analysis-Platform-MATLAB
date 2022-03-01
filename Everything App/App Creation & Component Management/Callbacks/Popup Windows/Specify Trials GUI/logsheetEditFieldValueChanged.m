@@ -1,7 +1,6 @@
-function []=logicDropDownValueChanged(src)
+function []=logsheetEditFieldValueChanged(src)
 
-%% PURPOSE: IN THE INCLSTRUCT, CHANGE THE LOGIC USED FOR A SPECIFIC CRITERIA IN THE SPECIFY TRIALS
-% Works for structure or logsheet drop-downs
+%% PURPOSE: STORE TO THE INCLSTRUCT THE CHANGE IN THE TEXT FIELDS IN THE LOGSHEET SUBTAB
 
 value=src.Value;
 fig=ancestor(src,'figure','toplevel');
@@ -12,11 +11,11 @@ type=handles.Top.includeExcludeTabGroup.SelectedTab.Title;
 
 condNum=find(ismember(handles.(type).conditionDropDown.Items,handles.(type).conditionDropDown.Value)==1,1);
 
-subTabTitle=handles.(type).logStructTabGroup.SelectedTab.Title;
-
 srcNum=str2double(src.Tag(isstrprop(src.Tag,'digit')));
 
-inclStruct.(type).Condition(condNum).(subTabTitle)(srcNum).Logic=value;
+subTabTitle=handles.(type).logStructTabGroup.SelectedTab.Title;
+
+inclStruct.(type).Condition(condNum).Logsheet(srcNum).Value=value;
 
 setappdata(fig,'inclStruct',inclStruct);
 
@@ -26,7 +25,7 @@ mName=getappdata(fig,'specifyTrialsMPath');
 % Read through every line to find where it matches the current criteria name, and replace the logic value.
 text=regexp(fileread(mName),'\n','split'); % Read in the file, where each line is one cell.
 
-toMatch=['inclStruct.' type '.Condition(' num2str(condNum) ').' subTabTitle '(' num2str(srcNum) ').Logic'];
+toMatch=['inclStruct.' type '.Condition(' num2str(condNum) ').' subTabTitle '(' num2str(srcNum) ').Value'];
 for i=1:length(text)
 
     if length(text{i})>=length(toMatch) && isequal(text{i}(1:length(toMatch)),toMatch)

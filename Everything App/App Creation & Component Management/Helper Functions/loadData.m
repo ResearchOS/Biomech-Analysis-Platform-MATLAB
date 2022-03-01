@@ -23,7 +23,7 @@ for i=1:length(fldNames)
         continue;
     end
 
-    inputPaths=pathsByLevel.Inputs.(fldNames{i}).(level);
+%     inputPaths=pathsByLevel.Inputs.(fldNames{i}).(level);
     outputPaths=pathsByLevel.Outputs.(fldNames{i}).(level);
     allPaths=pathsByLevel.All.(fldNames{i}).(level);
 

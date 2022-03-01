@@ -88,18 +88,20 @@ setappdata(fig,'specifyTrialsMPath',specifyTrialsMPath);
 cd(currCD);
 
 % Parse the inclStruct to populate the GUI.
+
+currSelectedTab=handles.Top.includeExcludeTabGroup.SelectedTab;
 for inclExcl=1:2
 
     switch inclExcl
         case 1
-            type='Include';            
+            type='Include';  
+            currTab=handles.Top.includeTab;    
         case 2
             type='Exclude';
-    end
+            currTab=handles.Top.excludeTab;    
+    end    
 
-    currTab=handles.(type);    
-
-    currCondDropDown=currTab.conditionDropDown;
+    currCondDropDown=handles.(type).conditionDropDown;
 
     if ~isstruct(inclStruct) || ~isfield(inclStruct,'Include')
         disp('No trials to include');
@@ -126,6 +128,10 @@ for inclExcl=1:2
     currCondDropDown.Items=condNames;
     currCondDropDown.Value=condNames{1};
 
+    handles.Top.includeExcludeTabGroup.SelectedTab=currTab;
+
     conditionNameDropDownValueChanged(currCondDropDown); % Propagate the changes
 
 end
+
+handles.Top.includeExcludeTabGroup.SelectedTab=currSelectedTab;

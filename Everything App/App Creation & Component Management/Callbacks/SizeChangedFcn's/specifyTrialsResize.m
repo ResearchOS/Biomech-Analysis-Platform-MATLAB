@@ -52,7 +52,7 @@ excludeAddConditionButtonRelPos=[0.55 0.8];
 excludeRemoveConditionButtonRelPos=[0.65 0.8];
 includeUpArrowButtonRelPos=[0.92 0.6];
 includeDownArrowButtonRelPos=[0.92 0.1];
-excludeUpArrowButtonRelPos=[0.92 0.5];
+excludeUpArrowButtonRelPos=[0.92 0.6];
 excludeDownArrowButtonRelPos=[0.92 0.1];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).

@@ -76,6 +76,10 @@ for i=1:2 % Logsheet or structure
         return;
     end
 
+    if ~isfield(inclStruct,type)
+        continue;
+    end
+
     if ~isfield(inclStruct.(type).Condition,type2) || (isfield(inclStruct.(type).Condition,type2) && isempty(inclStruct.(type).Condition(condNum).(type2)))
         continue; % The logsheet or structure criteria does not exist for this condition.
     end

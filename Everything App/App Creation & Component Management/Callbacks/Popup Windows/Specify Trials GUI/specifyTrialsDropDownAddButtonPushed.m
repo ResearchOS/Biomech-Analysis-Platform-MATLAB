@@ -38,7 +38,7 @@ end
 if exist(specifyTrialsPath,'file')~=2
     % Text file does not exist at all. Create it and add this to file.
 
-    text{1}=['Project Name: ' getappdata(pguiFig,'projectName')];
+    text{1}=['Project Name: ' projectName];
     mName=[getappdata(pguiFig,'codePath') 'SpecifyTrials' slash vName '_' projectName '_specifyTrials.m'];
     text{2}=[guiLocation ': ' mName];
 
@@ -159,4 +159,4 @@ end
 handles.Top.specifyTrialsDropDown.Items=[handles.Top.specifyTrialsDropDown.Items {vName}];
 handles.Top.specifyTrialsDropDown.Value=vName;
 
-specifyTrialsVersionDropDownValueChanged(handles.Top.SpecifyTrialsDropDown);
+specifyTrialsVersionDropDownValueChanged(handles.Top.specifyTrialsDropDown);

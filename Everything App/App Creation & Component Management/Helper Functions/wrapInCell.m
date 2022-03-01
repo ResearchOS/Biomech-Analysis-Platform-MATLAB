@@ -16,6 +16,10 @@ for i=1:length(inclExcl)
             for k=1:length(logOrStruct) % Loop through logsheet & struct conditions
                 
                 for l=1:length(currInclExcl.Condition(j).(logOrStruct{k}))
+                    if ~isstruct(currInclExcl.Condition(j).(logOrStruct{k}))
+                        continue; % Temporary for testing new specify trials GUI
+                    end
+                    
                     condName=currInclExcl.Condition(j).(logOrStruct{k})(l).Name;
                     condVal=currInclExcl.Condition(j).(logOrStruct{k})(l).Value;
                     

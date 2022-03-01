@@ -45,6 +45,8 @@ newHandles.Include.removeConditionButton=uibutton(newHandles.Top.includeTab,'Tex
 newHandles.Include.logStructTabGroup=uitabgroup(newHandles.Top.includeTab,'AutoResizeChildren','off');
 newHandles.Include.LogTab=uitab(newHandles.Include.logStructTabGroup,'Title','Logsheet','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
 newHandles.Include.StructTab=uitab(newHandles.Include.logStructTabGroup,'Title','Structure','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
+newHandles.Include.UpArrowButton=uibutton(newHandles.Top.includeTab,'push','Text',{'/\';'||'},'Tag','IncludeUpArrowButton','ButtonPushedFcn',@(includeUpArrowButton,event) includeUpArrowButtonPushed(includeUpArrowButton));
+newHandles.Include.DownArrowButton=uibutton(newHandles.Top.includeTab,'push','Text',{'||';'\/'},'Tag','IncludeDownArrowButton','ButtonPushedFcn',@(includeDownArrowButton,event) includeDownArrowButtonPushed(includeDownArrowButton));
 
 newHandles.Exclude.conditionLabel=uilabel(newHandles.Top.excludeTab,'Text','Condition Name','Tag','ExcludeConditionLabel');
 newHandles.Exclude.conditionDropDown=uidropdown(newHandles.Top.excludeTab,'Items',{'Add Condition Name'},'Tag','ExcludeConditionDropDown','ValueChangedFcn',@(excludeConditionDropDown,event) excludeConditionDropDownValueChanged(excludeConditionDropDown));
@@ -53,10 +55,13 @@ newHandles.Exclude.removeConditionButton=uibutton(newHandles.Top.excludeTab,'Tex
 newHandles.Exclude.logStructTabGroup=uitabgroup(newHandles.Top.excludeTab,'AutoResizeChildren','off');
 newHandles.Exclude.LogTab=uitab(newHandles.Exclude.logStructTabGroup,'Title','Logsheet','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
 newHandles.Exclude.StructTab=uitab(newHandles.Exclude.logStructTabGroup,'Title','Structure','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
+newHandles.Exclude.UpArrowButton=uibutton(newHandles.Top.excludeTab,'push','Text',{'/\';'||'},'Tag','ExcludeUpArrowButton','ButtonPushedFcn',@(excludeUpArrowButton,event) excludeUpArrowButtonPushed(excludeUpArrowButton));
+newHandles.Exclude.DownArrowButton=uibutton(newHandles.Top.excludeTab,'push','Text',{'||';'\/'},'Tag','ExcludeDownArrowButton','ButtonPushedFcn',@(excludeDownArrowButton,event) excludeDownArrowButtonPushed(excludeDownArrowButton));
 
 Q.UserData=struct('IncludeExcludeTabGroup',newHandles.Top.includeExcludeTabGroup,'SpecifyTrialsLabel',newHandles.Top.specifyTrialsLabel,'SpecifyTrialsDropDown',newHandles.Top.specifyTrialsDropDown,'SpecifyTrialsDropDownAdd',newHandles.Top.specifyTrialsDropDownAdd,'SpecifyTrialsDropDownRemove',newHandles.Top.specifyTrialsDropDownRemove,...
     'IncludeConditionLabel',newHandles.Include.conditionLabel,'IncludeConditionDropDown',newHandles.Include.conditionDropDown,'IncludeAddConditionButton',newHandles.Include.addConditionButton,'IncludeRemoveConditionButton',newHandles.Include.removeConditionButton,'IncludeLogStructTabGroup',newHandles.Include.logStructTabGroup,...
-    'ExcludeConditionLabel',newHandles.Exclude.conditionLabel,'ExcludeConditionDropDown',newHandles.Exclude.conditionDropDown,'ExcludeAddConditionButton',newHandles.Exclude.addConditionButton,'ExcludeRemoveConditionButton',newHandles.Exclude.removeConditionButton,'ExcludeLogStructTabGroup',newHandles.Exclude.logStructTabGroup);
+    'ExcludeConditionLabel',newHandles.Exclude.conditionLabel,'ExcludeConditionDropDown',newHandles.Exclude.conditionDropDown,'ExcludeAddConditionButton',newHandles.Exclude.addConditionButton,'ExcludeRemoveConditionButton',newHandles.Exclude.removeConditionButton,'ExcludeLogStructTabGroup',newHandles.Exclude.logStructTabGroup,...
+    'IncludeUpArrowButton',newHandles.Include.UpArrowButton,'IncludeDownArrowButton',newHandles.Include.DownArrowButton,'ExcludeUpArrowButton',newHandles.Exclude.UpArrowButton,'ExcludeDownArrowButton',newHandles.Exclude.DownArrowButton);
 
 specifyTrialsResize(Q); % Initialize all components' positions.
 

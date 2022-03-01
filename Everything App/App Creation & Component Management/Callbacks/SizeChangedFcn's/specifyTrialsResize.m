@@ -50,6 +50,10 @@ excludeConditionLabelRelPos=[0.02 0.8];
 excludeConditionDropDownRelPos=[0.2 0.8];
 excludeAddConditionButtonRelPos=[0.55 0.8];
 excludeRemoveConditionButtonRelPos=[0.65 0.8];
+includeUpArrowButtonRelPos=[0.92 0.6];
+includeDownArrowButtonRelPos=[0.92 0.1];
+excludeUpArrowButtonRelPos=[0.92 0.5];
+excludeDownArrowButtonRelPos=[0.92 0.1];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -66,6 +70,10 @@ excludeConditionLabelSize=[0.2 compHeight];
 excludeConditionDropDownSize=[0.3 compHeight];
 excludeAddConditionButtonSize=[0.05 compHeight];
 excludeRemoveConditionButtonSize=[0.05 compHeight];
+includeUpArrowButtonSize=[0.05 1.67*compHeight];
+includeDownArrowButtonSize=[0.05 1.67*compHeight];
+excludeUpArrowButtonSize=[0.05 1.67*compHeight];
+excludeDownArrowButtonSize=[0.05 1.67*compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.
 specifyTrialsLabelPos=round([specifyTrialsLabelRelPos.*figSize specifyTrialsLabelSize(1)*figSize(1) specifyTrialsLabelSize(2)]);
@@ -80,6 +88,10 @@ excludeConditionLabelPos=round([excludeConditionLabelRelPos.*figSize excludeCond
 excludeAddConditionButtonPos=round([excludeAddConditionButtonRelPos.*figSize excludeAddConditionButtonSize(1)*figSize(1) excludeAddConditionButtonSize(2)]);
 excludeRemoveConditionButtonPos=round([excludeRemoveConditionButtonRelPos.*figSize excludeRemoveConditionButtonSize(1)*figSize(1) excludeRemoveConditionButtonSize(2)]);
 excludeConditionDropDownPos=round([excludeConditionDropDownRelPos.*figSize excludeConditionDropDownSize(1)*figSize(1) excludeConditionDropDownSize(2)]);
+includeUpArrowButtonPos=round([includeUpArrowButtonRelPos.*figSize includeUpArrowButtonSize(1)*figSize(1) includeUpArrowButtonSize(2)]);
+includeDownArrowButtonPos=round([includeDownArrowButtonRelPos.*figSize includeDownArrowButtonSize(1)*figSize(1) includeDownArrowButtonSize(2)]);
+excludeUpArrowButtonPos=round([excludeUpArrowButtonRelPos.*figSize excludeUpArrowButtonSize(1)*figSize(1) excludeUpArrowButtonSize(2)]);
+excludeDownArrowButtonPos=round([excludeDownArrowButtonRelPos.*figSize excludeDownArrowButtonSize(1)*figSize(1) excludeDownArrowButtonSize(2)]);
 
 %% Set the actual positions for each component
 data.SpecifyTrialsLabel.Position=specifyTrialsLabelPos;
@@ -97,6 +109,10 @@ data.ExcludeConditionLabel.Position=excludeConditionLabelPos;
 data.ExcludeAddConditionButton.Position=excludeAddConditionButtonPos;
 data.ExcludeRemoveConditionButton.Position=excludeRemoveConditionButtonPos;
 data.ExcludeConditionDropDown.Position=excludeConditionDropDownPos;
+data.IncludeUpArrowButton.Position=includeUpArrowButtonPos;
+data.IncludeDownArrowButton.Position=includeDownArrowButtonPos;
+data.ExcludeUpArrowButton.Position=excludeUpArrowButtonPos;
+data.ExcludeDownArrowButton.Position=excludeDownArrowButtonPos;
 
 %% Set the font sizes for all components that use text
 data.SpecifyTrialsLabel.FontSize=newFontSize;
@@ -111,3 +127,7 @@ data.ExcludeConditionLabel.FontSize=newFontSize;
 data.ExcludeAddConditionButton.FontSize=newFontSize;
 data.ExcludeRemoveConditionButton.FontSize=newFontSize;
 data.ExcludeConditionDropDown.FontSize=newFontSize;
+data.IncludeUpArrowButton.FontSize=newFontSize;
+data.IncludeDownArrowButton.FontSize=newFontSize;
+data.ExcludeUpArrowButton.FontSize=newFontSize;
+data.ExcludeDownArrowButton.FontSize=newFontSize;

@@ -126,8 +126,30 @@ else
     for i=1:length(newText)
 
         if isequal(newText{i}(1:length(guiLocation)),guiLocation)
-            charStartIdx=strfind(newText{i},':')+2;
-            newText{i}=newText{i}(charStartIdx(1):end);
+            colonIdx=strfind(newText{i},':');
+            beforeColon=newText{i}(1:colonIdx(1)-1);
+            % Parse the text to only remove one gui location, if multiple
+            beforeColonSplit=strsplit(beforeColon,', ');
+            newBeforeColon='';
+            newCount=0;
+            for j=1:length(beforeColonSplit)
+
+                if isequal(beforeColonSplit{j},guiLocation)
+                    continue;
+                end
+
+                newCount=newCount+1;
+
+                if newCount>1
+                    newBeforeColon=[newBeforeColon ', ' beforeColonSplit{j}];
+                else
+                    newBeforeColon=beforeColonSplit{j};
+                end
+
+            end
+
+            newText{i}=newBeforeColon;
+            newText{i}=[newText{i} text{i}(colonIdx(1):end)];
             break;
         end
 

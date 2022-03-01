@@ -1,0 +1,3 @@
+function []=logicDropDownValueChanged(src)
+
+%% PURPOSE: CHANGE THE LOGIC USED FOR A SPECIFIC CRITERIA IN THE SPECIFY TRIALS

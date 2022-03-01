@@ -97,4 +97,4 @@ delete(mName);
 handles.Top.specifyTrialsDropDown.Items=handles.Top.specifyTrialsDropDown.Items(~ismember(handles.Top.specifyTrialsDropDown.Items,vName));
 handles.Top.specifyTrialsDropDown.Value=handles.Top.specifyTrialsDropDown.Items{1};
 
-specifyTrialsVersionDropDownValueChanged(handles.Top.SpecifyTrialsDropDown);
+specifyTrialsVersionDropDownValueChanged(handles.Top.specifyTrialsDropDown);

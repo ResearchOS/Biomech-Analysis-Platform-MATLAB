@@ -43,8 +43,8 @@ newHandles.Include.conditionDropDown=uidropdown(newHandles.Top.includeTab,'Items
 newHandles.Include.addConditionButton=uibutton(newHandles.Top.includeTab,'Text','+','Tag','IncludeAddConditionButton','Tooltip','Add New Inclusion Condition','ButtonPushedFcn',@(includeAddConditionButton,event) includeAddConditionButtonPushed(includeAddConditionButton));
 newHandles.Include.removeConditionButton=uibutton(newHandles.Top.includeTab,'Text','-','Tag','IncludeRemoveConditionButton','Tooltip','Remove Inclusion Condition','ButtonPushedFcn',@(includeRemoveConditionButton,event) includeRemoveConditionButtonPushed(includeRemoveConditionButton));
 newHandles.Include.logStructTabGroup=uitabgroup(newHandles.Top.includeTab,'AutoResizeChildren','off');
-newHandles.Include.LogTab=uitab(newHandles.Include.logStructTabGroup,'Title','Logsheet','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
-newHandles.Include.StructTab=uitab(newHandles.Include.logStructTabGroup,'Title','Structure','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
+newHandles.Include.LogTab=uitab(newHandles.Include.logStructTabGroup,'Title','Logsheet','Tag','IncludeLogsheetTab','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
+newHandles.Include.StructTab=uitab(newHandles.Include.logStructTabGroup,'Title','Structure','AutoResizeChildren','off','Tag','IncludeStructTab','SizeChangedFcn',@specifyTrialsResize);
 newHandles.Include.UpArrowButton=uibutton(newHandles.Top.includeTab,'push','Text',{'/\';'||'},'Tag','IncludeUpArrowButton','ButtonPushedFcn',@(includeUpArrowButton,event) includeUpArrowButtonPushed(includeUpArrowButton));
 newHandles.Include.DownArrowButton=uibutton(newHandles.Top.includeTab,'push','Text',{'||';'\/'},'Tag','IncludeDownArrowButton','ButtonPushedFcn',@(includeDownArrowButton,event) includeDownArrowButtonPushed(includeDownArrowButton));
 
@@ -53,8 +53,8 @@ newHandles.Exclude.conditionDropDown=uidropdown(newHandles.Top.excludeTab,'Items
 newHandles.Exclude.addConditionButton=uibutton(newHandles.Top.excludeTab,'Text','+','Tag','ExcludeAddConditionButton','Tooltip','Add New Exclusion Condition','ButtonPushedFcn',@(excludeAddConditionButton,event) excludeAddConditionButtonPushed(excludeAddConditionButton));
 newHandles.Exclude.removeConditionButton=uibutton(newHandles.Top.excludeTab,'Text','-','Tag','ExcludeRemoveConditionButton','Tooltip','Remove Exclusion Condition','ButtonPushedFcn',@(excludeRemoveConditionButton,event) excludeRemoveConditionButtonPushed(excludeRemoveConditionButton));
 newHandles.Exclude.logStructTabGroup=uitabgroup(newHandles.Top.excludeTab,'AutoResizeChildren','off');
-newHandles.Exclude.LogTab=uitab(newHandles.Exclude.logStructTabGroup,'Title','Logsheet','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
-newHandles.Exclude.StructTab=uitab(newHandles.Exclude.logStructTabGroup,'Title','Structure','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
+newHandles.Exclude.LogTab=uitab(newHandles.Exclude.logStructTabGroup,'Title','Logsheet','AutoResizeChildren','off','Tag','ExcludeLogsheetTab','SizeChangedFcn',@specifyTrialsResize);
+newHandles.Exclude.StructTab=uitab(newHandles.Exclude.logStructTabGroup,'Title','Structure','AutoResizeChildren','off','Tag','ExcludeStructTab','SizeChangedFcn',@specifyTrialsResize);
 newHandles.Exclude.UpArrowButton=uibutton(newHandles.Top.excludeTab,'push','Text',{'/\';'||'},'Tag','ExcludeUpArrowButton','ButtonPushedFcn',@(excludeUpArrowButton,event) excludeUpArrowButtonPushed(excludeUpArrowButton));
 newHandles.Exclude.DownArrowButton=uibutton(newHandles.Top.excludeTab,'push','Text',{'||';'\/'},'Tag','ExcludeDownArrowButton','ButtonPushedFcn',@(excludeDownArrowButton,event) excludeDownArrowButtonPushed(excludeDownArrowButton));
 
@@ -101,11 +101,9 @@ if ~isempty(allProjectsList)
 
         % Now in the current project. Read all pre-existing specify trials, and determine which one should be in the current drop down value.
 
-        if ~contains(text{i},':')
-            mNameStartIdx=1;
-        else
-            mNameStartIdx=strfind(text{i},':')+2; % Idx of the first char of the mfilename on this line
-        end
+        colonIdx=strfind(text{i},':'); % All lines start with a semicolon, even if no gui location prefix.
+        colonIdx=colonIdx(1); % Isolate the first colon
+        mNameStartIdx=colonIdx+2; % Idx of the first char of the mfilename on this line
 
         mName=text{i}(mNameStartIdx:end); % The m file path
         mNameSplit=strsplit(mName,slash);
@@ -114,11 +112,11 @@ if ~isempty(allProjectsList)
         allNamesCount=allNamesCount+1;
         allNames{allNamesCount}=vName;
 
+        currLoc=strfind(text{i}(1:colonIdx),guiLocation); % Find if the current location is in this line of text before the semicolon.
+
         % If the current line is 
         if ~isempty(vName) && any([isequal(guiLocation,'Import') && isequal(text{i}(1:6),'Import') ...
-                (contains(guiLocation,'Process Group') && isequal(text{i}(1:length(guiLocation)),guiLocation)) ...
-                (contains(guiLocation,'Process Fcn') && isequal(text{i}(1:length(guiLocation)),guiLocation)) ...
-                (contains(guiLocation,'Plot Fcn') && isequal(text{i}(1:length(guiLocation)),guiLocation))])
+                contains(guiLocation,'Process Group') contains(guiLocation,'Process Fcn') contains(guiLocation,'Plot Fcn')]) && ~isempty(currLoc)
             % Now in the desired specify trials version
             currVName=vName;
         end        

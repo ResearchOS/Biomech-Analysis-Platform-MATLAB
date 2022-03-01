@@ -36,13 +36,7 @@ for i=1:2 % Logsheet or structure
         case 2
             type2='Structure';
             currSubTab=handles.(type).StructTab;
-    end
-
-    if ~isfield(inclStruct.(type).Condition,type2) || (isfield(inclStruct.(type).Condition,type2) && isempty(inclStruct.(type).Condition(condNum).(type2)))
-        continue; % The logsheet or structure criteria does not exist for this condition.
-    end
-
-    currType2Struct=inclStruct.(type).Condition(condNum).(type2);
+    end           
 
     if isequal(type,'Include')
         pref='incl';
@@ -78,6 +72,16 @@ for i=1:2 % Logsheet or structure
         end
     end
 
+    if ~isstruct(inclStruct)
+        return;
+    end
+
+    if ~isfield(inclStruct.(type).Condition,type2) || (isfield(inclStruct.(type).Condition,type2) && isempty(inclStruct.(type).Condition(condNum).(type2)))
+        continue; % The logsheet or structure criteria does not exist for this condition.
+    end
+
+    currType2Struct=inclStruct.(type).Condition(condNum).(type2);
+
     % Re-populate items
     if i==1 % Logsheet
         for j=1:numCols
@@ -110,6 +114,14 @@ for i=1:2 % Logsheet or structure
         currName=currType2Struct(j).Name;
         currValue=currType2Struct(j).Value;
         currLogic=currType2Struct(j).Logic; % is, is not, contains, does not contain, is empty, is not empty, ignore
+
+        if ~iscell(currName)
+            currName={currName};
+        end
+
+        if ~iscell(currValue)
+            currValue={currValue};
+        end
 
         if isequal(currLogic,'ignore')
             continue;

@@ -194,6 +194,9 @@ end
 handles.Top.specifyTrialsDropDown.Items=[handles.Top.specifyTrialsDropDown.Items {vName}];
 handles.Top.specifyTrialsDropDown.Value=vName;
 
+handles.Include.conditionDropDown.Items={'Add Condition Name'};
+handles.Exclude.conditionDropDown.Items={'Add Condition Name'};
+
 specifyTrialsVersionDropDownValueChanged(handles.Top.specifyTrialsDropDown);
 
 end % End function

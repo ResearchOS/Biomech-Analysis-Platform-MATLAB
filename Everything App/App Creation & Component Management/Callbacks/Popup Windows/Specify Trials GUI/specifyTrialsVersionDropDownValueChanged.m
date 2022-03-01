@@ -87,11 +87,6 @@ setappdata(fig,'inclStruct',inclStruct);
 setappdata(fig,'specifyTrialsMPath',specifyTrialsMPath);
 cd(currCD);
 
-if ~isfield(inclStruct,'Include')
-    disp('No trials to include');
-    return;
-end
-
 % Parse the inclStruct to populate the GUI.
 for inclExcl=1:2
 
@@ -102,14 +97,25 @@ for inclExcl=1:2
             type='Exclude';
     end
 
+    currTab=handles.(type);    
+
+    currCondDropDown=currTab.conditionDropDown;
+
+    if ~isstruct(inclStruct) || ~isfield(inclStruct,'Include')
+        disp('No trials to include');
+        condNames={'Add Condition Name'};
+        currCondDropDown.Items=condNames;
+        currCondDropDown.Value=condNames{1};
+
+        conditionNameDropDownValueChanged(currCondDropDown); % Propagate the changes
+        return;
+    end
+
     if ~isfield(inclStruct,type)
         continue;
     end
 
-    currTab=handles.(type);
     currStruct=inclStruct.(type);
-
-    currCondDropDown=currTab.conditionDropDown;
 
     condNames=cell(length(currStruct.Condition),1);
 

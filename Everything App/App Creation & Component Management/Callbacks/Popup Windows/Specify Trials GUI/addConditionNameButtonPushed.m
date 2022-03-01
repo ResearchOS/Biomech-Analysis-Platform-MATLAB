@@ -48,6 +48,8 @@ headerRow=logVar(1,:);
 text=regexp(fileread(filePath),'\n','split'); % Read in the file
 
 inclexclCond=0; % Initialize that there is no inclusion or exclusion criteria present
+condNum=0;
+lastLine=1;
 for i=1:length(text)
 
     currLine=text{i}(~isspace(text{i}));
@@ -60,21 +62,17 @@ for i=1:length(text)
         continue;
     end
 
-    if length(currLine)>=18 && isequal(currLine(12:18),type)
+    if length(currLine)>=18 && ismember(currLine(12:18),{'Include','Exclude'})
         inclexclCond=1;
 
         % Determine the condition number
-        condNum=str2double(currLine(isstrprop(currLine(1:35),'digit')));
+        if isequal(currLine(12:18),type)
+            condNum=str2double(currLine(isstrprop(currLine(1:35),'digit')));
+        end
 
         lastLine=i;
     end
 
-end
-
-% Modify the M file to add the new condition
-if inclexclCond==0 % No conditions currently exist, the file should just be the one line of the function declaration
-    condNum=0;
-    lastLine=1;
 end
 
 fcnText=text(1:lastLine)'; % Carry over everything prior to this new condition.

@@ -153,6 +153,9 @@ end
 cd(currDir); % Go back to original directory.
 
 %% Iterate over all processing functions in the group to run them.
+specifyTrialsPath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'allProjects_SpecifyTrials.txt'];
+text=regexp(fileread(specifyTrialsPath),'\n','split');
+projFound=0;
 for i=1:length(fcnNames)
     
     % Bring the projectStruct from the base workspace into this one. Doing this for each function incorporates results of any previously finished functions.
@@ -161,7 +164,7 @@ for i=1:length(fcnNames)
     fcnName=fcnNames{i};
     argsName=argsNames{i};
     runFunc=runFuncs(i);
-    specTrials=funcSpecifyTrials(fcnCount);
+    specTrials=funcSpecifyTrials(i); % 1 means function level, 0 means group level
     currLevels=funcLevels{i};
     methodLetter=strsplit(argsName,'_Process');
     methodLetter=methodLetter{2}(isletter(methodLetter{2}));
@@ -174,19 +177,48 @@ for i=1:length(fcnNames)
     end
     
     % Run the specify trials function, either function or group level.
-    if specTrials==1 % Function-level specify trials
-        specTrialsFolder=[codePath 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Function'];
-        specTrialsName=funcSpecifyTrialsName{fcnCount};
-    else % Group-level specify trials
-        specTrialsFolder=[codePath 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Group'];
-        specTrialsName=groupSpecifyTrialsName;
+    if isequal(specTrials,0) % Group level
+        prefix=['Process Group ' groupName];
+    elseif isequal(specTrials,1) % Function level
+        splitName=strsplit(fcnName,'_Process');
+        prefix=['Process Fcn ' splitName{1} splitName{2}];
     end
-    cd(specTrialsFolder); % Ensure that the wrong function is not accidentally used
-    inclStruct=feval(specTrialsName); % No input arguments
-    cd(currDir);
+    for j=1:length(text)
+
+        if projFound==0 && isequal(text{j}(1:length('Project Name:')),'Project Name:')
+            projFound=1;
+        end
+
+        if projFound==0 || isempty(text{j})
+            continue;
+        end
+
+        colonIdx=strfind(text{j},':');
+        colonIdx=colonIdx(1);
+
+        if length(text{j})>length(prefix) && ~isempty(strfind(text{j}(1:colonIdx-1),prefix)) % This is the correct specify trials version
+            currSpecTrialsMPath=text{j}(colonIdx+2:end);
+            [~,currSpecTrialsName]=fileparts(currSpecTrialsMPath);
+            break;
+        end
+
+    end
+
+    inclStruct=feval(currSpecTrialsName);
+
+%     if specTrials==1 % Function-level specify trials
+%         specTrialsFolder=[codePath 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Function'];
+%         specTrialsName=funcSpecifyTrialsName{fcnCount};
+%     else % Group-level specify trials
+%         specTrialsFolder=[codePath 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Group'];
+%         specTrialsName=groupSpecifyTrialsName;
+%     end
+%     cd(specTrialsFolder); % Ensure that the wrong function is not accidentally used
+%     inclStruct=feval(specTrialsName); % No input arguments
+%     cd(currDir);
     
     % Run getTrialNames
-    trialNames=getTrialNames(inclStruct,logVar,fig,0,evalin('base','projectStruct;'));
+    trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
     subNames=fieldnames(trialNames);
 
     %% CHECK HERE (IN EACH SECTION) THAT THE PROJECTSTRUCT allPaths EXIST BEFORE CALLING THEM?

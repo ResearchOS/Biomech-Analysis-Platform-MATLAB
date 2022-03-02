@@ -134,18 +134,32 @@ for i=1:2 % Logsheet or structure
         for k=1:length(entryHandles.ColName)
             if isequal(currName{1},entryHandles.ColName{k})
                 entryHandles.DropDown{k}.Value=currLogic;
-                newValue='';
+                if ~iscell(currType2Struct(j).Value)
+                    newValue='';
+                else
+                    newValue='{';
+                end
                 if size(currValue,1)>=size(currValue,2) % AND logic
                     sym='; ';
                 else
                     sym=', ';
                 end
                 for l=1:length(currValue)
-                    if l==1
-                        newValue=currValue{l};
+
+                    if ischar(currValue{l})
+                        modValue=['''' currValue{l} ''''];
                     else
-                        newValue=[newValue sym currValue{l}];
+                        modValue=currValue{l};
                     end
+
+                    if l==1
+                        newValue=[newValue modValue];
+                    else
+                        newValue=[newValue sym modValue];
+                    end
+                end
+                if iscell(currType2Struct(j).Value)
+                    newValue=[newValue '}'];
                 end
                 entryHandles.TextField{k}.Value=newValue;
             end

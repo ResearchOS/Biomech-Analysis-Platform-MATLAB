@@ -115,8 +115,7 @@ if ~isempty(allProjectsList)
         currLoc=strfind(text{i}(1:colonIdx),guiLocation); % Find if the current location is in this line of text before the semicolon.
 
         % If the current line is 
-        if ~isempty(vName) && any([isequal(guiLocation,'Import') && isequal(text{i}(1:6),'Import') ...
-                contains(guiLocation,'Process Group') contains(guiLocation,'Process Fcn') contains(guiLocation,'Plot Fcn')]) && ~isempty(currLoc)
+        if ~isempty(vName) && any([isequal(guiLocation,'Import') contains(guiLocation,'Process Group') contains(guiLocation,'Process Fcn') contains(guiLocation,'Plot Fcn')]) && ~isempty(currLoc)
             % Now in the desired specify trials version
             currVName=vName;
         end        

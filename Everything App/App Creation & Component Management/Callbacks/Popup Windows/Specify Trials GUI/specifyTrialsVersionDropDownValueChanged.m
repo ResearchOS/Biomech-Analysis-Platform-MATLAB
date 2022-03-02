@@ -26,7 +26,7 @@ elseif ispc==1
 end
 
 specifyTrialsPath=getappdata(fig,'allProjectsSpecifyTrialsPath');
-% guiLocation=getappdata(fig,'guiLocation');
+guiLocation=getappdata(fig,'guiLocation');
 
 assert(exist(specifyTrialsPath,'file')==2);
 
@@ -135,3 +135,56 @@ for inclExcl=1:2
 end
 
 handles.Top.includeExcludeTabGroup.SelectedTab=currSelectedTab;
+
+% If it was present on another specifyTrials version, remove it.
+allFixed=[0 0];
+for i=1:length(text)
+
+    guiLocIdx=strfind(text{i},guiLocation);
+    if ~isempty(guiLocIdx)
+        colonIdx=strfind(text{i},':');
+        colonIdx=colonIdx(1); % First colon
+        beforeColonSplit=strsplit(text{i}(1:colonIdx-1),', ');
+        count=0;
+        newBeforeColon='';
+        for j=1:length(beforeColonSplit)
+
+            if isequal(beforeColonSplit{j},guiLocation)
+                continue;
+            end
+
+            count=count+1;
+
+            if count==1
+                newBeforeColon=beforeColonSplit{j};
+            else
+                newBeforeColon=[newBeforeColon ', ' beforeColonSplit{j}];
+            end            
+
+        end 
+
+        text{i}=[newBeforeColon text{i}(colonIdx:end)]; 
+        allFixed(1)=1;
+    end
+
+    if ~isempty(strfind(text{i},specifyTrialsMPath)) % This is the correct specify trials version.
+        colonIdx=strfind(text{i},':');
+        colonIdx=colonIdx(1);
+        if isequal(colonIdx,1)
+            text{i}=[guiLocation text{i}];
+        else
+            text{i}=[guiLocation ', ' text{i}];
+        end
+        allFixed(2)=1;
+    end
+
+    if all(allFixed)
+        break;
+    end
+
+end
+
+fid=fopen(specifyTrialsPath,'w');
+fprintf(fid,'%s\n',text{1:end-1});
+fprintf(fid,'%s',text{end});
+fclose(fid);

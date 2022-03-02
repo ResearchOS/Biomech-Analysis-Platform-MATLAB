@@ -29,7 +29,7 @@ toMatch=['inclStruct.' type '.Condition(' num2str(condNum) ').' subTabTitle '(' 
 for i=1:length(text)
 
     if length(text{i})>=length(toMatch) && isequal(text{i}(1:length(toMatch)),toMatch)
-        text{i}=[toMatch '=''' value ''';'];
+        text{i}=[toMatch '=' value ';'];
         break;
     end
 

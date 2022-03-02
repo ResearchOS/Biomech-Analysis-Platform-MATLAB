@@ -254,8 +254,34 @@ logVar=logVar.logVar; % Convert struct to cell array
 hSpecifyTrialsButton=handles.Import.openGroupSpecifyTrialsButton;
 % hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
 specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
-inclStruct=feval(['specifyTrials_Import' hSpecifyTrialsButton.Text(specTrialsNumIdx)]); % Return the inclusion criteria
-% Run getValidTrialNames
+
+% Read through the allPaths_SpecifyTrials.txt file to see which specifyTrials the import is using.
+specifyTrialsPath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'allProjects_SpecifyTrials.txt'];
+text=regexp(fileread(specifyTrialsPath),'\n','split');
+projFound=0;
+for i=1:length(text)
+
+    if projFound==0 && isequal(text{i}(1:length('Project Name:')),'Project Name:')
+        projFound=1;
+    end
+
+    if projFound==0 || isempty(text{i})
+        continue;
+    end
+
+    colonIdx=strfind(text{i},':');
+    colonIdx=colonIdx(1);
+
+    if length(text{i})>length('Import:') && ~isempty(strfind(text{i}(1:colonIdx-1),'Import')) % This is the correct specify trials version
+        currSpecTrialsMPath=text{i}(colonIdx+2:end);
+        [~,currSpecTrialsName]=fileparts(currSpecTrialsMPath);
+        break;
+    end
+
+end
+
+inclStruct=feval(currSpecTrialsName); % Return the inclusion criteria
+% Run getTrialNames to return the desired trial names
 [allTrialNames,logVar]=getTrialNames(inclStruct,logVar,fig,0);
 
 %% Read logsheet for data type-specific metadata for trials of interest

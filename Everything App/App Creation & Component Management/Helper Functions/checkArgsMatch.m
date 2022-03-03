@@ -1,9 +1,15 @@
-function [ok]=checkArgsMatch(processFilePath,argsFilePath)
+function [ok]=checkArgsMatch(processFilePath,argsFilePath,argStruct)
 
 %% PURPOSE: ENSURE THAT ALL ARGS CALLED BY GETARG IN THE PROCESSING FUNCTION APPEAR IN THE CORRESPONDING ARGUMENTS FILE.
+% Inputs:
+% processFilePath: The full path name to the current processing function (char)
+% argFilePath: The full path name to the current argument function (char)
+% argStruct: The output of the arguments function (struct)
 
 processText=regexp(fileread(processFilePath),'\n','split'); % Each line is one element of the cell now.
 % argsText=regexp(fileread(argsFilePath),'\n','split'); % Each line is one element of the cell now.
+
+argStructNames=fieldnames(argStruct);
 
 % Get the list of args called by the process function
 ok=1;
@@ -32,7 +38,7 @@ for i=1:length(processText)
 
     if isempty(semicolonIdx) && isempty(threeDotIdx)
         ok=0;
-        warning('Terminating Processing!');
+        warning('Terminating Processing Due to Error Reading Args File!');
         disp(['Argument ''' argName ''' called in: ' processFilePath]);
         disp(['Missing End of Line Character (; or ...): ' argsFilePath]);
         return; % This line is missing a terminating character.
@@ -45,15 +51,20 @@ for i=1:length(processText)
 
         argName=currLine(charStartIdx:charEndIdx);
 
-        str=which(argName,'in',argsFilePath);
-
-        if isempty(str) || ~isequal(str,argsFilePath)
+        if ~ismember(argName,argStructNames)
             ok=0;
-            warning('Terminating Processing!');
+            warning('Terminating Processing Due to Incorrect Arg Name!');
             disp(['Argument ''' argName ''' called in: ' processFilePath]);
             disp(['Missing In: ' argsFilePath]);
             return;
         end
+
+%         str=which(argName,'in',argsFilePath);
+% 
+%         if isempty(str) || ~isequal(str,argsFilePath)
+%             ok=0;
+%             
+%         end
 
     elseif ~isempty(startIdxSet)
 
@@ -71,16 +82,26 @@ for i=1:length(processText)
         end
 
         for j=1:length(argNames)
+            
+            argName=argNames{j};
 
-            str=which(argNames{j},'in',argsFilePath);
-
-            if isempty(str) || ~isequal(str,argsFilePath)
+            if ~ismember(argName,argStructNames)
                 ok=0;
-                warning('Terminating Processing!');
-                disp(['Argument ''' argNames{j} ''' called in: ' processFilePath]);
+                warning('Terminating Processing Due to Incorrect Arg Name!');
+                disp(['Argument ''' argName ''' called in: ' processFilePath]);
                 disp(['Missing In: ' argsFilePath]);
                 return;
             end
+
+%             str=which(argNames{j},'in',argsFilePath);
+% 
+%             if isempty(str) || ~isequal(str,argsFilePath)
+%                 ok=0;
+%                 warning('Terminating Processing!');
+%                 disp(['Argument ''' argNames{j} ''' called in: ' processFilePath]);
+%                 disp(['Missing In: ' argsFilePath]);
+%                 return;
+%             end
 
         end
 

@@ -41,7 +41,7 @@ else
     argsFuncName=[fcnName methodLetter];
 end
 
-% saveLevels=cell(length(argNames),1);
+saveLevels=cell(length(argNames),1);
 
 for i=1:length(argNames)
     argName=argNames{i};

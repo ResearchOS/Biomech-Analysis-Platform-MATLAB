@@ -41,21 +41,21 @@ end
 methodID=fileSuffix{2}(1:strfind(fileSuffix{2},'.')-1);
 
 argCount=0;
-fcnCount=0;
+% fcnCount=0;
 outputCount=0;
 inputCount=0;
-for i=1:length(text)
+for i=2:length(text)
     
     currLine=text{i}(~isspace(text{i})); % Remove all white space.
 
-    if length(currLine)>length('function') && isequal(currLine(1:length('function')),'function')
-        fcnCount=fcnCount+1;
-        continue; % This line won't be an argument line
-    end
-
-    if fcnCount<2
-        continue; % Only start parsing the file after reaching the input args functions.
-    end
+%     if length(currLine)>length('function') && isequal(currLine(1:length('function')),'function')
+%         fcnCount=fcnCount+1;
+%         continue; % This line won't be an argument line
+%     end
+% 
+%     if fcnCount<2
+%         continue; % Only start parsing the file after reaching the input args functions.
+%     end
     
     if ~contains(currLine,'=')
         continue; % Check for equals sign

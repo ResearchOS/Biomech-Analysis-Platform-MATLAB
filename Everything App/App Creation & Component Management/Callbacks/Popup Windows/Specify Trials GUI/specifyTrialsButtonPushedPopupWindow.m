@@ -20,6 +20,16 @@ fig=ancestor(src,'figure','toplevel');
 assignin('base','gui',fig); % Send the fig handle to the base workspace.
 % handles=getappdata(fig,'handles');
 
+allHandles=findall(0);
+for i=1:length(allHandles)
+
+    if isprop(allHandles(i),'Name') && isequal(allHandles(i).Name,'Specify Trials')
+        warning(['Close the open specify trials window before opening a new one!']);
+        return;
+    end
+
+end
+
 clc;
 Q=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
 Q.Name='Specify Trials'; % Name the window

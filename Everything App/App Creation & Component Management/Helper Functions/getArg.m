@@ -1,8 +1,8 @@
-function [argIn]=getArg(argName,subName,trialName,repNum)
+function [varargout]=getArg(argNames,subName,trialName,repNum)
 
 %% PURPOSE: RETURN ONE INPUT ARGUMENT TO A PROCESSING FUNCTION AT EITHER THE PROJECT, SUBJECT, OR TRIAL LEVEL
 % Inputs:
-% argName: The name of the input argument. Spelling must match the input arguments function (char)
+% argNames: The names of the input arguments. Spelling must match the input arguments function (cell array of chars)
 % subName: The subject name, if accessing subject or trial level data. If project level data, not inputted. (char)
 % trialName: The trial name, if accessing trial data. If subject or project level data, not inputted (char)
 
@@ -31,7 +31,7 @@ useGroupArgs=0; % 1 to use group args, 0 not to. This will be replaced by GUI ch
 if useGroupArgs==1 % Group level arguments
     
 else
-%     argsFunc=[argsFolder slash fcnName methodLetter '_' argName]; % The full path to the arguments file
+%     argsFunc=[argsFolder slash fcnName methodLetter '_' argNames]; % The full path to the arguments file
     argsFuncName=[fcnName methodLetter];
 end
 
@@ -39,8 +39,21 @@ if evalin('base','exist(''projectStruct'',''var'')~=1')
     evalin('base','projectStruct=''''');
 end
 
-% if repNum==0
-%     argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName);    
-% else
-argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName,repNum);
-% end
+% argIn returned as a struct with fields of argNames
+if ~isempty(trialName)
+    level='Trial';
+elseif ~isempty(subName)
+    level='Subject';
+else
+    level='Project';
+end
+argIn=feval(argsFuncName,level,evalin('base','projectStruct;'),subName,trialName,repNum);
+
+% Find the subset of arguments specified by argNames
+retArgNames=fieldnames(argIn);
+for i=1:length(retArgNames)
+
+    varargout{i}=argIn.(retArgNames{i}); % All argument names should have been found in the arguments function!
+
+end
+

@@ -58,8 +58,7 @@ for i=lineNum+1:length(text)
     
     if isempty(text{i})
         break; % Finished with this group
-    end
-    
+    end    
     
     a=strsplit(text{i},':');
     runAndSpecifyTrialsCell=strsplit(strtrim(a{2}),' ');
@@ -109,10 +108,20 @@ end
 argsFolderFcn=[codePath 'Process_' projectName slash 'Arguments' slash 'Per Function' slash];
 argsFolderGroup=[codePath 'Process_' projectName slash 'Arguments' slash 'Per Group' slash];
 currDir=cd([codePath 'Process_' projectName slash 'Arguments']);
+argPath=cell(length(fcnNames),1);
 
 if ~exist('fcnNames','var')
     return;
 end
+
+specifyTrialsPath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'allProjects_SpecifyTrials.txt'];
+text=regexp(fileread(specifyTrialsPath),'\n','split');
+projFound=0;
+currSpecTrialsName=cell(length(fcnNames),1);
+% levels={'Project','Subject','Trial'};
+funcLevels=cell(length(fcnNames),1);
+
+projectStruct=evalin('base','projectStruct;');
 
 for i=1:length(fcnNames)
 
@@ -126,56 +135,12 @@ for i=1:length(fcnNames)
         argPath{i}=[argsFolderFcn argsNames{i} '.m'];
     elseif exist([argsFolderGroup argsNames{i} '.m'],'file')==2
         argPath{i}=[argsFolderGroup argsNames{i} '.m'];
-    end        
+    end     
 
-    [inputPaths{i},outputPaths{i},allPaths{i}]=readArgsFcn(argPath{i});
-    if ~iscell(allPaths{i})
-        return;
-    end
-    funcLevels{i}='';
-    for j=1:length(allPaths{i})
-        currPathSplit=strsplit(allPaths{i}{j},'.');        
-        if length(currPathSplit)>=4 && isequal(currPathSplit{3}([1 end]),'()')
-            funcLevels{i}=[funcLevels{i}; {'Trial'}];
-        elseif length(currPathSplit)>=3 && isequal(currPathSplit{2}([1 end]),'()')
-            funcLevels{i}=[funcLevels{i}; {'Subject'}]   ;        
-        else
-            funcLevels{i}=[funcLevels{i}; {'Project'}];
-            break;
-        end
-
-    end
-
-    funcLevels{i}=sort(unique(funcLevels{i}));
-    
-    
-end
-cd(currDir); % Go back to original directory.
-
-%% Iterate over all processing functions in the group to run them.
-specifyTrialsPath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'allProjects_SpecifyTrials.txt'];
-text=regexp(fileread(specifyTrialsPath),'\n','split');
-projFound=0;
-for i=1:length(fcnNames)
-    
-    % Bring the projectStruct from the base workspace into this one. Doing this for each function incorporates results of any previously finished functions.
-    projectStruct=evalin('base','projectStruct;');
-    
-    fcnName=fcnNames{i};
-    argsName=argsNames{i};
-    runFunc=runFuncs(i);
     specTrials=funcSpecifyTrials(i); % 1 means function level, 0 means group level
-    currLevels=funcLevels{i};
-    methodLetter=strsplit(argsName,'_Process');
-    methodLetter=methodLetter{2}(isletter(methodLetter{2}));
-    setappdata(fig,'methodLetter',methodLetter)
-%     assignin('base','methodLetter',methodLetter); % Send the method letter to the base workspace
-    
-    if runFunc==0
-        disp(['Skipping ' fcnName ' Because it was Unchecked in Group ' groupName ' in the GUI']);
-        continue; % If this function shouldn't be run this time, skip it.
-    end
-    
+    fcnName=fcnNames{i};
+
+    % Need to run the specifyTrials for this function so that I can test it at each level.
     % Run the specify trials function, either function or group level.
     if isequal(specTrials,0) % Group level
         prefix=['Process Group ' groupName];
@@ -198,13 +163,126 @@ for i=1:length(fcnNames)
 
         if length(text{j})>length(prefix) && ~isempty(strfind(text{j}(1:colonIdx-1),prefix)) % This is the correct specify trials version
             currSpecTrialsMPath=text{j}(colonIdx+2:end);
-            [~,currSpecTrialsName]=fileparts(currSpecTrialsMPath);
+            [~,currSpecTrialsName{i}]=fileparts(currSpecTrialsMPath);
             break;
         end
 
     end
 
-    inclStruct=feval(currSpecTrialsName);
+    % Run specifyTrials & get the first subject name, trial name, & rep num for testing
+    inclStruct=feval(currSpecTrialsName{i}); % Get the metadata for specifying trials
+    trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct); % Get the trial names
+    subNames=fieldnames(trialNames);
+
+    % Try running the args function at project, then subject, then trial levels. If it throws an error, check if the error is that the variable was
+    % not returned. If so, go to the next level down. If no error, it is this level. If other error, throw that error.
+    funcLevels{i}='';
+    % Check project level for non-existent field or missing output arg errors.
+    level='Project';
+    try
+        argStruct=feval(argsNames{i},level,projectStruct);
+        funcLevels{i}=[funcLevels{i}; {level}]; % Only runs if no errors in args fcn
+    catch ME
+        % This checks for the existence of all input argument fields.
+        if isequal(ME.identifier,'MATLAB:nonExistentField')
+            error(['Project level data missing in args fcn: ' argPath{i}]);
+        elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs')  && ~isequal(ME.identifier,'MATLAB:minrhs')
+            rethrow(ME); % Let the user know that something else bad has happened.
+        end
+    end
+
+    % Check subject level for non-existent field or missing output arg errors
+    if ~ismember('Project',funcLevels{i})
+        level='Subject';
+        for subNum=1:length(subNames) % Iterate over each subject.
+            subName=subNames{subNum};
+
+            try
+                argStruct=feval(argsNames{i},level,projectStruct,subName);
+                funcLevels{i}=[funcLevels{i}; {level}]; % Only runs if no errors in args fcn
+            catch ME
+                if isequal(ME.identifier,'MATLAB:nonExistentField')
+                    error(['Subject ' subName ' data missing in args fcn: ' argPath{i}]);
+                elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs') && ~isequal(ME.identifier,'MATLAB:minrhs')
+                    rethrow(ME); % Let the user know that something else bad has happened.
+                end
+            end
+
+            if ~ismember('Subject',funcLevels{i})
+                level='Trial';
+                currTrialNames=fieldnames(trialNames.(subName));
+                for trialNum=1:length(currTrialNames)
+                    trialName=currTrialNames{trialNum};
+                    for repNum=trialNames.(subName).(trialName)
+
+                        try
+                            argStruct=feval(argsNames{i},level,projectStruct,subName,trialName,repNum);
+                            funcLevels{i}=[funcLevels{i}; {level}];
+                        catch ME
+                            if isequal(ME.identifier,'MATLAB:nonExistentField')
+                                error(['Subject ' subName ' Trial ' trialName ' Repetititon ' num2str(repNum) ' data missing in args fcn: ' argPath{i}]);
+                            elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs') && ~isequal(ME.identifier,'MATLAB:minrhs')
+                                rethrow(ME); % Let the user know that something else bad has happened.
+                            end
+                        end
+
+                    end
+                end
+            end
+
+
+        end
+    end
+
+    funcLevels{i}=sort(unique(funcLevels{i})); % Organize the function levels alphabetically, which also happens to be in order of "largest" to "smallest" scope.
+
+
+%     [inputPaths{i},outputPaths{i},allPaths{i}]=readArgsFcn(argPath{i});
+%     if ~iscell(allPaths{i})
+%         return;
+%     end
+%     funcLevels{i}='';
+%     for j=1:length(allPaths{i})
+%         currPathSplit=strsplit(allPaths{i}{j},'.');        
+%         if length(currPathSplit)>=4 && isequal(currPathSplit{3}([1 end]),'()')
+%             funcLevels{i}=[funcLevels{i}; {'Trial'}];
+%         elseif length(currPathSplit)>=3 && isequal(currPathSplit{2}([1 end]),'()')
+%             funcLevels{i}=[funcLevels{i}; {'Subject'}]   ;        
+%         else
+%             funcLevels{i}=[funcLevels{i}; {'Project'}];
+%             break;
+%         end
+% 
+%     end
+% 
+%     funcLevels{i}=sort(unique(funcLevels{i}));
+    
+    
+end
+cd(currDir); % Go back to original directory.
+
+%% Iterate over all processing functions in the group to run them.
+for i=1:length(fcnNames)
+    
+    % Bring the projectStruct from the base workspace into this one. Doing this for each function incorporates results of any previously finished functions.
+    projectStruct=evalin('base','projectStruct;');
+    
+    fcnName=fcnNames{i};
+    argsName=argsNames{i};
+    runFunc=runFuncs(i);
+%     specTrials=funcSpecifyTrials(i); % 1 means function level, 0 means group level
+    currLevels=funcLevels{i};
+    methodLetter=strsplit(argsName,'_Process');
+    methodLetter=methodLetter{2}(isletter(methodLetter{2}));
+    setappdata(fig,'methodLetter',methodLetter)
+%     assignin('base','methodLetter',methodLetter); % Send the method letter to the base workspace
+    
+    if runFunc==0
+        disp(['Skipping ' fcnName ' Because it was Unchecked in Group ' groupName ' in the GUI']);
+        continue; % If this function shouldn't be run this time, skip it.
+    end
+    
+    inclStruct=feval(currSpecTrialsName{i}); % Run the appropriate specify trials for the current function.
 
 %     if specTrials==1 % Function-level specify trials
 %         specTrialsFolder=[codePath 'Process_' getappdata(fig,'projectName') slash 'Specify Trials' slash 'Per Function'];
@@ -231,11 +309,11 @@ for i=1:length(fcnNames)
     % function) are present using the existField function. If not, throw an error and don't run the function.
     processFile=[fcnFolder{i} slash fcnName '.m'];
     argsFile=argPath{i};
-    if ~checkArgsMatch(processFile,argsFile) || ~checkAllPaths(inputPaths{i},projectStruct,trialNames,argsFile)
-        % checkArgsMatch reads the two files for matching called args.
-        % checkAllPaths uses existField on all allPaths at all levels to ensure that there won't be an error with getArg. If a field does not exist, throws an error.
-        return;
-    end
+%     if ~checkArgsMatch(processFile,argsFile) || ~checkAllPaths(inputPaths{i},projectStruct,trialNames,argsFile)
+%         % checkArgsMatch reads the two files for matching called args.
+%         % checkAllPaths uses existField on all allPaths at all levels to ensure that there won't be an error with getArg. If a field does not exist, throws an error.
+%         return;
+%     end
 
     % Run the processing function
     if ismember('Project',currLevels)

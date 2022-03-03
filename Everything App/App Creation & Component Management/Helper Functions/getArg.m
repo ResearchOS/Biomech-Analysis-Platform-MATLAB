@@ -9,17 +9,21 @@ function [varargout]=getArg(argNames,subName,trialName,repNum)
 % Outputs:
 % argIn: The argument to pass in to the processing function
 
+if ~iscell(argNames)
+    argNames={argNames}; % There's only one input argument, so make it a cell if not already.
+end
+
 fig=evalin('base','gui;');
 
-if nargin<=3 % Trial level data. No repetitions
-    repNum=1;
-end
-if nargin<=2 % Subject level data
-    trialName='';
-end
-if nargin==1 % Project level data
-    subName='';
-end
+% if nargin<=3 % Trial level data. No repetitions
+%     repNum=1;
+% end
+% if nargin<=2 % Subject level data
+%     trialName='';
+% end
+% if nargin==1 % Project level data
+%     subName='';
+% end
 
 % 1. Get the name of the corresponding input argument file
 % fig=evalin('base','gui;'); % Get the gui from the base workspace.
@@ -36,24 +40,29 @@ else
 end
 
 if evalin('base','exist(''projectStruct'',''var'')~=1')
-    evalin('base','projectStruct=''''');
+    evalin('base','projectStruct='''''); % If there's no projectStruct, create an empty one. Why though? Shouldn't I return an error?
 end
 
 % argIn returned as a struct with fields of argNames
-if ~isempty(trialName)
+if exist('trialName','var')
     level='Trial';
-elseif ~isempty(subName)
+    argIn=feval(argsFuncName,level,evalin('base','projectStruct;'),subName,trialName,repNum);
+elseif exist('subName','var')
     level='Subject';
+    argIn=feval(argsFuncName,level,evalin('base','projectStruct;'),subName);
 else
     level='Project';
+    argIn=feval(argsFuncName,level,evalin('base','projectStruct;'));
 end
-argIn=feval(argsFuncName,level,evalin('base','projectStruct;'),subName,trialName,repNum);
 
 % Find the subset of arguments specified by argNames
-retArgNames=fieldnames(argIn);
-for i=1:length(retArgNames)
+% retArgNames=fieldnames(argIn);
+varargout=cell(length(argNames),1);
+for i=1:length(argNames)
 
-    varargout{i}=argIn.(retArgNames{i}); % All argument names should have been found in the arguments function!
+    if isfield(argIn,argNames{i})
+        varargout{i}=argIn.(argNames{i}); % All argument names should have been found in the arguments function!
+    end
 
 end
 

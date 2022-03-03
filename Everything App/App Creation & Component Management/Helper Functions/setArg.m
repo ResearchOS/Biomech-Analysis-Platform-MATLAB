@@ -7,6 +7,14 @@ function setArg(subName,trialName,repNum,varargin)
 % repNum: The repetition number for the current trial (double)
 % varargin: The value of each output argument. The name passed in to this function must exactly match what is in the input arguments function (any data type)
 
+if ~isempty(repNum) && ~isempty(trialName)
+    level='Trial';
+elseif ~isempty(subName)
+    level='Subject';
+else
+    level='Project';
+end
+
 st=dbstack;
 fcnName=st(2).name; % The name of the calling function.
 
@@ -33,16 +41,20 @@ else
     argsFuncName=[fcnName methodLetter];
 end
 
-saveLevels=cell(length(argNames),1);
+% saveLevels=cell(length(argNames),1);
 
 for i=1:length(argNames)
     argName=argNames{i};
-    argIn=feval(argsFuncName,argName,evalin('base','projectStruct;'),subName,trialName,repNum);
+    argIn=feval(argsFuncName,level,evalin('base','projectStruct;'),subName,trialName,repNum);
+
+    if ~ischar(argIn.(argName)) && ~isequal(argIn.(argName)(1:length('projectStruct')),'projectStruct')
+        continue;
+    end
 
     saveLevels{i}='Project';
     
     % Resolve the path names (i.e. subName & trialName)
-    splitPath=strsplit(argIn,'.');
+    splitPath=strsplit(argIn.(argName),'.');
     resPath=splitPath{1}; % Initialize the resolved path name
     for j=2:length(splitPath)
         if ismember(j,[2 3]) && isequal(splitPath{j}([1 end]),'()') % Dynamic subject or trial name
@@ -79,9 +91,9 @@ end
 evalin('base','clear currData;');
 
 % Save the data to the appropriate file. Use parallel pool if desired.
-p=gcp('nocreate');
-if isempty(p)
-    p=parpool('local',1);
-end
+% p=gcp('nocreate');
+% if isempty(p)
+%     p=parpool('local',1);
+% end
 % f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));
 saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));

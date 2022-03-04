@@ -51,11 +51,11 @@ for i=1:length(dataTypeSplit)
     pathsByLevel.ImportFcnName.(dataField)=[lower(dataField) '_Import' methodNumber.(dataField)];
 
     % Import function args paths to read through
-    dataImportArgsFcnNames{i}=[codePath 'Import_' getappdata(fig,'projectName') slash 'Arguments' slash lower(dataField) '_Import' methodNumber.(dataField) methodLetter.(dataField) '.m'];
+    dataImportArgsFcnNames.(dataField)=[codePath 'Import_' getappdata(fig,'projectName') slash 'Arguments' slash lower(dataField) '_Import' methodNumber.(dataField) methodLetter.(dataField) '.m'];
 
     % Read through import function args and get all of the projectStruct
     % paths
-    [argsPaths.Inputs.(dataField),argsPaths.Outputs.(dataField),argsPaths.All.(dataField)]=readArgsFcn(dataImportArgsFcnNames{i});
+    [argsPaths.Inputs.(dataField),argsPaths.Outputs.(dataField),argsPaths.All.(dataField)]=readArgsFcn(dataImportArgsFcnNames.(dataField));
 
     trialCount=0; % The count of how many inputs paths there are at the trial level, per data type or processing group
     subjCount=0;
@@ -139,7 +139,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
 
         if isequal(action,'None')
             continue;
-        end        
+        end
 
         % Iterate over all function names in that group
         for j=lineNums(i)+1:length(groupText)
@@ -173,8 +173,8 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
             if isequal(spaceSplit{4}(end),'1') % Function level args
                 argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '_Process' fcnNum fcnLetter '.m'];
             elseif isequal(spaceSplit{4}(end),'0') % Group level args
-                argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Group' slash fcnName '_Process' fcnNum fcnLetter '.m'];
-            end           
+                argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Group' slash groupNameField '_Process_Args.m'];
+            end
 
             [argsPaths.Inputs.([fcnName fcnNum]),argsPaths.Outputs.([fcnName fcnNum]),argsPaths.All.([fcnName fcnNum])]=readArgsFcn(argsFcnName);
 
@@ -197,7 +197,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
                 end
 
                 % Split the argsPaths by project, subject, and trial level.
-                if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')                    
+                if length(currPathSplit)>=3 && isequal(currPathSplit{3}([1 end]),'()')
                     if ismember(currPath,argsPaths.Inputs.([fcnName fcnNum]))
                         trialCountIn=trialCountIn+1;
                         pathsByLevel.Inputs.([fcnName fcnNum fcnLetter]).Trial{trialCountIn,1}=currPath;
@@ -208,7 +208,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
                     end
                     trialCount=trialCount+1;
                     pathsByLevel.All.([fcnName fcnNum fcnLetter]).Trial{trialCount,1}=currPath;
-                elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')                    
+                elseif length(currPathSplit)>=2 && isequal(currPathSplit{2}([1 end]),'()')
                     if ismember(currPath,argsPaths.Inputs.([fcnName fcnNum]))
                         subjCountIn=subjCountIn+1;
                         pathsByLevel.Inputs.([fcnName fcnNum fcnLetter]).Subject{subjCountIn,1}=currPath;
@@ -219,7 +219,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
                     end
                     subjCount=subjCount+1;
                     pathsByLevel.All.([fcnName fcnNum fcnLetter]).Subject{subjCount,1}=currPath;
-                else                    
+                else
                     if isequal(currPath,argsPaths.Inputs.([fcnName fcnNum]))
                         projCountIn=projCountIn+1;
                         pathsByLevel.Inputs.([fcnName fcnNum fcnLetter]).Project{projCountIn,1}=currPath;
@@ -247,7 +247,7 @@ logVar=logVar.logVar; % Convert struct to cell array
 % Run specifyTrials
 hSpecifyTrialsButton=handles.Import.openGroupSpecifyTrialsButton;
 % hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');
-specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
+% specTrialsNumIdx=isstrprop(hSpecifyTrialsButton.Text,'digit');
 
 % Read through the allPaths_SpecifyTrials.txt file to see which specifyTrials the import is using.
 specifyTrialsPath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'allProjects_SpecifyTrials.txt'];
@@ -328,14 +328,6 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
 
             fullPathMat=[dataPath 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
 
-            %         if loadAnyTrial==1 && exist(fullPathMat,'file')==2
-            %             trialData=load(fullPathMat); % Load the trial's MAT file.
-            %             fldName=fieldnames(trialData);
-            %             assert(length(fldName)==1);
-            %             trialData=trialData.(fldName{1});
-            %             assignin('base','trialData',trialData);
-            %         end
-
             % Find the logsheet row numbers of that trial name
             subRowIdx=find(strcmp(logVar(:,subjIDColNum),subName));
             rowNums=[]; validCount=0;
@@ -357,6 +349,9 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
             for repNum=repNums
 
                 rowNum=rowNums(repNum);
+
+                logRow=logVar(rowNum,:);
+                logHeaders=logVar(1,:);
 
                 for i=1:length(dataTypes)
                     alphaNumericIdx=isstrprop(dataTypes{i},'alpha') | isstrprop(dataTypes{i},'digit');
@@ -395,10 +390,9 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
                     pathsByLevel.MethodNum.(dataField)=number;
                     pathsByLevel.MethodLetter.(dataField)=letter;
 
-                end
+                    setappdata(fig,'argsFuncName',dataImportArgsFcnNames.(dataField));
 
-                logRow=logVar(rowNum,:);
-                logHeaders=logVar(1,:);
+                end
 
                 switch kk
                     case 1
@@ -409,33 +403,33 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
 
             end
 
-            evalin('base','clear trialData;');
-
         end
 
-        if loadAnySubj==1 && exist(fullPathSubjMat,'file')==2
-            %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' SUBJECT-LEVEL DATA
-            switch kk
-                case 1
-                    offloadData(pathsByLevel,'Subject',subName);
-                case 2
-                    loadData(fullPathSubjMat,redoVal,pathsByLevel,'Subject',subName);
-            end
-        end
+        evalin('base','clear trialData;');
 
     end
 
-    fullPathProjMat=[dataPath 'MAT Data Files' slash projectName '.mat'];
-
-    if loadAnyProj==1 && exist(fullPathProjMat,'file')==2
-        %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' PROJECT-LEVEL DATA
+    if loadAnySubj==1 && exist(fullPathSubjMat,'file')==2
+        %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' SUBJECT-LEVEL DATA
         switch kk
             case 1
-                offloadData(pathsByLevel,'Project');
+                offloadData(pathsByLevel,'Subject',subName);
             case 2
-                loadData(fullPathProjMat,redoVal,pathsByLevel,'Project');
+                loadData(fullPathSubjMat,redoVal,pathsByLevel,'Subject',subName); % Will never import data here, never subject-level raw data files.
         end
+    end
 
+end
+
+fullPathProjMat=[dataPath 'MAT Data Files' slash projectName '.mat'];
+
+if loadAnyProj==1 && exist(fullPathProjMat,'file')==2
+    %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' PROJECT-LEVEL DATA
+    switch kk
+        case 1
+            offloadData(pathsByLevel,'Project');
+        case 2
+            loadData(fullPathProjMat,redoVal,pathsByLevel,'Project'); % Will never import data here, never project-level raw data files
     end
 
 end
@@ -443,7 +437,7 @@ end
 for sub=1:length(subNames)
 
     subName=subNames{sub};
-%     trialNames=fieldnames(allTrialNames.(subName));
+    %     trialNames=fieldnames(allTrialNames.(subName));
 
     evalin('base',['projectStruct.' subName '=orderfields(projectStruct.' subName ');' ]); % Rearrange trial names in alphabetical order.
 

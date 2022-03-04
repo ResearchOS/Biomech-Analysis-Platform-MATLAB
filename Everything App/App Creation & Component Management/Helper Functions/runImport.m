@@ -13,12 +13,6 @@ elseif ispc==1
     slash='\';
 end
 
-% if evalin('base','exist(''projectStruct'',''var'') && isstruct(''projectStruct'')')
-%     projectStruct=evalin('base','projectStruct;');
-% else
-%     projectStruct=''; % If the projectStruct does not exist in the base workspace.
-% end
-
 projectName=getappdata(fig,'projectName');
 codePath=getappdata(fig,'codePath');
 dataPath=getappdata(fig,'dataPath');

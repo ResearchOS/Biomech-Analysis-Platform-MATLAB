@@ -64,7 +64,7 @@ for i=2:length(text)
     percIdx=strfind(currLine,'%');
     equalsIdx=strfind(currLine,'=');
 
-    if ~isempty(percIdx) && (percIdx==1 || percIdx<equalsIdx)
+    if ~isempty(percIdx) && (percIdx(1)==1 || percIdx(1)<equalsIdx)
         continue; % This line is a comment
     end
     

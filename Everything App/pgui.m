@@ -4,9 +4,9 @@ function []=pgui()
 % THIS FUNCTION CREATES ALL COMPONENTS, AND CONTAINS THE CALLBACKS FOR ALL COMPONENTS IN THE GUI.
 
 % WRITTEN BY: MITCHELL TILLMAN, 11/06/2021
-% IN HONOR OF DOUGLAS ERIC TILLMAN, 10/29/1961-07/05/2021
+% IN HONOR AND LOVING MEMORY OF MY FATHER DOUGLAS ERIC TILLMAN, 10/29/1961-07/05/2021
 
-% Assumes that the app is being run from within the 'Everything App' folder and that the rest of the files & folders are untouched.
+% Assumes that the app is being run from within the 'Everything App' folder and that the rest of the files & folders within it are untouched.
 addpath(genpath(fileparts(mfilename('fullpath')))); % Add all subfolders to the path so that app creation & management is unencumbered.
 
 % Check if Mac or PC

@@ -5,6 +5,7 @@ function []=fcnNamesButtonPushed(src)
 % fcnName=src.Text;
 currTag=src.Tag;
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 if ~isletter(currTag(end-1)) % 2 digits
     runNum=currTag(end-1:end);
@@ -12,13 +13,40 @@ else % 1 digit
     runNum=currTag(end);
 end
 
-% Get the text area values
-fcnNames=findobj(fig,'Type','uitextarea','Tag','SetupFunctionNamesField');
-fcnNames=fcnNames.Value;
-currFcn=fcnNames{str2double(runNum)}; % The corresponding entry from the text area in the Process > Setup tab
+runGroupDropDown=handles.ProcessRun.runGroupNameDropDown;
+currGroup=runGroupDropDown.Value;
 
-fcnElems=strsplit(currFcn,' ');
-fcnName=[fcnElems{1} '_Process' fcnElems{2}(~isletter(fcnElems{2}))];
+fcnNamesFilePath=getappdata(fig,'fcnNamesFilePath');
+[text]=readFcnNames(fcnNamesFilePath);
+[groupNames,lineNums,mostRecentGroupName]=getGroupNames(text);
+
+idx=ismember(groupNames,currGroup); % The idx of the current group name
+
+currLineNum=lineNums(idx); % The line number of the current group number
+fcnNames={''};
+fcnCount=0;
+for i=currLineNum+1:length(text)
+    
+    if isempty(text{i})
+        break; % Finished iterating through the function names in this group
+    end
+
+    fcnCount=fcnCount+1;
+    
+    colonIdx=strfind(text{i},':'); % Get the index of the colon in each line
+
+    if fcnCount<str2double(runNum)
+        continue;
+    end
+
+    fcnName=text{i}(1:colonIdx-1);
+    fcnNameSplit=strsplit(fcnName,' ');
+
+    fcnName=[fcnNameSplit{1} '_Process' fcnNameSplit{2}(isstrprop(fcnNameSplit{2},'digit'))];
+    
+    break;
+    
+end
 
 if ismac==1
     slash='/';

@@ -32,7 +32,7 @@ fcnName=st(2).name;
 fig=evalin('base','gui;');
 methodLetter=getappdata(fig,'methodLetter');
 splitName=strsplit(fcnName,'_');
-methodNum=splitName{2}(isstrprop(splitName{2},'digit'));
+methodNum=splitName{end}(isstrprop(splitName{end},'digit'));
 
 useGroupArgs=0; % 1 to use group args, 0 not to. This will be replaced by GUI checkbox value later.
 if useGroupArgs==1

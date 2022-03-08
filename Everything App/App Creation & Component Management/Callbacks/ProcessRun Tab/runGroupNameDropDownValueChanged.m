@@ -107,7 +107,7 @@ elseif ispc==1
 end
 
 % Create the components after deleting them
-if exist('fcnNames','var')==1
+if exist('fcnNames','var')==1 % There are any functions in this group
     elemNum=0;
     for i=1:length(fcnNames)
         

@@ -37,11 +37,13 @@ fcnName=nameCell{1}; % Function name
 fcnNum=nameCell{2}; % Method number
 
 if any(isstrprop(fcnNum,'alpha'))
-    error('No letters in the function number!');
+    warning('No letters in the function number!');
+    return;
 end
 
 if ~any(isstrprop(fcnNum,'digit'))
-    error('Need numbers in the function number!');
+    warning('Need numbers in the function number!');
+    return;
 end
 
 if ismac==1

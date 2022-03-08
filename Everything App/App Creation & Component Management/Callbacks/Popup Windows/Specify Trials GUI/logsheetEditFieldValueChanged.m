@@ -7,6 +7,10 @@ fig=ancestor(src,'figure','toplevel');
 inclStruct=getappdata(fig,'inclStruct');
 handles=getappdata(fig,'handles');
 
+if isempty(value)
+    value=['''' '''']; % Handles deleted fields
+end
+
 type=handles.Top.includeExcludeTabGroup.SelectedTab.Title;
 
 condNum=find(ismember(handles.(type).conditionDropDown.Items,handles.(type).conditionDropDown.Value)==1,1);

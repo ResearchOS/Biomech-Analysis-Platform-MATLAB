@@ -1,4 +1,4 @@
-function [trialNames,logVar]=getTrialNames2(inclStruct,logVar,src,org,projectStruct)
+function [trialNames,logVar]=getTrialNames(inclStruct,logVar,src,org,projectStruct)
 
 %% PURPOSE: RETURN THE TRIAL NAMES OF INTEREST SPECIFIED BY THE INCLUSION CRITERIA. UPDATED FOR GUI SPECIFYTRIALS
 % Inputs:

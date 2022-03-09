@@ -3,6 +3,7 @@ function []=addFunctionGroupButtonPushed(src,event)
 %% PURPOSE: ADD A FUNCTION GROUP TO THE PROJECT'S FUNCTION GROUP TEXT FILE
 
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 fcnNamesFilePath=getappdata(fig,'fcnNamesFilePath');
 
@@ -74,6 +75,9 @@ fid=fopen(fcnNamesFilePath,'w');
 fprintf(fid,'%s\n',text{1:end-1});
 fprintf(fid,'%s',text{end});
 fclose(fid);
+
+textArea=handles.ProcessSetup.setupFunctionNamesField;
+textArea.Value={''};
 
 % Set the run tab drop down list to have the same group names as the setup tab
 hGroupNamesRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');

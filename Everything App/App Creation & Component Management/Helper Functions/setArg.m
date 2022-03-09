@@ -47,8 +47,13 @@ for i=1:length(argNames)
     argName=argNames{i};
     argIn=feval(argsFuncName,level,evalin('base','projectStruct;'),subName,trialName,repNum);
 
-    if ~ischar(argIn.(argName)) && ~isequal(argIn.(argName)(1:length('projectStruct')),'projectStruct')
-        continue;
+    if isfield(argIn,argName)
+        if ~ischar(argIn.(argName)) && ~isequal(argIn.(argName)(1:length('projectStruct')),'projectStruct')
+            continue;
+        end
+    else
+        warning(['Missing field name: ' argName ' In args function!']);
+        return;
     end
 
     saveLevels{i}='Project';
@@ -81,10 +86,22 @@ for i=1:length(argNames)
         end
     end   
     
-    resPath=[resPath '.Method' methodNum methodLetter]; % Automatically assign the method ID
+    resPath=[resPath '.Method' methodNum methodLetter]; % Automatically assign the method ID       
     
     assignin('base','currData',varargin{i}); % Store the data to the base workspace.
     evalin('base',[resPath '=currData;']); % Store the data to the projectStruct in the base workspace.
+
+    %% Cut off the paths by level
+    savePathsByLevel.(saveLevels{i}).FullPaths{i,1}=resPath;
+    dotIdx=strfind(resPath,'.');
+    switch saveLevels{i}
+        case 'Project'
+            savePathsByLevel.(saveLevels{i}).Paths{i,1}=resPath;
+        case 'Subject'
+            savePathsByLevel.(saveLevels{i}).Paths{i,1}=resPath(dotIdx(2)+1:end); % subName. ...
+        case 'Trial'
+            savePathsByLevel.(saveLevels{i}).Paths{i,1}=resPath(dotIdx(3)+1:end); % trialName. ...
+    end
     
 end
 
@@ -96,4 +113,4 @@ evalin('base','clear currData;');
 %     p=parpool('local',1);
 % end
 % f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));
-saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));
+saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)),savePathsByLevel);

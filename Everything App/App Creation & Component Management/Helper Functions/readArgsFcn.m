@@ -136,6 +136,7 @@ end
 if ~exist('pathsOutputs','var')
     warning('Missing output variables! Terminating processing.');
     pathsOutputs='';
+    paths='';
     return;
 end
 

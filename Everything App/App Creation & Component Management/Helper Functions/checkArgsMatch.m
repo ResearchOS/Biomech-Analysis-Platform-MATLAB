@@ -1,4 +1,4 @@
-function [ok]=checkArgsMatch(processFilePath,argsFilePath,argStruct)
+function [ok]=checkArgsMatch(processFilePath,argsFilePath,argStruct,levelIn)
 
 %% PURPOSE: ENSURE THAT ALL ARGS CALLED BY GETARG IN THE PROCESSING FUNCTION APPEAR IN THE CORRESPONDING ARGUMENTS FILE.
 % Inputs:
@@ -14,6 +14,8 @@ argStructNames=fieldnames(argStruct);
 % Get the list of args called by the process function
 ok=1;
 for i=1:length(processText)
+
+    disp(i);
 
     currLine=processText{i}(~isspace(processText{i}));
 
@@ -44,64 +46,102 @@ for i=1:length(processText)
         return; % This line is missing a terminating character.
     end    
 
-    if ~isempty(startIdxGet)
+    if ~isempty(startIdxGet) % getArg call
 
-        charStartIdx=startIdxGet+length('getArg(')+1; % First char of the argument
-        charEndIdx=strfind(currLine(charStartIdx:end),'''')+charStartIdx-2; % Final char of the argument
+%         charStartIdx=startIdxGet+length('getArg(')+2; % First char of the argument
+%         charEndIdx=strfind(currLine(charStartIdx:end),'''')+charStartIdx-2; % Final char of the argument
 
-        argName=currLine(charStartIdx:charEndIdx);
-
-        if ~ismember(argName,argStructNames)
-            ok=0;
-            warning('Terminating Processing Due to Incorrect Arg Name!');
-            disp(['Argument ''' argName ''' called in: ' processFilePath]);
-            disp(['Missing In: ' argsFilePath]);
-            return;
+        currArgs=strsplit(currLine,"'"); % Split by apostrophes
+        currArgs=currArgs(2:end); % Ignore the stuff to the left of the first argument
+        splitLevels=strsplit(currArgs{end},',');
+        currArgs=currArgs(1:end-1);
+        idxVect=true(length(currArgs),1);
+        for j=1:length(currArgs)
+            if ~any(isstrprop(currArgs{j},'alpha'))
+                idxVect(j)=false;
+                currArgs=currArgs(idxVect); % Omit the current entry
+                idxVect=true(length(currArgs),1);
+                if j==length(currArgs)
+                    break;
+                end
+            end
+        end
+        if contains(splitLevels{1},'}')
+            splitLevels=splitLevels(2:end); % Omit the ending bracket if applicable
         end
 
-%         str=which(argName,'in',argsFilePath);
-% 
-%         if isempty(str) || ~isequal(str,argsFilePath)
-%             ok=0;
-%             
-%         end
-
-    elseif ~isempty(startIdxSet)
-
-        if exist('prevLine','var') && ~contains(prevLine,'...')
-            wholeLine=currLine;
-            charStartIdx=startIdxSet+length('setArg(')+1; % First char of the argument
-        else
-            wholeLine=[wholeLine currLine];
-            charStartIdx=1;
-        end
-        
-        if ~contains(currLine,'...') % Check if the setArg went multi-line
-            argNames=strsplit(wholeLine(charStartIdx-1:semicolonIdx-2),',');
-            argNames=argNames(4:end);
+        switch length(splitLevels)
+            case 0 % Project level
+                currLevel='Project';
+            case 1 % Subject level
+                currLevel='Subject';
+            otherwise % Trial level
+                currLevel='Trial';
         end
 
-        for j=1:length(argNames)
-            
-            argName=argNames{j};
+        if isequal(currLevel,levelIn)
+%             argName=currLine(charStartIdx:charEndIdx);
 
-            if ~ismember(argName,argStructNames)
+            if ~ismember(currArgs,argStructNames)
                 ok=0;
                 warning('Terminating Processing Due to Incorrect Arg Name!');
-                disp(['Argument ''' argName ''' called in: ' processFilePath]);
+                disp(['Argument ''' currArgs(~ismember(currArgs,argStructNames)) ''' called in: ' processFilePath]);
                 disp(['Missing In: ' argsFilePath]);
                 return;
             end
+        end
 
-%             str=which(argNames{j},'in',argsFilePath);
-% 
-%             if isempty(str) || ~isequal(str,argsFilePath)
-%                 ok=0;
-%                 warning('Terminating Processing!');
-%                 disp(['Argument ''' argNames{j} ''' called in: ' processFilePath]);
-%                 disp(['Missing In: ' argsFilePath]);
-%                 return;
-%             end
+    elseif ~isempty(startIdxSet) % setArg call
+
+%         if exist('prevLine','var') && ~contains(prevLine,'...')
+%             wholeLine=currLine;
+%             charStartIdx=startIdxSet+length('setArg(')+1; % First char of the argument
+%         else
+%             wholeLine=[wholeLine currLine];
+%             charStartIdx=1;
+%         end
+%         
+%         if ~contains(currLine,'...') % Check if the setArg went multi-line
+%             argNames=strsplit(wholeLine(charStartIdx-1:semicolonIdx-2),',');
+%             argNames=argNames(4:end);
+%         end
+
+        if isequal(currLine(1:4),'eval')
+            continue;
+        end
+
+        currArgs=strsplit(currLine(8:end),','); % Split by apostrophes
+        currArgsEndSplit=strsplit(currArgs{end},')');
+        currArgs{end}=currArgsEndSplit{1};
+        for j=1:length(currArgs)
+            try
+                if isempty(eval(currArgs{j}))
+                    break;
+                end
+            catch                
+            end
+        end
+
+        switch j
+            case 1 % Project
+                currLevel='Project';
+            case 2 % Subject
+                currLevel='Subject';
+            otherwise % Trial
+                currLevel='Trial';
+        end
+
+        currArgs=currArgs(4:end); % Ignore the indices before the first argument
+        
+        if isequal(currLevel,levelIn)
+
+            if ~all(ismember(currArgs,argStructNames))
+                ok=0;
+                warning('Terminating Processing Due to Incorrect Arg Name!');
+                disp(['Argument ''' currArgs(~ismember(currArgs,argStructNames)) ''' called in: ' processFilePath]);
+                disp(['Missing In: ' argsFilePath]);
+                return;
+            end
 
         end
 

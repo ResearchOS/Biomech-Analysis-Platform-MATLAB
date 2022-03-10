@@ -9,10 +9,11 @@ function Process_TemplateST(projectStruct,subName,trialNames)
 %% TODO: Assign input arguments to variable names
 roomNum=getArg('roomNum',subName); % Get subject level variable
 
-for trialNum=1:length(trialNames)
-    trialName=trialNames{trialNum};
+trialFldNames=fieldnames(trialNames);
+for trialNum=1:length(trialFldNames)
+    trialName=trialFldNames{trialNum};
 
-    for repNum=allTrialNames.(subName).(trialName)
+    for repNum=trialNames.(trialName)
 
         trialArg=getArg('comPos',subName,trialName,repNum); % Get trial level variable
         setArg(subName,trialName,repNum,trialArg); % Set trial level variable

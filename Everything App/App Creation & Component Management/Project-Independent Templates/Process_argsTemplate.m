@@ -14,9 +14,9 @@ function [argStruct]=Process_argsTemplate(level,projectStruct,subName,trialName,
 
 switch level
     case 'Project'
-
+        argStruct.Placeholder='placeholder';
     case 'Subject'
-
+        argStruct.Placeholder='placeholder';
     case 'Trial'
-
+        argStruct.Placeholder='placeholder';
 end

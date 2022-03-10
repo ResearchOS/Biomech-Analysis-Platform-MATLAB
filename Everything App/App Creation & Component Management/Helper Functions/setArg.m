@@ -84,6 +84,10 @@ for i=1:length(argNames)
                 resPath=[resPath '.' splitPath{j}];
             end
         end
+        if contains(resPath,'..') % subName or trialName was entered at the wrong level.
+            error('Subject or trial name in output arg entered at the wrong level!');
+%             return;
+        end
     end   
     
 %     resPath=[resPath '.Method' methodNum methodLetter]; % Automatically assign the method ID       

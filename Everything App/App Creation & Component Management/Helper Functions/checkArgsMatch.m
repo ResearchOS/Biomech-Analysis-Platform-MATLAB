@@ -53,7 +53,7 @@ for i=1:length(processText)
 
         currArgs=strsplit(currLine,"'"); % Split by apostrophes
         currArgs=currArgs(2:end); % Ignore the stuff to the left of the first argument
-        splitLevels=strsplit(currArgs{end},',');
+        splitLevels=strsplit(currArgs{end},',');        
         currArgs=currArgs(1:end-1);
         idxVect=true(length(currArgs),1);
         for j=1:length(currArgs)
@@ -66,7 +66,7 @@ for i=1:length(processText)
                 end
             end
         end
-        if contains(splitLevels{1},'}')
+        if contains(splitLevels{1},'}') || isempty(splitLevels{1})
             splitLevels=splitLevels(2:end); % Omit the ending bracket if applicable
         end
 

@@ -198,9 +198,9 @@ for i=1:length(fcnNames)
         end
     end
 
-    % Check subject level for non-existent field or missing output arg errors
-    level='Subject';
+    % Check subject level for non-existent field or missing output arg errors    
     for subNum=1:length(subNames) % Iterate over each subject.
+        level='Subject';
         subName=subNames{subNum};
 
         try

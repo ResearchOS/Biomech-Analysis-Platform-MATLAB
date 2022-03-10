@@ -101,9 +101,9 @@ for i=2:length(text)
     for j=1:length(splitPath) 
         if length(splitPath{j})>=8 && ~isempty(strfind(splitPath{j}(1:6),'Method'))
             methodIDFound=1;
-            if isOutput==1
-                error(['projectStruct assignment paths should not have method ID! Line ' num2str(i) ' in function: ' filePath]);
-            end
+%             if isOutput==1
+%                 error(['projectStruct assignment paths should not have method ID! Line ' num2str(i) ' in function: ' filePath]);
+%             end
         end
         if j==1
             paths{argCount,1}=splitPath{1};
@@ -111,18 +111,19 @@ for i=2:length(text)
             paths{argCount,1}=[paths{argCount} '.' splitPath{j}];
         end        
     end    
-    if isOutput==0 && methodIDFound==0
-        warning('projectStruct input paths should have method ID field!'); 
+    if methodIDFound==0 && isOutput==0
+        warning('projectStruct paths should have method ID field!'); 
         disp(['Line ' num2str(i) ' in function: ' filePath]);
         pathsInputs='';
         pathsOutputs='';
         paths='';
         return;
     elseif isOutput==1 && methodIDFound==0 % This is correct. Now insert the method ID field.
-        paths{argCount,1}=[paths{argCount} '.Method' methodID];
+%         paths{argCount,1}=[paths{argCount} '.Method' methodID];
         outputCount=outputCount+1;
         pathsOutputs{outputCount,1}=paths{argCount};
     elseif isOutput==0 && methodIDFound==1 % This is correct for inputs.
+        % paths already set above.
         inputCount=inputCount+1;
         pathsInputs{inputCount,1}=paths{argCount};
     end

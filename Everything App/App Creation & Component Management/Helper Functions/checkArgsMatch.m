@@ -15,7 +15,7 @@ argStructNames=fieldnames(argStruct);
 ok=1;
 for i=1:length(processText)
 
-    disp(i);
+%     disp(i);
 
     currLine=processText{i}(~isspace(processText{i}));
 

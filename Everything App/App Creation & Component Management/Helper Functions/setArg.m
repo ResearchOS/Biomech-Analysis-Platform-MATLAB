@@ -86,7 +86,7 @@ for i=1:length(argNames)
         end
     end   
     
-    resPath=[resPath '.Method' methodNum methodLetter]; % Automatically assign the method ID       
+%     resPath=[resPath '.Method' methodNum methodLetter]; % Automatically assign the method ID       
     
     assignin('base','currData',varargin{i}); % Store the data to the base workspace.
     evalin('base',[resPath '=currData;']); % Store the data to the projectStruct in the base workspace.

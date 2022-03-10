@@ -118,7 +118,7 @@ for i=2:length(text)
         pathsOutputs='';
         paths='';
         return;
-    elseif isOutput==1 && methodIDFound==0 % This is correct. Now insert the method ID field.
+    elseif isOutput==1 % && methodIDFound==0 % This is correct. Now insert the method ID field.
 %         paths{argCount,1}=[paths{argCount} '.Method' methodID];
         outputCount=outputCount+1;
         pathsOutputs{outputCount,1}=paths{argCount};

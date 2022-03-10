@@ -78,7 +78,7 @@ for i=1:length(dataTypes)
                     newPath=[newPath '.' subName];
                 elseif ismember(level,{'Trial'}) && k==3 && isequal(newPathSplit{k}([1 end]),'()')
                     newPath=[newPath '.' trialName];
-                elseif k==4 && all(ismember('()',newPathSplit{k})) && ~isequal(newPathSplit{k}([1 end]),'()')
+                elseif ismember(level,{'Trial'}) && k==4 && all(ismember('()',newPathSplit{k})) && ~isequal(newPathSplit{k}([1 end]),'()')
                     openParensIdx=strfind(newPathSplit{k},'(');
                     newPath=[newPath '.' newPathSplit{k}(1:openParensIdx-1) '(' num2str(repNum) ')'];
                 else
@@ -88,7 +88,7 @@ for i=1:length(dataTypes)
 
         end
 
-        if exist('currData','var') && existField(currData,['currData.' path],repNum) && redoVal==0
+        if exist('currData','var') && ((ismember(level,{'Trial'}) && existField(currData,['currData.' path],repNum)) || (~ismember(level,{'Trial'}) && existField(currData,['currData.' path]))) && redoVal==0
 
             path=['currData.' path];
             newData=eval(path); % Add repetition number to path.

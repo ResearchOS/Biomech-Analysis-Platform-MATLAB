@@ -434,6 +434,7 @@ if loadAnyProj==1 && exist(fullPathProjMat,'file')==2
 
 end
 
+%% Rearrange subject & trial names to be in alphabetical order.
 for sub=1:length(subNames)
 
     subName=subNames{sub};

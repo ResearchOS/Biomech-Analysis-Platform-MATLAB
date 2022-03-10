@@ -328,3 +328,15 @@ for i=1:length(fcnNames)
     end
 
 end
+
+%% Rearrange subject & trial names to be in alphabetical order.
+for sub=1:length(subNames)
+
+    subName=subNames{sub};
+    %     trialNames=fieldnames(allTrialNames.(subName));
+
+    evalin('base',['projectStruct.' subName '=orderfields(projectStruct.' subName ');' ]); % Rearrange trial names in alphabetical order.
+
+end
+
+evalin('base','projectStruct=orderfields(projectStruct);'); % Rearrange subject names in alphabetical order.

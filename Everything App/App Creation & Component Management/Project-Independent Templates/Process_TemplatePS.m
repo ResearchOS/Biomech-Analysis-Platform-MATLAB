@@ -1,6 +1,6 @@
 function Process_TemplatePS(projectStruct,subNames)
 
-%% PURPOSE: TEMPLATE FOR TRIAL-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
+%% PURPOSE: TEMPLATE FOR PROJECT & SUBJECT-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
 % Inputs:
 % projectStruct: The entire data struct. Used for saving ONLY.
 % methodLetter: The method letter for all output arguments. Matches the letter of the current input arguments function. (char)
@@ -14,7 +14,7 @@ for subNum=1:length(subNames)
     
     height=getArg('height',subName); % Get subject level variable
     
-    setArg(subName,[],height); % Set subject level variable
+    setArg(subName,[],[],height); % Set subject level variable
     
 end
 
@@ -23,4 +23,4 @@ end
 collectionSite=['Zaferiou Lab ' roomNum];
 
 %% TODO: Store the computed variable(s) data to the projectStruct
-setArg([],[],collectionSite); % Set project level variable
+setArg([],[],[],collectionSite); % Set project level variable

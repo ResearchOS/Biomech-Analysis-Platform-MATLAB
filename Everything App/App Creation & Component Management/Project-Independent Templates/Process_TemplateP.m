@@ -1,6 +1,6 @@
 function Process_TemplateP(projectStruct)
 
-%% PURPOSE: TEMPLATE FOR TRIAL-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
+%% PURPOSE: TEMPLATE FOR PROJECT-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
 % Inputs:
 % projectStruct: The entire data struct. Used for saving ONLY.
 % methodLetter: The method letter for all output arguments. Matches the letter of the current input arguments function. (char)
@@ -14,4 +14,4 @@ roomNum=getArg('roomNum'); % Get project level variable
 collectionSite=['Zaferiou Lab ' roomNum];
 
 %% TODO: Store the computed variable(s) data to the projectStruct
-setArg([],[],collectionSite); % Set project level variable
+setArg([],[],[],collectionSite); % Set project level variable

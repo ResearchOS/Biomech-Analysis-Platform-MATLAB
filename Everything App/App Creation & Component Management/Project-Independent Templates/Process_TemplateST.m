@@ -1,6 +1,6 @@
 function Process_TemplateST(projectStruct,subName,trialNames)
 
-%% PURPOSE: TEMPLATE FOR TRIAL-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER PROJECT.
+%% PURPOSE: TEMPLATE FOR SUBJECT & TRIAL-LEVEL PROCESSING FUNCTIONS. THIS FUNCTION WILL BE CALLED ONCE PER SUBJECT.
 % Inputs:
 % projectStruct: The entire data struct. Used for saving ONLY.
 % methodLetter: The method letter for all output arguments. Matches the letter of the current input arguments function. (char)

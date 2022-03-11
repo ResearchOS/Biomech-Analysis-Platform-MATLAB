@@ -76,6 +76,8 @@ for i=2:length(text)
         continue; % This variable assignment is not from the projectStruct.
     end
     
+    assert(length(startIdx)<=1,'Can only be one projectStruct statement per line!'); % Check that there is only one projectStruct statement in this line
+    
     semiColonIdx=strfind(currLine,';');
     assert(length(semiColonIdx)==1,['Multi-line statements not supported in args functions! Missing semicolon in line ' num2str(i) ' in function: ' filePath]); % There can only be one semicolon per line
 

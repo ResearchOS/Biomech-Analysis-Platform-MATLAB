@@ -14,9 +14,9 @@ function [argStruct]=Import_argsTemplate(level,projectStruct,subName,trialName,r
 
 switch level
     case 'Project'
-
+        argStruct.Placeholder='projectStruct.Placeholder';
     case 'Subject'
-
+        argStruct.Placeholder='projectStruct.Placeholder';
     case 'Trial'
-        argStruct.Placeholder='placeHolder';
+        argStruct.Placeholder='projectStruct.Placeholder';
 end

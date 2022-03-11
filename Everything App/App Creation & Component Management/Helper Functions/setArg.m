@@ -48,7 +48,7 @@ for i=1:length(argNames)
     argIn=feval(argsFuncName,level,evalin('base','projectStruct;'),subName,trialName,repNum);
 
     if isfield(argIn,argName)
-        if ~ischar(argIn.(argName)) && ~isequal(argIn.(argName)(1:length('projectStruct')),'projectStruct')
+        if ~ischar(argIn.(argName)) || ~isequal(argIn.(argName)(1:length('projectStruct')),'projectStruct')
             continue;
         end
     else
@@ -111,10 +111,15 @@ end
 
 evalin('base','clear currData;');
 
-% Save the data to the appropriate file. Use parallel pool if desired.
-% p=gcp('nocreate');
-% if isempty(p)
-%     p=parpool('local',1);
-% end
-% f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)));
-saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)),savePathsByLevel);
+%% Store the save paths by level to the figure variable
+fig=evalin('base','gui;');
+savePathsByLevelFig=getappdata(fig,'savePathsByLevel');
+
+currLevels=fieldnames(savePathsByLevel);
+for i=1:length(currLevels)
+
+    savePathsByLevelFig.(currLevels{i}).Paths=[savePathsByLevelFig.(currLevels{i}).Paths; savePathsByLevel.(currLevels{i}).FullPaths];
+
+end
+
+setappdata(fig,'savePathsByLevel',savePathsByLevelFig);

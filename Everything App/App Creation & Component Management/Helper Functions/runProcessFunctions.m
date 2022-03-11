@@ -14,6 +14,11 @@ elseif ispc==1
     slash='\';
 end
 
+savePathsByLevel.Trial.Paths={};
+savePathsByLevel.Subject.Paths={};
+savePathsByLevel.Project.Paths={};
+setappdata(fig,'savePathsByLevel',savePathsByLevel); % Initialize the savePathsByLevel to be empty.
+
 codePath=getappdata(fig,'codePath');
 % dataPath=getappdata(fig,'dataPath');
 projectName=getappdata(fig,'projectName');
@@ -340,3 +345,14 @@ for sub=1:length(subNames)
 end
 
 evalin('base','projectStruct=orderfields(projectStruct);'); % Rearrange subject names in alphabetical order.
+
+%% Save the entire processing function group's output
+% Save the data to the appropriate file. Use parallel pool if desired.
+p=gcp('nocreate');
+if isempty(p)
+    p=parpool('local',1);
+end
+savePathsByLevelFig=getappdata(fig,'savePathsByLevel');
+% f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),savePathsByLevelFig);
+saveDataToFile(fig,evalin('base','projectStruct;'),savePathsByLevelFig);
+% saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)),savePathsByLevel);

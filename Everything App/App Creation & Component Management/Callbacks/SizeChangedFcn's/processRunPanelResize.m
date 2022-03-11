@@ -164,19 +164,25 @@ for i=1:specifyTrialsButtonCount
     if runFcnCheckbox(i).Value==0 % If not checked, turn off specify trials checkbox & button visibility
         specifyTrialsCheckbox(i).Visible='off';
         specifyTrialsButton(i).Visible='off';
+        fcnArgsCheckbox(i).Visible='off';
+        fcnArgsButton(i).Visible='off';
     elseif isequal(runFcnCheckbox(i).Visible,'on')
         specifyTrialsCheckbox(i).Visible='on';
         specifyTrialsButton(i).Visible='on';
-    end
-    if specifyTrialsCheckbox(i).Value==1 && specifyTrialsCheckbox(i).Visible==1 % If not checked, turn off specify trials button visibility
-        specifyTrialsButton(i).Visible='on';
-    else
-        specifyTrialsButton(i).Visible='off';
-    end
-    if fcnArgsCheckbox(i).Value==0 % If not checked, turn off args button visibility
-        fcnArgsButton(i).Visible='off';
-    elseif fcnArgsCheckbox(i).Value==1
+        fcnArgsCheckbox(i).Visible='on';
         fcnArgsButton(i).Visible='on';
+
+        if specifyTrialsCheckbox(i).Value==1 && specifyTrialsCheckbox(i).Visible==1 % If not checked, turn off specify trials button visibility
+            specifyTrialsButton(i).Visible='on';
+        else
+            specifyTrialsButton(i).Visible='off';
+        end
+        if fcnArgsCheckbox(i).Value==0 && fcnArgsCheckbox(i).Visible==1 % If not checked, turn off args button visibility
+            fcnArgsButton(i).Visible='off';
+        elseif fcnArgsCheckbox(i).Value==1
+            fcnArgsButton(i).Visible='on';
+        end
     end
+    
     
 end

@@ -6,9 +6,9 @@ Data Panel Linear & Angular Transverse-Plane Angles: None
 Data Panel Lateral Distance: None
 Data Panel Hwb About COM: None
 Data Panel TBCM Position: None
-Data Panel Calibrations: None
-Data Panel Smooth Marker Data: None
-Data Panel Setup: None
+Data Panel Calibrations: Load
+Data Panel Smooth Marker Data: Load
+Data Panel Setup: Load
 Target Trial ID Format: Trial Name/Number
 Trial ID Column Header For MOCAP & FP: Trial Name/Number
 Subject ID Column Header: Subject Codename

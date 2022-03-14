@@ -101,12 +101,12 @@ for i=1:length(dataTypes)
             feval(pathsByLevel.ImportFcnName.(dataTypes{i}),rawDataFileNames.(dataTypes{i}),logRow,logHeaders,subName,trialName,repNum);
             break;
 
-        elseif isfield(rawDataFileNames,dataTypes{i}) && exist(rawDataFileNames.(dataTypes{i}),'file')~=2
+        elseif isequal(level,'Trial') && isfield(rawDataFileNames,dataTypes{i}) && exist(rawDataFileNames.(dataTypes{i}),'file')~=2
 
             disp(['Missing raw data file: ' rawDataFileNames.(dataTypes{i})]);
             return;
 
-        else
+        elseif isequal(level,'Trial')
 
             % When can I really say that the data is missing? Certainly if this is not a trial level (i.e. no import). But when else?
             disp(['Data to be loaded from MAT is missing: ' newPath]);

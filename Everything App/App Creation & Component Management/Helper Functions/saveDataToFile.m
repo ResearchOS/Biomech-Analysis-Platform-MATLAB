@@ -51,17 +51,21 @@ for i=1:length(saveLevels)
                 dotNum=1;
         end        
 
-        if ~isequal(prevMatFilePath,matFilePath) % Save off a mat file and load the new mat file.  
+        if ~isequal(prevMatFilePath,matFilePath) % Save off a mat file and load the new mat file if it exists.
 
             if ~isempty(prevMatFilePath) % Save off the previous file.
                 eval(['save(''' prevMatFilePath ''',''data'',' '''-v6''' ');']);
             end
 
             % Load the new file.
-            matFile=load(matFilePath);
-            fldNames=fieldnames(matFile);
-            assert(length(fldNames)==1);
-            data=matFile.(fldNames{1});
+            if exist(matFilePath,'file')==2
+                matFile=load(matFilePath);
+                fldNames=fieldnames(matFile);
+                assert(length(fldNames)==1);
+                data=matFile.(fldNames{1});
+            else
+                clear data;
+            end
 
         end
 
@@ -73,7 +77,9 @@ for i=1:length(saveLevels)
     end
 
     % Save off the final file.
-    eval(['save(''' matFilePath ''',''data'',' '''-v6''' ');']);
+    if ~isempty(currPaths)
+        eval(['save(''' matFilePath ''',''data'',' '''-v6''' ');']);
+    end
 
 end
 

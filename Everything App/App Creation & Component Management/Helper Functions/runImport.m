@@ -172,11 +172,23 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
 
             if isequal(spaceSplit{4}(end),'1') % Function level args
                 argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '_Process' fcnNum fcnLetter '.m'];
+                if exist(argsFcnName,'file')~=2
+                    warning(['Argument function missing for processing function ' fcnName fcnNum fcnLetter ' in group ' groupNameField]);
+                    return;
+                end
             elseif isequal(spaceSplit{4}(end),'0') % Group level args
                 argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Group' slash groupNameField '_Process_Args.m'];
+                if exist(argsFcnName,'file')~=2
+                    warning(['Group arguments missing for processing group ' groupNameField]);
+                    return;
+                end
             end
 
             [argsPaths.Inputs.([fcnName fcnNum]),argsPaths.Outputs.([fcnName fcnNum]),argsPaths.All.([fcnName fcnNum])]=readArgsFcn(argsFcnName);
+
+            if isempty(argsPaths.All.([fcnName fcnNum])) % There was a problem with the args function
+                return;
+            end
 
             pathsByLevel.Action.([fcnName fcnNum fcnLetter])=action;
 
@@ -407,16 +419,16 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
 
         evalin('base','clear trialData;');
 
-    end
-
-    if loadAnySubj==1 && exist(fullPathSubjMat,'file')==2
-        %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' SUBJECT-LEVEL DATA
-        switch kk
-            case 1
-                offloadData(pathsByLevel,'Subject',subName);
-            case 2
-                loadData(fullPathSubjMat,redoVal,pathsByLevel,'Subject',subName); % Will never import data here, never subject-level raw data files.
+        if loadAnySubj==1 && exist(fullPathSubjMat,'file')==2
+            %% LOAD/OFFLOAD DATA TYPES' & PROCESSING GROUPS' SUBJECT-LEVEL DATA
+            switch kk
+                case 1
+                    offloadData(pathsByLevel,'Subject',subName);
+                case 2
+                    loadData(fullPathSubjMat,redoVal,pathsByLevel,'Subject',subName); % Will never import data here, never subject-level raw data files.
+            end
         end
+
     end
 
 end

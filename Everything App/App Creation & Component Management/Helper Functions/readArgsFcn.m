@@ -137,7 +137,7 @@ if ~exist('pathsInputs','var')
 end
 
 if ~exist('pathsOutputs','var')
-    warning('Missing output variables! Terminating processing.');
+    warning(['Terminating processing. Missing output variables in ' filePath '!']);
     pathsOutputs='';
     paths='';
     return;

@@ -64,11 +64,13 @@ newHandles.nameInCodeLabel=uilabel(Q,'Text','Name In Code','Tag','NameInCodeLabe
 newHandles.fullNicknameEditField=uieditfield(Q,'text','Value','','Tag','FullNicknameEditField','Tooltip','The arg name in the list (in case it was cut off)','Editable','off');
 newHandles.nameInCodeEditField=uieditfield(Q,'text','Value','','Tag','NameInCodeEditField','Tooltip','How the arg is referred to in this function. Can be function-specific or common across this processing group','Editable','on','ValueChangedFcn',@(nameInCodeEditField,event) nameInCodeEditFieldValueChanged(nameInCodeEditField));
 newHandles.descriptionTextArea=uitextarea(Q,'Value','Enter Description Here','Tooltip','Description of what this arg is and how it was computed','Editable','on','Tag','DescriptionTextArea','ValueChangedFcn',@(descriptionTextArea,event) descriptionTextAreaValueChanged(descriptionTextArea));
+newHandles.renameVarButton=uibutton(Q,'push','Text','Reset Nickname','Tooltip','Change the nickname','Tag','RenameVarButton','ButtonPushedFcn',@(renameVarButton,event) renameVarButtonPushed(renameVarButton));
 
 Q.UserData=struct('AllLabel',newHandles.allLabel,'AllOpenButton',newHandles.allOpenButton,'AllArgsHardCodeCheckbox',newHandles.allArgsHardCodeCheckbox,'AllArgsProjectCheckbox',newHandles.allArgsProjectCheckbox,'AllArgsSubjectCheckbox',newHandles.allArgsSubjectCheckbox,'AllArgsTrialCheckbox',newHandles.allArgsTrialCheckbox,...
     'AllArgsListBox',newHandles.allArgsListBox,'CreateArgButton',newHandles.createArgButton,'DeleteArgButton',newHandles.deleteArgButton,'AddArgsToFcnButton',newHandles.addArgsToFcnButton,'RemoveArgsFromFcnButton',newHandles.removeArgsFromFcnButton,'FcnLabel',newHandles.fcnLabel,'FcnOpenButton',newHandles.fcnOpenButton,...
     'FcnListBox',newHandles.fcnListBox,'FcnArgsVersionLabel',newHandles.fcnArgsVersionLabel,'FcnArgsVersionDropDown',newHandles.fcnArgsVersionDropDown,'AddFcnArgsVersionButton',newHandles.addFcnArgsVersionButton,'DeleteFcnArgsVersionButton',newHandles.deleteFcnArgsVersionButton,'PrintFcnArgsButton',newHandles.printFcnArgsButton,...
-    'SyncToGroupButton',newHandles.syncToGroupButton,'IsSyncedCheckbox',newHandles.isSyncedCheckbox,'FullNicknameLabel',newHandles.fullNicknameLabel,'NameInCodeLabel',newHandles.nameInCodeLabel,'FullNicknameEditField',newHandles.fullNicknameEditField,'NameInCodeEditField',newHandles.nameInCodeEditField,'DescriptionTextArea',newHandles.descriptionTextArea);
+    'SyncToGroupButton',newHandles.syncToGroupButton,'IsSyncedCheckbox',newHandles.isSyncedCheckbox,'FullNicknameLabel',newHandles.fullNicknameLabel,'NameInCodeLabel',newHandles.nameInCodeLabel,'FullNicknameEditField',newHandles.fullNicknameEditField,'NameInCodeEditField',newHandles.nameInCodeEditField,'DescriptionTextArea',newHandles.descriptionTextArea,...
+    'RenameVarButton',newHandles.renameVarButton);
 
 argsResize(Q);
 

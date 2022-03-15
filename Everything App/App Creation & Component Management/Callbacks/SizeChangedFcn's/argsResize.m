@@ -61,6 +61,7 @@ nameInCodeLabelRelPos=[0.55 0.7];
 fullNicknameEditFieldRelPos=[0.7 0.75];
 nameInCodeEditFieldRelPos=[0.7 0.7];
 descriptionTextAreaRelPos=[0.55 0.02];
+renameVarButtonRelPos=[0.75 0.8];
 
 %% Component width specified relative to GUI width, height is in absolute units (constant)
 compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text
@@ -90,6 +91,7 @@ nameInCodeLabelSize=[0.15 compHeight];
 fullNicknameEditFieldSize=[0.28 compHeight];
 nameInCodeEditFieldSize=[0.28 compHeight];
 descriptionTextAreaSize=[0.43 0.6];
+renameVarButtonSize=[0.20 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.
 allLabelPos=round([allLabelRelPos.*figSize allLabelSize(1)*figSize(1) allLabelSize(2)]);
@@ -118,6 +120,7 @@ nameInCodeLabelPos=round([nameInCodeLabelRelPos.*figSize nameInCodeLabelSize(1)*
 fullNicknameEditFieldPos=round([fullNicknameEditFieldRelPos.*figSize fullNicknameEditFieldSize(1)*figSize(1) fullNicknameEditFieldSize(2)]);
 nameInCodeEditFieldPos=round([nameInCodeEditFieldRelPos.*figSize nameInCodeEditFieldSize(1)*figSize(1) nameInCodeEditFieldSize(2)]);
 descriptionTextAreaPos=round([descriptionTextAreaRelPos.*figSize descriptionTextAreaSize.*figSize]);
+renameVarButtonPos=round([renameVarButtonRelPos.*figSize renameVarButtonSize(1)*figSize(1) renameVarButtonSize(2)]);
 
 %% Set the actual positions for each component
 data.AllLabel.Position=allLabelPos;
@@ -146,6 +149,7 @@ data.NameInCodeLabel.Position=nameInCodeLabelPos;
 data.FullNicknameEditField.Position=fullNicknameEditFieldPos;
 data.NameInCodeEditField.Position=nameInCodeEditFieldPos;
 data.DescriptionTextArea.Position=descriptionTextAreaPos;
+data.RenameVarButton.Position=renameVarButtonPos;
 
 %% Set the font sizes for all components that use text
 data.AllLabel.FontSize=newFontSize;
@@ -163,7 +167,7 @@ data.FcnLabel.FontSize=newFontSize;
 data.FcnOpenButton.FontSize=newFontSize;
 data.FcnListBox.FontSize=newFontSize;
 data.FcnArgsVersionLabel.FontSize=newFontSize;
-data.FcnArgsVerionDropDown.FontSize=newFontSize;
+data.FcnArgsVersionDropDown.FontSize=newFontSize;
 data.AddFcnArgsVersionButton.FontSize=newFontSize;
 data.DeleteFcnArgsVersionButton.FontSize=newFontSize;
 data.PrintFcnArgsVersionButton.FontSize=newFontSize;
@@ -174,3 +178,4 @@ data.NameInCodeLabel.FontSize=newFontSize;
 data.FullNicknameEditField.FontSize=newFontSize;
 data.NameInCodeEditField.FontSize=newFontSize;
 data.DescriptionTextArea.FontSize=newFontSize;
+data.RenameVarButton.FontSize=newFontSize;

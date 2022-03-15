@@ -22,7 +22,6 @@ fcnName=[fcnNameOnly '_' guiTab methodNum letter];
 setappdata(fig,'fcnName',fcnName);
 groupName=getappdata(fig,'groupName');
 
-
 projectName=getappdata(fig,'projectName');
 
 % Read through the txt file to find the args in the current function, group, and guiTab combo.

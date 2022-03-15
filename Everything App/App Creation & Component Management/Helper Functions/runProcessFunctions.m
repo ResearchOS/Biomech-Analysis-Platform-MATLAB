@@ -76,11 +76,11 @@ for i=lineNum+1:length(text)
     number=fcnNameCell{2}(~isletter(fcnNameCell{2}));
     letter=fcnNameCell{2}(isletter(fcnNameCell{2}));
     fcnNames{fcnCount}=[fcnNameCell{1} '_Process' number]; % All the function names, in order
-    if isequal(runAndSpecifyTrialsCell{3}(end),'1') % if using function-specific argument function
-        argsNames{fcnCount}=[fcnNameCell{1} '_Process' number letter]; % All the argument function names, in order
-    else % if using group level argument function
-        argsNames{fcnCount}=groupArgsName;
-    end
+%     if isequal(runAndSpecifyTrialsCell{3}(end),'1') % if using function-specific argument function
+%         argsNames{fcnCount}=[fcnNameCell{1} '_Process' number letter]; % All the argument function names, in order
+%     else % if using group level argument function
+%         argsNames{fcnCount}=groupArgsName;
+%     end
 
     runFuncs(fcnCount)=str2double(runAndSpecifyTrialsCell{1}(end));
     funcSpecifyTrials(fcnCount)=str2double(runAndSpecifyTrialsCell{2}(end));
@@ -132,17 +132,17 @@ projectStruct=evalin('base','projectStruct;');
 
 for i=1:length(fcnNames)
 
-    if exist([argsNames{i} '.m'],'file')~=2
-        beep;
-        warning(['Input Argument Function Does Not Exist: ' argsNames{i}]);
-        return;
-    end
+%     if exist([argsNames{i} '.m'],'file')~=2
+%         beep;
+%         warning(['Input Argument Function Does Not Exist: ' argsNames{i}]);
+%         return;
+%     end
 
-    if exist([argsFolderFcn argsNames{i} '.m'],'file')==2
-        argPath{i}=[argsFolderFcn argsNames{i} '.m'];
-    elseif exist([argsFolderGroup argsNames{i} '.m'],'file')==2
-        argPath{i}=[argsFolderGroup argsNames{i} '.m'];
-    end
+%     if exist([argsFolderFcn argsNames{i} '.m'],'file')==2
+%         argPath{i}=[argsFolderFcn argsNames{i} '.m'];
+%     elseif exist([argsFolderGroup argsNames{i} '.m'],'file')==2
+%         argPath{i}=[argsFolderGroup argsNames{i} '.m'];
+%     end
 
     specTrials=funcSpecifyTrials(i); % 1 means function level, 0 means group level
     fcnName=fcnNames{i};

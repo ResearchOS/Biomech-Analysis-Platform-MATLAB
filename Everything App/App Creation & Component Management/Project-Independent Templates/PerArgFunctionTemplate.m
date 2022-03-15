@@ -1,4 +1,4 @@
-function [argPath,argVal]=PerArgFunctionTemplate(projectStruct,subName,trialName,repNum)
+function [arg]=PerArgFunctionTemplate(inOut,projectStruct,subName,trialName,repNum)
 
 %% PURPOSE: TEMPLATE FOR ARGUMENT FUNCTIONS
 % Outputs:
@@ -6,7 +6,10 @@ function [argPath,argVal]=PerArgFunctionTemplate(projectStruct,subName,trialName
 % If not wanting to store the value provided here, set argPath to 'projectStruct.Placeholder';
 % argVal: (optional) The value of the argument (any data type)
 
-% argPath='projectStruct.Placeholder';
-argPath='projectStruct.(subName).(trialName).Results(repNum)';
+if isequal(inOut,'out')
+    arg='projectStruct.Placeholder';
+    % argPath='projectStruct.(subName).(trialName).Results(repNum)';
+    return;
+end
 
-argVal=projectStruct.(subName).(trialName).Results(repNum);
+arg=projectStruct.(subName).(trialName).Results(repNum);

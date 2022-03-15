@@ -78,13 +78,13 @@ for i=1:length(argNames)
     % argIn returned as a struct with fields of argNames
     if exist('trialName','var')
 %         level='Trial';
-        [~,argIn]=feval(argsFcnName{i},evalin('base','projectStruct;'),subName,trialName,repNum);
+        [~,argIn]=feval(argsFcnName{i},'in',evalin('base','projectStruct;'),subName,trialName,repNum);
     elseif exist('subName','var')
 %         level='Subject';
-        [~,argIn]=feval(argsFcnName{i},evalin('base','projectStruct;'),subName);
+        [~,argIn]=feval(argsFcnName{i},'in',evalin('base','projectStruct;'),subName);
     else
 %         level='Project';
-        [~,argIn]=feval(argsFcnName{i},evalin('base','projectStruct;'));
+        [~,argIn]=feval(argsFcnName{i},'in',evalin('base','projectStruct;'));
     end
 
     varargout{i}=argIn;

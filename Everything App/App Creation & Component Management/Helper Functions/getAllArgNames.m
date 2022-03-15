@@ -66,7 +66,7 @@ for i=1:length(text)
         continue;
     end
 
-    if ~(length(text{i})>=length(guiTab) && isequal(text{i}(1:length(guiTab)),guiTab))
+    if ~isempty(text{i}) && ~(length(text{i})>=length(guiTab) && isequal(text{i}(1:length(guiTab)),guiTab))
         continue; % If this argument name is not from the proper GUI tab, skip it.
     end
 
@@ -77,7 +77,7 @@ for i=1:length(text)
     % Args specific to one function within one group.    
     colonIdx=strfind(text{i},':');
     if isempty(text{i})
-        continue;
+        break;
     end
     argCount=argCount+1;
     argNames{argCount}=strtrim(text{i}(colonIdx(1)+1:colonIdx(2)-1)); % Get argument name    

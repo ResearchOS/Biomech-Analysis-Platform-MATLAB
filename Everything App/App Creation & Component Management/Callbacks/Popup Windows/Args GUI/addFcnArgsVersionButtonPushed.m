@@ -1,0 +1,3 @@
+function []=addFcnArgsVersionButtonPushed(src,event)
+
+%% PURPOSE: ADD A NEW ARGS VERSION TO THE CURRENT FUNCTION. COPIES FROM THE CURRENT VERSION

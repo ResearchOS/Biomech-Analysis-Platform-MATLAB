@@ -1,0 +1,3 @@
+function []=allArgsFilterCheckboxChecked(src,event)
+
+%% PURPOSE: FILTER THE ALL ARGS LIST BOX BY WHICHEVER CHECKBOXES ARE SELECTED.

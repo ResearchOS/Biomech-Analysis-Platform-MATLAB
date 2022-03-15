@@ -8,8 +8,6 @@ if isempty(data)
     return; % Called on uifigure creation
 end
 
-% Set components to be invisible
-
 % Modify component location
 figSize=src.Position(3:4); % Width x height
 

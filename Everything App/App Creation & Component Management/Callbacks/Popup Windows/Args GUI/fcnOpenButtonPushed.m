@@ -1,0 +1,3 @@
+function []=fcnOpenButtonPushed(src,event)
+
+%% PURPOSE: OPEN THE ARGS FUNCTION SELECTED IN THE CURRENT FUNCTION ARGS LIST BOX.

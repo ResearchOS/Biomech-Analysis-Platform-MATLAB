@@ -21,6 +21,14 @@ if contains(input,':')
     return;
 end
 
+input=strtrim(input);
+input(isspace(input))='_'; % Replace spaces with underscores
+
+if ~isvarname(input)
+    warning('Improper argument nickname! Spaces are ok, but otherwise must evaluate to valid MATLAB variable name!');
+    return;
+end
+
 % 2. If this argument name already exists in the list, ask if want to overwrite.
 
 % 3. If does not exist, or overwriting, put the argument name and its corresponding function name into the text file.

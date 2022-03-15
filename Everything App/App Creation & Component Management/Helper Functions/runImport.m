@@ -4,6 +4,8 @@ function []=runImport(src)
 
 %% Initialize projectStruct & figure handles
 fig=ancestor(src,'figure','toplevel');
+setappdata(fig,'guiTab','Import'); % For args GUI
+setappdata(fig,'groupName','Import'); % For args GUI
 handles=getappdata(fig,'handles');
 assignin('base','gui',fig);
 
@@ -190,7 +192,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
             % Determine whether the function or group level args is specified.
 %             spaceSplit=strsplit(colonSplit{2},' ');
 
-            argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'ProcessArg_' argName];
+%             argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'ProcessArg_' argName];
 
 %             if isequal(spaceSplit{4}(end),'1') % Function level args
 %                 argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '_Process' fcnNum fcnLetter '.m'];
@@ -208,7 +210,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
 
 %% READ THROUGH THE ARGS TXT FILE FOR THE CURRENT FUNCTION TO GET THE LIST OF ARGUMENT NAMES. THEN, READ EACH OF THOSE FUNCTIONS TO RETURN ALL OF THE PATHS.
             [text]=readAllArgsTextFile(getappdata(fig,'everythingPath'),projectName,'Process');
-            [argNames]=getAllArgNames(text,projectName,'Process',groupNames{i},[fcnName fcnNum fcnLetter]);
+            [argNames]=getAllArgNames(text,projectName,'Process',groupNames{i},[fcnName '_Process' fcnNum fcnLetter]);
             
             argsPaths.Inputs.([fcnName fcnNum])={};
             argsPaths.Outputs.([fcnName fcnNum])={};
@@ -446,7 +448,7 @@ for kk=1:2 % First offload everything, then load everything. This accounts for a
                     pathsByLevel.MethodNum.(dataField)=number;
                     pathsByLevel.MethodLetter.(dataField)=letter;
 
-                    setappdata(fig,'argsFuncName',dataImportArgsFcnNames.(dataField));
+%                     setappdata(fig,'argsFuncName',dataImportArgsFcnNames.(dataField));
 
                 end
 

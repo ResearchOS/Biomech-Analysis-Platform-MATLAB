@@ -31,14 +31,14 @@ elseif ispc==1
 end
 pathSplit=strsplit(filePath,slash);
 fileName=pathSplit{end};
-if ~isempty(strfind(fileName,'_Import'))
-    fileSuffix=strsplit(fileName,'_Import');
-elseif ~isempty(strfind(fileName,'_Process'))
-    fileSuffix=strsplit(fileName,'_Process');
-elseif ~isempty(strfind(fileName,'_Plot'))
-    fileSuffix=strsplit(fileName,'_Plot');
-end
-methodID=fileSuffix{2}(1:strfind(fileSuffix{2},'.')-1);
+% if ~isempty(strfind(fileName,'_Import'))
+%     fileSuffix=strsplit(fileName,'_Import');
+% elseif ~isempty(strfind(fileName,'_Process'))
+%     fileSuffix=strsplit(fileName,'_Process');
+% elseif ~isempty(strfind(fileName,'_Plot'))
+%     fileSuffix=strsplit(fileName,'_Plot');
+% end
+% methodID=fileSuffix{2}(1:strfind(fileSuffix{2},'.')-1);
 
 argCount=0;
 % fcnCount=0;

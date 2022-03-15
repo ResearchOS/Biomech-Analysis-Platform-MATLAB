@@ -50,12 +50,32 @@ for i=1:length(dataTypeSplit)
     %     dataImportFcnNames{i}=[lower(dataField) '_Import' methodNumber.(dataField)];
     pathsByLevel.ImportFcnName.(dataField)=[lower(dataField) '_Import' methodNumber.(dataField)];
 
-    % Import function args paths to read through
-    dataImportArgsFcnNames.(dataField)=[codePath 'Import_' getappdata(fig,'projectName') slash 'Arguments' slash lower(dataField) '_Import' methodNumber.(dataField) methodLetter.(dataField) '.m'];
+    %% READ THROUGH THE ARGS TXT FILE FOR THE CURRENT FUNCTION TO GET THE LIST OF ARGUMENT NAMES. THEN, READ EACH OF THOSE FUNCTIONS TO RETURN ALL OF THE PATHS.
+    [text]=readAllArgsTextFile(getappdata(fig,'everythingPath'),projectName,'Import');
+    [argNames]=getAllArgNames(text,projectName,'Import','Import',[pathsByLevel.ImportFcnName.(dataField) methodLetter.(dataField)]);
 
-    % Read through import function args and get all of the projectStruct
-    % paths
-    [argsPaths.Inputs.(dataField),argsPaths.Outputs.(dataField),argsPaths.All.(dataField)]=readArgsFcn(dataImportArgsFcnNames.(dataField));
+    argsPaths.Inputs.(dataField)={};
+    argsPaths.Outputs.(dataField)={};
+    argsPaths.All.(dataField)={};
+    for argNum=1:length(argNames)
+        argName=argNames{argNum};
+        argFcnPath=[codePath 'Import_' projectName slash 'Arguments' slash 'ImportArg_' argName '.m'];
+        if exist(argFcnPath,'file')~=2
+            warning(['Missing function for Import Argument ' argName]);
+            return;
+        end
+        [tempIns,tempOuts,tempAll]=readArgsFcn(argFcnPath);
+        argsPaths.Inputs.(dataField)=[argsPaths.Inputs.(dataField); tempIns];
+        argsPaths.Outputs.(dataField)=[argsPaths.Outputs.(dataField); tempOuts];
+        argsPaths.All.(dataField)=[argsPaths.All.(dataField); tempAll];
+
+    end
+
+    % Import function args paths to read through
+%     dataImportArgsFcnNames.(dataField)=[codePath 'Import_' projectName slash 'Arguments' slash lower(dataField) '_Import' methodNumber.(dataField) methodLetter.(dataField) '.m'];
+
+    % Read through import function args and get all of the projectStruct paths
+%     [argsPaths.Inputs.(dataField),argsPaths.Outputs.(dataField),argsPaths.All.(dataField)]=readArgsFcn(dataImportArgsFcnNames.(dataField));
 
     trialCount=0; % The count of how many inputs paths there are at the trial level, per data type or processing group
     subjCount=0;
@@ -168,25 +188,49 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
             fcnNum=beforeColon{2}(~isletter(beforeColon{2}));
 
             % Determine whether the function or group level args is specified.
-            spaceSplit=strsplit(colonSplit{2},' ');
+%             spaceSplit=strsplit(colonSplit{2},' ');
 
-            if isequal(spaceSplit{4}(end),'1') % Function level args
-                argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '_Process' fcnNum fcnLetter '.m'];
-                if exist(argsFcnName,'file')~=2
-                    warning(['Argument function missing for processing function ' fcnName fcnNum fcnLetter ' in group ' groupNameField]);
+            argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'ProcessArg_' argName];
+
+%             if isequal(spaceSplit{4}(end),'1') % Function level args
+%                 argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '_Process' fcnNum fcnLetter '.m'];
+%                 if exist(argsFcnName,'file')~=2
+%                     warning(['Argument function missing for processing function ' fcnName fcnNum fcnLetter ' in group ' groupNameField]);
+%                     return;
+%                 end
+%             elseif isequal(spaceSplit{4}(end),'0') % Group level args
+%                 argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Group' slash groupNameField '_Process_Args.m'];
+%                 if exist(argsFcnName,'file')~=2
+%                     warning(['Group arguments missing for processing group ' groupNameField]);
+%                     return;
+%                 end
+%             end
+
+%% READ THROUGH THE ARGS TXT FILE FOR THE CURRENT FUNCTION TO GET THE LIST OF ARGUMENT NAMES. THEN, READ EACH OF THOSE FUNCTIONS TO RETURN ALL OF THE PATHS.
+            [text]=readAllArgsTextFile(getappdata(fig,'everythingPath'),projectName,'Process');
+            [argNames]=getAllArgNames(text,projectName,'Process',groupNames{i},[fcnName fcnNum fcnLetter]);
+            
+            argsPaths.Inputs.([fcnName fcnNum])={};
+            argsPaths.Outputs.([fcnName fcnNum])={};
+            argsPaths.All.([fcnName fcnNum])={};
+            for argNum=1:length(argNames)
+                argName=argNames{argNum};
+                argFcnPath=[codePath 'Process_' projectName slash 'Arguments' slash 'ProcessArg_' argName '.m'];
+                if exist(argFcnPath,'file')~=2
+                    warning(['Missing function for Process Argument ' argName]);
                     return;
                 end
-            elseif isequal(spaceSplit{4}(end),'0') % Group level args
-                argsFcnName=[codePath 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Group' slash groupNameField '_Process_Args.m'];
-                if exist(argsFcnName,'file')~=2
-                    warning(['Group arguments missing for processing group ' groupNameField]);
-                    return;
-                end
+                [tempIns,tempOuts,tempAll]=readArgsFcn(argFcnPath);
+                argsPaths.Inputs.([fcnName fcnNum])=[argsPaths.Inputs.([fcnName fcnNum]); tempIns];
+                argsPaths.Outputs.([fcnName fcnNum])=[argsPaths.Outputs.([fcnName fcnNum]); tempOuts];
+                argsPaths.All.([fcnName fcnNum])=[argsPaths.All.([fcnName fcnNum]); tempAll];
+            
             end
 
-            [argsPaths.Inputs.([fcnName fcnNum]),argsPaths.Outputs.([fcnName fcnNum]),argsPaths.All.([fcnName fcnNum])]=readArgsFcn(argsFcnName);
+%             [argsPaths.Inputs.([fcnName fcnNum]),argsPaths.Outputs.([fcnName fcnNum]),argsPaths.All.([fcnName fcnNum])]=readArgsFcn(argsFcnName);
 
             if isempty(argsPaths.All.([fcnName fcnNum])) % There was a problem with the args function
+                warning(['Problem with the Process Argument function for ' argName]);
                 return;
             end
 

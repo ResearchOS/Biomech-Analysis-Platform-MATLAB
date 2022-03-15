@@ -9,15 +9,18 @@ nameInCodeVal=handles.nameInCodeEditField.Value;
 
 currVals=handles.fcnListBox.Value;
 
-argsNameInCode=getappdata(fig,'argsNameInCode');
-argsDesc=getappdata(fig,'argsDesc');
-argNames=getappdata(fig,'argNames');
+% argsNameInCode=getappdata(fig,'argsNameInCode');
+% argsDesc=getappdata(fig,'argsDesc');
+% argNames=getappdata(fig,'argNames');
 
 fcnName=getappdata(fig,'fcnName');
 groupName=getappdata(fig,'groupName');
 guiTab=getappdata(fig,'guiTab');
 
 projectName=getappdata(fig,'projectName');
+
+text=readAllArgsTextFile(getappdata(fig,'everythingPath'),projectName,guiTab);
+[argsNames,argsNamesInCode,argsDescs]=getAllArgNames(text,projectName,guiTab,groupName,fcnName);
 
 if length(currVals)>1
     handles.nameInCodeEditField.Value='Mult';
@@ -28,10 +31,10 @@ if isequal(currVals,{'No Args'})
     return;
 end
 
-idx=ismember(handles.fcnListBox.Items,currVals);
-description=argsDesc{idx};
-argName=argNames{idx};
-currArgsNameInCode=argsNameInCode{idx};
+idx=ismember(argsNames,currVals);
+description=argsDescs{idx};
+argName=argsNames{idx};
+currArgsNameInCode=argsNamesInCode{idx};
 
 % Get the order of 1 and 0 for nameInCode to replicate it (changed when checkbox is checked)
 if isempty(currArgsNameInCode)

@@ -47,7 +47,7 @@ else
     text{1,1}=['Project Name: ' projectName];
     text{2,1}=['Group Name: ' groupName];
     text{3,1}=['Function Name: ' fcnName];
-    text{4,1}=[guiTab ': ' argName ':'];
+    text{4,1}=[guiTab ': ' argName ': 0 , 1 : Enter Description Here'];
     text{5,1}='';
     fid=fopen(txtPath,'w');
     fprintf(fid,'%s\n',text{1:end-1});

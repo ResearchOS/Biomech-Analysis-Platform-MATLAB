@@ -11,16 +11,18 @@ assert(length(descVal)==1);
 descVal=descVal{1};
 
 currVals=handles.fcnListBox.Value;
-
-argsNameInCode=getappdata(fig,'argsNameInCode');
-argsDesc=getappdata(fig,'argsDesc');
-argNames=getappdata(fig,'argNames');
-
 fcnName=getappdata(fig,'fcnName');
 groupName=getappdata(fig,'groupName');
 guiTab=getappdata(fig,'guiTab');
 
 projectName=getappdata(fig,'projectName');
+
+text=readAllArgsTextFile(getappdata(fig,'everythingPath'),projectName,guiTab);
+[argsNames,argsNamesInCode,argsDescs]=getAllArgNames(text,projectName,guiTab,groupName,fcnName);
+
+% argsNameInCode=getappdata(fig,'argsNameInCode');
+% argsDesc=getappdata(fig,'argsDesc');
+% argNames=getappdata(fig,'argNames');
 
 if length(currVals)>1
     handles.descriptionTextArea.Value='Mult';
@@ -31,10 +33,10 @@ if isequal(currVals,{'No Args'})
     return;
 end
 
-idx=ismember(handles.fcnListBox.Items,currVals);
-description=argsDesc{idx};
-argName=argNames{idx};
-currArgsNameInCode=argsNameInCode{idx};
+idx=ismember(argsNames,currVals);
+description=argsDescs{idx};
+argName=currVals{1};
+currArgsNameInCode=argsNamesInCode{idx};
 
 if any(contains(descVal,char(13))) || any(contains(descVal,'newline'))
     warning('Newline chars not allowed!');

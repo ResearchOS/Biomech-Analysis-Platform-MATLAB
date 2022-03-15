@@ -101,10 +101,10 @@ methodID=suffix(length(guiTab)+1:end); % Number & letter only
 methodLetter=methodID(isstrprop(methodID,'alpha'));
 methodNum=methodID(isstrprop(methodID,'digit'));
 
-if iscell(text)
+if iscell(text) && ~isempty(text{1})
     allLetters=getAllArgLetters(text,getappdata(fig,'projectName'),guiTab,fcnNameOnly,methodNum);
 else
-    allLetters=methodLetter;
+    allLetters={methodLetter};
 end
 newHandles.fcnArgsVersionDropDown.Items=allLetters;
 

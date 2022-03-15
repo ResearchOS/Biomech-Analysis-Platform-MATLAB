@@ -46,6 +46,7 @@ if isequal(fcnListBox.Items,{'No Args'})
 end
 
 fcnListBox.Items=sort(unique([fcnListBox.Items allArgsSelected]));
+fcnListBox.Value=allArgsSelected{1};
 
 % Update the argsDesc, nameInCode, and argNames vars
 

@@ -64,6 +64,5 @@ end
 
 writeAllArgsTextFile(getappdata(fig,'currProjectArgsTxtPath'),guiTab,groupName,fcnName,argName,projectName,nameInCodeStr,description);
 
-nameInCode=getappdata(fig,'argsNameInCode');
-nameInCode{idx}=nameInCodeStr;
-setappdata(fig,'argsNameInCode',nameInCode);
+argsNameInCode{idx}=nameInCodeStr;
+setappdata(fig,'argsNameInCode',argsNameInCode);

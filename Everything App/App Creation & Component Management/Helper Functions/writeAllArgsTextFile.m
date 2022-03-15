@@ -19,7 +19,8 @@ if ~isequal(fcnNameSplit{1},'Unassigned')
     suffix=fcnNameSplit{end}; % guiTab, methodNum, & methodLetter
     methodNum=suffix(methodNumIdx); % methodNum
     methodNumIdx=find(methodNumIdx==1,1,'first');
-    guiTab=fcnNameSplit{end}(1:methodNumIdx-1); % Which tab the args is being called from.
+    assert(isequal(fcnNameSplit{end}(1:methodNumIdx-1),guiTab));
+%     guiTab=; % Which tab the args is being called from.
     suffixAfterGuiTab=fcnNameSplit{end}(methodNumIdx:end);
     methodLetter=suffixAfterGuiTab(isstrprop(suffixAfterGuiTab,'alpha'));
 else
@@ -35,12 +36,15 @@ groupFound=0;
 
 if exist(txtPath,'file')==2
     text=regexp(fileread(txtPath),'\n','split');
+end
+
+if exist(txtPath,'file')==2 && (exist('text','var') && ~isempty(text{1}))
     if size(text,1)<size(text,2)
         text=text'; % Ensure that it is a column vector
     end
 else
     text{1,1}=['Project Name: ' projectName];
-    text{2,1}=['Group Name: ' fcnName];
+    text{2,1}=['Group Name: ' groupName];
     text{3,1}=['Function Name: ' fcnName];
     text{4,1}=[guiTab ': ' argName ':'];
     text{5,1}='';

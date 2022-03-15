@@ -10,9 +10,19 @@ setappdata(fig,'argsDesc','');
 
 % Get the current function name, group name, version letter, and guiTab.
 fcnName=getappdata(fig,'fcnName');
-groupName=getappdata(fig,'groupName');
-letter=handles.fcnArgsVersionDropDown.Value;
 guiTab=getappdata(fig,'guiTab');
+% Ensure that fcnName matches the letter
+fcnNameUnderscoreIdx=strfind(fcnName,['_' guiTab]);
+fcnNameOnly=fcnName(1:fcnNameUnderscoreIdx(end)-1);
+methodID=fcnName(fcnNameUnderscoreIdx+length(['_' guiTab]):end);
+% methodLetter=methodID(isstrprop(methodID,'alpha'));
+methodNum=methodID(isstrprop(methodID,'digit'));
+letter=handles.fcnArgsVersionDropDown.Value;
+fcnName=[fcnNameOnly '_' guiTab methodNum letter];
+setappdata(fig,'fcnName',fcnName);
+groupName=getappdata(fig,'groupName');
+
+
 projectName=getappdata(fig,'projectName');
 
 % Read through the txt file to find the args in the current function, group, and guiTab combo.

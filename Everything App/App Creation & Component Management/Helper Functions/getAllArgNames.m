@@ -40,13 +40,15 @@ for i=1:length(text)
         end
         if length(text{i})>=length('Function Name: ') && isequal(text{i}(1:length('Function Name: ')),'Function Name: ')
             continue;
-        end        
+        end                
         colonIdx=strfind(text{i},':');
         if isempty(text{i})
             continue;
         end
-        argCount=argCount+1;
-        argNames{argCount}=strtrim(text{i}(colonIdx(1)+1:colonIdx(2)-1)); % Get argument name        
+        if isequal(text{i}(1:length(guiTab)),guiTab)
+            argCount=argCount+1;
+            argNames{argCount}=strtrim(text{i}(colonIdx(1)+1:colonIdx(2)-1)); % Get argument name 
+        end
         continue;
     end
 

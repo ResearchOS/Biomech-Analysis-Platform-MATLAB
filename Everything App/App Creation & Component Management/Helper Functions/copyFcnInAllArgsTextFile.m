@@ -89,8 +89,8 @@ bool=1; % Indicate that it's ok to continue processing outside of this function
 newText=text(1:lastArgLine); % Copy over everything through the end of this function
 newText(lastArgLine+1)={''}; % Include a dividing empty line
 newText(lastArgLine+2)={['Function Name: ' fcnNameNew]}; % Insert the function name
-newText=[newText; text(firstArgLine:lastArgLine)]; % Append the contents of the new function
-newText=[newText; text(lastArgLine:end)]; % Append the rest of the txt file
+newText=[newText; text(firstArgLine:end)]; % Append the contents of the new function and the rest of the text file
+% newText=[newText; text(lastArgLine:end)]; % Append the rest of the txt file
 
 fid=fopen(txtPath,'w');
 fprintf(fid,'%s\n',newText{1:end-1});

@@ -110,7 +110,10 @@ end
 newHandles.fcnArgsVersionDropDown.Items=allLetters;
 
 % Set the current version letter based off of the function name input.
-assert(ismember(methodLetter,allLetters));
+assert(ismember(methodLetter,allLetters) || isempty(allLetters));
+if isempty(allLetters) % This function does not yet exist
+    newHandles.fcnArgsVersionDropDown.Items={methodLetter};
+end
 newHandles.fcnArgsVersionDropDown.Value=methodLetter;
 
 assignin('base','gui',fig);

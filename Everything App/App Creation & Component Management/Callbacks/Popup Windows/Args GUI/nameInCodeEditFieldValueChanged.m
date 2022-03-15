@@ -24,6 +24,10 @@ if length(currVals)>1
     return;
 end
 
+if isequal(currVals,{'No Args'})
+    return;
+end
+
 idx=ismember(handles.fcnListBox.Items,currVals);
 description=argsDesc{idx};
 argName=argNames{idx};

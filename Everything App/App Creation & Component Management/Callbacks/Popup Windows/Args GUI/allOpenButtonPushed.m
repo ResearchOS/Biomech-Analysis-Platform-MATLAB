@@ -10,6 +10,10 @@ projectName=getappdata(fig,'projectName');
 
 currVals=handles.allArgsListBox.Value;
 
+if isequal(currVals,{'No Args'})
+    return;
+end
+
 if ismac==1
     slash='/';
 elseif ispc==1

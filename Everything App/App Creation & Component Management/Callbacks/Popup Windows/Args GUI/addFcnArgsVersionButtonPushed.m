@@ -9,6 +9,11 @@ handles=getappdata(fig,'handles');
 
 currVals=handles.fcnListBox.Value;
 
+if isequal(currVals{1},'No Args') && length(currVals)==1
+    warning(['No arguments in current function args version! No need to make a new version.']);
+    return;
+end
+
 argsNameInCode=getappdata(fig,'argsNameInCode');
 argsDesc=getappdata(fig,'argsDesc');
 argNames=getappdata(fig,'argNames');

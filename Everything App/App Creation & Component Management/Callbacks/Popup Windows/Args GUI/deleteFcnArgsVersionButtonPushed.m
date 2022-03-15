@@ -68,10 +68,10 @@ end
 handles.fcnArgsVersionDropDown.Items=sort(unique(handles.fcnArgsVersionDropDown.Items(~ismember(handles.fcnArgsVersionDropDown.Items,currDropDownVal))));
 handles.fcnArgsVersionDropDown.Value=handles.fcnArgsVersionDropDown.Items(end);
 
+disp(['Deleted ' fcnName]);
+
 fcnName=[fcnNameOnly '_' guiTab methodNum handles.fcnArgsVersionDropDown.Items{end}];
 setappdata(fig,'fcnName',fcnName);
 
 % Propagate changes
 fcnArgsVersionDropDownValueChanged(fig);
-
-disp(['Deleted ' fcnName]);

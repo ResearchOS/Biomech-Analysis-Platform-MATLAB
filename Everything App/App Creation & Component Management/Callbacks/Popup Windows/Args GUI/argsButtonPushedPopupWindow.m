@@ -21,7 +21,7 @@ fig=ancestor(src,'figure','toplevel');
 allHandles=findall(0);
 for i=1:length(allHandles)
 
-        if isprop(allHandles(i),'Name') && isequal(allHandles(i).Name,'Args')
+        if isprop(allHandles(i),'Name') && contains(allHandles(i).Name,'Args')
             warning(['Close the open args window before opening a new one!']);
             return;
         end
@@ -31,7 +31,7 @@ end
 %% Initialize GUI
 clc;
 Q=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@argsResize);
-Q.Name='Args';
+Q.Name=['Args for ' fcnName];
 defaultPos=get(0,'defaultfigureposition');
 set(Q,'Position',defaultPos);
 setappdata(Q,'guiTab',guiTab);
@@ -49,7 +49,7 @@ newHandles.createArgButton=uibutton(Q,'push','Tooltip','Create new argument, add
 newHandles.deleteArgButton=uibutton(Q,'push','Tooltip','Delete selected argument from All args list and all functions','Text','-','Tag','DeleteArgButton','ButtonPushedFcn',@(deleteArgButton,event) deleteArgButtonPushed(deleteArgButton));
 newHandles.addArgsToFcnButton=uibutton(Q,'push','Text','=>','Tooltip','Add selected args from All to current function','Tag','AddArgsToFcnButon','ButtonPushedFcn',@(addArgsToFcnButton,event) addArgsToFcnButtonPushed(addArgsToFcnButton));
 newHandles.removeArgsFromFcnButton=uibutton(Q,'push','Text','<=','Tooltip','Remove selected args from current function','Tag','RemoveArgsFromFcnButon','ButtonPushedFcn',@(removeArgsFromFcnButton,event) removeArgsFromFcnButtonPushed(removeArgsFromFcnButton));
-newHandles.fcnLabel=uilabel(Q,'Text','Fcn Name','Tag','FcnNameLabel','WordWrap','on');
+newHandles.fcnLabel=uilabel(Q,'Text','Current Function','Tag','FcnNameLabel','WordWrap','on');
 newHandles.fcnOpenButton=uibutton(Q,'push','Tooltip','Open select arg from current function list','Text','open','Tag','FcnOpenButton','ButtonPushedFcn',@(fcnOpenButton,event) fcnOpenButtonPushed(fcnOpenButton));
 newHandles.fcnListBox=uilistbox(Q,'MultiSelect','on','Items',{'No Args'},'Value','No Args','Tooltip','The input & output argument names for the current function','Tag','FcnListBox','ValueChangedFcn',@(fcnListBox,event) fcnListBoxValueChanged(fcnListBox));
 newHandles.fcnArgsVersionLabel=uilabel(Q,'Text','Fcn Args Version','Tag','FcnArgsVersionLabel');
@@ -80,6 +80,7 @@ setappdata(Q,'currProjectArgsTxtPath',currProjectArgsTxtPath);
 setappdata(fig,'currProjectArgsTxtPath',currProjectArgsTxtPath);
 setappdata(Q,'everythingPath',getappdata(fig,'everythingPath'));
 setappdata(Q,'projectName',getappdata(fig,'projectName'));
+setappdata(Q,'codePath',getappdata(fig,'codePath'));
 
 % Set the all args list box
 if iscell(text) % The file exists and has pre-existing args in it

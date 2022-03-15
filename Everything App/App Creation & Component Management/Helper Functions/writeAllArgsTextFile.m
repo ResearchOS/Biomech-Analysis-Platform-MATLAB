@@ -176,7 +176,7 @@ if ismember('Function',insertType)
 end
 
 if ismember('Arg',insertType)
-    if any(ismember({'Function','Group','Project'},insertType))
+    if any(ismember({'Function','Group','Project'},insertType)) || ~isempty(newText{end})
         newLineNum=newLineNum+1; % Increment line number if added project, group, or function. Otherwise, line number ok.
     end
     newText{newLineNum}=[guiTab ': ' argName ':'];

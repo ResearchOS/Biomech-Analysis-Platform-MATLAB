@@ -39,5 +39,5 @@ end
 
 writeAllArgsTextFile(getappdata(fig,'currProjectArgsTxtPath'),guiTab,groupName,fcnName,argName,projectName,currArgsNameInCode,descVal);
 
-argsDesc{idx}=description;
+argsDesc{idx}=descVal;
 setappdata(fig,'argsDesc',argsDesc);

@@ -30,10 +30,14 @@ end
 % 4. In the text file, copy the arg names from the 'Unassigned' group & function to the current group and function.
 nameInCode='0 , 1 '; % Indicates that it is not synced by default (because 0 is in front).
 
+text=readAllArgsTextFile(getappdata(fig,'everythingPath'),getappdata(fig,'projectName'),guiTab);
+[argNames,~,argsDescs]=getAllArgNames(text,getappdata(fig,'projectName'),guiTab,'Unassigned',['Unassigned_' guiTab '1A']);
+
 for i=1:length(allArgsSelected)
 
     argName=allArgsSelected{i};
-    description=handles.descriptionTextArea.Value;
+    idx=ismember(argNames,argName);
+    description=argsDescs(idx);
     assert(length(description)==1);
     description=description{1};
     writeAllArgsTextFile(getappdata(fig,'currProjectArgsTxtPath'),guiTab,groupName,fcnName,argName,getappdata(fig,'projectName'),nameInCode,description);
@@ -54,12 +58,18 @@ argNames=getappdata(fig,'argNames');
 argsDesc=getappdata(fig,'argsDesc');
 argsNameInCode=getappdata(fig,'argsNameInCode');
 
-[argNames,k]=sort([argNames; argName]);
-argsDesc=[argsDesc; {description}];
+if ~iscell(argName)
+    argName={argName};
+end
+
+[argNames,k]=sort([argNames argName]);
+argsDesc=[argsDesc {description}];
 argsDesc=argsDesc(k);
-argsNameInCode=[argsNameInCode; {nameInCode}];
+argsNameInCode=[argsNameInCode {nameInCode}];
 argsNameInCode=argsNameInCode(k);
 
 setappdata(fig,'argNames',argNames);
 setappdata(fig,'argsDesc',argsDesc);
 setappdata(fig,'argsNameInCode',argsNameInCode);
+
+fcnListBoxValueChanged(fig);

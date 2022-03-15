@@ -42,4 +42,4 @@ end
 
 groupName='Unassigned';
 fcnName=['Unassigned_' getappdata(fig,'guiTab') '1A'];
-writeAllArgsTextFile(currProjectArgsTxtPath,getappdata(fig,'guiTab'),groupName,fcnName,input,getappdata(fig,'projectName'));
+writeAllArgsTextFile(currProjectArgsTxtPath,getappdata(fig,'guiTab'),groupName,fcnName,input,getappdata(fig,'projectName'),'0 , 1 ','Enter Description Here');

@@ -78,10 +78,21 @@ for i=1:length(text)
         continue;
     end
     argCount=argCount+1;
-    argNames{argCount}=strtrim(text{i}(colonIdx(1)+1:colonIdx(2)-1)); % Get argument name
-    argsNamesInCode{argCount}=strtrim(text{i}(colonIdx(2)+1:colonIdx(3)-1)); % Get the name in code
+    argNames{argCount}=strtrim(text{i}(colonIdx(1)+1:colonIdx(2)-1)); % Get argument name    
+    if ~isequal(groupName,'Unassigned')
+        argsNamesInCode{argCount}=strtrim(text{i}(colonIdx(2)+1:colonIdx(3)-1)); % Get the name in code
+    else
+        argsNamesInCode='';
+    end
     argsDesc{argCount}=strtrim(text{i}(colonIdx(3)+1:end)); % Get the description
 
 end
 
-argNames=sort(unique(argNames));
+[argNames,ia]=unique(argNames);
+% [argNames]=sort(argNames);
+if exist('groupName','var')
+    argsDesc=argsDesc(ia);
+    if ~isequal(groupName,'Unassigned')
+        argsNamesInCode=argsNamesInCode(ia);
+    end
+end

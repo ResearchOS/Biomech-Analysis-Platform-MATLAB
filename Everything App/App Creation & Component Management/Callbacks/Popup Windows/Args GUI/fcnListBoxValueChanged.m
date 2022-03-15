@@ -6,21 +6,30 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 currVals=handles.fcnListBox.Value;
+guiTab=getappdata(fig,'guiTab');
+groupName=getappdata(fig,'groupName');
+fcnName=getappdata(fig,'fcnName');
 
-argsNameInCode=getappdata(fig,'argsNameInCode');
-argsDesc=getappdata(fig,'argsDesc');
+text=readAllArgsTextFile(getappdata(fig,'everythingPath'),getappdata(fig,'projectName'),guiTab);
+[argNames,argsNamesInCode,argsDescs]=getAllArgNames(text,getappdata(fig,'projectName'),guiTab,groupName,fcnName);
+
+% argsNameInCode=getappdata(fig,'argsNameInCode');
+% argsDesc=getappdata(fig,'argsDesc');
 
 if length(currVals)>1 % Multiple items selected, clear the edit fields
     handles.fullNicknameEditField.Value='Mult';
     handles.nameInCodeEditField.Value='Mult';
     handles.descriptionTextArea.Value='Mult';
 else
-    idx=ismember(handles.fcnListBox.Items,currVals);
+%     idx=ismember(handles.fcnListBox.Items,currVals);
     handles.fullNicknameEditField.Value=currVals{1};
     if isequal(currVals{1},'No Args')
         return;
     end
-    currArgsNameInCode=argsNameInCode{idx};
+    idx=ismember(argNames,currVals);
+    currArgsNameInCode=argsNamesInCode{idx};
+    argsDesc=argsDescs{idx};
+%     currArgsNameInCode=argsNameInCode{idx};
     if isempty(currArgsNameInCode)
         handles.nameInCodeEditField.Value=currArgsNameInCode; % No value set yet
     else
@@ -49,6 +58,6 @@ else
         end
         handles.nameInCodeEditField.Value=useVal;
     end
-    handles.descriptionTextArea.Value=argsDesc{idx};
+    handles.descriptionTextArea.Value=argsDesc;
 end
 

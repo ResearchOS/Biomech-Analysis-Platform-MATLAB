@@ -37,7 +37,15 @@ if any(contains(descVal,char(13))) || any(contains(descVal,'newline'))
     return;
 end
 
+% Store it to the current function's arg in group
 writeAllArgsTextFile(getappdata(fig,'currProjectArgsTxtPath'),guiTab,groupName,fcnName,argName,projectName,currArgsNameInCode,descVal);
+
+% underscoreIdx=strfind(['_' guiTab]);
+% fcnNameOnly=fcnName(1:underscoreIdx-1);
+newFcnName=['Unassigned_' guiTab '1A'];
+
+% Also store the description to the corresponding argument in the Unassigned group.
+writeAllArgsTextFile(getappdata(fig,'currProjectArgsTxtPath'),guiTab,'Unassigned',newFcnName,argName,projectName,'0 , 1 ',descVal);
 
 argsDesc{idx}=descVal;
 setappdata(fig,'argsDesc',argsDesc);

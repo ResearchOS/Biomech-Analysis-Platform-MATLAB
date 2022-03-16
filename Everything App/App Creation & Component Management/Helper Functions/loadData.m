@@ -20,7 +20,7 @@ dataTypes=fieldnames(pathsByLevel.Action); % Data types and individual processin
 
 for i=1:length(dataTypes)
 
-    if ~isfield(pathsByLevel.All.(dataTypes{i}),level) % && isequal(pathsByLevel.Action.(dataTypes{i}),'Load'))
+    if ~(isfield(pathsByLevel.All.(dataTypes{i}),level) && isequal(pathsByLevel.Action.(dataTypes{i}),'Load'))
         continue;
     end
 

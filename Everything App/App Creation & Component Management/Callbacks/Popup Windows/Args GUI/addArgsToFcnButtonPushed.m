@@ -54,22 +54,22 @@ fcnListBox.Value=allArgsSelected{1};
 
 % Update the argsDesc, nameInCode, and argNames vars
 
-argNames=getappdata(fig,'argNames');
-argsDesc=getappdata(fig,'argsDesc');
-argsNameInCode=getappdata(fig,'argsNameInCode');
-
-if ~iscell(argName)
-    argName={argName};
-end
-
-[argNames,k]=sort([argNames argName]);
-argsDesc=[argsDesc {description}];
-argsDesc=argsDesc(k);
-argsNameInCode=[argsNameInCode {nameInCode}];
-argsNameInCode=argsNameInCode(k);
-
-setappdata(fig,'argNames',argNames);
-setappdata(fig,'argsDesc',argsDesc);
-setappdata(fig,'argsNameInCode',argsNameInCode);
+% argNames=getappdata(fig,'argNames');
+% argsDesc=getappdata(fig,'argsDesc');
+% argsNameInCode=getappdata(fig,'argsNameInCode');
+% 
+% if ~iscell(argName)
+%     argName={argName};
+% end
+% 
+% [argNames,k]=sort([argNames argName]);
+% argsDesc=[argsDesc {description}];
+% argsDesc=argsDesc(k);
+% argsNameInCode=[argsNameInCode {nameInCode}];
+% argsNameInCode=argsNameInCode(k);
+% 
+% setappdata(fig,'argNames',argNames);
+% setappdata(fig,'argsDesc',argsDesc);
+% setappdata(fig,'argsNameInCode',argsNameInCode);
 
 fcnListBoxValueChanged(fig);

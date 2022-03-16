@@ -14,6 +14,8 @@ elseif ispc==1
     slash='\';
 end
 
+setappdata(fig,'guiTab','Process');
+
 savePathsByLevel.Trial.Paths={};
 savePathsByLevel.Subject.Paths={};
 savePathsByLevel.Project.Paths={};
@@ -74,7 +76,7 @@ for i=lineNum+1:length(text)
     fcnCount=fcnCount+1;
     fcnNameCell=strsplit(a{1},' ');
     number=fcnNameCell{2}(~isletter(fcnNameCell{2}));
-    letter=fcnNameCell{2}(isletter(fcnNameCell{2}));
+    letters{fcnCount}=fcnNameCell{2}(isletter(fcnNameCell{2}));
     fcnNames{fcnCount}=[fcnNameCell{1} '_Process' number]; % All the function names, in order
 %     if isequal(runAndSpecifyTrialsCell{3}(end),'1') % if using function-specific argument function
 %         argsNames{fcnCount}=[fcnNameCell{1} '_Process' number letter]; % All the argument function names, in order
@@ -87,7 +89,7 @@ for i=lineNum+1:length(text)
     funcArgs(fcnCount)=str2double(runAndSpecifyTrialsCell{3}(end));
 
     if isequal(runAndSpecifyTrialsCell{2}(end),'1')
-        funcSpecifyTrialsName{fcnCount}=[fcnNameCell{1} '_Process' number letter '_SpecifyTrials'];
+        funcSpecifyTrialsName{fcnCount}=[fcnNameCell{1} '_Process' number letters{fcnCount} '_SpecifyTrials'];
     else
         funcSpecifyTrialsName{fcnCount}=groupSpecifyTrialsName;
     end
@@ -176,6 +178,17 @@ for i=1:length(fcnNames)
 
     end
 
+    % Read through all args functions and get what level they're at.
+    levels='';
+    argsText=readAllArgsTextFile(getappdata(fig,'everythingPath'),projectName,getappdata(fig,'guiTab'));
+    argNames=getAllArgNames(argsText,projectName,getappdata(fig,'guiTab'),groupName,[fcnName letters{i}]);
+    for j=1:length(argNames) % Iterate over all args of the current function
+        argsPath=[codePath 'Process_' projectName slash 'Arguments' slash 'ProcessArg_' argNames{j} '.m'];
+        [~,~,~,currLevels]=readArgsFcn(argsPath);
+        levels=[levels currLevels];
+    end
+    levels=sort(unique(levels));
+
     % Run specifyTrials & get the first subject name, trial name, & rep num for testing
     inclStruct=feval(currSpecTrialsName{i}); % Get the metadata for specifying trials
     trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct); % Get the trial names
@@ -183,81 +196,87 @@ for i=1:length(fcnNames)
 
     % Try running the args function at project, then subject, then trial levels. If it throws an error, check if the error is that the variable was
     % not returned. If so, go to the next level down. If no error, it is this level. If other error, throw that error.
-    funcLevels{i}='';
+    funcLevels{i}=levels;
     % Check project level for non-existent field or missing output arg errors.
-    level='Project';
-    processFile=[fcnFolder{i} slash fcnName '.m'];
+%     level='Project';
+%     processFile=[fcnFolder{i} slash fcnName '.m'];
 
-    try
-        argStruct=feval(argsNames{i},level,projectStruct);
-        if ~checkArgsMatch(processFile,argPath{i},argStruct,level) % Ensure that all data being called by the process function is present in the args function
-            return;
-        end
-        funcLevels{i}=[funcLevels{i}; {level}]; % Only runs if no errors in args fcn
-    catch ME
-        % This checks for the existence of all input argument fields.
-        if isequal(ME.identifier,'MATLAB:nonExistentField')
-            error(['Project level data missing from struct, in args fcn: ' argPath{i}]);
-        elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs')  && ~isequal(ME.identifier,'MATLAB:minrhs')
-            rethrow(ME); % Let the user know that something else bad has happened.
-        end
-    end
+%     if contains(levels,'P')
+%         feval(fcnName,)
+%     elseif contains(levels,'S')
+% 
+%     end
+
+%     try
+%         argStruct=feval(argsNames{i},level,projectStruct);
+%         if ~checkArgsMatch(processFile,argPath{i},argStruct,level) % Ensure that all data being called by the process function is present in the args function
+%             return;
+%         end
+%         funcLevels{i}=[funcLevels{i}; {level}]; % Only runs if no errors in args fcn
+%     catch ME
+%         % This checks for the existence of all input argument fields.
+%         if isequal(ME.identifier,'MATLAB:nonExistentField')
+%             error(['Project level data missing from struct, in args fcn: ' argPath{i}]);
+%         elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs')  && ~isequal(ME.identifier,'MATLAB:minrhs')
+%             rethrow(ME); % Let the user know that something else bad has happened.
+%         end
+%     end
 
     % Check subject level for non-existent field or missing output arg errors    
-    for subNum=1:length(subNames) % Iterate over each subject.
-        level='Subject';
-        subName=subNames{subNum};
-
-        try
-            argStruct=feval(argsNames{i},level,projectStruct,subName);
-            if subNum==1
-                if ~checkArgsMatch(processFile,argPath{i},argStruct,level) % Ensure that all data being called by the process function is present in the args function
-                    return;
-                end
-            end
-            funcLevels{i}=[funcLevels{i}; {level}]; % Only runs if no errors in args fcn
-        catch ME
-            if isequal(ME.identifier,'MATLAB:nonExistentField')
-                error(['Subject ' subName ' data missing from struct, in args fcn: ' argPath{i}]);
-            elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs') && ~isequal(ME.identifier,'MATLAB:minrhs')
-                rethrow(ME); % Let the user know that something else bad has happened.
-            end
-        end
-
-        level='Trial';
-        currTrialNames=fieldnames(trialNames.(subName));
-        for trialNum=1:length(currTrialNames)
-            trialName=currTrialNames{trialNum};
-            for repNum=trialNames.(subName).(trialName)
-
-                try
-                    argStruct=feval(argsNames{i},level,projectStruct,subName,trialName,repNum);
-                    if trialNum==1
-                        if ~checkArgsMatch(processFile,argPath{i},argStruct,level) % Ensure that all data being called by the process function is present in the args function
-                            return;
-                        end
-                    end
-                    funcLevels{i}=[funcLevels{i}; {level}];
-                catch ME
-                    if isequal(ME.identifier,'MATLAB:nonExistentField')
-                        warning(['Subject ' subName ' Trial ' trialName ' Repetititon ' num2str(repNum) ' data missing from struct, in args fcn: ' argPath{i}]);
-                        return;
-                    elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs') && ~isequal(ME.identifier,'MATLAB:minrhs')
-                        rethrow(ME); % Let the user know that something else bad has happened.
-                    end
-                end
-
-            end
-        end
-    end
-
-    funcLevels{i}=sort(unique(funcLevels{i})); % Organize the function levels alphabetically, which also happens to be in order of "largest" to "smallest" scope.
-
-    [inputPaths{i},outputPaths{i},allPaths{i}]=readArgsFcn(argPath{i}); % Read the text of the args files to return the input & output paths.
-
-    if isempty(allPaths{i})
-        return;
-    end
+%     for subNum=1:length(subNames) % Iterate over each subject.
+%         level='Subject';
+%         subName=subNames{subNum};
+% 
+%         try
+%             argStruct=feval(argsNames{i},level,projectStruct,subName);
+%             if subNum==1
+%                 if ~checkArgsMatch(processFile,argPath{i},argStruct,level) % Ensure that all data being called by the process function is present in the args function
+%                     return;
+%                 end
+%             end
+%             funcLevels{i}=[funcLevels{i}; {level}]; % Only runs if no errors in args fcn
+%         catch ME
+%             if isequal(ME.identifier,'MATLAB:nonExistentField')
+%                 error(['Subject ' subName ' data missing from struct, in args fcn: ' argPath{i}]);
+%             elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs') && ~isequal(ME.identifier,'MATLAB:minrhs')
+%                 rethrow(ME); % Let the user know that something else bad has happened.
+%             end
+%         end
+% 
+%         level='Trial';
+%         currTrialNames=fieldnames(trialNames.(subName));
+%         for trialNum=1:length(currTrialNames)
+%             trialName=currTrialNames{trialNum};
+%             for repNum=trialNames.(subName).(trialName)
+% 
+%                 try
+%                     argStruct=feval(argsNames{i},level,projectStruct,subName,trialName,repNum);
+%                     if trialNum==1
+%                         if ~checkArgsMatch(processFile,argPath{i},argStruct,level) % Ensure that all data being called by the process function is present in the args function
+%                             return;
+%                         end
+%                     end
+%                     funcLevels{i}=[funcLevels{i}; {level}];
+%                 catch ME
+%                     if isequal(ME.identifier,'MATLAB:nonExistentField')
+%                         warning(['Subject ' subName ' Trial ' trialName ' Repetititon ' num2str(repNum) ' data missing from struct, in args fcn: ' argPath{i}]);
+%                         return;
+%                     elseif ~isequal(ME.identifier,'MATLAB:unassignedOutputs') && ~isequal(ME.identifier,'MATLAB:minrhs')
+%                         rethrow(ME); % Let the user know that something else bad has happened.
+%                     end
+%                 end
+% 
+%             end
+%         end
+%     end
+% 
+%     funcLevels{i}=sort(unique(funcLevels{i})); % Organize the function levels alphabetically, which also happens to be in order of "largest" to "smallest" scope.
+% 
+%     [inputPaths{i},outputPaths{i},allPaths{i}]=readArgsFcn(argPath{i}); % Read the text of the args files to return the input & output paths.
+% 
+%     if isempty(allPaths{i})
+%         return;
+%     end
 
 end
 cd(currDir); % Go back to original directory.
@@ -269,11 +288,12 @@ for i=1:length(fcnNames)
     projectStruct=evalin('base','projectStruct;');
 
     fcnName=fcnNames{i};
-    argsName=argsNames{i};
+%     argsName=argsNames{i};
     runFunc=runFuncs(i);
     currLevels=funcLevels{i};
-    methodLetter=strsplit(argsName,'_Process');
-    methodLetter=methodLetter{2}(isletter(methodLetter{2}));
+    methodLetter=letters{i};
+%     methodLetter=strsplit(argsName,'_Process');
+%     methodLetter=methodLetter{2}(isletter(methodLetter{2}));
     setappdata(fig,'methodLetter',methodLetter)
 
     if runFunc==0
@@ -352,7 +372,8 @@ p=gcp('nocreate');
 if isempty(p)
     p=parpool('local',1);
 end
+disp('Finished processing! Handing data off to parallel pool for saving!');
 savePathsByLevelFig=getappdata(fig,'savePathsByLevel');
-% f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),savePathsByLevelFig);
-saveDataToFile(fig,evalin('base','projectStruct;'),savePathsByLevelFig);
+f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),savePathsByLevelFig);
+% saveDataToFile(fig,evalin('base','projectStruct;'),savePathsByLevelFig);
 % saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)),savePathsByLevel);

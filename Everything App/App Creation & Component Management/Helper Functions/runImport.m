@@ -232,7 +232,7 @@ if ~(isequal(groupNames{1},'Create Group Name') && length(groupNames)==1)
 %             [argsPaths.Inputs.([fcnName fcnNum]),argsPaths.Outputs.([fcnName fcnNum]),argsPaths.All.([fcnName fcnNum])]=readArgsFcn(argsFcnName);
 
             if isempty(argsPaths.All.([fcnName fcnNum])) % There was a problem with the args function
-                warning(['Problem with the Process Argument function for ' argName]);
+                warning(['Problem with the Process Argument function for ' argName ' for Function ' fcnName fcnNum]);
                 return;
             end
 

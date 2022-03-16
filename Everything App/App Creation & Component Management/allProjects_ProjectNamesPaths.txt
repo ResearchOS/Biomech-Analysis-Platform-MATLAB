@@ -1,5 +1,5 @@
 Project Name: Spr21TWWBiomechanics
-Data Panel Store Logsheet Metadata: Load
+Data Panel Store Logsheet Metadata: None
 Data Panel Spatiotemporal: None
 Data Panel Margin of Stability: None
 Data Panel Linear & Angular Transverse-Plane Angles: None
@@ -8,7 +8,7 @@ Data Panel Hwb About COM: None
 Data Panel TBCM Position: None
 Data Panel Calibrations: None
 Data Panel Smooth Marker Data: None
-Data Panel Setup: None
+Data Panel Setup: Load
 Target Trial ID Format: Trial Name/Number
 Trial ID Column Header For MOCAP & FP: Trial Name/Number
 Subject ID Column Header: Subject Codename

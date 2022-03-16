@@ -30,6 +30,10 @@ else
     fcnListBox.Items=fcnListBox.Items;    
 end
 
+if isempty(fcnListBox.Items)
+    fcnListBox.Items={'No Args'};
+end
+
 fcnListBox.Value=fcnListBox.Items{1};
 
 for i=1:length(fcnArgsSelected)
@@ -40,22 +44,22 @@ for i=1:length(fcnArgsSelected)
     end
 end
 
-if length(fcnArgsItems)>1
-    argNames=getappdata(fig,'argNames');
-    argsDesc=getappdata(fig,'argsDesc');
-    argsNameInCode=getappdata(fig,'argsNameInCode');
-
-    argNames=argNames(idx);
-    argsDesc=argsDesc(idx);
-    argsNameInCode=argsNameInCode(idx);
-
-    setappdata(fig,'argNames',argNames);
-    setappdata(fig,'argsDesc',argsDesc);
-    setappdata(fig,'argsNameInCode',argsNameInCode);
-else
-    setappdata(fig,'argNames',{});
-    setappdata(fig,'argsDesc',{});
-    setappdata(fig,'argsNameInCode',{});
-end
+% if length(fcnArgsItems)>1
+%     argNames=getappdata(fig,'argNames');
+%     argsDesc=getappdata(fig,'argsDesc');
+%     argsNameInCode=getappdata(fig,'argsNameInCode');
+% 
+%     argNames=argNames(idx);
+%     argsDesc=argsDesc(idx);
+%     argsNameInCode=argsNameInCode(idx);
+% 
+%     setappdata(fig,'argNames',argNames);
+%     setappdata(fig,'argsDesc',argsDesc);
+%     setappdata(fig,'argsNameInCode',argsNameInCode);
+% else
+%     setappdata(fig,'argNames',{});
+%     setappdata(fig,'argsDesc',{});
+%     setappdata(fig,'argsNameInCode',{});
+% end
 
 fcnListBoxValueChanged(fig);

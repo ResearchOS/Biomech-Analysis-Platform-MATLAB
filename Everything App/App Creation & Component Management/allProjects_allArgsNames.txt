@@ -50,7 +50,7 @@ Process: segMarkerNames: 0 , 1 : All segments' marker names to use for best trac
 Process: TopOfHeadMarkerName: 0 , 1 : Vertex marker name, 'VHTOP'
 Process: headUnitVectorScalingFactors: 0 , 1 : Enter Description Here
 Process: AnatomicMarkerNames: 0 , 1 : Enter Description Here
-Process: StaticCalTrialNames: 0 , 1 : As input, is the static cal trial name in the logsheet (i.e. Static Height Weight Cal). 
+Process: StaticCalTrialNames: 0 , 1 : The static cal trial name in the logsheet (i.e. Static Height Weight Cal).
 Process: StaticCalTrialNamesSubject: 0 , 1 : List of all static trials for the current subject.
 Process: trialTaskType: 0 , 1 : The task type of the current trial.
 Process: currTrialStaticCalName: 0 , 1 : The current trial's static reference trial name (i.e. Nairobi_003).
@@ -110,3 +110,75 @@ Process: Logsheet_StoreNames_Trial: 0 storeNames_Trial, 1 : Enter Description He
 Process: Logsheet_Target_Trial_ID_Column_Header: 0 targetTrialIDColHeader, 1 : Enter Description Here
 Process: Logsheet_VarType: 0 varType, 1 : Enter Description Here
 Process: Logsheet_Variable_Path: 0 logVarPath, 1 : Enter Description Here
+
+Group Name: Smooth Marker Data
+Function Name: CSAPS_NoGapFill_Process1A
+Process: markerData2: 0 markerData, 1 : Smoothed marker data
+
+Group Name: Setup
+Function Name: FrameRange_Process1A
+Process: markerData2: 0 data, 1 : Smoothed marker data
+Process: startFrame1: 0 startFrame, 1 : Frame 1
+Process: endFrame1: 0 endFrame, 1 : Equal to the length of the mocap timeseries
+
+Group Name: Setup
+Function Name: LabelHeadVertexMarker_Process1A
+Process: headMarkerNames: 0 headMarkerNames, 1 : Head segment marker names from segMarkerNames
+Process: headMarkerNames_Exclude: 0 exclHeadNames, 1 : Top of head and CJC. Excluded when re-running LabelHeadVertexMarker1
+Process: segMarkerNames: 0 mocapData, 1 : All segments' marker names to use for best tracking markers
+Process: TopOfHeadMarkerName: 0 topOfHeadName, 1 : Vertex marker name, 'VHTOP'
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: startFrame1: 0 startFrame, 1 : Frame 1
+Process: endFrame1: 0 endFrame, 1 : Equal to the length of the mocap timeseries
+Process: headUnitVectorScalingFactors: 0 unitVectScaleFactors, 1 : Enter Description Here
+
+Group Name: Setup
+Function Name: StaticCalTrialNames_Process1A
+Process: AnatomicMarkerNames: 0 allAnatMarkerNames, 1 : Enter Description Here
+Process: StaticCalTrialNames: 0 staticCalLabel, 1 : The static cal trial name in the logsheet (i.e. Static Height Weight Cal).
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+Process: StaticCalTrialNamesSubject: 0 allStaticTrialNames, 1 : List of all static trials for the current subject.
+
+Group Name: Setup
+Function Name: HeadVertexMarkerToAnatomicStaticTrial_Process1A
+Process: currTrialStaticCalName: 0 staticCalTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: TopOfHeadMarkerName: 0 topOfHeadName, 1 : Vertex marker name, 'VHTOP'
+Process: headMarkerNames: 0 headMarkerNames, 1 : Head segment marker names from segMarkerNames
+Process: headUnitVectorScalingFactors: 0 unitVectScaleFactors, 1 : Enter Description Here
+
+Group Name: Setup
+Function Name: SubjectHeight_Process1A
+Process: TopOfHeadMarkerName: 0 vhtop, 1 : Vertex marker name, 'VHTOP'
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: subjectHeight: 0 height, 1 : The subject's height.
+
+Group Name: Setup
+Function Name: DynamicCalTrialNames_Process1A
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: currTrialDynamicCalName: 0 currDynamicCal, 1 : The current trial's dynamic calibration reference trial name (i.e. Nairobi_003).
+Process: DynamicCalTrialName: 0 dynamicCalName, 1 : The dynamic calibration label from the logsheet
+Process: DynamicCalTrialNamesSubject: 0 dynamicCalTrialNames, 1 : The set of dynamic calibration trial names for this subject.
+
+Group Name: Setup
+Function Name: SubjectMass_Process1A
+Process: fpData: 0 fpData, 1 : All forceplates' data
+Process: subjectMass: 0 mass, 1 : The subject's mass as detemined by the force plates
+
+Group Name: Setup
+Function Name: GroundContactHeights_Process1A
+Process: bosMarkerNames: 0 bosNames, 1 : The marker names for the BOS
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: startFrame1: 0 startFrame, 1 : Frame 1
+Process: endFrame1: 0 endFrame, 1 : Equal to the length of the mocap timeseries
+Process: groundContactMarkerThresholds_NoVertTol: 0 meanMaxHeights, 1 : The heights of the markers during the static calibration trial. No vertical tolerance added here!
+
+Group Name: Setup
+Function Name: CreateTripods_Process1A
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: tripodRegion: 0 tripodBounds_Info, 1 : The X, Y, & Z bounds to use when labeling the tripod marker names. Also the number of markers
+Process: tripodMarkerNames: 0 tripodMarkerNames, 1 : Store the marker names on the tripods
+Process: tripodNames: 0 tripodNames, 1 : The tripod names

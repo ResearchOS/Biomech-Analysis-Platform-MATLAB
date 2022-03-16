@@ -92,6 +92,7 @@ Process: segmentStaticCalCOMPositions: 0 , 1 : The cardinal positions of the seg
 Process: segmentStaticLengths: 0 , 1 : Enter Description Here
 Process: segmentStaticCalProximalEPs: 0 , 1 : Enter Description Here
 Process: segmentStaticCalDistalEPs: 0 , 1 : Enter Description Here
+Process: staticCalIdxUsed: 0 , 1 : The index in the static calibration trial used to compute the model.
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -253,5 +254,7 @@ Process: segmentCalibrationMarkerNames: 0 segCalibMarkerNames, 1 : The marker na
 Process: staticCalJointCentersBySegment: 0 jointCentersBySeg, 1 : Enter Description Here
 Process: segmentStaticCalCOMPositions: 0 segCOM, 1: The cardinal positions of the segments' COM in the static trial.
 Process: segmentStaticLengths: 0 segLength, 1 : Enter Description Here
-Process: segmentStaticCalDistalEPs: 0 , 1 : Enter Description Here
-Process: segmentStaticCalProximalEPs: 0 , 1 : Enter Description Here
+Process: segmentStaticCalDistalEPs: 0 distEP, 1 : Enter Description Here
+Process: segmentStaticCalProximalEPs: 0 proxEP, 1 : Enter Description Here
+Process: segmentScaledMomentOfInertia: 0 momOfI, 1 : Moment of inertia for each segment scaled by segment lengths & masses (?)  (see Dumas 2007).
+Process: staticCalIdxUsed: 0 CJCidx, 1: The index in the static calibration trial used to compute the model.

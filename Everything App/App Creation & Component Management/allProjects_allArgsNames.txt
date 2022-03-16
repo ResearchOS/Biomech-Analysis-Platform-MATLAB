@@ -442,6 +442,7 @@ Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: bosMarkerNamesWithVirtual: 0 allBOSnames, 1 : BOS marker names including the virtual markers
 Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 allBOSHeightThreshs, 1 : Ground contact threshold heights of real & virtual markers, split by foot.
 Process: vertTol1: 0 vertTol, 1 : The vertical height error tolerance added to the BOS ground contact threshold heights to accomodate small errors in position tracking, and alleviate markers being right on the edge of the threshold flickering in and out.
+Process: bos2D1: 0 allBOSDataAndInfo, 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
 
 Function Name: FootInFront_Process1A
 Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.

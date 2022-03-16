@@ -182,3 +182,30 @@ Process: markerData2: 0 mocapData, 1 : Smoothed marker data
 Process: tripodRegion: 0 tripodBounds_Info, 1 : The X, Y, & Z bounds to use when labeling the tripod marker names. Also the number of markers
 Process: tripodMarkerNames: 0 tripodMarkerNames, 1 : Store the marker names on the tripods
 Process: tripodNames: 0 tripodNames, 1 : The tripod names
+
+Group Name: Calibrations
+Function Name: BestMarkerNames_Process4A
+Process: endFrame1: 0 endFrame, 1 : Equal to the length of the mocap timeseries
+Process: startFrame1: 0 startFrame, 1 : Frame 1
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: hipJointNames: 0 hipNames, 1 : Hip joint center names from dynamic calibration
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: pelvisSegmentName: 0 pelvName, 1 : Just the name of the pelvis segment. For this project, 'PELVIS'.
+Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+
+Group Name: Calibrations
+Function Name: FrameRange_Process2A
+Process: endFrame2: 0 motiveFinalFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 motiveInitialFrame, 1 : Start frame from the logsheet
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+
+Group Name: Calibrations
+Function Name: DynamicCalibration_Process1A
+Process: LHIPDynamicCalMetadata: 0 jointMetadata, 1 : Metadata for dynamic calibration, i.e. joint name, proximal segments, distal segment, guessMarker, etc. Lumped them all together to save space in the list. Stores all metadata.
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.

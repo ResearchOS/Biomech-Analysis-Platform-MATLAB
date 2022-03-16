@@ -125,6 +125,14 @@ Process: vertTol1: 0 , 1 : The vertical height error tolerance added to the BOS 
 Process: bos2D1: 0 , 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
 Process: footInFrontLogical: 0 , 1 : Enter Description Here
 Process: bos2DBodyFixed1: 0 , 1 : Body-fixed, split by foot. BOS only.
+Process: bosComponentizedMLAP1: 0 , 1 : In body-fixed coordinates.
+Process: lateralDistance1: 0 , 1 : The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
+Process: constantMultOfTrochanterHeight: 0 , 1 : The constant value to multiply the trochanter height by to get the pendular height. For frontal plane movements, this is 1.34
+Process: pendularLength: 0 , 1 : The effective length of the inverted pendulum model for each participant.
+Process: pendularEigenfrequency: 0 , 1 : The pendular eigenfrequency is sqrt(g*pendularLength) for each person.
+Process: bosCardinalComponentizedMLAP1: 0 , 1 : In cardinal coordinates, BOS bounds defined by pelvis-fixed coordinates.
+Process: XCOM1: 0 , 1 : Extrapolated COM position.
+Process: MOS1: 0 , 1 : The margin of stability, with XCOM.
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -443,6 +451,7 @@ Process: bosMarkerNamesWithVirtual: 0 allBOSnames, 1 : BOS marker names includin
 Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 allBOSHeightThreshs, 1 : Ground contact threshold heights of real & virtual markers, split by foot.
 Process: vertTol1: 0 vertTol, 1 : The vertical height error tolerance added to the BOS ground contact threshold heights to accomodate small errors in position tracking, and alleviate markers being right on the edge of the threshold flickering in and out.
 Process: bos2D1: 0 allBOSDataAndInfo, 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
+Process: bosMarkerNamesWithVirtualPerFoot: 0 bosMarkerNamesWVirtByFoot, 1 : All BOS data with virtual markers, split by left and right foot.
 
 Function Name: FootInFront_Process1A
 Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
@@ -460,3 +469,47 @@ Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
 Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: anatomicAxes1: 0 anatAx, 1 : Anatomic axes for each segment.
 Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+
+Function Name: ComponentizeBOS_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: footInFrontLogical: 0 footInFrontLogical, 1 : Enter Description Here
+Process: bos2DBodyFixed1: 0 rotBOS, 1 : Body-fixed, split by foot. BOS only.
+Process: bosComponentizedMLAP1: 0 bosMLAP, 1 : Enter Description Here
+Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
+
+Function Name: BalanceDistanceComponentized_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: bosComponentizedMLAP1: 0 bosMLAP, 1 : Enter Description Here
+Process: footInFrontLogical: 0 footInFront, 1 : Enter Description Here
+Process: lateralDistance1: 0 ld, 1: The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
+
+Group Name: Margin of Stability
+Function Name: PendulumHeight_Process1A
+Process: constantMultOfTrochanterHeight: 0 mult, 1 : The constant value to multiply the trochanter height by to get the pendular height. For frontal plane movements, this is 1.34
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: pendularLength: 0 l, 1: The effective length of the inverted pendulum model for each participant.
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+
+Function Name: PendulumEigenfrequency_Process1A
+Process: pendularLength: 0 len, 1 : The effective length of the inverted pendulum model for each participant.
+Process: pendularEigenfrequency: 0 w, 1: The pendular eigenfrequency is sqrt(g*pendularLength) for each person.
+
+Function Name: XCOMPosition_Process1A
+Process: pendularEigenfrequency: 0 w, 1 : The pendular eigenfrequency is sqrt(g*pendularLength) for each person.
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Enter Description Here
+Process: XCOM1: 0 xcom, 1 : Extrapolated COM position.
+
+Function Name: BOSBoundsCardinal_Process1A
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: bosComponentizedMLAP1: 0 bosMLAP, 1: In body-fixed coordinates.
+Process: pelvisReferenceFrame1: 0 bfAxes, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+Process: bosCardinalComponentizedMLAP1: 0 bosBoundsCard, 1 : In cardinal coordinates, BOS bounds defined by pelvis-fixed coordinates.
+
+Function Name: MOS_Process1A
+Process: bosCardinalComponentizedMLAP1: 0 bosBounds, 1 : In cardinal coordinates, BOS bounds defined by pelvis-fixed coordinates.
+Process: XCOM1: 0 xcom, 1 : Extrapolated COM position.
+Process: MOS1: 0 mos, 1 : The margin of stability, with XCOM.

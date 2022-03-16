@@ -8,29 +8,14 @@ fcnName=getappdata(fig,'fcnName');
 
 currVals=sort(handles.fcnListBox.Value);
 
-% Inputs
-% inputStr='{';
-% for i=1:length(currVals)
-% 
-%     inputStr=[inputStr '''' currVals{i} '''' ','];
-% 
-% end
-% inputStr=[inputStr(1:end-1) '}']; % Remove the final comma
-% 
-% % Outputs
-% outputStr='';
-% for i=1:length(currVals)
-% 
-%     outputStr=[outputStr currVals{i} ','];
-% 
-% end
-% outputStr=outputStr(1:end-1);
+allItems=handles.fcnListBox.Items;
 
 [text]=readAllArgsTextFile(getappdata(fig,'everythingPath'),getappdata(fig,'projectName'),getappdata(fig,'guiTab'));
 [~,argsNamesInCode]=getAllArgNames(text,getappdata(fig,'projectName'),getappdata(fig,'guiTab'),getappdata(fig,'groupName'),fcnName);
 
 inputStr='{';
 outputStr='';
+argsNamesInCode=argsNamesInCode(ismember(allItems,currVals));
 for i=1:length(currVals)
 
     currArgNameInCode=argsNamesInCode{i};

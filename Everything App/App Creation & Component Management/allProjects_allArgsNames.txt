@@ -87,6 +87,11 @@ Process: segmentScaledCOMLoc: 0 , 1 : COM scaling factors, scaled by participant
 Process: segmentCalibrationMarkerNames: 0 , 1 : The marker names specifically used for Dumas 2007 static calibration
 Process: zzLogsheetGender: 0 , 1 : Enter Description Here
 Process: aaTrialPlaceholder: 0 , 1 : Enter Description Here
+Process: staticCalJointCentersBySegment: 0 , 1 : Enter Description Here
+Process: segmentStaticCalCOMPositions: 0 , 1 : The cardinal positions of the segments' COM in the static trial.
+Process: segmentStaticLengths: 0 , 1 : Enter Description Here
+Process: segmentStaticCalProximalEPs: 0 , 1 : Enter Description Here
+Process: segmentStaticCalDistalEPs: 0 , 1 : Enter Description Here
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -245,3 +250,8 @@ Process: segmentMomentOfInertia: 0 inertParams, 1 : Segments' unscaled moments o
 Process: hipJointNames: 0 checkMarkerNames, 1 : Hip joint center names from dynamic calibration
 Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
 Process: segmentCalibrationMarkerNames: 0 segCalibMarkerNames, 1 : The marker names specifically used for Dumas 2007 static calibration
+Process: staticCalJointCentersBySegment: 0 jointCentersBySeg, 1 : Enter Description Here
+Process: segmentStaticCalCOMPositions: 0 segCOM, 1: The cardinal positions of the segments' COM in the static trial.
+Process: segmentStaticLengths: 0 segLength, 1 : Enter Description Here
+Process: segmentStaticCalDistalEPs: 0 , 1 : Enter Description Here
+Process: segmentStaticCalProximalEPs: 0 , 1 : Enter Description Here

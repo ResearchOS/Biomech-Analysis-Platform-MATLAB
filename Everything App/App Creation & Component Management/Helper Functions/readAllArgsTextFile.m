@@ -21,6 +21,7 @@ end
 
 text=regexp(fileread(textPath),'\n','split');
 
+needToSave=0;
 if iscell(text) % Check for extraneous newline characters.
     for i=1:length(text)
         if isempty(text{i})
@@ -29,14 +30,17 @@ if iscell(text) % Check for extraneous newline characters.
         end
         if isequal(text{i}(end),char(13)) % If there's a newline char at the end of the project name
             % This seems to really only happen when I switch between GitHub branches.
+            needToSave=1;
             text{i}=text{i}(1:end-1);
         end
     end
     % If the file had to be modified to get rid of the newline characters, save it back to "normal".
-    fid=fopen(textPath,'w');
-    fprintf(fid,'%s\n',text{1:end-1});
-    fprintf(fid,'%s',text{end});
-    fclose(fid);        
+    if needToSave==1
+        fid=fopen(textPath,'w');
+        fprintf(fid,'%s\n',text{1:end-1});
+        fprintf(fid,'%s',text{end});
+        fclose(fid);
+    end
 end
 
 if size(text,1)<size(text,2)

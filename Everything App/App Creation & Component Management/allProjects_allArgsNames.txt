@@ -93,6 +93,10 @@ Process: segmentStaticLengths: 0 , 1 : Enter Description Here
 Process: segmentStaticCalProximalEPs: 0 , 1 : Enter Description Here
 Process: segmentStaticCalDistalEPs: 0 , 1 : Enter Description Here
 Process: staticCalIdxUsed: 0 , 1 : The index in the static calibration trial used to compute the model.
+Process: staticCalAnatomicAxes: 0 , 1 : Enter Description Here
+Process: anatomicAxes1: 0 , 1 : Enter Description Here
+Process: trackingAxes1: 0 , 1 : Enter Description Here
+Process: segmentCOMPositions1: 0 , 1 : Segment COM positions in the dynamic trials
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -258,3 +262,40 @@ Process: segmentStaticCalDistalEPs: 0 distEP, 1 : Enter Description Here
 Process: segmentStaticCalProximalEPs: 0 proxEP, 1 : Enter Description Here
 Process: segmentScaledMomentOfInertia: 0 momOfI, 1 : Moment of inertia for each segment scaled by segment lengths & masses (?)  (see Dumas 2007).
 Process: staticCalIdxUsed: 0 CJCidx, 1: The index in the static calibration trial used to compute the model.
+Process: staticCalAnatomicAxes: 0 anatomicAxes, 1 : Enter Description Here
+
+Group Name: TBCM Position
+Function Name: BestMarkerNames_Process4A
+Process: startFrame1: 0 startFrame, 1 : Frame 1
+Process: endFrame1: 0 endFrame, 1 : Equal to the length of the mocap timeseries
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: pelvisSegmentName: 0 pelvName, 1 : Just the name of the pelvis segment. For this project, 'PELVIS'.
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: hipJointNames: 0 hipNames, 1 : Hip joint center names from dynamic calibration
+Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+
+Function Name: AnatomicAxes_Process1A
+Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+Process: staticCalIdxUsed: 0 staticTrialFrameNum, 1 : The index in the static calibration trial used to compute the model.
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: staticCalAnatomicAxes: 0 staticAnatAx, 1 : Enter Description Here
+Process: anatomicAxes1: 0 dynamicAnatAx, 1 : Enter Description Here
+Process: trackingAxes1: 0 dynamicTrackAx, 1 : Enter Description Here
+
+Function Name: SegmentCOMPosition_Process1A
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: anatomicAxes1: 0 segAnatAxes, 1 : Enter Description Here
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: segmentStaticCalCOMPositions: 0 segCOMs, 1 : The cardinal positions of the segments' COM in the static trial.
+Process: staticCalIdxUsed: 0 anatAxesIdx, 1 : The index in the static calibration trial used to compute the model.
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynamic trials
+Process: staticCalAnatomicAxes: 0 staticAnatAx, 1 : Enter Description Here
+Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data

@@ -99,7 +99,7 @@ Process: trackingAxes1: 0 , 1 : Enter Description Here
 Process: segmentCOMPositions1: 0 , 1 : Segment COM positions in the dynamic trials
 Process: TBCMPosition1: 0 , 1 : Cardinal coordinates Total body center of mass (TBCM) position.
 Process: mocapFrameRate: 0 , 1 : Taken from c3d
-Process: TBCMVelocity1: 0 , 1 : Enter Description Here
+Process: TBCMVelocity1: 0 , 1 : Cardinal coordinates.
 Process: segmentCOMVelocity1: 0 , 1 : Enter Description Here
 Process: ankleMarkerNames: 0 , 1 : For ankle radius. Order matters!
 Process: ankleRadius1: 0 , 1 : From the medial to the lateral malleolus, averaged over each foot.
@@ -133,6 +133,7 @@ Process: pendularEigenfrequency: 0 , 1 : The pendular eigenfrequency is sqrt(g*p
 Process: bosCardinalComponentizedMLAP1: 0 , 1 : In cardinal coordinates, BOS bounds defined by pelvis-fixed coordinates.
 Process: XCOM1: 0 , 1 : Extrapolated COM position.
 Process: MOS1: 0 , 1 : The margin of stability, with XCOM.
+Process: tbcmBodyFixedVelocity1: 0 , 1 : Body fixed velocity of TBCM
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -349,7 +350,7 @@ Group Name: Hwb About COM
 Function Name: TBCMVelocity_Process1A
 Process: TBCMPosition1: 0 tbcm, 1 : Enter Description Here
 Process: mocapFrameRate: 0 sampleRate, 1: Taken from c3d
-Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Enter Description Here
+Process: TBCMVelocity1: 0 tbcmVeloc, 1: Cardinal coordinates.
 
 Function Name: SegmentCOMVelocity_Process1A
 Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynamic trials
@@ -508,8 +509,26 @@ Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of ma
 Process: bosComponentizedMLAP1: 0 bosMLAP, 1: In body-fixed coordinates.
 Process: pelvisReferenceFrame1: 0 bfAxes, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
 Process: bosCardinalComponentizedMLAP1: 0 bosBoundsCard, 1 : In cardinal coordinates, BOS bounds defined by pelvis-fixed coordinates.
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 
 Function Name: MOS_Process1A
 Process: bosCardinalComponentizedMLAP1: 0 bosBounds, 1 : In cardinal coordinates, BOS bounds defined by pelvis-fixed coordinates.
 Process: XCOM1: 0 xcom, 1 : Extrapolated COM position.
 Process: MOS1: 0 mos, 1 : The margin of stability, with XCOM.
+
+Function Name: TBCMVelocityBodyFixed_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal reference frame
+Process: tbcmBodyFixedVelocity1: 0 tbcmVelocBF, 1 : Body fixed velocity of TBCM
+Process: pelvisReferenceFrame1: 0 bfAxes, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+
+Function Name: TBCMVelocity_Process1A
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+
+Function Name: XCOMPositionBodyFixed_Process1A
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: tbcmBodyFixedVelocity1: 0 tbcmVelocBF, 1 : Body fixed velocity of TBCM
+Process: pendularEigenfrequency: 0 w, 1 : The pendular eigenfrequency is sqrt(g*pendularLength) for each person.

@@ -218,3 +218,13 @@ Process: segmentMasses: 0 segMasses, 1 : In kg.
 Process: segmentPercMass: 0 percMass, 1 : Enter Description Here
 Process: segmentMomentOfInertia: 0 momOfI, 1 : Segments' unscaled moments of inertia.
 Process: segmentCOMPercLoc: 0 COMPercLoc, 1 : Unscaled to subject. COM percent location for each segment.
+
+Function Name: StaticCalibrationDumas2007_Process1A
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: subjectMass: 0 subjectMass, 1 : The subject's mass as detemined by the force plates
+Process: segmentMasses: 0 segMass, 1 : In kg.
+Process: staticCalJointCenterNames: 0 jointCenters, 1 : All joint centers computed & stored in static trial.
+Process: segmentCOMPercLoc: 0 comPercLoc, 1 : Unscaled to subject. COM percent location for each segment.
+Process: segmentMomentOfInertia: 0 inertParams, 1 : Segments' unscaled moments of inertia.
+Process: hipJointNames: 0 checkMarkerNames, 1 : Hip joint center names from dynamic calibration

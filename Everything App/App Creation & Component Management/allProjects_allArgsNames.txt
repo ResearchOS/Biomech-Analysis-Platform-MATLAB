@@ -110,6 +110,8 @@ Process: Logsheet_StoreNames_Trial: 0 storeNames_Trial, 1 : Enter Description He
 Process: Logsheet_Target_Trial_ID_Column_Header: 0 targetTrialIDColHeader, 1 : Enter Description Here
 Process: Logsheet_VarType: 0 varType, 1 : Enter Description Here
 Process: Logsheet_Variable_Path: 0 logVarPath, 1 : Enter Description Here
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: aaSubjectPlaceholder: 0 , 1 : Placeholder variable to force an argument to include the subject level.
 
 Group Name: Smooth Marker Data
 Function Name: CSAPS_NoGapFill_Process1A

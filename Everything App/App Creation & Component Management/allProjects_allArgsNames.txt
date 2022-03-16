@@ -228,3 +228,5 @@ Process: staticCalJointCenterNames: 0 jointCenters, 1 : All joint centers comput
 Process: segmentCOMPercLoc: 0 comPercLoc, 1 : Unscaled to subject. COM percent location for each segment.
 Process: segmentMomentOfInertia: 0 inertParams, 1 : Segments' unscaled moments of inertia.
 Process: hipJointNames: 0 checkMarkerNames, 1 : Hip joint center names from dynamic calibration
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: segmentCalibrationMarkerNames: 0 segCalibMarkerNames, 1 : The marker names specifically used for Dumas 2007 static calibration

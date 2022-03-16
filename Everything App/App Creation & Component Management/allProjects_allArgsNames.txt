@@ -117,11 +117,11 @@ Process: aaSubjectPlaceholder: 0 , 1 : Placeholder variable to force an argument
 Function Name: StoreLogsheetMetadata_Process1A
 Process: aaSubjectPlaceholder: 0 aa, 1 : Placeholder variable to force an argument to include the subject level.
 Process: zzLogsheetGender: 0 logInfo, 1 : Enter Description Here
-Process: Logsheet_Number_of_Header_Rows: 0 , 1 : Enter Description Here
-Process: Logsheet_Target_Trial_ID_Column_Header: 0 , 1 : Enter Description Here
-Process: Logsheet_Codename_Column_Header: 0 , 1 : Enter Description Here
-Process: Logsheet_Header_Names: 0 , 1 : Enter Description Here
-Process: Logsheet_Variable_Path: 0 , 1 : Enter Description Here
+Process: Logsheet_Number_of_Header_Rows: 0 numHeaderRows, 1 : Enter Description Here
+Process: Logsheet_Target_Trial_ID_Column_Header: 0 targetTrialIDColName, 1 : Enter Description Here
+Process: Logsheet_Codename_Column_Header: 0 codenameColHeader, 1 : Enter Description Here
+Process: Logsheet_Header_Names: 0 colHeaderNames, 1 : Enter Description Here
+Process: Logsheet_Variable_Path: 0 logVarPath, 1 : Enter Description Here
 
 Group Name: Smooth Marker Data
 Function Name: CSAPS_NoGapFill_Process1A

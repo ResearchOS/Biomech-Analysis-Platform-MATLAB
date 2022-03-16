@@ -4,25 +4,47 @@ function []=printFcnArgsButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+fcnName=getappdata(fig,'fcnName');
 
 currVals=sort(handles.fcnListBox.Value);
 
 % Inputs
+% inputStr='{';
+% for i=1:length(currVals)
+% 
+%     inputStr=[inputStr '''' currVals{i} '''' ','];
+% 
+% end
+% inputStr=[inputStr(1:end-1) '}']; % Remove the final comma
+% 
+% % Outputs
+% outputStr='';
+% for i=1:length(currVals)
+% 
+%     outputStr=[outputStr currVals{i} ','];
+% 
+% end
+% outputStr=outputStr(1:end-1);
+
+[text]=readAllArgsTextFile(getappdata(fig,'everythingPath'),getappdata(fig,'projectName'),getappdata(fig,'guiTab'));
+[~,argsNamesInCode]=getAllArgNames(text,getappdata(fig,'projectName'),getappdata(fig,'guiTab'),getappdata(fig,'groupName'),fcnName);
+
 inputStr='{';
-for i=1:length(currVals)
-
-    inputStr=[inputStr '''' currVals{i} '''' ','];
-
-end
-inputStr=[inputStr(1:end-1) '}']; % Remove the final comma
-
-% Outputs
 outputStr='';
 for i=1:length(currVals)
 
-    outputStr=[outputStr currVals{i} ','];
+    currArgNameInCode=argsNamesInCode{i};
+    currArgNameSplit=strsplit(currArgNameInCode,',');
+    beforeCommaSplit=strsplit(currArgNameSplit{1},' ');
+    %     afterCommaSplit=strsplit(currArgNameSplit{2},' ');
+
+    if isequal(beforeCommaSplit{1},'0')
+        inputStr=[inputStr '''' beforeCommaSplit{2} '''' ','];
+        outputStr=[outputStr beforeCommaSplit{2} ','];
+    end
 
 end
+inputStr=[inputStr(1:end-1) '}']; % Remove the final comma
 outputStr=outputStr(1:end-1);
 
 disp('Inputs: ');

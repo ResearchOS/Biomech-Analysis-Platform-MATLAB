@@ -122,7 +122,9 @@ Process: zeniGaitEvents1: 0 , 1 : Enter Description Here
 Process: isStanceLogical: 0 , 1 : Enter Description Here
 Process: markerDataGapFilledFeet: 0 , 1 : Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
 Process: vertTol1: 0 , 1 : The vertical height error tolerance added to the BOS ground contact threshold heights to accomodate small errors in position tracking, and alleviate markers being right on the edge of the threshold flickering in and out.
-Process: bos2D1: 0 , 1 : Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
+Process: bos2D1: 0 , 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
+Process: footInFrontLogical: 0 , 1 : Enter Description Here
+Process: bos2DBodyFixed1: 0 , 1 : Body-fixed, split by foot. BOS only.
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -420,8 +422,8 @@ Process: markerData2: 0 mocapData, 1 : Smoothed marker data
 Process: midStanceIdxByFoot: 0 midStance, 1 : Enter Description Here
 Process: zeniGaitEvents1: 0 gaitEvents, 1 : Enter Description Here
 Process: isStanceLogical: 0 stanceLogical, 1 : Enter Description Here
-Process: endFrame5: 0 endFrame, 1 : End of functional range of data (either at end of turn or at end of straight-line gait, per logsheet).
-Process: startFrame5: 0 startFrame, 1 : TBCM passes column
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 
 Function Name: GapFillFootMarkers_Process1A
 Process: markerDataGapFilledFeet: 0 mocapDataFilled, 1: Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
@@ -435,10 +437,14 @@ Process: bosDataWithVirtualPerFoot: 0 byFootDataWVirt, 1 : All BOS data with vir
 Process: bosDataWithVirtual: 0 allBOSData, 1 : BOS marker data including virtual markers
 Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
 Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
-Process: bosMarkerNamesWithVirtual: 0 allBOSnames, 1 : BOS marker names including the virtual markers
-Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 allBOSHeightThreshs, 1 : Ground contact threshold heights of real & virtual markers, split by foot.
-Process: vertTol1: 0 vertTol, 1 : The vertical height error tolerance added to the BOS ground contact threshold heights to accomodate small errors in position tracking, and alleviate markers being right on the edge of the threshold flickering in and out.
-Process: bosMarkerNamesWithVirtualPerFoot: 0 bosMarkerNamesWVirtByFoot, 1 : All BOS data with virtual markers, split by left and right foot.
+
+Function Name: FootInFront_Process1A
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: bos2D1: 0 bos2D, 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
 Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
 Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
-Process: bos2D1: 0 allBOSDataAndInfo, 1: Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
+Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
+Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : Enter Description Here
+Process: footInFrontLogical: 0 footInFrontLogical, 1 : Enter Description Here
+Process: bos2DBodyFixed1: 0 bodyFixedBOSByFoot, 1 : Body-fixed, split by foot. BOS only.

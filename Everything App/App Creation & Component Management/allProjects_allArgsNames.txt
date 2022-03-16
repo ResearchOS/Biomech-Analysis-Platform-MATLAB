@@ -94,7 +94,7 @@ Process: segmentStaticCalProximalEPs: 0 , 1 : Enter Description Here
 Process: segmentStaticCalDistalEPs: 0 , 1 : Enter Description Here
 Process: staticCalIdxUsed: 0 , 1 : The index in the static calibration trial used to compute the model.
 Process: staticCalAnatomicAxes: 0 , 1 : Enter Description Here
-Process: anatomicAxes1: 0 , 1 : Enter Description Here
+Process: anatomicAxes1: 0 , 1 : Anatomic axes for each segment.
 Process: trackingAxes1: 0 , 1 : Enter Description Here
 Process: segmentCOMPositions1: 0 , 1 : Segment COM positions in the dynamic trials
 Process: TBCMPosition1: 0 , 1 : Cardinal coordinates Total body center of mass (TBCM) position.
@@ -111,6 +111,10 @@ Process: startFrame5: 0 , 1 : TBCM passes column
 Process: endFrame3: 0 , 1 : TBCM passes the columns (straight-line gait only)
 Process: endFrame4: 0 , 1 : TBCM passes the tripods (straight-line only).
 Process: endFrame5: 0 , 1 : End of functional range of data (either at end of turn or at end of straight-line gait, per logsheet).
+Process: bosMarkerNamesWithVirtual: 0 , 1 : BOS marker names including the virtual markers
+Process: bosDataWithVirtual: 0 , 1 : BOS marker data including virtual markers
+Process: bosMarkerNamesWithVirtualPerFoot: 0 , 1 : All BOS data with virtual markers, split by left and right foot.
+Process: bosDataWithVirtualPerFoot: 0 , 1 : All BOS data with virtual markers split by foot.
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -354,4 +358,19 @@ Process: startFrame4: 0 startFrame4, 1 : TBCM passes the first tripod
 Process: startFrame5: 0 startFrame5, 1 : TBCM passes column
 Process: endFrame3: 0 endFrame3, 1 : TBCM passes the columns (straight-line gait only)
 Process: endFrame4: 0 endFrame4, 1 : TBCM passes the tripods (straight-line only).
-Process: endFrame5: 0 endFarme5, 1 : End of functional range of data (either at end of turn or at end of straight-line gait, per logsheet).
+Process: endFrame5: 0 endFrame5, 1 : End of functional range of data (either at end of turn or at end of straight-line gait, per logsheet).
+Process: endFrame2: 0 endFrame2, 1 : End frame from the logsheet
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+
+Function Name: FootVirtualMarkers_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: ankleRadius1: 0 heelRad, 1 : From the medial to the lateral malleolus, averaged over each foot.
+Process: bosMarkerNames: 0 bosNames, 1 : The marker names for the BOS
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: anatomicAxes1: 0 anatAxes, 1: Anatomic axes for each segment.
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: bosMarkerNamesWithVirtual: 0 allBOSVirtualnames, 1: BOS marker names including the virtual markers
+Process: bosDataWithVirtual: 0 allBOSData, 1 : BOS marker data including virtual markers
+Process: bosMarkerNamesWithVirtualPerFoot: 0 perFootVirtualNames, 1: All BOS data with virtual markers, split by left and right foot.
+Process: bosDataWithVirtualPerFoot: 0 perFootVirtualFootData, 1: All BOS data with virtual markers split by foot.

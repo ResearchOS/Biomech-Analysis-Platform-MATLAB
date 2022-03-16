@@ -97,10 +97,20 @@ Process: staticCalAnatomicAxes: 0 , 1 : Enter Description Here
 Process: anatomicAxes1: 0 , 1 : Enter Description Here
 Process: trackingAxes1: 0 , 1 : Enter Description Here
 Process: segmentCOMPositions1: 0 , 1 : Segment COM positions in the dynamic trials
-Process: TBCMPosition1: 0 , 1 : Enter Description Here
+Process: TBCMPosition1: 0 , 1 : Cardinal coordinates Total body center of mass (TBCM) position.
 Process: mocapFrameRate: 0 , 1 : Taken from c3d
 Process: TBCMVelocity1: 0 , 1 : Enter Description Here
 Process: segmentCOMVelocity1: 0 , 1 : Enter Description Here
+Process: ankleMarkerNames: 0 , 1 : For ankle radius. Order matters!
+Process: ankleRadius1: 0 , 1 : From the medial to the lateral malleolus, averaged over each foot.
+Process: columnCardinalPositions1: 0 , 1 : The positions of the columns in cardinal coordinates.
+Process: parsePhase1_okTaskTypes: 0 , 1 : The task types to run straight-line analyses for.
+Process: startFrame3: 0 , 1 : TBCM passes the columns
+Process: startFrame4: 0 , 1 : TBCM passes the first tripod
+Process: startFrame5: 0 , 1 : TBCM passes column
+Process: endFrame3: 0 , 1 : TBCM passes the columns (straight-line gait only)
+Process: endFrame4: 0 , 1 : TBCM passes the tripods (straight-line only).
+Process: endFrame5: 0 , 1 : End of functional range of data (either at end of turn or at end of straight-line gait, per logsheet).
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -323,3 +333,25 @@ Function Name: SegmentCOMVelocity_Process1A
 Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynamic trials
 Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
 Process: segmentCOMVelocity1: 0 segVeloc, 1 : Enter Description Here
+
+Group Name: Lateral Distance
+Function Name: AnkleRadius_Process1A
+Process: ankleMarkerNames: 0 ankleMarkerNames, 1 : For ankle radius. Order matters!
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+Process: ankleRadius1: 0 heelRad, 1: From the medial to the lateral malleolus, averaged over each foot.
+
+Function Name: ParsePhase_Process1A
+Process: TBCMPosition1: 0 tbcm, 1: Cardinal coordinates Total body center of mass (TBCM) position.
+Process: columnCardinalPositions1: 0 columnPos, 1 : The positions of the columns in cardinal coordinates.
+Process: tripodMarkerNames: 0 tripodMarkerNames, 1 : Store the marker names on the tripods
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: parsePhase1_okTaskTypes: 0 okTaskTypes, 1: The task types to run straight-line analyses for.
+Process: startFrame3: 0 startFrame3, 1 : TBCM passes the columns
+Process: startFrame4: 0 startFrame4, 1 : TBCM passes the first tripod
+Process: startFrame5: 0 startFrame5, 1 : TBCM passes column
+Process: endFrame3: 0 endFrame3, 1 : TBCM passes the columns (straight-line gait only)
+Process: endFrame4: 0 endFrame4, 1 : TBCM passes the tripods (straight-line only).
+Process: endFrame5: 0 endFarme5, 1 : End of functional range of data (either at end of turn or at end of straight-line gait, per logsheet).

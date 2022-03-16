@@ -209,3 +209,13 @@ Process: markerData2: 0 mocapData, 1 : Smoothed marker data
 Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
 Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
 Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+
+Function Name: DynamicCalibration_Process1B
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: RHIPDynamicCalMetadata: 0 jointMetadata, 1 : Metadata for dynamic calibration, i.e. joint name, proximal segments, distal segment, guessMarker, etc. Lumped them all together to save space in the list. Stores all metadata.

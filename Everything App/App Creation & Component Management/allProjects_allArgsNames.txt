@@ -448,3 +448,9 @@ Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes t
 Process: zeniGaitEvents1: 0 gaitEvents, 1 : Enter Description Here
 Process: footInFrontLogical: 0 footInFrontLogical, 1 : Enter Description Here
 Process: bos2DBodyFixed1: 0 bodyFixedBOSByFoot, 1 : Body-fixed, split by foot. BOS only.
+
+Function Name: BodyFixedAxes_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: anatomicAxes1: 0 anatAx, 1 : Anatomic axes for each segment.
+Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.

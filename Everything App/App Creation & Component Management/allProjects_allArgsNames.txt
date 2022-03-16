@@ -437,6 +437,11 @@ Process: bosDataWithVirtualPerFoot: 0 byFootDataWVirt, 1 : All BOS data with vir
 Process: bosDataWithVirtual: 0 allBOSData, 1 : BOS marker data including virtual markers
 Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
 Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: bosMarkerNamesWithVirtual: 0 allBOSnames, 1 : BOS marker names including the virtual markers
+Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 allBOSHeightThreshs, 1 : Ground contact threshold heights of real & virtual markers, split by foot.
+Process: vertTol1: 0 vertTol, 1 : The vertical height error tolerance added to the BOS ground contact threshold heights to accomodate small errors in position tracking, and alleviate markers being right on the edge of the threshold flickering in and out.
 
 Function Name: FootInFront_Process1A
 Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.

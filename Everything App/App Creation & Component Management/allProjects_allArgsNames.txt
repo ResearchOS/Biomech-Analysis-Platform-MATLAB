@@ -115,11 +115,14 @@ Process: bosMarkerNamesWithVirtual: 0 , 1 : BOS marker names including the virtu
 Process: bosDataWithVirtual: 0 , 1 : BOS marker data including virtual markers
 Process: bosMarkerNamesWithVirtualPerFoot: 0 , 1 : All BOS data with virtual markers, split by left and right foot.
 Process: bosDataWithVirtualPerFoot: 0 , 1 : All BOS data with virtual markers split by foot.
-Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 , 1 : Enter Description Here
-Process: pelvisReferenceFrame1: 0 , 1 : Enter Description Here
+Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 , 1 : Ground contact threshold heights of real & virtual markers, split by foot.
+Process: pelvisReferenceFrame1: 0 , 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
 Process: midStanceIdxByFoot: 0 , 1 : Enter Description Here
 Process: zeniGaitEvents1: 0 , 1 : Enter Description Here
 Process: isStanceLogical: 0 , 1 : Enter Description Here
+Process: markerDataGapFilledFeet: 0 , 1 : Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
+Process: vertTol1: 0 , 1 : The vertical height error tolerance added to the BOS ground contact threshold heights to accomodate small errors in position tracking, and alleviate markers being right on the edge of the threshold flickering in and out.
+Process: bos2D1: 0 , 1 : Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -343,6 +346,12 @@ Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynami
 Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
 Process: segmentCOMVelocity1: 0 segVeloc, 1 : Enter Description Here
 
+Function Name: BodyFixedAxes_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: anatomicAxes1: 0 anatAx, 1 : Anatomic axes for each segment.
+Process: pelvisReferenceFrame1: 0 pelvFrame, 1: Uses the pelvis anatomic axes to compute the body-fixed axes.
+
 Group Name: Lateral Distance
 Function Name: AnkleRadius_Process1A
 Process: ankleMarkerNames: 0 ankleMarkerNames, 1 : For ankle radius. Order matters!
@@ -374,11 +383,24 @@ Process: ankleRadius1: 0 heelRad, 1 : From the medial to the lateral malleolus, 
 Process: bosMarkerNames: 0 bosNames, 1 : The marker names for the BOS
 Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
 Process: anatomicAxes1: 0 anatAxes, 1: Anatomic axes for each segment.
-Process: markerData2: 0 mocapData, 1 : Smoothed marker data
 Process: bosMarkerNamesWithVirtual: 0 allBOSVirtualnames, 1: BOS marker names including the virtual markers
 Process: bosDataWithVirtual: 0 allBOSData, 1 : BOS marker data including virtual markers
 Process: bosMarkerNamesWithVirtualPerFoot: 0 perFootVirtualNames, 1: All BOS data with virtual markers, split by left and right foot.
 Process: bosDataWithVirtualPerFoot: 0 perFootVirtualFootData, 1: All BOS data with virtual markers split by foot.
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+
+Function Name: FootVirtualMarkers_Process1B
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: ankleRadius1: 0 heelRad, 1 : From the medial to the lateral malleolus, averaged over each foot.
+Process: bosMarkerNames: 0 bosNames, 1 : The marker names for the BOS
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: anatomicAxes1: 0 anatAxes, 1: Anatomic axes for each segment.
+Process: bosMarkerNamesWithVirtual: 0 allBOSVirtualnames, 1: BOS marker names including the virtual markers
+Process: bosDataWithVirtual: 0 allBOSData, 1 : BOS marker data including virtual markers
+Process: bosMarkerNamesWithVirtualPerFoot: 0 perFootVirtualNames, 1: All BOS data with virtual markers, split by left and right foot.
+Process: bosDataWithVirtualPerFoot: 0 perFootVirtualFootData, 1: All BOS data with virtual markers split by foot.
+Process: markerDataGapFilledFeet: 0 mocapData, 1 : Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
 
 Function Name: FootVirtualHeightThreshs_Process1A
 Process: ankleRadius1: 0 heelRad, 1 : From the medial to the lateral malleolus, averaged over each foot.
@@ -397,4 +419,26 @@ Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
 Process: markerData2: 0 mocapData, 1 : Smoothed marker data
 Process: midStanceIdxByFoot: 0 midStance, 1 : Enter Description Here
 Process: zeniGaitEvents1: 0 gaitEvents, 1 : Enter Description Here
+Process: isStanceLogical: 0 stanceLogical, 1 : Enter Description Here
+Process: endFrame5: 0 endFrame, 1 : End of functional range of data (either at end of turn or at end of straight-line gait, per logsheet).
+Process: startFrame5: 0 startFrame, 1 : TBCM passes column
+
+Function Name: GapFillFootMarkers_Process1A
+Process: markerDataGapFilledFeet: 0 mocapDataFilled, 1: Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : Enter Description Here
+Process: bosMarkerNamesWithVirtualPerFoot: 0 bosNamesByFoot, 1 : All BOS data with virtual markers, split by left and right foot.
+Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 threshHeightsWVirt, 1: Ground contact threshold heights of real & virtual markers, split by foot.
+Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+
+Function Name: BOS2D_Process1A
+Process: bosDataWithVirtualPerFoot: 0 byFootDataWVirt, 1 : All BOS data with virtual markers split by foot.
+Process: bosDataWithVirtual: 0 allBOSData, 1 : BOS marker data including virtual markers
 Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: bosMarkerNamesWithVirtual: 0 allBOSnames, 1 : BOS marker names including the virtual markers
+Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 allBOSHeightThreshs, 1 : Ground contact threshold heights of real & virtual markers, split by foot.
+Process: vertTol1: 0 vertTol, 1 : The vertical height error tolerance added to the BOS ground contact threshold heights to accomodate small errors in position tracking, and alleviate markers being right on the edge of the threshold flickering in and out.
+Process: bosMarkerNamesWithVirtualPerFoot: 0 bosMarkerNamesWVirtByFoot, 1 : All BOS data with virtual markers, split by left and right foot.
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: bos2D1: 0 allBOSDataAndInfo, 1: Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.

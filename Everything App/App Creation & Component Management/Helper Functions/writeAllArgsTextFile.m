@@ -68,17 +68,21 @@ for i=1:length(text)
 
     currLine=text{i};
 
-    if projectFound==0 && length(currLine)>=length(['Project Name: ' projectName]) && isequal(currLine(1:length(['Project Name: ' projectName])),['Project Name: ' projectName])
+    if i==length(text) && projectFound==0
+        insertType={'Project'; 'Group'; 'Function'; 'Arg'};
+        break;
+    end
+
+    if length(currLine)>=length(['Project Name: ' projectName]) && isequal(currLine(1:length(['Project Name: ' projectName])),['Project Name: ' projectName])
         projectFound=1;
         continue;
     end
 
-    if projectFound==0
-        insertType={'Project'; 'Group'; 'Function'; 'Arg'};
+    if projectFound==0        
         continue; % Skip other projects
     end
 
-    if length(text{i})>=length('Project Name:') && isequal(text{i}(1:length('Project Name:')),'Project Name:') % Another project was found after this one. Current project has ended.
+    if length(text{i})>=length('Project Name:') && isequal(text{i}(1:length('Project Name:')),'Project Name:') || (i==length(text) && groupFound==0) % Another project was found after this one. Current project has ended.
         currLineNum=i;
         insertType={'Group'; 'Function'; 'Arg'};
         break; % Current project has ended and the group was not found. Insert new group.
@@ -94,7 +98,7 @@ for i=1:length(text)
         continue; % Skip other groups in project
     end
 
-    if length(text{i})>=length('Group Name:') && isequal(text{i}(1:length('Group Name:')),'Group Name:') % Another project was found after this one. Current project has ended.
+    if length(text{i})>=length('Group Name:') && isequal(text{i}(1:length('Group Name:')),'Group Name:') || (i==length(text) && fcnFound==0) % Another project was found after this one. Current project has ended.
         currLineNum=i;
         insertType={'Function'; 'Arg'};
         break; % Current group has ended and the function was not found. Insert new function

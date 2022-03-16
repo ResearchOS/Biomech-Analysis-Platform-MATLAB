@@ -98,6 +98,9 @@ Process: anatomicAxes1: 0 , 1 : Enter Description Here
 Process: trackingAxes1: 0 , 1 : Enter Description Here
 Process: segmentCOMPositions1: 0 , 1 : Segment COM positions in the dynamic trials
 Process: TBCMPosition1: 0 , 1 : Enter Description Here
+Process: mocapFrameRate: 0 , 1 : Taken from c3d
+Process: TBCMVelocity1: 0 , 1 : Enter Description Here
+Process: segmentCOMVelocity1: 0 , 1 : Enter Description Here
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -309,3 +312,14 @@ Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynami
 Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
 Process: segmentMasses: 0 segMass, 1 : In kg.
 Process: subjectMass: 0 subjMass, 1 : The subject's mass as detemined by the force plates
+
+Group Name: Hwb About COM
+Function Name: TBCMVelocity_Process1A
+Process: TBCMPosition1: 0 tbcm, 1 : Enter Description Here
+Process: mocapFrameRate: 0 sampleRate, 1: Taken from c3d
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Enter Description Here
+
+Function Name: SegmentCOMVelocity_Process1A
+Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynamic trials
+Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+Process: segmentCOMVelocity1: 0 segVeloc, 1 : Enter Description Here

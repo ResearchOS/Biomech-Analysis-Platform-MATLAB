@@ -97,6 +97,7 @@ Process: staticCalAnatomicAxes: 0 , 1 : Enter Description Here
 Process: anatomicAxes1: 0 , 1 : Enter Description Here
 Process: trackingAxes1: 0 , 1 : Enter Description Here
 Process: segmentCOMPositions1: 0 , 1 : Segment COM positions in the dynamic trials
+Process: TBCMPosition1: 0 , 1 : Enter Description Here
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -299,3 +300,12 @@ Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynami
 Process: staticCalAnatomicAxes: 0 staticAnatAx, 1 : Enter Description Here
 Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
 Process: markerData2: 0 mocapData, 1 : Smoothed marker data
+
+Function Name: TBCMPosition_Process1A
+Process: TBCMPosition1: 0 TBCM, 1 : Enter Description Here
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynamic trials
+Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+Process: segmentMasses: 0 segMass, 1 : In kg.
+Process: subjectMass: 0 subjMass, 1 : The subject's mass as detemined by the force plates

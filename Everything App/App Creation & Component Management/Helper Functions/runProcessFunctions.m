@@ -374,6 +374,5 @@ if isempty(p)
 end
 disp('Finished processing! Handing data off to parallel pool for saving!');
 savePathsByLevelFig=getappdata(fig,'savePathsByLevel');
-f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),savePathsByLevelFig);
-% saveDataToFile(fig,evalin('base','projectStruct;'),savePathsByLevelFig);
-% saveDataToFile(fig,evalin('base','projectStruct;'),subName,trialName,sort(unique(saveLevels)),savePathsByLevel);
+% f=parfeval(p,@saveDataToFile,0,fig,evalin('base','projectStruct;'),savePathsByLevelFig);
+saveDataToFile(fig,evalin('base','projectStruct;'),savePathsByLevelFig);

@@ -136,6 +136,7 @@ Process: MOS1: 0 , 1 : The margin of stability, with XCOM.
 Process: tbcmBodyFixedVelocity1: 0 , 1 : Body fixed velocity of TBCM
 Process: bosComponentizedMLAP2: 0 , 1 : Using XCOM for MOS. Need to componentize separately because this is BODY FIXED, where the origin is now the XCOM position.
 Process: bos2DBodyFixed2: 0 , 1 : Uses the XCOM position as the origin!
+Process: midstanceIdx: 0 , 1 : Mistake. midStanceIdxByFoot is correct.
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -601,3 +602,30 @@ Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
 Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
 Process: XCOM1: 0 tbcm, 1 : Extrapolated COM position.
+
+Group Name: Plotting
+Function Name: plotCheckMOS_Process1A
+Process: MOS1: 0 mos, 1 : The margin of stability, with XCOM.
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+Process: XCOM1: 0 xcom, 1 : Extrapolated COM position.
+Process: bos2D1: 0 bos2D, 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
+Process: bos2DBodyFixed1: 0 rotBOS, 1 : Body-fixed, split by foot. BOS only.
+Process: bosComponentizedMLAP1: 0 mlBOSTBCM, 1 : In body-fixed coordinates. Using TBCM, for lateral distance.
+Process: bosDataWithVirtual: 0 bosDataWVirt, 1 : BOS marker data including virtual markers
+Process: endFrame2: 0 eF, 1 : End frame from the logsheet
+Process: startFrame2: 0 sF, 1 : Start frame from the logsheet
+Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
+Process: lateralDistance1: 0 ld, 1 : The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
+Process: markerDataGapFilledFeet: 0 mocapData, 1 : Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
+Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: bosDataWithVirtualPerFoot: 0 bosDataWVirtPerFoot, 1 : All BOS data with virtual markers split by foot.
+
+Function Name: plotCOMvsXCOM_Process1A
+Process: midStanceIdxByFoot: 0 midstance, 1 : Enter Description Here
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: XCOM1: 0 xcom, 1 : Extrapolated COM position.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: bosDataWithVirtualPerFoot: 0 bosData, 1 : All BOS data with virtual markers split by foot.
+Process: anatomicAxes1: 0 anatAx, 1 : Anatomic axes for each segment.

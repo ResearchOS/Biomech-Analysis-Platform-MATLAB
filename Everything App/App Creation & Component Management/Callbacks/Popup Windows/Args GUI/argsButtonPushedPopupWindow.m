@@ -18,15 +18,15 @@ end
 
 fig=ancestor(src,'figure','toplevel');
 
-allHandles=findall(0);
-for i=1:length(allHandles)
-
-        if isprop(allHandles(i),'Name') && contains(allHandles(i).Name,'Args')
-            warning(['Close the open args window before opening a new one!']);
-            return;
-        end
-
-end
+% allHandles=findall(0);
+% for i=1:length(allHandles)
+% 
+%         if isprop(allHandles(i),'Name') && contains(allHandles(i).Name,'Args')
+%             warning(['Close the open args window before opening a new one!']);
+%             return;
+%         end
+% 
+% end
 
 %% Initialize GUI
 clc;

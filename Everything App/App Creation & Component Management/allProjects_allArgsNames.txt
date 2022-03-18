@@ -135,6 +135,7 @@ Process: XCOM1: 0 , 1 : Extrapolated COM position.
 Process: MOS1: 0 , 1 : The margin of stability, with XCOM.
 Process: tbcmBodyFixedVelocity1: 0 , 1 : Body fixed velocity of TBCM
 Process: bosComponentizedMLAP2: 0 , 1 : Using XCOM for MOS. Need to componentize separately because this is BODY FIXED, where the origin is now the XCOM position.
+Process: bos2DBodyFixed2: 0 , 1 : Uses the XCOM position as the origin!
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -456,15 +457,12 @@ Process: bos2D1: 0 allBOSDataAndInfo, 1 : Cardinal coordinates! Contains data an
 Process: bosMarkerNamesWithVirtualPerFoot: 0 bosMarkerNamesWVirtByFoot, 1 : All BOS data with virtual markers, split by left and right foot.
 
 Function Name: FootInFront_Process1A
-Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
-Process: bos2D1: 0 bos2D, 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
 Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
 Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
-Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
 Process: zeniGaitEvents1: 0 gaitEvents, 1 : Enter Description Here
 Process: footInFrontLogical: 0 footInFrontLogical, 1 : Enter Description Here
-Process: bos2DBodyFixed1: 0 bodyFixedBOSByFoot, 1 : Body-fixed, split by foot. BOS only.
+Process: bos2DBodyFixed1: 0 rotBOS, 1 : Body-fixed, split by foot. BOS only.
 
 Function Name: BodyFixedAxes_Process1A
 Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
@@ -496,6 +494,15 @@ Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: bosComponentizedMLAP1: 0 bosMLAP, 1 : Enter Description Here
 Process: footInFrontLogical: 0 footInFront, 1 : Enter Description Here
 Process: lateralDistance1: 0 ld, 1: The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
+
+Function Name: BodyFixedBOS_Process1A
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: bos2DBodyFixed1: 0 bodyFixedBOSByFoot, 1 : Body-fixed, split by foot. BOS only.
+Process: bos2D1: 0 bos2D, 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
 
 Group Name: Margin of Stability
 Function Name: PendulumHeight_Process1A
@@ -549,8 +556,8 @@ Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
 Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: footInFrontLogical: 0 footInFrontLogical, 1 : Enter Description Here
 Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
-Process: bos2DBodyFixed1: 0 rotBOS, 1 : Body-fixed, split by foot. BOS only.
 Process: bosComponentizedMLAP2: 0 bosMLAP, 1: Using XCOM for MOS. Need to componentize separately because this is BODY FIXED, where the origin is now the XCOM position.
+Process: bos2DBodyFixed2: 0 rotBOS, 1 : Uses the XCOM position as the origin!
 
 Function Name: BalanceDistanceComponentized_Process1B
 Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
@@ -575,6 +582,7 @@ Process: XCOM1: 0 xcom, 1 : Extrapolated COM position.
 Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
 Process: MOS1: 0 mos, 1 : The margin of stability, with XCOM.
 Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 
 Function Name: ComponentizeBOS_Process1A
 Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
@@ -584,3 +592,12 @@ Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
 Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: footInFrontLogical: 0 footInFrontLogical, 1 : Logical index of when the left and right feet are on the floor in front.
 Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
+
+Function Name: BodyFixedBOS_Process1B
+Process: bos2D1: 0 bos2D, 1 : Cardinal coordinates! Contains data and marker names for both feet together, and each foot individually. Markers can be part of various sets: all on ground, part of BOS, or (for per foot) part of two foot BOS in that foot.
+Process: bos2DBodyFixed2: 0 bodyFixedBOSByFoot, 1 : Uses the XCOM position as the origin!
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: XCOM1: 0 tbcm, 1 : Extrapolated COM position.

@@ -4,3 +4,4 @@ Process Group Margin of Stability, Process Group Lateral Distance, Process Fcn F
 Process Fcn HeadVertexMarkerToAnatomicStaticTrial1, Process Fcn StaticCalibrationDumas20071, Process Fcn GroundContactHeights1, Process Fcn SubjectMass1, Process Fcn SubjectHeight1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\StaticCal_Spr21TWWBiomechanics_specifyTrials.m
 Process Fcn DynamicCalTrialNames1, Process Fcn DynamicCalibration1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\DynamicCal_Spr21TWWBiomechanics_specifyTrials.m
 : C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\Static_Dynamic_Cals_Spr21TWWBiomechanics_specifyTrials.m
+Process Fcn plotCheckMOS1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\PrePlanned_Spr21TWWBiomechanics_specifyTrials.m

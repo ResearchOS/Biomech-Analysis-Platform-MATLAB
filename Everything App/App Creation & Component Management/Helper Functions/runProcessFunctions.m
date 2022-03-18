@@ -15,6 +15,7 @@ elseif ispc==1
 end
 
 setappdata(fig,'guiTab','Process');
+setappdata(fig,'groupName',groupName);
 
 savePathsByLevel.Trial.Paths={};
 savePathsByLevel.Subject.Paths={};
@@ -294,7 +295,7 @@ for i=1:length(fcnNames)
     methodLetter=letters{i};
 %     methodLetter=strsplit(argsName,'_Process');
 %     methodLetter=methodLetter{2}(isletter(methodLetter{2}));
-    setappdata(fig,'methodLetter',methodLetter)
+    setappdata(fig,'methodLetter',methodLetter);
 
     if runFunc==0
         disp(['Skipping ' fcnName ' Because it was Unchecked in Group ' groupName ' in the GUI']);

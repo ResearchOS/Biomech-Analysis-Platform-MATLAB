@@ -185,7 +185,11 @@ for i=1:length(fcnNames)
     argNames=getAllArgNames(argsText,projectName,getappdata(fig,'guiTab'),groupName,[fcnName letters{i}]);
     for j=1:length(argNames) % Iterate over all args of the current function
         argsPath=[codePath 'Process_' projectName slash 'Arguments' slash 'ProcessArg_' argNames{j} '.m'];
-        [~,~,~,currLevels]=readArgsFcn(argsPath);
+        [~,~,~,currLevels]=readArgsFcn(argsPath); % Returns 0 if the args function does not exist.
+        if isequal(currLevels,0)
+            warning(['Args function does not exist: ' argsPath]);
+            return;
+        end
         levels=[levels currLevels];
     end
     levels=sort(unique(levels));

@@ -11,7 +11,15 @@ function [pathsInputs,pathsOutputs,paths,levels]=readArgsFcn(filePath)
 % levels: The levels of all input & output vars.
 
 % Load the text file.
-text=regexp(fileread(filePath),'\n','split'); % Each line is one element of the cell now.
+if exist(filePath,'file')==2
+    text=regexp(fileread(filePath),'\n','split'); % Each line is one element of the cell now.
+else    
+    pathsInputs='';
+    pathsOutputs='';
+    paths='';
+    levels=0;
+    return;
+end
 
 % Criteria:
 % 1. Must have an equals sign in the line.

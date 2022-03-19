@@ -30,12 +30,12 @@ Import: mocapRotMatrix2Cardinal: 0 , 1 : Rotation matrix from mocap to cardinal 
 Import: mocapfpHelper: 0 , 1 : Contains lots of input variables all packaged nicely into one arg.
 
 Function Name: Unassigned_Process1A
-Process: Logsheet_Header_Names: 0 , 1 : Enter Description Here
+Process: Logsheet_Header_Names: 0 , 1 : The names of the column headers in the logsheet.
 Process: Logsheet_Column_Trial_Or_Subject: 0 , 1 : Enter Description Here
-Process: Logsheet_Variable_Path: 0 , 1 : Enter Description Here
-Process: Logsheet_Number_of_Header_Rows: 0 , 1 : Enter Description Here
-Process: Logsheet_Target_Trial_ID_Column_Header: 0 , 1 : Enter Description Here
-Process: Logsheet_Codename_Column_Header: 0 , 1 : Enter Description Here
+Process: Logsheet_Variable_Path: 0 , 1 : The full path to the logsheet MAT file.
+Process: Logsheet_Number_of_Header_Rows: 0 , 1 : The number of header rows in the logsheet.
+Process: Logsheet_Target_Trial_ID_Column_Header: 0 , 1 : The logsheet column header name of the target trial ID column.
+Process: Logsheet_Codename_Column_Header: 0 , 1 : The column header name of the subject codename column in the logsheet.
 Process: Logsheet_StoreNames_Trial: 0 , 1 : Enter Description Here
 Process: Logsheet_StoreNames_Subject: 0 , 1 : Enter Description Here
 Process: Logsheet_VarType: 0 , 1 : Enter Description Here
@@ -82,7 +82,7 @@ Process: segmentPercMass: 0 , 1 : Enter Description Here
 Process: segmentMomentOfInertia: 0 , 1 : Segments' unscaled moments of inertia.
 Process: segmentCOMPercLoc: 0 , 1 : Unscaled to subject. COM percent location for each segment.
 Process: staticCalJointCenterNames: 0 , 1 : All joint centers computed & stored in static trial.
-Process: segmentScaledMomentOfInertia: 0 , 1 : Moment of inertia for each segment scaled by segment lengths & masses (?)  (see Dumas 2007).
+Process: segmentScaledMomentOfInertia: 0 , 1 : Moment of inertia in local coordinates for each segment scaled by segment lengths & masses (?)  (see Dumas 2007).
 Process: segmentScaledCOMLoc: 0 , 1 : COM scaling factors, scaled by participant-specific segment lengths.
 Process: segmentCalibrationMarkerNames: 0 , 1 : The marker names specifically used for Dumas 2007 static calibration
 Process: zzLogsheetGender: 0 , 1 : Enter Description Here
@@ -118,7 +118,7 @@ Process: bosDataWithVirtualPerFoot: 0 , 1 : All BOS data with virtual markers sp
 Process: groundContactMarkerThresholds_WithVirtual_NoVertTol: 0 , 1 : Ground contact threshold heights of real & virtual markers, split by foot.
 Process: pelvisReferenceFrame1: 0 , 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
 Process: midStanceIdxByFoot: 0 , 1 : Enter Description Here
-Process: zeniGaitEvents1: 0 , 1 : Enter Description Here
+Process: zeniGaitEvents1: 0 , 1 : The heel strike & toe off indices. Missing events are NaN.
 Process: isStanceLogical: 0 , 1 : Enter Description Here
 Process: markerDataGapFilledFeet: 0 , 1 : Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
 Process: vertTol1: 0 , 1 : The vertical height error tolerance added to the BOS ground contact threshold heights to accomodate small errors in position tracking, and alleviate markers being right on the edge of the threshold flickering in and out.
@@ -137,6 +137,29 @@ Process: tbcmBodyFixedVelocity1: 0 , 1 : Body fixed velocity of TBCM
 Process: bosComponentizedMLAP2: 0 , 1 : Using XCOM for MOS. Need to componentize separately because this is BODY FIXED, where the origin is now the XCOM position.
 Process: bos2DBodyFixed2: 0 , 1 : Uses the XCOM position as the origin!
 Process: midstanceIdx: 0 , 1 : Mistake. midStanceIdxByFoot is correct.
+Process: momentOfInertiaLocalScaled1: 0 , 1 : Scaled to segment length in static calibration
+Process: segmentScaledMomentOfInertiaGlobal1: 0 , 1 : Moment of inertia adjusted for each person, rotated into the global coordinate system.
+Process: segmentCardinalAngularVelocity1: 0 , 1 : Angular velocities in cardinal reference system for all segments.
+Process: segmentCOMPositionReltoTBCM1: 0 , 1 : This vector points from the TBCM to the segment COM position.
+Process: segmentCOMVelocityReltoTBCM1: 0 , 1 : Segment COM velocity relative to TBCM velocity.
+Process: angularMomentumWholeBodyAboutCOM1: 0 , 1 : In cardinal coordinates, not normalized at all.
+Process: segmentAngularMomentumAboutCOM1: 0 , 1 : Angular momentum in cardinal coordinates for each segment about the COM.
+Process: zzLogsheetLateCueFrame: 0 , 1 : The frame number of the late cue as specified by the log sheet.
+Process: pelvisHeadingAngle1: 0 , 1 : The pelvis heading angle used for plotting.
+Process: pelvisHeadingAngle2: 0 , 1 : The pelvis heading angle used for defining the turn phase.
+Process: pelvisHeadingThreshold3Std1: 0 , 1 : The pelvis heading threshold, 3 times the standard deviation of straight-line gait heading angles. Also includes the pelvis heading mean offset from straight line
+Process: pelvisHeadingAngle1UnitVector: 0 , 1 : Pelvis heading angle for plotting, normalized to unit vector length.
+Process: TBCMVelocityHeadingAngle1: 0 , 1 : Good for plotting.
+Process: TBCMVelocityHeadingAngle2: 0 , 1 : Used to define the threshold based on the TBCM velocity.
+Process: TBCMVelocityHeadingThreshold3Std1: 0 , 1 : The threshold value for TBCM velocity heading angle. 3*standard deviation of straight line gait. Also contains the mean offset during straight-line gait.
+Process: startFrame6: 0 , 1 : When the pelvis begins rotation (i.e. exceeds threshold value).
+Process: endFrame6: 0 , 1 : When the pelvis finishes rotation (dips below threshold value relative to new direction of travel)
+Process: endFrame7: 0 , 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: startFrame7: 0 , 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 , 1 : The last heel strike before the columns.
+Process: endFrame8: 0 , 1 : The first heel strike after the columns, if applicable.
+Process: lateCueFrame1: 0 , 1 : The frame when the late cue was delivered, from the logsheet.
+Process: TBCMVelocityHeadingAngle1UnitVector: 0 , 1 : TBCM velocity converted to unit vector. Good for obtaining angles.
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -365,6 +388,47 @@ Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
 Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: anatomicAxes1: 0 anatAx, 1 : Anatomic axes for each segment.
 Process: pelvisReferenceFrame1: 0 pelvFrame, 1: Uses the pelvis anatomic axes to compute the body-fixed axes.
+
+Function Name: MomentOfInertia2Global_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: anatomicAxes1: 0 segAnatAxes, 1 : Anatomic axes for each segment.
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+Process: segmentScaledMomentOfInertia: 0 MofILocal, 1 : Moment of inertia in local coordinates for each segment scaled by segment lengths & masses (?)  (see Dumas 2007).
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: segmentScaledMomentOfInertiaGlobal1: 0 globalMofI, 1 : Enter Description Here
+
+Function Name: SegmentAngularVelocity_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: anatomicAxes1: 0 dynamicAnatAx, 1 : Anatomic axes for each segment.
+Process: mocapFrameRate: 0 mocapFrameRate, 1 : Taken from c3d
+Process: segmentCardinalAngularVelocity1: 0 wCardinal, 1: Angular velocities in cardinal reference system for all segments.
+
+Function Name: SegmentCOMToTBCMVector_Process1A
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: segmentCOMPositions1: 0 segCOM, 1 : Segment COM positions in the dynamic trials
+Process: segmentCOMPositionReltoTBCM1: 0 Rvect, 1: This vector points from the TBCM to the segment COM position.
+
+Function Name: SegmentCOMVelocityRelToTBCMVelocity_Process1A
+Process: segmentCOMVelocity1: 0 segCOMVeloc, 1 : Enter Description Here
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+Process: segmentCOMVelocityReltoTBCM1: 0 relSegVeloc, 1: Segment COM velocity relative to TBCM velocity.
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+
+Function Name: HwbAboutCOM_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: angularMomentumWholeBodyAboutCOM1: 0 Hwb, 1: In cardinal coordinates, not normalized at all.
+Process: segmentAngularMomentumAboutCOM1: 0 Hseg, 1 : Angular momentum in cardinal coordinates for each segment about the COM.
+Process: segmentCOMPositionReltoTBCM1: 0 Rvect, 1 : This vector points from the TBCM to the segment COM position.
+Process: segmentCOMVelocityReltoTBCM1: 0 relVeloc, 1 : Segment COM velocity relative to TBCM velocity.
+Process: segmentScaledMomentOfInertiaGlobal1: 0 mOfI, 1: Moment of inertia adjusted for each person, rotated into the global coordinate system.
+Process: segmentCardinalAngularVelocity1: 0 angVeloc, 1 : Angular velocities in cardinal reference system for all segments.
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
 
 Group Name: Lateral Distance
 Function Name: AnkleRadius_Process1A
@@ -629,3 +693,75 @@ Process: XCOM1: 0 xcom, 1 : Extrapolated COM position.
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: bosDataWithVirtualPerFoot: 0 bosData, 1 : All BOS data with virtual markers split by foot.
 Process: anatomicAxes1: 0 anatAx, 1 : Anatomic axes for each segment.
+
+Group Name: Linear & Angular Transverse-Plane Angles
+Function Name: StoreLogsheetMetadata_Process1B
+Process: zzLogsheetLateCueFrame: 0 logInfo, 1 : The frame number of the late cue as specified by the log sheet.
+Process: Logsheet_Header_Names: 0 colHeaderNames, 1: The names of the column headers in the logsheet.
+Process: Logsheet_Codename_Column_Header: 0 codenameColHeader, 1: The column header name of the subject codename column in the logsheet.
+Process: Logsheet_Number_of_Header_Rows: 0 numHeaderRows, 1: The number of header rows in the logsheet.
+Process: Logsheet_Target_Trial_ID_Column_Header: 0 targetTrialIDColName, 1: The logsheet column header name of the target trial ID column.
+Process: Logsheet_Variable_Path: 0 logVarPath, 1: The full path to the logsheet MAT file.
+Process: aaSubjectPlaceholder: 0 , 1 : Placeholder variable to force an argument to include the subject level.
+
+Function Name: PelvisHeadingAngle_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: pelvisHeadingAngle1: 0 pelvAngle, 1 : Enter Description Here
+
+Function Name: PelvisHeadingAngle_Process2A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: pelvisReferenceFrame1: 0 pelvFrame, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: pelvisHeadingAngle2: 0 pelvAngles, 1 : The pelvis heading angle used for defining the turn phase.
+
+Function Name: PelvisHeadingAngleThreshold_Process1A
+Process: pelvisHeadingThreshold3Std1: 0 thresh, 1: The pelvis heading threshold, 3 times the standard deviation of straight-line gait heading angles. Also includes the pelvis heading mean offset from straight line
+Process: pelvisHeadingAngle1: 0 pelvAngle, 1 : The pelvis heading angle used for plotting.
+
+Function Name: MakeUnitVector3D_Process1A
+Process: pelvisHeadingAngle1: 0 vector, 1 : The pelvis heading angle used for plotting.
+Process: pelvisHeadingAngle1UnitVector: 0 unitVector, 1: Pelvis heading angle for plotting, normalized to unit vector length.
+
+Function Name: TBCMVelocityHeadingAngle_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: TBCMVelocityHeadingAngle1: 0 tbcmAngle, 1 : Good for plotting.
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+
+Function Name: TBCMVelocityHeadingAngle_Process2A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+Process: TBCMVelocityHeadingAngle2: 0 tbcmVelocAngles, 1 : Used to define the threshold based on the TBCM velocity.
+
+Function Name: TBCMVelocityHeadingAngleThreshold_Process1A
+Process: TBCMVelocityHeadingAngle1: 0 tbcmVelocAngle, 1 : Good for plotting.
+Process: TBCMVelocityHeadingThreshold3Std1: 0 thresh, 1: The threshold value for TBCM velocity heading angle. 3*standard deviation of straight line gait. Also contains the mean offset during straight-line gait.
+
+Function Name: ParsePhase_Process2A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: zeniGaitEvents1: 0 gaitEvents, 1: The heel strike & toe off indices. Missing events are NaN.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: startFrame6: 0 initTimePelv, 1 : When the pelvis begins rotation (i.e. exceeds threshold value).
+Process: endFrame6: 0 termTimePelv, 1 : When the pelvis finishes rotation (dips below threshold value relative to new direction of travel)
+Process: endFrame7: 0 termTimeHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: startFrame7: 0 initTimeHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 hsBeforeCol, 1 : The last heel strike before the columns.
+Process: endFrame8: 0 hsAfterCol, 1 : The first heel strike after the columns, if applicable.
+Process: endFrame3: 0 passColEndFrame, 1 : TBCM passes the columns (straight-line gait only)
+Process: startFrame3: 0 passColStartFrame, 1 : TBCM passes the columns
+Process: pelvisHeadingAngle2: 0 pelvAngles, 1 : The pelvis heading angle used for defining the turn phase.
+Process: pelvisHeadingThreshold3Std1: 0 pelvThresh, 1 : The pelvis heading threshold, 3 times the standard deviation of straight-line gait heading angles. Also includes the pelvis heading mean offset from straight line
+
+Function Name: MakeUnitVector3D_Process1B
+Process: TBCMVelocityHeadingAngle1UnitVector: 0 unitVector, 1: TBCM velocity converted to unit vector. Good for obtaining angles.
+Process: TBCMVelocity1: 0 vector, 1 : Cardinal coordinates.

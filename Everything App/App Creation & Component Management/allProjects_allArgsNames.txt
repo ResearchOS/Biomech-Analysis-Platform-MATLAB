@@ -693,6 +693,10 @@ Process: XCOM1: 0 xcom, 1 : Extrapolated COM position.
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: bosDataWithVirtualPerFoot: 0 bosData, 1 : All BOS data with virtual markers split by foot.
 Process: anatomicAxes1: 0 anatAx, 1 : Anatomic axes for each segment.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
 
 Group Name: Linear & Angular Transverse-Plane Angles
 Function Name: StoreLogsheetMetadata_Process1B

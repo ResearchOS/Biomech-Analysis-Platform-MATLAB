@@ -160,6 +160,17 @@ Process: startFrame8: 0 , 1 : The last heel strike before the columns.
 Process: endFrame8: 0 , 1 : The first heel strike after the columns, if applicable.
 Process: lateCueFrame1: 0 , 1 : The frame when the late cue was delivered, from the logsheet.
 Process: TBCMVelocityHeadingAngle1UnitVector: 0 , 1 : TBCM velocity converted to unit vector. Good for obtaining angles.
+Process: angularMomentumWholeBodyAboutCOM2: 0 , 1 : Normalized to unitless form by the Vistamehr method (divided by product of subject mass, height, and sqrt(g*height))
+Process: segmentAngularMomentumAboutCOM2: 0 , 1 : Normalized to unitless form by the Vistamehr method (divided by product of subject mass, height, and sqrt(g*height))
+Process: vistamehrNormalizationConstant: 0 , 1 : The normalization constant used to generate the angularMomentum2
+Process: TBCMStaticCalHeight1: 0 , 1 : Enter Description Here
+Process: TBCMavgVelocInPhase1: 0 , 1 : Across trials for each condition average gait speed during the phase of interest.
+Process: angularMomentumWholeBodyAboutCOM3: 0 , 1 : Normalized to unitless form with Herr method
+Process: segmentAngularMomentumAboutCOM3: 0 , 1 : Normalized to unitless form with Herr method
+Process: angularMomentumBFWholeBodyAboutCOM1: 0 , 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
+Process: perPhaseMOS: 0 , 1 : The MOS broken down by phase of gait during the phase of interest.
+Process: perPhaseLateralDistance: 0 , 1 : Enter Description Here
+Process: perPhaseHf: 0 , 1 : Enter Description Here
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -336,6 +347,7 @@ Process: pelvisSegmentName: 0 pelvName, 1 : Just the name of the pelvis segment.
 Process: markerData2: 0 mocapData, 1 : Smoothed marker data
 Process: hipJointNames: 0 hipNames, 1 : Hip joint center names from dynamic calibration
 Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
+Process: staticCalJointCenterNames: 0 staticCalJCNames, 1 : All joint centers computed & stored in static trial.
 
 Function Name: AnatomicAxes_Process1A
 Process: bestMarkerNames1: 0 bestMarkerNames, 1 : From bestMarkerNames4
@@ -397,6 +409,7 @@ Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's stat
 Process: segmentScaledMomentOfInertia: 0 MofILocal, 1 : Moment of inertia in local coordinates for each segment scaled by segment lengths & masses (?)  (see Dumas 2007).
 Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
 Process: segmentScaledMomentOfInertiaGlobal1: 0 globalMofI, 1 : Enter Description Here
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
 
 Function Name: SegmentAngularVelocity_Process1A
 Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
@@ -423,12 +436,54 @@ Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
 Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: trialLength: 0 tLength, 1 : The entire length of a timeseries.
 Process: angularMomentumWholeBodyAboutCOM1: 0 Hwb, 1: In cardinal coordinates, not normalized at all.
-Process: segmentAngularMomentumAboutCOM1: 0 Hseg, 1 : Angular momentum in cardinal coordinates for each segment about the COM.
+Process: segmentAngularMomentumAboutCOM1: 0 segH, 1 : Angular momentum in cardinal coordinates for each segment about the COM.
 Process: segmentCOMPositionReltoTBCM1: 0 Rvect, 1 : This vector points from the TBCM to the segment COM position.
 Process: segmentCOMVelocityReltoTBCM1: 0 relVeloc, 1 : Segment COM velocity relative to TBCM velocity.
 Process: segmentScaledMomentOfInertiaGlobal1: 0 mOfI, 1: Moment of inertia adjusted for each person, rotated into the global coordinate system.
 Process: segmentCardinalAngularVelocity1: 0 angVeloc, 1 : Angular velocities in cardinal reference system for all segments.
 Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: segmentMasses: 0 segMass, 1 : In kg.
+
+Function Name: NormalizeHwb_Process1A
+Process: subjectMass: 0 mass, 1 : The subject's mass as detemined by the force plates
+Process: subjectHeight: 0 height, 1 : The subject's height.
+Process: angularMomentumWholeBodyAboutCOM2: 0 HwbNorm, 1 : Normalized to unitless form by the Vistamehr method (divided by product of subject mass, height, and sqrt(g*height))
+Process: angularMomentumWholeBodyAboutCOM1: 0 HwbNotNorm, 1 : In cardinal coordinates, not normalized at all.
+Process: segmentAngularMomentumAboutCOM1: 0 segHNotNorm, 1 : Angular momentum in cardinal coordinates for each segment about the COM.
+Process: segmentAngularMomentumAboutCOM2: 0 segHNorm, 1 : Normalized to unitless form by the Vistamehr method (divided by product of subject mass, height, and sqrt(g*height))
+Process: vistamehrNormalizationConstant: 0 normConst, 1 : The normalization constant used to generate the angularMomentum2
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+
+Function Name: TBCMHeight_Process1A
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: TBCMStaticCalHeight1: 0 tbcmHeight, 1 : Enter Description Here
+Process: currTrialStaticCalName: 0 staticTrialName, 1 : The current trial's static reference trial name (i.e. Nairobi_003).
+
+Function Name: AverageGaitSpeedInPhase_Process1A
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 hsBeforeCol, 1 : The last heel strike before the columns.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 hsAfterCol, 1 : The first heel strike after the columns, if applicable.
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+Process: TBCMavgVelocInPhase1: 0 grandMeanVeloc, 1 : Enter Description Here
+
+Function Name: NormalizeHwb_Process2A
+Process: angularMomentumWholeBodyAboutCOM1: 0 HwbNotNorm, 1 : In cardinal coordinates, not normalized at all.
+Process: segmentAngularMomentumAboutCOM1: 0 segHNotNorm, 1 : Angular momentum in cardinal coordinates for each segment about the COM.
+Process: segMarkerNames: 0 segMarkerNames, 1 : All segments' marker names to use for best tracking markers
+Process: subjectMass: 0 mass, 1 : The subject's mass as detemined by the force plates
+Process: TBCMStaticCalHeight1: 0 tbcmHeight, 1 : Enter Description Here
+Process: TBCMavgVelocInPhase1: 0 gaitSpeed, 1: Across trials for each condition average gait speed during the phase of interest.
+Process: angularMomentumWholeBodyAboutCOM3: 0 HwbNorm, 1: Normalized to unitless form with Herr method
+Process: segmentAngularMomentumAboutCOM3: 0 HwbNotNorm, 1: Normalized to unitless form with Herr method
+
+Function Name: Rotate3DVector_GlobalToBodyFixed_Process1A
+Process: angularMomentumWholeBodyAboutCOM2: 0 vector, 1 : Normalized to unitless form by the Vistamehr method (divided by product of subject mass, height, and sqrt(g*height))
+Process: pelvisReferenceFrame1: 0 bfAxes, 1 : Uses the pelvis anatomic axes to compute the body-fixed axes.
+Process: angularMomentumBFWholeBodyAboutCOM1: 0 bfVector, 1: Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
 
 Group Name: Lateral Distance
 Function Name: AnkleRadius_Process1A
@@ -697,6 +752,25 @@ Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, i
 Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
 Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
 Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: pelvisHeadingAngle1: 0 pelvAngle, 1 : The pelvis heading angle used for plotting.
+Process: startFrame6: 0 pelvRotStart, 1 : When the pelvis begins rotation (i.e. exceeds threshold value).
+Process: endFrame6: 0 pelvRotEnd, 1 : When the pelvis finishes rotation (dips below threshold value relative to new direction of travel)
+
+Function Name: plotMOS_LDTimeseries_Process1A
+Process: MOS1: 0 mos, 1 : The margin of stability, with XCOM.
+Process: lateralDistance1: 0 ld, 1 : The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : The heel strike & toe off indices. Missing events are NaN.
+Process: startFrame8: 0 hsBeforeCol, 1 : The last heel strike before the columns.
+Process: startFrame7: 0 turnStartHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame6: 0 pelvisRotStart, 1 : When the pelvis begins rotation (i.e. exceeds threshold value).
+Process: endFrame8: 0 hsAfterCol, 1 : The first heel strike after the columns, if applicable.
+Process: endFrame7: 0 turnEndHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame6: 0 pelvisRotEnd, 1 : When the pelvis finishes rotation (dips below threshold value relative to new direction of travel)
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: pelvisHeadingAngle1: 0 pelvAngle, 1 : The pelvis heading angle used for plotting.
+Process: TBCMVelocityHeadingAngle1: 0 tbcmVelocAngle, 1 : Good for plotting.
+Process: angularMomentumWholeBodyAboutCOM2: 0 H, 1 : Normalized to unitless form by the Vistamehr method (divided by product of subject mass, height, and sqrt(g*height))
+Process: angularMomentumBFWholeBodyAboutCOM1: 0 H, 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
 
 Group Name: Linear & Angular Transverse-Plane Angles
 Function Name: StoreLogsheetMetadata_Process1B
@@ -769,3 +843,34 @@ Process: pelvisHeadingThreshold3Std1: 0 pelvThresh, 1 : The pelvis heading thres
 Function Name: MakeUnitVector3D_Process1B
 Process: TBCMVelocityHeadingAngle1UnitVector: 0 unitVector, 1: TBCM velocity converted to unit vector. Good for obtaining angles.
 Process: TBCMVelocity1: 0 vector, 1 : Cardinal coordinates.
+
+Group Name: Per Gait Phase
+Function Name: PerGaitPhase_Process1A
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColumnHS, 1 : The last heel strike before the columns.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColumnHS, 1 : The first heel strike after the columns, if applicable.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : The heel strike & toe off indices. Missing events are NaN.
+Process: MOS1: 0 data, 1 : The margin of stability, with XCOM.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: perPhaseMOS: 0 perPhaseData, 1: The MOS broken down by phase of gait during the phase of interest.
+
+Function Name: PerGaitPhase_Process1B
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColumnHS, 1 : The last heel strike before the columns.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColumnHS, 1 : The first heel strike after the columns, if applicable.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : The heel strike & toe off indices. Missing events are NaN.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: lateralDistance1: 0 data, 1 : The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
+Process: perPhaseLateralDistance: 0 perPhaseData, 1 : Enter Description Here
+
+Function Name: PerGaitPhase_Process1C
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColumnHS, 1 : The last heel strike before the columns.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColumnHS, 1 : The first heel strike after the columns, if applicable.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : The heel strike & toe off indices. Missing events are NaN.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: perPhaseHf: 0 perPhaseData, 1 : Enter Description Here
+Process: angularMomentumBFWholeBodyAboutCOM1: 0 data, 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.

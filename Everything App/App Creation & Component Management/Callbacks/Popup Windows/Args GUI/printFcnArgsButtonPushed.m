@@ -13,8 +13,8 @@ allItems=handles.fcnListBox.Items;
 [text]=readAllArgsTextFile(getappdata(fig,'everythingPath'),getappdata(fig,'projectName'),getappdata(fig,'guiTab'));
 [~,argsNamesInCode]=getAllArgNames(text,getappdata(fig,'projectName'),getappdata(fig,'guiTab'),getappdata(fig,'groupName'),fcnName);
 
-inputStr='{';
-outputStr='';
+outputStr='{';
+inputStr='';
 argsNamesInCode=argsNamesInCode(ismember(allItems,currVals));
 for i=1:length(currVals)
 
@@ -24,16 +24,24 @@ for i=1:length(currVals)
     %     afterCommaSplit=strsplit(currArgNameSplit{2},' ');
 
     if isequal(beforeCommaSplit{1},'0')
-        inputStr=[inputStr '''' beforeCommaSplit{2} '''' ','];
-        outputStr=[outputStr beforeCommaSplit{2} ','];
+        outputStr=[outputStr '''' beforeCommaSplit{2} '''' ','];
+        inputStr=[inputStr beforeCommaSplit{2} ','];
     end
 
 end
-inputStr=[inputStr(1:end-1) '}']; % Remove the final comma
-outputStr=outputStr(1:end-1);
+outputStr=[outputStr(1:end-1) '}']; % Remove the final comma
+inputStr=inputStr(1:end-1);
 
-disp('Inputs: ');
-disp(inputStr);
 disp(char(13));
-disp('Outputs:')
-disp(outputStr);
+disp('getArg:');
+disp(['[' inputStr ']=getArg(' outputStr ',subName,trialName,repNum);']);
+disp(char(13));
+disp('setArg');
+disp(['setArg(subName,trialName,repNum,' inputStr ');']);
+
+
+% disp('Inputs: ');
+% disp(outputStr);
+% disp(char(13));
+% disp('Outputs:')
+% disp(inputStr);

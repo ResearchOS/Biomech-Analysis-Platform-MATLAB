@@ -169,8 +169,29 @@ Process: angularMomentumWholeBodyAboutCOM3: 0 , 1 : Normalized to unitless form 
 Process: segmentAngularMomentumAboutCOM3: 0 , 1 : Normalized to unitless form with Herr method
 Process: angularMomentumBFWholeBodyAboutCOM1: 0 , 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
 Process: perPhaseMOS: 0 , 1 : The MOS broken down by phase of gait during the phase of interest.
-Process: perPhaseLateralDistance: 0 , 1 : Enter Description Here
-Process: perPhaseHf: 0 , 1 : Enter Description Here
+Process: perPhaseLateralDistance: 0 , 1 : Lateral distance per gait phase.
+Process: perPhaseHf: 0 , 1 : Body-fixed (pelvis) whole-body angular momentum about the COM, normalized with Vistamehr method.
+Process: summaryPerTrialHf: 0 , 1 : The summary data for all breakdowns of gait phases for body-fixed Hf normalized with Vistamehr method.
+Process: summaryPerTrialLD: 0 , 1 : Lateral distance per trial summary data broken down by all phases of gait.
+Process: summaryPerTrialMOS: 0 , 1 : Margin of stability data per trial summary broken down by each stage of gait.
+Process: summaryPerTrialHfWholePhase: 0 , 1 : This is the per trial summary data for Hf over the entire phase.
+Process: summaryPerTrialLDWholePhase: 0 , 1 : The lateral distance summary data over the whole phase.
+Process: summaryPerTrialMOSWholePhase: 0 , 1 : The MOS summary data per trial over the whole phase.
+Process: zzResultsScatterMetric: 0 , 1 : Just 'Hf' for plotting labels.
+Process: zzResultsScatterMetricLD: 0 , 1 : Enter Description Here
+Process: zzResultsScatterMetricMOS: 0 , 1 : Enter Description Here
+Process: summaryPerSubjectHfGaitPhases: 0 , 1 : The within subject summary of the Hf per gait phase.
+Process: summaryPerSubjectHfWholePhase: 0 , 1 : Enter Description Here
+Process: summaryPerSubjectLDGaitPhases: 0 , 1 : Enter Description Here
+Process: summaryPerSubjectLDWholePhase: 0 , 1 : Enter Description Here
+Process: summaryPerSubjectMOSGaitPhases: 0 , 1 : Enter Description Here
+Process: summaryPerSubjectMOSWholePhase: 0 , 1 : Enter Description Here
+Process: summaryBetweenSubjectHfGaitPhases: 0 , 1 : Enter Description Here
+Process: turnStrategyDixon1: 0 , 1 : The turn strategy, either step or spin, based on Dixon et al., 2013.
+Process: aggregatedWithinSubjectDixonTurnStrategy1: 0 , 1 : The num trials by num conditions matrix for each subject of turn strategies.
+Process: aggregatedWithinSubjectHfWholePhase: 0 , 1 : Enter Description Here
+Process: aggregatedWithinSubjectLDWholePhase: 0 , 1 : Enter Description Here
+Process: aggregatedWithinSubjectMOSWholePhase: 0 , 1 : Enter Description Here
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -772,6 +793,36 @@ Process: TBCMVelocityHeadingAngle1: 0 tbcmVelocAngle, 1 : Good for plotting.
 Process: angularMomentumWholeBodyAboutCOM2: 0 H, 1 : Normalized to unitless form by the Vistamehr method (divided by product of subject mass, height, and sqrt(g*height))
 Process: angularMomentumBFWholeBodyAboutCOM1: 0 H, 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
 
+Function Name: plotResultsScatter_Process1A
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: summaryPerTrialHfWholePhase: 0 data, 1 : This is the per trial summary data for Hf over the entire phase.
+Process: zzResultsScatterMetric: 0 metric, 1: Just 'Hf' for plotting labels.
+
+Function Name: plotResultsScatter_Process1B
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: summaryPerTrialHf: 0 data, 1 : The summary data for all breakdowns of gait phases for body-fixed Hf normalized with Vistamehr method.
+Process: zzResultsScatterMetric: 0 metric, 1 : Just 'Hf' for plotting labels.
+
+Function Name: plotResultsScatter_Process1C
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: zzResultsScatterMetricLD: 0 metric, 1 : Enter Description Here
+Process: summaryPerTrialLD: 0 data, 1 : Lateral distance per trial summary data broken down by all phases of gait.
+
+Function Name: plotResultsScatter_Process1D
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: zzResultsScatterMetricLD: 0 metric, 1 : Enter Description Here
+Process: summaryPerTrialLDWholePhase: 0 data, 1 : The lateral distance summary data over the whole phase.
+
+Function Name: plotResultsScatter_Process1E
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: zzResultsScatterMetricMOS: 0 metric, 1 : Enter Description Here
+Process: summaryPerTrialMOS: 0 data, 1 : Margin of stability data per trial summary broken down by each stage of gait.
+
+Function Name: plotResultsScatter_Process1F
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: zzResultsScatterMetricMOS: 0 metric, 1 : Enter Description Here
+Process: summaryPerTrialMOSWholePhase: 0 data, 1 : The MOS summary data per trial over the whole phase.
+
 Group Name: Linear & Angular Transverse-Plane Angles
 Function Name: StoreLogsheetMetadata_Process1B
 Process: zzLogsheetLateCueFrame: 0 logInfo, 1 : The frame number of the late cue as specified by the log sheet.
@@ -874,3 +925,101 @@ Process: zeniGaitEvents1: 0 gaitEvents, 1 : The heel strike & toe off indices. M
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: perPhaseHf: 0 perPhaseData, 1 : Enter Description Here
 Process: angularMomentumBFWholeBodyAboutCOM1: 0 data, 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
+
+Group Name: Statistics
+Function Name: WithinTrialSummary_Process1A
+Process: perPhaseHf: 0 data, 1 : Body-fixed (pelvis) whole-body angular momentum about the COM, normalized with Vistamehr method.
+Process: summaryPerTrialHf: 0 summData, 1: The summary data for all breakdowns of gait phases for body-fixed Hf normalized with Vistamehr method.
+
+Function Name: WithinTrialSummary_Process1B
+Process: perPhaseLateralDistance: 0 data, 1 : Lateral distance per gait phase.
+Process: summaryPerTrialLD: 0 summData, 1: Lateral distance per trial summary data broken down by all phases of gait.
+
+Function Name: WithinTrialSummary_Process1C
+Process: perPhaseMOS: 0 data, 1 : The MOS broken down by phase of gait during the phase of interest.
+Process: summaryPerTrialMOS: 0 summData, 1: Margin of stability data per trial summary broken down by each stage of gait.
+
+Function Name: WithinTrialSummary_Process2A
+Process: angularMomentumBFWholeBodyAboutCOM1: 0 data, 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
+Process: summaryPerTrialHfWholePhase: 0 summData, 1: This is the per trial summary data for Hf over the entire phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+
+Function Name: WithinTrialSummary_Process2B
+Process: summaryPerTrialLDWholePhase: 0 summData, 1: The lateral distance summary data over the whole phase.
+Process: lateralDistance1: 0 data, 1 : The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+
+Function Name: WithinTrialSummary_Process2C
+Process: MOS1: 0 data, 1 : The margin of stability, with XCOM.
+Process: summaryPerTrialMOSWholePhase: 0 summData, 1: The MOS summary data per trial over the whole phase.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+
+Function Name: WithinSubjectSummary_Process1A
+Process: summaryPerTrialHf: 0 data, 1 : The summary data for all breakdowns of gait phases for body-fixed Hf normalized with Vistamehr method.
+Process: summaryPerSubjectHfGaitPhases: 0 summData, 1 : The within subject summary of the Hf per gait phase.
+
+Function Name: WithinSubjectSummary_Process1C
+Process: summaryPerSubjectLDGaitPhases: 0 summData, 1 : Enter Description Here
+Process: summaryPerTrialLD: 0 data, 1 : Lateral distance per trial summary data broken down by all phases of gait.
+
+Function Name: WithinSubjectSummary_Process1D
+Process: summaryPerSubjectLDWholePhase: 0 summData, 1 : Enter Description Here
+Process: summaryPerTrialLDWholePhase: 0 data, 1 : The lateral distance summary data over the whole phase.
+
+Function Name: WithinSubjectSummary_Process1B
+Process: summaryPerSubjectHfWholePhase: 0 summData, 1 : Enter Description Here
+Process: summaryPerTrialHfWholePhase: 0 data, 1 : This is the per trial summary data for Hf over the entire phase.
+
+Function Name: WithinSubjectSummary_Process1E
+Process: summaryPerSubjectMOSGaitPhases: 0 summData, 1 : Enter Description Here
+Process: summaryPerTrialMOS: 0 data, 1 : Margin of stability data per trial summary broken down by each stage of gait.
+
+Function Name: WithinSubjectSummary_Process1F
+Process: summaryPerSubjectMOSWholePhase: 0 summData, 1 : Enter Description Here
+Process: summaryPerTrialMOSWholePhase: 0 data, 1 : The MOS summary data per trial over the whole phase.
+
+Function Name: BetweenSubjectSummary_Process1A
+Process: summaryPerSubjectHfGaitPhases: 0 data, 1 : The within subject summary of the Hf per gait phase.
+Process: summaryBetweenSubjectHfGaitPhases: 0 summData, 1 : Enter Description Here
+
+Function Name: WithinSubjectAggregate_Process1A
+Process: aaSubjectPlaceholder: 0 aa, 1 : Placeholder variable to force an argument to include the subject level.
+Process: turnStrategyDixon1: 0 data, 1 : The turn strategy, either step or spin, based on Dixon et al., 2013.
+Process: aggregatedWithinSubjectDixonTurnStrategy1: 0 subjData, 1: The num trials by num conditions matrix for each subject of turn strategies.
+
+Function Name: WithinSubjectAggregate_Process1B
+Process: aaSubjectPlaceholder: 0 aa, 1 : Placeholder variable to force an argument to include the subject level.
+Process: aggregatedWithinSubjectHfWholePhase: 0 subjData, 1 : Enter Description Here
+Process: summaryPerTrialHfWholePhase: 0 data, 1 : This is the per trial summary data for Hf over the entire phase.
+
+Function Name: WithinSubjectAggregate_Process1C
+Process: aaSubjectPlaceholder: 0 aa, 1 : Placeholder variable to force an argument to include the subject level.
+Process: aggregatedWithinSubjectLDWholePhase: 0 subjData, 1 : Enter Description Here
+Process: summaryPerTrialLDWholePhase: 0 data, 1 : The lateral distance summary data over the whole phase.
+
+Function Name: WithinSubjectAggregate_Process1D
+Process: aaSubjectPlaceholder: 0 aa, 1 : Placeholder variable to force an argument to include the subject level.
+Process: aggregatedWithinSubjectMOSWholePhase: 0 subjData, 1 : Enter Description Here
+Process: summaryPerTrialMOSWholePhase: 0 data, 1 : The MOS summary data per trial over the whole phase.
+
+Group Name: Spatiotemporal
+Function Name: DixonTurnStrategy_Process1A
+Process: endFrame7: 0 endFrame, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: startFrame7: 0 startFrame, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: pelvisHeadingAngle1: 0 pelvAngle, 1 : The pelvis heading angle used for plotting.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : The heel strike & toe off indices. Missing events are NaN.
+Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
+Process: footInFrontLogical: 0 footInFront, 1 : Logical index of when the left and right feet are on the floor in front.
+Process: turnStrategyDixon1: 0 turnStrat, 1: The turn strategy, either step or spin, based on Dixon et al., 2013.

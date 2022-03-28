@@ -1,13 +1,13 @@
 Project Name: Spr21TWWBiomechanics
-Data Panel Statistics: Load
-Data Panel Per Gait Phase: Load
+Data Panel Statistics: None
+Data Panel Per Gait Phase: None
 Data Panel Plotting: None
 Data Panel Store Logsheet Metadata: None
-Data Panel Spatiotemporal: None
+Data Panel Spatiotemporal: Load
 Data Panel Margin of Stability: None
 Data Panel Linear & Angular Transverse-Plane Angles: None
 Data Panel Lateral Distance: None
-Data Panel Hwb About COM: Load
+Data Panel Hwb About COM: None
 Data Panel TBCM Position: None
 Data Panel Calibrations: None
 Data Panel Smooth Marker Data: None

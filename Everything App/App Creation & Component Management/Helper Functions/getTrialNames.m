@@ -252,15 +252,15 @@ for inclExcl=1:2
                     end
                 elseif org==1
                     if ~exist('trialNames','var')
-                        trialNames.Condition(k).(subName).(trialName)=repNum;
-                    elseif length(trialNames.Condition)<k
-                        trialNames.Condition(k).(subName).(trialName)=repNum;
-                    elseif ~isempty(trialNames.Condition(k)) && ~isfield(trialNames.Condition(k),subName)
-                        trialNames.Condition(k).(subName).(trialName)=repNum;
-                    elseif isfield(trialNames.Condition(k),subName) && ~isfield(trialNames.Condition(k).(subName),trialName)
-                        trialNames.Condition(k).(subName).(trialName)=repNum;
+                        trialNames.Condition(condNum).(subName).(trialName)=repNum;
+                    elseif length(trialNames.Condition)<condNum
+                        trialNames.Condition(condNum).(subName).(trialName)=repNum;
+                    elseif ~isempty(trialNames.Condition(condNum)) && ~isfield(trialNames.Condition(condNum),subName)
+                        trialNames.Condition(condNum).(subName).(trialName)=repNum;
+                    elseif isfield(trialNames.Condition(condNum),subName) && ~isfield(trialNames.Condition(condNum).(subName),trialName)
+                        trialNames.Condition(condNum).(subName).(trialName)=repNum;
                     else
-                        trialNames.Condition(k).(subName).(trialName)=[trialNames.Condition(k).(subName).(trialName) repNum];
+                        trialNames.Condition(condNum).(subName).(trialName)=[trialNames.Condition(condNum).(subName).(trialName) repNum];
                     end
                 end
                 break;

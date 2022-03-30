@@ -235,7 +235,7 @@ for i=1:length(fcnNames)
     % Run the processing function
     if ismember('Project',currLevels)
 
-        disp(['Running ' fcnName]);
+        disp(['Running ' fcnName methodLetter]);
 
         if ismember('Trial',currLevels)
             feval(fcnName,projectStruct,trialNames); % projectStruct is an input argument for convenience of viewing the data only
@@ -253,7 +253,7 @@ for i=1:length(fcnNames)
 
         if ismember('Subject',currLevels)
 
-            disp(['Running ' fcnName ' Subject ' subName]);
+            disp(['Running ' fcnName methodLetter ' Subject ' subName]);
 
             if ismember('Trial',currLevels)
                 feval(fcnName,projectStruct,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
@@ -266,7 +266,7 @@ for i=1:length(fcnNames)
         for trialNum=1:length(currTrials)
             trialName=currTrials{trialNum};
 
-            disp(['Running ' fcnName ' Subject ' subName ' Trial ' trialName]);
+            disp(['Running ' fcnName methodLetter ' Subject ' subName ' Trial ' trialName]);
 
             for repNum=trialNames.(subName).(trialName)
 

@@ -8,4 +8,4 @@ Process Fcn plotCheckMOS1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-
 Process Fcn TBCMVelocityHeadingAngleThreshold1, Process Fcn PelvisHeadingAngleThreshold1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\Straight_Spr21TWWBiomechanics_specifyTrials.m
 Process Group TBCM Position: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\Static_SL_PP_LC_Spr21TWWBiomechanics_specifyTrials.m
 : C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\Oslo_LateCued_Spr21TWWBiomechanics_specifyTrials.m
-Process Fcn DixonTurnStrategy1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\PrePlanned_LateCued_Spr21TWWBiomechanics_specifyTrials.m
+Process Fcn WithinSubjectAggregate1, Process Fcn GolyskiAdaptedTurnStrategy1, Process Fcn DixonTurnStrategy1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\PrePlanned_LateCued_Spr21TWWBiomechanics_specifyTrials.m

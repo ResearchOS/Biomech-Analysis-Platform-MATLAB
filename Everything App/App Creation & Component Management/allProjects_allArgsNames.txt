@@ -209,6 +209,47 @@ Process: summaryPerTrialTurnStrategy: 0 , 1 : Enter Description Here
 Process: zzLogsheetStartFoot: 0 , 1 : The starting foot from the researcher comments column
 Process: startFoot: 0 , 1 : Enter Description Here
 Process: summaryPerTrialStartFoot: 0 , 1 : Enter Description Here
+Process: spatiotemporalStepLength: 0 , 1 : Step length from Huxham 2006.
+Process: spatiotemporalStrideWidth: 0 , 1 : Stride width from Huxham 2006. Equivalent to step width.
+Process: spatiotemporalStrideLength: 0 , 1 : Enter Description Here
+Process: spatiotemporalStepDuration: 0 , 1 : Enter Description Here
+Process: spatiotemporalStrideDuration: 0 , 1 : Enter Description Here
+Process: spatiotemporalApproachSpeed: 0 , 1 : Enter Description Here
+Process: spatiotemporalNumFFs: 0 , 1 : Enter Description Here
+Process: spatiotemporalPhaseDuration: 0 , 1 : Enter Description Here
+Process: summaryPerTrialApproachSpeed: 0 , 1 : Enter Description Here
+Process: summaryPerTrialStepLength: 0 , 1 : Enter Description Here
+Process: summaryPerTrialStrideLength: 0 , 1 : Enter Description Here
+Process: summaryPerTrialStrideWidth: 0 , 1 : Enter Description Here
+Process: summaryPerTrialStepDuration: 0 , 1 : Enter Description Here
+Process: summaryPerTrialStrideDuration: 0 , 1 : Enter Description Here
+Process: summaryPerTrialNumberFootfalls: 0 , 1 : Enter Description Here
+Process: summaryPerTrialPhaseDuration: 0 , 1 : Enter Description Here
+Process: indivPerTrialAvgTBCMVelocity: 0 , 1 : Enter Description Here
+Process: indivPerTrialTurnStrategy: 0 , 1 : Enter Description Here
+Process: indivPerTrialHfWholePhase: 0 , 1 : Enter Description Here
+Process: indivPerTrialLDNotNormWholePhase: 0 , 1 : The lateral distance summary data over the whole phase.
+Process: indivPerTrialMOSWholePhase: 0 , 1 : The MOS summary data per trial over the whole phase.
+Process: indivPerTrialLDNormWholePhase: 0 , 1 : The per trial summary data for normalized lateral distance over the entire phase.
+Process: indivPerTrialHfGaitPhases: 0 , 1 : Summary of each trial's Hf data broken down by gait phases.
+Process: indivPerTrialLDGaitPhases: 0 , 1 : Lateral distance per trial summary data broken down by all phases of gait.
+Process: indivPerTrialMOSGaitPhases: 0 , 1 : Margin of stability data per trial summary broken down by each stage of gait.
+Process: indivPerTrialLDNormGaitPhases: 0 , 1 : Lateral distance normalized by leg length per trial summary broken down by each stage of gait.
+Process: indivPerTrialStartFoot: 0 , 1 : Enter Description Here
+Process: indivPerTrialStepLength: 0 , 1 : Enter Description Here
+Process: indivPerTrialStrideLength: 0 , 1 : Enter Description Here
+Process: indivPerTrialStrideWidth: 0 , 1 : Enter Description Here
+Process: indivPerTrialStepDuration: 0 , 1 : Enter Description Here
+Process: indivPerTrialStrideDuration: 0 , 1 : Enter Description Here
+Process: indivPerTrialNumFootfalls: 0 , 1 : Enter Description Here
+Process: indivPerTrialPhaseDuration: 0 , 1 : Enter Description Here
+Process: zzResultsScatterMetricAvgVeloc: 0 , 1 : Enter Description Here
+Process: summaryPerTrialTBCMVelocity: 0 , 1 : Enter Description Here
+Process: indivPerTrialTBCMVelocity: 0 , 1 : Enter Description Here
+Process: TBCM3DNormVelocity: 0 , 1 : 3D norm of TBCM velocity.
+Process: diffDistTBCMAtPelvOnsetToInter: 0 , 1 : Distance of the COM position at pelvis rotation onset relative to tripod, along +Y axis.
+Process: indivPerTrialDiffDistTBCMPelvToInter: 0 , 1 : Enter Description Here
+Process: summaryPerTrialDiffDistTBCMPelvOnsetToInter: 0 , 1 : Enter Description Here
 
 Group Name: Import
 Function Name: mocapfp_Import1A
@@ -385,6 +426,7 @@ Process: segmentStaticCalProximalEPs: 0 proxEP, 1 : Enter Description Here
 Process: segmentScaledMomentOfInertia: 0 momOfI, 1 : Moment of inertia for each segment scaled by segment lengths & masses (?)  (see Dumas 2007).
 Process: staticCalIdxUsed: 0 CJCidx, 1: The index in the static calibration trial used to compute the model.
 Process: staticCalAnatomicAxes: 0 anatomicAxes, 1 : Enter Description Here
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
 
 Group Name: TBCM Position
 Function Name: BestMarkerNames_Process4A
@@ -518,6 +560,7 @@ Process: endFrame8: 0 hsAfterCol, 1 : The first heel strike after the columns, i
 Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
 Process: TBCMavgVelocInPhase1: 0 grandMeanVeloc, 1: Subject level mean velocity per phase.
 Process: TBCMavgVelocInPhasePerTrial1: 0 meanVelocInTrial, 1: The average TBCM velocity for one trial during the phase of interest.
+Process: TBCM3DNormVelocity: 0 normVeloc, 1: 3D norm of TBCM velocity.
 
 Function Name: NormalizeHwb_Process2A
 Process: angularMomentumWholeBodyAboutCOM1: 0 HwbNotNorm, 1 : In cardinal coordinates, not normalized at all.
@@ -793,8 +836,8 @@ Process: bos2D1: 0 bos2D, 1 : Cardinal coordinates! Contains data and marker nam
 Process: bos2DBodyFixed1: 0 rotBOS, 1 : Body-fixed, split by foot. BOS only.
 Process: bosComponentizedMLAP1: 0 mlBOSTBCM, 1 : In body-fixed coordinates. Using TBCM, for lateral distance.
 Process: bosDataWithVirtual: 0 bosDataWVirt, 1 : BOS marker data including virtual markers
-Process: endFrame2: 0 eF, 1 : End frame from the logsheet
-Process: startFrame2: 0 sF, 1 : Start frame from the logsheet
+Process: endFrame2: 0 endFrame, 1 : End frame from the logsheet
+Process: startFrame2: 0 startFrame, 1 : Start frame from the logsheet
 Process: isStanceLogical: 0 isStance, 1 : Enter Description Here
 Process: lateralDistance1: 0 ld, 1 : The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
 Process: markerDataGapFilledFeet: 0 mocapData, 1 : Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
@@ -832,41 +875,61 @@ Process: pelvisHeadingAngle1: 0 pelvAngle, 1 : The pelvis heading angle used for
 Process: TBCMVelocityHeadingAngle1: 0 tbcmVelocAngle, 1 : Good for plotting.
 Process: angularMomentumWholeBodyAboutCOM2: 0 H, 1 : Normalized to unitless form by the Vistamehr method (divided by product of subject mass, height, and sqrt(g*height))
 Process: angularMomentumBFWholeBodyAboutCOM1: 0 H, 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
+Process: zzLogsheetLateCueFrame: 0 cueFrame, 1 : The frame number of the late cue as specified by the log sheet.
 
 Function Name: plotResultsScatter_Process1A
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
-Process: summaryPerTrialHfWholePhase: 0 data, 1 : This is the per trial summary data for Hf over the entire phase.
 Process: zzResultsScatterMetric: 0 metric, 1: Just 'Hf' for plotting labels.
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: indivPerTrialHfWholePhase: 0 data, 1 : Enter Description Here
+
+Function Name: plotResultsScatter_Process1H
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: zzResultsScatterMetricAvgVeloc: 0 metric, 1 : Enter Description Here
+Process: indivPerTrialAvgTBCMVelocity: 0 data, 1 : Enter Description Here
+
+Function Name: plotResultsScatter_Process1I
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: indivPerTrialMOSWholePhase: 0 data, 1: The MOS summary data per trial over the whole phase.
+Process: zzResultsScatterMetricMOS: 0 metric, 1 : Enter Description Here
 
 Function Name: plotResultsScatter_Process1B
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
-Process: summaryPerTrialHf: 0 data, 1 : The summary data for all breakdowns of gait phases for body-fixed Hf normalized with Vistamehr method.
 Process: zzResultsScatterMetric: 0 metric, 1 : Just 'Hf' for plotting labels.
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: indivPerTrialHfGaitPhases: 0 data, 1: Summary of each trial's Hf data broken down by gait phases.
 
 Function Name: plotResultsScatter_Process1C
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
 Process: zzResultsScatterMetricLD: 0 metric, 1 : Enter Description Here
-Process: summaryPerTrialLD: 0 data, 1 : Lateral distance per trial summary data broken down by all phases of gait.
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: indivPerTrialLDGaitPhases: 0 data, 1: Lateral distance per trial summary data broken down by all phases of gait.
 
 Function Name: plotResultsScatter_Process1D
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
 Process: zzResultsScatterMetricLD: 0 metric, 1 : Enter Description Here
-Process: summaryPerTrialLDWholePhase: 0 data, 1 : The lateral distance summary data over the whole phase.
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: indivPerTrialLDNotNormWholePhase: 0 data, 1: The lateral distance summary data over the whole phase.
 
 Function Name: plotResultsScatter_Process1E
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
 Process: zzResultsScatterMetricMOS: 0 metric, 1 : Enter Description Here
-Process: summaryPerTrialMOS: 0 data, 1 : Margin of stability data per trial summary broken down by each stage of gait.
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: indivPerTrialMOSGaitPhases: 0 data, 1: Margin of stability data per trial summary broken down by each stage of gait.
 
 Function Name: plotResultsScatter_Process1F
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
-Process: summaryPerTrialNormLDWholePhase: 0 data, 1 : The per trial summary data for normalized lateral distance over the entire phase.
 Process: zzResultsScatterMetricNormLD: 0 metric, 1 : Enter Description Here
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: indivPerTrialLDNormWholePhase: 0 data, 1 : The per trial summary data for normalized lateral distance over the entire phase.
 
 Function Name: plotResultsScatter_Process1G
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
-Process: summaryPerTrialNormLD: 0 data, 1 : Lateral distance normalized by leg length per trial summary broken down by each stage of gait.
 Process: zzResultsScatterMetricNormLD: 0 metric, 1 : Enter Description Here
+Process: aaTrialPlaceholder: 0 aa, 1 : Enter Description Here
+Process: indivPerTrialLDNormGaitPhases: 0 data, 1: Lateral distance normalized by leg length per trial summary broken down by each stage of gait.
 
 Group Name: Linear & Angular Transverse-Plane Angles
 Function Name: StoreLogsheetMetadata_Process1B
@@ -1103,6 +1166,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: TBCMavgVelocInPhasePerTrial1: 0 data, 1 : The average TBCM velocity for one trial during the phase of interest.
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: summaryPerTrialAvgTBCMVelocity: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialAvgTBCMVelocity: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1B
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1113,6 +1177,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: summaryPerTrialTurnStrategy: 0 summData, 1 : Enter Description Here
 Process: turnStrategyGolyskiAdapted1: 0 data, 1 : Turns trategy (step or spin) based on which foot during the turn is closest to the middle of the intersection.
+Process: indivPerTrialTurnStrategy: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1C
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1123,6 +1188,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: summaryPerTrialHfWholePhase: 0 summData, 1 : This is the per trial summary data for Hf over the entire phase.
 Process: angularMomentumBFWholeBodyAboutCOM1: 0 data, 1 : Body-fixed angular momentum normalized with Vistamehr method, with body-fixed axes being pelvis anatomic axes.
+Process: indivPerTrialHfWholePhase: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1D
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1133,6 +1199,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: summaryPerTrialLDWholePhase: 0 summData, 1 : The lateral distance summary data over the whole phase.
 Process: lateralDistance1: 0 data, 1 : The lateral distance using only the lateral edge of the front foot only. Replicates Spr21TWWBiomechanics data.
+Process: indivPerTrialLDNotNormWholePhase: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1E
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1143,6 +1210,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: summaryPerTrialMOSWholePhase: 0 summData, 1 : The MOS summary data per trial over the whole phase.
 Process: MOS1: 0 data, 1 : The margin of stability, with XCOM.
+Process: indivPerTrialMOSWholePhase: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1F
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1153,6 +1221,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: lateralDistanceNormalized1: 0 data, 1 : Lateral distance normalized to subject leg length.
 Process: summaryPerTrialNormLDWholePhase: 0 summData, 1 : The per trial summary data for normalized lateral distance over the entire phase.
+Process: indivPerTrialLDNormWholePhase: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1G
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1163,6 +1232,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: perPhaseHf: 0 data, 1 : Body-fixed (pelvis) whole-body angular momentum about the COM, normalized with Vistamehr method.
 Process: summaryPerTrialHf: 0 summData, 1 : The summary data for all breakdowns of gait phases for body-fixed Hf normalized with Vistamehr method.
+Process: indivPerTrialHfGaitPhases: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1H
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1173,6 +1243,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: summaryPerTrialLD: 0 summData, 1 : Lateral distance per trial summary data broken down by all phases of gait.
 Process: perPhaseLateralDistance: 0 data, 1 : Lateral distance per gait phase.
+Process: indivPerTrialLDGaitPhases: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1I
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1183,6 +1254,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: summaryPerTrialMOS: 0 summData, 1 : Margin of stability data per trial summary broken down by each stage of gait.
 Process: perPhaseMOS: 0 data, 1 : The MOS broken down by phase of gait during the phase of interest.
+Process: indivPerTrialMOSGaitPhases: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1J
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1193,6 +1265,7 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: summaryPerTrialNormLD: 0 summData, 1 : Lateral distance normalized by leg length per trial summary broken down by each stage of gait.
 Process: perPhaseNormLateralDistance1: 0 data, 1 : Per gait phase lateral distance normalzed by leg length.
+Process: indivPerTrialLDNormGaitPhases: 0 indivData, 1 : Enter Description Here
 
 Function Name: WithinTrialAggregate_Process1K
 Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
@@ -1203,6 +1276,106 @@ Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns
 Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
 Process: startFoot: 0 data, 1 : Enter Description Here
 Process: summaryPerTrialStartFoot: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialStartFoot: 0 indivData, 1 : Enter Description Here
+
+Function Name: WithinTrialAggregate_Process1L
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: spatiotemporalStepLength: 0 data, 1 : Step length from Huxham 2006.
+Process: summaryPerTrialStepLength: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialStepLength: 0 indivData, 1 : Enter Description Here
+
+Function Name: WithinTrialAggregate_Process1M
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: spatiotemporalStrideLength: 0 data, 1 : Enter Description Here
+Process: summaryPerTrialStrideLength: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialStrideLength: 0 indivData, 1 : Enter Description Here
+
+Function Name: WithinTrialAggregate_Process1N
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: spatiotemporalStrideWidth: 0 data, 1 : Stride width from Huxham 2006. Equivalent to step width.
+Process: summaryPerTrialStrideWidth: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialStrideWidth: 0 indivData, 1 : Enter Description Here
+
+Function Name: WithinTrialAggregate_Process1O
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: summaryPerTrialStepDuration: 0 summData, 1 : Enter Description Here
+Process: spatiotemporalStepDuration: 0 data, 1 : Enter Description Here
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: indivPerTrialStepDuration: 0 indivData, 1 : Enter Description Here
+
+Function Name: WithinTrialAggregate_Process1P
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: spatiotemporalStrideDuration: 0 data, 1 : Enter Description Here
+Process: summaryPerTrialStrideDuration: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialStrideDuration: 0 indivData, 1 : Enter Description Here
+
+Function Name: WithinTrialAggregate_Process1Q
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: spatiotemporalNumFFs: 0 data, 1 : Enter Description Here
+Process: summaryPerTrialNumberFootfalls: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialNumFootfalls: 0 indivData, 1 : Enter Description Here
+
+Function Name: WithinTrialAggregate_Process1R
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: spatiotemporalPhaseDuration: 0 data, 1 : Enter Description Here
+Process: summaryPerTrialPhaseDuration: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialPhaseDuration: 0 indivData, 1 : Enter Description Here
+
+Function Name: WithinTrialAggregate_Process1S
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: summaryPerTrialTBCMVelocity: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialTBCMVelocity: 0 indivData, 1 : Enter Description Here
+Process: TBCM3DNormVelocity: 0 data, 1 : 3D norm of TBCM velocity.
+
+Function Name: WithinTrialAggregate_Process1T
+Process: diffDistTBCMAtPelvOnsetToInter: 0 data, 1 : Distance of the COM position at pelvis rotation onset relative to tripod, along +Y axis.
+Process: aaProjectPlaceholder: 0 aa, 1 : Enter Description Here
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: summaryPerTrialDiffDistTBCMPelvOnsetToInter: 0 summData, 1 : Enter Description Here
+Process: indivPerTrialDiffDistTBCMPelvToInter: 0 indivData, 1 : Enter Description Here
 
 Group Name: Spatiotemporal
 Function Name: DixonTurnStrategy_Process1A
@@ -1220,3 +1393,47 @@ Process: bosDataWithVirtualPerFoot: 0 bosData, 1 : All BOS data with virtual mar
 Process: turnStrategyGolyskiAdapted1: 0 turnStrat, 1: Turns trategy (step or spin) based on which foot during the turn is closest to the middle of the intersection.
 Process: endFrame7: 0 endFrame, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
 Process: startFrame7: 0 startFrame, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+
+Function Name: AuxiliaryMeasures_Process1A
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: markerDataGapFilledFeet: 0 mocapData, 1 : Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : The heel strike & toe off indices. Missing events are NaN.
+Process: spatiotemporalStepLength: 0 stepLength, 1: Step length from Huxham 2006.
+Process: spatiotemporalStrideWidth: 0 strideWidth, 1: Stride width from Huxham 2006. Equivalent to step width.
+Process: spatiotemporalStrideLength: 0 strideLength, 1 : Enter Description Here
+Process: spatiotemporalStepDuration: 0 stepDur, 1 : Enter Description Here
+Process: spatiotemporalStrideDuration: 0 strideDur, 1 : Enter Description Here
+Process: spatiotemporalApproachSpeed: 0 apprSpeed, 1 : Enter Description Here
+Process: spatiotemporalNumFFs: 0 numFFs, 1 : Enter Description Here
+Process: spatiotemporalPhaseDuration: 0 phaseDur, 1 : Enter Description Here
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+
+Function Name: DiffDistTBCMPelvOnsetToInter_Process1A
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: startFrame6: 0 pelvOnset, 1 : When the pelvis begins rotation (i.e. exceeds threshold value).
+Process: startFrame4: 0 passTripod, 1 : TBCM passes the first tripod
+Process: diffDistTBCMAtPelvOnsetToInter: 0 dist, 1: Distance of the COM position at pelvis rotation onset relative to tripod, along +Y axis.
+
+Function Name: AuxiliaryMeasures_Process2A
+Process: TBCMPosition1: 0 tbcm, 1 : Cardinal coordinates Total body center of mass (TBCM) position.
+Process: TBCMVelocity1: 0 tbcmVeloc, 1 : Cardinal coordinates.
+Process: endFrame7: 0 endTurnHS, 1 : The first heel strike after the pelvis finishes rotating. Defines the end of the turn phase.
+Process: endFrame8: 0 afterColHS, 1 : The first heel strike after the columns, if applicable.
+Process: startFrame7: 0 startTurnHS, 1 : The last heel strike before pelvis initiation. Defines the start of the turn phase.
+Process: startFrame8: 0 beforeColHS, 1 : The last heel strike before the columns.
+Process: markerDataGapFilledFeet: 0 mocapData, 1 : Mocap data with all data equivalent to marker data 2 except that the real marker data is gap filled during mid stance.
+Process: spatiotemporalApproachSpeed: 0 apprSpeed, 1 : Enter Description Here
+Process: spatiotemporalNumFFs: 0 numFFs, 1 : Enter Description Here
+Process: spatiotemporalPhaseDuration: 0 phaseDur, 1 : Enter Description Here
+Process: spatiotemporalStepDuration: 0 stepDur, 1 : Enter Description Here
+Process: spatiotemporalStepLength: 0 stepLength, 1 : Step length from Huxham 2006.
+Process: spatiotemporalStrideLength: 0 strideLength, 1 : Enter Description Here
+Process: spatiotemporalStrideDuration: 0 strideDur, 1 : Enter Description Here
+Process: spatiotemporalStrideWidth: 0 strideWidth, 1 : Stride width from Huxham 2006. Equivalent to step width.
+Process: trialTaskType: 0 taskType, 1 : The task type of the current trial.
+Process: zeniGaitEvents1: 0 gaitEvents, 1 : The heel strike & toe off indices. Missing events are NaN.

@@ -3,14 +3,14 @@ Data Panel Statistics: Load
 Data Panel Per Gait Phase: Load
 Data Panel Plotting: Load
 Data Panel Store Logsheet Metadata: None
-Data Panel Spatiotemporal: None
-Data Panel Margin of Stability: Load
-Data Panel Linear & Angular Transverse-Plane Angles: Load
-Data Panel Lateral Distance: Load
-Data Panel Hwb About COM: Load
-Data Panel TBCM Position: Load
+Data Panel Spatiotemporal: Load
+Data Panel Margin of Stability: None
+Data Panel Linear & Angular Transverse-Plane Angles: None
+Data Panel Lateral Distance: None
+Data Panel Hwb About COM: None
+Data Panel TBCM Position: None
 Data Panel Calibrations: None
-Data Panel Smooth Marker Data: Load
+Data Panel Smooth Marker Data: None
 Data Panel Setup: None
 Target Trial ID Format: Trial Name/Number
 Trial ID Column Header For MOCAP & FP: Trial Name/Number

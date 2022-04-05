@@ -86,7 +86,7 @@ for i=1:length(inputNamesinCode)
     else
 %         level='Project';
         [argIn]=feval(argsFcnName{i},'in',evalin('base','projectStruct;'),'','','');
-    end
+    end    
 
     varargout{i}=argIn;
 

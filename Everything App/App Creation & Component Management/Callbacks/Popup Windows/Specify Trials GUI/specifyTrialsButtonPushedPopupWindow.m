@@ -30,7 +30,8 @@ for i=1:length(allHandles)
 
 end
 
-clc;
+%% Initialize GUI
+% clc;
 Q=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
 Q.Name='Specify Trials'; % Name the window
 defaultPos=get(0,'defaultfigureposition'); % Get the default figure position

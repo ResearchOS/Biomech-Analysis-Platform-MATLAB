@@ -54,19 +54,22 @@ elseif ispc==1
     slash='\';
 end
 
-argsFolder=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function'];
-addpath(argsFolder);
+%% Open args GUI for this function
+argsButtonPushedPopupWindow(fig,'Process',fcnName,currGroup)
 
-if exist(argsFolder,'dir')~=7
-    mkdir(argsFolder);
-end
-
-argsPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '.m'];
-
-if exist(argsPath,'file')==2
-    edit(argsPath);
-else % If the arguments file does not exist, create it from the template.
-    templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'Process_argsTemplate.m'];
-%     firstLine=['function [argsVars,argsPaths]=' fcnName '(projectStruct,subName,trialName,repNum)'];
-    createFileFromTemplate(templatePath,argsPath,fcnName)
-end
+% argsFolder=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function'];
+% addpath(argsFolder);
+% 
+% if exist(argsFolder,'dir')~=7
+%     mkdir(argsFolder);
+% end
+% 
+% argsPath=[getappdata(fig,'codePath') 'Process_' getappdata(fig,'projectName') slash 'Arguments' slash 'Per Function' slash fcnName '.m'];
+% 
+% if exist(argsPath,'file')==2
+%     edit(argsPath);
+% else % If the arguments file does not exist, create it from the template.
+%     templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'Process_argsTemplate.m'];
+% %     firstLine=['function [argsVars,argsPaths]=' fcnName '(projectStruct,subName,trialName,repNum)'];
+%     createFileFromTemplate(templatePath,argsPath,fcnName)
+% end

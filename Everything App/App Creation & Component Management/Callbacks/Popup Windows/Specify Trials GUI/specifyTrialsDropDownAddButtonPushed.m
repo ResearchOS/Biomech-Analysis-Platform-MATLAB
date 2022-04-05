@@ -136,7 +136,7 @@ else
     % Search through newText to remove the guiLocation label from the previous path.
     for i=1:length(newText)
 
-        if isequal(newText{i}(1:length(guiLocation)),guiLocation)
+        if length(newText{i})>=length(guiLocation) && isequal(newText{i}(1:length(guiLocation)),guiLocation)
             colonIdx=strfind(newText{i},':');
             beforeColon=newText{i}(1:colonIdx(1)-1);
             % Parse the text to only remove one gui location, if multiple

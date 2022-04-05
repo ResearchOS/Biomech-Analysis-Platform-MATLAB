@@ -20,7 +20,7 @@ fldNames=fieldnames(pathsByLevel.All); % Data types and individual processing fu
 for i=1:length(fldNames)
 
     if isfield(pathsByLevel.All.(fldNames{i}),level) && isequal(pathsByLevel.Action.(fldNames{i}),'Offload')
-        paths=pathsByLevel.All.(fldNames{i}).(level);
+        paths=pathsByLevel.All.(fldNames{i}).(level);        
 
         switch level
             case 'Project'
@@ -39,6 +39,7 @@ for i=1:length(fldNames)
 
         for j=1:length(paths)
 
+            repNum=1;
             rmdPath=paths{j};
             dotIdx=strfind(rmdPath,'.');
             rmdPath=rmdPath(1:dotIdx(end)-1);
@@ -62,7 +63,9 @@ for i=1:length(fldNames)
 
             assignin('base','newPath',rmdPath);
             assignin('base','repNum',repNum);
-            if evalin('base',['existField(projectStruct,newPath,repNum);'])==1
+%             projectStruct=evalin('base','projectStruct;');
+%             a=existField(projectStruct,[rmdPath '.' paths{j}(dotIdx(end)+1:end)],repNum);
+            if evalin('base',['existField(projectStruct,''' rmdPath '.' paths{j}(dotIdx(end)+1:end) ''',repNum);'])==1
                 evalin('base',[rmdPath '=rmfield(' rmdPath ', ''' paths{j}(dotIdx(end)+1:end) ''');']);
                 % Option to recursively remove fieldnames for all fields that are empty.
             end

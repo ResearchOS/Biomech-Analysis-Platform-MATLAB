@@ -1,0 +1,3 @@
+function []=deleteArgButtonPushed(src,event)
+
+%% PURPOSE: DELETE AN ARGUMENT FROM THE ALL ARGS LIST, AND FROM ALL FUNCTIONS TOO.

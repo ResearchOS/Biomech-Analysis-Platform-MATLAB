@@ -1,4 +1,4 @@
-function [pathsInputs,pathsOutputs,paths]=readArgsFcn(filePath)
+function [pathsInputs,pathsOutputs,paths,levels]=readArgsFcn(filePath)
 
 %% PURPOSE: READ THE TEXT OF THE ARGUMENTS FUNCTION TO ISOLATE THE PATH NAMES OF ALL INPUT VARIABLES
 % Inputs:
@@ -8,9 +8,18 @@ function [pathsInputs,pathsOutputs,paths]=readArgsFcn(filePath)
 
 % Outputs:
 % paths: The path names within the struct for each variable (cell array of chars)
+% levels: The levels of all input & output vars.
 
 % Load the text file.
-text=regexp(fileread(filePath),'\n','split'); % Each line is one element of the cell now.
+if exist(filePath,'file')==2
+    text=regexp(fileread(filePath),'\n','split'); % Each line is one element of the cell now.
+else    
+    pathsInputs='';
+    pathsOutputs='';
+    paths='';
+    levels=0;
+    return;
+end
 
 % Criteria:
 % 1. Must have an equals sign in the line.
@@ -31,19 +40,21 @@ elseif ispc==1
 end
 pathSplit=strsplit(filePath,slash);
 fileName=pathSplit{end};
-if ~isempty(strfind(fileName,'_Import'))
-    fileSuffix=strsplit(fileName,'_Import');
-elseif ~isempty(strfind(fileName,'_Process'))
-    fileSuffix=strsplit(fileName,'_Process');
-elseif ~isempty(strfind(fileName,'_Plot'))
-    fileSuffix=strsplit(fileName,'_Plot');
-end
-methodID=fileSuffix{2}(1:strfind(fileSuffix{2},'.')-1);
+% if ~isempty(strfind(fileName,'_Import'))
+%     fileSuffix=strsplit(fileName,'_Import');
+% elseif ~isempty(strfind(fileName,'_Process'))
+%     fileSuffix=strsplit(fileName,'_Process');
+% elseif ~isempty(strfind(fileName,'_Plot'))
+%     fileSuffix=strsplit(fileName,'_Plot');
+% end
+% methodID=fileSuffix{2}(1:strfind(fileSuffix{2},'.')-1);
 
 argCount=0;
 % fcnCount=0;
 outputCount=0;
 inputCount=0;
+levels='';
+levelsCount=0;
 for i=2:length(text)
     
     currLine=text{i}(~isspace(text{i})); % Remove all white space.
@@ -130,6 +141,21 @@ for i=2:length(text)
         pathsInputs{inputCount,1}=paths{argCount};
     end
     
+    if length(splitPath)>=3 && isequal(splitPath{3}([1 end]),'()') % Trial level
+        levelsCount=levelsCount+1;
+        levels{levelsCount}='Trial';
+    elseif length(splitPath)>=2 && isequal(splitPath{2}([1 end]),'()') % Subject level
+        levelsCount=levelsCount+1;
+        levels{levelsCount}='Subject';
+    elseif isequal(splitPath{1},'projectStruct') && ~isequal(splitPath{2},'Placeholder')
+        levelsCount=levelsCount+1;
+        levels{levelsCount}='Project';
+    end % Hard-coded do NOT count towards the levels
+    
+end
+
+if ~isempty(levels)
+    levels=sort(unique(levels));
 end
 
 if ~exist('pathsInputs','var')

@@ -34,32 +34,58 @@ methodLetter=getappdata(fig,'methodLetter');
 splitName=strsplit(fcnName,'_');
 methodNum=splitName{end}(isstrprop(splitName{end},'digit'));
 
-useGroupArgs=0; % 1 to use group args, 0 not to. This will be replaced by GUI checkbox value later.
-if useGroupArgs==1
-    
-else
-    argsFuncName=[fcnName methodLetter];
+% useGroupArgs=0; % 1 to use group args, 0 not to. This will be replaced by GUI checkbox value later.
+% if useGroupArgs==1
+%     
+% else
+%     argsFuncName=[fcnName methodLetter];
+% end
+
+guiTab=getappdata(fig,'guiTab');
+
+%% Relate the argNames to the arg function names
+[text]=readAllArgsTextFile(getappdata(fig,'everythingPath'),getappdata(fig,'projectName'),getappdata(fig,'guiTab'));
+[argsFcnNames,argsNamesInCode]=getAllArgNames(text,getappdata(fig,'projectName'),guiTab,getappdata(fig,'groupName'),[fcnName methodLetter]);
+
+argsFcnName=cell(length(argNames),1);
+argCount=0;
+for j=1:length(argNames)
+    for i=1:length(argsNamesInCode)
+
+        currArgNameInCode=argsNamesInCode{i};
+        currArgNameSplit=strsplit(currArgNameInCode,',');
+        beforeCommaSplit=strsplit(currArgNameSplit{1},' ');
+        %     afterCommaSplit=strsplit(currArgNameSplit{2},' ');
+
+        if isequal(beforeCommaSplit{1},'0') && isequal(beforeCommaSplit{2},argNames{j})
+            argCount=argCount+1;
+            argsFcnName{argCount}=[guiTab 'Arg_' argsFcnNames{i}];
+        end
+
+    end
 end
 
 saveLevels=cell(length(argNames),1);
 
+inOut='out';
 for i=1:length(argNames)
     argName=argNames{i};
-    argIn=feval(argsFuncName,level,evalin('base','projectStruct;'),subName,trialName,repNum);
+    currFcnName=argsFcnName{i};   
+    argIn=feval(currFcnName,inOut,evalin('base','projectStruct;'),subName,trialName,repNum);
 
-    if isfield(argIn,argName)
-        if ~ischar(argIn.(argName)) || ~isequal(argIn.(argName)(1:length('projectStruct')),'projectStruct')
-            continue;
-        end
-    else
-        warning(['Missing field name: ' argName ' In args function!']);
-        return;
-    end
+%     if isfield(argIn,argName)
+%         if ~ischar(argIn.(argName)) || ~isequal(argIn.(argName)(1:length('projectStruct')),'projectStruct')
+%             continue;
+%         end
+%     else
+%         warning(['Missing field name: ' argName ' In args function!']);
+%         return;
+%     end
 
     saveLevels{i}='Project';
     
     % Resolve the path names (i.e. subName & trialName)
-    splitPath=strsplit(argIn.(argName),'.');
+    splitPath=strsplit(argIn,'.');
     resPath=splitPath{1}; % Initialize the resolved path name
     for j=2:length(splitPath)
         if ismember(j,[2 3]) && isequal(splitPath{j}([1 end]),'()') % Dynamic subject or trial name

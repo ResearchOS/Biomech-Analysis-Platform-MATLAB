@@ -22,4 +22,6 @@ Logsheet Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomecha
 Data Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
 Code Path: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\
 
-Most Recent Project Name: Spr21TWWBiomechanics
+Project Name: Spr22RoleOfEachLeg
+
+Most Recent Project Name: Spr22RoleOfEachLeg

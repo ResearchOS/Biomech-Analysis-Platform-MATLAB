@@ -132,9 +132,23 @@ else
 
     end
 
+    if ~exist('currLine','var')
+        currLine=numLines+1;
+    end
+
     newText=text(1:currLine-1);
     % Search through newText to remove the guiLocation label from the previous path.
+    currProj=0;
     for i=1:length(newText)
+
+        if length(text{i})>=length(projLine) && isequal(text{i}(1:length(projLine)),projLine)
+            currProj=1;
+            continue;
+        end
+
+        if currProj==0
+            continue;
+        end
 
         if length(newText{i})>=length(guiLocation) && isequal(newText{i}(1:length(guiLocation)),guiLocation)
             colonIdx=strfind(newText{i},':');

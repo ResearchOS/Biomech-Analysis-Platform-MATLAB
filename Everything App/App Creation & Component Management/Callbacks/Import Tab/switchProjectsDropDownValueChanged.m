@@ -54,7 +54,11 @@ everythingPath=getappdata(fig,'everythingPath');
 A=readAllProjects(getappdata(fig,'everythingPath')); % Return the text of the 'allProjects_ProjectNamesPaths.txt' file
 if iscell(A)
     allProjectsList=getAllProjectNames(A);
-    existingProject=1;
+    if ismember(projectName,allProjectsList)
+        existingProject=1;
+    else
+        existingProject=0;
+    end
 else
     existingProject=0;
 end
@@ -185,7 +189,7 @@ if existingProject==1
         hDataTypesDropDown.Items=sort(hDataTypesDropDown.Items);
     else
 %         hTrialIDColHeaderDataTypeField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
-        hTrialIDColHeaderDataTypeField=handles.Import.dataTypeTrialIDColHeaderField;
+        hTrialIDColHeaderDataTypeField=handles.Import.trialIDColHeaderDataTypeField;
         hTrialIDColHeaderDataTypeField.Visible='off';
         hDataTypesDropDown.Items={'No Data Types to Import'};
     end
@@ -258,7 +262,7 @@ elseif existingProject==0
     end
     allProjectsList=getAllProjectNames(A);
     
-    hTrialIDColHeaderDataTypesField=handles.Import.dataTypeTrialIDColumnHeaderField;
+    hTrialIDColHeaderDataTypesField=handles.Import.trialIDColHeaderDataTypeField;
 %     hTrialIDColHeaderDataTypesField=findobj(fig,'Type','uieditfield','Tag','DataTypeTrialIDColumnHeaderField');
     hTrialIDColHeaderDataTypesField.Visible='off';
     
@@ -408,3 +412,5 @@ else % If the text file is empty.
 end
 
 setappdata(fig,'handles',handles);
+
+disp(['Success! Switched to Project: ' projectName]);

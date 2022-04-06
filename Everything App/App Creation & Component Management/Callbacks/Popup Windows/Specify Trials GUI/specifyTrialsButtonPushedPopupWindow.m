@@ -20,6 +20,12 @@ fig=ancestor(src,'figure','toplevel');
 assignin('base','gui',fig); % Send the fig handle to the base workspace.
 % handles=getappdata(fig,'handles');
 
+codePath=getappdata(fig,'codePath');
+if isempty(codePath) || exist(codePath,'dir')~=7
+    disp('Must enter the code path first!')
+    return;
+end
+
 allHandles=findall(0);
 for i=1:length(allHandles)
 
@@ -97,7 +103,7 @@ if ~isempty(allProjectsList)
     projectNameLine=['Project Name: ' getappdata(fig,'projectName')];
     for i=1:numLines
 
-        if isequal(text{i}(1:length(projectNameLine)),projectNameLine)
+        if length(text{i})>=length(projectNameLine) && isequal(text{i}(1:length(projectNameLine)),projectNameLine)
             currProjectLine=i;            
             continue;
         end          
@@ -143,5 +149,9 @@ if ~isempty(allProjectsList)
 end
 
 setappdata(Q,'handles',newHandles);
+
+if isempty(currVName)
+    return;
+end
 
 specifyTrialsVersionDropDownValueChanged(Q);

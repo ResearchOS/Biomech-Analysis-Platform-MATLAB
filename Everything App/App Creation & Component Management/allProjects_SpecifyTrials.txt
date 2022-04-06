@@ -11,3 +11,5 @@ Process Group TBCM Position: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr2
 Process Fcn DiffDistTBCMPelvOnsetToInter1, Process Fcn WithinSubjectAggregate1, Process Fcn GolyskiAdaptedTurnStrategy1, Process Fcn DixonTurnStrategy1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\PrePlanned_LateCued_Spr21TWWBiomechanics_specifyTrials.m
 : C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\OneTrialOnly_Spr21TWWBiomechanics_specifyTrials.m
 Process Group Spatiotemporal, Process Group Plotting, Process Group Statistics, Process Fcn AuxiliaryMeasures1: C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\SpecifyTrials\SL_PP_LC_ExclBad_Spr21TWWBiomechanics_specifyTrials.m
+
+Project Name: Spr22RoleOfEachLeg

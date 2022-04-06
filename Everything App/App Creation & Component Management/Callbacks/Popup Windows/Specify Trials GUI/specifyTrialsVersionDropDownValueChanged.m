@@ -78,7 +78,7 @@ end
 currCD=cd(folder);
 
 if exist(specifyTrialsMPath,'file')~=2
-    warning(['Please remove this version. The specify trials file was deleted: ' specifyTrialsMPath]);
+    warning(['Please remove this version from the dropdown. The specify trials file was deleted: ' specifyTrialsMPath]);
     return;
 end
 

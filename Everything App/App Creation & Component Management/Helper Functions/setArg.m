@@ -7,17 +7,26 @@ function setArg(subName,trialName,repNum,varargin)
 % repNum: The repetition number for the current trial (double)
 % varargin: The value of each output argument. The name passed in to this function must exactly match what is in the input arguments function (any data type)
 
-if ~isempty(repNum) && ~isempty(trialName)
-    level='Trial';
-elseif ~isempty(subName)
-    level='Subject';
-else
-    level='Project';
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
 end
 
 st=dbstack;
 fcnName=st(2).name; % The name of the calling function.
 
+%% Get the level for the current arguments to store. Also get the file path for the current MAT file.
+fig=evalin('base','gui;');
+if ~isempty(repNum) && ~isempty(trialName)
+    matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
+elseif ~isempty(subName)
+    matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash subName '_' projectName '.mat'];
+else
+    matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat'];
+end
+
+%% Get the names of the setArg input arguments. Checks if they are valid names.
 argNames=cell(length(varargin),1);
 nArgs=length(varargin);
 for i=4:nArgs+3
@@ -27,125 +36,92 @@ for i=4:nArgs+3
     end
 end
 
-st=dbstack;
-fcnName=st(2).name;
-fig=evalin('base','gui;');
-methodLetter=getappdata(fig,'methodLetter');
-splitName=strsplit(fcnName,'_');
-methodNum=splitName{end}(isstrprop(splitName{end},'digit'));
+%% NOTE: WHEN FIRST CREATING THE VARIABLE, NEED TO CHECK THAT IT IS UNIQUE (SEARCH FOR MATCHES IN COLUMN 6, CREATED BY APPENDING COLUMN 5 + 2)
+% SO BY THE TIME WE RUN SETARG, THERE SHOULD BE NO DANGER OF HAVING NON-UNIQUE METADATA.
 
-% useGroupArgs=0; % 1 to use group args, 0 not to. This will be replaced by GUI checkbox value later.
-% if useGroupArgs==1
-%     
-% else
-%     argsFuncName=[fcnName methodLetter];
-% end
+%% Get the list of variables already in the MAT file.
+if exist(matFilePath,'file')==2
+    %% Relate the argNames to the arg function names
+%     NOT USED: % Column 3: group name,
+    % Column 1: project name,
+    % Column 2: analysis name,    
+    % Column 3: function name, (includes method number & letter)
+    % Column 4: variable name in code,
+    % Column 5: variable name in GUI (changes after renaming the variable in the GUI)
+    % Column 6: variable save name (never changes! Matches Column 2 + Column 5 when first created. If the variable has been renamed, name does not change.)
+    % Column 7: date created
+    % Column 8: date modified
 
-guiTab=getappdata(fig,'guiTab');
+    VariableMetadata=load(matFilePath,'VariablesMetadata'); % Get the metadata for all variables in the MAT file.
 
-%% Relate the argNames to the arg function names
-[text]=readAllArgsTextFile(getappdata(fig,'everythingPath'),getappdata(fig,'projectName'),getappdata(fig,'guiTab'));
-[argsFcnNames,argsNamesInCode]=getAllArgNames(text,getappdata(fig,'projectName'),guiTab,getappdata(fig,'groupName'),[fcnName methodLetter]);
+    %% Filter the existing argNames by the current project, analysis, function, and argument names.
+    %     groupIdx=ismember(VariableMetadata(:,3),getappdata(fig,'groupName'));
+    projectIdx=ismember(VariableMetadata(:,1),getappdata(fig,'projectName'));
+    analysisIdx=ismember(VariableMetadata(:,2),getappdata(fig,'analysisName'));
+    fcnIdx=ismember(VariableMetadata(:,4),getappdata(fig,'fcnName'));
+    varsIdx=ismember(VariableMetadata(:,5),argNames);
 
-argsFcnName=cell(length(argNames),1);
-argCount=0;
-for j=1:length(argNames)
-    for i=1:length(argsNamesInCode)
+    existIdx=projectIdx & analysisIdx & fcnIdx & varsIdx; % The row idx for metadata of the current variables to save that already exist.
+    existVariableMetadata=VariableMetadata(existIdx,:); % Isolate pre-existing variables to save that already exist.
 
-        currArgNameInCode=argsNamesInCode{i};
-        currArgNameSplit=strsplit(currArgNameInCode,',');
-        beforeCommaSplit=strsplit(currArgNameSplit{1},' ');
-        %     afterCommaSplit=strsplit(currArgNameSplit{2},' ');
+    saveNamesExist=existVariableMetadata(:,6)'; % Extract the names that the data should be saved as.
 
-        if isequal(beforeCommaSplit{1},'0') && isequal(beforeCommaSplit{2},argNames{j})
-            argCount=argCount+1;
-            argsFcnName{argCount}=[guiTab 'Arg_' argsFcnNames{i}];
-        end
+    VariableMetadata{existIdx,8}=datetime('now'); % Change when the variable was last modified.    
+
+    noExistVarNames=argNames(~ismember(argNames,existVariableMetadata(:,5))); % The names of the variables that do not already exist.
+
+    count=0;
+    VariableMetadata{length(existIdx)+1:length(existIdx)+length(noExistVarNames),1:8}=[]; % Initialize additional rows as empty cells.
+    saveNamesNoExist=cell(1,length(noExistVarNames));
+    for rowNum=length(existIdx)+1:length(existIdx)+length(noExistVarNames)
+
+        count=count+1;
+        VariableMetadata{rowNum,1}=getappdata(fig,'projectName');        
+        VariableMetadata{rowNum,2}=getappdata(fig,'analysisName');        
+        VariableMetadata{rowNum,3}=getappdata(fig,'fcnName');
+        VariableMetadata{rowNum,4}=noExistVarNames{count};
+        VariableMetadata{rowNum,5}=[]; % Comes from the master list of variable names held <somewhere>.
+        VariableMetadata{rowNum,6}=[VariableMetadata{rowNum,5} '_' VariableMetadata{rowNum,2}];
+        VariableMetadata{rowNum,7}=datetime('now');
+        VariableMetadata{rowNum,8}=datetime('now');
+
+        saveNamesNoExist{1,count}=VariableMetadata{rowNum,6};
 
     end
-end
 
-saveLevels=cell(length(argNames),1);
+    saveNames=[saveNamesNoExist saveNamesExist {'VariableMetadata'}]; % Add the 'VariableMetadata' variable to the var names to save.
 
-inOut='out';
-for i=1:length(argNames)
-    argName=argNames{i};
-    currFcnName=argsFcnName{i};   
-    argIn=feval(currFcnName,inOut,evalin('base','projectStruct;'),subName,trialName,repNum);
+    save(matFilePath,saveNames{:},'-v6','-append'); % Append the data to the MAT file. Overwrites existing variables, adds new ones.
 
-%     if isfield(argIn,argName)
-%         if ~ischar(argIn.(argName)) || ~isequal(argIn.(argName)(1:length('projectStruct')),'projectStruct')
-%             continue;
-%         end
-%     else
-%         warning(['Missing field name: ' argName ' In args function!']);
-%         return;
-%     end
+else % All variables are new.
+    % Initialize the variable metadata with column headers.
+    VariableMetadata{1,1}='Project Name';
+    VariableMetadata{1,2}='Analysis Name';
+    VariableMetadata{1,3}='Function Name';
+    VariableMetadata{1,4}='Variable Name In Code';
+    VariableMetadata{1,5}='Variable Name In GUI'; % Comes from the master list of variable names held <somewhere>.
+    VariableMetadata{1,6}='Variable Save Name (Never Changes)';
+    VariableMetadata{1,7}='Date Created';
+    VariableMetadata{1,8}='Date Modified';
 
-    saveLevels{i}='Project';
-    
-    % Resolve the path names (i.e. subName & trialName)
-    splitPath=strsplit(argIn,'.');
-    resPath=splitPath{1}; % Initialize the resolved path name
-    for j=2:length(splitPath)
-        if ismember(j,[2 3]) && isequal(splitPath{j}([1 end]),'()') % Dynamic subject or trial name
-            dynamicName=splitPath{j}(2:end-1);
-            if any(ismember('()',dynamicName)) % There is an index in this field name
-                % error? Or ok for trial names?
-            else
-                if j==2 && isequal(dynamicName,'subName')
-                    resPath=[resPath '.' subName];
-                    saveLevels{i}='Subject';
-                elseif j==3 && isequal(dynamicName,'trialName')
-                    resPath=[resPath '.' trialName];
-                    saveLevels{i}='Trial';                    
-                end
-            end
-        else
-            if j==4 && all(ismember('()',splitPath{j})) && ~isequal(splitPath{j}([1 end]),'()') % There are parentheses in this field name, but it is not a dynamic field name.
-                % Check if there are multiple repetitions in this trial.
-                openParensIdx=strfind(splitPath{j},'(');
-                resPath=[resPath '.' splitPath{j}(1:openParensIdx-1) '(' num2str(repNum) ')'];
-            else
-                resPath=[resPath '.' splitPath{j}];
-            end
-        end
-        if contains(resPath,'..') % subName or trialName was entered at the wrong level.
-            error('Subject or trial name in output arg entered at the wrong level!');
-%             return;
-        end
-    end   
-    
-%     resPath=[resPath '.Method' methodNum methodLetter]; % Automatically assign the method ID       
-    
-    assignin('base','currData',varargin{i}); % Store the data to the base workspace.
-    evalin('base',[resPath '=currData;']); % Store the data to the projectStruct in the base workspace.
+    saveNames=cell(1,length(argNames)); % Initialize the save names cell array (comma-separated list)
 
-    %% Cut off the paths by level
-    savePathsByLevel.(saveLevels{i}).FullPaths{i,1}=resPath;
-    dotIdx=strfind(resPath,'.');
-    switch saveLevels{i}
-        case 'Project'
-            savePathsByLevel.(saveLevels{i}).Paths{i,1}=resPath;
-        case 'Subject'
-            savePathsByLevel.(saveLevels{i}).Paths{i,1}=resPath(dotIdx(2)+1:end); % subName. ...
-        case 'Trial'
-            savePathsByLevel.(saveLevels{i}).Paths{i,1}=resPath(dotIdx(3)+1:end); % trialName. ...
+    % Put the variable metadata into the cell array.
+    for i=2:length(argNames)+1
+        VariableMetadata{i,1}=getappdata(fig,'projectName');
+        VariableMetadata{i,2}=getappdata(fig,'analysisName');        
+        VariableMetadata{i,3}=getappdata(fig,'fcnName');
+        VariableMetadata{i,4}=argNames{i};
+        VariableMetadata{i,5}=[]; % Comes from the master list of variable names held <somewhere>.
+        VariableMetadata{i,6}=[VariableMetadata{i,5} '_' VariableMetadata{i,2}];
+        VariableMetadata{i,7}=datetime('now');
+        VariableMetadata{i,8}=datetime('now');
+
+        saveNames{1,i}=VariableMetadata{i,6};
     end
-    
-end
 
-evalin('base','clear currData;');
+    saveNames=[saveNames {'VariableMetadata'}]; % Add the 'VariableMetadata' variable to the var names to save.
 
-%% Store the save paths by level to the figure variable
-fig=evalin('base','gui;');
-savePathsByLevelFig=getappdata(fig,'savePathsByLevel');
-
-currLevels=fieldnames(savePathsByLevel);
-for i=1:length(currLevels)
-
-    savePathsByLevelFig.(currLevels{i}).Paths=[savePathsByLevelFig.(currLevels{i}).Paths; savePathsByLevel.(currLevels{i}).FullPaths];
+    save(matFilePath,saveNames{:,6},'-v6'); % Save the data for the first time, because the MAT file does not exist yet.
 
 end
-
-setappdata(fig,'savePathsByLevel',savePathsByLevelFig);

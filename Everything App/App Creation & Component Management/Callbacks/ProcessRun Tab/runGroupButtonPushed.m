@@ -4,6 +4,22 @@ function []=runGroupButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 
+persistent check;
+
+if isempty(check)
+    check=1;
+    pause(0.5);
+    if check==1
+        disp('Single click');
+        check=[];
+    elseif check==2
+        disp('Double click');
+    end
+else
+    check=2;
+    return;
+end
+
 hRunDropDown=findobj(fig,'Type','uidropdown','Tag','RunGroupNameDropDown');
 groupName=hRunDropDown.Value;
 

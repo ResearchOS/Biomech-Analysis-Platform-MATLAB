@@ -73,6 +73,8 @@ if exist(matFilePath,'file')==2
         count=count+1;
         saveNames{1,count}=VariablesMetadata.NameInMAT{rowNum,1};
 
+%         eval([saveNames{1,count} '=' ])
+
     end
 
     %% Add new vars' data and metadata.  

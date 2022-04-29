@@ -25,11 +25,11 @@ end
 
 fig=evalin('base','gui;');
 
-if ~isempty(repNum) && ~isempty(trialName)
+if ~isempty(repNum) && ~isempty(trialName) % Trial level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
-elseif ~isempty(subName)
+elseif ~isempty(subName) % Subject level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash subName '_' projectName '.mat'];
-else
+else % Project level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat'];
 end
 
@@ -45,6 +45,10 @@ for i=4:nArgs+3
     if isempty(argNames{i-3})
         error(['Argument #' num2str(i) ' (output variable #' num2str(i-3) ') is not a scalar name in ' fcnName ' line #' num2str(st(2).line)]);
     end
+end
+
+if length(argNames)<length(unique(argNames))
+    error('Argument names in code must be unique!');
 end
 
 % methodLetter=getappdata(fig,'methodLetter'); % Get the method letter from the base workspace
@@ -68,14 +72,11 @@ for varNum=1:length(inputNamesinCode)
     elseif ~any(currIdx) % No vars found, data not saved.
         nameInGUI=VariablesMetadata.NameInGUI{currIdx};
         error(['Variable ''' nameInGUI ''' missing from file: ' matFilePath]);
-%         return;
     elseif sum(currIdx)>1 % Multiple vars found. Should never happen, because setArg should check for this and throw an error!
         nameInGUI=VariablesMetadata.NameInGUI{currIdx};
         error(['Variable ''' nameInGUI ''' found ''' num2str(sum(currIdx)) ''' times in file: ' matFilePath]);
-%         return;
     else % What happened here?
         error('What happened here?');
-%         return;
     end
 
 end

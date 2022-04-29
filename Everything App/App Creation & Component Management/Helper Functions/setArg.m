@@ -18,11 +18,11 @@ fcnName=st(2).name; % The name of the calling function.
 
 %% Get the level for the current arguments to store. Also get the file path for the current MAT file.
 fig=evalin('base','gui;');
-if ~isempty(repNum) && ~isempty(trialName)
+if ~isempty(repNum) && ~isempty(trialName) % Trial level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
-elseif ~isempty(subName)
+elseif ~isempty(subName) % Subject level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash subName '_' projectName '.mat'];
-else
+else % Project level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat'];
 end
 
@@ -40,15 +40,15 @@ saveNames=cell(1,length(argNames)); % Initialize the save names cell array (comm
 
 if exist(matFilePath,'file')==2
     %% Relate the argNames to the arg function names
-%     NOT USED: % Column 3: group name,
-    % Column 1: variable name in MAT file (save name, never changes! Matches Column 2 + Column 5 when first created. If the variable has been renamed, name does not change.)
-    % Column 2: variable name in GUI (changes after renaming the variable in the GUI) 
-    % Column 3: variable name in code,
-    % Column 4: project name,
-    % Column 5: analysis name,    
-    % Column 6: function name, (includes method number & letter)
-    % Column 7: date created
-    % Column 8: date modified
+    % VariablesMetadata fieldnames:
+    % ProjectName: The active project when generating this variable (char)
+    % AnalysisName: The active analysis when generating this variable (char)
+    % FunctionName: The function used to generate this variable (full method ID, number and letter) (char)
+    % NameInGUI: The variable name as represented in the GUI (may change if the user decides to rename the variable, otherwise static) (char)
+    % NameInMAT: The variable name used to store the data in the MAT file (static, will never change, even if NameInGUI changes) (char)
+    % NameInCode: The variable name in the code, which may change from function to function. (char)
+    % DateCreated: When the variable identified by NameInMAT was first created (char)
+    % DateModified: When the variable identified by NameInMAT was last modified (char)
 
     VariablesMetadata=load(matFilePath,'VariablesMetadata'); % Get the metadata for all variables in the MAT file.
 
@@ -60,7 +60,6 @@ if exist(matFilePath,'file')==2
 
     existIdx=projectIdx & analysisIdx & fcnIdx & varsIdx; % The idx for the variables being saved that already exist.
     existVarNamesInCode=VariablesMetadata.NameInCode(existIdx,:); % Isolate names in code of pre-existing variables to save.
-%     existVarNamesInMAT=VariablesMetadata.NameInMAT(existIdx,:); % Isolate names in MAT file of pre-existing variables to save.
 
     currTime=char(datetime('now')); % Change when the variable was last modified.        
 
@@ -76,10 +75,9 @@ if exist(matFilePath,'file')==2
 
     end
 
-    %% Add new vars' data and metadata.    
+    %% Add new vars' data and metadata.  
     noExistVarNamesInCode=argNames(~ismember(argNames,existVarNamesInCode)); % The names of the variables to save that do not already exist.
 
-%     saveNamesNoExist=cell(1,length(noExistVarNames));
     for rowNum=length(existIdx)+1:length(existIdx)+length(noExistVarNamesInCode)
 
         count=count+1;
@@ -87,8 +85,8 @@ if exist(matFilePath,'file')==2
         VariablesMetadata.AnalysisName{rowNum,1}=getappdata(fig,'analysisName');        
         VariablesMetadata.OutputFunctionName{rowNum,1}=getappdata(fig,'fcnName');
         VariablesMetadata.NameInCode{rowNum,1}=noExistVarNamesInCode{count};
-        VariablesMetadata.NameInMAT{rowNum,1}=[VariablesMetadata.NameInGUI{rowNum,1} '_' VariablesMetadata.AnalysisName{rowNum,1}]; % By definition must be unique!
         VariablesMetadata.NameInGUI{rowNum,1}=''; % Unique! Comes from the master list of variable names held <somewhere>. Shown in GUI universally, across all analyses and functions.
+        VariablesMetadata.NameInMAT{rowNum,1}=[VariablesMetadata.NameInGUI{rowNum,1} '_' VariablesMetadata.AnalysisName{rowNum,1}]; % By definition must be unique!        
         VariablesMetadata.DateCreated{rowNum,1}=char(datetime('now'));
         VariablesMetadata.DateModified{rowNum,1}=char(datetime('now'));
 
@@ -96,7 +94,7 @@ if exist(matFilePath,'file')==2
 
     end
 
-    % Do I need to order the fields or are they already ordered when I created the VariableMetadata variable?
+    % Do I need to order the fields or are they still ordered after creating the VariableMetadata variable the first time?
 
     saveNames=[saveNames {'VariableMetadata'}]; % Add the 'VariableMetadata' variable to the var names to save.
 
@@ -104,13 +102,11 @@ if exist(matFilePath,'file')==2
 
 else % All variables are new.      
     % Put the variable metadata into the cell array.
-    count=0;
-    for i=2:length(argNames)+1
-        count=count+1;
+    for count=1:length(argNames)
         VariablesMetadata.ProjectName{count,1}=getappdata(fig,'projectName');
         VariablesMetadata.AnalysisName{count,1}=getappdata(fig,'analysisName');
         VariablesMetadata.OutputFunctionName{count,1}=getappdata(fig,'fcnName');
-        VariablesMetadata.NameInCode{count,1}=argNames{i}; % Not unique.
+        VariablesMetadata.NameInCode{count,1}=argNames{count}; % Not unique.
         VariablesMetadata.NameInGUI{count,1}=''; % Unique! Comes from the master list of variable names held <somewhere>. Shown in GUI universally, across all analyses and functions.
         VariablesMetadata.NameInMAT{count,1}=[VariablesMetadata.NameInGUI{count,1} '_' VariablesMetadata.AnalysisName{count,1}]; % By definition must be unique!
         VariablesMetadata.DateCreated{count,1}=char(datetime('now'));

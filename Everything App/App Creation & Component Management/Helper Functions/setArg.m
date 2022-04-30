@@ -1,6 +1,7 @@
 function setArg(subName,trialName,repNum,varargin)
 
 %% PURPOSE: RETURN ONE INPUT ARGUMENT TO A PROCESSING FUNCTION AT EITHER THE PROJECT, SUBJECT, OR TRIAL LEVEL
+% STORES THE VARIABLE FIRST INTO THE PROJECTSTRUCT, THEN SAVES IT TO THE CORRESPONDING MAT FILE.
 % Inputs:
 % subName: The subject name, if accessing subject or trial level data. If project level data, not inputted. (char)
 % trialName: The trial name, if accessing trial data. If subject or project level data, not inputted (char)

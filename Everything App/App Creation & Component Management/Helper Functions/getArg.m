@@ -1,6 +1,7 @@
 function [varargout]=getArg(inputNamesinCode,subName,trialName,repNum)
 
 %% PURPOSE: RETURN ONE INPUT ARGUMENT TO A PROCESSING FUNCTION AT EITHER THE PROJECT, SUBJECT, OR TRIAL LEVEL
+% FIRST LOOKS THROUGH VARS EXISTING IN THE WORKSPACE. IF NOT FOUND THERE, SEARCHES IN THE CORRESPONDING MAT FILE. IF NOT FOUND THERE, THROWS ERROR.
 % Inputs:
 % inputNamesinCode: The names of the input arguments. Spelling must match the input arguments function (cell array of chars)
 % subName: The subject name, if accessing subject or trial level data. If project level data, not inputted. (char)

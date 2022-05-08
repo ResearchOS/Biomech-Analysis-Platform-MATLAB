@@ -143,10 +143,10 @@ handles.Import.functionsSearchBarEditField=uieditfield(importTab,'text','Value',
 handles.Import.argumentsSearchBarEditField=uieditfield(importTab,'text','Value','','Tooltip','Arguments Search By Name','Tag','ArgumentsSearchBarEditField','ValueChangedFcn',@(argumentsSearchBarEditField,event) argumentsSearchBarEditFieldValueChanged(argumentsSearchBarEditField));
 
 % 32. All functions UI tree
-handles.Import.functionsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree));
+handles.Import.functionsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
 
 % 33. All arguments UI tree
-handles.Import.argumentsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(argumentsUITree,event) argumentsUITreeSelectionChanged(argumentsUITree),'CheckedNodesChangedFcn',@(argumentsUITree,event) argumentsUITreeCheckedNodesChanged(argumentsUITree));
+handles.Import.argumentsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(argumentsUITree,event) argumentsUITreeSelectionChanged(argumentsUITree),'CheckedNodesChangedFcn',@(argumentsUITree,event) argumentsUITreeCheckedNodesChanged(argumentsUITree),'Tag','ArgumentsUITree');
 
 % 34. Group/function description text area (dynamic?) label
 handles.Import.groupFunctionDescriptionTextAreaLabel=uilabel(importTab,'Text','Group/Function Description','Tag','GroupFunctionDescriptionTextAreaLabel','FontWeight','bold');
@@ -184,144 +184,159 @@ importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'Lo
 %% Initialize the process tab.
 % 1. Analysis label
 handles.Process.analysisLabel=uilabel(processTab,'Text','Analysis','Tag','AnalysisLabel','FontWeight','bold');
+
 % 2. Analysis drop down
 handles.Process.analysisDropDown=uidropdown(processTab,'Items',{'New Analysis'},'Tooltip','Select Analysis','Editable','off','Tag','SwitchAnalysisDropDown','ValueChangedFcn',@(switchAnalysisDropDown,event) switchAnalysisDropDownValueChanged(switchAnalysisDropDown));
+
 % 3. New analysis button
 handles.Process.newAnalysisButton=uibutton(processTab,'push','Text','+','Tag','NewAnalysisButton','Tooltip','Create New Analysis','ButtonPushedFcn',@(newAnalysisButton,event) newAnalysisButtonPushed(newAnalysisButton));
+
 % 4. Archive analysis button
 handles.Process.archiveAnalysisButton=uibutton(processTab,'push','Text','A+','Tag','ArchiveAnalysisButton','Tooltip','Archive Analysis','ButtonPushedFcn',@(archiveAnalysisButton,event) archiveAnalysisButtonPushed(archiveAnalysisButton));
+
 % 5. All functions UI tree label
 handles.Process.functionsUITreeLabel=uilabel(processTab,'Text','Functions','Tag','FunctionsUITreeLabel','FontWeight','bold');
+
 % 6. All arguments UI tree label
 handles.Process.argumentsUITreeLabel=uilabel(processTab,'Text','Arguments','Tag','ArgumentsUITreeLabel','FontWeight','bold');
+
 % 7. All functions search bar
 handles.Process.functionsSearchBarEditField=uieditfield(processTab,'text','Value','','Tooltip','Functions Search By Name','Tag','FunctionsSearchBarEditField','ValueChangedFcn',@(functionsSearchBarEditField,event) functionsSearchBarEditFieldValueChanged(functionsSearchBarEditField));
+
 % 8. All arguments search bar
 handles.Process.argumentsSearchBarEditField=uieditfield(processTab,'text','Value','','Tooltip','Arguments Search By Name','Tag','ArgumentsSearchBarEditField','ValueChangedFcn',@(argumentsSearchBarEditField,event) argumentsSearchBarEditFieldValueChanged(argumentsSearchBarEditField));
+
 % 9. All functions UI tree
-handles.Process.functionsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree));
+handles.Process.functionsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
+
 % 10. All arguments UI tree
-handles.Process.argumentsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(argumentsUITree,event) argumentsUITreeSelectionChanged(argumentsUITree),'CheckedNodesChangedFcn',@(argumentsUITree,event) argumentsUITreeCheckedNodesChanged(argumentsUITree));
+handles.Process.argumentsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(argumentsUITree,event) argumentsUITreeSelectionChanged(argumentsUITree),'CheckedNodesChangedFcn',@(argumentsUITree,event) argumentsUITreeCheckedNodesChanged(argumentsUITree),'Tag','ArgumentsUITree');
+
 % 11. Create new group button
 handles.Process.newGroupButton=uibutton(processTab,'push','Text','G+','Tag','NewGroupButton','Tooltip','New Group','ButtonPushedFcn',@(newGroupButton,event) newGroupButtonPushed(newGroupButton));
+
 % 12. Archive group button
 handles.Process.archiveGroupButton=uibutton(processTab,'push','Text','AG','Tag','NewGroupButton','Tooltip','Archive Group','ButtonPushedFcn',@(archiveGroupButton,event) archiveGroupButtonPushed(archiveGroupButton));
+
 % 13. Create new function button
 handles.Process.newFunctionButton=uibutton(processTab,'push','Text','F+','Tag','NewFunctionButton','Tooltip','New Function','ButtonPushedFcn',@(newFunctionButton,event) newFunctionButtonPushed(newFunctionButton));
+
 % 14. Archive function button
 handles.Process.archiveFunctionButton=uibutton(processTab,'push','Text','AF','Tag','NewFunctionButton','Tooltip','Archive Function','ButtonPushedFcn',@(archiveFunctionButton,event) archiveFunctionButtonPushed(archiveFunctionButton));
+
 % 15. Assign function to group button
 handles.Process.functionToGroupButton=uibutton(processTab,'push','Text','F->G','Tag','FunctionToGroupButton','Tooltip','Assign Function to Group','ButtonPushedFcn',@(functionToGroupButton,event) functionToGroupButtonPushed(functionToGroupButton));
+
 % 16. Unassign function from group button
 handles.Process.functionFromGroupButton=uibutton(processTab,'push','Text','F<-G','Tag','FunctionFromGroupButton','Tooltip','Remove Function from Group','ButtonPushedFcn',@(functionFromGroupButton,event) functionFromGroupButtonPushed(functionFromGroupButton));
+
 % 17. Reorder groups in this analysis button
 handles.Process.reorderGroupsButton=uibutton(processTab,'push','Text','G Reorder','Tag','GroupReorderButton','Tooltip','Reorder Groups','ButtonPushedFcn',@(reorderGroupsButton,event) reorderGroupsButtonPushed(reorderGroupsButton));
+
 % 18. Reorder functions in this group (in this analysis) button
 handles.Process.reorderFunctionsButton=uibutton(processTab,'push','Text','F Reorder','Tag','FunctionReorderButton','Tooltip','Reorder Functions','ButtonPushedFcn',@(reorderFunctionsButton,event) reorderFunctionsButtonPushed(reorderFunctionsButton));
+
 % 19. Create new argument button
 handles.Process.newArgumentButton=uibutton(processTab,'push','Text','A+','Tag','NewArgumentButton','Tooltip','New Argument','ButtonPushedFcn',@(newArgumentButton,event) newArgumentButtonPushed(newArgumentButton));
+
 % 20. Archive argument button
 handles.Process.archiveArgumentButton=uibutton(processTab,'push','Text','A->A','Tag','ArchiveArgumentButton','Tooltip','Archive Argument','ButtonPushedFcn',@(archiveArgumentButton,event) archiveArgumentButtonPushed(archiveArgumentButton));
+
 % 21. Add argument to function as input button
 handles.Process.addInputArgumentButton=uibutton(processTab,'push','Text','I+','Tag','AddInputArgumentButton','Tooltip','Add Input Argument','ButtonPushedFcn',@(addInputArgumentButton,event) addInputArgumentButtonPushed(addInputArgumentButton));
+
 % 22. Add argument to function as output button
 handles.Process.addOutputArgumentButton=uibutton(processTab,'push','Text','O+','Tag','AddOutputArgumentButton','Tooltip','Add Output Argument','ButtonPushedFcn',@(addOutputArgumentButton,event) addOutputArgumentButtonPushed(addOutputArgumentButton));
+
 % 23. Unassign argument from function
 handles.Process.removeArgumentButton=uibutton(processTab,'push','Text','A-','Tag','RemoveArgumentButton','Tooltip','Remove Argument','ButtonPushedFcn',@(removeArgumentButton,event) removeArgumentButtonPushed(removeArgumentButton));
+
 % 24. Checkbox to indicate argument (variable) value has been manually edited
-handles.Process.manualArgumentCheckbox=uicheckbox(processTab,'Text','Project','Value',0,'Tag','ManualArgumentCheckbox','Tooltip','If checked, argument was manually edited');
+handles.Process.manualArgumentCheckbox=uicheckbox(processTab,'Text','Manual','Value',0,'Tag','ManualArgumentCheckbox','Tooltip','If checked, argument was manually edited');
+
 % 25. Edit name label 
 handles.Process.editNameLabel=uilabel(processTab,'Text','Edit Name','Tag','EditNameLabel');
+
 % 26. Edit name text field
 handles.Process.editNameEditField=uieditfield(processTab,'text','Value','','Tooltip','Manual Edits Name','Tag','ManualEditNameEditField','ValueChangedFcn',@(editNameEditField,event) editNameEditFieldValueChanged(editNameEditField));
+
 % 27. Save argument button
 handles.Process.manualSaveArgButton=uibutton(processTab,'push','Text','Manual Save','Tag','ManualSaveArgButton','Tooltip','Manual Argument Save','ButtonPushedFcn',@(manualSaveArgButton,event) manualSaveArgButtonPushed(manualSaveArgButton));
+
 % 28. Dynamic function name label (currently selected function name)
 handles.Process.argFcnNameLabel=uilabel(processTab,'Text','ArgFcnNameLabel','Tag','ArgFcnNameLabel');
+
 % 29. Analysis Description Label (dynamic)
-handles.Process.analysisDescriptionLabel=uilabel(processTab,'Text','Current Analysis','Tag','AnalysisDescriptionLabel');
+% handles.Process.analysisDescriptionLabel=uilabel(processTab,'Text','Current Analysis','Tag','AnalysisDescriptionLabel');
+
 % 30. Analysis Description button
 handles.Process.analysisDescriptionButton=uibutton(processTab,'push','Text','Description','Tag','AnalysisDescriptionButton','Tooltip','Current Analysis Description','ButtonPushedFcn',@(analysisDescriptionButton,event) analysisDescriptionButtonPushed(analysisDescriptionButton));
+
 % 31. Generate analysis Run Code button
 handles.Process.genRunCodeButton=uibutton(processTab,'push','Text',{'Generate','Run Code'},'Tag','GenRunCodeButton','Tooltip','Generate Run Code for Current Analysis','ButtonPushedFcn',@(genRunCodeButton,event) genRunCodeButtonPushed(genRunCodeButton));
+
 % 32. Selected arg name dynamic label
 handles.Process.argNameLabel=uilabel(processTab,'Text','Current Argument','Tag','ArgNameLabel');
+
 % 33. Name in code text field
 handles.Process.nameInCodeEditField=uieditfield(processTab,'text','Value','','Tooltip','Argument''s Name in Code','Tag','NameInCodeEditField','ValueChangedFcn',@(nameInCodeEditField,event) nameInCodeEditFieldValueChanged(nameInCodeEditField));
+
 % 34. Level label
-handles.Process.levelLabel=uilabel(processTab,'Text','Level','Tag','ArgLevelLabel');
+handles.Process.argLevelLabel=uilabel(processTab,'Text','Level','Tag','ArgLevelLabel');
+
 % 35. Level dropdown
 handles.Process.levelDropDown=uidropdown(processTab,'Items',{'P','S','T'},'Tooltip','Argument Level','Editable','off','Tag','LevelDropDown','ValueChangedFcn',@(levelDropDown,event) levelDropDownValueChanged(levelDropDown));
-% 38. Index label
-handles.Process.
-% 39. Index edit field
-handles.Process.
+
+% 38. Subvariable label
+handles.Process.subvariablesLabel=uilabel(processTab,'Text','Subvariables','Tag','SubvariablesLabel');
+
+% 39. Subvariable index edit field
+handles.Process.subvariableIndexEditField=uieditfield(processTab,'text','Value','','Tooltip','Subvariable Index','Tag','SubvariableIndexEditField','ValueChangedFcn',@(subvariableIndexEditField,event) subvariableIndexEditFieldValueChanged(subvariableIndexEditField));
+
 % 40. "G" (Group) label
-handles.Process.
+handles.Process.groupSpecifyTrialsLabel=uilabel(processTab,'Text','G','Tag','GroupSpecifyTrialsLabel');
+
 % 41. "G" (Group) Specify Trials button
-handles.Process.
+handles.Process.groupSpecifyTrialsButton=uibutton(processTab,'push','Text','G Specify Trials','Tag','GroupSpecifyTrialsButton','Tooltip','Group Specify Trials','ButtonPushedFcn',@(groupSpecifyTrialsButton,event) groupSpecifyTrialsButtonPushed(groupSpecifyTrialsButton));
+
 % 42. "F" (Function) label
-handles.Process.
+handles.Process.functionSpecifyTrialsLabel=uilabel(processTab,'Text','F','Tag','FunctionSpecifyTrialsLabel');
+
 % 43. "F" (Function) Specify Trials button
-handles.Process.
+handles.Process.functionSpecifyTrialsButton=uibutton(processTab,'push','Text','F Specify Trials','Tag','FunctionSpecifyTrialsButton','Tooltip','Function Specify Trials','ButtonPushedFcn',@(functionSpecifyTrialsButton,event) functionSpecifyTrialsButtonPushed(functionSpecifyTrialsButton));
+
 % 44. Function/group description (dynamic?) label
-handles.Process.
+handles.Process.groupFcnDescriptionLabel=uilabel(processTab,'Text','Group/Fcn Description','Tag','GroupFcnDescriptionLabel');
+
 % 45. Group description text area
-handles.Process.
+handles.Process.groupFcnDescriptionTextArea=uitextarea(processTab,'Value','Enter Group/Function Description Here','Tag','GroupFcnDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(groupFcnDescriptionTextArea,event) groupFcnDescriptionTextAreaValueChanged(groupFcnDescriptionTextArea));
+
 % 47. Argument description text area
-handles.Process.
+handles.Process.argDescriptionTextArea=uitextarea(processTab,'Value','Enter Argument Description Here','Tag','ArgDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argDescriptionTextArea,event) argDescriptionTextAreaValueChanged(argDescriptionTextArea));
+
 % 48. Run Group(s) button
-handles.Process.
+handles.Process.runGroupButton=uibutton(processTab,'push','Text','Run Group(s)','Tag','RunGroupButton','Tooltip','Run Processing Functions','ButtonPushedFcn',@(runGroupButton,event) runGroupButtonPushed(runGroupButton));
 
-handles.ProcessSetup.setupGroupNameLabel=uilabel(processSetupTab,'Text','Group Name','Tag','SetupGroupNameLabel');
-handles.ProcessSetup.setupGroupNameDropDown=uidropdown(processSetupTab,'Items',{'Create Function Group'},'Editable','Off','Tooltip','Select processing function group','Tag','SetupGroupNameDropDown','ValueChangedFcn',@(setupGroupNameDropDown,event) setupGroupNamesDropDownValueChanged(setupGroupNameDropDown));
-handles.ProcessSetup.setupFunctionNamesLabel=uilabel(processSetupTab,'Text','Function Names','Tag','SetupFunctionNamesLabel');
-handles.ProcessSetup.setupFunctionNamesField=uitextarea(processSetupTab,'Value','Function Names','Tag','SetupFunctionNamesField','Editable','on','Visible','on','ValueChangedFcn',@(setupFunctionNamesField,event) setupFunctionNamesFieldValueChanged(setupFunctionNamesField));
-handles.ProcessSetup.newFunctionPanel=uipanel(processSetupTab,'Title','New Function','Tag','NewFunctionPanel','BackGroundColor',[0.9 0.9 0.9],'BorderType','line','FontWeight','bold','TitlePosition','centertop');
-handles.ProcessSetup.saveGroupButton=uibutton(processSetupTab,'push','Text','Save Group To File','Tag','SaveGroupButton','ButtonPushedFcn',@(saveGroupButton,event) saveGroupButtonPushed(saveGroupButton));
-handles.ProcessSetup.inputsLabel=uilabel(processSetupTab,'Text','Function Levels','Tag','InputsLabel');
-% outputsLabel=uilabel(processSetupTab,'Text','Output Levels','Tag','OutputsLabel');
-handles.ProcessSetup.inputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','InputCheckboxProject','Tooltip','New function contains project-level variables');
-handles.ProcessSetup.inputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','InputCheckboxSubject','Tooltip','New function contains subject-level variables');
-handles.ProcessSetup.inputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','InputCheckboxTrial','Tooltip','New function contains trial-level variables');
-% outputCheckboxP=uicheckbox(processSetupTab,'Text','Project','Value',0,'Tag','OutputCheckboxProject');
-% outputCheckboxS=uicheckbox(processSetupTab,'Text','Subject','Value',0,'Tag','OutputCheckboxSubject');
-% outputCheckboxT=uicheckbox(processSetupTab,'Text','Trial','Value',0,'Tag','OutputCheckboxTrial');
-handles.ProcessSetup.newFunctionButton=uibutton(processSetupTab,'push','Text','Create New Function','Tag','NewFunctionButton','ButtonPushedFcn',@(newFunctionButton,event) newFunctionButtonPushed(newFunctionButton));
-handles.ProcessSetup.addFunctionGroupButton=uibutton(processSetupTab,'push','Text','+','Tag','AddFunctionGroupButton','Tooltip','Create new processing function group','ButtonPushedFcn',@(addFunctionGroupButton,event) addFunctionGroupButtonPushed(addFunctionGroupButton));
+% 49. Subvariable UI tree
+handles.Process.subvariableUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(subvariableUITree,event) subvariableUITreeSelectionChanged(subvariableUITree),'CheckedNodesChangedFcn',@(subvariableUITree,event) subvariableUITreeCheckedNodesChanged(subvariableUITree),'Tag','SubvariableUITree');
 
-% Create the Process > Run tab
-handles.ProcessRun.runGroupNameLabel=uilabel(processRunTab,'Text','Group Name','Tag','RunGroupNameLabel');
-handles.ProcessRun.runGroupNameDropDown=uidropdown(processRunTab,'Items',{'Create Function Group'},'Editable','off','Tag','RunGroupNameDropDown','ValueChangedFcn',@(runGroupNameDropDown,event) runGroupNameDropDownValueChanged(runGroupNameDropDown));
-handles.ProcessRun.runFunctionNamesLabel=uilabel(processRunTab,'Text','Function Names','Tag','RunFunctionNamesLabel');
-handles.ProcessRun.groupRunCheckboxLabel=uilabel(processRunTab,'Text','Run','Tag','GroupRunCheckboxLabel');
-handles.ProcessRun.groupArgsCheckboxLabel=uilabel(processRunTab,'Text','Args','Tag','GroupArgsCheckboxLabel');
-handles.ProcessRun.runGroupButton=uibutton(processRunTab,'push','Text','Run Group','Tag','RunGroupButton','Tooltip','Run the currently selected processing group functions','ButtonPushedFcn',@(runGroupButton,event) runGroupButtonPushed(runGroupButton));
-handles.ProcessRun.runAllButton=uibutton(processRunTab,'push','Text','Run All','Tag','RunAllButton','Tooltip','Run all processing function groups','ButtonPushedFcn',@(runAllButton,event) runAllButtonPushed(runAllButton));
-handles.ProcessRun.runFunctionsPanel=uipanel(processRunTab,'Title','','Tag','RunFunctionsPanel','BackGroundColor',[0.92 0.92 0.92],'AutoResizeChildren','off','SizeChangedFcn',@processRunPanelResize);
-handles.ProcessRun.specifyTrialsGroupButton=uibutton(processRunTab,'push','Text','Specify Trials','Tag','SpecifyTrialsGroupButton','Tooltip','Open group-level specify trials','ButtonPushedFcn',@(specifyTrialsGroupButton,event) specifyTrialsGroupButtonPushed(specifyTrialsGroupButton));
-handles.ProcessRun.specifyTrialsCheckboxLabel=uilabel(processRunTab,'Text','Specify Trials','Tag','SpecifyTrialsCheckboxLabel');
-% specifyTrialsGroupCheckbox=uicheckbox(processRunTab,'Text','','Value',0,'Tag','SpecifyTrialsGroupCheckbox');
-handles.ProcessRun.processRunUpArrowButton=uibutton(processRunTab,'Text',{'/\';'||'},'Tag','ProcessRunUpArrowButton','ButtonPushedFcn',@(processRunUpArrowButton,event) processRunUpArrowButtonPushed(processRunUpArrowButton));
-handles.ProcessRun.processRunDownArrowButton=uibutton(processRunTab,'Text',{'||';'\/'},'Tag','ProcessRunDownArrowButton','ButtonPushedFcn',@(processRunDownArrowButton,event) processRunDownArrowButtonPushed(processRunDownArrowButton));
-handles.ProcessRun.runGroupArgsButton=uibutton(processRunTab,'Text','Args','Tag','RunGroupArgsButton','Tooltip','Open group-level arguments','ButtonPushedFcn',@(runGroupArgsButton,event) runGroupArgsButtonPushed(runGroupArgsButton));
+% 50. Modify subvariables button
+handles.Process.modifySubvariablesButton=uibutton(processTab,'push','Text','Modify Subvariables','Tag','ModifySubvariablesButton','Tooltip','Modify Subvariables','ButtonPushedFcn',@(modifySubvariablesButton,event) modifySubvariablesButtonPushed(modifySubvariablesButton));
 
-processTab.UserData=struct('SetupGroupNameLabel',handles.ProcessSetup.setupGroupNameLabel,'SetupGroupNameDropDown',handles.ProcessSetup.setupGroupNameDropDown,'SetupFunctionNamesLabel',handles.ProcessSetup.setupFunctionNamesLabel,'SetupFunctionNamesField',handles.ProcessSetup.setupFunctionNamesField,...
-    'NewFunctionPanel',handles.ProcessSetup.newFunctionPanel,'SaveGroupButton',handles.ProcessSetup.saveGroupButton,'InputsLabel',handles.ProcessSetup.inputsLabel,'InputCheckboxProject',handles.ProcessSetup.inputCheckboxP,'InputCheckboxSubject',handles.ProcessSetup.inputCheckboxS,'InputCheckboxTrial',handles.ProcessSetup.inputCheckboxT,...
-    'NewFunctionButton',handles.ProcessSetup.newFunctionButton,'AddFunctionGroupButton',handles.ProcessSetup.addFunctionGroupButton,'RunGroupNameLabel',handles.ProcessRun.runGroupNameLabel,'RunGroupNameDropDown',handles.ProcessRun.runGroupNameDropDown,'RunFunctionNamesLabel',handles.ProcessRun.runFunctionNamesLabel,...
-    'GroupRunCheckboxLabel',handles.ProcessRun.groupRunCheckboxLabel,'GroupArgsCheckboxLabel',handles.ProcessRun.groupArgsCheckboxLabel,'RunGroupButton',handles.ProcessRun.runGroupButton,'RunAllButton',handles.ProcessRun.runAllButton,'RunFunctionsPanel',handles.ProcessRun.runFunctionsPanel,...
-    'SpecifyTrialsGroupButton',handles.ProcessRun.specifyTrialsGroupButton,'SpecifyTrialsCheckboxLabel',handles.ProcessRun.specifyTrialsCheckboxLabel,'ProcessRunUpArrowButton',handles.ProcessRun.processRunUpArrowButton,'ProcessRunDownArrowButton',handles.ProcessRun.processRunDownArrowButton,...
-    'RunGroupArgsButton',handles.ProcessRun.runGroupArgsButton);
-%     'OutputsLabel',outputsLabel,'OutputCheckboxProject',outputCheckboxP,'OutputCheckboxSubject',outputCheckboxS,'OutputCheckboxTrial',outputCheckboxT,...
+processTab.UserData=struct('AnalysisLabel',handles.Process.analysisLabel,'SwitchAnalysisDropDown',handles.Process.analysisDropDown,'NewAnalysisButton',handles.Process.newAnalysisButton,'ArchiveAnalysisButton',handles.Process.archiveAnalysisButton,...
+    'FunctionsUITreeLabel',handles.Process.functionsUITreeLabel,'ArgumentsUITreeLabel',handles.Process.argumentsUITreeLabel,'FunctionsSearchBarEditField',handles.Process.functionsSearchBarEditField,'ArgumentsSearchBarEditField',handles.Process.argumentsSearchBarEditField,...
+    'FunctionsUITree',handles.Process.functionsUITree,'ArgumentsUITree',handles.Process.argumentsUITree,'NewGroupButton',handles.Process.newGroupButton,'ArchiveGroupButton',handles.Process.archiveGroupButton,'NewFunctionButton',handles.Process.newFunctionButton,...
+    'ArchiveFunctionButton',handles.Process.archiveFunctionButton,'FunctionToGroupButton',handles.Process.functionToGroupButton,'FunctionFromGroupButton',handles.Process.functionFromGroupButton,'ReorderGroupsButton',handles.Process.reorderGroupsButton,...
+    'ReorderFunctionsButton',handles.Process.reorderFunctionsButton,'NewArgumentButton',handles.Process.newArgumentButton,'ArchiveArgumentButton',handles.Process.archiveArgumentButton,'AddInputArgumentButton',handles.Process.addInputArgumentButton,...
+    'AddOutputArgumentButton',handles.Process.addOutputArgumentButton,'RemoveArgumentButton',handles.Process.removeArgumentButton,'ManualArgumentCheckbox',handles.Process.manualArgumentCheckbox,'EditNameLabel',handles.Process.editNameLabel,'EditNameEditField',handles.Process.editNameEditField,...
+    'ManualSaveArgButton',handles.Process.manualSaveArgButton,'ArgFcnNameLabel',handles.Process.argFcnNameLabel,'AnalysisDescriptionButton',handles.Process.analysisDescriptionButton,...
+    'GenRunCodeButton',handles.Process.genRunCodeButton,'ArgNameLabel',handles.Process.argNameLabel,'NameInCodeEditField',handles.Process.nameInCodeEditField,'ArgLevelLabel',handles.Process.argLevelLabel,'LevelDropDown',handles.Process.levelDropDown,...
+    'SubvariablesLabel',handles.Process.subvariablesLabel,'SubvariablesIndexEditField',handles.Process.subvariableIndexEditField,'GroupSpecifyTrialsLabel',handles.Process.groupSpecifyTrialsLabel,'GroupSpecifyTrialsButton',handles.Process.groupSpecifyTrialsButton,...
+    'FunctionSpecifyTrialsLabel',handles.Process.functionSpecifyTrialsLabel,'FunctionSpecifyTrialsButton',handles.Process.functionSpecifyTrialsButton,'GroupFcnDescriptionLabel',handles.Process.groupFcnDescriptionLabel,'GroupFcnDescriptionTextArea',handles.Process.groupFcnDescriptionTextArea,...
+    'ArgDescriptionTextArea',handles.Process.argDescriptionTextArea,'RunGroupButton',handles.Process.runGroupButton,'SubvariableUITree',handles.Process.subvariableUITree,'ModifySubvariablesButton',handles.Process.modifySubvariablesButton);
 
 % Resize all objects in each subtab.
-hProcessRun=findobj(fig,'Tag','Run');
-processTabGroup.SelectedTab=hProcessRun;
 @processResize;
-hProcessSetup=findobj(fig,'Tag','Setup');
-processTabGroup.SelectedTab=hProcessSetup;
-@processResize;
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the plot tab

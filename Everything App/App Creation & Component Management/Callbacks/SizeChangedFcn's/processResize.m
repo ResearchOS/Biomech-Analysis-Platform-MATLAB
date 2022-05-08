@@ -14,12 +14,12 @@ figSize=src.Position(3:4); % Width x height
 fig=ancestor(src,'figure','toplevel');
 ancSize=fig.Position(3:4);
 defaultPos=get(0,'defaultfigureposition');
-if isequal(ancSize,defaultPos(3:4))
-    set(gca,'Position',[defaultPos(1:2) defaultPos(3)*2 defaultPos(4)]);
-    newDefaultPos=defaultPos(3:4);
-    newDefaultPos(1)=newDefaultPos(1)*2;
-end
-if isequal(ancSize,newDefaultPos(1:2)) % If currently in default figure size
+% if isequal(ancSize,defaultPos(3:4))
+%     set(gca,'Position',[defaultPos(1:2) defaultPos(3)*2 defaultPos(4)]);
+%     newDefaultPos=defaultPos(3:4);
+%     newDefaultPos(1)=newDefaultPos(1)*2;
+% end
+if isequal(ancSize,[defaultPos(3)*2 defaultPos(4)]) % If currently in default figure size
     if ~isempty(getappdata(fig,'fontSizeRelToHeight')) % If the figure has been restored to default size after previously being resized.
         fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight'); % Get the original ratio.
     else % Figure initialized as default size

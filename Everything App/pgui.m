@@ -20,7 +20,7 @@ end
 fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize); % Create the figure window for the app
 fig.Name='pgui'; % Name the window
 defaultPos=get(0,'defaultfigureposition'); % Get the default figure position
-set(fig,'Position',defaultPos); % Set the figure to be at that position (redundant, I know, but should be clear)
+set(fig,'Position',[defaultPos(1:2) defaultPos(3)*2 defaultPos(4)]); % Set the figure to be at that position (redundant, I know, but should be clear)
 figSize=get(fig,'Position'); % Get the figure's position.
 figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax: left offset, bottom offset, width, height (pixels)
 

@@ -16,7 +16,7 @@ elseif ismac==1
     slash='/';
 end
 
-%% Create figure & store its attributes
+%% Create figure
 fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize); % Create the figure window for the app
 fig.Name='pgui'; % Name the window
 defaultPos=get(0,'defaultfigureposition'); % Get the default figure position
@@ -113,13 +113,13 @@ handles.Import.targetTrialIDColHeaderField=uieditfield(importTab,'text','Value',
 handles.Import.newImportFcnButton=uibutton(importTab,'push','Text','F+','Tag','OpenImportFcnButton','Tooltip','Create new import function','ButtonPushedFcn',@(openImportFcnButton,event) openImportFcnButtonPushed(openImportFcnButton));
 
 % 22. Archive import function
-handles.Import.archiveImportFcnButton=uibutton(importTab,'push','Text','F->A','Tag','ArchiveImportFcnButton','Tooltip','Archive selected import function','ButtonPushedFcn',@(archiveImportFcnButton,event) archiveImportFcnButtonPushed(archiveImportFcnButton));
+handles.Import.archiveImportFcnButton=uibutton(importTab,'push','Text','F-','Tag','ArchiveImportFcnButton','Tooltip','Archive selected import function','ButtonPushedFcn',@(archiveImportFcnButton,event) archiveImportFcnButtonPushed(archiveImportFcnButton));
 
 % 23. Add new project button
 handles.Import.addProjectButton=uibutton(importTab,'push','Text','P+','Tag','AddProjectButton','Tooltip','Create new project','ButtonPushedFcn',@(addProjectButton,event) addProjectButtonPushed(addProjectButton));
 
 % 24. Archive project button
-handles.Import.archiveProjectButton=uibutton(importTab,'push','Text','P->A','Tag','ArchiveProjectButton','Tooltip','Archive current project','ButtonPushedFcn',@(archiveProjectButton,event) archiveProjectButtonPushed(archiveProjectButton));
+handles.Import.archiveProjectButton=uibutton(importTab,'push','Text','P-','Tag','ArchiveProjectButton','Tooltip','Archive current project','ButtonPushedFcn',@(archiveProjectButton,event) archiveProjectButtonPushed(archiveProjectButton));
 
 % 25. Open logsheet button
 handles.Import.openLogsheetButton=uibutton(importTab,'push','Text','O','Tag','OpenLogsheetButton','Tooltip','Open logsheet','ButtonPushedFcn',@(openLogsheetButton,event) openLogsheetButtonPushed(openLogsheetButton));
@@ -155,7 +155,7 @@ handles.Import.groupFunctionDescriptionTextAreaLabel=uilabel(importTab,'Text','G
 handles.Import.groupFunctionDescriptionTextArea=uitextarea(importTab,'Value','Enter Description Here','Tag','GroupFunctionDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(groupFunctionDescriptionTextArea,event) groupFunctionDescriptionTextAreaValueChanged(groupFunctionDescriptionTextArea));
 
 % 36. Un-archive import function button
-handles.Import.unarchiveImportFcnButton=uibutton(importTab,'push','Text','A->F','Tag','UnarchiveImportFcnButton','Tooltip','Unarchive selected import function','ButtonPushedFcn',@(unarchiveImportFcnButton,event) unarchiveImportFcnButtonPushed(unarchiveImportFcnButton));
+handles.Import.unarchiveImportFcnButton=uibutton(importTab,'push','Text','F--','Tag','UnarchiveImportFcnButton','Tooltip','Unarchive selected import function','ButtonPushedFcn',@(unarchiveImportFcnButton,event) unarchiveImportFcnButtonPushed(unarchiveImportFcnButton));
 
 % 37. Argument description text area label
 handles.Import.argumentDescriptionTextAreaLabel=uilabel(importTab,'Text','Argument Description','Tag','ArgumentDescriptionTextAreaLabel','FontWeight','bold');
@@ -164,7 +164,7 @@ handles.Import.argumentDescriptionTextAreaLabel=uilabel(importTab,'Text','Argume
 handles.Import.argumentDescriptionTextArea=uitextarea(importTab,'Value','Enter Description Here','Tag','ArgumentDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argumentDescriptionTextArea,event) argumentDescriptionTextAreaValueChanged(argumentDescriptionTextArea));
 
 % 39. Un-archive project button
-handles.Import.unarchiveProjectButton=uibutton(importTab,'push','Text','A->P','Tag','UnarchiveProjectButton','Tooltip','Unarchive current project','ButtonPushedFcn',@(unarchiveProjectButton,event) unarchiveProjectButtonPushed(unarchiveProjectButton));
+handles.Import.unarchiveProjectButton=uibutton(importTab,'push','Text','P--','Tag','UnarchiveProjectButton','Tooltip','Unarchive current project','ButtonPushedFcn',@(unarchiveProjectButton,event) unarchiveProjectButtonPushed(unarchiveProjectButton));
 
 importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'LogsheetPathButton',handles.Import.logsheetPathButton,'DataPathButton',handles.Import.dataPathButton,'CodePathButton',handles.Import.codePathButton,...
     'AddProjectButton',handles.Import.addProjectButton,'LogsheetPathField',handles.Import.logsheetPathField,'DataPathField',handles.Import.dataPathField,'CodePathField',handles.Import.codePathField,...
@@ -189,10 +189,10 @@ handles.Process.analysisLabel=uilabel(processTab,'Text','Analysis','Tag','Analys
 handles.Process.analysisDropDown=uidropdown(processTab,'Items',{'New Analysis'},'Tooltip','Select Analysis','Editable','off','Tag','SwitchAnalysisDropDown','ValueChangedFcn',@(switchAnalysisDropDown,event) switchAnalysisDropDownValueChanged(switchAnalysisDropDown));
 
 % 3. New analysis button
-handles.Process.newAnalysisButton=uibutton(processTab,'push','Text','+','Tag','NewAnalysisButton','Tooltip','Create New Analysis','ButtonPushedFcn',@(newAnalysisButton,event) newAnalysisButtonPushed(newAnalysisButton));
+handles.Process.newAnalysisButton=uibutton(processTab,'push','Text','An+','Tag','NewAnalysisButton','Tooltip','Create New Analysis','ButtonPushedFcn',@(newAnalysisButton,event) newAnalysisButtonPushed(newAnalysisButton));
 
 % 4. Archive analysis button
-handles.Process.archiveAnalysisButton=uibutton(processTab,'push','Text','A+','Tag','ArchiveAnalysisButton','Tooltip','Archive Analysis','ButtonPushedFcn',@(archiveAnalysisButton,event) archiveAnalysisButtonPushed(archiveAnalysisButton));
+handles.Process.archiveAnalysisButton=uibutton(processTab,'push','Text','An-','Tag','ArchiveAnalysisButton','Tooltip','Archive Analysis','ButtonPushedFcn',@(archiveAnalysisButton,event) archiveAnalysisButtonPushed(archiveAnalysisButton));
 
 % 5. All functions UI tree label
 handles.Process.functionsUITreeLabel=uilabel(processTab,'Text','Functions','Tag','FunctionsUITreeLabel','FontWeight','bold');
@@ -216,13 +216,13 @@ handles.Process.argumentsUITree=uitree(processTab,'checkbox','SelectionChangedFc
 handles.Process.newGroupButton=uibutton(processTab,'push','Text','G+','Tag','NewGroupButton','Tooltip','New Group','ButtonPushedFcn',@(newGroupButton,event) newGroupButtonPushed(newGroupButton));
 
 % 12. Archive group button
-handles.Process.archiveGroupButton=uibutton(processTab,'push','Text','AG','Tag','NewGroupButton','Tooltip','Archive Group','ButtonPushedFcn',@(archiveGroupButton,event) archiveGroupButtonPushed(archiveGroupButton));
+handles.Process.archiveGroupButton=uibutton(processTab,'push','Text','G-','Tag','NewGroupButton','Tooltip','Archive Group','ButtonPushedFcn',@(archiveGroupButton,event) archiveGroupButtonPushed(archiveGroupButton));
 
 % 13. Create new function button
 handles.Process.newFunctionButton=uibutton(processTab,'push','Text','F+','Tag','NewFunctionButton','Tooltip','New Function','ButtonPushedFcn',@(newFunctionButton,event) newFunctionButtonPushed(newFunctionButton));
 
 % 14. Archive function button
-handles.Process.archiveFunctionButton=uibutton(processTab,'push','Text','AF','Tag','NewFunctionButton','Tooltip','Archive Function','ButtonPushedFcn',@(archiveFunctionButton,event) archiveFunctionButtonPushed(archiveFunctionButton));
+handles.Process.archiveFunctionButton=uibutton(processTab,'push','Text','F-','Tag','NewFunctionButton','Tooltip','Archive Function','ButtonPushedFcn',@(archiveFunctionButton,event) archiveFunctionButtonPushed(archiveFunctionButton));
 
 % 15. Assign function to group button
 handles.Process.functionToGroupButton=uibutton(processTab,'push','Text','F->G','Tag','FunctionToGroupButton','Tooltip','Assign Function to Group','ButtonPushedFcn',@(functionToGroupButton,event) functionToGroupButtonPushed(functionToGroupButton));
@@ -240,7 +240,7 @@ handles.Process.reorderFunctionsButton=uibutton(processTab,'push','Text','F Reor
 handles.Process.newArgumentButton=uibutton(processTab,'push','Text','A+','Tag','NewArgumentButton','Tooltip','New Argument','ButtonPushedFcn',@(newArgumentButton,event) newArgumentButtonPushed(newArgumentButton));
 
 % 20. Archive argument button
-handles.Process.archiveArgumentButton=uibutton(processTab,'push','Text','A->A','Tag','ArchiveArgumentButton','Tooltip','Archive Argument','ButtonPushedFcn',@(archiveArgumentButton,event) archiveArgumentButtonPushed(archiveArgumentButton));
+handles.Process.archiveArgumentButton=uibutton(processTab,'push','Text','A-','Tag','ArchiveArgumentButton','Tooltip','Archive Argument','ButtonPushedFcn',@(archiveArgumentButton,event) archiveArgumentButtonPushed(archiveArgumentButton));
 
 % 21. Add argument to function as input button
 handles.Process.addInputArgumentButton=uibutton(processTab,'push','Text','I+','Tag','AddInputArgumentButton','Tooltip','Add Input Argument','ButtonPushedFcn',@(addInputArgumentButton,event) addInputArgumentButtonPushed(addInputArgumentButton));
@@ -249,7 +249,7 @@ handles.Process.addInputArgumentButton=uibutton(processTab,'push','Text','I+','T
 handles.Process.addOutputArgumentButton=uibutton(processTab,'push','Text','O+','Tag','AddOutputArgumentButton','Tooltip','Add Output Argument','ButtonPushedFcn',@(addOutputArgumentButton,event) addOutputArgumentButtonPushed(addOutputArgumentButton));
 
 % 23. Unassign argument from function
-handles.Process.removeArgumentButton=uibutton(processTab,'push','Text','A-','Tag','RemoveArgumentButton','Tooltip','Remove Argument','ButtonPushedFcn',@(removeArgumentButton,event) removeArgumentButtonPushed(removeArgumentButton));
+handles.Process.removeArgumentButton=uibutton(processTab,'push','Text','IO-','Tag','RemoveArgumentButton','Tooltip','Remove Argument','ButtonPushedFcn',@(removeArgumentButton,event) removeArgumentButtonPushed(removeArgumentButton));
 
 % 24. Checkbox to indicate argument (variable) value has been manually edited
 handles.Process.manualArgumentCheckbox=uicheckbox(processTab,'Text','Manual','Value',0,'Tag','ManualArgumentCheckbox','Tooltip','If checked, argument was manually edited');
@@ -270,10 +270,10 @@ handles.Process.argFcnNameLabel=uilabel(processTab,'Text','ArgFcnNameLabel','Tag
 % handles.Process.analysisDescriptionLabel=uilabel(processTab,'Text','Current Analysis','Tag','AnalysisDescriptionLabel');
 
 % 30. Analysis Description button
-handles.Process.analysisDescriptionButton=uibutton(processTab,'push','Text','Description','Tag','AnalysisDescriptionButton','Tooltip','Current Analysis Description','ButtonPushedFcn',@(analysisDescriptionButton,event) analysisDescriptionButtonPushed(analysisDescriptionButton));
+handles.Process.analysisDescriptionButton=uibutton(processTab,'push','Text','An Description','Tag','AnalysisDescriptionButton','Tooltip','Current Analysis Description','ButtonPushedFcn',@(analysisDescriptionButton,event) analysisDescriptionButtonPushed(analysisDescriptionButton));
 
 % 31. Generate analysis Run Code button
-handles.Process.genRunCodeButton=uibutton(processTab,'push','Text',{'Generate','Run Code'},'Tag','GenRunCodeButton','Tooltip','Generate Run Code for Current Analysis','ButtonPushedFcn',@(genRunCodeButton,event) genRunCodeButtonPushed(genRunCodeButton));
+handles.Process.genRunCodeButton=uibutton(processTab,'push','Text',{'Generate Run Code'},'Tag','GenRunCodeButton','Tooltip','Generate Run Code for Current Analysis','ButtonPushedFcn',@(genRunCodeButton,event) genRunCodeButtonPushed(genRunCodeButton));
 
 % 32. Selected arg name dynamic label
 handles.Process.argNameLabel=uilabel(processTab,'Text','Current Argument','Tag','ArgNameLabel');

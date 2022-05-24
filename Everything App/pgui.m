@@ -180,6 +180,8 @@ importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'Lo
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 
+drawnow; % Show the properly placed import tab components.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the process tab.
 % 1. Analysis label
@@ -338,9 +340,106 @@ processTab.UserData=struct('AnalysisLabel',handles.Process.analysisLabel,'Switch
 % Resize all objects in each subtab.
 @processResize;
 
+drawnow; % Show the properly placed Process tab components.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the plot tab
-handles.Plot.rootSavePlotPathField=uieditfield(plotTab,'text','Value','Root Folder to Save Plots','Tag','RootSavePlotPathField');
+% 1. Add function button
+handles.Plot.addFunctionButton=uibutton(plotTab,'push','Text','F+','Tag','AddFunctionButton','Tooltip','Create New Function','ButtonPushedFcn',@(addFunctionButton,event) addFunctionButtonPushed(addFunctionButton));
+% 2. Add function from template button
+handles.Plot.templatesDropDown=uidropdown(plotTab,'Items',{'No Templates'},'Tooltip','Plotting Function Templates','Editable','off','Tag','TemplatesDropDown','ValueChangedFcn',@(templatesDropDown,event) templatesDropDownValueChanged(templatesDropDown));
+% 3. Archive function button
+handles.Plot.archiveFunctionButton=uibutton(plotTab,'push','Text','F-','Tag','ArchiveFunctionButton','Tooltip','Archive Function','ButtonPushedFcn',@(archiveFunctionButton,event) archiveFunctionButtonPushed(archiveFunctionButton));
+% 4. Restore function from archive button
+handles.Plot.restoreFunctionButton=uibutton(plotTab,'push','Text','F--','Tag','FunctionFromTemplateButton','Tooltip','Create New Function From Template','ButtonPushedFcn',@(createFunctionFromTemplateButton,event) createFunctionFromTemplateButtonPushed(createFunctionFromTemplateButton));
+% 6. Add plotting function template button
+handles.Plot.addPlotTemplateButton=uibutton(plotTab,'push','Text','Template+','Tag','AddPlotTemplateButton','Tooltip','Create New Plot Template','ButtonPushedFcn',@(addPlotTemplateButton,event) addPlotTemplateButtonPushed(addPlotTemplateButton));
+% 7. Archive plotting function type button
+handles.Plot.archivePlotTemplateButton=uibutton(plotTab,'push','Text','Template-','Tag','ArchivePlotTemplateButton','Tooltip','Archive Plot Template','ButtonPushedFcn',@(archivePlotTemplateButton,event) archivePlotTemplateButtonPushed(archivePlotTemplateButton));
+% 8. Restore plotting function type from archive button
+handles.Plot.restorePlotTemplateButton=uibutton(plotTab,'push','Text','Template--','Tag','RestorePlotTemplateButton','Tooltip','Restore Plot Template','ButtonPushedFcn',@(restorePlotTemplateButton,event) restorePlotTemplateButtonPushed(restorePlotTemplateButton));
+% 9. Save plot label
+handles.Plot.saveFormatLabel=uilabel(plotTab,'Text','Save','Tag','SaveFormatLabel');
+% 10. Save as fig checkbox
+handles.Plot.figCheckbox=uicheckbox(plotTab,'Text','Fig','Value',0,'Tag','FigCheckbox','Tooltip','Save plot as .fig (static only)');
+% 11. Save as png checkbox
+handles.Plot.pngCheckbox=uicheckbox(plotTab,'Text','PNG','Value',0,'Tag','PNGCheckbox','Tooltip','Save plot as .png (static only)');
+% 12. Save as svg checkbox
+handles.Plot.svgCheckbox=uicheckbox(plotTab,'Text','SVG','Value',0,'Tag','SVGCheckbox','Tooltip','Save plot as .svg (static only)');
+% 13. Save as mp4 checkbox
+handles.Plot.mp4Checkbox=uicheckbox(plotTab,'Text','MP4','Value',0,'Tag','MP4Checkbox','Tooltip','Save plot as .mp4 (movies only)');
+% 14. % real speed numeric text field
+handles.Plot.percSpeedEditField=uieditfield(plotTab,'numeric','Tooltip','% Playback Speed (1-100)','Value',0,'Tag','PercSpeedEditField','ValueChangedFcn',@(percSpeedEditField,event) percSpeedEditFieldValueChanged(percSpeedEditField));
+% 15. Interval numeric text field
+handles.Plot.intervalEditField=uieditfield(plotTab,'numeric','Tooltip','Integer >= 1','Value',1,'Tag','IntervalEditField','ValueChangedFcn',@(intervalEditField,event) intervalEditFieldValueChanged(intervalEditField));
+% 16. Functions label
+handles.Plot.functionsLabel=uilabel(plotTab,'Text','Functions','Tag','FunctionsLabel');
+% 17. Functions search edit field
+handles.Plot.functionsSearchEditField=uieditfield(plotTab,'text','Value','','Tooltip','Functions Search','Tag','FunctionsSearchEditField','ValueChangedFcn',@(functionsSearchEditField,event) functionsSearchEditFieldValueChanged(functionsSearchEditField));
+% 18. Functions UI tree
+handles.Plot.functionsUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
+% 19. Arguments label
+handles.Plot.argumentsLabel=uilabel(plotTab,'Text','Arguments','Tag','ArgumentsLabel');
+% 20. Arguments search edit field
+handles.Plot.argumentsSearchEditField=uieditfield(plotTab,'text','Value','','Tooltip','Arguments Search','Tag','ArgumentsSearchEditField','ValueChangedFcn',@(argumentsSearchEditField,event) argumentsSearchEditFieldValueChanged(argumentsSearchEditField));
+% 21. Arguments UI tree
+handles.Plot.argumentsUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(argumentsUITree,event) argumentsUITreeSelectionChanged(argumentsUITree),'CheckedNodesChangedFcn',@(argumentsUITree,event) argumentsUITreeCheckedNodesChanged(argumentsUITree),'Tag','ArgumentsUITree');
+% 22. Root save path button
+handles.Plot.rootSavePathButton=uibutton(plotTab,'push','Text','Root Save Path','Tag','RootSavePathButton','Tooltip','Root Folder to Save Plots','ButtonPushedFcn',@(rootSavePathButton) rootSavePathButtonPushed(rootSavePathButton));
+% 23. Root save path edit field
+handles.Plot.rootSavePathEditField=uieditfield(plotTab,'text','Value','','Tooltip','Root Save Path','Tag','RootSavePathEditField','ValueChangedFcn',@(rootSavePathEditField,event) rootSavePathEditFieldValueChanged(rootSavePathEditField));
+% 24. Example plot sneak peek button
+handles.Plot.sneakPeekButton=uibutton(plotTab,'push','Text','Sneak Peek','Tag','SneakPeekButton','Tooltip','Quick Look at Sample Plot of Current Function','ButtonPushedFcn',@(sneakPeekButton) sneakPeekButtonPushed(sneakPeekButton));
+% 25. Analysis label
+handles.Plot.analysisLabel=uilabel(plotTab,'Text','Analysis','Tag','AnalysisLabel');
+% 26. Analysis dropdown
+handles.Plot.analysisDropDown=uidropdown(plotTab,'Items',{'No Analyses'},'Tooltip','The analysis for the current variable','Editable','off','Tag','AnalysisDropDown','ValueChangedFcn',@(analysisDropDown,event) analysisDropDownValueChanged(analysisDropDown));
+% 27. Subvariables label
+handles.Plot.subvariablesLabel=uilabel(plotTab,'Text','Subvariables','Tag','SubvariablesLabel');
+% 28. Subvariables UI tree
+handles.Plot.subvariablesUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(subvariablesUITree,event) subvariablesUITreeSelectionChanged(subvariablesUITree),'CheckedNodesChangedFcn',@(subvariablesUITree,event) subvariablesUITreeCheckedNodesChanged(subvariablesUITree),'Tag','SubvariablesUITree');
+% 29. Subvariable index edit field
+
+% 30. Modify subvariables button
+handles.Plot.modifySubvariablesButton=uibutton(plotTab,'push','Text','Modify Subvariables','Tag','ModifySubvariablesButton','Tooltip','Modify Subvariables List','ButtonPushedFcn',@(modifySubvariablesButton) modifySubvariablesButtonPushed(modifySubvariablesButton));
+% 31. Group/fcn description label
+handles.Plot.groupFcnDescriptionLabel=uilabel(plotTab,'Text','Group/Fcn Description','Tag','GroupFcnDescriptionLabel');
+% 32. Group/fcn description text area
+handles.Plot.groupFcnDescriptionTextArea=uitextarea(plotTab,'Value','Enter Description Here','Tag','GroupFunctionDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(groupFunctionDescriptionTextArea,event) groupFunctionDescriptionTextAreaValueChanged(groupFunctionDescriptionTextArea));
+% 33. Argument name label (dynamic)
+handles.Plot.argNameLabel=uilabel(plotTab,'Text','Argument','Tag','ArgNameLabel');
+% 34. Argument name in code edit field
+handles.Plot.argNameInCodeEditField=uieditfield(plotTab,'text','Value','','Tooltip','Argument Name in Code','Tag','ArgNameInCodeEditField','ValueChangedFcn',@(argNameInCodeEditField,event) argNameInCodeEditFieldValueChanged(argNameInCodeEditField));
+% 35. Argument description text area
+handles.Plot.argDescriptionTextArea=uitextarea(plotTab,'Value','Enter Argument Description Here','Tag','ArgDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argDescriptionTextArea,event) argDescriptionTextAreaValueChanged(argDescriptionTextArea));
+% 36. Save subfolder label
+handles.Plot.saveSubfolderLabel=uilabel(plotTab,'Text','Subfolder','Tag','SaveSubfolderLabel');
+% 37. Save subfolder edit field
+handles.Plot.saveSubfolderEditField=uieditfield(plotTab,'text','Value','','Tooltip','Save Subfolder','Tag','SaveSubfolderEditField','ValueChangedFcn',@(saveSubfolderEditField,event) saveSubfolderEditFieldValueChanged(saveSubfolderEditField));
+% 38. Plot button
+handles.Plot.plotButton=uibutton(plotTab,'push','Text','Plot','Tag','PlotButton','Tooltip','Run Plotting Function','ButtonPushedFcn',@(plotButton) plotButtonPushed(plotButton));
+% 39. Specify trials button (dynamic label)
+handles.Plot.specifyTrialsButton=uibutton(plotTab,'push','Text','Plot','Tag','SpecifyTrialsButton','Tooltip','Select Specify Trials','ButtonPushedFcn',@(specifyTrialsButton) specifyTrialsButtonPushed(specifyTrialsButton));
+% 40. By condition checkbox
+handles.Plot.byConditionCheckbox=uicheckbox(plotTab,'Text','By Condition','Value',0,'Tag','ByConditionCheckbox','Tooltip','Specify Trials Grouped By Condition');
+% 41. Generate run code button
+handles.Plot.generateRunCodeButton=uibutton(plotTab,'push','Text','Generate Run Code','Tag','GenerateRunCodeButton','Tooltip','Generate Run Code Independent of GUI','ButtonPushedFcn',@(generateRunCodeButton) generateRunCodeButtonPushed(generateRunCodeButton));
+
+plotTab.UserData=struct('AddFunctionButton',handles.Plot.addFunctionButton,'TemplatesDropDown',handles.Plot.templatesDropDown,'ArchiveFunctionButton',handles.Plot.archiveFunctionButton,...
+    'RestoreFunctionButton',handles.Plot.restoreFunctionButton,'AddPlotTemplateButton',handles.Plot.addPlotTemplateButton,'ArchivePlotTemplateButton',handles.Plot.archivePlotTemplateButton,...
+    'RestorePlotTemplateButton',handles.Plot.restorePlotTemplateButton,'SaveFormatLabel',handles.Plot.saveFormatLabel,'FigCheckbox',handles.Plot.figCheckbox,'SVGCheckbox',handles.Plot.svgCheckbox,...
+    'PNGCheckbox',handles.Plot.pngCheckbox,'MP4Checkbox',handles.Plot.mp4Checkbox,'PercSpeedEditField',handles.Plot.percSpeedEditField,'IntervalEditField',handles.Plot.intervalEditField,...
+    'FunctionsLabel',handles.Plot.functionsLabel,'FunctionsSearchEditField',handles.Plot.functionsSearchEditField,'FunctionsUITree',handles.Plot.functionsUITree,'ArgumentsLabel',handles.Plot.argumentsLabel,...
+    'ArgumentsSearchEditField',handles.Plot.argumentsSearchEditField,'ArgumentsUITree',handles.Plot.argumentsUITree,'RootSavePathButton',handles.Plot.rootSavePathButton,'RootSavePathEditField',handles.Plot.rootSavePathEditField,...
+    'SneakPeekButton',handles.Plot.sneakPeekButton,'AnalysisLabel',handles.Plot.analysisLabel,'AnalysisDropDown',handles.Plot.analysisDropDown,'SubvariablesLabel',handles.Plot.subvariablesLabel,...
+    'SubvariablesUITree',handles.Plot.subvariablesUITree,'ModifySubvariablesButton',handles.Plot.modifySubvariablesButton,'GroupFcnDescriptionLabel',handles.Plot.groupFcnDescriptionLabel,...
+    'GroupFcnDescriptionTextArea',handles.Plot.groupFcnDescriptionTextArea,'ArgNameLabel',handles.Plot.argNameLabel,'ArgNameInCodeEditField',handles.Plot.argNameInCodeEditField,'ArgDescriptionTextArea',handles.Plot.argDescriptionTextArea,...
+    'SaveSubfolder',handles.Plot.saveSubfolderLabel,'SaveSubfolderEditField',handles.Plot.saveSubfolderEditField,'PlotButton',handles.Plot.plotButton,'SpecifyTrialsButton',handles.Plot.specifyTrialsButton,...
+    'ByConditionCheckbox',handles.Plot.byConditionCheckbox,'GenerateRunCodeButton',handles.Plot.generateRunCodeButton);
+
+@plotResize;
+
+drawnow; % Show the properly placed Process tab components.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the stats tab

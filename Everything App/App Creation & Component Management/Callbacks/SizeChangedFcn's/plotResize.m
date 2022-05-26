@@ -78,7 +78,7 @@ GenerateRunCodeButtonRelPos=[0.8 0.75];
 % All component dimensions here are specified as absolute sizes (pixels)
 compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
 AddFunctionButtonSize=[0.06 compHeight];
-TemplatesDropDownSize=[0.1 compHeight];
+TemplatesDropDownSize=[0.08 compHeight];
 ArchiveFunctionButtonSize=[0.06 compHeight];
 RestoreFunctionButtonSize=[0.06 compHeight];
 AddPlotTemplateButtonSize=[0.06 compHeight];

@@ -46,7 +46,7 @@ tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off'); %
 fig.UserData=struct('TabGroup1',tabGroup1); % Store the components to the figure.
 importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off','SizeChangedFcn',@importResize); % Create the import tab
 processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off','SizeChangedFcn',@processResize); % Create the process tab
-plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off'); % Create the plot tab
+plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off','SizeChangedFcn',@plotResize); % Create the plot tab
 statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off'); % Create the stats tab
 settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
 
@@ -149,7 +149,7 @@ handles.Import.functionsUITree=uitree(importTab,'checkbox','SelectionChangedFcn'
 handles.Import.argumentsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(argumentsUITree,event) argumentsUITreeSelectionChanged(argumentsUITree),'CheckedNodesChangedFcn',@(argumentsUITree,event) argumentsUITreeCheckedNodesChanged(argumentsUITree),'Tag','ArgumentsUITree');
 
 % 34. Group/function description text area (dynamic?) label
-handles.Import.groupFunctionDescriptionTextAreaLabel=uilabel(importTab,'Text','Group/Function Description','Tag','GroupFunctionDescriptionTextAreaLabel','FontWeight','bold');
+handles.Import.groupFunctionDescriptionTextAreaLabel=uilabel(importTab,'Text','Function Description','Tag','GroupFunctionDescriptionTextAreaLabel','FontWeight','bold');
 
 % 35. Group/function description text area
 handles.Import.groupFunctionDescriptionTextArea=uitextarea(importTab,'Value','Enter Description Here','Tag','GroupFunctionDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(groupFunctionDescriptionTextArea,event) groupFunctionDescriptionTextAreaValueChanged(groupFunctionDescriptionTextArea));
@@ -164,7 +164,16 @@ handles.Import.argumentDescriptionTextAreaLabel=uilabel(importTab,'Text','Argume
 handles.Import.argumentDescriptionTextArea=uitextarea(importTab,'Value','Enter Description Here','Tag','ArgumentDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argumentDescriptionTextArea,event) argumentDescriptionTextAreaValueChanged(argumentDescriptionTextArea));
 
 % 39. Un-archive project button
-handles.Import.unarchiveProjectButton=uibutton(importTab,'push','Text','P--','Tag','UnarchiveProjectButton','Tooltip','Unarchive current project','ButtonPushedFcn',@(unarchiveProjectButton,event) unarchiveProjectButtonPushed(unarchiveProjectButton));
+handles.Import.unarchiveProjectButton=uibutton(importTab,'push','Text','P--','Tag','UnarchiveProjectButton','Tooltip','Unarchive Current Project','ButtonPushedFcn',@(unarchiveProjectButton,event) unarchiveProjectButtonPushed(unarchiveProjectButton));
+
+% 40. Add argument button
+handles.Import.addArgumentButton=uibutton(importTab,'push','Text','A+','Tag','AddArgumentButton','Tooltip','Add New Argument','ButtonPushedFcn',@(addArgumentButton,event) addArgumentButtonPushed(addArgumentButton));
+
+% 41. Archive argument button
+handles.Import.archiveArgumentButton=uibutton(importTab,'push','Text','A-','Tag','ArchiveArgumentButton','Tooltip','Archive Selected Argument','ButtonPushedFcn',@(archiveArgumentButton,event) archiveArgumentButtonPushed(archiveArgumentButton));
+
+% 42. Un-archive argument button
+handles.Import.unarchiveArgumentButton=uibutton(importTab,'push','Text','A--','Tag','UnarchiveArgumentButton','Tooltip','Unarchive Selected Argument','ButtonPushedFcn',@(unarchiveArgumentButton,event) unarchiveArgumentButtonPushed(unarchiveArgumentButton));
 
 importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'LogsheetPathButton',handles.Import.logsheetPathButton,'DataPathButton',handles.Import.dataPathButton,'CodePathButton',handles.Import.codePathButton,...
     'AddProjectButton',handles.Import.addProjectButton,'LogsheetPathField',handles.Import.logsheetPathField,'DataPathField',handles.Import.dataPathField,'CodePathField',handles.Import.codePathField,...
@@ -176,7 +185,8 @@ importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'Lo
     'ArchiveProjectButton',handles.Import.archiveProjectButton,'FunctionsUITreeLabel',handles.Import.functionsUITreeLabel,'ArgumentsUITreeLabel',handles.Import.argumentsUITreeLabel,'FunctionsSearchBarEditField',handles.Import.functionsSearchBarEditField,...
     'ArgumentsSearchBarEditField',handles.Import.argumentsSearchBarEditField,'FunctionsUITree',handles.Import.functionsUITree,'ArgumentsUITree',handles.Import.argumentsUITree,'GroupFunctionDescriptionTextAreaLabel',handles.Import.groupFunctionDescriptionTextAreaLabel,...
     'GroupFunctionDescriptionTextArea',handles.Import.groupFunctionDescriptionTextArea,'UnarchiveImportFcnButton',handles.Import.unarchiveImportFcnButton,'ArgumentDescriptionTextAreaLabel',handles.Import.argumentDescriptionTextAreaLabel,...
-    'ArgumentDescriptionTextArea',handles.Import.argumentDescriptionTextArea,'UnarchiveProjectButton',handles.Import.unarchiveProjectButton);
+    'ArgumentDescriptionTextArea',handles.Import.argumentDescriptionTextArea,'UnarchiveProjectButton',handles.Import.unarchiveProjectButton,'AddArgumentButton',handles.Import.addArgumentButton,'ArchiveArgumentButton',handles.Import.archiveArgumentButton,...
+    'UnarchiveArgumentButton',handles.Import.unarchiveArgumentButton);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 
@@ -236,7 +246,7 @@ handles.Process.functionFromGroupButton=uibutton(processTab,'push','Text','F<-G'
 handles.Process.reorderGroupsButton=uibutton(processTab,'push','Text','G Reorder','Tag','GroupReorderButton','Tooltip','Reorder Groups','ButtonPushedFcn',@(reorderGroupsButton,event) reorderGroupsButtonPushed(reorderGroupsButton));
 
 % 18. Reorder functions in this group (in this analysis) button
-handles.Process.reorderFunctionsButton=uibutton(processTab,'push','Text','F Reorder','Tag','FunctionReorderButton','Tooltip','Reorder Functions','ButtonPushedFcn',@(reorderFunctionsButton,event) reorderFunctionsButtonPushed(reorderFunctionsButton));
+handles.Process.reorderFunctionsButton=uibutton(processTab,'push','Text','F Reorder','Tag','FunctionReorderButton','Tooltip','Reorder Functions in Current Group','ButtonPushedFcn',@(reorderFunctionsButton,event) reorderFunctionsButtonPushed(reorderFunctionsButton));
 
 % 19. Create new argument button
 handles.Process.newArgumentButton=uibutton(processTab,'push','Text','A+','Tag','NewArgumentButton','Tooltip','New Argument','ButtonPushedFcn',@(newArgumentButton,event) newArgumentButtonPushed(newArgumentButton));

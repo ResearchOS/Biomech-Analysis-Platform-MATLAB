@@ -60,6 +60,7 @@ else
 end
 
 % 3. Change the GUI fields unrelated to functions & arguments
+handles.Import.codePathField.Value=codePath;
 handles.Import.dataPathField.Value=projectSettingsStruct.Import.Paths.(hostVarName).DataPath;
 handles.Import.logsheetPathField.Value=projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPath;
 handles.Import.numHeaderRowsField.Value=projectSettingsStruct.Import.NumHeaderRows;
@@ -83,5 +84,6 @@ end
 
 % 5. Tell the user that the project has successfully switched
 setappdata(fig,'projectName',projectName);
+drawnow;
 a=toc;
 disp(['Success! Switched to project ' projectName ' in ' num2str(a) ' seconds']);

@@ -48,7 +48,7 @@ hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from t
 
 % 3. Change the GUI fields unrelated to functions & arguments
 handles.Import.dataPathField.Value=projectSettingsStruct.Import.Paths.(hostVarName).DataPath;
-handles.Import.logsheetPath.Value=projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPath;
+handles.Import.logsheetPathField.Value=projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPath;
 handles.Import.numHeaderRowsField.Value=projectSettingsStruct.Import.NumHeaderRows;
 handles.Import.subjIDColHeaderField.Value=projectSettingsStruct.Import.SubjectIDColHeader;
 handles.Import.targetTrialIDColHeaderField.Value=projectSettingsStruct.Import.TargetTrialIDColHeader;
@@ -60,8 +60,8 @@ else
     setappdata(fig,'dataPath','');
 end
 
-if exist(handles.Import.logsheetPath.Value,'file')==2
-    setappdata(fig,'logsheetPath',handles.Import.logsheetPath.Value);
+if exist(handles.Import.logsheetPathField.Value,'file')==2
+    setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
 else
     setappdata(fig,'logsheetPath','');
 end

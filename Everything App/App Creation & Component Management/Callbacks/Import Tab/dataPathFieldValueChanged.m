@@ -15,7 +15,7 @@ if isempty(dataPath) || isequal(dataPath,'Data Path (contains ''Subject Data'' f
 end
 
 if exist(dataPath,'dir')~=7
-    warning(['Incorrect path: ' dataPath]);
+    warning(['Incorrect data folder path: ' dataPath]);
     return;
 end
 

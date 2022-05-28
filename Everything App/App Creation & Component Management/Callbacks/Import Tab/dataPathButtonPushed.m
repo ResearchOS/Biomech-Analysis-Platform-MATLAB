@@ -26,8 +26,8 @@ if ~isequal(dataPath(end),slash)
     dataPath=[dataPath slash]; % Ensure that there is always a slash at the end of the data path.
 end
 
-% 3. Update the value of the code path edit field
+% 3. Update the value of the data path edit field
 handles.Import.dataPathField.Value=dataPath;
 
-% 4. Run the codePathEditFieldValueChanged callback
+% 4. Run the dataPathEditFieldValueChanged callback
 dataPathFieldValueChanged(fig);

@@ -52,6 +52,7 @@ if exist(projectSettingsMATPath,'file')~=2
     % Just missing the data type-specific trial ID column header, and of course the UI trees and description text areas
     projectSettingsStruct.Import.Paths.(hostVarName).DataPath='Data Path (contains ''Subject Data'' folder)';
     projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPath='Logsheet Path (ends in .xlsx)';
+    projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPathMAT='';
     projectSettingsStruct.Import.NumHeaderRows=-1;
     projectSettingsStruct.Import.SubjectIDColHeader='Subject ID Column Header';
     projectSettingsStruct.Import.TargetTrialIDColHeader='Target Trial ID Column Header';

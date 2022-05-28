@@ -1,15 +1,42 @@
 function []=switchProjectsDropDownValueChanged(src,event)
 
+tic;
 %% PURPOSE: WHEN CHANGING PROJECTS (ADDING NEW OR SWITCHING) PROPAGATE PROJECT SETTINGS TO THE REST OF THE GUI
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
-projectName=getappdata(fig,'projectName');
+projectName=handles.Import.switchProjectsDropDown.Value;
 
-codePath=handles.Import.codePathField.Value;
+% 2. Load the project-specific settings MAT file.
+settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
+projectNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
+projectNames=projectNames(~ismember(projectNames,'mostRecentProjectName')); % Remove the most recent project name from the list of variables in the settings MAT file
 
-% 1. Check if the code path exists. If not, need to make all the components invisible.
-if exist(codePath,'dir')~=7
+% codePath=handles.Import.codePathField.Value;
+
+if ismember(projectName,projectNames)
+    settingsStruct=load(settingsMATPath,projectName);
+    settingsStruct=settingsStruct.(projectName);
+
+    [~,hostname]=system('hostname'); % Get the name of the current computer
+    hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
+
+    projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
+
+    if exist(projectSettingsMATPath,'file')==2
+        projectSettingsStruct=load(projectSettingsMATPath,projectName);
+        projectSettingsStruct=projectSettingsStruct.(projectName);
+        codePath=projectSettingsStruct.Import.Paths.(hostVarName).CodePath;
+    else
+        codePath='';
+    end
+
+else
+    codePath='';
+end
+
+% 1. Check if the project already exists. If not, need to make all the components invisible.
+if ~ismember(projectName,projectNames) || (ismember(projectName,projectNames) && exist(codePath,'dir')~=7)
     % Turn off visibility for everything except new project & code path components
     tabNames=fieldnames(handles);
     for tabNum=1:length(tabNames) % Iterate through every tab
@@ -20,6 +47,7 @@ if exist(codePath,'dir')~=7
             end
         end
     end
+    return;
 else
     % Turn all component visibility on.
     tabNames=fieldnames(handles);
@@ -30,21 +58,6 @@ else
         end
     end
 end
-
-% 2. Load the project-specific settings MAT file.
-settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
-settingsStruct=load(settingsMATPath,projectName);
-settingsStruct=settingsStruct.(projectName);
-
-[~,hostname]=system('hostname'); % Get the name of the current computer
-hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
-
-projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
-projectSettingsStruct=load(projectSettingsMATPath,projectName);
-projectSettingsStruct=projectSettingsStruct.(projectName);
-
-[~,hostname]=system('hostname'); % Get the name of the current computer
-hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
 
 % 3. Change the GUI fields unrelated to functions & arguments
 handles.Import.dataPathField.Value=projectSettingsStruct.Import.Paths.(hostVarName).DataPath;
@@ -67,3 +80,8 @@ else
 end
 
 % 4. Change the GUI fields related to functions & arguments
+
+% 5. Tell the user that the project has successfully switched
+setappdata(fig,'projectName',projectName);
+a=toc;
+disp(['Success! Switched to project ' projectName ' in ' num2str(a) ' seconds']);

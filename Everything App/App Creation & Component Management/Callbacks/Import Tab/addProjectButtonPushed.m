@@ -22,6 +22,17 @@ while isOKName==0
 
 end
 
+% Turn off visibility for everything except new project & code path components
+tabNames=fieldnames(handles);
+for tabNum=1:length(tabNames) % Iterate through every tab
+    compNames=fieldnames(handles.(tabNames{tabNum}));
+    for compNum=1:length(compNames)
+        if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown'}))
+            handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
+        end
+    end
+end
+
 % Create a struct for the new project (to be located in the project-independent settings folder)
 [~,hostname]=system('hostname'); % Get the name of the current computer
 hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
@@ -40,7 +51,7 @@ else
     save(settingsMATPath,'mostRecentProjectName',projectName,'-mat','-v6');
 end
 
-% 3. Add visibility of the code path edit field
+% 3. Add visibility of the code path edit field (if not already visible)
 handles.Import.codePathButton.Visible=1;
 handles.Import.codePathField.Visible=1;
 

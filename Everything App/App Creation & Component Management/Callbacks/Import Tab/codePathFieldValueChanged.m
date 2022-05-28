@@ -86,7 +86,9 @@ tabNames=fieldnames(handles);
 for tabNum=1:length(tabNames) % Iterate through every tab
     compNames=fieldnames(handles.(tabNames{tabNum}));
     for compNum=1:length(compNames)
-        handles.(tabNames{tabNum}).(compNames{compNum}).Visible=1;
+        if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
+            handles.(tabNames{tabNum}).(compNames{compNum}).Visible=1;
+        end
     end
 end
 

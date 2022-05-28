@@ -27,10 +27,6 @@ figSize=get(fig,'Position'); % Get the figure's position.
 figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax: left offset, bottom offset, width, height (pixels)
 
 %% Initialize app data
-
-
-
-
 setappdata(fig,'everythingPath',[fileparts(mfilename('fullpath')) slash]); % Path to the 'Everything App' folder.
 rmpath(genpath([getappdata(fig,'everythingPath') slash 'm File Library'])); % Ensure that the function library files are not on the path, because I don't want to run those files, I want to copy them to my local project.
 setappdata(fig,'projectName',''); % The current project name in the dropdown on the Import tab.
@@ -53,13 +49,14 @@ setappdata(fig,'dataPath',''); % The current project's data path on the Import t
 % setappdata(fig,'trialNameColumnNum',0); % The column number in the logsheet for the trial names to be stored in the struct.
 
 %% Create tab group with the four primary tabs
-tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off'); % Create the tab group for the four stages of data processing
+tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
 fig.UserData=struct('TabGroup1',tabGroup1); % Store the components to the figure.
 importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off','SizeChangedFcn',@importResize); % Create the import tab
 processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off','SizeChangedFcn',@processResize); % Create the process tab
 plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off','SizeChangedFcn',@plotResize); % Create the plot tab
 statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off'); % Create the stats tab
 settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
+handles.Tabs.tabGroup1=tabGroup1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.
@@ -577,7 +574,7 @@ load(settingsMATPath,'mostRecentProjectName'); % Load the name of the most recen
 
 % The most recent project's settings is NOT guaranteed to exist (if the user exited immediately after creating the project without entering the Code Path)
 projectNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
-projectNames=projectNames(~ismember(projectNames,'mostRecentProjectName')); % Remove the most recent project name from the list of variables in the settings MAT file
+projectNames=projectNames(~ismember(projectNames,{'mostRecentProjectName','currTab'})); % Remove the most recent project name from the list of variables in the settings MAT file
 if ~ismember(mostRecentProjectName,projectNames)
     disp(['Project-specific settings file path could not be found in project-independent settings MAT file (project variable missing)']);
     disp(['To resolve, either enter the Code Path for this project, or check the settings MAT files']);
@@ -613,7 +610,9 @@ if ~isfield(projectSettingsStruct,hostVarName) % If this is the first time runni
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
             if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown','CodePathButton','CodePathField'}))
-                handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
+                if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
+                    handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
+                end
             end
         end
     end
@@ -631,7 +630,9 @@ if exist(projectSettingsMATPath,'file')~=2
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
             if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown','CodePathButton','CodePathField'}))
-                handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
+                if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
+                    handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
+                end
             end
         end
     end
@@ -648,6 +649,9 @@ handles.Import.codePathField.Value=projectSettingsStruct.Import.Paths.(hostVarNa
 
 % 7. Whether the project name was found in the file or not, run the callback to set up the app properly.
 switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
+load(settingsMATPath,'currTab');
+hTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
+handles.Tabs.tabGroup1.SelectedTab=hTab;
 drawnow;
 a=toc;
 disp(['pgui startup time is ' num2str(a) ' seconds']);

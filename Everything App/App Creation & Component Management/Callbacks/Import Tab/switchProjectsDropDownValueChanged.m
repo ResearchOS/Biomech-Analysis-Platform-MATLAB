@@ -43,7 +43,9 @@ if ~ismember(projectName,projectNames) || (ismember(projectName,projectNames) &&
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
             if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown','CodePathButton','CodePathField'}))
-                handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
+                if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
+                    handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
+                end
             end
         end
     end
@@ -54,7 +56,9 @@ else
     for tabNum=1:length(tabNames) % Iterate through every tab
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
-            handles.(tabNames{tabNum}).(compNames{compNum}).Visible=1;
+            if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
+                handles.(tabNames{tabNum}).(compNames{compNum}).Visible=1;
+            end
         end
     end
 end

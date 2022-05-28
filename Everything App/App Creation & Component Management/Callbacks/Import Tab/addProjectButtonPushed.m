@@ -1,74 +1,58 @@
-function []=addProjectButtonPushed(src)
+function []=addProjectButtonPushed(src,event)
+
+%% PURPOSE: CREATE A NEW PROJECT. COULD BE FIRST TIME USE (NO EXISTING PROJECTS, ALL COMPONENTS INVISIBLE), OR JUST A NEW PROJECT (ALL COMPONENTS VISIBLE)
 
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
-projectName=inputdlg('Enter the new project name','New Project Name');
+% 1. Prompt for the name of the new project
+isOKName=0; % Initialize that the new project name is not a valid MATLAB variable name.
+while isOKName==0
+    projectName=inputdlg('Enter the new project name','New Project Name');
 
-if isempty(projectName) || isempty(projectName{1})
-    return; % Pressed Cancel, or did not enter anything.
-end
-
-projectName=projectName{1};
-
-setappdata(fig,'projectName',projectName);
-
-text=readAllProjects(getappdata(fig,'everythingPath'));
-projectList=getAllProjectNames(text);
-
-h=findobj(fig,'Type','uidropdown','Tag','SwitchProjectsDropDown');
-if ismember(projectName,projectList)
-    disp(['Switching to existing project: ' projectName]);
-    h.Value=projectName;
-    switchProjectsDropDownValueChanged(fig);
-    return;
-end
-
-if ~ismember(projectName,projectList)
-    if ~isempty(projectList)
-        h.Items=[projectList projectName];
-    else
-        h.Items={projectName};
+    if isempty(projectName) || isempty(projectName{1})
+        return; % Pressed Cancel, or did not enter anything.
     end
+
+    projectName=projectName{1};
+
+    if isvarname(projectName)
+        isOKName=1;
+    end
+
 end
-h.Items=h.Items(~ismember(h.Items,'New Project'));
-h.Items=sort(h.Items);
-h.Value=projectName;
 
-setappdata(fig,'allProjectsList',h.Items); % Modify the internal list of project names
+% Create a struct for the new project (to be located in the project-independent settings folder)
+[~,hostname]=system('hostname'); % Get the name of the current computer
+hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
+projectSettingsStruct.(hostVarName).projectSettingsMATPath=''; % Temporary variable just to create an empty structure with one empty field for the current computer's hostname.
+eval([projectName '=projectSettingsStruct;']); % Name the variable according to the current project name. One variable per project in the MAT file. 
 
-%% Add the project name to the bottom of the text file.
-% numLines=length(text);
-% recProjNamePrefix='Most Recent Project Name:';
-% if ~isempty(text)
-%     for i=numLines:-1:1
-%         if isequal(text{i}(1:length(recProjNamePrefix)),recProjNamePrefix)
-%             lastLine=i-2;
-%             break;
-%         end
-%     end
-%     
-%     newText(1:lastLine)=text(1:lastLine);
-%     newText{lastLine+1}='';
-% else
-%     lastLine=-1;
-% end
-% newText{lastLine+2}=['Project Name: ' projectName];
-% newText{lastLine+3}='';
-% newText{lastLine+4}=[recProjNamePrefix ' ' projectName];
-% 
-% fid=fopen(getappdata(fig,'allProjectsTxtPath'),'w');
-% fprintf(fid,'%s\n',newText{1:end-1});
-% fprintf(fid,'%s',newText{end});
-% fclose(fid);
+% 2. Set the most recent project name and the current project name. Store in GUI and save to file.
+setappdata(fig,'projectName',projectName);
+settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 
-%% Add the project name to the specify trials file (should not already be present).
-specTrialsTxtFile="C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Biomech-Analysis-Platform\Everything App\App Creation & Component Management\allProjects_SpecifyTrials.txt";
-text=regexp(fileread(specTrialsTxtFile),'\n','split');
+% Save to project-independent settings MAT file
+mostRecentProjectName=projectName;
+if exist(settingsMATPath','file')==2
+    save(settingsMATPath,'mostRecentProjectName',projectName,'-mat','-append'); % Save the most recent (i.e. current) project name, and the project's settings struct with the path name to the code folder
+else
+    save(settingsMATPath,'mostRecentProjectName',projectName,'-mat','-v6');
+end
 
-text=[text {''} {['Project Name: ' projectName]}]; % Add the project name.
-fid=fopen(specTrialsTxtFile,'w');
-fprintf(fid,'%s\n',text{1:end-1});
-fprintf(fid,'%s',text{end});
-fclose(fid); % Close the file
+% 3. Add visibility of the code path edit field
+handles.Import.codePathButton.Visible=1;
+handles.Import.codePathField.Visible=1;
 
-switchProjectsDropDownValueChanged(fig);
+disp('Next, select or enter the full path to the folder where all of the code for this project will be stored.');
+
+% 4. Add project name to project drop down list
+projList=handles.Import.switchProjectsDropDown.Items; % Get the list of current projects
+
+if length(projList)==1 && isequal(projList{1},'New Project')
+    handles.Import.switchProjectsDropDown.Items={projectName};
+else
+    handles.Import.switchProjectsDropDown.Items=[handles.Import.switchProjectsDropDown.Items {projectName}];
+end
+
+handles.Import.switchProjectsDropDown.Value=projectName;

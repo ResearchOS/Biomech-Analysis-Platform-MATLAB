@@ -1,16 +1,21 @@
-function []=dataPathButtonPushed(src)
+function []=dataPathButtonPushed(src,event)
 
-%% PURPOSE: OPEN THE UI FOLDER PICKER WHEN BUTTON IS PUSHED ON IMPORT TAB. PUT THE FILE PATH INTO THE DATA PATH FIELD
+%% PURPOSE: OPEN A UI FOLDER PICKER TO SELECT THE FOLDER WHERE THE DATA FOR THIS PROJECT IS STORED.
+% NOTE: CURRENTLY ASSUMES THAT ALL DATA IS IN SUBFOLDERS OF THIS DIRECTORY
 
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
+projectName=getappdata(fig,'projectName');
 
-dataPath=getappdata(fig,'dataPath'); % dataPath always begins empty
-path=uigetdir(dataPath,'Select the data folder');
+% 1. Prompt for the path
+dataPath=getappdata(fig,'dataPath');
+path=uigetdir(dataPath,'Select the data folder for the current project');
 if isequal(path,0) % 'Cancel' or 'Close' button was clicked.
     figure(fig);
     return;
 end
 
+% 2. Ensure that there is always a slash at the end of the data path.
 dataPath=path;
 if ispc==1 % On PC
     slash='\';
@@ -18,14 +23,11 @@ elseif ismac==1 % On Mac
     slash='/';
 end
 if ~isequal(dataPath(end),slash)
-    dataPath=[dataPath slash];
+    dataPath=[dataPath slash]; % Ensure that there is always a slash at the end of the data path.
 end
-setappdata(fig,'dataPath',dataPath);
-disp(['Data Path: ' dataPath]);
 
-% Set the dataPathField to display the new path.
-h=findobj(fig,'Type','uieditfield','Tag','DataPathField');
-h.Value=dataPath;
+% 3. Update the value of the code path edit field
+handles.Import.dataPathField.Value=dataPath;
 
-% Run the dataPathFieldValueChanged callback
-dataPathFieldValueChanged(h);
+% 4. Run the codePathEditFieldValueChanged callback
+dataPathFieldValueChanged(fig);

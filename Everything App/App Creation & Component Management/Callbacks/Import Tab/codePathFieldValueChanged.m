@@ -1,95 +1,93 @@
-function []=codePathFieldValueChanged(src)
+function []=codePathFieldValueChanged(src,event)
 
-%% PURPOSE: STORE THE CODE PATH TO THE CODEPATHFIELD, AND STORE IT TO THE FIG.
+%% PURPOSE: PROPAGATE CHANGES TO THE CODE PATH EDIT FIELD TO THE SAVED SETTINGS AND THE REST OF THE GUI
 
-data=src.Value;
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
+projectName=getappdata(fig,'projectName');
 
-if isempty(data) || isequal(data,'Path to Project Processing Code Folder')
-    setappdata(fig,'fcnNamesFilePath','');
+codePath=handles.Import.codePathField.Value;
+
+if isempty(codePath) || isequal(codePath,'Path to Project Processing Code Folder')
     setappdata(fig,'codePath','');
     return;
 end
 
-if exist(data,'dir')~=7
-    warning(['Incorrect path: ' data]);
+if exist(codePath,'dir')~=7
+    warning(['Selected code path does not exist: ' codePath]);
     return;
 end
+
 if ispc==1 % On PC
     slash='\';
 elseif ismac==1 % On Mac
     slash='/';
 end
-if ~isequal(data(end),slash)
-    data=[data slash];
-    src.Value=data;
-end
 
+if ~isequal(codePath(end),slash)
+    codePath=[codePath slash];
+    handles.Import.codePathField.Value=codePath;
+end
 
 if ~isempty(getappdata(fig,'codePath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
-    rmpath(genpath(getappdata(fig,'codePath'))); % Remove the old code path from the matlab path
+    rmpath(genpath(getappdata(fig,'codePath'))); % Remove the old code path (if any) from the matlab path
     warning on MATLAB:rmpath:DirNotFound; % Turn the warning back on.
 end
 
-setappdata(fig,'codePath',data); % Store the code path name to the figure variable.
+setappdata(fig,'codePath',codePath);
+
+[~,hostname]=system('hostname'); % Get the name of the current computer
+hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
+projectSettingsMATPath=[codePath 'Settings_' projectName '.mat']; % The project-specific settings MAT file in the project's code folder
+
+% 1. Load the project settings structure MAT file, if it exists.
+if exist(projectSettingsMATPath,'file')==2
+    projectSettingsStruct=load(projectSettingsMATPath,projectName);
+    projectSettingsStruct=projectSettingsStruct.(projectName);
+end
+
+% 3. If the project settings structure MAT file does not exist, initialize the project-specific settings with default values for all GUI components.
+if exist(projectSettingsMATPath,'file')~=2
+    % Just missing the data type-specific trial ID column header, and of course the UI trees and description text areas
+    projectSettingsStruct.Import.Paths.(hostVarName).DataPath='Data Path (contains ''Subject Data'' folder)';
+    projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPath='Logsheet Path (ends in .xlsx)';
+    projectSettingsStruct.Import.NumHeaderRows=-1;
+    projectSettingsStruct.Import.SubjectIDColHeader='Subject ID Column Header';
+    projectSettingsStruct.Import.TargetTrialIDColHeader='Target Trial ID Column Header';
+    projectSettingsStruct.Plot.RootSavePath='Root Save Path';
+end
+
+projectSettingsStruct.Import.Paths.(hostVarName).CodePath=codePath;
+
+eval([projectName '=projectSettingsStruct;']); % Rename the projectSettingsStruct to the projectName
+if exist(projectSettingsMATPath,'file')==2
+    save(projectSettingsMATPath,projectName,'-append');
+else
+    save(projectSettingsMATPath,projectName,'-mat','-v6');
+end
+
+% Add the projectSettingsMATPath to the project-independent settings MAT path
+settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
+settingsStruct=load(settingsMATPath,projectName);
+settingsStruct=settingsStruct.(projectName);
+
+settingsStruct.(hostVarName).projectSettingsMATPath=projectSettingsMATPath; % Store the project's settings MAT file path to the project-independent settings structure.
+
+eval([projectName '=settingsStruct;']); % Rename the settingsStruct to the projectName
+
+save(settingsMATPath,projectName,'-append'); % Save the project-independent settings MAT file.
 
 addpath(genpath(getappdata(fig,'codePath'))); % Add the new code path to the matlab path
 
-projectName=getappdata(fig,'projectName'); % Get the current project name.
-allProjectsPathTxt=getappdata(fig,'allProjectsTxtPath'); % The full file name of the text file with all projects path names
-
-% The project name should ALWAYS be in this file at this point. If not, it's because it's the first time and they've never entered a project name before.
-if exist(allProjectsPathTxt,'file')~=2
-    warning('Enter a project name!');
-    return;
+% Turn all component visibility on.
+tabNames=fieldnames(handles);
+for tabNum=1:length(tabNames) % Iterate through every tab
+    compNames=fieldnames(handles.(tabNames{tabNum}));
+    for compNum=1:length(compNames)
+        handles.(tabNames{tabNum}).(compNames{compNum}).Visible=1;
+    end
 end
 
-text=regexp(fileread(allProjectsPathTxt),'\n','split'); % Read in the file, where each line is one cell.
-
-foundProject=0; % Initialize that the project has not been found yet.
-projectPrefix='Project Name:';
-codePrefix='Code Path:';
-codePathExists=0; % Initialize that the code path does not yet exist for this project.
-for i=1:length(text)
-    
-    if length(text{i})>=length(projectPrefix)+length(projectName) && isequal(text{i}(1:length(projectPrefix)),projectPrefix) && isequal(text{i}(length(projectPrefix)+2:end),projectName)
-        foundProject=1;
-    elseif foundProject==0
-        continue;
-    end
-    
-    if isempty(text{i}) % Project section has ended
-        lineNum=i;
-        break;
-    end
-    
-    % Options:
-    % 1. Logsheet Path entry already exists for this project. So just replace the path itself (same line)
-    % 2. Logsheet Path entry does not exist for this project. Need to insert a line. Order within each project does not matter.
-    
-    if length(text{i})>=length(codePrefix) && isequal(text{i}(1:length(codePrefix)),codePrefix) % Case 1
-        codePathExists=1;
-        text{i}=[codePrefix ' ' data];
-        break; % Finished iterating through text file
-    end
-    
-end
-
-if codePathExists==0
-    linesAfter=text(lineNum:length(text)); % Extract everything after the new line.
-    text{i}=[codePrefix ' ' data]; % Add the logsheet path to the text.
-    text(i+1:i+length(linesAfter))=linesAfter; % Replace the 2nd part of the text.
-end
-fid=fopen(allProjectsPathTxt,'w');
-fprintf(fid,'%s\n',text{1:end-1});
-fprintf(fid,'%s',text{end});
-fclose(fid);
-
-fcnNamesFilePath=[getappdata(fig,'codePath') 'functionNames_' getappdata(fig,'projectName') '.txt']; % Set the current project's function names path
-setappdata(fig,'fcnNamesFilePath',fcnNamesFilePath);
-
-% switchProjectsDropDownValueChanged(fig); % Update the values of everything, because so much hinges on the code path.
-
-disp(['Code Path: ' data]);
-figure(fig);
+% Propagate changes to the rest of the GUI.
+switchProjectsDropDownValueChanged(fig);

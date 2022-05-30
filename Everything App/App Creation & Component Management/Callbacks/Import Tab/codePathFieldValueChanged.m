@@ -59,6 +59,8 @@ if exist(projectSettingsMATPath,'file')~=2
     NonFcnSettingsStruct.Import.TargetTrialIDColHeader='Target Trial ID Column Header';
     NonFcnSettingsStruct.Plot.RootSavePath='Root Save Path';
     NonFcnSettingsStruct.ProjectName=projectName;
+
+    % Function-specific settings struct
 end
 
 NonFcnSettingsStruct.Import.Paths.(hostVarName).CodePath=codePath;

@@ -6,11 +6,12 @@ tic;
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=handles.Import.switchProjectsDropDown.Value;
+setappdata(fig,'projectName',projectName);
 
 % 1. Load the project-specific settings MAT file (if it exists)
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 projectNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
-projectNames=projectNames(~ismember(projectNames,'mostRecentProjectName')); % Remove the most recent project name from the list of variables in the settings MAT file
+projectNames=projectNames(~ismember(projectNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
 
 if ismember(projectName,projectNames)
     settingsStruct=load(settingsMATPath,projectName);
@@ -19,15 +20,20 @@ if ismember(projectName,projectNames)
     [~,hostname]=system('hostname'); % Get the name of the current computer
     hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
 
-    projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
+    if isfield(settingsStruct,hostVarName)
+        projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
 
-    if exist(projectSettingsMATPath,'file')==2
-        projectSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
-        projectSettingsStruct=projectSettingsStruct.NonFcnSettingsStruct;
-        codePath=projectSettingsStruct.Import.Paths.(hostVarName).CodePath;
+        if exist(projectSettingsMATPath,'file')==2
+            projectSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+            projectSettingsStruct=projectSettingsStruct.NonFcnSettingsStruct;
+            codePath=projectSettingsStruct.Import.Paths.(hostVarName).CodePath;
+        else
+            codePath='';
+        end
+
     else
         codePath='';
-    end
+    end    
 
 else
     codePath='';
@@ -37,6 +43,7 @@ end
 if ~ismember(projectName,projectNames) || (ismember(projectName,projectNames) && exist(codePath,'dir')~=7)
     % Turn off visibility for everything except new project & code path components
     tabNames=fieldnames(handles);
+    tabNames=tabNames(~ismember(tabNames,'Tabs'));
     for tabNum=1:length(tabNames) % Iterate through every tab
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
@@ -47,10 +54,12 @@ if ~ismember(projectName,projectNames) || (ismember(projectName,projectNames) &&
             end
         end
     end
+    handles.Import.codePathField.Value='Path to Project Processing Code Folder';
     return;
 else
     % Turn all component visibility on.
     tabNames=fieldnames(handles);
+    tabNames=tabNames(~ismember(tabNames,'Tabs'));
     for tabNum=1:length(tabNames) % Iterate through every tab
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
@@ -92,7 +101,6 @@ mostRecentProjectName=projectName;
 save(getappdata(fig,'settingsMATPath'),'mostRecentProjectName','-append');
 
 % 6. Tell the user that the project has successfully switched
-setappdata(fig,'projectName',projectName);
 drawnow;
 a=toc;
 disp(['Success! Switched to project ' projectName ' in ' num2str(a) ' seconds']);

@@ -557,6 +557,7 @@ if exist(settingsMATPath,'file')~=2 % Turn off visibility on everything except n
     disp(['Create a new project to begin!']);
     disp(['Be careful in naming your project, as this cannot be changed later!']);
     tabNames=fieldnames(handles);
+    tabNames=tabNames(~ismember(tabNames,'Tabs'));
     for tabNum=1:length(tabNames) % Iterate through every tab
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
@@ -577,12 +578,13 @@ load(settingsMATPath,'mostRecentProjectName'); % Load the name of the most recen
 
 % The most recent project's settings is NOT guaranteed to exist (if the user exited immediately after creating the project without entering the Code Path)
 projectNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
-projectNames=projectNames(~ismember(projectNames,{'mostRecentProjectName','currTab'})); % Remove the most recent project name from the list of variables in the settings MAT file
+projectNames=projectNames(~ismember(projectNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
 if ~ismember(mostRecentProjectName,projectNames)
     disp(['Project-specific settings file path could not be found in project-independent settings MAT file (project variable missing)']);
     disp(['To resolve, either enter the Code Path for this project, or check the settings MAT files']);
     % Turn off visibility for everything except new project & code path components
     tabNames=fieldnames(handles);
+    tabNames=tabNames(~ismember(tabNames,'Tabs'));
     for tabNum=1:length(tabNames) % Iterate through every tab
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
@@ -609,6 +611,7 @@ if ~isfield(projectSettingsStruct,hostVarName) % If this is the first time runni
     disp(['Project-specific settings file path for this computer could not be found in project-independent settings MAT file (computer hostname missing in project variable)']);
     % Turn off visibility for everything except new project & code path components
     tabNames=fieldnames(handles);
+    tabNames=tabNames(~ismember(tabNames,'Tabs'));
     for tabNum=1:length(tabNames) % Iterate through every tab
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)
@@ -629,6 +632,7 @@ if exist(projectSettingsMATPath,'file')~=2
     disp(['The path to the project-specific settings file is not valid. Enter a new one, or check the project-independent settings MAT file located at: ' settingsMATPath]);
     % Turn off visibility for everything except new project & code path components
     tabNames=fieldnames(handles);
+    tabNames=tabNames(~ismember(tabNames,'Tabs'));
     for tabNum=1:length(tabNames) % Iterate through every tab
         compNames=fieldnames(handles.(tabNames{tabNum}));
         for compNum=1:length(compNames)

@@ -24,6 +24,7 @@ end
 
 % Turn off visibility for everything except new project & code path components
 tabNames=fieldnames(handles);
+tabNames=tabNames(~ismember(tabNames,'Tabs'));
 for tabNum=1:length(tabNames) % Iterate through every tab
     compNames=fieldnames(handles.(tabNames{tabNum}));
     for compNum=1:length(compNames)
@@ -54,6 +55,7 @@ end
 % 3. Add visibility of the code path edit field (if not already visible)
 handles.Import.codePathButton.Visible=1;
 handles.Import.codePathField.Visible=1;
+handles.Import.codePathField.Value='Path to Project Processing Code Folder';
 
 disp('Next, select or enter the full path to the folder where all of the code for this project will be stored.');
 

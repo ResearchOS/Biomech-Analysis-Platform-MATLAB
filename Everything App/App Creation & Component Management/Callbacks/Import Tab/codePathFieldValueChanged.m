@@ -25,9 +25,10 @@ elseif ismac==1 % On Mac
 end
 
 if ~isequal(codePath(end),slash)
-    codePath=[codePath slash];
-    handles.Import.codePathField.Value=codePath;
+    codePath=[codePath slash];    
 end
+
+handles.Import.codePathField.Value=codePath;
 
 if ~isempty(getappdata(fig,'codePath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
@@ -84,6 +85,7 @@ addpath(genpath(getappdata(fig,'codePath'))); % Add the new code path to the mat
 
 % Turn all component visibility on.
 tabNames=fieldnames(handles);
+tabNames=tabNames(~ismember(tabNames,'Tabs'));
 for tabNum=1:length(tabNames) % Iterate through every tab
     compNames=fieldnames(handles.(tabNames{tabNum}));
     for compNum=1:length(compNames)

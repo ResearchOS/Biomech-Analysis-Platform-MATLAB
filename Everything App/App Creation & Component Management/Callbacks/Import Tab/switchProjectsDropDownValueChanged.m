@@ -7,12 +7,10 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=handles.Import.switchProjectsDropDown.Value;
 
-% 2. Load the project-specific settings MAT file.
+% 1. Load the project-specific settings MAT file (if it exists)
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 projectNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
 projectNames=projectNames(~ismember(projectNames,'mostRecentProjectName')); % Remove the most recent project name from the list of variables in the settings MAT file
-
-% codePath=handles.Import.codePathField.Value;
 
 if ismember(projectName,projectNames)
     settingsStruct=load(settingsMATPath,projectName);
@@ -24,8 +22,8 @@ if ismember(projectName,projectNames)
     projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
 
     if exist(projectSettingsMATPath,'file')==2
-        projectSettingsStruct=load(projectSettingsMATPath,projectName);
-        projectSettingsStruct=projectSettingsStruct.(projectName);
+        projectSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+        projectSettingsStruct=projectSettingsStruct.NonFcnSettingsStruct;
         codePath=projectSettingsStruct.Import.Paths.(hostVarName).CodePath;
     else
         codePath='';
@@ -35,7 +33,7 @@ else
     codePath='';
 end
 
-% 1. Check if the project already exists. If not, need to make all the components invisible.
+% 2. Check if the project already exists. If not, need to make all the components invisible.
 if ~ismember(projectName,projectNames) || (ismember(projectName,projectNames) && exist(codePath,'dir')~=7)
     % Turn off visibility for everything except new project & code path components
     tabNames=fieldnames(handles);
@@ -85,8 +83,15 @@ else
 end
 
 % 4. Change the GUI fields related to functions & arguments
+% Import tab: If no data types have been entered yet, then regardless of whether there are functions in the processing folder, make invisible the
+% buttons on the left side of the screen besides "D+"
+    % If there is at least one data type, ensure that all of the buttons are visible.
 
-% 5. Tell the user that the project has successfully switched
+% 5. Set the most recent project to the current project name.
+mostRecentProjectName=projectName;
+save(getappdata(fig,'settingsMATPath'),'mostRecentProjectName','-append');
+
+% 6. Tell the user that the project has successfully switched
 setappdata(fig,'projectName',projectName);
 drawnow;
 a=toc;

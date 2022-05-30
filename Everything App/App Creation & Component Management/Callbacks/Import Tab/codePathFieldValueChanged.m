@@ -43,29 +43,30 @@ projectSettingsMATPath=[codePath 'Settings_' projectName '.mat']; % The project-
 
 % 1. Load the project settings structure MAT file, if it exists.
 if exist(projectSettingsMATPath,'file')==2
-    projectSettingsStruct=load(projectSettingsMATPath,projectName);
-    projectSettingsStruct=projectSettingsStruct.(projectName);
+    NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+    NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 end
 
 % 3. If the project settings structure MAT file does not exist, initialize the project-specific settings with default values for all GUI components.
 if exist(projectSettingsMATPath,'file')~=2
     % Just missing the data type-specific trial ID column header, and of course the UI trees and description text areas
-    projectSettingsStruct.Import.Paths.(hostVarName).DataPath='Data Path (contains ''Subject Data'' folder)';
-    projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPath='Logsheet Path (ends in .xlsx)';
-    projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPathMAT='';
-    projectSettingsStruct.Import.NumHeaderRows=-1;
-    projectSettingsStruct.Import.SubjectIDColHeader='Subject ID Column Header';
-    projectSettingsStruct.Import.TargetTrialIDColHeader='Target Trial ID Column Header';
-    projectSettingsStruct.Plot.RootSavePath='Root Save Path';
+    NonFcnSettingsStruct.Import.Paths.(hostVarName).DataPath='Data Path (contains ''Subject Data'' folder)';
+    NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPath='Logsheet Path (ends in .xlsx)';
+    NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPathMAT='';
+    NonFcnSettingsStruct.Import.NumHeaderRows=-1;
+    NonFcnSettingsStruct.Import.SubjectIDColHeader='Subject ID Column Header';
+    NonFcnSettingsStruct.Import.TargetTrialIDColHeader='Target Trial ID Column Header';
+    NonFcnSettingsStruct.Plot.RootSavePath='Root Save Path';
+    NonFcnSettingsStruct.ProjectName=projectName;
 end
 
-projectSettingsStruct.Import.Paths.(hostVarName).CodePath=codePath;
+NonFcnSettingsStruct.Import.Paths.(hostVarName).CodePath=codePath;
 
-eval([projectName '=projectSettingsStruct;']); % Rename the projectSettingsStruct to the projectName
+% eval([projectName '=NonFcnSettingsStruct;']); % Rename the NonFcnSettingsStruct to the projectName
 if exist(projectSettingsMATPath,'file')==2
-    save(projectSettingsMATPath,projectName,'-append');
+    save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 else
-    save(projectSettingsMATPath,projectName,'-mat','-v6');
+    save(projectSettingsMATPath,'NonFcnSettingsStruct','-mat','-v6');
 end
 
 % Add the projectSettingsMATPath to the project-independent settings MAT path

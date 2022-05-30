@@ -12,7 +12,7 @@ if isempty(headerName)
     return;
 end
 
-% Save the data path to the project-specific settings
+% Save the subject ID column header to the project-specific settings
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
@@ -22,11 +22,9 @@ hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from t
 
 projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
 
-projectSettingsStruct=load(projectSettingsMATPath);
-projectSettingsStruct=projectSettingsStruct.(projectName);
+NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
-projectSettingsStruct.Import.SubjectIDColHeader=headerName;
+NonFcnSettingsStruct.Import.SubjectIDColHeader=headerName;
 
-eval([projectName '=projectSettingsStruct;']); % Rename the projectSettingsStruct to the projectName
-
-save(projectSettingsMATPath,projectName,'-append');
+save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');

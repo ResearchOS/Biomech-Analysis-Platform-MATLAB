@@ -7,6 +7,8 @@ tic;
 % WRITTEN BY: MITCHELL TILLMAN, 11/06/2021
 % IN HONOR AND LOVING MEMORY OF MY FATHER DOUGLAS ERIC TILLMAN, 10/29/1961-07/05/2021
 
+version='3.0'; % Current version of the pgui package.
+
 % Assumes that the app is being run from within the 'Everything App' folder and that the rest of the files & folders within it are untouched.
 pguiPath=mfilename('fullpath'); % The path where the pgui function is stored.
 addpath(genpath(fileparts(pguiPath))); % Add all subfolders to the path so that app creation & management is unencumbered.
@@ -35,6 +37,7 @@ setappdata(fig,'projectSettingsMATPath',''); % The project-specific settings MAT
 setappdata(fig,'codePath',''); % The current project's code path on the Import tab.
 setappdata(fig,'logsheetPath',''); % The current project's logsheet path on the Import tab.
 setappdata(fig,'dataPath',''); % The current project's data path on the Import tab.
+setappdata(fig,'fcnSettings',''); % The function-related settings for the whole GUI.
 
 % setappdata(fig,'numHeaderRows',0); % The current project's number of header rows in the logsheet on the Import tab.
 % setappdata(fig,'rootSavePlotPath',''); % The current project's root save plot path on the Plot tab.
@@ -643,15 +646,22 @@ end
 hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
 
 % 7. Set the code path edit field value
-projectSettingsStruct=load(projectSettingsMATPath);
-projectSettingsStruct=projectSettingsStruct.(mostRecentProjectName);
+projectSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-function related variables
+projectSettingsStruct=projectSettingsStruct.NonFcnSettingsStruct;
 handles.Import.codePathField.Value=projectSettingsStruct.Import.Paths.(hostVarName).CodePath;
 
-% 7. Whether the project name was found in the file or not, run the callback to set up the app properly.
+assert(isequal(projectSettingsStruct.ProjectName,mostRecentProjectName)); % Ensure that the proper project's settings are being loaded.
+
+% 8. Whether the project name was found in the file or not, run the callback to set up the app properly.
 switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
 load(settingsMATPath,'currTab');
 hTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
 handles.Tabs.tabGroup1.SelectedTab=hTab;
+
+% 9. Write the current pgui version number to the project-independent settings.
+save(settingsMATPath,'version','-append');
+
+% 10. Finish pgui creation
 drawnow;
 a=toc;
 disp(['pgui startup time is ' num2str(a) ' seconds']);

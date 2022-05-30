@@ -50,11 +50,11 @@ hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from t
 
 projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
 
-projectSettingsStruct=load(projectSettingsMATPath);
-projectSettingsStruct=projectSettingsStruct.(projectName);
+NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
-projectSettingsStruct.Import.Paths.(hostVarName).DataPath=dataPath;
+NonFcnSettingsStruct.Import.Paths.(hostVarName).DataPath=dataPath;
 
-eval([projectName '=projectSettingsStruct;']); % Rename the projectSettingsStruct to the projectName
+% eval([projectName '=NonFcnSettingsStruct;']); % Rename the NonFcnSettingsStruct to the projectName
 
-save(projectSettingsMATPath,projectName,'-append');
+save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');

@@ -17,7 +17,7 @@ if num<0
     return;
 end
 
-% Save the data path to the project-specific settings
+% Save the number of header rows to the project-specific settings
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
@@ -27,11 +27,9 @@ hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from t
 
 projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
 
-projectSettingsStruct=load(projectSettingsMATPath);
-projectSettingsStruct=projectSettingsStruct.(projectName);
+NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
-projectSettingsStruct.Import.NumHeaderRows=num;
+NonFcnSettingsStruct.Import.NumHeaderRows=num;
 
-eval([projectName '=projectSettingsStruct;']); % Rename the projectSettingsStruct to the projectName
-
-save(projectSettingsMATPath,projectName,'-append');
+save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');

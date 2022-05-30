@@ -34,12 +34,14 @@ settingsStruct=settingsStruct.(projectName);
 [~,hostname]=system('hostname'); % Get the name of the current computer
 hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
 
-projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
+projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath; % Isolate the path to the project settings MAT file.
 
-projectSettingsStruct=load(projectSettingsMATPath);
-projectSettingsStruct=projectSettingsStruct.(projectName);
+NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettings;
 
-projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPath=logsheetPath;
+NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPath=logsheetPath; % Store the computer-specific logsheet path to the struct
+
+% Convert the logsheet to .mat file format.
 [logsheetFolder,name,ext]=fileparts(logsheetPath);
 logsheetPathMAT=[logsheetFolder name '.mat'];
 
@@ -47,10 +49,29 @@ if contains(ext,'xls')
     [~,~,logsheetVar]=xlsread(logsheetPath,1);
 end
 
-save(logsheetPathMAT,'logsheetVar');
+% If numHeaderRows>=0 and subject ID codename column header and target trial ID column headers are found in the first row of the logsheet, 
+% then ensure that every entry in the column is a valid MATLAB variable name before saving to .mat file format.
+subjIDColHeader=handles.Import.subjIDColHeaderField.Value;
+targetTrialIDColHeader=handles.Import.targetTrialIDColHeaderField.Value;
+numHeaderRows=handles.Import.numHeaderRowsField.Value;
 
-projectSettingsStruct.Import.Paths.(hostVarName).LogsheetPathMAT=logsheetPathMAT;
+if all(ismember({subjIDColHeader,targetTrialIDColHeader},logsheetVar(1,:))) && numHeaderRows>=0 % All logsheet-related fields have been properly filled out, except data type-specific ones (because they're used for read only)
+    subjCodenames=logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),subjIDColHeader));
+    targetTrialIDs=logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),targetTrialIDColHeader));
+    for i=1:length(subjCodenames)
+        if ~isvarname(subjCodenames{i}) && ~isempty(subjCodenames{i})
+            subjCodenames{i}=genvarname(subjCodenames{i});            
+        end
+        if ~isvarname(targetTrialIDs{i}) && ~isempty(targetTrialIDs{i})
+            targetTrialIDs{i}=genvarname(targetTrialIDs{i});
+        end
+    end
+    logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),subjIDColHeader))=subjCodenames;
+    logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),targetTrialIDColHeader))=targetTrialIDs;
+end
 
-eval([projectName '=projectSettingsStruct;']); % Rename the projectSettingsStruct to the projectName
+save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the logsheet.
 
-save(projectSettingsMATPath,projectName,'-append');
+NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPathMAT=logsheetPathMAT;
+
+save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.

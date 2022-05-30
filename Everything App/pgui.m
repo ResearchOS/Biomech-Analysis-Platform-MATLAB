@@ -577,8 +577,8 @@ end
 load(settingsMATPath,'mostRecentProjectName'); % Load the name of the most recently worked on project.
 
 % The most recent project's settings is NOT guaranteed to exist (if the user exited immediately after creating the project without entering the Code Path)
-projectNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
-projectNames=projectNames(~ismember(projectNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
+varNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
+projectNames=varNames(~ismember(varNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
 if ~ismember(mostRecentProjectName,projectNames)
     disp(['Project-specific settings file path could not be found in project-independent settings MAT file (project variable missing)']);
     disp(['To resolve, either enter the Code Path for this project, or check the settings MAT files']);
@@ -658,7 +658,11 @@ assert(isequal(projectSettingsStruct.ProjectName,mostRecentProjectName)); % Ensu
 
 % 8. Whether the project name was found in the file or not, run the callback to set up the app properly.
 switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
-load(settingsMATPath,'currTab');
+if ~ismember('currTab',varNames)
+    currTab='Import';
+else
+    load(settingsMATPath,'currTab');
+end
 hTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
 handles.Tabs.tabGroup1.SelectedTab=hTab;
 

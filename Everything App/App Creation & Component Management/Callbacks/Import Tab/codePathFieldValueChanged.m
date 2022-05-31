@@ -61,15 +61,37 @@ if exist(projectSettingsMATPath,'file')~=2
     NonFcnSettingsStruct.ProjectName=projectName;
 
     % Function-specific settings struct
+    % Cell arrays contain all names of that type, whether being used/displayed or not (helpful for listing all functions/args at the bottom of the UI tree)
+    
+    % Import
+    FcnSettingsStruct.Import.DataTypes={''};
+%     FcnSettingsStruct.Import.FcnNames={''};
+%     FcnSettingsStruct.Import.Arguments={''};
+    FcnSettingsStruct.Import.FcnUITree.All={''};
+    FcnSettingsStruct.Import.ArgsUITree.All={''};
+
+    % Process
+    FcnSettingsStruct.Process.Groups={''};
+%     FcnSettingsStruct.Process.FcnNames={''};
+%     FcnSettingsStruct.Process.Arguments={''};
+    FcnSettingsStruct.Process.FcnUITree.All={''};
+    FcnSettingsStruct.Process.ArgsUITree.All={''};
+
+    % Plot
+    FcnSettingsStruct.Plot.PlotTypes={''};
+%     FcnSettingsStruct.Plot.FcnNames={''};
+%     FcnSettingsStruct.Plot.Arguments={''};
+    FcnSettingsStruct.Plot.FcnUITree.All={''};
+    FcnSettingsStruct.Plot.ArgsUITree.All={''};
 end
 
 NonFcnSettingsStruct.Import.Paths.(hostVarName).CodePath=codePath;
 
 % eval([projectName '=NonFcnSettingsStruct;']); % Rename the NonFcnSettingsStruct to the projectName
 if exist(projectSettingsMATPath,'file')==2
-    save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+    save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % FcnSettingsStruct not changed here, so it's not loaded here.
 else
-    save(projectSettingsMATPath,'NonFcnSettingsStruct','-mat','-v6');
+    save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-mat','-v6');
 end
 
 % Add the projectSettingsMATPath to the project-independent settings MAT path

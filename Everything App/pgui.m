@@ -37,19 +37,8 @@ setappdata(fig,'projectSettingsMATPath',''); % The project-specific settings MAT
 setappdata(fig,'codePath',''); % The current project's code path on the Import tab.
 setappdata(fig,'logsheetPath',''); % The current project's logsheet path on the Import tab.
 setappdata(fig,'dataPath',''); % The current project's data path on the Import tab.
-setappdata(fig,'fcnSettings',''); % The function-related settings for the whole GUI.
-
-% setappdata(fig,'numHeaderRows',0); % The current project's number of header rows in the logsheet on the Import tab.
-% setappdata(fig,'rootSavePlotPath',''); % The current project's root save plot path on the Plot tab.
-
-% setappdata(fig,'functionNames',''); % functionNames always begins empty.
-% setappdata(fig,'fcnNamesFilePath',''); % Function names file path always begins empty
-% setappdata(fig,'processRunArrowCount',0); % The Process > Run tab arrow count always begins at 0.
-% setappdata(fig,'dataPanelArrowCount',0); % The Import tab data select panel arrow count always begins at 0.
-% setappdata(fig,'subjectNames',''); % subjectNames always begins empty.
-% setappdata(fig,'subjectCodenameColumnNum',0); % The column number in the logsheet for the subject codenames
-
-% setappdata(fig,'trialNameColumnNum',0); % The column number in the logsheet for the trial names to be stored in the struct.
+setappdata(fig,'NonFcnSettingsStruct',''); % The non-function related settings for the current project
+setappdata(fig,'FcnSettingsStruct',''); % The function related settings for the current project
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
@@ -121,7 +110,7 @@ handles.Import.targetTrialIDColHeaderLabel=uilabel(importTab,'Text','Target Tria
 handles.Import.targetTrialIDColHeaderField=uieditfield(importTab,'text','Value','Target Trial ID Column Header','Tag','TargetTrialIDColHeaderField','Tooltip','Logsheet Column Header for projectStruct Trial Names','ValueChangedFcn',@(targetTrialIDFormatField,event) targetTrialIDFormatFieldValueChanged(targetTrialIDFormatField));
 
 % 21. Create new import function
-handles.Import.newImportFcnButton=uibutton(importTab,'push','Text','F+','Tag','OpenImportFcnButton','Tooltip','Create new import function','ButtonPushedFcn',@(openImportFcnButton,event) openImportFcnButtonPushed(openImportFcnButton));
+handles.Import.newImportFcnButton=uibutton(importTab,'push','Text','F+','Tag','OpenImportFcnButton','Tooltip','Create new import function','ButtonPushedFcn',@(newImportFcnButton,event) addImportFcnButtonPushed(newImportFcnButton));
 
 % 22. Archive import function
 handles.Import.archiveImportFcnButton=uibutton(importTab,'push','Text','F-','Tag','ArchiveImportFcnButton','Tooltip','Archive selected import function','ButtonPushedFcn',@(archiveImportFcnButton,event) archiveImportFcnButtonPushed(archiveImportFcnButton));
@@ -658,6 +647,7 @@ assert(isequal(projectSettingsStruct.ProjectName,mostRecentProjectName)); % Ensu
 
 % 8. Whether the project name was found in the file or not, run the callback to set up the app properly.
 switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
+
 if ~ismember('currTab',varNames)
     currTab='Import';
 else

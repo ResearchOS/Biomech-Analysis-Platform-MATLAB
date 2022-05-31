@@ -54,8 +54,8 @@ TrialIDColHeaderDataTypeLabelRelPos=[0.5 0.85];
 TrialIDColHeaderDataTypeFieldRelPos=[0.76 0.85];
 TargetTrialIDColHeaderLabelRelPos=[0.5 0.8];
 TargetTrialIDColHeaderFieldRelPos=[0.76 0.8];
-ArchiveImportFcnButtonRelPos=[0.01 0.45];
-NewImportFcnButtonRelPos=[0.01 0.5];
+ArchiveImportFcnButtonRelPos=[0.01 0.55];
+NewImportFcnButtonRelPos=[0.01 0.6];
 OpenLogsheetButtonRelPos=[0.37 0.8];
 OpenDataPathButtonRelPos=[0.37 0.85];
 OpenCodePathButtonRelPos=[0.37 0.9];
@@ -72,14 +72,16 @@ UnarchiveImportFcnButtonRelPos=[0.01 0.55];
 ArgumentDescriptionTextAreaLabelRelPos=[0.55 0.4];
 ArgumentDescriptionTextAreaRelPos=[0.55 0.1];
 UnarchiveProjectButtonRelPos=[0.43 0.9];
-AddArgumentButtonRelPos=[0.01 0.35];
-ArchiveArgumentButtonRelPos=[0.01 0.3];
+AddArgumentButtonRelPos=[0.01 0.3];
+ArchiveArgumentButtonRelPos=[0.01 0.25];
 UnarchiveArgumentButtonRelPos=[0.01 0.35];
-AddDataTypeButtonRelPos=[0.01 0.65];
-ArchiveDataTypeButtonRelPos=[0.01 0.6];
-AddInputArgumentButtonRelPos=[0.01 0.2];
-AddOutputArgumentButtonRelPos=[0.01 0.15];
-RemoveArgumentButtonRelPos=[0.01 0.1];
+AddDataTypeButtonRelPos=[0.01 0.75];
+ArchiveDataTypeButtonRelPos=[0.01 0.7];
+AddInputArgumentButtonRelPos=[0.01 0.15];
+AddOutputArgumentButtonRelPos=[0.01 0.1];
+RemoveArgumentButtonRelPos=[0.01 0.05];
+FunctionToDataTypeButtonRelPos=[0.01 0.45];
+FunctionFromDataTypeButtonRelPos=[0.01 0.4];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -130,6 +132,8 @@ ArchiveDataTypeButtonSize=[0.06 compHeight];
 AddInputArgumentButtonSize=[0.06 compHeight];
 AddOutputArgumentButtonSize=[0.06 compHeight];
 RemoveArgumentButtonSize=[0.06 compHeight];
+FunctionToDataTypeButtonSize=[0.06 compHeight];
+FunctionFromDataTypeButtonSize=[0.06 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 ProjectNameLabelPos=round([ProjectNameLabelRelPos.*figSize ProjectNameLabelSize(1)*figSize(1) ProjectNameLabelSize(2)]);
@@ -178,6 +182,8 @@ ArchiveDataTypeButtonPos=round([ArchiveDataTypeButtonRelPos.*figSize ArchiveData
 AddInputArgumentButtonPos=round([AddInputArgumentButtonRelPos.*figSize AddInputArgumentButtonSize(1)*figSize(1) AddInputArgumentButtonSize(2)]);
 AddOutputArgumentButtonPos=round([AddOutputArgumentButtonRelPos.*figSize AddOutputArgumentButtonSize(1)*figSize(1) AddOutputArgumentButtonSize(2)]);
 RemoveArgumentButtonPos=round([RemoveArgumentButtonRelPos.*figSize RemoveArgumentButtonSize(1)*figSize(1) RemoveArgumentButtonSize(2)]);
+FunctionToDataTypeButtonPos=round([FunctionToDataTypeButtonRelPos.*figSize FunctionToDataTypeButtonSize(1)*figSize(1) FunctionToDataTypeButtonSize(2)]);
+FunctionFromDataTypeButtonPos=round([FunctionFromDataTypeButtonRelPos.*figSize FunctionFromDataTypeButtonSize(1)*figSize(1) FunctionFromDataTypeButtonSize(2)]);
 
 data.ProjectNameLabel.Position=ProjectNameLabelPos;
 data.LogsheetPathButton.Position=LogsheetPathButtonPos;
@@ -225,6 +231,8 @@ data.ArchiveDataTypeButton.Position=ArchiveDataTypeButtonPos;
 data.AddInputArgumentButton.Position=AddInputArgumentButtonPos;
 data.AddOutputArgumentButton.Position=AddOutputArgumentButtonPos;
 data.RemoveArgumentButton.Position=RemoveArgumentButtonPos;
+data.FunctionToDataTypeButton.Position=FunctionToDataTypeButtonPos;
+data.FunctionFromDataTypeButton.Position=FunctionFromDataTypeButtonPos;
 
 data.ProjectNameLabel.FontSize=newFontSize;
 data.LogsheetPathButton.FontSize=newFontSize;
@@ -272,3 +280,5 @@ data.ArchiveDataTypeButton.FontSize=newFontSize;
 data.AddInputArgumentButton.FontSize=newFontSize;
 data.AddOutputArgumentButton.FontSize=newFontSize;
 data.RemoveArgumentButton.FontSize=newFontSize;
+data.FunctionToDataTypeButton.FontSize=newFontSize;
+data.FunctionFromDataTypeButton.FontSize=newFontSize;

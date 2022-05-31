@@ -190,6 +190,12 @@ handles.Import.addOutputArgumentButton=uibutton(importTab,'push','Text','O+','Ta
 % 47. Remove argument (input or output variable) from function button
 handles.Import.removeArgumentButton=uibutton(importTab,'push','Text','IO-','Tag','RemoveArgumentButton','Tooltip','Remove Selected Argument from Selected Function','ButtonPushedFcn',@(removeArgumentButton,event) removeArgumentButtonPushed(removeArgumentButton));
 
+% 48. Add function to data type button
+handles.Import.functionToDataTypeButton=uibutton(importTab,'push','Text','F->D','Tag','FunctionToDataTypeButton','Tooltip','Add Selected Function to a Data Type','ButtonPushedFcn',@(functionToDataTypeButton,event) functionToDataTypeButtonPushed(functionToDataTypeButton));
+
+% 49. Remove function from data type button
+handles.Import.functionFromDataTypeButton=uibutton(importTab,'push','Text','F<-D','Tag','FunctionFromDataTypeButton','Tooltip','Remove Selected Function from Data Type','ButtonPushedFcn',@(functionFromDataTypeButton,event) functionFromDataTypeButtonPushed(functionFromDataTypeButton));
+
 % Comments contain temporarily removed components
 % 'UnarchiveProjectButton',handles.Import.unarchiveProjectButton,'UnarchiveImportFcnButton',handles.Import.unarchiveImportFcnButton,'UnarchiveArgumentButton',handles.Import.unarchiveArgumentButton,
 importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'LogsheetPathButton',handles.Import.logsheetPathButton,'DataPathButton',handles.Import.dataPathButton,'CodePathButton',handles.Import.codePathButton,...
@@ -204,7 +210,8 @@ importTab.UserData=struct('ProjectNameLabel',handles.Import.projectNameLabel,'Lo
     'GroupFunctionDescriptionTextArea',handles.Import.groupFunctionDescriptionTextArea,'ArgumentDescriptionTextAreaLabel',handles.Import.argumentDescriptionTextAreaLabel,...
     'ArgumentDescriptionTextArea',handles.Import.argumentDescriptionTextArea,'AddArgumentButton',handles.Import.addArgumentButton,'ArchiveArgumentButton',handles.Import.archiveArgumentButton,...
     'AddDataTypeButton',handles.Import.addDataTypeButton,'ArchiveDataTypeButton',handles.Import.archiveDataTypeButton,'AddInputArgumentButton',handles.Import.addInputArgumentButton,...
-    'AddOutputArgumentButton',handles.Import.addOutputArgumentButton,'RemoveArgumentButton',handles.Import.removeArgumentButton);
+    'AddOutputArgumentButton',handles.Import.addOutputArgumentButton,'RemoveArgumentButton',handles.Import.removeArgumentButton,'FunctionToDataTypeButton',handles.Import.functionToDataTypeButton,...
+    'FunctionFromDataTypeButton',handles.Import.functionFromDataTypeButton);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 

@@ -127,17 +127,17 @@ for tabNum=1:3 % Import, Process, Plot
 
     allFcns=FcnSettingsStruct.(tabName).FcnUITree.All;
     if ~(length(allFcns)==1 && isempty(allFcns{1}))
-        uitreenode(fcnUITree,'Text','All'); % Initialize the "All" parent node
+        allFcnsNode=uitreenode(fcnUITree,'Text','All'); % Initialize the "All" parent node
         for i=1:length(allFcns) % If there are any functions at all, regardless of having been assigned a group.
-
+            uitreenode(allFcnsNode,'Text',allFcns{i});
         end
     end
 
     allArgs=FcnSettingsStruct.(tabName).ArgsUITree.All;
     if ~(length(allArgs)==1 && isempty(allArgs{1}))
-        uitreenode(argUITree,'Text','All');
+        allArgsNode=uitreenode(argUITree,'Text','All');
         for i=1:length(allArgs) % If there are any arguments at all, regardless of having been assigned a group
-
+            uitreenode(allArgsNode,'Text',allArgs{i});
         end
     end
 end

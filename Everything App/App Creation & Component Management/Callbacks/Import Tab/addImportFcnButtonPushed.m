@@ -36,8 +36,6 @@ end
 fcnUITree=handles.Import.functionsUITree; % Isolate UI Tree object
 
 %% Make function node under 'All'
-% First, make the function node as a parent
-% fcnNode=uitreenode(fcnUITree,'Text',fcnName,'Tag',[fcnName '_C']); % Ending with '_C' to indicate that this is a child node.
 allFcnNode=findobj(fcnUITree.Children,'Tag','All_P');
 if isempty(allFcnNode)
     allFcnNode=uitreenode(fcnUITree,'Text','All','Tag',['All_P']); % Ending with '_P' to indicate that this is a parent node.
@@ -51,6 +49,6 @@ else
     FcnSettingsStruct.Import.FcnUITree.All=[FcnSettingsStruct.Import.FcnUITree.All; {fcnName}];
 end
 
-% Save & store
+%% Save & store
 save(getappdata(fig,'projectSettingsMATPath'),'FcnSettingsStruct','-append');
 setappdata(fig,'FcnSettingsStruct',FcnSettingsStruct);

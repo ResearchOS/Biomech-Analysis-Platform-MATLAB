@@ -38,8 +38,8 @@ end
 
 setappdata(fig,'codePath',codePath);
 
-[~,hostname]=system('hostname'); % Get the name of the current computer
-hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
+[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
+macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
 projectSettingsMATPath=[codePath 'Settings_' projectName '.mat']; % The project-specific settings MAT file in the project's code folder
 
 % 1. Load the project settings structure MAT file, if it exists.
@@ -51,9 +51,9 @@ end
 % 3. If the project settings structure MAT file does not exist, initialize the project-specific settings with default values for all GUI components.
 if exist(projectSettingsMATPath,'file')~=2
     % Just missing the data type-specific trial ID column header, and of course the UI trees and description text areas
-    NonFcnSettingsStruct.Import.Paths.(hostVarName).DataPath='Data Path (contains ''Subject Data'' folder)';
-    NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPath='Logsheet Path (ends in .xlsx)';
-    NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPathMAT='';
+    NonFcnSettingsStruct.Import.Paths.(macAddress).DataPath='Data Path (contains ''Subject Data'' folder)';
+    NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath='Logsheet Path (ends in .xlsx)';
+    NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT='';
     NonFcnSettingsStruct.Import.NumHeaderRows=-1;
     NonFcnSettingsStruct.Import.SubjectIDColHeader='Subject ID Column Header';
     NonFcnSettingsStruct.Import.TargetTrialIDColHeader='Target Trial ID Column Header';
@@ -85,11 +85,16 @@ if exist(projectSettingsMATPath,'file')~=2
     FcnSettingsStruct.Plot.ArgsUITree.All={''};
 end
 
-NonFcnSettingsStruct.Import.Paths.(hostVarName).CodePath=codePath;
+NonFcnSettingsStruct.Import.Paths.(macAddress).CodePath=codePath;
 
 % eval([projectName '=NonFcnSettingsStruct;']); % Rename the NonFcnSettingsStruct to the projectName
-if exist(projectSettingsMATPath,'file')==2
-    save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % FcnSettingsStruct not changed here, so it's not loaded here.
+if exist(projectSettingsMATPath,'file')==2    
+    varNames=who('-file',projectSettingsMATPath);
+    if ~ismember('FcnSettingsStruct',varNames)
+        save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-append');
+    else
+        save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % FcnSettingsStruct not changed here, so it's not loaded here.
+    end
 else
     save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-mat','-v6');
 end
@@ -99,7 +104,7 @@ settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
 
-settingsStruct.(hostVarName).projectSettingsMATPath=projectSettingsMATPath; % Store the project's settings MAT file path to the project-independent settings structure.
+settingsStruct.(macAddress).projectSettingsMATPath=projectSettingsMATPath; % Store the project's settings MAT file path to the project-independent settings structure.
 
 eval([projectName '=settingsStruct;']); % Rename the settingsStruct to the projectName
 

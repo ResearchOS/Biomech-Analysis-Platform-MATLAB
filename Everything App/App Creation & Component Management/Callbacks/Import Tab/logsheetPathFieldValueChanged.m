@@ -31,15 +31,15 @@ settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
 
-[~,hostname]=system('hostname'); % Get the name of the current computer
-hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
+[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
+macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
 
-projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath; % Isolate the path to the project settings MAT file.
+projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Isolate the path to the project settings MAT file.
 
 NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
 NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
-NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPath=logsheetPath; % Store the computer-specific logsheet path to the struct
+NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath=logsheetPath; % Store the computer-specific logsheet path to the struct
 
 % Convert the logsheet to .mat file format.
 [logsheetFolder,name,ext]=fileparts(logsheetPath);
@@ -72,6 +72,6 @@ end
 
 save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the logsheet.
 
-NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPathMAT=logsheetPathMAT;
+NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT=logsheetPathMAT;
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.

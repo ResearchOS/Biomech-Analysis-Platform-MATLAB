@@ -35,9 +35,9 @@ for tabNum=1:length(tabNames) % Iterate through every tab
 end
 
 % Create a struct for the new project (to be located in the project-independent settings folder)
-[~,hostname]=system('hostname'); % Get the name of the current computer
-hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
-settingsStruct.(hostVarName).projectSettingsMATPath=''; % Temporary variable just to create an empty structure for the project with one empty field for the current computer's hostname.
+[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
+macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
+settingsStruct.(macAddress).projectSettingsMATPath=''; % Temporary variable just to create an empty structure for the project with one empty field for the current computer's hostname.
 eval([projectName '=settingsStruct;']); % Name the variable according to the current project name. One variable per project in the MAT file. 
 
 % 2. Set the most recent project name and the current project name. Store in GUI and save to file.

@@ -17,16 +17,16 @@ if ismember(projectName,projectNames)
     settingsStruct=load(settingsMATPath,projectName);
     settingsStruct=settingsStruct.(projectName);
 
-    [~,hostname]=system('hostname'); % Get the name of the current computer
-    hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
+    [~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
+    macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
 
-    if isfield(settingsStruct,hostVarName)
-        projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
+    if isfield(settingsStruct,macAddress)
+        projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
 
         if exist(projectSettingsMATPath,'file')==2
             NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
             NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
-            codePath=NonFcnSettingsStruct.Import.Paths.(hostVarName).CodePath;
+            codePath=NonFcnSettingsStruct.Import.Paths.(macAddress).CodePath;
         else
             codePath='';
         end
@@ -72,8 +72,8 @@ end
 
 % 3. Change the GUI fields unrelated to functions & arguments
 handles.Import.codePathField.Value=codePath;
-handles.Import.dataPathField.Value=NonFcnSettingsStruct.Import.Paths.(hostVarName).DataPath;
-handles.Import.logsheetPathField.Value=NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPath;
+handles.Import.dataPathField.Value=NonFcnSettingsStruct.Import.Paths.(macAddress).DataPath;
+handles.Import.logsheetPathField.Value=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
 handles.Import.numHeaderRowsField.Value=NonFcnSettingsStruct.Import.NumHeaderRows;
 handles.Import.subjIDColHeaderField.Value=NonFcnSettingsStruct.Import.SubjectIDColHeader;
 handles.Import.targetTrialIDColHeaderField.Value=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;

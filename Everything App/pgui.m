@@ -601,9 +601,9 @@ projectSettingsStruct=load(settingsMATPath,mostRecentProjectName); % Load the pa
 projectSettingsStruct=projectSettingsStruct.(mostRecentProjectName);
 
 % 6. In the settingsMATPath (project-independent settings) extract the path to project-specific settings MAT file.
-[~,hostname]=system('hostname'); % Get the name of the current computer
-hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
-if ~isfield(projectSettingsStruct,hostVarName) % If this is the first time running this project on this computer, there won't be a hostname associated with this project.
+[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the MAC address of the current computer
+macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
+if ~isfield(projectSettingsStruct,macAddress) % If this is the first time running this project on this computer, there won't be a hostname associated with this project.
     disp(['Project-specific settings file path for this computer could not be found in project-independent settings MAT file (computer hostname missing in project variable)']);
     % Turn off visibility for everything except new project & code path components
     tabNames=fieldnames(handles);
@@ -620,7 +620,7 @@ if ~isfield(projectSettingsStruct,hostVarName) % If this is the first time runni
     end
     return;
 end
-projectSettingsMATPath=projectSettingsStruct.(hostVarName).projectSettingsMATPath; % Extracts the path of the specific project on the current computer.
+projectSettingsMATPath=projectSettingsStruct.(macAddress).projectSettingsMATPath; % Extracts the path of the specific project on the current computer.
 
 setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
 
@@ -642,13 +642,10 @@ if exist(projectSettingsMATPath,'file')~=2
     return;
 end
 
-[~,hostname]=system('hostname'); % Get the name of the current computer
-hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
-
 % 7. Set the code path edit field value
 projectSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-function related variables
 projectSettingsStruct=projectSettingsStruct.NonFcnSettingsStruct;
-handles.Import.codePathField.Value=projectSettingsStruct.Import.Paths.(hostVarName).CodePath;
+handles.Import.codePathField.Value=projectSettingsStruct.Import.Paths.(macAddress).CodePath;
 
 assert(isequal(projectSettingsStruct.ProjectName,mostRecentProjectName)); % Ensure that the proper project's settings are being loaded.
 

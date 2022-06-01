@@ -22,10 +22,10 @@ settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
 
-[~,hostname]=system('hostname'); % Get the name of the current computer
-hostVarName=genvarname(hostname); % Generate a valid MATLAB variable name from the computer host name.
+[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
+macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
 
-projectSettingsMATPath=settingsStruct.(hostVarName).projectSettingsMATPath;
+projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
 
 NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
 NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
@@ -35,8 +35,8 @@ NonFcnSettingsStruct.Import.NumHeaderRows=numHeaderRows;
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
 %% Check if the logsheet can/should be modified, if all metadata has been specified.
-logsheetPath=NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPath;
-logsheetPathMAT=NonFcnSettingsStruct.Import.Paths.(hostVarName).LogsheetPathMAT;
+logsheetPath=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
+logsheetPathMAT=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT;
 if exist(logsheetPath,'file')~=2
     return;
 end

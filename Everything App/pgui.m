@@ -30,7 +30,9 @@ figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax:
 
 %% Initialize app data
 setappdata(fig,'everythingPath',[fileparts(mfilename('fullpath')) slash]); % Path to the 'Everything App' folder.
+warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
 rmpath(genpath([getappdata(fig,'everythingPath') slash 'm File Library'])); % Ensure that the function library files are not on the path, because I don't want to run those files, I want to copy them to my local project.
+warning on MATLAB:rmpath:DirNotFound; % Turn the warning back on.
 setappdata(fig,'projectName',''); % The current project name in the dropdown on the Import tab.
 setappdata(fig,'settingsMATPath',''); % The project-independent settings MAT file full path.
 setappdata(fig,'projectSettingsMATPath',''); % The project-specific settings MAT file full path.
@@ -39,6 +41,7 @@ setappdata(fig,'logsheetPath',''); % The current project's logsheet path on the 
 setappdata(fig,'dataPath',''); % The current project's data path on the Import tab.
 setappdata(fig,'NonFcnSettingsStruct',''); % The non-function related settings for the current project
 setappdata(fig,'FcnSettingsStruct',''); % The function related settings for the current project
+setappdata(fig,'allowAllTabs',0); % Initialize that only the Projects tab can be selected.
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
@@ -50,6 +53,14 @@ plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off','
 statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off'); % Create the stats tab
 settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
 handles.Tabs.tabGroup1=tabGroup1;
+
+% Store handles to individual tabs.
+handles.Projects.Tab=projectsTab;
+handles.Import.Tab=importTab;
+handles.Process.Tab=processTab;
+handles.Plot.Tab=plotTab;
+handles.Stats.Tab=statsTab;
+handles.Settings.Tab=settingsTab;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the projects tab.
@@ -539,6 +550,10 @@ plotTab.UserData=struct('AddFunctionButton',handles.Plot.addFunctionButton,'Temp
 setappdata(fig,'handles',handles);
 assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected
 
+% 0. Turn off visibility to everything on the Projects tab except for the
+% add project button, the drop down, and the label.
+resetProjectAccess_Visibility(fig,0);
+
 % 1. Get the location where the pgui file is currently stored.
 [pguiFolderPath,~]=fileparts(pguiPath);
 
@@ -549,26 +564,12 @@ if exist(settingsFolderPath,'dir')~=7
     mkdir(settingsFolderPath);
 end
 
-settingsMATPath=[settingsFolderPath slash 'projectIndependentSettings.mat'];
+settingsMATPath=[settingsFolderPath slash 'projectIndependentSettings.mat']; % Get the path to the project-independent settings file.
 setappdata(fig,'settingsMATPath',settingsMATPath); % Store the project-independent settings MAT file path to the GUI.
 
 % 3. If the project-independent settings MAT File does not exist, make all components on all tabs invisible except for the add project
 % button, project dropdown list, and Project Name label on the Import tab.
-if exist(settingsMATPath,'file')~=2 % Turn off visibility on everything except new project components
-    beep;
-    disp(['Settings file not found at: ' settingsMATPath]);
-    disp(['Create a new project to begin!']);
-    disp(['Be careful in naming your project, as this cannot be changed later!']);
-    tabNames=fieldnames(handles);
-    tabNames=tabNames(~ismember(tabNames,'Tabs'));
-    for tabNum=1:length(tabNames) % Iterate through every tab
-        compNames=fieldnames(handles.(tabNames{tabNum}));
-        for compNum=1:length(compNames)
-            if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown'}))
-                handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
-            end
-        end
-    end
+if exist(settingsMATPath,'file')~=2    
     % Play the fun audio file.
     [y, Fs]=audioread([pguiFolderPath slash 'App Creation & Component Management' slash 'Fun Audio File' slash 'Lets get ready to rumble Sound Effect.mp3']);
     sound(y,Fs);
@@ -577,100 +578,96 @@ end
 
 % 4. Here, the project-independent settings MAT file exists, so read it.
 % mostRecentProjectName is guaranteed to exist.
+varNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
+if ~ismember(varNames,'mostRecentProjectName')    
+    return;
+end
+
 load(settingsMATPath,'mostRecentProjectName'); % Load the name of the most recently worked on project.
 
 % The most recent project's settings is NOT guaranteed to exist (if the user exited immediately after creating the project without entering the Code Path)
-varNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
 projectNames=varNames(~ismember(varNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
-if ~ismember(mostRecentProjectName,projectNames)
+if ~ismember(mostRecentProjectName,projectNames)    
     disp(['Project-specific settings file path could not be found in project-independent settings MAT file (project variable missing)']);
     disp(['To resolve, either enter the Code Path for this project, or check the settings MAT files']);
-    % Turn off visibility for everything except new project & code path components
-    tabNames=fieldnames(handles);
-    tabNames=tabNames(~ismember(tabNames,'Tabs'));
-    for tabNum=1:length(tabNames) % Iterate through every tab
-        compNames=fieldnames(handles.(tabNames{tabNum}));
-        for compNum=1:length(compNames)
-            if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown','CodePathButton','CodePathField'}))
-                handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
-            end
-        end
-    end
     return;
 end
 
 % 5. Set the projects drop down list
-handles.Import.switchProjectsDropDown.Items=projectNames;
-handles.Import.switchProjectsDropDown.Value=mostRecentProjectName;
+handles.Projects.switchProjectsDropDown.Items=projectNames;
+handles.Projects.switchProjectsDropDown.Value=mostRecentProjectName;
 setappdata(fig,'projectName',mostRecentProjectName);
 
 projectSettingsStruct=load(settingsMATPath,mostRecentProjectName); % Load the path to the project-specific settings. Still need to extract computer-specific paths.
 projectSettingsStruct=projectSettingsStruct.(mostRecentProjectName);
 
+% assert(isequal(projectSettingsStruct.ProjectName,mostRecentProjectName)); % Ensure that the proper project's settings are being loaded.
+
 % 6. In the settingsMATPath (project-independent settings) extract the path to project-specific settings MAT file.
-[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the MAC address of the current computer
-macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
-if ~isfield(projectSettingsStruct,macAddress) % If this is the first time running this project on this computer, there won't be a hostname associated with this project.
+macAddress=getComputerID();
+if ~isfield(projectSettingsStruct,macAddress) % If this is the first time running this project on this computer, there won't be a hostname associated with this project.    
     disp(['Project-specific settings file path for this computer could not be found in project-independent settings MAT file (computer hostname missing in project variable)']);
-    % Turn off visibility for everything except new project & code path components
-    tabNames=fieldnames(handles);
-    tabNames=tabNames(~ismember(tabNames,'Tabs'));
-    for tabNum=1:length(tabNames) % Iterate through every tab
-        compNames=fieldnames(handles.(tabNames{tabNum}));
-        for compNum=1:length(compNames)
-            if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown','CodePathButton','CodePathField'}))
-                if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
-                    handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
-                end
-            end
-        end
-    end
     return;
 end
+
 projectSettingsMATPath=projectSettingsStruct.(macAddress).projectSettingsMATPath; % Extracts the path of the specific project on the current computer.
 
 setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
 
-if exist(projectSettingsMATPath,'file')~=2
-    disp(['The path to the project-specific settings file is not valid. Enter a new one, or check the project-independent settings MAT file located at: ' settingsMATPath]);
-    % Turn off visibility for everything except new project & code path components
-    tabNames=fieldnames(handles);
-    tabNames=tabNames(~ismember(tabNames,'Tabs'));
-    for tabNum=1:length(tabNames) % Iterate through every tab
-        compNames=fieldnames(handles.(tabNames{tabNum}));
-        for compNum=1:length(compNames)
-            if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown','CodePathButton','CodePathField'}))
-                if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
-                    handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
-                end
-            end
-        end
-    end
+if exist(projectSettingsMATPath,'file')~=2    
+    resetProjectAccess_Visibility(fig,1); % Make code path components visible
+    disp(['The path to the project-specific settings file is not valid. To fix, you can:']);
+    disp(['(1) Enter a new code folder path,']);
+    disp(['(2) Ensure that the project settings MAT file exists in the current code folder,']);
+    disp(['(3) Check the accuracy of the project-independent settings MAT file located at: ' settingsMATPath]);
     return;
 end
 
-% 7. Set the code path edit field value
 projectSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-function related variables
 projectSettingsStruct=projectSettingsStruct.NonFcnSettingsStruct;
-handles.Import.codePathField.Value=projectSettingsStruct.Import.Paths.(macAddress).CodePath;
 
-assert(isequal(projectSettingsStruct.ProjectName,mostRecentProjectName)); % Ensure that the proper project's settings are being loaded.
+% 7. Set the code path edit field value
+handles.Projects.codePathField.Value=projectSettingsStruct.Projects.Paths.(macAddress).CodePath;
 
-% 8. Whether the project name was found in the file or not, run the callback to set up the app properly.
+if exist(handles.Projects.codePathField.Value,'dir')~=7
+    resetProjectAccess_Visibility(fig,1); % Make code path components visible
+    return;
+end
+
+% 8. Set the data path edit field value.
+handles.Projects.dataPathField.Value=projectSettingsStruct.Projects.Paths.(macAddress).DataPath;
+
+if exist(handles.Projects.dataPathField.Value,'dir')~=7        
+    resetProjectAccess_Visibility(fig,2); % Make data path components visible
+    return;
+end
+
+resetProjectAccess_Visibility(fig,3); % Make all components visible
+
+% 9. Whether the project name was found in the file or not, run the callback to set up the app properly.
 switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
 
 if ~ismember('currTab',varNames)
-    currTab='Import';
+    currTab='Projects';
 else
     load(settingsMATPath,'currTab');
 end
 hTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
 handles.Tabs.tabGroup1.SelectedTab=hTab;
 
-% 9. Write the current pgui version number to the project-independent settings.
+% 10. Write the current pgui version number to the project-independent settings.
 save(settingsMATPath,'version','-append');
 
-% 10. Finish pgui creation
+% 11. Finish pgui creation
 drawnow;
 a=toc;
 disp(['pgui startup time is ' num2str(a) ' seconds']);
+
+setappdata(fig,'allowAllTabs',1); % Indicates that project setup took place properly, and all tabs can be used.
+
+% If everything is properly set up, turn on visibility to all components on
+% Projects tab.
+compNames=fieldnames(handles.Projects); % Get all component names
+for compNum=1:length(compNames)    
+    handles.Projects.(compNames{compNum}).Visible=1;
+end

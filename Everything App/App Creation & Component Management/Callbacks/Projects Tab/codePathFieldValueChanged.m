@@ -6,7 +6,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-codePath=handles.Import.codePathField.Value;
+codePath=handles.Projects.codePathField.Value;
 
 if isempty(codePath) || isequal(codePath,'Path to Project Processing Code Folder')
     setappdata(fig,'codePath','');
@@ -28,7 +28,7 @@ if ~isequal(codePath(end),slash)
     codePath=[codePath slash];    
 end
 
-handles.Import.codePathField.Value=codePath;
+handles.Projects.codePathField.Value=codePath;
 
 if ~isempty(getappdata(fig,'codePath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
@@ -38,8 +38,7 @@ end
 
 setappdata(fig,'codePath',codePath);
 
-[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
-macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
+macAddress=getComputerID();
 projectSettingsMATPath=[codePath 'Settings_' projectName '.mat']; % The project-specific settings MAT file in the project's code folder
 
 % 1. Load the project settings structure MAT file, if it exists.
@@ -51,7 +50,7 @@ end
 % 3. If the project settings structure MAT file does not exist, initialize the project-specific settings with default values for all GUI components.
 if exist(projectSettingsMATPath,'file')~=2
     % Just missing the data type-specific trial ID column header, and of course the UI trees and description text areas
-    NonFcnSettingsStruct.Import.Paths.(macAddress).DataPath='Data Path (contains ''Subject Data'' folder)';
+    NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath='Data Path (contains ''Subject Data'' folder)';
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath='Logsheet Path (ends in .xlsx)';
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT='';
     NonFcnSettingsStruct.Import.NumHeaderRows=-1;
@@ -64,7 +63,7 @@ if exist(projectSettingsMATPath,'file')~=2
     % Cell arrays contain all names of that type, whether being used/displayed or not (helpful for listing all functions/args at the bottom of the UI tree)
     
     % Import
-    FcnSettingsStruct.Import.DataTypes={''};
+%     FcnSettingsStruct.Import.DataTypes={''};
 %     FcnSettingsStruct.Import.FcnNames={''};
 %     FcnSettingsStruct.Import.Arguments={''};
     FcnSettingsStruct.Import.FcnUITree.All={''};
@@ -85,7 +84,7 @@ if exist(projectSettingsMATPath,'file')~=2
     FcnSettingsStruct.Plot.ArgsUITree.All={''};
 end
 
-NonFcnSettingsStruct.Import.Paths.(macAddress).CodePath=codePath;
+NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath=codePath;
 
 % eval([projectName '=NonFcnSettingsStruct;']); % Rename the NonFcnSettingsStruct to the projectName
 if exist(projectSettingsMATPath,'file')==2    
@@ -112,16 +111,11 @@ save(settingsMATPath,projectName,'-append'); % Save the project-independent sett
 
 addpath(genpath(getappdata(fig,'codePath'))); % Add the new code path to the matlab path
 
-% Turn all component visibility on.
-tabNames=fieldnames(handles);
-tabNames=tabNames(~ismember(tabNames,'Tabs'));
-for tabNum=1:length(tabNames) % Iterate through every tab
-    compNames=fieldnames(handles.(tabNames{tabNum}));
-    for compNum=1:length(compNames)
-        if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
-            handles.(tabNames{tabNum}).(compNames{compNum}).Visible=1;
-        end
-    end
+% Turn data path components visibility on, if not already visible.
+if handles.Projects.DataPathField.Visible==0
+    resetProjectAccess_Visibility(fig,2);
+else
+    resetProjectAccess_Visibility(fig,3);
 end
 
 % Propagate changes to the rest of the GUI.

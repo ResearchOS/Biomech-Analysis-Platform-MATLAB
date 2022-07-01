@@ -5,7 +5,7 @@ function []=openCodePathButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-path=handles.Import.codePathField.Value;
+path=handles.Projects.codePathField.Value;
 
 if isempty(path) || exist(path,'dir')~=7
     beep;

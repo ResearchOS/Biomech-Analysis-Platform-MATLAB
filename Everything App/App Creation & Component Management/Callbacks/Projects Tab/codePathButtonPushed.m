@@ -26,7 +26,7 @@ if ~isequal(codePath(end),slash)
 end
 
 % 3. Update the value of the code path edit field
-handles.Import.codePathField.Value=codePath;
+handles.Projects.codePathField.Value=codePath;
 
 % 4. Run the codePathEditFieldValueChanged callback
 codePathFieldValueChanged(fig);

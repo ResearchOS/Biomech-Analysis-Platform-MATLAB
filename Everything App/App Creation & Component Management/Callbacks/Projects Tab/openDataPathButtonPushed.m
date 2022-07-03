@@ -5,7 +5,7 @@ function []=openDataPathButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-path=handles.Import.dataPathField.Value;
+path=handles.Projects.dataPathField.Value;
 
 if isempty(path) || exist(path,'dir')~=7
     beep;
@@ -18,16 +18,18 @@ if ispc==1
     return;
 end
 
-spaceSplit=strsplit(path,' ');
+% spaceSplit=strsplit(path,' ');
+% 
+% newPath='';
+% for i=1:length(spaceSplit)
+%     if i>1        
+%         mid='\ ';
+%     else
+%         mid='';
+%     end
+%     newPath=[newPath mid spaceSplit{i}];
+% end
 
-newPath='';
-for i=1:length(spaceSplit)
-    if i>1        
-        mid='\ ';
-    else
-        mid='';
-    end
-    newPath=[newPath mid spaceSplit{i}];
-end
+newPath=['''' path ''''];
 
-system(['open ' path]);
+system(['open ' newPath]);

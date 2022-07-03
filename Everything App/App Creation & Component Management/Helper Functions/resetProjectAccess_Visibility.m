@@ -12,8 +12,10 @@ handles=getappdata(fig,'handles');
 %% Hide the non-essential components
 compNames=fieldnames(handles.Projects); % Get all component names
 
+okTags={'OpenPISettingsPathButton'};
+
 if visible>=0 % Nothing except for new project components visible
-    okTags={'ProjectNameLabel','SwitchProjectsDropDown','AddProjectButton'};
+    okTags=[okTags, {'ProjectNameLabel','SwitchProjectsDropDown','AddProjectButton'}];
 end
 
 if visible>=1 % New project components & code path components visible

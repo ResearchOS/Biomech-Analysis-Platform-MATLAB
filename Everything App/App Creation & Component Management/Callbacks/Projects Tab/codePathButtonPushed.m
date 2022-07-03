@@ -4,7 +4,7 @@ function []=codePathButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
-projectName=getappdata(fig,'projectName');
+% projectName=getappdata(fig,'projectName');
 
 % 1. Prompt for the path.
 codePath=getappdata(fig,'codePath');

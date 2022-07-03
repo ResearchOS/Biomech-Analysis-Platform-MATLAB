@@ -45,6 +45,7 @@ ArchiveProjectButtonRelPos=[0.43 0.95];
 OpenDataPathButtonRelPos=[0.37 0.85];
 OpenCodePathButtonRelPos=[0.37 0.9];
 UnarchiveProjectButtonRelPos=[0.43 0.9];
+OpenPISettingsPathButtonRelPos=[0.7 0.95];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -60,6 +61,7 @@ ArchiveProjectButtonSize=[0.06 compHeight];
 OpenDataPathButtonSize=[0.05 compHeight];
 OpenCodePathButtonSize=[0.05 compHeight];
 UnarchiveProjectButtonSize=[0.06 compHeight];
+OpenPISettingsPathButtonSize=[0.15 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 ProjectNameLabelPos=round([ProjectNameLabelRelPos.*figSize ProjectNameLabelSize(1)*figSize(1) ProjectNameLabelSize(2)]);
@@ -73,6 +75,7 @@ OpenCodePathButtonPos=round([OpenCodePathButtonRelPos.*figSize OpenCodePathButto
 ArchiveProjectButtonPos=round([ArchiveProjectButtonRelPos.*figSize ArchiveProjectButtonSize(1)*figSize(1) ArchiveProjectButtonSize(2)]);
 UnarchiveProjectButtonPos=round([UnarchiveProjectButtonRelPos.*figSize UnarchiveProjectButtonSize(1)*figSize(1) UnarchiveProjectButtonSize(2)]);
 SwitchProjectsDropDownPos=round([SwitchProjectsDropDownRelPos.*figSize SwitchProjectsDropDownSize(1)*figSize(1) SwitchProjectsDropDownSize(2)]);
+OpenPISettingsPathButtonPos=round([OpenPISettingsPathButtonRelPos.*figSize OpenPISettingsPathButtonSize(1)*figSize(1) OpenPISettingsPathButtonSize(2)]);
 
 data.ProjectNameLabel.Position=ProjectNameLabelPos;
 data.DataPathButton.Position=DataPathButtonPos;
@@ -85,6 +88,7 @@ data.OpenCodePathButton.Position=OpenCodePathButtonPos;
 data.ArchiveProjectButton.Position=ArchiveProjectButtonPos;
 data.UnarchiveProjectButton.Position=UnarchiveProjectButtonPos;
 data.SwitchProjectsDropDown.Position=SwitchProjectsDropDownPos;
+data.OpenPISettingsPathButton.Position=OpenPISettingsPathButtonPos;
 
 data.ProjectNameLabel.FontSize=newFontSize;
 data.DataPathButton.FontSize=newFontSize;
@@ -97,3 +101,4 @@ data.OpenDataPathButton.FontSize=newFontSize;
 data.OpenCodePathButton.FontSize=newFontSize;
 data.ArchiveProjectButton.FontSize=newFontSize;
 data.UnarchiveProjectButton.FontSize=newFontSize;
+data.OpenPISettingsPathButton.FontSize=newFontSize;

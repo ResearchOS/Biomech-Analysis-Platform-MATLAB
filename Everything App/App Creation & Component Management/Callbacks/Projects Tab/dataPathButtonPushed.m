@@ -5,7 +5,7 @@ function []=dataPathButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
-projectName=getappdata(fig,'projectName');
+% projectName=getappdata(fig,'projectName');
 
 % 1. Prompt for the path
 dataPath=getappdata(fig,'dataPath');
@@ -27,7 +27,7 @@ if ~isequal(dataPath(end),slash)
 end
 
 % 3. Update the value of the data path edit field
-handles.Import.dataPathField.Value=dataPath;
+handles.Projects.dataPathField.Value=dataPath;
 
 % 4. Run the dataPathEditFieldValueChanged callback
 dataPathFieldValueChanged(fig);

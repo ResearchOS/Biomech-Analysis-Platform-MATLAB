@@ -7,7 +7,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-dataPath=handles.Import.dataPathField.Value;
+dataPath=handles.Projects.dataPathField.Value;
 
 if isempty(dataPath) || isequal(dataPath,'Data Path (contains ''Subject Data'' folder)')
     setappdata(fig,'dataPath','');
@@ -15,7 +15,8 @@ if isempty(dataPath) || isequal(dataPath,'Data Path (contains ''Subject Data'' f
 end
 
 if exist(dataPath,'dir')~=7
-    warning(['Incorrect data folder path: ' dataPath]);
+    warning(['Selected data folder path does not exist: ' dataPath]);
+    resetProjectAccess_Visibility(fig,2);
     return;
 end
 
@@ -26,9 +27,10 @@ elseif ismac==1 % On Mac
 end
 
 if ~isequal(dataPath(end),slash)
-    dataPath=[dataPath slash];
-    handles.Import.dataPathField.Value=dataPath;
+    dataPath=[dataPath slash];    
 end
+
+handles.Projects.dataPathField.Value=dataPath;
 
 if ~isempty(getappdata(fig,'dataPath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
@@ -38,23 +40,26 @@ end
 
 setappdata(fig,'dataPath',dataPath); % Store the data path name to the figure variable.
 
-addpath(genpath(getappdata(fig,'dataPath')));
+macAddress=getComputerID();
+projectSettingsMATPath=[getappdata(fig,'codePath') 'Settings_' projectName '.mat'];
 
-% Save the data path to the project-specific settings
-settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
-settingsStruct=load(settingsMATPath,projectName);
-settingsStruct=settingsStruct.(projectName);
-
-[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
-macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
-
-projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
+% 1. Load the project settings structure MAT file. It should always exist
+% by this point!
+if exist(projectSettingsMATPath,'file')~=2
+    beep;
+    disp(['Missing the settings MAT file for project: ' projectName]);
+    disp(['Should be located at: ' projectSettingsMATPath]);
+    resetProjectAccess_Visibility(fig,1);
+    return;
+end
 
 NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
 NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
-NonFcnSettingsStruct.Import.Paths.(macAddress).DataPath=dataPath;
+NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath=dataPath;
 
-% eval([projectName '=NonFcnSettingsStruct;']); % Rename the NonFcnSettingsStruct to the projectName
+addpath(genpath(getappdata(fig,'dataPath')));
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+
+resetProjectAccess_Visibility(fig,3);

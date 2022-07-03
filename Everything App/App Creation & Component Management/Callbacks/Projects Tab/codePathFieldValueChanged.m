@@ -14,7 +14,8 @@ if isempty(codePath) || isequal(codePath,'Path to Project Processing Code Folder
 end
 
 if exist(codePath,'dir')~=7
-    warning(['Selected code path does not exist: ' codePath]);
+    warning(['Selected code folder path does not exist: ' codePath]);
+    resetProjectAccess_Visibility(fig,1);
     return;
 end
 
@@ -112,11 +113,11 @@ save(settingsMATPath,projectName,'-append'); % Save the project-independent sett
 addpath(genpath(getappdata(fig,'codePath'))); % Add the new code path to the matlab path
 
 % Turn data path components visibility on, if not already visible.
-if handles.Projects.DataPathField.Visible==0
+if handles.Projects.dataPathField.Visible==0
     resetProjectAccess_Visibility(fig,2);
-else
+elseif exist(handles.Projects.dataPathField.Value,'file')==2
     resetProjectAccess_Visibility(fig,3);
 end
 
 % Propagate changes to the rest of the GUI.
-switchProjectsDropDownValueChanged(fig);
+% switchProjectsDropDownValueChanged(fig);

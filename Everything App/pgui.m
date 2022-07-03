@@ -94,9 +94,12 @@ handles.Projects.openDataPathButton=uibutton(projectsTab,'push','Text','O','Tag'
 % 10. Open code path button
 handles.Projects.openCodePathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenCodePathButton','Tooltip','Open code folder','ButtonPushedFcn',@(openCodePathButton,event) openCodePathButtonPushed(openCodePathButton));
 
+% 11. Show project-independent settings file
+handles.Projects.openPISettingsPathButton=uibutton(projectsTab,'push','Text','Open P-I Settings','Tag','OpenPISettingsPathButton','Tooltip','Open project-independent settings folder','ButtonPushedFcn',@(openPISettingsPathButton,event) openPISettingsPathButtonPushed(openPISettingsPathButton));
+
 projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectNameLabel,'DataPathButton',handles.Projects.dataPathButton,'CodePathButton',handles.Projects.codePathButton,...
     'AddProjectButton',handles.Projects.addProjectButton,'SwitchProjectsDropDown',handles.Projects.switchProjectsDropDown,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenCodePathButton',handles.Projects.openCodePathButton,...
-    'ArchiveProjectButton',handles.Projects.archiveProjectButton,'DataPathField',handles.Projects.dataPathField,'CodePathField',handles.Projects.codePathField);
+    'ArchiveProjectButton',handles.Projects.archiveProjectButton,'DataPathField',handles.Projects.dataPathField,'CodePathField',handles.Projects.codePathField,'OpenPISettingsPathButton',handles.Projects.openPISettingsPathButton);
 
 @projectsResize;
 
@@ -645,7 +648,7 @@ end
 resetProjectAccess_Visibility(fig,3); % Make all components visible
 
 % 9. Whether the project name was found in the file or not, run the callback to set up the app properly.
-switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
+% switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
 
 if ~ismember('currTab',varNames)
     currTab='Projects';
@@ -665,9 +668,9 @@ disp(['pgui startup time is ' num2str(a) ' seconds']);
 
 setappdata(fig,'allowAllTabs',1); % Indicates that project setup took place properly, and all tabs can be used.
 
-% If everything is properly set up, turn on visibility to all components on
-% Projects tab.
-compNames=fieldnames(handles.Projects); % Get all component names
-for compNum=1:length(compNames)    
-    handles.Projects.(compNames{compNum}).Visible=1;
-end
+% % If everything is properly set up, turn on visibility to all components on
+% % Projects tab.
+% compNames=fieldnames(handles.Projects); % Get all component names
+% for compNum=1:length(compNames)    
+%     handles.Projects.(compNames{compNum}).Visible=1;
+% end

@@ -18,16 +18,18 @@ if ispc==1
     return;
 end
 
-spaceSplit=strsplit(path,' ');
+% spaceSplit=strsplit(path,' ');
+% 
+% newPath='';
+% for i=1:length(spaceSplit)
+%     if i>1        
+%         mid='\ '; % To escape the spaces
+%     else
+%         mid='';
+%     end
+%     newPath=[newPath mid spaceSplit{i}];
+% end
 
-newPath='';
-for i=1:length(spaceSplit)
-    if i>1        
-        mid='\ ';
-    else
-        mid='';
-    end
-    newPath=[newPath mid spaceSplit{i}];
-end
+newPath=['''' path ''''];
 
 system(['open ' newPath]);

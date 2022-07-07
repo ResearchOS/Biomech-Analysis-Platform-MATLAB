@@ -644,6 +644,8 @@ if exist(handles.Projects.codePathField.Value,'dir')~=7
     return;
 end
 
+setappdata(fig,'codePath',handles.Projects.codePathField.Value);
+
 % 8. Set the data path edit field value.
 handles.Projects.dataPathField.Value=projectSettingsStruct.Projects.Paths.(macAddress).DataPath;
 
@@ -653,6 +655,8 @@ if exist(handles.Projects.dataPathField.Value,'dir')~=7
 end
 
 resetProjectAccess_Visibility(fig,3); % Make all components visible
+
+setappdata(fig,'dataPath',handles.Projects.dataPathField.Value);
 
 % 9. Whether the project name was found in the file or not, run the callback to set up the app properly.
 % switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.

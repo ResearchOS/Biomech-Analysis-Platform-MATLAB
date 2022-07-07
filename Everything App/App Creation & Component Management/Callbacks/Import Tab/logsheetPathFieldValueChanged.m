@@ -29,7 +29,14 @@ handles.Import.logsheetPathField.Value=logsheetPath;
 setappdata(fig,'logsheetPath',logsheetPath);
 
 macAddress=getComputerID();
-projectSettingsMATPath=[getappdata(fig,'codePath') 'Settings_' projectName '.mat'];
+% projectSettingsMATPath=[getappdata(fig,'codePath') 'Settings_' projectName '.mat'];
+
+% Save the data path to the project-specific settings
+settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
+settingsStruct=load(settingsMATPath,projectName);
+settingsStruct=settingsStruct.(projectName);
+
+projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Isolate the path to the project settings MAT file.
 
 % 1. Load the project settings structure MAT file. It should always exist
 % by this point!
@@ -39,13 +46,6 @@ if exist(projectSettingsMATPath,'file')~=2
     disp(['Should be located at: ' projectSettingsMATPath]);    
     return;
 end
-
-% Save the data path to the project-specific settings
-settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
-settingsStruct=load(settingsMATPath,projectName);
-settingsStruct=settingsStruct.(projectName);
-
-projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Isolate the path to the project settings MAT file.
 
 NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
 NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;

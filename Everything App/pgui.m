@@ -145,94 +145,101 @@ handles.Import.targetTrialIDColHeaderLabel=uilabel(importTab,'Text','Target Tria
 handles.Import.targetTrialIDColHeaderField=uieditfield(importTab,'text','Value','Target Trial ID Column Header','Tag','TargetTrialIDColHeaderField','Tooltip','Logsheet Column Header for projectStruct Trial Names','ValueChangedFcn',@(targetTrialIDFormatField,event) targetTrialIDFormatFieldValueChanged(targetTrialIDFormatField));
 
 % 14. Create new import function
-handles.Import.newImportFcnButton=uibutton(importTab,'push','Text','F+','Tag','OpenImportFcnButton','Tooltip','Create new import function','ButtonPushedFcn',@(newImportFcnButton,event) addImportFcnButtonPushed(newImportFcnButton));
+% handles.Import.newImportFcnButton=uibutton(importTab,'push','Text','F+','Tag','OpenImportFcnButton','Tooltip','Create new import function','ButtonPushedFcn',@(newImportFcnButton,event) addImportFcnButtonPushed(newImportFcnButton));
 
 % 15. Archive import function
-handles.Import.archiveImportFcnButton=uibutton(importTab,'push','Text','F-','Tag','ArchiveImportFcnButton','Tooltip','Archive selected import function','ButtonPushedFcn',@(archiveImportFcnButton,event) archiveImportFcnButtonPushed(archiveImportFcnButton));
+% handles.Import.archiveImportFcnButton=uibutton(importTab,'push','Text','F-','Tag','ArchiveImportFcnButton','Tooltip','Archive selected import function','ButtonPushedFcn',@(archiveImportFcnButton,event) archiveImportFcnButtonPushed(archiveImportFcnButton));
 
 % 16. Open logsheet button
 handles.Import.openLogsheetButton=uibutton(importTab,'push','Text','O','Tag','OpenLogsheetButton','Tooltip','Open logsheet','ButtonPushedFcn',@(openLogsheetButton,event) openLogsheetButtonPushed(openLogsheetButton));
 
 % 17. All functions UI tree label
-handles.Import.functionsUITreeLabel=uilabel(importTab,'Text','Functions','Tag','FunctionsUITreeLabel','FontWeight','bold');
+% handles.Import.functionsUITreeLabel=uilabel(importTab,'Text','Functions','Tag','FunctionsUITreeLabel','FontWeight','bold');
 
 % 18. All arguments UI tree label
-handles.Import.argumentsUITreeLabel=uilabel(importTab,'Text','Arguments','Tag','ArgumentsUITreeLabel','FontWeight','bold');
+% handles.Import.argumentsUITreeLabel=uilabel(importTab,'Text','Arguments','Tag','ArgumentsUITreeLabel','FontWeight','bold');
 
 % 19. All functions search bar text box
-handles.Import.functionsSearchBarEditField=uieditfield(importTab,'text','Value','','Tooltip','Functions Search By Name','Tag','FunctionsSearchBarEditField','ValueChangedFcn',@(functionsSearchBarEditField,event) functionsSearchBarEditFieldValueChanged(functionsSearchBarEditField));
+% handles.Import.functionsSearchBarEditField=uieditfield(importTab,'text','Value','','Tooltip','Functions Search By Name','Tag','FunctionsSearchBarEditField','ValueChangedFcn',@(functionsSearchBarEditField,event) functionsSearchBarEditFieldValueChanged(functionsSearchBarEditField));
 
 % 20. All arguments search bar text box
-handles.Import.argumentsSearchBarEditField=uieditfield(importTab,'text','Value','','Tooltip','Arguments Search By Name','Tag','ArgumentsSearchBarEditField','ValueChangedFcn',@(argumentsSearchBarEditField,event) argumentsSearchBarEditFieldValueChanged(argumentsSearchBarEditField));
+% handles.Import.argumentsSearchBarEditField=uieditfield(importTab,'text','Value','','Tooltip','Arguments Search By Name','Tag','ArgumentsSearchBarEditField','ValueChangedFcn',@(argumentsSearchBarEditField,event) argumentsSearchBarEditFieldValueChanged(argumentsSearchBarEditField));
 
 % 21. All functions UI tree
-handles.Import.functionsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
+% handles.Import.functionsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
 
 % 22. All arguments UI tree
-handles.Import.argumentsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(argumentsUITree,event) argumentsUITreeSelectionChanged(argumentsUITree),'CheckedNodesChangedFcn',@(argumentsUITree,event) argumentsUITreeCheckedNodesChanged(argumentsUITree),'Tag','ArgumentsUITree');
+% handles.Import.argumentsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(argumentsUITree,event) argumentsUITreeSelectionChanged(argumentsUITree),'CheckedNodesChangedFcn',@(argumentsUITree,event) argumentsUITreeCheckedNodesChanged(argumentsUITree),'Tag','ArgumentsUITree');
 
 % 23. Group/function description text area (dynamic?) label
-handles.Import.groupFunctionDescriptionTextAreaLabel=uilabel(importTab,'Text','Function Description','Tag','GroupFunctionDescriptionTextAreaLabel','FontWeight','bold');
+% handles.Import.groupFunctionDescriptionTextAreaLabel=uilabel(importTab,'Text','Function Description','Tag','GroupFunctionDescriptionTextAreaLabel','FontWeight','bold');
 
 % 24. Group/function description text area
-handles.Import.groupFunctionDescriptionTextArea=uitextarea(importTab,'Value','Enter Description Here','Tag','GroupFunctionDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(groupFunctionDescriptionTextArea,event) groupFunctionDescriptionTextAreaValueChanged(groupFunctionDescriptionTextArea));
+% handles.Import.groupFunctionDescriptionTextArea=uitextarea(importTab,'Value','Enter Description Here','Tag','GroupFunctionDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(groupFunctionDescriptionTextArea,event) groupFunctionDescriptionTextAreaValueChanged(groupFunctionDescriptionTextArea));
 
 % 25. Un-archive import function button
 % handles.Import.unarchiveImportFcnButton=uibutton(importTab,'push','Text','F--','Tag','UnarchiveImportFcnButton','Tooltip','Unarchive selected import function','ButtonPushedFcn',@(unarchiveImportFcnButton,event) unarchiveImportFcnButtonPushed(unarchiveImportFcnButton));
 
 % 26. Argument description text area label
-handles.Import.argumentDescriptionTextAreaLabel=uilabel(importTab,'Text','Argument Description','Tag','ArgumentDescriptionTextAreaLabel','FontWeight','bold');
+% handles.Import.argumentDescriptionTextAreaLabel=uilabel(importTab,'Text','Argument Description','Tag','ArgumentDescriptionTextAreaLabel','FontWeight','bold');
 
 % 27. Argument description text area
-handles.Import.argumentDescriptionTextArea=uitextarea(importTab,'Value','Enter Description Here','Tag','ArgumentDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argumentDescriptionTextArea,event) argumentDescriptionTextAreaValueChanged(argumentDescriptionTextArea));
+% handles.Import.argumentDescriptionTextArea=uitextarea(importTab,'Value','Enter Description Here','Tag','ArgumentDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argumentDescriptionTextArea,event) argumentDescriptionTextAreaValueChanged(argumentDescriptionTextArea));
 
 % 28. Un-archive project button
 % handles.Import.unarchiveProjectButton=uibutton(importTab,'push','Text','P--','Tag','UnarchiveProjectButton','Tooltip','Unarchive Current Project','ButtonPushedFcn',@(unarchiveProjectButton,event) unarchiveProjectButtonPushed(unarchiveProjectButton));
 
 % 29. Add argument button
-handles.Import.addArgumentButton=uibutton(importTab,'push','Text','A+','Tag','AddArgumentButton','Tooltip','Add New Argument','ButtonPushedFcn',@(addArgumentButton,event) addArgumentButtonPushed(addArgumentButton));
+% handles.Import.addArgumentButton=uibutton(importTab,'push','Text','A+','Tag','AddArgumentButton','Tooltip','Add New Argument','ButtonPushedFcn',@(addArgumentButton,event) addArgumentButtonPushed(addArgumentButton));
 
 % 30. Archive argument button
-handles.Import.archiveArgumentButton=uibutton(importTab,'push','Text','A-','Tag','ArchiveArgumentButton','Tooltip','Archive Selected Argument','ButtonPushedFcn',@(archiveArgumentButton,event) archiveArgumentButtonPushed(archiveArgumentButton));
+% handles.Import.archiveArgumentButton=uibutton(importTab,'push','Text','A-','Tag','ArchiveArgumentButton','Tooltip','Archive Selected Argument','ButtonPushedFcn',@(archiveArgumentButton,event) archiveArgumentButtonPushed(archiveArgumentButton));
 
 % 31. Un-archive argument button
 % handles.Import.unarchiveArgumentButton=uibutton(importTab,'push','Text','A--','Tag','UnarchiveArgumentButton','Tooltip','Unarchive Selected Argument','ButtonPushedFcn',@(unarchiveArgumentButton,event) unarchiveArgumentButtonPushed(unarchiveArgumentButton));
 
 % 32. Add new data type (group) button
-handles.Import.addDataTypeButton=uibutton(importTab,'push','Text','D+','Tag','AddDataTypeButton','Tooltip','Add New Data Type (Groups Import Functions)','ButtonPushedFcn',@(addDataTypeButton,event) addDataTypeButtonPushed(addDataTypeButton));
+% handles.Import.addDataTypeButton=uibutton(importTab,'push','Text','D+','Tag','AddDataTypeButton','Tooltip','Add New Data Type (Groups Import Functions)','ButtonPushedFcn',@(addDataTypeButton,event) addDataTypeButtonPushed(addDataTypeButton));
 
 % 33. Archive data type (group) button
-handles.Import.archiveDataTypeButton=uibutton(importTab,'push','Text','D-','Tag','ArchiveDataTypeButton','Tooltip','Archive Data Type','ButtonPushedFcn',@(archiveDataTypeButton,event) archiveDataTypeButtonPushed(archiveDataTypeButton));
+% handles.Import.archiveDataTypeButton=uibutton(importTab,'push','Text','D-','Tag','ArchiveDataTypeButton','Tooltip','Archive Data Type','ButtonPushedFcn',@(archiveDataTypeButton,event) archiveDataTypeButtonPushed(archiveDataTypeButton));
 
 % 34. Add argument to function as input variable button
-handles.Import.addInputArgumentButton=uibutton(importTab,'push','Text','I+','Tag','AddInputArgumentButton','Tooltip','Add Selected Argument as Input to Selected Function','ButtonPushedFcn',@(addInputArgumentButton,event) addInputArgumentButtonPushed(addInputArgumentButton));
+% handles.Import.addInputArgumentButton=uibutton(importTab,'push','Text','I+','Tag','AddInputArgumentButton','Tooltip','Add Selected Argument as Input to Selected Function','ButtonPushedFcn',@(addInputArgumentButton,event) addInputArgumentButtonPushed(addInputArgumentButton));
 
 % 35. Add argument to function as output variable button
-handles.Import.addOutputArgumentButton=uibutton(importTab,'push','Text','O+','Tag','AddOutputArgumentButton','Tooltip','Add Selected Argument as Output to Selected Function','ButtonPushedFcn',@(addOutputArgumentButton,event) addOutputArgumentButtonPushed(addOutputArgumentButton));
+% handles.Import.addOutputArgumentButton=uibutton(importTab,'push','Text','O+','Tag','AddOutputArgumentButton','Tooltip','Add Selected Argument as Output to Selected Function','ButtonPushedFcn',@(addOutputArgumentButton,event) addOutputArgumentButtonPushed(addOutputArgumentButton));
 
 % 36. Remove argument (input or output variable) from function button
-handles.Import.removeArgumentButton=uibutton(importTab,'push','Text','IO-','Tag','RemoveArgumentButton','Tooltip','Remove Selected Argument from Selected Function','ButtonPushedFcn',@(removeArgumentButton,event) removeArgumentButtonPushed(removeArgumentButton));
+% handles.Import.removeArgumentButton=uibutton(importTab,'push','Text','IO-','Tag','RemoveArgumentButton','Tooltip','Remove Selected Argument from Selected Function','ButtonPushedFcn',@(removeArgumentButton,event) removeArgumentButtonPushed(removeArgumentButton));
 
 % 37. Add function to data type button
-handles.Import.functionToDataTypeButton=uibutton(importTab,'push','Text','F->D','Tag','FunctionToDataTypeButton','Tooltip','Add Selected Function to a Data Type','ButtonPushedFcn',@(functionToDataTypeButton,event) functionToDataTypeButtonPushed(functionToDataTypeButton));
+% handles.Import.functionToDataTypeButton=uibutton(importTab,'push','Text','F->D','Tag','FunctionToDataTypeButton','Tooltip','Add Selected Function to a Data Type','ButtonPushedFcn',@(functionToDataTypeButton,event) functionToDataTypeButtonPushed(functionToDataTypeButton));
 
 % 38. Remove function from data type button
-handles.Import.functionFromDataTypeButton=uibutton(importTab,'push','Text','F<-D','Tag','FunctionFromDataTypeButton','Tooltip','Remove Selected Function from Data Type','ButtonPushedFcn',@(functionFromDataTypeButton,event) functionFromDataTypeButtonPushed(functionFromDataTypeButton));
+% handles.Import.functionFromDataTypeButton=uibutton(importTab,'push','Text','F<-D','Tag','FunctionFromDataTypeButton','Tooltip','Remove Selected Function from Data Type','ButtonPushedFcn',@(functionFromDataTypeButton,event) functionFromDataTypeButtonPushed(functionFromDataTypeButton));
 
 % Comments contain temporarily removed components
 % 'UnarchiveProjectButton',handles.Import.unarchiveProjectButton,'UnarchiveImportFcnButton',handles.Import.unarchiveImportFcnButton,'UnarchiveArgumentButton',handles.Import.unarchiveArgumentButton,
+
+% importTab.UserData=struct('LogsheetPathButton',handles.Import.logsheetPathButton,'LogsheetPathField',handles.Import.logsheetPathField,'OpenSpecifyTrialsButton',handles.Import.openSpecifyTrialsButton,...
+%     'RunImportButton',handles.Import.runImportButton,'LogsheetLabel',handles.Import.logsheetLabel,...
+%     'NumHeaderRowsLabel',handles.Import.numHeaderRowsLabel,'NumHeaderRowsField',handles.Import.numHeaderRowsField,'SubjectIDColHeaderLabel',handles.Import.subjIDColHeaderLabel,'SubjectIDColHeaderField',handles.Import.subjIDColHeaderField,...
+%     'TrialIDColHeaderDataTypeLabel',handles.Import.trialIDColHeaderDataTypeLabel,'TrialIDColHeaderDataTypeField',handles.Import.trialIDColHeaderDataTypeField,'TargetTrialIDColHeaderLabel',handles.Import.targetTrialIDColHeaderLabel,...
+%     'TargetTrialIDColHeaderField',handles.Import.targetTrialIDColHeaderField,'ArchiveImportFcnButton',handles.Import.archiveImportFcnButton,'NewImportFcnButton',handles.Import.newImportFcnButton,'OpenLogsheetButton',handles.Import.openLogsheetButton,...
+%     'FunctionsUITreeLabel',handles.Import.functionsUITreeLabel,'ArgumentsUITreeLabel',handles.Import.argumentsUITreeLabel,'FunctionsSearchBarEditField',handles.Import.functionsSearchBarEditField,...
+%     'ArgumentsSearchBarEditField',handles.Import.argumentsSearchBarEditField,'FunctionsUITree',handles.Import.functionsUITree,'ArgumentsUITree',handles.Import.argumentsUITree,'GroupFunctionDescriptionTextAreaLabel',handles.Import.groupFunctionDescriptionTextAreaLabel,...
+%     'GroupFunctionDescriptionTextArea',handles.Import.groupFunctionDescriptionTextArea,'ArgumentDescriptionTextAreaLabel',handles.Import.argumentDescriptionTextAreaLabel,...
+%     'ArgumentDescriptionTextArea',handles.Import.argumentDescriptionTextArea,'AddArgumentButton',handles.Import.addArgumentButton,'ArchiveArgumentButton',handles.Import.archiveArgumentButton,...
+%     'AddDataTypeButton',handles.Import.addDataTypeButton,'ArchiveDataTypeButton',handles.Import.archiveDataTypeButton,'AddInputArgumentButton',handles.Import.addInputArgumentButton,...
+%     'AddOutputArgumentButton',handles.Import.addOutputArgumentButton,'RemoveArgumentButton',handles.Import.removeArgumentButton,'FunctionToDataTypeButton',handles.Import.functionToDataTypeButton,...
+%     'FunctionFromDataTypeButton',handles.Import.functionFromDataTypeButton);
+
 importTab.UserData=struct('LogsheetPathButton',handles.Import.logsheetPathButton,'LogsheetPathField',handles.Import.logsheetPathField,'OpenSpecifyTrialsButton',handles.Import.openSpecifyTrialsButton,...
     'RunImportButton',handles.Import.runImportButton,'LogsheetLabel',handles.Import.logsheetLabel,...
     'NumHeaderRowsLabel',handles.Import.numHeaderRowsLabel,'NumHeaderRowsField',handles.Import.numHeaderRowsField,'SubjectIDColHeaderLabel',handles.Import.subjIDColHeaderLabel,'SubjectIDColHeaderField',handles.Import.subjIDColHeaderField,...
     'TrialIDColHeaderDataTypeLabel',handles.Import.trialIDColHeaderDataTypeLabel,'TrialIDColHeaderDataTypeField',handles.Import.trialIDColHeaderDataTypeField,'TargetTrialIDColHeaderLabel',handles.Import.targetTrialIDColHeaderLabel,...
-    'TargetTrialIDColHeaderField',handles.Import.targetTrialIDColHeaderField,'ArchiveImportFcnButton',handles.Import.archiveImportFcnButton,'NewImportFcnButton',handles.Import.newImportFcnButton,'OpenLogsheetButton',handles.Import.openLogsheetButton,...
-    'FunctionsUITreeLabel',handles.Import.functionsUITreeLabel,'ArgumentsUITreeLabel',handles.Import.argumentsUITreeLabel,'FunctionsSearchBarEditField',handles.Import.functionsSearchBarEditField,...
-    'ArgumentsSearchBarEditField',handles.Import.argumentsSearchBarEditField,'FunctionsUITree',handles.Import.functionsUITree,'ArgumentsUITree',handles.Import.argumentsUITree,'GroupFunctionDescriptionTextAreaLabel',handles.Import.groupFunctionDescriptionTextAreaLabel,...
-    'GroupFunctionDescriptionTextArea',handles.Import.groupFunctionDescriptionTextArea,'ArgumentDescriptionTextAreaLabel',handles.Import.argumentDescriptionTextAreaLabel,...
-    'ArgumentDescriptionTextArea',handles.Import.argumentDescriptionTextArea,'AddArgumentButton',handles.Import.addArgumentButton,'ArchiveArgumentButton',handles.Import.archiveArgumentButton,...
-    'AddDataTypeButton',handles.Import.addDataTypeButton,'ArchiveDataTypeButton',handles.Import.archiveDataTypeButton,'AddInputArgumentButton',handles.Import.addInputArgumentButton,...
-    'AddOutputArgumentButton',handles.Import.addOutputArgumentButton,'RemoveArgumentButton',handles.Import.removeArgumentButton,'FunctionToDataTypeButton',handles.Import.functionToDataTypeButton,...
-    'FunctionFromDataTypeButton',handles.Import.functionFromDataTypeButton);
+    'TargetTrialIDColHeaderField',handles.Import.targetTrialIDColHeaderField,'OpenLogsheetButton',handles.Import.openLogsheetButton);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 

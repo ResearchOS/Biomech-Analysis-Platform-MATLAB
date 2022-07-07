@@ -24,15 +24,26 @@ elseif ismac==1 % On Mac
     slash='/';
 end
 
+handles.Import.logsheetPathField.Value=logsheetPath;
+
 setappdata(fig,'logsheetPath',logsheetPath);
+
+macAddress=getComputerID();
+projectSettingsMATPath=[getappdata(fig,'codePath') 'Settings_' projectName '.mat'];
+
+% 1. Load the project settings structure MAT file. It should always exist
+% by this point!
+if exist(projectSettingsMATPath,'file')~=2
+    beep;
+    disp(['Missing the settings MAT file for project: ' projectName]);
+    disp(['Should be located at: ' projectSettingsMATPath]);    
+    return;
+end
 
 % Save the data path to the project-specific settings
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
-
-[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
-macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
 
 projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Isolate the path to the project settings MAT file.
 
@@ -45,6 +56,7 @@ NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath=logsheetPath; % Stor
 [logsheetFolder,name,ext]=fileparts(logsheetPath);
 logsheetPathMAT=[logsheetFolder slash name '.mat'];
 
+% IN THE FUTURE, DO OTHER EXTENSIONS TOO (CSV, OTHERS?)
 if contains(ext,'xls')
     [~,~,logsheetVar]=xlsread(logsheetPath,1);
 end

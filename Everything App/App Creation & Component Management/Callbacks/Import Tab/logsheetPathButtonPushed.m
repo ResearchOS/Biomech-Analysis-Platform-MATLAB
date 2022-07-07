@@ -4,11 +4,11 @@ function []=logsheetPathButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
-projectName=getappdata(fig,'projectName');
+% projectName=getappdata(fig,'projectName');
 
 % 1. Prompt for the logsheet path
 logsheetPath=getappdata(fig,'logsheetPath');
-codePath=handles.Import.codePathField.Value;
+codePath=handles.Projects.codePathField.Value;
 [file,path]=uigetfile({'*.xlsx';'*.xls'},'Select the logsheet file',codePath);
 if isequal(file,0) && isequal(path,0) % 'Cancel' or 'Close' button was clicked
     figure(fig);

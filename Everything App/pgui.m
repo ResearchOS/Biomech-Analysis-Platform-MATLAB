@@ -27,6 +27,7 @@ defaultPos=get(0,'defaultfigureposition'); % Get the default figure position
 set(fig,'Position',[defaultPos(1:2) defaultPos(3)*2 defaultPos(4)]); % Set the figure to be at that position (redundant, I know, but should be clear)
 figSize=get(fig,'Position'); % Get the figure's position.
 figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax: left offset, bottom offset, width, height (pixels)
+setappdata(fig,'version',version);
 
 %% Initialize app data
 setappdata(fig,'everythingPath',[fileparts(mfilename('fullpath')) slash]); % Path to the 'Everything App' folder.
@@ -42,6 +43,7 @@ setappdata(fig,'dataPath',''); % The current project's data path on the Import t
 setappdata(fig,'NonFcnSettingsStruct',''); % The non-function related settings for the current project
 setappdata(fig,'FcnSettingsStruct',''); % The function related settings for the current project
 setappdata(fig,'allowAllTabs',0); % Initialize that only the Projects tab can be selected.
+setappdata(fig,'rootSavePlotPath',''); % The root folder to save plots to.
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
@@ -118,7 +120,7 @@ handles.Import.openSpecifyTrialsButton=uibutton(importTab,'push','Tooltip','Open
 handles.Import.runImportButton=uibutton(importTab,'push','Tooltip','Run Import','Text','Run Import/Load','Tag','RunImportButton','ButtonPushedFcn',@(runImportButton,event) runImportButtonPushed(runImportButton));
 
 % 5. Logsheet label
-handles.Import.logsheetLabel=uilabel(importTab,'Text','Logsheet:','FontWeight','bold');
+handles.Import.logsheetLabel=uilabel(importTab,'Text','Logsheet:','FontWeight','bold','Tag','LogsheetLabel');
 
 % 6. Number of header rows label
 handles.Import.numHeaderRowsLabel=uilabel(importTab,'Text','# of Header Rows','Tag','NumHeaderRowsLabel','Tooltip','Number of Header Rows in Logsheet');
@@ -133,7 +135,7 @@ handles.Import.subjIDColHeaderLabel=uilabel(importTab,'Text','Subject ID Column 
 handles.Import.subjIDColHeaderField=uieditfield(importTab,'text','Value','Subject ID Column Header','Tooltip','Logsheet Column Header for Subject Codenames','Tag','SubjIDColumnHeaderField','ValueChangedFcn',@(subjIDColHeaderField,event) subjIDColHeaderFieldValueChanged(subjIDColHeaderField));
 
 % 10. Trial ID column header label
-handles.Import.trialIDColHeaderDataTypeLabel=uilabel(importTab,'Text','Data Type: Trial ID Column Header','Tooltip','Logsheet Column Header for Data Type-Specific File Names');
+handles.Import.trialIDColHeaderDataTypeLabel=uilabel(importTab,'Text','Data Type: Trial ID Column Header','Tooltip','Logsheet Column Header for Data Type-Specific File Names','Tag','TrialIDColHeaderDataTypeLabel');
 
 % 11. Trial ID column header text box
 handles.Import.trialIDColHeaderDataTypeField=uieditfield(importTab,'text','Value','Data Type: Trial ID Column Header','Tooltip','Logsheet Column Header for Data Type-Specific File Names','Tag','DataTypeTrialIDColumnHeaderField','ValueChangedFcn',@(trialIDColHeaderField,event) trialIDColHeaderDataTypeFieldValueChanged(trialIDColHeaderField));
@@ -556,8 +558,7 @@ plotTab.UserData=struct('AddFunctionButton',handles.Plot.addFunctionButton,'Temp
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% AFTER COMPONENT INITIALIZATION, READ PROJECT SETTINGS FROM MAT FILE
-% 0. Assign component handles to GUI and send GUI variable to base workspace
-setappdata(fig,'handles',handles);
+setappdata(fig,'handles',handles); % Needed for resetProjectAccess_Visibility
 assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected
 
 % 0. Turn off visibility to everything on the Projects tab except for the
@@ -597,91 +598,19 @@ load(settingsMATPath,'mostRecentProjectName'); % Load the name of the most recen
 
 % The most recent project's settings is NOT guaranteed to exist (if the user exited immediately after creating the project without entering the Code Path)
 projectNames=varNames(~ismember(varNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
-if ~ismember(mostRecentProjectName,projectNames)    
-    disp(['Project-specific settings file path could not be found in project-independent settings MAT file (project variable missing)']);
-    disp(['To resolve, either enter the Code Path for this project, or check the settings MAT files']);
-    return;
-end
 
 % 5. Set the projects drop down list
 handles.Projects.switchProjectsDropDown.Items=projectNames;
 handles.Projects.switchProjectsDropDown.Value=mostRecentProjectName;
-setappdata(fig,'projectName',mostRecentProjectName);
-
-projectSettingsStruct=load(settingsMATPath,mostRecentProjectName); % Load the path to the project-specific settings. Still need to extract computer-specific paths.
-projectSettingsStruct=projectSettingsStruct.(mostRecentProjectName);
-
-% assert(isequal(projectSettingsStruct.ProjectName,mostRecentProjectName)); % Ensure that the proper project's settings are being loaded.
-
-% 6. In the settingsMATPath (project-independent settings) extract the path to project-specific settings MAT file.
-macAddress=getComputerID();
-if ~isfield(projectSettingsStruct,macAddress) % If this is the first time running this project on this computer, there won't be a hostname associated with this project.    
-    disp(['Project-specific settings file path for this computer could not be found in project-independent settings MAT file (computer hostname missing in project variable)']);
-    return;
-end
-
-projectSettingsMATPath=projectSettingsStruct.(macAddress).projectSettingsMATPath; % Extracts the path of the specific project on the current computer.
-
-setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
-
-if exist(projectSettingsMATPath,'file')~=2    
-    resetProjectAccess_Visibility(fig,1); % Make code path components visible
-    disp(['The path to the project-specific settings file is not valid. To fix, you can:']);
-    disp(['(1) Enter a new code folder path,']);
-    disp(['(2) Ensure that the project settings MAT file exists in the current code folder,']);
-    disp(['(3) Check the accuracy of the project-independent settings MAT file located at: ' settingsMATPath]);
-    return;
-end
-
-projectSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-function related variables
-projectSettingsStruct=projectSettingsStruct.NonFcnSettingsStruct;
-
-% 7. Set the code path edit field value
-handles.Projects.codePathField.Value=projectSettingsStruct.Projects.Paths.(macAddress).CodePath;
-
-if exist(handles.Projects.codePathField.Value,'dir')~=7
-    resetProjectAccess_Visibility(fig,1); % Make code path components visible
-    return;
-end
-
-setappdata(fig,'codePath',handles.Projects.codePathField.Value);
-
-% 8. Set the data path edit field value.
-handles.Projects.dataPathField.Value=projectSettingsStruct.Projects.Paths.(macAddress).DataPath;
-
-if exist(handles.Projects.dataPathField.Value,'dir')~=7        
-    resetProjectAccess_Visibility(fig,2); % Make data path components visible
-    return;
-end
-
-resetProjectAccess_Visibility(fig,3); % Make all components visible
-
-setappdata(fig,'dataPath',handles.Projects.dataPathField.Value);
+% setappdata(fig,'projectName',mostRecentProjectName);
 
 % 9. Whether the project name was found in the file or not, run the callback to set up the app properly.
-% switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
-
-if ~ismember('currTab',varNames)
-    currTab='Projects';
-else
-    load(settingsMATPath,'currTab');
-end
-hTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
-handles.Tabs.tabGroup1.SelectedTab=hTab;
-
-% 10. Write the current pgui version number to the project-independent settings.
-save(settingsMATPath,'version','-append');
+switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
 
 % 11. Finish pgui creation
+% 0. Assign component handles to GUI and send GUI variable to base workspace
 drawnow;
 a=toc;
 disp(['pgui startup time is ' num2str(a) ' seconds']);
 
-setappdata(fig,'allowAllTabs',1); % Indicates that project setup took place properly, and all tabs can be used.
-
-% % If everything is properly set up, turn on visibility to all components on
-% % Projects tab.
-% compNames=fieldnames(handles.Projects); % Get all component names
-% for compNum=1:length(compNames)    
-%     handles.Projects.(compNames{compNum}).Visible=1;
-% end
+% setappdata(fig,'allowAllTabs',1); % Indicates that project setup took place properly, and all tabs can be used.

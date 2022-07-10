@@ -10,11 +10,13 @@ logsheetPath=handles.Import.logsheetPathField.Value;
 
 if isempty(logsheetPath) || isequal(logsheetPath,'Logsheet Path (ends in .xlsx)')
     setappdata(fig,'logsheetPath','');
+    resetProjectAccess_Visibility(fig,3);
     return;
 end
 
 if exist(logsheetPath,'file')~=2
     warning(['Incorrect logsheet path: ' logsheetPath]);
+    resetProjectAccess_Visibility(fig,3);
     return;
 end
 
@@ -87,3 +89,5 @@ save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the lo
 NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT=logsheetPathMAT;
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
+
+resetProjectAccess_Visibility(fig,4);

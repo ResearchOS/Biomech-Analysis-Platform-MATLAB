@@ -5,141 +5,112 @@ tic;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
-projectName=handles.Import.switchProjectsDropDown.Value;
+projectName=handles.Projects.switchProjectsDropDown.Value;
 setappdata(fig,'projectName',projectName);
 
 % 1. Load the project-specific settings MAT file (if it exists)
+% Get the path to that file from the project-independent settings MAT file.
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
-projectNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
-projectNames=projectNames(~ismember(projectNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
+varNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
+projectNames=varNames(~ismember(varNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
 
-if ismember(projectName,projectNames)
-    settingsStruct=load(settingsMATPath,projectName);
-    settingsStruct=settingsStruct.(projectName);
-
-    [~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
-    macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
-
-    if isfield(settingsStruct,macAddress)
-        projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
-
-        if exist(projectSettingsMATPath,'file')==2
-            NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
-            NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
-            codePath=NonFcnSettingsStruct.Import.Paths.(macAddress).CodePath;
-        else
-            codePath='';
-        end
-
-    else
-        codePath='';
-    end    
-
-else
-    codePath='';
-end
-
-% 2. Check if the project already exists. If not, need to make all the components invisible.
-if ~ismember(projectName,projectNames) || (ismember(projectName,projectNames) && exist(codePath,'dir')~=7)
-    % Turn off visibility for everything except new project & code path components
-    tabNames=fieldnames(handles);
-    tabNames=tabNames(~ismember(tabNames,'Tabs'));
-    for tabNum=1:length(tabNames) % Iterate through every tab
-        compNames=fieldnames(handles.(tabNames{tabNum}));
-        for compNum=1:length(compNames)
-            if ~(isequal(tabNames{tabNum},'Import') && ismember(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,{'ProjectNameLabel','AddProjectButton','SwitchProjectsDropDown','CodePathButton','CodePathField'}))
-                if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
-                    handles.(tabNames{tabNum}).(compNames{compNum}).Visible=0;
-                end
-            end
-        end
-    end
-    handles.Import.codePathField.Value='Path to Project Processing Code Folder';
+if ~ismember(projectName,projectNames)
+    resetProjectAccess_Visibility(fig,1);   
+    disp(['Project-specific settings file path could not be found in project-independent settings MAT file (project variable missing)']);
+    disp(['To resolve, either enter the Code Path for this project, or check the settings MAT files']);
+    setappdata(fig,'codePath','');
+    codePathFieldValueChanged(fig); % Changing the code folder path changes all project-specific settings.
     return;
-else
-    % Turn all component visibility on.
-    tabNames=fieldnames(handles);
-    tabNames=tabNames(~ismember(tabNames,'Tabs'));
-    for tabNum=1:length(tabNames) % Iterate through every tab
-        compNames=fieldnames(handles.(tabNames{tabNum}));
-        for compNum=1:length(compNames)
-            if ~isequal(handles.(tabNames{tabNum}).(compNames{compNum}).Tag,'TabGroup')
-                handles.(tabNames{tabNum}).(compNames{compNum}).Visible=1;
-            end
-        end
-    end
 end
 
-% 3. Change the GUI fields unrelated to functions & arguments
-handles.Import.codePathField.Value=codePath;
-handles.Import.dataPathField.Value=NonFcnSettingsStruct.Import.Paths.(macAddress).DataPath;
-handles.Import.logsheetPathField.Value=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
+settingsStruct=load(settingsMATPath,projectName);
+settingsStruct=settingsStruct.(projectName);
+macAddress=getComputerID();
+
+% assert(isequal(settingsStruct.(macAddress).ProjectName,projectName));
+
+if ~isfield(settingsStruct,macAddress) % This project has never been accessed on this computer.
+    resetProjectAccess_Visibility(fig,1);
+    setappdata(fig,'codePath','');
+    disp(['Project-specific settings file path for this computer could not be found in project-independent settings MAT file (computer hostname missing in project variable)']);
+    codePathFieldValueChanged(fig); % Changing the code folder path changes all project-specific settings.
+    return;
+end
+
+projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Get the file path of the project-specific settings MAT file
+
+setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
+
+if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist
+    resetProjectAccess_Visibility(fig,1);
+    setappdata(fig,'codePath','');
+    codePathFieldValueChanged(fig); % Changing the code folder path changes all project-specific settings.
+    disp(['The path to the project-specific settings file is not valid. To fix, you can:']);
+    disp(['(1) Enter a new code folder path,']);
+    disp(['(2) Ensure that the project settings MAT file exists in the current code folder,']);
+    disp(['(3) Check the accuracy of the project-independent settings MAT file located at: ' settingsMATPath]);
+    return;
+end
+
+NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+
+%% Projects tab
+codePath=NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath;
+dataPath=NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath;
+
+if exist(codePath,'dir')==7
+    setappdata(fig,'codePath',codePath);
+    handles.Projects.codePathField.Value=codePath;
+else
+    resetProjectAccess_Visibility(fig,1);
+    setappdata(fig,'codePath','');
+    handles.Projects.codePathField.Value='Path to Project Processing Code Folder';
+    return;
+end
+
+if exist(dataPath,'dir')==7
+    setappdata(fig,'dataPath',dataPath);
+    handles.Projects.dataPathField.Value=dataPath;
+else
+    resetProjectAccess_Visibility(fig,2);
+    setappdata(fig,'dataPath','');
+    handles.Projects.dataPathField.Value='Data Path (contains ''Subject Data'' folder';
+    return;
+end
+
+if ~ismember('currTab',varNames)
+    currTab='Projects';
+else
+    load(settingsMATPath,'currTab');
+end
+hTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
+handles.Tabs.tabGroup1.SelectedTab=hTab;
+version=getappdata(fig,'version');
+save(settingsMATPath,'version','-append');
+
+%% Import tab
+logsheetPath=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
 handles.Import.numHeaderRowsField.Value=NonFcnSettingsStruct.Import.NumHeaderRows;
 handles.Import.subjIDColHeaderField.Value=NonFcnSettingsStruct.Import.SubjectIDColHeader;
 handles.Import.targetTrialIDColHeaderField.Value=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
-handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;
 
-if exist(handles.Import.dataPathField.Value,'dir')==7
-    setappdata(fig,'dataPath',handles.Import.dataPathField.Value);
-else
-    setappdata(fig,'dataPath','');
-end
-
-if exist(handles.Import.logsheetPathField.Value,'file')==2
+if exist(logsheetPath,'file')==2
+    handles.Import.logsheetPathField.Value=logsheetPath;
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
+    resetProjectAccess_Visibility(fig,4); % Allow all tabs to be used.
 else
+    resetProjectAccess_Visibility(fig,3); % Disallow loading info from logsheet.
     setappdata(fig,'logsheetPath','');
 end
 
-% 4. Change the GUI fields related to functions & arguments
-% Import tab: If no data types have been entered yet, then regardless of whether there are functions in the processing folder, make invisible the
-% buttons on the left side of the screen besides "D+"
-    % If there is at least one data type, ensure that all of the buttons are visible.
-if exist(projectSettingsMATPath,'file')==2
-    load(projectSettingsMATPath,'FcnSettingsStruct'); % Don't "double access" this variable because it will likely get rather large.
-end
+%% Plot tab
+handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;
 
-tabNames={'Import','Process','Plot'};
-groupingNames={'DataTypes','Groups','PlotTypes'};
-for tabNum=1:3 % Import, Process, Plot
-
-    tabName=tabNames{tabNum};
-    groupingName=groupingNames{tabNum};
-    fcnUITree=handles.(tabName).functionsUITree; % The current tab's function UI tree
-    argUITree=handles.(tabName).argumentsUITree; % The current tab's argument UI tree
-
-    % Clear the UI tree objects when switching projects.
-    delete(fcnUITree.Children);
-    delete(argUITree.Children);
-
-    parentGroupedNodes=FcnSettingsStruct.(tabName).(groupingName);
-    if ~(length(parentGroupedNodes)==1 && isempty(parentGroupedNodes{1}))        
-        for parentNodeNum=1:length(parentGroupedNodes) % If there are any parent grouping nodes, build the UI tree
-            parentNode=parentGroupedNodes{parentNodeNum};
-            uitreenode(fcnUITree,'Text',parentNode);
-            % Build the nodes under that parent node
-            childNodes=fieldnames(FcnSettingsStruct.(tabName).FcnUITree.(parentNode));
-            for childNodeNum=1:length(childNodes)
-
-            end
-        end
-    end
-
-    allFcns=FcnSettingsStruct.(tabName).FcnUITree.All;
-    if ~(length(allFcns)==1 && isempty(allFcns{1}))
-        allFcnsNode=uitreenode(fcnUITree,'Text','All'); % Initialize the "All" parent node
-        for i=1:length(allFcns) % If there are any functions at all, regardless of having been assigned a group.
-            uitreenode(allFcnsNode,'Text',allFcns{i});
-        end
-    end
-
-    allArgs=FcnSettingsStruct.(tabName).ArgsUITree.All;
-    if ~(length(allArgs)==1 && isempty(allArgs{1}))
-        allArgsNode=uitreenode(argUITree,'Text','All');
-        for i=1:length(allArgs) % If there are any arguments at all, regardless of having been assigned a group
-            uitreenode(allArgsNode,'Text',allArgs{i});
-        end
-    end
+if exist(handles.Plot.rootSavePathEditField.Value,'dir')==7
+    setappdata(fig,'rootSavePlotPath',handles.Plot.rootSavePathEditField.Value);
+else
+    setappdata(fig,'rootSavePlotPath','');
 end
 
 % 5. Set the most recent project to the current project name.
@@ -148,7 +119,7 @@ save(getappdata(fig,'settingsMATPath'),'mostRecentProjectName','-append');
 
 % 6. Store all of the project-specific settings to the GUI.
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
-setappdata(fig,'FcnSettingsStruct',FcnSettingsStruct);
+% setappdata(fig,'FcnSettingsStruct',FcnSettingsStruct);
 
 % 7. Tell the user that the project has successfully switched
 drawnow;

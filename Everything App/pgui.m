@@ -65,6 +65,68 @@ handles.Stats.Tab=statsTab;
 handles.Settings.Tab=settingsTab;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Initialize the processing map objects
+% 1. The figure object for the processing map
+handles.Figure.mapFigure=uiaxes(importTab,'Tag','MapFigure');
+
+% 2. Add fcn button
+
+% 3. Remove fcn button
+
+% 4. Add fcn type dropdown (same branch before selected, same branch after selected, new branch after selected)
+
+% 5. Move fcn button
+
+% 6. Propagate changes button
+
+% 7. Propagate changes checkbox
+
+% 8. Run selected fcn's button
+
+% 9. New input button
+
+% 10. New output button
+
+% 11. Remove argument button
+
+% 12. Fcn name label
+
+% 13. Fcn & args listbox
+
+% 14. Arg name in code label
+
+% 15. Arg name in code field
+
+% 16. Fcn description label
+
+% 17. Fcn description text area
+
+% 18. Arg description label
+
+% 19. Arg description text area
+
+% 20. Show input vars button
+
+% 21. Show output vars button
+
+% 22. Specify trials button/panel/checkboxes/etc.
+
+% 23. Assign input arg from existing list
+
+% 24. Assign output arg from existing list
+
+% 25. Splits label
+
+% 26. Splits listbox
+
+% 27. Splits description label
+
+% 28. Splits text area
+
+% 29. Fcn search field
+
+% 30.
+
 %% Initialize the projects tab.
 % 1. The project name label
 handles.Projects.projectNameLabel=uilabel(projectsTab,'Text','Project Name','Tag','ProjectNameLabel','FontWeight','bold');

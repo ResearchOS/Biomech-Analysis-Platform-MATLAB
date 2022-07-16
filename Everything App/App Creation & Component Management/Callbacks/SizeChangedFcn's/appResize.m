@@ -15,3 +15,5 @@ figPos=src.Position(3:4); % Position of the figure on the screen. Syntax: left o
 data.TabGroup1.Visible='off';
 data.TabGroup1.Position=[0 0 figPos(1) figPos(2)];
 data.TabGroup1.Visible='on';
+
+%% RESIZE THE MAP FIGURE COMPONENTS

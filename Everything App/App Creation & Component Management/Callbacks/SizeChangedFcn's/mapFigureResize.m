@@ -1,0 +1,3 @@
+function []=mapFigureResize(src,event)
+
+%% PURPOSE: RESIZE ALL OF THE FIGURE OBJECTS RELATED TO THE MAPPING FIGURE

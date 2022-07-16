@@ -1,6 +1,8 @@
 function []=tabGroup1SelectionChanged(src,event)
 
 %% PURPOSE: STORE THE MOST RECENTLY SELECTED TAB SO THE PGUI CAN OPEN TO IT THE NEXT TIME
+% Also, set the parent tab of the processing map figure objects to the
+% currently selected tab.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -30,3 +32,5 @@ if exist(settingsMATPath,'file')~=2
 else
     save(settingsMATPath,'currTab','-mat','-append'); % Save the most recent (i.e. current) project name, and the project's settings struct with the path name to the code folder
 end
+
+%% Set the parent tab of the processing map figure objects to the currently selected tab.

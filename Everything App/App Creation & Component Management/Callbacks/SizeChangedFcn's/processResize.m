@@ -54,8 +54,8 @@ ArgDescriptionLabelRelPos=[0.3 0.21];
 ArgDescriptionTextAreaRelPos=[0.3 0.01];
 ShowInputVarsButtonRelPos=[0.64 0.9];
 ShowOutputVarsButtonRelPos=[0.72 0.9];
-AssignExistingArg2InputButtonRelPos=[0.25 0.9];
-AssignExistingArg2OutputButtonRelPos=[0.25 0.85];
+AssignExistingArg2InputButtonRelPos=[0.23 0.9];
+AssignExistingArg2OutputButtonRelPos=[0.23 0.85];
 SplitsLabelRelPos=[0.01 0.5];
 SplitsListboxRelPos=[0.01 0.3];
 SplitsDescriptionLabelRelPos=[0.5 0.5];
@@ -69,13 +69,13 @@ SpecifyTrialsLabelRelPos=[0.01 0.22];
 RemoveSpecifyTrialsButtonRelPos=[0.22 0.1];
 MarkImportFcnCheckboxRelPos=[0.82 0.9];
 NewSpecifyTrialsButtonRelPos=[0.22 0.15];
-NewSplitButtonRelPos=[0.215 0.4];
-RemoveSplitButtonRelPos=[0.215 0.35];
+NewSplitButtonRelPos=[0.225 0.45];
+RemoveSplitButtonRelPos=[0.225 0.4];
 SearchVarsFieldRelPos=[0.5 0.5];
 VarsListboxRelPos=[0.01 0.55];
-UnassignVarsButtonRelPos=[0.22 0.75];
+UnassignVarsButtonRelPos=[0.225 0.8];
 EditSubvarsButtonRelPos=[0.215 0.7];
-SplitsDescButtonRelPos=[0.2 0.3];
+SplitsDescButtonRelPos=[0.22 0.3];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -115,13 +115,13 @@ SpecifyTrialsLabelSize=[0.2 compHeight];
 RemoveSpecifyTrialsButtonSize=[0.07 compHeight];
 MarkImportFcnCheckboxSize=[0.2 compHeight];
 NewSpecifyTrialsButtonSize=[0.07 compHeight];
-NewSplitButtonSize=[0.08 compHeight];
-RemoveSplitButtonSize=[0.08 compHeight];
+NewSplitButtonSize=[0.06 compHeight];
+RemoveSplitButtonSize=[0.06 compHeight];
 SearchVarsFieldSize=[0.2 compHeight];
 VarsListboxSize=[0.2 0.4];
 UnassignVarsButtonSize=[0.06 compHeight];
 EditSubvarsButtonSize=[0.08 compHeight];
-SplitsDescButtonSize=[0.1 compHeight];
+SplitsDescButtonSize=[0.07 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 MapFigurePos=round([MapFigureRelPos.*figSize MapFigureSize.*figSize]);

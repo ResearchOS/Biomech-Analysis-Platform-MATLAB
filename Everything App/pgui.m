@@ -46,8 +46,8 @@ setappdata(fig,'allowAllTabs',0); % Initialize that only the Projects tab can be
 setappdata(fig,'rootSavePlotPath',''); % The root folder to save plots to.
 
 %% Create tab group with the four primary tabs
-% tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
-tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','Tag','TabGroup'); % Create the tab group for the four stages of data processing
+tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
+% tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','Tag','TabGroup'); % Create the tab group for the four stages of data processing
 fig.UserData=struct('TabGroup1',tabGroup1); % Store the components to the figure.
 projectsTab=uitab(tabGroup1,'Title','Projects','Tag','Projects','AutoResizeChildren','off','SizeChangedFcn',@projectsResize); % Create the projects tab
 importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off','SizeChangedFcn',@importResize); % Create the import tab
@@ -67,115 +67,7 @@ handles.Settings.Tab=settingsTab;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the processing map objects. By default they are children of the import tab, but the parent tab will always be the currently selected tab.
-% % 1. The figure object for the processing map
-% handles.Figure.mapFigure=uiaxes(importTab,'Tag','MapFigure');
-% 
-% % 2. Add fcn button (works with #4)
-% handles.Figure.addFcnButton=uibutton(importTab,'push','Text','F+','Tag','AddFcnButton','Tooltip','Add New Function','ButtonPushedFcn',@(addFcnButton,event) addFunctionButtonPushed(addFcnButton));
-% 
-% % 3. Remove fcn button
-% handles.Figure.removeFcnButton=uibutton(importTab,'push','Text','F-','Tag','RemoveFcnButton','Tooltip','Remove Function','ButtonPushedFcn',@(removeFcnButton,event) removeFunctionButtonPushed(removeFcnButton));
-% 
-% % 4. Add fcn type dropdown (same branch before selected, same branch after selected, new branch after selected)
-% handles.Figure.addFcnTypeDropDown=uidropdown(importTab,'Items',{'Same Branch Before Selected','Same Branch After Selected','New Branch Offshoot','Start New Branch'},'Tooltip','Specify Where the New Function Will Be Placed','Editable','off','Tag','AddFcnTypeDropDown','ValueChangedFcn',@(addFcnTypeDropDown,event) addFcnTypeDropDownValueChanged(addFcnTypeDropDown));
-% 
-% % 5. Move fcn button (works with #4)
-% handles.Figure.moveFcnButton=uibutton(importTab,'push','Text','Move Fcn','Tag','MoveFcnButton','Tooltip','Move Function to New Place in Plot','ButtonPushedFcn',@(moveFcnButton,event) moveFunctionButtonPushed(moveFcnButton));
-% 
-% % 6. Propagate changes button
-% handles.Figure.propagateChangesButton=uibutton(importTab,'state','Text','Propagate Changes','Tag','PropagateChangesButton','Tooltip','Propagate Changes to All Affected Variables','ValueChangedFcn',@(propagateChangesButton,event) propagateChangesValueChanged(propagateChangesButton));
-% 
-% % 7. Propagate changes checkbox
-% handles.Figure.propagateChangesCheckbox=uicheckbox(importTab,'Text','','Value',0,'Tag','PropagateChangesCheckbox','Tooltip','If checked, un-propagated changes to args have occurred. If a function code was edited (cannot be auto detected), manually check this box to propagate changes.');
-% 
-% % 8. Run selected fcn's button
-% handles.Figure.runSelectedFcnsButton=uibutton(importTab,'push','Text','Run Selected Fcns','Tag','RunSelectedFcnsButton','Tooltip','Run Selected Fcns','ButtonPushedFcn',@(runSelectedFcnsButton,event) runSelectedFcnsButtonPushed(runSelectedFcnsButton));
-% 
-% % 9. New arg button
-% handles.Figure.createArgButton=uibutton(importTab,'push','Text','Create Arg','Tag','CreateArgButton','Tooltip','Create New Argument','ButtonPushedFcn',@(createArgButton,event) createArgButtonPushed(createArgButton));
-% 
-% % 11. Remove argument button
-% handles.Figure.removeArgButton=uibutton(importTab,'push','Text','Remove Arg','Tag','RemoveArgButton','Tooltip','Remove Arg From Fcn','ButtonPushedFcn',@(removeArgButton,event) removeArgButtonPushed(removeArgButton));
-% 
-% % 12. Fcn name label
-% handles.Figure.fcnNameLabel=uilabel(importTab,'Text','Fcn Name','Tag','FcnNameLabel','FontWeight','bold');
-% 
-% % 13. Fcn & args UI Tree
-% handles.Figure.fcnArgsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
-% 
-% % 14. Arg name in code label
-% handles.Figure.argNameInCodeLabel=uilabel(importTab,'Text','Arg Name In Code','Tag','ArgNameInCodeLabel');
-% 
-% % 15. Arg name in code field
-% handles.Figure.argNameInCodeField=uieditfield(importTab,'text','Value','Arg Name In Code','Tag','ArgNameInCodeField','ValueChangedFcn',@(argNameInCodeField,event) argNameInCodeFieldValueChanged(argNameInCodeField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
-% 
-% % 16. Fcn description label
-% handles.Figure.fcnDescriptionLabel=uilabel(importTab,'Text','Fcn Description','Tag','FcnDescriptionLabel','FontWeight','bold');
-% 
-% % 17. Fcn description text area
-% handles.Figure.fcnDescriptionTextArea=uitextarea(importTab,'Value','Enter Fcn Description Here','Tag','FcnDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(fcnDescriptionTextArea,event) fcnDescriptionTextAreaValueChanged(fcnDescriptionTextArea));
-% 
-% % 18. Arg description label
-% handles.Figure.argDescriptionLabel=uilabel(importTab,'Text','Arg Description','Tag','ArgDescriptionLabel','FontWeight','bold');
-% 
-% % 19. Arg description text area
-% handles.Figure.argDescriptionTextArea=uitextarea(importTab,'Value','Enter Arg Description Here','Tag','ArgDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argDescriptionTextArea,event) argDescriptionTextAreaValueChanged(argDescriptionTextArea));
-% 
-% % 20. Show input vars button
-% handles.Figure.showInputVarsButton=uibutton(importTab,'push','Text','Show I','Tag','ShowInputVarsButton','Tooltip','Show Input Vars to Current Function','ButtonPushedFcn',@(showInputVarsButton,event) showInputVarsButtonPushed(showInputVarsButton));
-% 
-% % 21. Show output vars button
-% handles.Figure.showOutputVarsButton=uibutton(importTab,'push','Text','Show O','Tag','ShowOutputVarsButton','Tooltip','Show Output Vars of Current Function','ButtonPushedFcn',@(showOutputVarsButton,event) showOutputVarsButtonPushed(showOutputVarsButton));
-% 
-% % 33. Specify trials label
-% handles.Figure.specifyTrialsLabel=uilabel(importTab,'Text','SpecifyTrials','Tag','SplitsLabel','FontWeight','bold');
-% 
-% % 22. Specify trials button/panel/checkboxes/etc.
-% handles.Figure.specifyTrialsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
-% 
-% % 23. Assign input arg from existing list
-% handles.Figure.assignExistingArg2InputButton=uibutton(importTab,'push','Text','I+','Tag','AssignExistingArg2InputButton','Tooltip','Assign Existing Variable as Input to Selected Function','ButtonPushedFcn',@(assignExistingArg2InputButton,event) assignExistingArg2InputButtonPushed(assignExistingArg2InputButton));
-% 
-% % 24. Assign output arg from existing list
-% handles.Figure.assignExistingArg2OutputButton=uibutton(importTab,'push','Text','O+','Tag','AssignExistingArg2OutputButton','Tooltip','Assign Existing Variable as Output of Selected Function','ButtonPushedFcn',@(assignExistingArg2OutputButton,event) assignExistingArg2OutputButtonPushed(assignExistingArg2OutputButton));
-% 
-% % 25. Splits label
-% handles.Figure.splitsLabel=uilabel(processTab,'Text','Processing Splits','Tag','SplitsLabel');
-% 
-% % 26. Splits UI Tree
-% handles.Figure.splitsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
-% 
-% % 27. Splits description label
-% handles.Figure.splitsDescriptionLabel=uilabel(processTab,'Text','Split Description','Tag','SplitsDescriptionLabel','FontWeight','bold');
-% 
-% % 28. Splits text area
-% handles.Figure.splitsTextArea=uitextarea(processTab,'Value','Enter Split Description Here','Tag','SplitsDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(splitsDescriptionTextArea,event) splitsDescriptionTextAreaValueChanged(splitsDescriptionTextArea));
-% 
-% % 29. Fcn search field
-% handles.Figure.fcnsArgsSearchField=uieditfield(importTab,'text','Value','Search','Tag','FcnsArgsSearchField','ValueChangedFcn',@(fcnsArgsSearchField,event) fcnsArgsSearchFieldValueChanged(fcnsArgsSearchField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
-% 
-% % 30. Subvariable label
-% handles.Figure.subVarLabel=uilabel(importTab,'Text','Subvariable(s)','Tag','SubVarLabel');
-% 
-% % 31. Subvariable UI Tree
-% handles.Figure.subVarUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
-% 
-% % 32. Convert variable between hard-coded and dynamic
-% handles.Figure.convertVarHardDynamicButton=uibutton(importTab,'push','Text','Var Dynamic <=> Hard-coded','Tag','ConvertVarHardDynamicButton','Tooltip','Convert Selected Var Between Hard-Coded and Dynamic','ButtonPushedFcn',@(convertVarHardDynamicButton,event) convertVarHardDynamicButtonPushed(convertVarHardDynamicButton));
 
-% 33. Remove specify trials
-
-% 34. Mark function as an Import function checkbox
-
-
-% fig.UserData=struct('MapFigure',handles.Figure.mapFigure,'AddFcnButton',handles.Figure.addFcnButton,'RemoveFcnButton',handles.Figure.removeFcnButton,'AddFcnTypeDropDown',handles.Figure.addFcnTypeDropDown,...
-%     'MoveFcnButton',handles.Figure.moveFcnButton,'PropagateChangesButton',handles.Figure.propagateChangesButton,'PropagateChangesCheckbox',handles.Figure.propagateChangesCheckbox,'RunSelectedFcnsButton',handles.Figure.runSelectedFcnsButton,...
-%     'CreateArgButton',handles.Figure.createArgButton,'RemoveArgButton',handles.Figure.removeArgButton,'FcnNameLabel',handles.Figure.fcnNameLabel,'FcnArgsUITree',handles.Figure.fcnArgsUITree,'ArgNameInCodeLabel',handles.Figure.argNameInCodeLabel,...
-%     'ArgNameInCodeField',handles.Figure.argNameInCodeField,'FcnDescriptionLabel',handles.Figure.fcnDescriptionLabel,'FcnDescriptionTextArea',handles.Figure.fcnDescriptionTextArea,'ArgDescriptionLabel',handles.Figure.argDescriptionLabel,...
-%     'ArgDescriptionTextArea',handles.Figure.argDescriptionTextArea,'ShowInputVarsButton',handles.Figure.showInputVarsButton,'ShowOutputVarsButton',handles.Figure.showOutputVarsButton,'AssignExistingArg2InputButton',handles.Figure.assignExistingArg2InputButton,...
-%     'AssignExistingArg2OutputButton',handles.Figure.assignExistingArg2OutputButton,'SplitsLabel',handles.Figure.splitsLabel,'SplitsListbox',handles.Figure.splitsUITree,'SplitsDescriptionLabel',handles.Figure.splitsDescriptionLabel,...
-%     'SplitsTextArea',handles.Figure.splitsTextArea,'FcnsArgsSearchField',handles.Figure.fcnsArgsSearchField,'SubVarLabel',handles.Figure.subVarLabel,'SubVarUITree',handles.Figure.subVarUITree,'ConvertVarHardDynamicButton',handles.Figure.convertVarHardDynamicButton,...
-%     'SpecifyTrialsUITree',handles.Figure.specifyTrialsUITree);
 
 % appResize(fig);
 % mapFigureResize(fig);
@@ -276,7 +168,7 @@ handles.Import.trialSubjectDropDown=uidropdown(importTab,'Items',{'Trial','Subje
 handles.Import.assignVariableButton=uibutton(importTab,'push','Text','Assign var','Tag','AssignVariableButton','Tooltip','Assign logsheet data to variable','ButtonPushedFcn',@(assignVariableButton,event) assignVariableButtonPushed(assignVariableButton));
 
 % 18. Variable name field
-handles.Import.logVarNameField=uieditfield(importTab,'text','Value','','Tag','LogVarNameField','Tooltip','Name of the Variable for this Logsheet Data','ValueChangedFcn',@(logVarNameField,event) logVarNameFieldValueChanged(logVarNameField));
+handles.Import.logVarNameField=uieditfield(importTab,'text','Value','','Tag','LogVarNameField','Editable','off','Tooltip','Name of the Variable for this Logsheet Data','ValueChangedFcn',@(logVarNameField,event) logVarNameFieldValueChanged(logVarNameField));
 
 % 19. Variable names list box
 handles.Import.variableNamesListbox=uilistbox(importTab,'Multiselect','off','Tag','VariableNamesListbox','Items',{'No Vars'});
@@ -318,8 +210,144 @@ importTab.UserData=struct('LogsheetPathButton',handles.Import.logsheetPathButton
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the process tab.
+% 1. The figure object for the processing map
+handles.Process.mapFigure=uiaxes(processTab,'Tag','MapFigure');
 
+% 2. Add fcn button (works with #4)
+handles.Process.addFcnButton=uibutton(processTab,'push','Text','F+','Tag','AddFcnButton','Tooltip','Add New Function','ButtonPushedFcn',@(addFcnButton,event) addFunctionButtonPushed(addFcnButton));
 
+% 3. Remove fcn button
+handles.Process.removeFcnButton=uibutton(processTab,'push','Text','F-','Tag','RemoveFcnButton','Tooltip','Remove Function','ButtonPushedFcn',@(removeFcnButton,event) removeFunctionButtonPushed(removeFcnButton));
+
+% 4. Add fcn type dropdown (same branch before selected, same branch after selected, new branch after selected)
+handles.Process.addFcnTypeDropDown=uidropdown(processTab,'Items',{'Same Branch Before Selected','Same Branch After Selected','New Branch Offshoot','Start New Branch'},'Tooltip','Specify Where the New Function Will Be Placed','Editable','off','Tag','AddFcnTypeDropDown','ValueChangedFcn',@(addFcnTypeDropDown,event) addFcnTypeDropDownValueChanged(addFcnTypeDropDown));
+
+% 5. Move fcn button (works with #4)
+handles.Process.moveFcnButton=uibutton(processTab,'push','Text','Move Fcn','Tag','MoveFcnButton','Tooltip','Move Function to New Place in Plot','ButtonPushedFcn',@(moveFcnButton,event) moveFunctionButtonPushed(moveFcnButton));
+
+% 6. Propagate changes button
+handles.Process.propagateChangesButton=uibutton(processTab,'state','Text','Propagate Changes','Tag','PropagateChangesButton','Tooltip','Propagate Changes to All Affected Variables','ValueChangedFcn',@(propagateChangesButton,event) propagateChangesValueChanged(propagateChangesButton));
+
+% 7. Propagate changes checkbox
+handles.Process.propagateChangesCheckbox=uicheckbox(processTab,'Text','','Value',0,'Tag','PropagateChangesCheckbox','Tooltip','If checked, un-propagated changes to args have occurred. If a function code was edited (cannot be auto detected), manually check this box to propagate changes.');
+
+% 8. Run selected fcn's button
+handles.Process.runSelectedFcnsButton=uibutton(processTab,'push','Text','Run Selected Fcns','Tag','RunSelectedFcnsButton','Tooltip','Run Selected Fcns','ButtonPushedFcn',@(runSelectedFcnsButton,event) runSelectedFcnsButtonPushed(runSelectedFcnsButton));
+
+% 9. New arg button
+handles.Process.createArgButton=uibutton(processTab,'push','Text','Var+','Tag','CreateArgButton','Tooltip','Create New Argument','ButtonPushedFcn',@(createArgButton,event) createArgButtonPushed(createArgButton));
+
+% 11. Remove argument button
+handles.Process.removeArgButton=uibutton(processTab,'push','Text','Var-','Tag','RemoveArgButton','Tooltip','Remove Arg From Fcn','ButtonPushedFcn',@(removeArgButton,event) removeArgButtonPushed(removeArgButton));
+
+% 12. Fcn name label
+handles.Process.fcnNameLabel=uilabel(processTab,'Text','Fcn Name','Tag','FcnNameLabel','FontWeight','bold');
+
+% 13. Fcn & args UI Tree
+handles.Process.fcnArgsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
+
+% 14. Arg name in code label
+handles.Process.argNameInCodeLabel=uilabel(processTab,'Text','Arg Name In Code','Tag','ArgNameInCodeLabel');
+
+% 15. Arg name in code field
+handles.Process.argNameInCodeField=uieditfield(processTab,'text','Value','Arg Name In Code','Tag','ArgNameInCodeField','ValueChangedFcn',@(argNameInCodeField,event) argNameInCodeFieldValueChanged(argNameInCodeField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
+
+% 16. Fcn description label
+handles.Process.fcnDescriptionLabel=uilabel(processTab,'Text','Fcn Description','Tag','FcnDescriptionLabel','FontWeight','bold');
+
+% 17. Fcn description text area
+handles.Process.fcnDescriptionTextArea=uitextarea(processTab,'Value','Enter Fcn Description Here','Tag','FcnDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(fcnDescriptionTextArea,event) fcnDescriptionTextAreaValueChanged(fcnDescriptionTextArea));
+
+% 18. Arg description label
+handles.Process.argDescriptionLabel=uilabel(processTab,'Text','Arg Description','Tag','ArgDescriptionLabel','FontWeight','bold');
+
+% 19. Arg description text area
+handles.Process.argDescriptionTextArea=uitextarea(processTab,'Value','Enter Arg Description Here','Tag','ArgDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argDescriptionTextArea,event) argDescriptionTextAreaValueChanged(argDescriptionTextArea));
+
+% 20. Show input vars button
+handles.Process.showInputVarsButton=uibutton(processTab,'push','Text','Show I','Tag','ShowInputVarsButton','Tooltip','Show Input Vars to Current Function','ButtonPushedFcn',@(showInputVarsButton,event) showInputVarsButtonPushed(showInputVarsButton));
+
+% 21. Show output vars button
+handles.Process.showOutputVarsButton=uibutton(processTab,'push','Text','Show O','Tag','ShowOutputVarsButton','Tooltip','Show Output Vars of Current Function','ButtonPushedFcn',@(showOutputVarsButton,event) showOutputVarsButtonPushed(showOutputVarsButton));
+
+% 33. Specify trials label
+handles.Process.specifyTrialsLabel=uilabel(processTab,'Text','SpecifyTrials','Tag','SpecifyTrialsLabel','FontWeight','bold');
+
+% 22. Specify trials button/panel/checkboxes/etc.
+handles.Process.specifyTrialsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
+
+% 23. Assign input arg from existing list
+handles.Process.assignExistingArg2InputButton=uibutton(processTab,'push','Text','I+','Tag','AssignExistingArg2InputButton','Tooltip','Assign Existing Variable as Input to Selected Function','ButtonPushedFcn',@(assignExistingArg2InputButton,event) assignExistingArg2InputButtonPushed(assignExistingArg2InputButton));
+
+% 24. Assign output arg from existing list
+handles.Process.assignExistingArg2OutputButton=uibutton(processTab,'push','Text','O+','Tag','AssignExistingArg2OutputButton','Tooltip','Assign Existing Variable as Output of Selected Function','ButtonPushedFcn',@(assignExistingArg2OutputButton,event) assignExistingArg2OutputButtonPushed(assignExistingArg2OutputButton));
+
+% 25. Splits label
+handles.Process.splitsLabel=uilabel(processTab,'Text','Processing Splits','Tag','SplitsLabel','FontWeight','bold');
+
+% 26. Splits UI Tree
+handles.Process.splitsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
+
+% 27. Splits description label
+% handles.Process.splitsDescriptionLabel=uilabel(processTab,'Text','Split Description','Tag','SplitsDescriptionLabel','FontWeight','bold');
+
+% 28. Splits text area
+% handles.Process.splitsTextArea=uitextarea(processTab,'Value','Enter Split Description Here','Tag','SplitsDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(splitsDescriptionTextArea,event) splitsDescriptionTextAreaValueChanged(splitsDescriptionTextArea));
+
+% 29. Fcn search field
+handles.Process.fcnsArgsSearchField=uieditfield(processTab,'text','Value','Search','Tag','FcnsArgsSearchField','ValueChangedFcn',@(fcnsArgsSearchField,event) fcnsArgsSearchFieldValueChanged(fcnsArgsSearchField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
+
+% 30. Subvariable label
+% handles.Process.subVarLabel=uilabel(processTab,'Text','Subvariable(s)','Tag','SubVarLabel');
+
+% 31. Subvariable UI Tree
+% handles.Process.subVarUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
+
+% 32. Convert variable between hard-coded and dynamic
+handles.Process.convertVarHardDynamicButton=uibutton(processTab,'push','Text','Var Dynamic <=> Hard-coded','Tag','ConvertVarHardDynamicButton','Tooltip','Convert Selected Var Between Hard-Coded and Dynamic','ButtonPushedFcn',@(convertVarHardDynamicButton,event) convertVarHardDynamicButtonPushed(convertVarHardDynamicButton));
+
+% 33. Remove specify trials button
+handles.Process.removeSpecifyTrialsButton=uibutton(processTab,'push','Text','ST-','Tag','RemoveSpecifyTrialsButton','Tooltip','Remove Specify Trials Condition','ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
+
+% 34. Mark function as an Import function checkbox
+handles.Process.markImportFcnCheckbox=uicheckbox(processTab,'Text','Mark Import Fcn','Value',0,'Tag','MarkImportFcnCheckbox','Tooltip','Check this box to mark a function as importing from raw data files','ValueChangedFcn',@(markImportFcnCheckbox,event) markImportFcnCheckboxValueChanged(markImportFcnCheckbox));
+
+% 35. New specify trials button
+handles.Process.newSpecifyTrialsButton=uibutton(processTab,'push','Text','ST+','Tag','NewSpecifyTrialsButton','Tooltip','New Specify Trials Condition','ButtonPushedFcn',@(newSpecifyTrialsButton,event) newSpecifyTrialsButtonPushed(newSpecifyTrialsButton));
+
+% 36. New processing split button
+handles.Process.newSplitButton=uibutton(processTab,'push','Text','PS+','Tag','NewSplitButton','Tooltip','New Split','ButtonPushedFcn',@(newSplitButton,event) newSplitButtonPushed(newSplitButton));
+
+% 37. Remove processing split button
+handles.Process.removeSplitButton=uibutton(processTab,'push','Text','PS-','Tag','RemoveSplitButton','Tooltip','Remove Split','ButtonPushedFcn',@(removeSplitButton,event) removeSplitButtonPushed(removeSplitButton));
+
+% 38. Search variables field
+% handles.Process.searchVarsField=uieditfield(processTab,'text','Value','Search','Tag','SearchVarsField','ValueChangedFcn',@(searchVarsField,event) searchVarsFieldValueChanged(searchVarsField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
+
+% 39. Variables listbox
+handles.Process.varsListbox=uilistbox(processTab,'Multiselect','on','Tag','VarsListbox','Items',{'No Vars'});
+
+% 40. Unassign variable from function button
+handles.Process.unassignVarsButton=uibutton(processTab,'push','Text','<-','Tag','UnassignVarsButton','Tooltip','Unassign Var From Function','ButtonPushedFcn',@(unassignVarsButton,event) unassignVarsButtonPushed(unassignVarsButton));
+
+% 41. Edit subvariables button
+handles.Process.editSubvarsButton=uibutton(processTab,'push','Text','Subvars','Tag','EditSubvarsButton','Tooltip','Edit subvariables','ButtonPushedFcn',@(editSubvarsButton,event) editSubvarsButtonPushed(editSubvarsButton));
+
+% 42. Processing splits description button
+handles.Process.splitsDescButton=uibutton(processTab,'push','Text','Splits Desc','Tag','SplitsDescButton','Tooltip','Description of selected split','ButtonPushedFcn',@(splitsDescButton,event) splitsDescButtonPushed(splitsDescButton));
+
+processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',handles.Process.addFcnButton,'RemoveFcnButton',handles.Process.removeFcnButton,'AddFcnTypeDropDown',handles.Process.addFcnTypeDropDown,...
+    'MoveFcnButton',handles.Process.moveFcnButton,'PropagateChangesButton',handles.Process.propagateChangesButton,'PropagateChangesCheckbox',handles.Process.propagateChangesCheckbox,'RunSelectedFcnsButton',handles.Process.runSelectedFcnsButton,...
+    'CreateArgButton',handles.Process.createArgButton,'RemoveArgButton',handles.Process.removeArgButton,'FcnNameLabel',handles.Process.fcnNameLabel,'FcnArgsUITree',handles.Process.fcnArgsUITree,'ArgNameInCodeLabel',handles.Process.argNameInCodeLabel,...
+    'ArgNameInCodeField',handles.Process.argNameInCodeField,'FcnDescriptionLabel',handles.Process.fcnDescriptionLabel,'FcnDescriptionTextArea',handles.Process.fcnDescriptionTextArea,'ArgDescriptionLabel',handles.Process.argDescriptionLabel,...
+    'ArgDescriptionTextArea',handles.Process.argDescriptionTextArea,'ShowInputVarsButton',handles.Process.showInputVarsButton,'ShowOutputVarsButton',handles.Process.showOutputVarsButton,'AssignExistingArg2InputButton',handles.Process.assignExistingArg2InputButton,...
+    'AssignExistingArg2OutputButton',handles.Process.assignExistingArg2OutputButton,'SplitsLabel',handles.Process.splitsLabel,'SplitsListbox',handles.Process.splitsUITree,...
+    'FcnsArgsSearchField',handles.Process.fcnsArgsSearchField,'ConvertVarHardDynamicButton',handles.Process.convertVarHardDynamicButton,...
+    'SpecifyTrialsUITree',handles.Process.specifyTrialsUITree,'RemoveSpecifyTrialsButton',handles.Process.removeSpecifyTrialsButton,'MarkImportFcnCheckbox',handles.Process.markImportFcnCheckbox,'NewSpecifyTrialsButton',handles.Process.newSpecifyTrialsButton,...
+    'SpecifyTrialsLabel',handles.Process.specifyTrialsLabel,'NewSplitButton',handles.Process.newSplitButton,'RemoveSplitButton',handles.Process.removeSplitButton,'UnassignVarsButton',handles.Process.unassignVarsButton,...
+    'EditSubvarsButton',handles.Process.editSubvarsButton,'SplitsDescButton',handles.Process.splitsDescButton,'VarsListbox',handles.Process.varsListbox);
+
+@processResize;
 % drawnow; % Show the properly placed Process tab components.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -519,9 +547,9 @@ handles.Projects.switchProjectsDropDown.Items=projectNames;
 handles.Projects.switchProjectsDropDown.Value=mostRecentProjectName;
 % setappdata(fig,'projectName',mostRecentProjectName);
 
-% set(handles.Figure.mapFigure,'XTick',[]);
-% set(handles.Figure.mapFigure,'YTick',[]);
-% box(handles.Figure.mapFigure,'on');
+set(handles.Process.mapFigure,'XTick',[]);
+set(handles.Process.mapFigure,'YTick',[]);
+box(handles.Process.mapFigure,'on');
 
 % 9. Whether the project name was found in the file or not, run the callback to set up the app properly.
 switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.

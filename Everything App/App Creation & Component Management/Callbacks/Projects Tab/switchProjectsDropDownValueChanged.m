@@ -99,6 +99,7 @@ if exist(logsheetPath,'file')==2
     handles.Import.logsheetPathField.Value=logsheetPath;
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
     resetProjectAccess_Visibility(fig,4); % Allow all tabs to be used.
+    logsheetPathFieldValueChanged(fig,0); % 0 indicates to not re-read the logsheet file.
 else
     resetProjectAccess_Visibility(fig,3); % Disallow loading info from logsheet.
     setappdata(fig,'logsheetPath','');

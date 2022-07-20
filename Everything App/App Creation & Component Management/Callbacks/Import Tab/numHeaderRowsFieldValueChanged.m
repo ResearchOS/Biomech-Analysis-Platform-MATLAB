@@ -17,53 +17,12 @@ if numHeaderRows<0
     return;
 end
 
-% Save the number of header rows to the project-specific settings
-settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
-settingsStruct=load(settingsMATPath,projectName);
-settingsStruct=settingsStruct.(projectName);
+projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
-macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
-
-projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
-
-NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
-NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 NonFcnSettingsStruct.Import.NumHeaderRows=numHeaderRows;
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
-%% Check if the logsheet can/should be modified, if all metadata has been specified.
-logsheetPath=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
-logsheetPathMAT=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT;
-if exist(logsheetPath,'file')~=2
-    return;
-end
-
-[~,~,logsheetVar]=xlsread(logsheetPath,1); % Reload the logsheet to accommodate any changes made. Has the downside of sometimes reading Excel files is glitchy.
-
-subjIDColHeader=NonFcnSettingsStruct.Import.SubjectIDColHeader;
-targetTrialIDColHeader=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
-
-% load(logsheetPathMAT,'logsheetVar'); % To load and modify the previously saved MAT logsheet
-
-if all(ismember({subjIDColHeader,targetTrialIDColHeader},logsheetVar(1,:)))
-    subjCodenames=logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),subjIDColHeader));
-    targetTrialIDs=logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),targetTrialIDColHeader));
-    for i=1:length(subjCodenames)
-        if ~isvarname(subjCodenames{i}) && ~isempty(subjCodenames{i})
-            subjCodenames{i}=genvarname(subjCodenames{i});            
-        end
-        if ~isvarname(targetTrialIDs{i}) && ~isempty(targetTrialIDs{i})
-            targetTrialIDs{i}=genvarname(targetTrialIDs{i});
-        end
-    end
-    logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),subjIDColHeader))=subjCodenames;
-    logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),targetTrialIDColHeader))=targetTrialIDs;
-    save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the logsheet.
-end
-
-if exist(logsheetPathMAT,'file')~=2
-    save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the logsheet.
-end
+logsheetPathFieldValueChanged(fig);

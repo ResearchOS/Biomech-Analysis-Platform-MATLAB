@@ -20,10 +20,8 @@ load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings
 
 dataType=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
 trialSubject=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;
-varName=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName;
 
 if ~any([isempty(dataType) isempty(trialSubject)])
-% if ~any([isempty(dataType) isempty(trialSubject) isempty(varName)])
     return; % All metadata present, all good
 end
 

@@ -157,13 +157,13 @@ handles.Import.dataTypeDropDown=uidropdown(importTab,'Items',{'','char','double'
 handles.Import.trialSubjectDropDown=uidropdown(importTab,'Items',{'','Trial','Subject'},'Tooltip','Variable is Trial or Subject Level','Editable','off','Tag','TrialSubjectDropDown','ValueChangedFcn',@(trialSubjectDropDown,event) trialSubjectDropDownValueChanged(trialSubjectDropDown));
 
 % 17. Variable name in code button
-handles.Import.assignVariableButton=uibutton(importTab,'push','Text','Assign var','Tag','AssignVariableButton','Tooltip','Assign logsheet data to variable','ButtonPushedFcn',@(assignVariableButton,event) assignVariableButtonPushed(assignVariableButton));
+% handles.Import.assignVariableButton=uibutton(importTab,'push','Text','Assign var','Tag','AssignVariableButton','Tooltip','Assign logsheet data to variable','ButtonPushedFcn',@(assignVariableButton,event) assignVariableButtonPushed(assignVariableButton));
 
 % 18. Variable name field
-handles.Import.logVarNameField=uieditfield(importTab,'text','Value','','Tag','LogVarNameField','Editable','off','Tooltip','Name of the Variable for this Logsheet Data','ValueChangedFcn',@(logVarNameField,event) logVarNameFieldValueChanged(logVarNameField));
+% handles.Import.logVarNameField=uieditfield(importTab,'text','Value','','Tag','LogVarNameField','Editable','off','Tooltip','Name of the Variable for this Logsheet Data','ValueChangedFcn',@(logVarNameField,event) logVarNameFieldValueChanged(logVarNameField));
 
 % 19. Variable names list box
-handles.Import.variableNamesListbox=uilistbox(importTab,'Multiselect','off','Tag','VariableNamesListbox','Items',{'No Vars'});
+% handles.Import.variableNamesListbox=uilistbox(importTab,'Multiselect','off','Tag','VariableNamesListbox','Items',{'No Vars'});
 
 % 20. Variable search field
 handles.Import.varSearchField=uieditfield(importTab,'text','Value','Search','Tag','VarSearchField','ValueChangedFcn',@(varSearchField,event) varSearchFieldValueChanged(varSearchField));
@@ -172,7 +172,7 @@ handles.Import.varSearchField=uieditfield(importTab,'text','Value','Search','Tag
 handles.Import.runLogImportButton=uibutton(importTab,'push','Text','Run Logsheet Import','Tag','RunLogImportButton','Tooltip','Import logsheet data','ButtonPushedFcn',@(runLogImportButton,event) runLogImportButtonPushed(runLogImportButton));
 
 % 22. Create argument button
-handles.Import.createArgButton=uibutton(importTab,'push','Text','Create Arg','Tag','CreateArgButton','Tooltip','Create new variable','ButtonPushedFcn',@(createArgButton,event) createArgButtonPushed(createArgButton));
+% handles.Import.createArgButton=uibutton(importTab,'push','Text','Create Arg','Tag','CreateArgButton','Tooltip','Create new variable','ButtonPushedFcn',@(createArgButton,event) createArgButtonPushed(createArgButton));
 
 % 23. Specify trials UI tree
 handles.Import.specifyTrialsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeSelectionChanged(specifyTrialsUITree),'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree),'Tag','SpecifyTrialsUITree');
@@ -197,9 +197,8 @@ importTab.UserData=struct('LogsheetPathButton',handles.Import.logsheetPathButton
     'TrialIDColHeaderDataTypeLabel',handles.Import.trialIDColHeaderDataTypeLabel,'TrialIDColHeaderDataTypeField',handles.Import.trialIDColHeaderDataTypeField,'TargetTrialIDColHeaderLabel',handles.Import.targetTrialIDColHeaderLabel,...
     'TargetTrialIDColHeaderField',handles.Import.targetTrialIDColHeaderField,'OpenLogsheetButton',handles.Import.openLogsheetButton,'LogVarsUITree',handles.Import.logVarsUITree,...
     'DataTypeLabel',handles.Import.dataTypeLabel,'DataTypeDropDown',handles.Import.dataTypeDropDown,'TrialSubjectDropDown',handles.Import.trialSubjectDropDown,...
-    'AssignVariableButton',handles.Import.assignVariableButton,'LogVarNameField',handles.Import.logVarNameField,...
-    'VariableNamesListbox',handles.Import.variableNamesListbox,'VarSearchField',handles.Import.varSearchField,'RunLogImportButton',handles.Import.runLogImportButton,...
-    'CreateArgButton',handles.Import.createArgButton,'SpecifyTrialsUITree',handles.Import.specifyTrialsUITree,'NewSpecifyTrialsButton',handles.Import.newSpecifyTrialsButton,...
+    'VarSearchField',handles.Import.varSearchField,'RunLogImportButton',handles.Import.runLogImportButton,...
+    'SpecifyTrialsUITree',handles.Import.specifyTrialsUITree,'NewSpecifyTrialsButton',handles.Import.newSpecifyTrialsButton,...
     'RemoveSpecifyTrialsButton',handles.Import.removeSpecifyTrialsButton,'ImportFcnDropDown',handles.Import.importFcnDropDown,'CheckAllLogVarsUITreeButton',handles.Import.checkAllLogVarsUITreeButton,'UncheckAllLogVarsUITreeButton',handles.Import.uncheckAllLogVarsUITreeButton);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
@@ -494,13 +493,19 @@ processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the settings tab
-
+% 1. Create gui workspace variable checkbox
+% handles.Settings.guiVarCheckbox=uicheckbox(settingsTab,'Text','GUI workspace variable','Value',1,'Tag','GUIVarCheckbox','Tooltip','Check to store GUI variable to workspace. Useful for debugging GUI.','ValueChangedFcn',@(guiVarCheckbox) guiVarCheckboxValueChanged(guiVarCheckbox,event));
+% 
+% 
+% 
+% settingsTab.UserData=struct('GUIVarCheckbox',handles.Settings.guiVarCheckbox);
+% 
+% drawnow;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% AFTER COMPONENT INITIALIZATION, READ PROJECT SETTINGS FROM MAT FILE
 setappdata(fig,'handles',handles); % Needed for resetProjectAccess_Visibility
-assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected
 
 % 0. Turn off visibility to everything on the Projects tab except for the
 % add project button, the drop down, and the label.
@@ -552,10 +557,11 @@ box(handles.Process.mapFigure,'on');
 % 9. Whether the project name was found in the file or not, run the callback to set up the app properly.
 switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
 
+% 10. Set components according to the project-independent settings from the settings tab
+
 % 11. Finish pgui creation
 % 0. Assign component handles to GUI and send GUI variable to base workspace
 drawnow;
+assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected
 a=toc;
 disp(['pgui startup time is ' num2str(a) ' seconds']);
-
-% setappdata(fig,'allowAllTabs',1); % Indicates that project setup took place properly, and all tabs can be used.

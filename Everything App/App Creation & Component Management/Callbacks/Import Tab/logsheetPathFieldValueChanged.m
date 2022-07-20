@@ -107,8 +107,8 @@ for i=1:size(logsheetVar,2)
     if ~(isfield(NonFcnSettingsStruct.Import,'LogsheetVars') && isfield(NonFcnSettingsStruct.Import.LogsheetVars,headerNameVar))
         NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType='';
         NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject='';
-        NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName='';
-    end    
+%         NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName=headerNameVar;
+    end
 
     if i==1
         handles.Import.logVarsUITree.SelectedNodes=a;
@@ -117,10 +117,10 @@ for i=1:size(logsheetVar,2)
 end
 
 headerName=handles.Import.logVarsUITree.SelectedNodes.Text;
-headerNameVar=genvarname(headerName);
+% headerNameVar=genvarname(headerName);
 
 handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
 handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;
-handles.Import.logVarNameField.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName;
+% handles.Import.logVarNameField.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName;
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.

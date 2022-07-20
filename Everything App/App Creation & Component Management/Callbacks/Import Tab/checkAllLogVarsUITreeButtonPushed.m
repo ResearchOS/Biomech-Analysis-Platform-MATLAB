@@ -16,8 +16,7 @@ for i=1:length(handles.Import.logVarsUITree.Children)
     headerNameVar=genvarname(headerName);
 
     if ~isempty(NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType) && ...
-            ~isempty(NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject) % && ...
-%             ~isempty(NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName)
+            ~isempty(NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject)
 
         handles.Import.logVarsUITree.CheckedNodes=[handles.Import.logVarsUITree.CheckedNodes; handles.Import.logVarsUITree.Children(i)];
 

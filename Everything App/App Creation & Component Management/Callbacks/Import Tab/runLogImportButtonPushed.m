@@ -56,6 +56,13 @@ useHeaderDataTypesSubject=useHeaderDataTypes(subjectCheckedVarsIdx);
 subjIDCol=ismember(headerNames,subjIDColHeader);
 targetTrialIDCol=ismember(headerNames,targetTrialIDColHeader);
 
+missingSubNameRows=cellfun(@isempty,logsheetVar(:,subjIDCol));
+
+if any(missingSubNameRows)
+    disp(['Data not saved! Logsheet missing subject names in the following rows: ' num2str(find(missingSubNameRows'==1))]);
+    return;
+end
+
 assert(any(subjIDCol));
 assert(any(targetTrialIDCol));
 
@@ -71,58 +78,145 @@ elseif ispc==1
 end
 
 %% Trial level data
-for rowNum=rowNums    
+if any(trialCheckedVarsIdx) % There is at least one trial level variable
+    for rowNum=rowNums
 
-    rowDataTrial=logsheetVar(rowNum,useHeadersIdxNumsTrial);       
-    subName=logsheetVar{rowNum,subjIDCol};
-    trialName=logsheetVar{rowNum,targetTrialIDCol};
+        rowDataTrial=logsheetVar(rowNum,useHeadersIdxNumsTrial);
+        subName=logsheetVar{rowNum,subjIDCol};
+        trialName=logsheetVar{rowNum,targetTrialIDCol};
 
-    folderName=[dataPath 'MAT Data Files' slash subName slash];
+        folderName=[dataPath 'MAT Data Files' slash subName slash];
 
-    % Handle trial level data
-    for varNum=1:length(rowDataTrial)
+        % Handle trial level data
+        for varNum=1:length(rowDataTrial)
 
-        var=rowDataTrial{varNum};
+            var=rowDataTrial{varNum};
 
-        if isa(var,'cell')
-            var=var{1};
-        end
+            if isa(var,'cell')
+                var=var{1};
+            end
 
-        switch useHeaderDataTypesTrial{varNum}
-            case 'char'                
-                if isa(var,'double')
-                    if isnan(var)
-                        var='';
-                    else
-                        var=num2str(var);
+            switch useHeaderDataTypesTrial{varNum}
+                case 'char'
+                    if isa(var,'double')
+                        if isnan(var)
+                            var='';
+                        else
+                            var=num2str(var);
+                        end
                     end
-                end                
-            case 'double'
-                if isa(var,'char')
-                    var=str2double(var);
-                end
+                case 'double'
+                    if isa(var,'char')
+                        var=str2double(var);
+                    end
+            end
+
+            assert(isa(var,useHeaderDataTypesTrial{varNum}));
+
+            rowDataTrialStruct.(useHeaderVarNamesTrial{varNum})=var;
+
         end
 
-        assert(isa(var,useHeaderDataTypesTrial{varNum}));   
+        % Save trial level data
+        if exist(folderName,'dir')~=7
+            mkdir(folderName);
+        end
 
-        rowDataTrialStruct.(useHeaderVarNamesTrial{varNum})=var;
+        fileName=[folderName trialName '_' subName '_' projectName '.mat'];
+
+        if exist(fileName,'file')~=2
+            save(fileName,'-struct','rowDataTrialStruct','-v6','-mat');
+        else
+            save(fileName,'-struct','rowDataTrialStruct','-append');
+        end
 
     end
-
-    % Save trial level data    
-    if exist(folderName,'dir')~=7
-        mkdir(folderName);
-    end
-
-    fileName=[folderName trialName '_' subName '_' projectName '.mat'];
-
-    if exist(fileName,'file')~=2
-        save(fileName,'-struct','rowDataTrialStruct','-v6','-mat');
-    else
-        save(fileName,'-struct','rowDataTrialStruct','-append');
-    end
-
 end
 toc;
+
 %% Subject level data
-% rowDataSubject=logsheetVar(rowNum,useHeadersIdxNumsSubject);
+% Need to incorporate specifyTrials here too
+
+subNamesAll=logsheetVar(numHeaderRows+1:end,subjIDCol);
+subNames=unique(subNamesAll); % The complete list of subject names
+
+rowNums=cell(length(subNames),1);
+for i=1:length(subNames)
+
+    subName=subNames{i};
+
+    rowNums{i}=[zeros(numHeaderRows,1); ismember(subNamesAll,subName)];
+
+end
+
+if any(subjectCheckedVarsIdx)
+    for subNum=1:length(subNames)
+        currSubRows=logical(rowNums{subNum});
+
+        subName=subNames{subNum};
+
+        folderName=[dataPath 'MAT Data Files' slash subName slash];
+
+        for varNum=1:length(useHeadersIdxNumsSubject)
+
+            varAll=logsheetVar(currSubRows,useHeadersIdxNumsSubject(varNum));
+
+            count=0;
+            for i=1:length(varAll)
+
+                if any(isnan(varAll{i})) || isempty(varAll{i})
+                    continue;
+                end
+
+                count=count+1;
+                if count==1
+                    var=varAll{i};
+                else
+                    if ~isequal(var,varAll{i})
+                        disp(['Non-unique entries in logsheet for subject ' subName ' variable ' headerNames{useHeadersIdxNumsSubject(varNum)}]);
+                        return;
+                    end
+                end
+
+            end
+
+            if isa(var,'cell')
+                var=var{1};
+            end
+
+            switch useHeaderDataTypesSubject{varNum}
+                case 'char'
+                    if isa(var,'double')
+                        if isnan(var)
+                            var='';
+                        else
+                            var=num2str(var);
+                        end
+                    end
+                case 'double'
+                    if isa(var,'char')
+                        var=str2double(var);
+                    end
+            end
+
+            assert(isa(var,useHeaderDataTypesSubject{varNum}));
+
+            rowDataSubjectStruct.(useHeaderVarNamesSubject{varNum})=var;
+
+        end
+
+        % Save trial level data
+        if exist(folderName,'dir')~=7
+            mkdir(folderName);
+        end
+
+        fileName=[folderName subName '_' projectName '.mat'];
+
+        if exist(fileName,'file')~=2
+            save(fileName,'-struct','rowDataSubjectStruct','-v6','-mat');
+        else
+            save(fileName,'-struct','rowDataSubjectStruct','-append');
+        end
+
+    end
+end

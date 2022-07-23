@@ -105,6 +105,9 @@ else
     setappdata(fig,'logsheetPath','');
 end
 
+%% Process tab
+getVarsList(fig,projectName); % Fill in the Process tab list of variables
+
 %% Plot tab
 handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;
 

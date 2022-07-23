@@ -8,7 +8,11 @@ projectName=getappdata(fig,'projectName');
 
 projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct');
+if ismember('VariableNamesList',whos('-file',projectSettingsMATPath))
+    load(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList');
+else
+    load(projectSettingsMATPath,'NonFcnSettingsStruct');
+end
 
 macAddress=getComputerID();
 
@@ -47,8 +51,8 @@ subjectCheckedVarsIdx=ismember(useHeaderTrialSubject,'Subject');
 useHeadersIdxNumsTrial=useHeadersIdxNums(trialCheckedVarsIdx); % Logsheet columns for trial level vars
 useHeadersIdxNumsSubject=useHeadersIdxNums(subjectCheckedVarsIdx); % Logsheet columns for subject level vars
 
-useHeaderVarNamesTrial=useHeaderVarNames(trialCheckedVarsIdx);
-useHeaderVarNamesSubject=useHeaderVarNames(subjectCheckedVarsIdx);
+useHeaderVarNamesTrial=useHeaderVarNames(trialCheckedVarsIdx)';
+useHeaderVarNamesSubject=useHeaderVarNames(subjectCheckedVarsIdx)';
 
 useHeaderDataTypesTrial=useHeaderDataTypes(trialCheckedVarsIdx);
 useHeaderDataTypesSubject=useHeaderDataTypes(subjectCheckedVarsIdx);
@@ -124,6 +128,10 @@ if any(trialCheckedVarsIdx) % There is at least one trial level variable
 
         fileName=[folderName trialName '_' subName '_' projectName '.mat'];
 
+        VariableNamesList=loadVarList(fileName);        
+
+        rowDataTrialStruct.VariableNamesList=unique([VariableNamesList; useHeaderVarNamesTrial]);
+
         if exist(fileName,'file')~=2
             save(fileName,'-struct','rowDataTrialStruct','-v6','-mat');
         else
@@ -132,7 +140,6 @@ if any(trialCheckedVarsIdx) % There is at least one trial level variable
 
     end
 end
-toc;
 
 %% Subject level data
 % Need to incorporate specifyTrials here too
@@ -210,7 +217,9 @@ if any(subjectCheckedVarsIdx)
             mkdir(folderName);
         end
 
-        fileName=[folderName subName '_' projectName '.mat'];
+        fileName=[folderName subName '_' projectName '.mat'];               
+
+        rowDataSubjectStruct.VariableNamesList=unique([VariableNamesList; useHeaderVarNamesSubject]);
 
         if exist(fileName,'file')~=2
             save(fileName,'-struct','rowDataSubjectStruct','-v6','-mat');
@@ -220,3 +229,12 @@ if any(subjectCheckedVarsIdx)
 
     end
 end
+
+% Save the saved variables to the project settings .mat file
+
+a=toc;
+disp(['Variables successfully imported from logsheet in ' num2str(round(a,2)) ' seconds: ']);
+
+cellDisp(1,:)=useHeaderDataTypes';
+cellDisp(2,:)=useHeaderTrialSubject';
+disp(cell2table(cellDisp,'VariableNames',headerNames));

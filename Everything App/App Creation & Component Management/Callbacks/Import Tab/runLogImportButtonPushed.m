@@ -6,16 +6,15 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
+assignin('base','gui',fig);
 
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-if ismember('VariableNamesList',projectSettingsVarNames)
-    load(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList');
-else
-    load(projectSettingsMATPath,'NonFcnSettingsStruct');
-end
+splitName='Logsheet'; % The name of the current processing split
+splitCode=genSplitCode(projectSettingsMATPath,splitName);
+
+load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 macAddress=getComputerID();
 
@@ -28,7 +27,7 @@ targetTrialIDColHeader=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
 load(logsheetPathMAT,'logsheetVar');
 
 headerNames=logsheetVar(1,:);
-headerVarNames=genvarname(headerNames);
+% headerVarNames=genvarname(headerNames);
 
 % Get the header names, data types, and trial/subject levels that are checked from the log vars UI tree
 checkedNodes=handles.Import.logVarsUITree.CheckedNodes;
@@ -126,11 +125,9 @@ if any(trialCheckedVarsIdx) % There is at least one trial level variable
 
             assert(isa(var,useHeaderDataTypesTrial{varNum}));
 
-            rowDataTrialStruct.(useHeaderVarNamesTrial{varNum})=var;
+            rowDataTrialStruct.([useHeaderVarNamesTrial{varNum} '_' splitCode])=var;
 
-        end
-
-        setArgLogsheet(subName,trialName,repNum,rowDataTrialStruct);
+        end        
 
         folderName=[dataPath 'MAT Data Files' slash subName slash];
 
@@ -217,11 +214,9 @@ if any(subjectCheckedVarsIdx)
 
             assert(isa(var,useHeaderDataTypesSubject{varNum}));            
 
-            rowDataSubjectStruct.(useHeaderVarNamesSubject{varNum})=var;
+            rowDataSubjectStruct.([useHeaderVarNamesSubject{varNum} '_' splitCode])=var;
 
         end
-
-        setArg(subName,[],[],varNames);
 
         % Save subject level data
         if exist(folderName,'dir')~=7
@@ -239,12 +234,8 @@ if any(subjectCheckedVarsIdx)
     end
 end
 
-numVars=length(useHeaderNames);
-
-splitName='Logsheet'; % The name of the current processing split
-
-% Save the saved variables to the project settings .mat file
-
+% Save the saved variables' metadata to the project settings .mat file
+setSavedVarsList_Logsheet(projectName,splitName,useHeaderVarNames)
 
 a=toc;
 disp(['Variables successfully imported from logsheet in ' num2str(round(a,2)) ' seconds: ']);

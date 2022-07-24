@@ -128,9 +128,9 @@ if any(trialCheckedVarsIdx) % There is at least one trial level variable
 
         fileName=[folderName trialName '_' subName '_' projectName '.mat'];
 
-        VariableNamesList=loadVarList(fileName);        
+%         VariableNamesList=loadVarList(fileName);        
 
-        rowDataTrialStruct.VariableNamesList=unique([VariableNamesList; useHeaderVarNamesTrial]);
+%         rowDataTrialStruct.VariableNamesList=unique([VariableNamesList; useHeaderVarNamesTrial]);
 
         if exist(fileName,'file')~=2
             save(fileName,'-struct','rowDataTrialStruct','-v6','-mat');
@@ -219,7 +219,7 @@ if any(subjectCheckedVarsIdx)
 
         fileName=[folderName subName '_' projectName '.mat'];               
 
-        rowDataSubjectStruct.VariableNamesList=unique([VariableNamesList; useHeaderVarNamesSubject]);
+%         rowDataSubjectStruct.VariableNamesList=unique([VariableNamesList; useHeaderVarNamesSubject]);
 
         if exist(fileName,'file')~=2
             save(fileName,'-struct','rowDataSubjectStruct','-v6','-mat');
@@ -230,11 +230,28 @@ if any(subjectCheckedVarsIdx)
     end
 end
 
+numVars=length(useHeaderNames);
+
 % Save the saved variables to the project settings .mat file
+if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
+    splitCode=genSplitCode(1);
+    VariableNamesList.GUINames=useHeaderNames;
+    VariableNamesList.SaveNames=useHeaderVarNames;
+    VariableNamesList.Splits=repmat({splitCode},numVars,1);
+    VariableNamesList.Descriptions=repmat({''},numVars,1);
+else
+    % Get the number of splits
+    numSplits=length(unique(VariableNamesList.Splits));
+    splitCode=genSplitCode(numSplits+1);
+    VariableNamesList.GUINames=[VariableNamesList.GUINames; useHeaderNames];
+    VariableNamesList.SaveNames=[VariableNamesList.SaveNames; useHeaderVarNames];
+    VariableNamesList.Splits=[VariableNamesList.Splits; repmat(splitCode,numVars,1)];
+    VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({''},numVars,1)];
+end
 
 a=toc;
 disp(['Variables successfully imported from logsheet in ' num2str(round(a,2)) ' seconds: ']);
 
 cellDisp(1,:)=useHeaderDataTypes';
 cellDisp(2,:)=useHeaderTrialSubject';
-disp(cell2table(cellDisp,'VariableNames',headerNames));
+disp(cell2table(cellDisp,'VariableNames',useHeaderNames));

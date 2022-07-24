@@ -8,7 +8,10 @@ projectName=getappdata(fig,'projectName');
 
 projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-if ismember('VariableNamesList',whos('-file',projectSettingsMATPath))
+projectSettingsVars=whos('-file',projectSettingsMATPath);
+projectSettingsVarNames={projectSettingsVars.name};
+
+if ismember('VariableNamesList',projectSettingsVarNames)
     load(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList');
 else
     load(projectSettingsMATPath,'NonFcnSettingsStruct');
@@ -67,8 +70,16 @@ if any(missingSubNameRows)
     return;
 end
 
-assert(any(subjIDCol));
-assert(any(targetTrialIDCol));
+try
+    assert(any(subjIDCol));
+catch
+    disp(['Missing subject codename column header. Expected header name: ' headerNames{subjIDCol}]);
+end
+try
+    assert(any(targetTrialIDCol));
+catch
+    disp(['Missing target trial ID column header. Expected header name: ' headerNames{targetTrialIDCol}]);
+end
 
 % Get the row numbers from the specify trials selected
 rowNums=numHeaderRows+1:size(logsheetVar,1); % Temporarily use all rows until specify trials is completed.
@@ -87,9 +98,7 @@ if any(trialCheckedVarsIdx) % There is at least one trial level variable
 
         rowDataTrial=logsheetVar(rowNum,useHeadersIdxNumsTrial);
         subName=logsheetVar{rowNum,subjIDCol};
-        trialName=logsheetVar{rowNum,targetTrialIDCol};
-
-        folderName=[dataPath 'MAT Data Files' slash subName slash];
+        trialName=logsheetVar{rowNum,targetTrialIDCol};        
 
         % Handle trial level data
         for varNum=1:length(rowDataTrial)
@@ -121,16 +130,16 @@ if any(trialCheckedVarsIdx) % There is at least one trial level variable
 
         end
 
+        setArgLogsheet(subName,trialName,repNum,rowDataTrialStruct);
+
+        folderName=[dataPath 'MAT Data Files' slash subName slash];
+
         % Save trial level data
         if exist(folderName,'dir')~=7
             mkdir(folderName);
         end
 
         fileName=[folderName trialName '_' subName '_' projectName '.mat'];
-
-%         VariableNamesList=loadVarList(fileName);        
-
-%         rowDataTrialStruct.VariableNamesList=unique([VariableNamesList; useHeaderVarNamesTrial]);
 
         if exist(fileName,'file')~=2
             save(fileName,'-struct','rowDataTrialStruct','-v6','-mat');
@@ -206,20 +215,20 @@ if any(subjectCheckedVarsIdx)
                     end
             end
 
-            assert(isa(var,useHeaderDataTypesSubject{varNum}));
+            assert(isa(var,useHeaderDataTypesSubject{varNum}));            
 
             rowDataSubjectStruct.(useHeaderVarNamesSubject{varNum})=var;
 
         end
 
-        % Save trial level data
+        setArg(subName,[],[],varNames);
+
+        % Save subject level data
         if exist(folderName,'dir')~=7
             mkdir(folderName);
         end
 
         fileName=[folderName subName '_' projectName '.mat'];               
-
-%         rowDataSubjectStruct.VariableNamesList=unique([VariableNamesList; useHeaderVarNamesSubject]);
 
         if exist(fileName,'file')~=2
             save(fileName,'-struct','rowDataSubjectStruct','-v6','-mat');
@@ -232,22 +241,10 @@ end
 
 numVars=length(useHeaderNames);
 
+splitName='Logsheet'; % The name of the current processing split
+
 % Save the saved variables to the project settings .mat file
-if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
-    splitCode=genSplitCode(1);
-    VariableNamesList.GUINames=useHeaderNames;
-    VariableNamesList.SaveNames=useHeaderVarNames;
-    VariableNamesList.Splits=repmat({splitCode},numVars,1);
-    VariableNamesList.Descriptions=repmat({''},numVars,1);
-else
-    % Get the number of splits
-    numSplits=length(unique(VariableNamesList.Splits));
-    splitCode=genSplitCode(numSplits+1);
-    VariableNamesList.GUINames=[VariableNamesList.GUINames; useHeaderNames];
-    VariableNamesList.SaveNames=[VariableNamesList.SaveNames; useHeaderVarNames];
-    VariableNamesList.Splits=[VariableNamesList.Splits; repmat(splitCode,numVars,1)];
-    VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({''},numVars,1)];
-end
+
 
 a=toc;
 disp(['Variables successfully imported from logsheet in ' num2str(round(a,2)) ' seconds: ']);

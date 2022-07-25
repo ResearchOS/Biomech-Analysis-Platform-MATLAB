@@ -106,7 +106,17 @@ else
 end
 
 %% Process tab
-getVarsList(fig,projectName); % Fill in the Process tab list of variables
+projectSettingsVars=whos('-file',projectSettingsMATPath);
+projectSettingsVarNames={projectSettingsVars.name};
+
+if ismember('VariableNamesList',projectSettingsVarNames)
+    load(projectSettingsMATPath,'VariableNamesList');
+    handles.Process.varsListbox.Items=VariableNamesList.GUINames;
+    handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
+    handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
+else
+    
+end
 
 %% Plot tab
 handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;

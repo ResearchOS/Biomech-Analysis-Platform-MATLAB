@@ -30,6 +30,10 @@ end
 
 splitCode=genSplitCode(projectSettingsMATPath,splitName);
 
+if ~iscell(splitCode)
+    splitCode={splitCode};
+end
+
 numVars=length(guiNames);
 
 if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
@@ -37,7 +41,7 @@ if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
     VariableNamesList.SaveNames=guiVarNames;
     VariableNamesList.SplitNames=repmat(splitName,numVars,1);
     VariableNamesList.SplitCodes=repmat(splitCode,numVars,1);
-    VariableNamesList.Descriptions=repmat({''},numVars,1);
+    VariableNamesList.Descriptions=repmat({'Enter Arg Description Here'},numVars,1);
     save(projectSettingsMATPath,'VariableNamesList','-append');
     return;
 end
@@ -52,7 +56,7 @@ if ~ismember(splitName,VariableNamesList.SplitNames)
     VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames]; % Does not include the split code
     VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,numVars,1)];
     VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,numVars,1)];
-    VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({''},numVars,1)];
+    VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVars,1)];
     save(projectSettingsMATPath,'VariableNamesList','-append');
     return;
 end
@@ -68,6 +72,6 @@ VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(currVarsNotInSp
 VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(currVarsNotInSplit)]; % Does not include the split code
 VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,sum(currVarsNotInSplit),1)];
 VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
-VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({''},numVars,1)];
+VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVars,1)];
 
 save(projectSettingsMATPath,'VariableNamesList','-append');

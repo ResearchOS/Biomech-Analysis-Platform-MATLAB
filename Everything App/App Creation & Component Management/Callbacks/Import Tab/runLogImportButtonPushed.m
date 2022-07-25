@@ -235,7 +235,7 @@ if any(subjectCheckedVarsIdx)
 end
 
 % Save the saved variables' metadata to the project settings .mat file
-setSavedVarsList_Logsheet(splitName,useHeaderVarNames)
+setSavedVarsList_Logsheet(splitName,useHeaderNames)
 
 a=toc;
 disp(['Variables successfully imported from logsheet in ' num2str(round(a,2)) ' seconds: ']);

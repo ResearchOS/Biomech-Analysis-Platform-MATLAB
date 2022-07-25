@@ -1,10 +1,9 @@
-function []=setSavedVarsList_Logsheet(projectName,splitName,guiNames)
+function []=setSavedVarsList_Logsheet(splitName,guiNames)
 
 %% PURPOSE: UPDATE AND SAVE THE LIST OF SAVED VARIABLES TO THE CURRENT PROJECT'S SETTINGS MAT PATH
 % NOTE: IN THIS LOGSHEET VERSION OF SETSAVEDVARSLIST, IT ACCEPTS THE NAMES
 % OF THE VARS AS SPECIFIED IN THE GUI
 % Inputs:
-% projectName: Name of the current project (char)
 % splitName: The name of the current split to save the variables to (char)
 % guiNames: The names of the variables as specified in the GUI (cell array
 % of chars)
@@ -29,7 +28,7 @@ if ~iscell(splitName)
     splitName={splitName};
 end
 
-splitCode=genSplitCode;
+splitCode=genSplitCode(projectSettingsMATPath,splitName);
 
 numVars=length(guiNames);
 

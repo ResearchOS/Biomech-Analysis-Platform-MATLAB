@@ -27,6 +27,11 @@ while true
 
     fcnName=fcnName{1};
 
+    if isequal(fcnName,'Logsheet')
+        disp('Function cannot be named logsheet!');
+        continue;
+    end
+
     if isvarname(fcnName)
         break;
     end
@@ -74,6 +79,8 @@ while true
 end
 
 %% OPTIONAL: Specify the purpose of the function
+
+%% Create the entry for this function in the FunctionNamesList variable in the projectSettingsMATPath
 
 %% Create the function from template.
 templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'Process_Template' fcnLevel '.m'];

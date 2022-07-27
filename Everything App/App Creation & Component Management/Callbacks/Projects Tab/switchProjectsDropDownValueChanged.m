@@ -118,6 +118,12 @@ if ismember('FunctionNamesList',projectSettingsVarNames)
     plotMapFigure(FunctionNamesList);
 else
     createNode(fig,'Logsheet','0','Logsheet','0',[0 0]); % Create the logsheet node
+    FunctionNamesList.FunctionNames={'Logsheet'};
+    FunctionNamesList.SplitNames={'Logsheet'};
+    FunctionNamesList.InputVariableNames={''}; % Do I need to somehow include split suffix here?
+    FunctionNamesList.OutputVariableNames={''}; % Do I need to somehow include split suffix here? This suffix should always be the current split name?
+    FunctionNamesList.Descriptions={''};
+    save(projectSettingsMATPath,'FunctionNamesList','-append');
 end
 
 % Fill in metadata

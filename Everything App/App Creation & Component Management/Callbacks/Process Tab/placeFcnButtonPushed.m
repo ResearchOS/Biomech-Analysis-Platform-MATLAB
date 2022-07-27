@@ -34,3 +34,5 @@ fcnName=fcnNames{idx};
 %% Have the user select where to place the function on the plot
 axes(handles.Process.mapFigure);
 loc=ginput(1);
+
+%% 

@@ -11,10 +11,7 @@ setappdata(fig,'projectName',projectName);
 % 1. Load the project-specific settings MAT file (if it exists)
 % Get the path to that file from the project-independent settings MAT file.
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
-varNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
-projectNames=varNames(~ismember(varNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
-
-if ~ismember(projectName,projectNames)
+if exist(settingsMATPath,'file')~=2
     resetProjectAccess_Visibility(fig,1);   
     disp(['Project-specific settings file path could not be found in project-independent settings MAT file (project variable missing)']);
     disp(['To resolve, either enter the Code Path for this project, or check the settings MAT files']);
@@ -23,11 +20,17 @@ if ~ismember(projectName,projectNames)
     return;
 end
 
+varNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
+projectNames=varNames(~ismember(varNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
+
+if ~ismember(projectName,projectNames)
+    disp(['Unknown error: project name ' projectName ' not found in the list of projects. Try restarting the GUI']);
+    return;
+end
+
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
 macAddress=getComputerID();
-
-% assert(isequal(settingsStruct.(macAddress).ProjectName,projectName));
 
 if ~isfield(settingsStruct,macAddress) % This project has never been accessed on this computer.
     resetProjectAccess_Visibility(fig,1);
@@ -38,8 +41,6 @@ if ~isfield(settingsStruct,macAddress) % This project has never been accessed on
 end
 
 projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Get the file path of the project-specific settings MAT file
-
-setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
 
 if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist
     resetProjectAccess_Visibility(fig,1);
@@ -52,8 +53,9 @@ if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MA
     return;
 end
 
-NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
-NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
+
+load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 %% Projects tab
 codePath=NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath;
@@ -106,25 +108,30 @@ else
 end
 
 %% Process tab
-% Delete all graphics objects in the plot
+% Delete all graphics objects in the plot, and all splits nodes
 delete(handles.Process.mapFigure.Children);
+delete(handles.Process.splitsUITree.Children);
 
 % Fill in processing map figure
 projectSettingsVars=whos('-file',projectSettingsMATPath);
 projectSettingsVarNames={projectSettingsVars.name};
 
-if ismember('FunctionNamesList',projectSettingsVarNames)
-    load(projectSettingsMATPath,'FunctionNamesList');
-    plotMapFigure(FunctionNamesList);
+if ismember('Digraph',projectSettingsVarNames)
+    load(projectSettingsMATPath,'Digraph');    
 else
-    createNode(fig,'Logsheet','0','Logsheet','0',[0 0]); % Create the logsheet node
-    FunctionNamesList.FunctionNames={'Logsheet'};
-    FunctionNamesList.SplitNames={'Logsheet'};
-    FunctionNamesList.InputVariableNames={''}; % Do I need to somehow include split suffix here?
-    FunctionNamesList.OutputVariableNames={''}; % Do I need to somehow include split suffix here? This suffix should always be the current split name?
-    FunctionNamesList.Descriptions={''};
-    save(projectSettingsMATPath,'FunctionNamesList','-append');
+    Digraph=digraph;
+    Digraph=addnode(Digraph,1);
+    Digraph.Nodes.FunctionNames={'Logsheet'};
+    Digraph.Nodes.Descriptions={{''}};
+    Digraph.Nodes.InputVariableNames={{''}}; % Name in file
+    Digraph.Nodes.OutputVariableNames={{''}}; % Name in file
+    Digraph.Nodes.Coordinates=[0 0];  
+    Digraph.Nodes.SplitNames={{'Default'}};
+
+    save(projectSettingsMATPath,'Digraph','-append');
 end
+
+plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 
 % Fill in metadata
 if ismember('VariableNamesList',projectSettingsVarNames)
@@ -139,8 +146,7 @@ if ismember('VariableNamesList',projectSettingsVarNames)
     end
 else
     handles.Process.varsListbox.Items={'No Vars'};
-    handles.Process.varsListbox.Value='No Vars';
-    delete(handles.Process.splitsUITree.Children);
+    handles.Process.varsListbox.Value='No Vars';    
 end
 
 %% Plot tab

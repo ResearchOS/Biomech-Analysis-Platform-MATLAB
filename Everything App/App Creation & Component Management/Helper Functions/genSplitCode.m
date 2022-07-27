@@ -30,6 +30,15 @@ end
 splitNums=str2double(VariableNamesList.SplitCodes);
 splitCode=max(splitNums)+1;
 
+switch splitCode
+    case splitCode>=100
+        splitCode=num2str(splitCode);
+    case splitCode>=10
+        splitCode=['0' num2str(splitCode)];
+    otherwise
+        splitCode=['00' num2str(splitCode)];
+end
+
 
 % key={'0','1','2','3','4','5','6','7','8','9',...
 %     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',...

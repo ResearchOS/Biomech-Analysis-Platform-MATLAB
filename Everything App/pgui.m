@@ -542,18 +542,19 @@ end
 
 % 4. Here, the project-independent settings MAT file exists, so read it.
 % mostRecentProjectName is guaranteed to exist.
-varNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
-if ~ismember(varNames,'mostRecentProjectName')    
+settingsVarNames=who('-file',settingsMATPath); % Get the list of all projects in the project-independent settings MAT file (each one is one variable).
+if ~ismember(settingsVarNames,'mostRecentProjectName')    
     return;
 end
 
 load(settingsMATPath,'mostRecentProjectName'); % Load the name of the most recently worked on project.
 
 % The most recent project's settings is NOT guaranteed to exist (if the user exited immediately after creating the project without entering the Code Path)
-projectNames=varNames(~ismember(varNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
+projectNames=settingsVarNames(~ismember(settingsVarNames,{'mostRecentProjectName','currTab','version'})); % Remove the most recent project name from the list of variables in the settings MAT file
 
 % 5. Set the projects drop down list
-handles.Projects.switchProjectsDropDown.Items=projectNames;
+[~,idx]=sort(upper(projectNames));
+handles.Projects.switchProjectsDropDown.Items=projectNames(idx);
 handles.Projects.switchProjectsDropDown.Value=mostRecentProjectName;
 % setappdata(fig,'projectName',mostRecentProjectName);
 
@@ -564,7 +565,8 @@ box(handles.Process.mapFigure,'on');
 % 9. Whether the project name was found in the file or not, run the callback to set up the app properly.
 switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged callback function to recall all of the project-specific metadata from the associated files.
 
-% 10. Set components according to the project-independent settings from the settings tab
+% 10. Set components according to the project-independent settings from the
+% settings tab (not done yet)
 
 % 11. Finish pgui creation
 % 0. Assign component handles to GUI and send GUI variable to base workspace

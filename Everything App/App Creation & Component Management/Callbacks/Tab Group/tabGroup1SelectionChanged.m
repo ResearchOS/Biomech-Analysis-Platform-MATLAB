@@ -10,8 +10,13 @@ handles=getappdata(fig,'handles');
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 
 currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
-prevTab=load(settingsMATPath,'currTab');
-prevTab=prevTab.currTab;
+
+if exist(settingsMATPath,'file')~=2
+    prevTab='Projects';
+else
+    prevTab=load(settingsMATPath,'currTab');
+    prevTab=prevTab.currTab;
+end
 
 if getappdata(fig,'allowAllTabs')==2 % All tabs
     okTabs={'Projects','Import','Process','Plot','Stats','Settings','Exemplar'};

@@ -11,7 +11,6 @@ function []=createNode(fig,fcnName,prevFcnName,fcnSplitName,prevFcnSplitName,coo
 
 fig=ancestor(fig,'figure','toplevel');
 handles=getappdata(fig,'handles');
-axes();
 
 nodeSize=60;
 nodeFaceColor='black';

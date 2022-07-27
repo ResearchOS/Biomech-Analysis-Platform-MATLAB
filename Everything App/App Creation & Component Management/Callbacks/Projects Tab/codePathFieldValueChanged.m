@@ -120,4 +120,4 @@ elseif exist(handles.Projects.dataPathField.Value,'file')==2
 end
 
 % Propagate changes to the rest of the GUI.
-% switchProjectsDropDownValueChanged(fig);
+switchProjectsDropDownValueChanged(fig);

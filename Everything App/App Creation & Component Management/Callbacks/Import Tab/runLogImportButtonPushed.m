@@ -11,7 +11,7 @@ assignin('base','gui',fig);
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 % projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-splitName='Logsheet'; % The name of the current processing split
+splitName='Default'; % The name of the current processing split
 splitCode=genSplitCode(projectSettingsMATPath,splitName);
 
 load(projectSettingsMATPath,'NonFcnSettingsStruct');

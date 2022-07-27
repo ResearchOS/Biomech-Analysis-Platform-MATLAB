@@ -15,8 +15,12 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 projectSettingsVars=whos('-file',projectSettingsMATPath);
 projectSettingsVarNames={projectSettingsVars.name};
 
+assert(ismember('Digraph',projectSettingsVarNames));
+
 if ismember('VariableNamesList',projectSettingsVarNames)
-    load(projectSettingsMATPath,'VariableNamesList');
+    load(projectSettingsMATPath,'VariableNamesList','Digraph');
+else
+    load(projectSettingsMATPath,'Digraph');
 end
 
 if size(guiNames,1)<size(guiNames,2)
@@ -62,9 +66,6 @@ if ~ismember(splitName,VariableNamesList.SplitNames)
     return;
 end
 
-%% Create/add on to split names struct, where each field name is a split name and the hierarchy in the UI tree should mirror what's in the struct
-
-
 %% Split name already exists
 % Check if any/all of the variables being saved are part of the
 % split already
@@ -82,4 +83,10 @@ handles.Process.varsListbox.Items=VariableNamesList.GUINames;
 handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
 handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
 
-save(projectSettingsMATPath,'VariableNamesList','-append');
+if isequal(Digraph.Nodes.SplitNames{1},{''})
+    Digraph.Nodes.SplitNames{1}={splitName};
+elseif ~ismember(splitName,Digraph.Nodes.SplitNames{1})    
+    Digraph.Nodes.SplitNames{1}=[Digraph.Nodes.SplitNames{1}; {splitName}];
+end
+
+save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');

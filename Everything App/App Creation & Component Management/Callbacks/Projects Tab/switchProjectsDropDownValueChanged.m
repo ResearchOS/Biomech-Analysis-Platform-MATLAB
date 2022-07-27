@@ -106,18 +106,35 @@ else
 end
 
 %% Process tab
+% Delete all graphics objects in the plot
+delete(handles.Process.mapFigure.Children);
+
+% Fill in processing map figure
 projectSettingsVars=whos('-file',projectSettingsMATPath);
 projectSettingsVarNames={projectSettingsVars.name};
 
+if ismember('FunctionNamesList',projectSettingsVarNames)
+    load(projectSettingsMATPath,'FunctionNamesList');
+    plotMapFigure(FunctionNamesList);
+else
+    createNode(fig,'Logsheet','0','Logsheet','0',[0 0]); % Create the logsheet node
+end
+
+% Fill in metadata
 if ismember('VariableNamesList',projectSettingsVarNames)
     load(projectSettingsMATPath,'VariableNamesList');
-    handles.Process.varsListbox.Items=VariableNamesList.GUINames;
+    [~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
+    handles.Process.varsListbox.Items=VariableNamesList.GUINames(alphabetIdx);
     handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
     varsListBoxValueChanged(fig);
     splitNames=unique(VariableNamesList.SplitNames);
     for i=1:length(splitNames)
         uitreenode(handles.Process.splitsUITree,'Text',splitNames{i});
     end
+else
+    handles.Process.varsListbox.Items={'No Vars'};
+    handles.Process.varsListbox.Value='No Vars';
+    delete(handles.Process.splitsUITree.Children);
 end
 
 %% Plot tab

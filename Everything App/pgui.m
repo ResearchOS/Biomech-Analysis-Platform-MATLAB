@@ -212,7 +212,7 @@ importTab.UserData=struct('LogsheetPathButton',handles.Import.logsheetPathButton
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the process tab.
 % 1. The figure object for the processing map
-handles.Process.mapFigure=uiaxes(processTab,'Tag','MapFigure');
+handles.Process.mapFigure=uiaxes(processTab,'Tag','MapFigure','HandleVisibility','on');
 
 % 2. Add fcn button (works with #4)
 handles.Process.addFcnButton=uibutton(processTab,'push','Text','F+','Tag','AddFcnButton','Tooltip','Add New Function','ButtonPushedFcn',@(addFcnButton,event) addFunctionButtonPushed(addFcnButton));
@@ -337,6 +337,9 @@ handles.Process.editSubvarsButton=uibutton(processTab,'push','Text','Subvars','T
 % 42. Processing splits description button
 handles.Process.splitsDescButton=uibutton(processTab,'push','Text','Splits Desc','Tag','SplitsDescButton','Tooltip','Description of selected split','ButtonPushedFcn',@(splitsDescButton,event) splitsDescButtonPushed(splitsDescButton));
 
+% 43. Place function button
+handles.Process.placeFcnButton=uibutton(processTab,'push','Text','Place Fcn','Tag','PlaceFcnButton','Tooltip','Place a function from the processing functions folder into the processing map figure','ButtonPushedFcn',@(placeFcnButton,event) placeFcnButtonPushed(placeFcnButton));
+
 processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',handles.Process.addFcnButton,'RemoveFcnButton',handles.Process.removeFcnButton,'AddFcnTypeDropDown',handles.Process.addFcnTypeDropDown,...
     'MoveFcnButton',handles.Process.moveFcnButton,'PropagateChangesButton',handles.Process.propagateChangesButton,'PropagateChangesCheckbox',handles.Process.propagateChangesCheckbox,'RunSelectedFcnsButton',handles.Process.runSelectedFcnsButton,...
     'CreateArgButton',handles.Process.createArgButton,'RemoveArgButton',handles.Process.removeArgButton,'FcnNameLabel',handles.Process.fcnNameLabel,'FcnArgsUITree',handles.Process.fcnArgsUITree,'ArgNameInCodeLabel',handles.Process.argNameInCodeLabel,...
@@ -346,7 +349,7 @@ processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',
     'FcnsArgsSearchField',handles.Process.fcnsArgsSearchField,'ConvertVarHardDynamicButton',handles.Process.convertVarHardDynamicButton,...
     'SpecifyTrialsUITree',handles.Process.specifyTrialsUITree,'RemoveSpecifyTrialsButton',handles.Process.removeSpecifyTrialsButton,'MarkImportFcnCheckbox',handles.Process.markImportFcnCheckbox,'NewSpecifyTrialsButton',handles.Process.newSpecifyTrialsButton,...
     'SpecifyTrialsLabel',handles.Process.specifyTrialsLabel,'NewSplitButton',handles.Process.newSplitButton,'RemoveSplitButton',handles.Process.removeSplitButton,'UnassignVarsButton',handles.Process.unassignVarsButton,...
-    'EditSubvarsButton',handles.Process.editSubvarsButton,'SplitsDescButton',handles.Process.splitsDescButton,'VarsListbox',handles.Process.varsListbox);
+    'EditSubvarsButton',handles.Process.editSubvarsButton,'SplitsDescButton',handles.Process.splitsDescButton,'VarsListbox',handles.Process.varsListbox,'PlaceFcnButton',handles.Process.placeFcnButton);
 
 @processResize;
 % drawnow; % Show the properly placed Process tab components.

@@ -38,7 +38,7 @@ MapFigureRelPos=[0.5 0.07];
 AddFcnButtonRelPos=[0.5 0.95];
 RemoveFcnButtonRelPos=[0.9 0.95];
 AddFcnTypeDropDownRelPos=[0.55 0.95];
-MoveFcnButtonRelPos=[0.78 0.95];
+MoveFcnButtonRelPos=[0.75 0.95];
 PropagateChangesButtonRelPos=[0.5 0.01];
 PropagateChangesCheckboxRelPos=[0.71 0.01];
 RunSelectedFcnsButtonRelPos=[0.76 0.01];
@@ -76,6 +76,7 @@ VarsListboxRelPos=[0.01 0.55];
 UnassignVarsButtonRelPos=[0.225 0.8];
 EditSubvarsButtonRelPos=[0.215 0.7];
 SplitsDescButtonRelPos=[0.22 0.3];
+PlaceFcnButtonRelPos=[0.82 0.95];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -84,7 +85,7 @@ MapFigureSize=[0.5 0.82];
 AddFcnButtonSize=[0.05 compHeight];
 RemoveFcnButtonSize=[0.05 compHeight];
 AddFcnTypeDropDownSize=[0.2 compHeight];
-MoveFcnButtonSize=[0.1 compHeight];
+MoveFcnButtonSize=[0.07 compHeight];
 PropagateChangesButtonSize=[0.2 compHeight];
 PropagateChangesCheckboxSize=[0.05 compHeight];
 RunSelectedFcnsButtonSize=[0.2 compHeight];
@@ -122,6 +123,7 @@ VarsListboxSize=[0.2 0.4];
 UnassignVarsButtonSize=[0.06 compHeight];
 EditSubvarsButtonSize=[0.08 compHeight];
 SplitsDescButtonSize=[0.07 compHeight];
+PlaceFcnButtonSize=[0.07 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 MapFigurePos=round([MapFigureRelPos.*figSize MapFigureSize.*figSize]);
@@ -166,6 +168,7 @@ VarsListboxPos=round([VarsListboxRelPos.*figSize VarsListboxSize.*figSize]);
 UnassignVarsButtonPos=round([UnassignVarsButtonRelPos.*figSize UnassignVarsButtonSize(1)*figSize(1) UnassignVarsButtonSize(2)]);
 EditSubvarsButtonPos=round([EditSubvarsButtonRelPos.*figSize EditSubvarsButtonSize(1)*figSize(1) EditSubvarsButtonSize(2)]);
 SplitsDescButtonPos=round([SplitsDescButtonRelPos.*figSize SplitsDescButtonSize(1)*figSize(1) SplitsDescButtonSize(2)]);
+PlaceFcnButtonPos=round([PlaceFcnButtonRelPos.*figSize PlaceFcnButtonSize(1)*figSize(1) PlaceFcnButtonSize(2)]);
 
 data.MapFigure.Position=MapFigurePos;
 data.AddFcnButton.Position=AddFcnButtonPos;
@@ -209,6 +212,7 @@ data.VarsListbox.Position=VarsListboxPos;
 data.UnassignVarsButton.Position=UnassignVarsButtonPos;
 data.EditSubvarsButton.Position=EditSubvarsButtonPos;
 data.SplitsDescButton.Position=SplitsDescButtonPos;
+data.PlaceFcnButton.Position=PlaceFcnButtonPos;
 
 data.MapFigure.FontSize=newFontSize;
 data.AddFcnButton.FontSize=newFontSize;
@@ -252,3 +256,4 @@ data.VarsListbox.FontSize=newFontSize;
 data.UnassignVarsButton.FontSize=newFontSize;
 data.EditSubvarsButton.FontSize=newFontSize;
 data.SplitsDescButton.FontSize=newFontSize;
+data.PlaceFcnButton.FontSize=newFontSize;

@@ -90,11 +90,7 @@ else
     return;
 end
 
-%% Fill in logsheet variables list box
-
-% Delete all objects from the logsheet list box
-delete(handles.Import.logVarsUITree.Children);
-
+%% Initialize the logsheet variables in the MAT file
 % Fill in the logsheet list box, and save default values for each
 % variable's attributes
 headerNames=logsheetVar(1,:);
@@ -121,11 +117,30 @@ for i=1:size(logsheetVar,2)
 
 end
 
-% headerName=handles.Import.logVarsUITree.SelectedNodes.Text;
-% headerNameVar=genvarname(headerName);
-
 handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
 handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;
-% handles.Import.logVarNameField.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName;
+
+% If there's no Digraph in the projectSettingsMATPath, make one and plot
+% it.
+% Fill in processing map figure
+projectSettingsVars=whos('-file',projectSettingsMATPath);
+projectSettingsVarNames={projectSettingsVars.name};
+
+if ismember('Digraph',projectSettingsVarNames)
+    load(projectSettingsMATPath,'Digraph');    
+else
+    Digraph=digraph;
+    Digraph=addnode(Digraph,1);
+    Digraph.Nodes.FunctionNames={'Logsheet'};
+    Digraph.Nodes.Descriptions={{''}};
+    Digraph.Nodes.InputVariableNames={{''}}; % Name in file
+    Digraph.Nodes.OutputVariableNames={{''}}; % Name in file
+    Digraph.Nodes.Coordinates=[0 0];  
+    Digraph.Nodes.SplitNames={{'Default'}};
+
+    save(projectSettingsMATPath,'Digraph','-append');
+end
+
+plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.

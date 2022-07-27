@@ -134,16 +134,6 @@ else
     save(projectSettingsMATPath,'Digraph','-append');
 end
 
-% splitNames={};
-% for i=1:length(Digraph.Nodes.SplitNames)
-%     splitNames=unique([splitNames; Digraph.Nodes.SplitNames{i}]);
-% end
-% 
-% [~,idx]=sort(upper(splitNames));
-% for i=1:length(splitNames)
-%     uitreenode(handles.Process.splitsUITree,'Text',splitNames{idx});
-% end
-
 plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 
 % Fill in metadata

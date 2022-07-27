@@ -113,9 +113,11 @@ if ismember('VariableNamesList',projectSettingsVarNames)
     load(projectSettingsMATPath,'VariableNamesList');
     handles.Process.varsListbox.Items=VariableNamesList.GUINames;
     handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
-    handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
-else
-    
+    varsListBoxValueChanged(fig);
+    splitNames=unique(VariableNamesList.SplitNames);
+    for i=1:length(splitNames)
+        uitreenode(handles.Process.splitsUITree,'Text',splitNames{i});
+    end
 end
 
 %% Plot tab

@@ -9,6 +9,7 @@ function []=setSavedVarsList_Logsheet(splitName,guiNames)
 % of chars)
 
 fig=evalin('base','gui;');
+handles=getappdata(fig,'handles');
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
 projectSettingsVars=whos('-file',projectSettingsMATPath);
@@ -61,6 +62,9 @@ if ~ismember(splitName,VariableNamesList.SplitNames)
     return;
 end
 
+%% Create/add on to split names struct, where each field name is a split name and the hierarchy in the UI tree should mirror what's in the struct
+
+
 %% Split name already exists
 % Check if any/all of the variables being saved are part of the
 % split already
@@ -72,6 +76,10 @@ VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(currVarsNotInSp
 VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(currVarsNotInSplit)]; % Does not include the split code
 VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,sum(currVarsNotInSplit),1)];
 VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
-VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVars,1)];
+VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},sum(currVarsNotInSplit),1)];
+
+handles.Process.varsListbox.Items=VariableNamesList.GUINames;
+handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
+handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
 
 save(projectSettingsMATPath,'VariableNamesList','-append');

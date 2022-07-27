@@ -326,7 +326,7 @@ handles.Process.removeSplitButton=uibutton(processTab,'push','Text','PS-','Tag',
 % handles.Process.searchVarsField=uieditfield(processTab,'text','Value','Search','Tag','SearchVarsField','ValueChangedFcn',@(searchVarsField,event) searchVarsFieldValueChanged(searchVarsField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 
 % 39. Variables listbox
-handles.Process.varsListbox=uilistbox(processTab,'Multiselect','on','Tag','VarsListbox','Items',{'No Vars'});
+handles.Process.varsListbox=uilistbox(processTab,'Multiselect','on','Tag','VarsListbox','Items',{'No Vars'},'ValueChangedFcn',@(varsListBox,event) varsListBoxValueChanged(varsListBox));
 
 % 40. Unassign variable from function button
 handles.Process.unassignVarsButton=uibutton(processTab,'push','Text','<-','Tag','UnassignVarsButton','Tooltip','Unassign Var From Function','ButtonPushedFcn',@(unassignVarsButton,event) unassignVarsButtonPushed(unassignVarsButton));

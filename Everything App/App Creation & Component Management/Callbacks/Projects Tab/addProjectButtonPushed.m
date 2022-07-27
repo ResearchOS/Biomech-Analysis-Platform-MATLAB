@@ -19,6 +19,8 @@ while true
         break;
     end
 
+    disp(['Project name needs to be valid variable name!']);
+
 end
 
 resetProjectAccess_Visibility(fig,0);

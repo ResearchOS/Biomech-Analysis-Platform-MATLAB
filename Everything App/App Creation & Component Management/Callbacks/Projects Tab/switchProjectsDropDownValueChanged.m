@@ -102,6 +102,9 @@ if exist(logsheetPath,'file')==2
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
     resetProjectAccess_Visibility(fig,4); % Allow all tabs to be used.
     logsheetPathFieldValueChanged(fig,0); % 0 indicates to not re-read the logsheet file.
+    varName=handles.Import.logVarsUITree.SelectedNodes.Text;
+    handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(varName).TrialSubject;
+    handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(varName).DataType;
 else
     resetProjectAccess_Visibility(fig,3); % Disallow loading info from logsheet.
     setappdata(fig,'logsheetPath','');
@@ -131,6 +134,16 @@ else
     save(projectSettingsMATPath,'Digraph','-append');
 end
 
+% splitNames={};
+% for i=1:length(Digraph.Nodes.SplitNames)
+%     splitNames=unique([splitNames; Digraph.Nodes.SplitNames{i}]);
+% end
+% 
+% [~,idx]=sort(upper(splitNames));
+% for i=1:length(splitNames)
+%     uitreenode(handles.Process.splitsUITree,'Text',splitNames{idx});
+% end
+
 plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 
 % Fill in metadata
@@ -138,7 +151,7 @@ if ismember('VariableNamesList',projectSettingsVarNames)
     load(projectSettingsMATPath,'VariableNamesList');
     [~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
     handles.Process.varsListbox.Items=VariableNamesList.GUINames(alphabetIdx);
-    handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
+    handles.Process.varsListbox.Value=VariableNamesList.GUINames{alphabetIdx(1)};
     varsListBoxValueChanged(fig);
     splitNames=unique(VariableNamesList.SplitNames);
     for i=1:length(splitNames)

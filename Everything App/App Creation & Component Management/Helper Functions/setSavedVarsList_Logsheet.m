@@ -90,3 +90,5 @@ elseif ~ismember(splitName,Digraph.Nodes.SplitNames{1})
 end
 
 save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
+
+varsListBoxValueChanged(fig);

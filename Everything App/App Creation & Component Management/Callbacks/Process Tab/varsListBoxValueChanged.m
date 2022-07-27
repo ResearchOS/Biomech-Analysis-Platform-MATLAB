@@ -16,7 +16,7 @@ assert(ismember('VariableNamesList',projectSettingsVarNames));
 load(projectSettingsMATPath,'VariableNamesList');
 
 % splitName=handles.Process.splitsUITree.SelectedNode.Text;
-splitName='Logsheet';
+splitName='Default';
 
 varName=handles.Process.varsListbox.Value;
 

@@ -9,9 +9,16 @@ handles=getappdata(fig,'handles');
 
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 
+if exist(settingsMATPath,'file')==2
+    settingsVarNames=whos('-file',settingsMATPath);
+    settingsVarNames={settingsVarNames.name};
+end
+
 currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
 
 if exist(settingsMATPath,'file')~=2
+    prevTab='Projects';
+elseif exist(settingsMATPath,'file')==2 && ~ismember('currTab',settingsVarNames)
     prevTab='Projects';
 else
     prevTab=load(settingsMATPath,'currTab');

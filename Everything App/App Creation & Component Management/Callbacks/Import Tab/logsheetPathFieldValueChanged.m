@@ -97,10 +97,15 @@ delete(handles.Import.logVarsUITree.Children);
 
 % Fill in the logsheet list box, and save default values for each
 % variable's attributes
+headerNames=logsheetVar(1,:);
+headerNamesVars=genvarname(headerNames);
+[~,idx]=sort(upper(headerNamesVars));
+headerNamesVars=headerNamesVars(idx);
+headerNames=headerNames(idx);
 for i=1:size(logsheetVar,2)
 
-    headerName=logsheetVar{1,i};
-    headerNameVar=genvarname(headerName);
+    headerName=headerNames{i};
+    headerNameVar=headerNamesVars{i};
 
     a=uitreenode(handles.Import.logVarsUITree,'Text',headerName,'Tag',headerName);
 
@@ -116,7 +121,7 @@ for i=1:size(logsheetVar,2)
 
 end
 
-headerName=handles.Import.logVarsUITree.SelectedNodes.Text;
+% headerName=handles.Import.logVarsUITree.SelectedNodes.Text;
 % headerNameVar=genvarname(headerName);
 
 handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;

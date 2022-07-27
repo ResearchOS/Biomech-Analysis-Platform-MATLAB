@@ -15,4 +15,4 @@ load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
 handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;
-handles.Import.logVarNameField.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName;
+% handles.Import.logVarNameField.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName;

@@ -19,8 +19,7 @@ end
 load(projectSettingsMATPath,'VariableNamesList');
 
 varGUIName=handles.Process.varsListbox.Value;
-% splitName=handles.Process.splitsUITree.SelectedNodes.Text;
-splitName='Logsheet';
+splitName=handles.Process.splitsUITree.SelectedNodes.Text;
 
 %% Find the row of the VariableNamesList pertaining to the current variable and split name. Then, change its description.
 varIdx=ismember(VariableNamesList.GUINames,varGUIName) & ismember(VariableNamesList.SplitNames,splitName);

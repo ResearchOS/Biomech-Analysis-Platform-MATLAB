@@ -95,6 +95,8 @@ Digraph.Nodes.Coordinates(end,:)=Digraph.Nodes.Coordinates(idxDigraphFcnNames,:)
 Digraph.Nodes.InputVariableNames{end}={''};
 Digraph.Nodes.OutputVariableNames{end}={''};
 Digraph.Nodes.SplitNames{end}=splitNames;
+nodeID=max(Digraph.Nodes.NodeNumber)+1;
+Digraph.Nodes.NodeNumber=nodeID; % Helps to differentiate nodes of the same function name
 
 nodeNum=size(Digraph.Nodes,1);
 

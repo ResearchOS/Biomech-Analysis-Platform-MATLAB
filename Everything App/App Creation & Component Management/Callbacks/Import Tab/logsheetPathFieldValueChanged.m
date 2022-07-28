@@ -93,6 +93,7 @@ end
 %% Initialize the logsheet variables in the MAT file
 % Fill in the logsheet list box, and save default values for each
 % variable's attributes
+delete(handles.Import.logVarsUITree.Children);
 headerNames=logsheetVar(1,:);
 headerNamesVars=genvarname(headerNames);
 [~,idx]=sort(upper(headerNamesVars));

@@ -25,5 +25,9 @@ if ~any([isempty(dataType) isempty(trialSubject)])
     return; % All metadata present, all good
 end
 
-handles.Import.logVarsUITree.CheckedNodes=handles.Import.logVarsUITree.CheckedNodes(~ismember(handles.Import.logVarsUITree.CheckedNodes,checkedNode));
+if isempty(handles.Import.logVarsUITree.CheckedNodes(~ismember(handles.Import.logVarsUITree.CheckedNodes,checkedNode)))
+    handles.Import.logVarsUITree.CheckedNodes=[];
+else
+    handles.Import.logVarsUITree.CheckedNodes=handles.Import.logVarsUITree.CheckedNodes(~ismember(handles.Import.logVarsUITree.CheckedNodes,checkedNode));
+end
 disp(['Logsheet variable missing metadata, checkbox cannot be checked: ' headerName]);

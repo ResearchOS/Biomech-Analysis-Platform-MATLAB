@@ -48,6 +48,7 @@ if ~tf
 end
 
 assert(length(unique(idxDigraphFcnNames))==1);
+prevFcnName=digraphFcnNames{idxDigraphFcnNames};
 
 %% Have the user select whether this function is a new branch
 branchOpts={'Yes','No'};
@@ -58,15 +59,15 @@ if ~tf
 end
 
 if isequal(branchOpts{idxYesNo},'Yes')
-    splitNames=inputdlg('Enter split name','Split name');
-    splitNames=splitNames{1};
+    splitName=inputdlg('Enter split name','Split name');
+    splitName=splitName{1};
     while true
 
-        if isempty(splitNames)
+        if isempty(splitName)
             return;
         end
 
-        if isvarname(splitNames)
+        if isvarname(splitName)
             break;
         end
 
@@ -78,45 +79,69 @@ if isequal(branchOpts{idxYesNo},'Yes')
 
     splitNames=[Digraph.Nodes.SplitNames{idxDigraphFcnNames}; splitName];
 
+    newSplit=1;
+
 else
     splitNames=Digraph.Nodes.SplitNames{idxDigraphFcnNames};
     coordOffset=[0 -1];
+    newSplit=0;
 end
 
 % Add most node properties
 Digraph=addnode(Digraph,1);
 Digraph.Nodes.FunctionNames{end}=fcnName;
 Digraph.Nodes.Descriptions{end}={''};
-Digraph.Nodes.Coordinates(end,:)=Digraph.Nodes.Coordinates(end,:)+coordOffset;
+Digraph.Nodes.Coordinates(end,:)=Digraph.Nodes.Coordinates(idxDigraphFcnNames,:)+coordOffset;
 Digraph.Nodes.InputVariableNames{end}={''};
 Digraph.Nodes.OutputVariableNames{end}={''};
 Digraph.Nodes.SplitNames{end}=splitNames;
 
 nodeNum=size(Digraph.Nodes,1);
 
-% Add edge connections
-% First, check if the function is being inserted between an existing edge.
-if ismember(idxDigraphFcnNames,Digraph.Edges.EndNodes(:,1))
-    befNodeNum=find(ismember(idxDigraphFcnNames,Digraph.Edges.EndNodes(:,1))==1);
-    afterNodeNum=Digraph.Edges.EndNodes(befNodeNum,2);
-    Digraph=rmedge(Digraph,befNodeNum);
+prevNodeIdx=find(ismember(Digraph.Nodes.FunctionNames,prevFcnName)==1);
+
+Digraph=addedge(Digraph,prevNodeIdx,nodeNum); % Add a new edge from the prior node to the new one.
+
+% Add the function names of the new node to the digraph
+if ~any(ismember(Digraph.Edges.Properties.VariableNames,'FunctionNames'))
+%     Digraph.Edges.FunctionNames={prevFcnName fcnName};
+    currEdgeIdx=true; % The row number of the function names for the new edge
+else
+    currEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)); % The row number of the function names for the new edge    
 end
 
-% Second, add the new function connection
-Digraph=addedge(Digraph,idxDigraphFcnNames,nodeNum);
+Digraph.Edges.FunctionNames{currEdgeIdx,1}=prevFcnName;
+Digraph.Edges.FunctionNames{currEdgeIdx,2}=fcnName;
 
-% Third, reconnect the node after it and move it and all others in this
-% line down by 1
-if ismember(idxDigraphFcnNames,Digraph.Edges.EndNodes(:,1))
-    Digraph=addedge(Digraph,nodeNum,afterNodeNum);
-    nodesInCol=find(ismember(Digraph.Nodes.Coordinates(:,2),Digraph.Nodes.Coordinates(nodeNum,2))==1);
-    for i=1:length(nodesInCol)
+delEdgeIdx=ismember(Digraph.Edges.FunctionNames(:,1),prevFcnName) & ~currEdgeIdx; % The edge to be deleted.
 
-        Digraph.Nodes.Coordinates(nodesInCol(i),2)=Digraph.Nodes.Coordinates(nodesInCol(i),2)-1;
+afterNodeNum=Digraph.Edges.EndNodes(delEdgeIdx,2);
 
-    end
+currNodeNum=find(ismember(Digraph.Nodes.FunctionNames,fcnName)==1);
+
+if ~isempty(afterNodeNum) && newSplit==0
+    Digraph=rmedge(Digraph,Digraph.Edges.EndNodes(delEdgeIdx,1),afterNodeNum); % Delete the edge
+    
+    Digraph=addedge(Digraph,currNodeNum,afterNodeNum);
+
+    newEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)); % The row number of the function names for the new edge    
+    Digraph.Edges.FunctionNames{newEdgeIdx,1}=fcnName;
+    Digraph.Edges.FunctionNames{newEdgeIdx,2}=Digraph.Nodes.FunctionNames{afterNodeNum};    
+
+end
+
+sameCol=ismember(Digraph.Nodes.Coordinates(:,1),Digraph.Nodes.Coordinates(currNodeNum,1));
+
+belowCoord=Digraph.Nodes.Coordinates(:,2)<=Digraph.Nodes.Coordinates(currNodeNum,2);
+
+nodesInCol=find((sameCol & belowCoord)==1);
+nodesInCol(nodesInCol==currNodeNum)=[];
+
+for i=1:length(nodesInCol)
+    Digraph.Nodes.Coordinates(nodesInCol(i),2)=Digraph.Nodes.Coordinates(nodesInCol(i),2)-1;
 end
 
 plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
+% axis(handles.Process.mapFigure,'equal');
 
 save(projectSettingsMATPath,'Digraph','-append');

@@ -24,6 +24,11 @@ numHeaderRows=NonFcnSettingsStruct.Import.NumHeaderRows;
 subjIDColHeader=NonFcnSettingsStruct.Import.SubjectIDColHeader;
 targetTrialIDColHeader=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
 
+if numHeaderRows<0
+    disp(['Need to enter the number of header rows!']);
+    return;
+end
+
 load(logsheetPathMAT,'logsheetVar');
 
 headerNames=logsheetVar(1,:);

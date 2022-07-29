@@ -38,27 +38,64 @@ end
 %% Have the user select which function it is building from
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph');
-digraphFcnNames=Digraph.Nodes.FunctionNames;
+% digraphFcnNames=Digraph.Nodes.FunctionNames;
 
-label={'Select the function to place the new function after'};
-[idxDigraphFcnNames,tf]=listdlg('ListString',digraphFcnNames,'PromptString',label,'SelectionMode','single','Name','Select placement');
+% msgbox('First select the origin function node, then select the location to place the new function node. To place between existing nodes, select the existing node as the second location');
+Q=figure; % Plot the digraph on a separate figure to use ginput
+xlims=handles.Process.mapFigure.XLim;
+ylims=handles.Process.mapFigure.YLim;
+xlimRange=round(abs(diff(xlims)));
+ylimRange=round(abs(diff(ylims)));
+hold on;
 
-if ~tf
+count=0;
+for i=-2*xlimRange+floor(xlims(1)):ceil(xlims(2))+xlimRange*2
+    for j=-2*ylimRange+floor(ylims(1)):ceil(ylims(2))*ylimRange*2
+        count=count+1;
+        allCoords(count,:)=[i j];
+    end
+end
+
+figure(Q);
+scatter(allCoords(:,1),allCoords(:,2),30,'k','filled');
+plot(Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
+xlim(xlims);
+ylim(ylims);
+[x,y]=ginput(2);
+pos=[x y];
+tol=0.1;
+allDigraphCoords=Digraph.Nodes.Coordinates;
+allDigraphDists=sqrt((allDigraphCoords(:,1)-repmat(pos(1,1),size(allDigraphCoords,1),1)).^2+(allDigraphCoords(:,2)-repmat(pos(1,2),size(allDigraphCoords,1),1)).^2);
+prevNodeRow=allDigraphDists<tol;
+
+if ~any(prevNodeRow)
+    disp('Did not click close enough to a node placement, try again!');
+    close(Q);
     return;
 end
 
-assert(length(unique(idxDigraphFcnNames))==1);
-prevFcnName=digraphFcnNames{idxDigraphFcnNames};
+prevNodeCoord=allDigraphCoords(prevNodeRow,:);
+prevFcnName=Digraph.Nodes.FunctionNames{prevNodeRow};
+prevNodeID=Digraph.Nodes.NodeNumber(prevNodeRow);
+newNodeCoord=round(pos(2,:));
 
-%% Have the user select whether this function is a new branch
-branchOpts={'Yes','No'};
-[idxYesNo,tf]=listdlg('ListString',branchOpts,'PromptString','Specify whether to create a new branch','SelectionMode','single','Name','New Branch?');
-
-if ~tf
+if sqrt(newNodeCoord(1)-pos(2,1).^2+newNodeCoord(2)-pos(2,2).^2)>=tol
+    disp('Did not click close enough to a node placement, try again!');
+    close(Q);
     return;
 end
 
-if isequal(branchOpts{idxYesNo},'Yes')
+close(Q);
+
+% Check if creating a new split
+coordOffset=newNodeCoord-prevNodeCoord;
+splitNames=Digraph.Nodes.SplitNames{prevNodeRow};
+
+if ismember(newNodeCoord,allDigraphCoords,'rows') % Splitting up an existing edge
+    newSplit=0;    
+elseif isequal(coordOffset,[1 -1]) % Creating a new split
+    newSplit=1;
+
     splitName=inputdlg('Enter split name','Split name');
     splitName=splitName{1};
     while true
@@ -75,60 +112,59 @@ if isequal(branchOpts{idxYesNo},'Yes')
 
     end
 
-    coordOffset=[1 -1];
+    splitNames=[Digraph.Nodes.SplitNames{prevNodeRow}; splitName];
 
-    splitNames=[Digraph.Nodes.SplitNames{idxDigraphFcnNames}; splitName];
-
-    newSplit=1;
-
-else
-    splitNames=Digraph.Nodes.SplitNames{idxDigraphFcnNames};
-    coordOffset=[0 -1];
-    newSplit=0;
 end
 
 % Add most node properties
+afterNodeRow=ismember(Digraph.Nodes.Coordinates,newNodeCoord,'rows'); % Empty if not splitting an existing connection, not empty if being split
+afterNodeID=Digraph.Nodes.NodeNumber(afterNodeRow);
 Digraph=addnode(Digraph,1);
 Digraph.Nodes.FunctionNames{end}=fcnName;
 Digraph.Nodes.Descriptions{end}={''};
-Digraph.Nodes.Coordinates(end,:)=Digraph.Nodes.Coordinates(idxDigraphFcnNames,:)+coordOffset;
+Digraph.Nodes.Coordinates(end,:)=newNodeCoord;
 Digraph.Nodes.InputVariableNames{end}={''};
 Digraph.Nodes.OutputVariableNames{end}={''};
 Digraph.Nodes.SplitNames{end}=splitNames;
 nodeID=max(Digraph.Nodes.NodeNumber)+1;
-Digraph.Nodes.NodeNumber=nodeID; % Helps to differentiate nodes of the same function name
+Digraph.Nodes.NodeNumber(end)=nodeID; % Helps to differentiate nodes of the same function name
 
 nodeNum=size(Digraph.Nodes,1);
 
-prevNodeIdx=find(ismember(Digraph.Nodes.FunctionNames,prevFcnName)==1);
+prevNodeRowNum=find(prevNodeRow==1);
 
-Digraph=addedge(Digraph,prevNodeIdx,nodeNum); % Add a new edge from the prior node to the new one.
+Digraph=addedge(Digraph,prevNodeRowNum,nodeNum); % Add a new edge from the prior node to the new one.
 
 % Add the function names of the new node to the digraph
 if ~any(ismember(Digraph.Edges.Properties.VariableNames,'FunctionNames'))
 %     Digraph.Edges.FunctionNames={prevFcnName fcnName};
     currEdgeIdx=true; % The row number of the function names for the new edge
 else
-    currEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)); % The row number of the function names for the new edge    
+%     currEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)) & ismember(Digraph.Edges.NodeNumber,[prevNodeID nodeID],'rows'); % The row number of the function names for the new edge    
+    currEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)) & ismember(Digraph.Edges.NodeNumber,[0 0],'rows'); % The row number of the function names for the new edge    
 end
 
 Digraph.Edges.FunctionNames{currEdgeIdx,1}=prevFcnName;
 Digraph.Edges.FunctionNames{currEdgeIdx,2}=fcnName;
+Digraph.Edges.NodeNumber(currEdgeIdx,1)=prevNodeID;
+Digraph.Edges.NodeNumber(currEdgeIdx,2)=nodeID;
 
-delEdgeIdx=ismember(Digraph.Edges.FunctionNames(:,1),prevFcnName) & ~currEdgeIdx; % The edge to be deleted.
+delEdgeIdx=ismember(Digraph.Edges.NodeNumber,[prevNodeID afterNodeID],'rows');
+% delEdgeIdx=prevNodeRow & afterNodeRow & ~currEdgeIdx; % The edge to be deleted.
 
-afterNodeNum=Digraph.Edges.EndNodes(delEdgeIdx,2);
+% afterNodeNum=Digraph.Edges.EndNodes(delEdgeIdx,2);
 
-currNodeNum=find(ismember(Digraph.Nodes.FunctionNames,fcnName)==1);
+currNodeNum=find((ismember(Digraph.Nodes.FunctionNames,fcnName) & ismember(Digraph.Nodes.NodeNumber,nodeNum))==1);
 
-if ~isempty(afterNodeNum) && newSplit==0
-    Digraph=rmedge(Digraph,Digraph.Edges.EndNodes(delEdgeIdx,1),afterNodeNum); % Delete the edge
+if ~isempty(afterNodeID) && newSplit==0
+    Digraph=rmedge(Digraph,prevNodeID,afterNodeID); % Delete the edge
     
-    Digraph=addedge(Digraph,currNodeNum,afterNodeNum);
+    Digraph=addedge(Digraph,currNodeNum,afterNodeID);
 
-    newEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)); % The row number of the function names for the new edge    
+    newEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)) & ismember(Digraph.Edges.NodeNumber,[0 0],'rows'); % The row number of the function names for the new edge    
     Digraph.Edges.FunctionNames{newEdgeIdx,1}=fcnName;
-    Digraph.Edges.FunctionNames{newEdgeIdx,2}=Digraph.Nodes.FunctionNames{afterNodeNum};    
+    Digraph.Edges.FunctionNames{newEdgeIdx,2}=Digraph.Nodes.FunctionNames{afterNodeID}; 
+    Digraph.Edges.NodeNumber(newEdgeIdx,1:2)=[currNodeNum afterNodeID];
 
 end
 

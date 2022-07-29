@@ -92,6 +92,7 @@ version=getappdata(fig,'version');
 save(settingsMATPath,'version','-append');
 
 %% Import tab
+delete(handles.Process.mapFigure.Children);
 logsheetPath=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
 handles.Import.numHeaderRowsField.Value=NonFcnSettingsStruct.Import.NumHeaderRows;
 handles.Import.subjIDColHeaderField.Value=NonFcnSettingsStruct.Import.SubjectIDColHeader;
@@ -112,30 +113,29 @@ end
 
 %% Process tab
 % Delete all graphics objects in the plot, and all splits nodes
-delete(handles.Process.mapFigure.Children);
 delete(handles.Process.splitsUITree.Children);
 
 % Fill in processing map figure
 projectSettingsVars=whos('-file',projectSettingsMATPath);
 projectSettingsVarNames={projectSettingsVars.name};
 
-if ismember('Digraph',projectSettingsVarNames)
-    load(projectSettingsMATPath,'Digraph');    
-else
-    Digraph=digraph;
-    Digraph=addnode(Digraph,1);
-    Digraph.Nodes.FunctionNames={'Logsheet'};
-    Digraph.Nodes.Descriptions={{''}};
-    Digraph.Nodes.InputVariableNames={{''}}; % Name in file
-    Digraph.Nodes.OutputVariableNames={{''}}; % Name in file
-    Digraph.Nodes.Coordinates=[0 0];  
-    Digraph.Nodes.SplitNames={{'Default'}};
-    Digraph.Nodes.NodeNumber=1;
+% if ismember('Digraph',projectSettingsVarNames)
+%     load(projectSettingsMATPath,'Digraph');    
+% else
+%     Digraph=digraph;
+%     Digraph=addnode(Digraph,1);
+%     Digraph.Nodes.FunctionNames={'Logsheet'};
+%     Digraph.Nodes.Descriptions={{''}};
+%     Digraph.Nodes.InputVariableNames={{''}}; % Name in file
+%     Digraph.Nodes.OutputVariableNames={{''}}; % Name in file
+%     Digraph.Nodes.Coordinates=[0 0];  
+%     Digraph.Nodes.SplitNames={{'Default'}};
+%     Digraph.Nodes.NodeNumber=1;
+% 
+%     save(projectSettingsMATPath,'Digraph','-append');
+% end
 
-    save(projectSettingsMATPath,'Digraph','-append');
-end
-
-plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
+% plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 
 % Fill in metadata
 if ismember('VariableNamesList',projectSettingsVarNames)

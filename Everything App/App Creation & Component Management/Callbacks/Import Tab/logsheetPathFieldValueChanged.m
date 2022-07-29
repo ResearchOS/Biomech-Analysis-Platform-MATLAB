@@ -138,6 +138,7 @@ else
     Digraph.Nodes.OutputVariableNames={{''}}; % Name in file
     Digraph.Nodes.Coordinates=[0 0];  
     Digraph.Nodes.SplitNames={{'Default'}};
+    Digraph.Nodes.NodeNumber=1;
 
     save(projectSettingsMATPath,'Digraph','-append');
 end

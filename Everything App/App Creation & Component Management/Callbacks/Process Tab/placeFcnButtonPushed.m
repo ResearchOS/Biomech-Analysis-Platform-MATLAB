@@ -46,7 +46,7 @@ xlims=handles.Process.mapFigure.XLim;
 ylims=handles.Process.mapFigure.YLim;
 xlimRange=round(abs(diff(xlims)));
 ylimRange=round(abs(diff(ylims)));
-hold on;
+% hold on;
 
 count=0;
 for i=-2*xlimRange+floor(xlims(1)):ceil(xlims(2))+xlimRange*2
@@ -57,11 +57,14 @@ for i=-2*xlimRange+floor(xlims(1)):ceil(xlims(2))+xlimRange*2
 end
 
 figure(Q);
-scatter(allCoords(:,1),allCoords(:,2),30,'k','filled');
+% fig.CurrentAxes=handles.Process.mapFigure;
+% set(0,'CurrentUIFigure',handles.Process.mapFigure);
+allDots=scatter(allCoords(:,1),allCoords(:,2),30,'k','filled');
 plot(Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 xlim([min(Digraph.Nodes.Coordinates(:,1)-0.8) max(Digraph.Nodes.Coordinates(:,1)+1.2)]);
 ylim([min(Digraph.Nodes.Coordinates(:,2)-1.2) max(Digraph.Nodes.Coordinates(:,2)+0.8)]);
 [x,y]=ginput(2);
+delete(allDots);
 pos=[x y];
 tol=0.1;
 allDigraphCoords=Digraph.Nodes.Coordinates;

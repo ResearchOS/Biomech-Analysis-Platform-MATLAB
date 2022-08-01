@@ -20,7 +20,10 @@ splitName='Default';
 
 varName=handles.Process.varsListbox.Value;
 
-varRow=ismember(VariableNamesList.GUINames,varName) & ismember(VariableNamesList.SplitNames,splitName);
+% varRowDesc=ismember(VariableNamesList.GUINames,varName) & ismember(VariableNamesList.SplitNames,splitName);
+varRowDesc=ismember(VariableNamesList.GUINames,varName); % & ismember(VariableNamesList.SplitNames,splitName);
 
-handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varRow};
+if ~isempty(varRowDesc)
+    handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varRowDesc};
+end
 

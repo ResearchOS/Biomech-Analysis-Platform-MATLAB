@@ -21,7 +21,7 @@ elseif ismac==1
 end
 
 %% Create figure
-fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize); % Create the figure window for the app
+fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig)); % Create the figure window for the app
 fig.Name='pgui'; % Name the window
 defaultPos=get(0,'defaultfigureposition'); % Get the default figure position
 set(fig,'Position',[defaultPos(1:2) defaultPos(3)*2 defaultPos(4)]); % Set the figure to be at that position (redundant, I know, but should be clear)
@@ -44,6 +44,9 @@ setappdata(fig,'NonFcnSettingsStruct',''); % The non-function related settings f
 setappdata(fig,'FcnSettingsStruct',''); % The function related settings for the current project
 setappdata(fig,'allowAllTabs',0); % Initialize that only the Projects tab can be selected.
 setappdata(fig,'rootSavePlotPath',''); % The root folder to save plots to.
+setappdata(fig,'currentPointDown',[0 0]); % The location of the mouse on the figure when the mouse is clicked down
+setappdata(fig,'currentPointUp',[0 0]); % The location of the mouse on the figure when the mouse is released up
+setappdata(fig,'selectedNodeNumbers',0); % The node ID numbers of the selected nodes
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing

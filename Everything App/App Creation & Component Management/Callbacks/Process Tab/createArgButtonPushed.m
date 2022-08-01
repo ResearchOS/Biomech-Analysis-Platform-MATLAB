@@ -15,7 +15,15 @@ nameInGUIOK=0;
 defaultNameInCodeOK=0;
 
 %% 0. Get the path to the VariablesMainList file.
-matVarPath=[getappdata(fig,'dataPath') slash 'MAT Data Files' slash 'VariablesMainList.mat'];
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+varNames=whos('-file',projectSettingsMATPath);
+varNames={varNames.name};
+if ismember('VariableNamesList',varNames)
+    load(projectSettingsMATPath,'VariableNamesList');
+    guiNames=VariableNamesList.GUINames;
+else
+    guiNames={''};
+end
 
 %% Prompt for the name of the argument as shown in the GUI
 while ~nameInGUIOK
@@ -38,21 +46,16 @@ while ~nameInGUIOK
         continue;
     end
 
-    if length(nameInGUI)>namelengthmax-3 % Minus 3 because of the underscore and hard-coded and level identifiers in the name.
+    if length(nameInGUI)>namelengthmax-4 % Minus 3 because of the underscore and hard-coded and level identifiers in the name.
         beep;
-        disp(['Try again, argument name too long! Must be less than or equal to ' num2str(namelengthmax-3) ' characters, but is currently ' num2str(length(nameInGUI)) ' characters!']);
+        disp(['Try again, argument name too long! Must be less than or equal to ' num2str(namelengthmax-4) ' characters, but is currently ' num2str(length(nameInGUI)) ' characters!']);
         continue;
     end
 
     % 2. Check if this argument name already exists in the list.
-    if exist(matVarPath,'file')==2
-        varNames=load(matVarPath,'-mat','VariableNamesOnly');
-        if ismember(nameInGUI,varNames)
-            disp('This variable already exists! No argument added, try again.');
-            continue;
-        end
-    else
-        varNames={};
+    if ismember(nameInGUI,guiNames)
+        disp('This variable already exists! No argument added, try again.');
+        continue;
     end
 
     nameInGUIOK=1;
@@ -61,7 +64,7 @@ end
 %% Prompt for the default name of the argument in the code.
 while ~defaultNameInCodeOK
     % 3. Ask for a default name in the code to use when adding a variable to a function.
-    input2=inputdlg('Enter default argument name in code (leave blank to not provide default)');
+    input2=inputdlg('Enter default argument name in code (leave blank to not provide default)','Default name',[1 35],{genvarname(nameInGUI)});
     if isempty(input2)
         disp('Process cancelled, no argument added');
         return;
@@ -74,15 +77,17 @@ while ~defaultNameInCodeOK
 
     if ~isvarname(defaultName)
         beep;
-        disp('Improper argument name! Spaces are ok, but otherwise must evaluate to valid MATLAB variable name!');
+        disp('Improper argument name! Must evaluate to valid MATLAB variable name!');
         continue;
     end
 
-    if length(defaultName)>namelengthmax
+    if length(defaultName)>namelengthmax-4
         beep;
-        disp(['Argument name too long! Must be less than or equal to ' num2str(namelengthmax) ' characters, but is currently ' num2str(length(defaultName)) ' characters!']);
+        disp(['Argument name too long! Must be less than or equal to ' num2str(namelengthmax-4) ' characters, but is currently ' num2str(length(defaultName)) ' characters!']);
         continue;
     end
+
+    defaultNameInCodeOK=1;
 end
 
 %% 4. Ask whether the variable will be hard-coded
@@ -92,11 +97,11 @@ if isempty(input3)
     return;
 end
 
-switch input3{1}
+switch input3
     case 'Yes'
-        isHC='Y';
+        isHC=1;
     case 'No'
-        isHC='N';
+        isHC=0;
 end
 
 %% 5. Ask what level the variable will be stored at (Project, Subject, or Trial)
@@ -106,7 +111,7 @@ if isempty(input4)
     return;
 end
 
-switch input4{1}
+switch input4
     case 'Project'
         level='P';
     case 'Subject'
@@ -116,30 +121,28 @@ switch input4{1}
 end
 
 % 6. Add this variable to the GUI
-[varNames,k]=sort([upper(varNames); upper(nameInGUI)]);
-VariableNamesOnly=varNames(k,1);
-setappdata(fig','AllVariableNames',VariableNamesOnly);
-% Update all of the list boxes full of variable names! On Import, Process, Plot, and Stats tabs!
-% updateListBoxes(handles,VariableNamesOnly,isHC,level);
+if exist('VariableNamesList','var')==1
+    numRows=size(VariableNamesList.GUINames,1);
+else
+    numRows=0;
+end
+VariableNamesList.GUINames{numRows+1}=nameInGUI;
+VariableNamesList.SaveNames{numRows+1}=defaultName;
+VariableNamesList.Descriptions{numRows+1}={'Enter Arg Description Here'};
+VariableNamesList.SplitNames{numRows+1}={''};
+VariableNamesList.SplitCodes{numRows+1}={''};
+VariableNamesList.Level{numRows+1}=level;
+VariableNamesList.IsHardCoded{numRows+1}=isHC;
 
 % 7. Now, add this variable to the VariablesMainList
-varName.DefaultNameInCode=defaultName;
-varName.NameInGUI=nameInGUI;
-varName.Level=input4{1};
-if isequal(input3{1},'Yes')
-    varName.IsHardcoded=true;
+if isHC==1
     % Create and store here the name of the .m file.
     hardcodedPath=[getappdata(fig,'codePath') 'Hardcoded M Files' slash nameInGUI '.m'];
     templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'PerArgFunctionTemplate.m'];
     createFileFromTemplate(templatePath,hardcodedPath,nameInGUI);
-else
-    varName.IsHardcoded=false;
 end
 
-eval([nameInGUI '=varName;']); % Create the variable name
+[~,idx]=sort(upper(VariableNamesList.GUINames));
+handles.Process.varsListbox.Items=VariableNamesList.GUINames(idx);
 
-if exist(matVarPath,'file')==2
-    save(matVarPath,eval(nameInGUI),'VariableNamesOnly','-v6','-append'); % Save the variable to the file.
-else
-    save(matVarPath,eval(nameInGUI),'VariableNamesOnly','-v6'); % Save the variable to the file.
-end
+save(projectSettingsMATPath,'VariableNamesList','-append');

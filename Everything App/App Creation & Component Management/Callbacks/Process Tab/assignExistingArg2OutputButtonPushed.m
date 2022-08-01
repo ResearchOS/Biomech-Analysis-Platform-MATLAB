@@ -50,5 +50,6 @@ for i=1:length(varNameInGUI)
     highlightedFcnsChanged(fig,Digraph,nodeNum);
 
 end
+expand(a);
 
 save(projectSettingsMATPath,'Digraph','-append');

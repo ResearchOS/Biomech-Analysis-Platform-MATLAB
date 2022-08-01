@@ -113,29 +113,11 @@ end
 
 %% Process tab
 % Delete all graphics objects in the plot, and all splits nodes
-delete(handles.Process.splitsUITree.Children);
+% delete(handles.Process.splitsUITree.Children);
 
 % Fill in processing map figure
 projectSettingsVars=whos('-file',projectSettingsMATPath);
 projectSettingsVarNames={projectSettingsVars.name};
-
-% if ismember('Digraph',projectSettingsVarNames)
-%     load(projectSettingsMATPath,'Digraph');    
-% else
-%     Digraph=digraph;
-%     Digraph=addnode(Digraph,1);
-%     Digraph.Nodes.FunctionNames={'Logsheet'};
-%     Digraph.Nodes.Descriptions={{''}};
-%     Digraph.Nodes.InputVariableNames={{''}}; % Name in file
-%     Digraph.Nodes.OutputVariableNames={{''}}; % Name in file
-%     Digraph.Nodes.Coordinates=[0 0];  
-%     Digraph.Nodes.SplitNames={{'Default'}};
-%     Digraph.Nodes.NodeNumber=1;
-% 
-%     save(projectSettingsMATPath,'Digraph','-append');
-% end
-
-% plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 
 % Fill in metadata
 if ismember('VariableNamesList',projectSettingsVarNames)
@@ -143,11 +125,7 @@ if ismember('VariableNamesList',projectSettingsVarNames)
     [~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
     handles.Process.varsListbox.Items=VariableNamesList.GUINames(alphabetIdx);
     handles.Process.varsListbox.Value=VariableNamesList.GUINames{alphabetIdx(1)};
-    varsListBoxValueChanged(fig);
-    splitNames=unique(VariableNamesList.SplitNames);
-    for i=1:length(splitNames)
-        uitreenode(handles.Process.splitsUITree,'Text',splitNames{i});
-    end
+    varsListBoxValueChanged(fig);    
 else
     handles.Process.varsListbox.Items={'No Vars'};
     handles.Process.varsListbox.Value='No Vars';    

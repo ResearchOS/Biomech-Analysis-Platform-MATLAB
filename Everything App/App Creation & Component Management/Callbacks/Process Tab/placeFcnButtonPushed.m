@@ -140,26 +140,18 @@ prevNodeRowNum=find(prevNodeRow==1);
 Digraph=addedge(Digraph,prevNodeRowNum,currNodeRowNum);
 
 % Add the function names of the new node to the digraph
-if ~any(ismember(Digraph.Edges.Properties.VariableNames,'FunctionNames'))
-    %     Digraph.Edges.FunctionNames={prevFcnName fcnName};
+if ~any(ismember(Digraph.Edges.Properties.VariableNames,'FunctionNames'))   
     currEdgeIdx=true; % The row number of the function names for the new edge
 else
     currEdgeIdx=ismember(Digraph.Edges.EndNodes,[prevNodeRowNum,currNodeRowNum],'rows');
-    %     currEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)) & ismember(Digraph.Edges.NodeNumber,[prevNodeID nodeID],'rows'); % The row number of the function names for the new edge
-    %     currEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)) & ismember(Digraph.Edges.NodeNumber,[0 0],'rows'); % The row number of the function names for the new edge
 end
 
 Digraph.Edges.FunctionNames{currEdgeIdx,1}=prevFcnName;
 Digraph.Edges.FunctionNames{currEdgeIdx,2}=fcnName;
 Digraph.Edges.NodeNumber(currEdgeIdx,1)=prevNodeID;
 Digraph.Edges.NodeNumber(currEdgeIdx,2)=currNodeID;
-% delEdgeIdx=prevNodeRow & afterNodeRow & ~currEdgeIdx; % The edge to be deleted.
-
-% afterNodeNum=Digraph.Edges.EndNodes(delEdgeIdx,2);
 
 if any(afterNodeRow) % If there is an edge to delete
-
-%     delEdgeIdx=ismember(Digraph.Edges.NodeNumber,[prevNodeID afterNodeID],'rows');
 
     Digraph=rmedge(Digraph,prevNodeID,afterNodeID); % Delete the edge
 
@@ -183,22 +175,6 @@ if any(afterNodeRow) % If there is an edge to delete
     end
 
 end
-
-% currNodeNum=find((ismember(Digraph.Nodes.FunctionNames,fcnName) & ismember(Digraph.Nodes.NodeNumber,currNodeRowNum))==1);
-
-% if ~isempty(afterNodeID) && newSplit==0
-%     Digraph=rmedge(Digraph,prevNodeID,afterNodeID); % Delete the edge
-%
-%     Digraph=addedge(Digraph,currNodeNum,afterNodeID); % Add the new one from the current node to the next one
-%
-%     newEdgeIdx=cellfun(@isempty,Digraph.Edges.FunctionNames(:,1)) & ismember(Digraph.Edges.NodeNumber,[0 0],'rows'); % The row number of the function names for the new edge
-%     Digraph.Edges.FunctionNames{newEdgeIdx,1}=fcnName;
-%     Digraph.Edges.FunctionNames{newEdgeIdx,2}=Digraph.Nodes.FunctionNames{afterNodeID};
-%     Digraph.Edges.NodeNumber(newEdgeIdx,1:2)=[currNodeNum afterNodeID];
-%
-% end
-
-
 
 plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 % axis(handles.Process.mapFigure,'equal');

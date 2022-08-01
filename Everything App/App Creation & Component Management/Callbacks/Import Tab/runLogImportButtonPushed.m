@@ -37,6 +37,11 @@ headerNames=logsheetVar(1,:);
 % Get the header names, data types, and trial/subject levels that are checked from the log vars UI tree
 checkedNodes=handles.Import.logVarsUITree.CheckedNodes;
 
+if isempty(checkedNodes)
+    disp('Check a box to import a variable from the logsheet!');
+    return;
+end
+
 useHeaderDataTypes=cell(length(checkedNodes),1);
 useHeaderTrialSubject=cell(length(checkedNodes),1);
 
@@ -46,10 +51,8 @@ useHeadersIdx=ismember(headerNames,useHeaderNames);
 useHeadersIdxNums=find(useHeadersIdx==1);
 
 for i=1:length(checkedNodes)
-
     useHeaderDataTypes{i}=NonFcnSettingsStruct.Import.LogsheetVars.(useHeaderVarNames{i}).DataType;
     useHeaderTrialSubject{i}=NonFcnSettingsStruct.Import.LogsheetVars.(useHeaderVarNames{i}).TrialSubject;
-
 end
 
 trialCheckedVarsIdx=ismember(useHeaderTrialSubject,'Trial');
@@ -74,15 +77,14 @@ if any(missingSubNameRows)
     return;
 end
 
-try
-    assert(any(subjIDCol));
-catch
+if ~any(subjIDCol)
     disp(['Missing subject codename column header. Expected header name: ' headerNames{subjIDCol}]);
+    return;
 end
-try
-    assert(any(targetTrialIDCol));
-catch
+
+if ~any(targetTrialIDCol)
     disp(['Missing target trial ID column header. Expected header name: ' headerNames{targetTrialIDCol}]);
+    return;
 end
 
 % Get the row numbers from the specify trials selected

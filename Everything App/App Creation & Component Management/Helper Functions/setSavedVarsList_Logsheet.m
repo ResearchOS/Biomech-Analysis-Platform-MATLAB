@@ -18,9 +18,9 @@ projectSettingsVarNames={projectSettingsVars.name};
 assert(ismember('Digraph',projectSettingsVarNames));
 
 if ismember('VariableNamesList',projectSettingsVarNames)
-    load(projectSettingsMATPath,'VariableNamesList','Digraph');
+    load(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct');
 else
-    load(projectSettingsMATPath,'Digraph');
+    load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
 end
 
 if size(guiNames,1)<size(guiNames,2)
@@ -33,11 +33,11 @@ if ~iscell(splitName)
     splitName={splitName};
 end
 
-splitCode=genSplitCode(projectSettingsMATPath,splitName);
+splitCode=genSplitCode(projectSettingsMATPath,splitName{1});
 
-if ~iscell(splitCode)
-    splitCode={splitCode};
-end
+assert(~iscell(splitCode));
+
+NonFcnSettingsStruct.Process.Splits.(splitName{1}).Code=splitCode;
 
 numVars=length(guiNames);
 
@@ -45,9 +45,11 @@ if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
     VariableNamesList.GUINames=guiNames;
     VariableNamesList.SaveNames=guiVarNames;
     VariableNamesList.SplitNames=repmat(splitName,numVars,1);
-    VariableNamesList.SplitCodes=repmat(splitCode,numVars,1);
+%     VariableNamesList.SplitCodes=repmat(splitCode,numVars,1);
     VariableNamesList.Descriptions=repmat({'Enter Arg Description Here'},numVars,1);
-    save(projectSettingsMATPath,'VariableNamesList','-append');
+%     VariableNamesList.Level=level;
+%     VariableNamesList.IsHardCoded=isHC;
+    save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
     return;
 end
 
@@ -60,9 +62,9 @@ if ~ismember(splitName,VariableNamesList.SplitNames)
     VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames];
     VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames]; % Does not include the split code
     VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,numVars,1)];
-    VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,numVars,1)];
+%     VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,numVars,1)];
     VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVars,1)];
-    save(projectSettingsMATPath,'VariableNamesList','-append');
+    save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
     return;
 end
 
@@ -76,7 +78,7 @@ currVarsNotInSplit=~(ismember(splitName,VariableNamesList.SplitNames) & ismember
 VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(currVarsNotInSplit)];
 VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(currVarsNotInSplit)]; % Does not include the split code
 VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,sum(currVarsNotInSplit),1)];
-VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
+% VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
 VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},sum(currVarsNotInSplit),1)];
 
 handles.Process.varsListbox.Items=VariableNamesList.GUINames;
@@ -89,6 +91,6 @@ elseif ~ismember(splitName,Digraph.Nodes.SplitNames{1})
     Digraph.Nodes.SplitNames{1}=[Digraph.Nodes.SplitNames{1}; {splitName}];
 end
 
-save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
+save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','-append');
 
 varsListBoxValueChanged(fig);

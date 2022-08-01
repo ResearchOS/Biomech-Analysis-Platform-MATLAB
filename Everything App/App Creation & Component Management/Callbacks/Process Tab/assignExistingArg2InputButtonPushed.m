@@ -51,4 +51,6 @@ for i=1:length(varNameInGUI)
 
 end
 
+expand(a);
+
 save(projectSettingsMATPath,'Digraph','-append');

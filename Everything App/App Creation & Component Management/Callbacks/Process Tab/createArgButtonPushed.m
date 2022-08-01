@@ -122,17 +122,18 @@ end
 
 % 6. Add this variable to the GUI
 if exist('VariableNamesList','var')==1
-    numRows=size(VariableNamesList.GUINames,1);
+    rowNum=size(VariableNamesList.GUINames,1)+1;
 else
-    numRows=0;
+    rowNum=1;
 end
-VariableNamesList.GUINames{numRows+1}=nameInGUI;
-VariableNamesList.SaveNames{numRows+1}=defaultName;
-VariableNamesList.Descriptions{numRows+1}={'Enter Arg Description Here'};
-VariableNamesList.SplitNames{numRows+1}={''};
-VariableNamesList.SplitCodes{numRows+1}={''};
-VariableNamesList.Level{numRows+1}=level;
-VariableNamesList.IsHardCoded{numRows+1}=isHC;
+
+VariableNamesList.GUINames{rowNum}=nameInGUI;
+VariableNamesList.SaveNames{rowNum}=defaultName;
+VariableNamesList.Descriptions{rowNum}={'Enter Arg Description Here'};
+VariableNamesList.SplitNames{rowNum}={''};
+VariableNamesList.SplitCodes{rowNum}={''};
+VariableNamesList.Level{rowNum}=level;
+VariableNamesList.IsHardCoded{rowNum}=isHC;
 
 % 7. Now, add this variable to the VariablesMainList
 if isHC==1
@@ -144,5 +145,6 @@ end
 
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 handles.Process.varsListbox.Items=VariableNamesList.GUINames(idx);
+handles.Process.varsListbox.Value=nameInGUI;
 
 save(projectSettingsMATPath,'VariableNamesList','-append');

@@ -5,6 +5,10 @@ function []=windowButtonUpFcn(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+if ~isequal(handles.Tabs.tabGroup1.SelectedTab.Title,'Process')
+    return;
+end
+
 xlims=handles.Process.mapFigure.XLim;
 ylims=handles.Process.mapFigure.YLim;
 

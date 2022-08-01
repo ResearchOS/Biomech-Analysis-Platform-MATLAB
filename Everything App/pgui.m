@@ -290,7 +290,7 @@ handles.Process.assignExistingArg2OutputButton=uibutton(processTab,'push','Text'
 handles.Process.splitsLabel=uilabel(processTab,'Text','Processing Splits','Tag','SplitsLabel','FontWeight','bold');
 
 % 26. Splits UI Tree
-handles.Process.splitsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(splitsUITree,event) splitsUITreeSelectionChanged(splitsUITree),'CheckedNodesChangedFcn',@(splitsUITree,event) splitsUITreeCheckedNodesChanged(splitsUITree),'Tag','FunctionsUITree');
+handles.Process.splitsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(splitsUITree,event) splitsUITreeSelectionChanged(splitsUITree),'CheckedNodesChangedFcn',@(splitsUITree,event) splitsUITreeCheckedNodesChanged(splitsUITree),'Tag','SplitsUITree');
 
 % 27. Splits description label
 % handles.Process.splitsDescriptionLabel=uilabel(processTab,'Text','Split Description','Tag','SplitsDescriptionLabel','FontWeight','bold');

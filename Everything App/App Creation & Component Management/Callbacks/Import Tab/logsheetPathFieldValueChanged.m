@@ -114,12 +114,11 @@ for i=1:size(logsheetVar,2)
 
     if i==1
         handles.Import.logVarsUITree.SelectedNodes=a;
+        handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
+        handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;
     end
 
 end
-
-handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
-handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;
 
 % If there's no Digraph in the projectSettingsMATPath, make one and plot
 % it.
@@ -141,6 +140,15 @@ else
     Digraph.Nodes.NodeNumber=1;
 
     save(projectSettingsMATPath,'Digraph','-append');
+end
+
+% Add the splits UI tree nodes on the Process tab
+delete(handles.Process.splitsUITree.Children);
+splitNames=getUniqueMembers(Digraph.Nodes.SplitNames);
+[~,idx]=sort(upper(splitNames));
+splitNames=splitNames(idx);
+for i=1:length(splitNames)
+    uitreenode(handles.Process.splitsUITree,'Text',splitNames{i});
 end
 
 plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);

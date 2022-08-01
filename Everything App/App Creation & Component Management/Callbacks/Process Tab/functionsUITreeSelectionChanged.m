@@ -8,9 +8,9 @@ handles=getappdata(fig,'handles');
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 varNames=whos('-file',projectSettingsMATPath);
 varNames={varNames.name};
-assert(ismember('Digraph',varNames));
+assert(all(ismember({'Digraph','VariableNamesList'},varNames)));
 
-load(projectSettingsMATPath,'Digraph');
+load(projectSettingsMATPath,'Digraph','VariableNamesList');
 
 if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     handles.Process.fcnDescriptionTextArea.Value='Enter Arg Description Here';
@@ -32,3 +32,10 @@ assert(~isempty(nodeNum));
 nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
 handles.Process.fcnDescriptionTextArea.Value=Digraph.Nodes.Descriptions{nodeRow};
+
+b=handles.Process.fcnArgsUITree.SelectedNodes.Parent;
+if isprop(b,'Text') && ismember(b.Text,{'Inputs','Outputs'}) % Ensure that this is a variable
+    varRow=ismember(VariableNamesList.GUINames,handles.Process.fcnArgsUITree.SelectedNodes.Text);
+    handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varRow};
+    handles.Process.argNameInCodeFIeld.Value=VariableNamesList.SaveNames{varRow};
+end

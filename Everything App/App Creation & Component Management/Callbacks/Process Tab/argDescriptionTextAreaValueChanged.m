@@ -19,10 +19,11 @@ end
 load(projectSettingsMATPath,'VariableNamesList');
 
 varGUIName=handles.Process.varsListbox.Value;
-splitName=handles.Process.splitsUITree.SelectedNodes.Text;
+% splitName=handles.Process.splitsUITree.SelectedNodes.Text;
 
 %% Find the row of the VariableNamesList pertaining to the current variable and split name. Then, change its description.
-varIdx=ismember(VariableNamesList.GUINames,varGUIName) & ismember(VariableNamesList.SplitNames,splitName);
+% varIdx=ismember(VariableNamesList.GUINames,varGUIName) & ismember(VariableNamesList.SplitNames,splitName);
+varIdx=ismember(VariableNamesList.GUINames,varGUIName); % & ismember(VariableNamesList.SplitNames,splitName);
 
 assert(sum(varIdx)==1); % Ensure that it is unique
 

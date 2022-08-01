@@ -122,7 +122,7 @@ end
 
 % 6. Add this variable to the GUI
 if exist('VariableNamesList','var')==1
-    rowNum=size(VariableNamesList.GUINames,1)+1;
+    rowNum=length(VariableNamesList.GUINames)+1;
 else
     rowNum=1;
 end
@@ -131,7 +131,7 @@ VariableNamesList.GUINames{rowNum}=nameInGUI;
 VariableNamesList.SaveNames{rowNum}=defaultName;
 VariableNamesList.Descriptions{rowNum}={'Enter Arg Description Here'};
 VariableNamesList.SplitNames{rowNum}={''};
-VariableNamesList.SplitCodes{rowNum}={''};
+% VariableNamesList.SplitCodes{rowNum}={''};
 VariableNamesList.Level{rowNum}=level;
 VariableNamesList.IsHardCoded{rowNum}=isHC;
 

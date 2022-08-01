@@ -78,6 +78,7 @@ if ~(exist('dontRead','var') && exist(logsheetPathMAT,'file')==2) % Don't do MAT
     end
 
     save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the logsheet.
+    setappdata(fig,'logsheetPathMAT',logsheetPathMAT);
 
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT=logsheetPathMAT;    
 

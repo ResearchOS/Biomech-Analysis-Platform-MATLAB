@@ -55,27 +55,17 @@ if exist(newFcnPath,'file')==2
 end
 
 %% Get the desired level of the processing function from the user
-while true
+opts={'Project','Subject','Trial'};
+[idx,tf]=listdlg('Select Function Level(s)',opts);
+if ~tf
+    return;
+end
+optsLetters={'P','S','T'};
+levels=optsLetters(idx);
 
-    fcnLevel=inputdlg('Enter Function Level','Function Level');
-
-    if isempty(fcnLevel)
-        return;
-    end
-
-    if length(fcnLevel)>1
-        disp('One line of text only!');
-        continue;
-    end
-
-    fcnLevel=sort(upper(fcnLevel{1}));
-    
-    if all(ismember(fcnLevel,'PST'))
-        break;
-    end
-    
-    disp('Function level must be one of: (P)roject, (S)ubject, (T)rial');
-
+fcnLevel='';
+for i=1:length(levels)
+    fcnLevel=[fcnLevel levels{i}];
 end
 
 %% OPTIONAL: Specify the purpose of the function

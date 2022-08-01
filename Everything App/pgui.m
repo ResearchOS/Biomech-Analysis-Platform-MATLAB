@@ -39,6 +39,7 @@ setappdata(fig,'settingsMATPath',''); % The project-independent settings MAT fil
 setappdata(fig,'projectSettingsMATPath',''); % The project-specific settings MAT file full path.
 setappdata(fig,'codePath',''); % The current project's code path on the Import tab.
 setappdata(fig,'logsheetPath',''); % The current project's logsheet path on the Import tab.
+setappdata(fig,'logsheetPathMAT',''); % The logsheet MAT file path
 setappdata(fig,'dataPath',''); % The current project's data path on the Import tab.
 setappdata(fig,'NonFcnSettingsStruct',''); % The non-function related settings for the current project
 setappdata(fig,'FcnSettingsStruct',''); % The function related settings for the current project

@@ -47,9 +47,13 @@ for i=1:length(varNameInGUI)
 
     Digraph.Nodes.OutputVariableNames{nodeRow}=Digraph.Nodes.OutputVariableNames{nodeRow}(~emptyIdx);
 
-    highlightedFcnsChanged(fig,Digraph,nodeNum);
+    b=findobj(a,'Text','Outputs');
+
+    uitreenode(b,'Text',currName);
+
+%     highlightedFcnsChanged(fig,Digraph,nodeNum);
 
 end
-expand(a);
+expand(b);
 
 save(projectSettingsMATPath,'Digraph','-append');

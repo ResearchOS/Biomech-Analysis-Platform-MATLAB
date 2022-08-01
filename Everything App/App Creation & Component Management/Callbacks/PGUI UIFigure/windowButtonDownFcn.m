@@ -9,6 +9,10 @@ if ~isequal(handles.Tabs.tabGroup1.SelectedTab.Title,'Process')
     return;
 end
 
+if isempty(fig.CurrentObject)
+    return;
+end
+
 xlims=handles.Process.mapFigure.XLim;
 ylims=handles.Process.mapFigure.YLim;
 

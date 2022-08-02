@@ -18,9 +18,11 @@ ylims=handles.Process.mapFigure.YLim;
 
 currPoint=handles.Process.mapFigure.CurrentPoint;
 
-% assert(isequal(currPoint(1,:),[currPoint(2,1:2) -1*currPoint(2,3)]));
-
 currPoint=currPoint(1,1:2);
+
+if isequal(fig.SelectionType,'open')
+    openMFile(fig,currPoint);
+end
 
 if currPoint(1)<xlims(1) || currPoint(1)>xlims(2) || currPoint(2)<ylims(1) || currPoint(2)>ylims(2)        
     if isequal(fig.CurrentObject.Tag,'VarsListbox')              

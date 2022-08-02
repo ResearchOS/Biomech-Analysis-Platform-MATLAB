@@ -42,6 +42,7 @@ splitName=handles.Process.splitsUITree.CheckedNodes.Text; % Checked or selected?
 splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
 
 setappdata(fig,'splitName',splitName);
+setappdata(fig,'splitCode',splitCode);
 macAddress=getComputerID();
 logsheetPathMAT=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT;
 load(logsheetPathMAT,'logsheetVar');

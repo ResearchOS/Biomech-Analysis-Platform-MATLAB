@@ -48,6 +48,8 @@ setappdata(fig,'rootSavePlotPath',''); % The root folder to save plots to.
 setappdata(fig,'currentPointDown',[0 0]); % The location of the mouse on the figure when the mouse is clicked down
 setappdata(fig,'currentPointUp',[0 0]); % The location of the mouse on the figure when the mouse is released up
 setappdata(fig,'selectedNodeNumbers',0); % The node ID numbers of the selected nodes
+setappdata(fig,'splitName',''); % The name of the current processing split
+setappdata(fig,'splitCode',''); % The code to append to variables for the current processing split
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing

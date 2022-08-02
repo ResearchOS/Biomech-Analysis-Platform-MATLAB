@@ -17,17 +17,28 @@ closeParensIdx=strfind(firstLine,')');
 
 args=strsplit(firstLine(openParensIdx+1:closeParensIdx-1),',');
 
-switch length(args)
-    case 1 % Just projectStruct
-        levels='P';
-    case 2 % projectStruct and allTrialNames
-        if isequal(args{2},'allTrialNames')
-            levels='PST';
-        else
-            levels='PS';
-        end
-    case 4 % projectStruct, subName, trialName, repNum
-        levels='T';
-    otherwise
-        levels=''; % The user switched up the input variables
+if isequal(args,{'projectStruct'})
+    levels='P';
+elseif isequal(args,{'projectStruct','subNames'})
+    levels='PS';
+elseif isequal(args,{'projectStruct','allTrialNames'})
+    levels='PST';
+elseif isequal(args,{'projectStruct','subName','trialNames'})
+    levels='ST';
+elseif isequal(args,{'projectStruct','subName'}) % How to distinguish between PS and S?
+    levels='S';
+elseif isequal(args,{'projectStruct','subName','trialName','repNum'})
+    levels='T';
+else
+    levels=''; % The user changed the input variables
+end
+
+if isequal(levels,'')
+    disp('The input arguments were changed! Here are the list of available input arguments:');
+    disp('Project: ''projectStruct''');
+    disp('Project & Subject: ''projectStruct, subNames''');
+    disp('Project, Subject, & Trial: ''projectStruct, subName, trialNames''');
+    disp('Subject & Trial: ''projectStruct, subName, trialNames''');
+    disp('Subject: ''projectStruct, subName''');
+    disp('Trial: ''projectStruct, subName, trialName, repNum''');
 end

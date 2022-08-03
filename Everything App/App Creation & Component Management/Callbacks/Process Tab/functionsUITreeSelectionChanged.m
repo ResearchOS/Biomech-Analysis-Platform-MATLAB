@@ -8,7 +8,11 @@ handles=getappdata(fig,'handles');
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 varNames=whos('-file',projectSettingsMATPath);
 varNames={varNames.name};
-assert(all(ismember({'Digraph','VariableNamesList'},varNames)));
+try
+    assert(all(ismember({'Digraph','VariableNamesList'},varNames)));
+catch
+    return;
+end
 
 load(projectSettingsMATPath,'Digraph','VariableNamesList');
 

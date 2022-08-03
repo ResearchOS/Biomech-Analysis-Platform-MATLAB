@@ -139,6 +139,7 @@ else
     Digraph.Nodes.Coordinates=[0 0];  
     Digraph.Nodes.SplitNames={{'Default'}};
     Digraph.Nodes.NodeNumber=1;
+    Digraph.Nodes.SpecifyTrials={''};
 
     save(projectSettingsMATPath,'Digraph','-append');
 end

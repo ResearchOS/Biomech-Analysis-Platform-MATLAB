@@ -181,13 +181,13 @@ handles.Import.runLogImportButton=uibutton(importTab,'push','Text','Run Logsheet
 % handles.Import.createArgButton=uibutton(importTab,'push','Text','Create Arg','Tag','CreateArgButton','Tooltip','Create new variable','ButtonPushedFcn',@(createArgButton,event) createArgButtonPushed(createArgButton));
 
 % 23. Specify trials UI tree
-handles.Import.specifyTrialsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeSelectionChanged(specifyTrialsUITree),'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree),'Tag','SpecifyTrialsUITree');
+% handles.Import.specifyTrialsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeSelectionChanged(specifyTrialsUITree),'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree),'Tag','SpecifyTrialsUITree');
 
 % 24. New specify trials button
-handles.Import.newSpecifyTrialsButton=uibutton(importTab,'push','Text','ST+','Tag','NewSpecifyTrialsButton','Tooltip','Create new specify trials condition','ButtonPushedFcn',@(newSpecifyTrialsButton,event) newSpecifyTrialsButtonPushed(newSpecifyTrialsButton));
+% handles.Import.newSpecifyTrialsButton=uibutton(importTab,'push','Text','ST+','Tag','NewSpecifyTrialsButton','Tooltip','Create new specify trials condition','ButtonPushedFcn',@(newSpecifyTrialsButton,event) newSpecifyTrialsButtonPushed(newSpecifyTrialsButton));
 
 % 25. Remove specify trials option
-handles.Import.removeSpecifyTrialsButton=uibutton(importTab,'push','Text','ST-','Tag','RemoveSpecifyTrialsButton','Tooltip','Remove specify trials condition','ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
+% handles.Import.removeSpecifyTrialsButton=uibutton(importTab,'push','Text','ST-','Tag','RemoveSpecifyTrialsButton','Tooltip','Remove specify trials condition','ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
 
 % 26. Import function drop down (for data type-specific column headers)
 handles.Import.importFcnDropDown=uidropdown(importTab,'Items',{'New Import Fcn'},'Editable','off','Tag','ImportFcnDropDown','ValueChangedFcn',@(importFcnDropDown,event) importFcnDropDownValueChanged(importFcnDropDown));
@@ -199,7 +199,10 @@ handles.Import.checkAllLogVarsUITreeButton=uibutton(importTab,'push','Text','Che
 handles.Import.uncheckAllLogVarsUITreeButton=uibutton(importTab,'push','Text','Uncheck all','Tag','UncheckAllLogVarsUITreeButton','Tooltip','Uncheck all columns','ButtonPushedFcn',@(uncheckAllLogVarsUITreeButton,event) uncheckAllLogVarsUITreeButtonPushed(uncheckAllLogVarsUITreeButton));
 
 % 29. Edit specify trials
-handles.Import.editSpecifyTrialsButton=uibutton(importTab,'push','Text','ST Edit','Tag','EditSpecifyTrialsButton','Tooltip','Edit specify trials condition','ButtonPushedFcn',@(editSpecifyTrialsButton,event) editSpecifyTrialsButtonPushed(editSpecifyTrialsButton));
+% handles.Import.editSpecifyTrialsButton=uibutton(importTab,'push','Text','ST Edit','Tag','EditSpecifyTrialsButton','Tooltip','Edit specify trials condition','ButtonPushedFcn',@(editSpecifyTrialsButton,event) editSpecifyTrialsButtonPushed(editSpecifyTrialsButton));
+
+% 29. Specify trials button
+handles.Import.specifyTrialsButton=uibutton(importTab,'push','Text','Specify Trials','Tag','SpecifyTrialsButton','Tooltip','Create or Modify Specify Trials','ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushedPopupWindow(specifyTrialsButton));
 
 importTab.UserData=struct('LogsheetPathButton',handles.Import.logsheetPathButton,'LogsheetPathField',handles.Import.logsheetPathField,'LogsheetLabel',handles.Import.logsheetLabel,...
     'NumHeaderRowsLabel',handles.Import.numHeaderRowsLabel,'NumHeaderRowsField',handles.Import.numHeaderRowsField,'SubjectIDColHeaderLabel',handles.Import.subjIDColHeaderLabel,'SubjectIDColHeaderField',handles.Import.subjIDColHeaderField,...
@@ -207,9 +210,8 @@ importTab.UserData=struct('LogsheetPathButton',handles.Import.logsheetPathButton
     'TargetTrialIDColHeaderField',handles.Import.targetTrialIDColHeaderField,'OpenLogsheetButton',handles.Import.openLogsheetButton,'LogVarsUITree',handles.Import.logVarsUITree,...
     'DataTypeLabel',handles.Import.dataTypeLabel,'DataTypeDropDown',handles.Import.dataTypeDropDown,'TrialSubjectDropDown',handles.Import.trialSubjectDropDown,...
     'VarSearchField',handles.Import.varSearchField,'RunLogImportButton',handles.Import.runLogImportButton,...
-    'SpecifyTrialsUITree',handles.Import.specifyTrialsUITree,'NewSpecifyTrialsButton',handles.Import.newSpecifyTrialsButton,...
-    'RemoveSpecifyTrialsButton',handles.Import.removeSpecifyTrialsButton,'ImportFcnDropDown',handles.Import.importFcnDropDown,'CheckAllLogVarsUITreeButton',handles.Import.checkAllLogVarsUITreeButton,'UncheckAllLogVarsUITreeButton',handles.Import.uncheckAllLogVarsUITreeButton,...
-    'EditSpecifyTrialsButton',handles.Import.editSpecifyTrialsButton);
+    'ImportFcnDropDown',handles.Import.importFcnDropDown,'CheckAllLogVarsUITreeButton',handles.Import.checkAllLogVarsUITreeButton,'UncheckAllLogVarsUITreeButton',handles.Import.uncheckAllLogVarsUITreeButton,...
+    'SpecifyTrialsButton',handles.Import.specifyTrialsButton);
 
 @importResize; % Run the importResize to set all components' positions to their correct positions
 
@@ -281,7 +283,10 @@ handles.Process.showOutputVarsButton=uibutton(processTab,'push','Text','Show O',
 handles.Process.specifyTrialsLabel=uilabel(processTab,'Text','SpecifyTrials','Tag','SpecifyTrialsLabel','FontWeight','bold');
 
 % 22. Specify trials button/panel/checkboxes/etc.
-handles.Process.specifyTrialsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeSelectionChanged(specifyTrialsUITree),'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree),'Tag','SpecifyTrialsUITree');
+% handles.Process.specifyTrialsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeSelectionChanged(specifyTrialsUITree),'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree),'Tag','SpecifyTrialsUITree');
+
+% 22. Specify trials button
+handles.Process.specifyTrialsButton=uibutton(processTab,'push','Text','Specify Trials','Tag','SpecifyTrialsButton','Tooltip','Create or Modify Specify Trials','ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushedPopupWindow(specifyTrialsButton));
 
 % 23. Assign input arg from existing list
 handles.Process.assignExistingArg2InputButton=uibutton(processTab,'push','Text','-> I','Tag','AssignExistingArg2InputButton','Tooltip','Assign Existing Variable as Input to Selected Function','ButtonPushedFcn',@(assignExistingArg2InputButton,event) assignExistingArg2InputButtonPushed(assignExistingArg2InputButton));
@@ -314,13 +319,13 @@ handles.Process.fcnsArgsSearchField=uieditfield(processTab,'text','Value','Searc
 handles.Process.convertVarHardDynamicButton=uibutton(processTab,'push','Text','Var Dynamic <=> Hard-coded','Tag','ConvertVarHardDynamicButton','Tooltip','Convert Selected Var Between Hard-Coded and Dynamic','ButtonPushedFcn',@(convertVarHardDynamicButton,event) convertVarHardDynamicButtonPushed(convertVarHardDynamicButton));
 
 % 33. Remove specify trials button
-handles.Process.removeSpecifyTrialsButton=uibutton(processTab,'push','Text','ST-','Tag','RemoveSpecifyTrialsButton','Tooltip','Remove Specify Trials Condition','ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
+% handles.Process.removeSpecifyTrialsButton=uibutton(processTab,'push','Text','ST-','Tag','RemoveSpecifyTrialsButton','Tooltip','Remove Specify Trials Condition','ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
 
 % 34. Mark function as an Import function checkbox
 handles.Process.markImportFcnCheckbox=uicheckbox(processTab,'Text','Mark Import Fcn','Value',0,'Tag','MarkImportFcnCheckbox','Tooltip','Check this box to mark a function as importing from raw data files','ValueChangedFcn',@(markImportFcnCheckbox,event) markImportFcnCheckboxValueChanged(markImportFcnCheckbox));
 
 % 35. New specify trials button
-handles.Process.newSpecifyTrialsButton=uibutton(processTab,'push','Text','ST+','Tag','NewSpecifyTrialsButton','Tooltip','New Specify Trials Condition','ButtonPushedFcn',@(newSpecifyTrialsButton,event) newSpecifyTrialsButtonPushed(newSpecifyTrialsButton));
+% handles.Process.newSpecifyTrialsButton=uibutton(processTab,'push','Text','ST+','Tag','NewSpecifyTrialsButton','Tooltip','New Specify Trials Condition','ButtonPushedFcn',@(newSpecifyTrialsButton,event) newSpecifyTrialsButtonPushed(newSpecifyTrialsButton));
 
 % 36. New processing split button
 handles.Process.newSplitButton=uibutton(processTab,'push','Text','PS+','Tag','NewSplitButton','Tooltip','New Split','ButtonPushedFcn',@(newSplitButton,event) newSplitButtonPushed(newSplitButton));
@@ -353,7 +358,7 @@ processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',
     'ArgDescriptionTextArea',handles.Process.argDescriptionTextArea,'ShowInputVarsButton',handles.Process.showInputVarsButton,'ShowOutputVarsButton',handles.Process.showOutputVarsButton,'AssignExistingArg2InputButton',handles.Process.assignExistingArg2InputButton,...
     'AssignExistingArg2OutputButton',handles.Process.assignExistingArg2OutputButton,'SplitsLabel',handles.Process.splitsLabel,'SplitsListbox',handles.Process.splitsUITree,...
     'FcnsArgsSearchField',handles.Process.fcnsArgsSearchField,'ConvertVarHardDynamicButton',handles.Process.convertVarHardDynamicButton,...
-    'SpecifyTrialsUITree',handles.Process.specifyTrialsUITree,'RemoveSpecifyTrialsButton',handles.Process.removeSpecifyTrialsButton,'MarkImportFcnCheckbox',handles.Process.markImportFcnCheckbox,'NewSpecifyTrialsButton',handles.Process.newSpecifyTrialsButton,...
+    'SpecifyTrialsButton',handles.Process.specifyTrialsButton,'MarkImportFcnCheckbox',handles.Process.markImportFcnCheckbox,...
     'SpecifyTrialsLabel',handles.Process.specifyTrialsLabel,'NewSplitButton',handles.Process.newSplitButton,'RemoveSplitButton',handles.Process.removeSplitButton,'UnassignVarsButton',handles.Process.unassignVarsButton,...
     'EditSubvarsButton',handles.Process.editSubvarsButton,'SplitsDescButton',handles.Process.splitsDescButton,'VarsListbox',handles.Process.varsListbox,'PlaceFcnButton',handles.Process.placeFcnButton);
 

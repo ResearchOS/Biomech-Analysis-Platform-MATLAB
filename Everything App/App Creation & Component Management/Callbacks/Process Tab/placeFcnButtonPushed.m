@@ -129,6 +129,7 @@ Digraph.Nodes.Coordinates(end,:)=newNodeCoord;
 Digraph.Nodes.InputVariableNames{end}={''};
 Digraph.Nodes.OutputVariableNames{end}={''};
 Digraph.Nodes.SplitNames{end}=splitNames;
+Digraph.Nodes.SpecifyTrials{end}='';
 currNodeID=max(Digraph.Nodes.NodeNumber)+1;
 Digraph.Nodes.NodeNumber(end)=currNodeID; % Helps to differentiate nodes of the same function name
 
@@ -137,6 +138,7 @@ currNodeRowNum=size(Digraph.Nodes,1);
 prevNodeRowNum=find(prevNodeRow==1);
 
 % Add a new edge from the prior node to the new one.
+% ADD ONE EDGE FOR EVERY SPLIT FROM THE PRIOR NODE TO THE CURRENT ONE
 Digraph=addedge(Digraph,prevNodeRowNum,currNodeRowNum);
 
 % Add the function names of the new node to the digraph
@@ -155,6 +157,7 @@ if any(afterNodeRow) % If there is an edge to delete
 
     Digraph=rmedge(Digraph,prevNodeID,afterNodeID); % Delete the edge
 
+    % ADD ONE EDGE FOR EVERY SPLIT FROM THE PRIOR NODE TO THE CURRENT ONE
     Digraph=addedge(Digraph,currNodeRowNum,afterNodeID); % Add the new one from the current node to the next one
 
     newEdgeIdx=ismember(Digraph.Edges.EndNodes,[currNodeRowNum afterNodeID],'rows');

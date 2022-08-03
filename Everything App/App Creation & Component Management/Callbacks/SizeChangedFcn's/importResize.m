@@ -63,6 +63,7 @@ ImportFcnDropDownRelPos=[0.75 0.5];
 CheckAllLogVarsUITreeButtonRelPos=[0.01 0.45];
 UncheckAllLogVarsUITreeButtonRelPos=[0.12 0.45];
 EditSpecifyTrialsButtonRelPos=[0.22 0.05];
+SpecifyTrialsButtonRelPos=[0.01 0.16];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -96,6 +97,7 @@ ImportFcnDropDownSize=[0.2 compHeight];
 CheckAllLogVarsUITreeButtonSize=[0.1 compHeight];
 UncheckAllLogVarsUITreeButtonSize=[0.1 compHeight];
 EditSpecifyTrialsButtonSize=[0.08 compHeight];
+SpecifyTrialsButtonSize=[0.2 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 LogsheetPathButtonPos=round([LogsheetPathButtonRelPos.*figSize LogsheetPathButtonSize(1)*figSize(1) LogsheetPathButtonSize(2)]);
@@ -127,6 +129,7 @@ ImportFcnDropDownPos=round([ImportFcnDropDownRelPos.*figSize ImportFcnDropDownSi
 CheckAllLogVarsUITreeButtonPos=round([CheckAllLogVarsUITreeButtonRelPos.*figSize CheckAllLogVarsUITreeButtonSize(1)*figSize(1) CheckAllLogVarsUITreeButtonSize(2)]);
 UncheckAllLogVarsUITreeButtonPos=round([UncheckAllLogVarsUITreeButtonRelPos.*figSize UncheckAllLogVarsUITreeButtonSize(1)*figSize(1) UncheckAllLogVarsUITreeButtonSize(2)]);
 EditSpecifyTrialsButtonPos=round([EditSpecifyTrialsButtonRelPos.*figSize EditSpecifyTrialsButtonSize(1)*figSize(1) EditSpecifyTrialsButtonSize(2)]);
+SpecifyTrialsButtonPos=round([SpecifyTrialsButtonRelPos.*figSize SpecifyTrialsButtonSize(1)*figSize(1) SpecifyTrialsButtonSize(2)]);
 
 data.LogsheetPathButton.Position=LogsheetPathButtonPos;
 data.LogsheetPathField.Position=LogsheetPathFieldPos;
@@ -150,13 +153,14 @@ data.TrialSubjectDropDown.Position=TrialSubjectDropDownPos;
 data.VarSearchField.Position=VarSearchFieldPos;
 data.RunLogImportButton.Position=RunLogImportButtonPos;
 % data.CreateArgButton.Position=CreateArgButtonPos;
-data.SpecifyTrialsUITree.Position=SpecifyTrialsUITreePos;
-data.NewSpecifyTrialsButton.Position=NewSpecifyTrialsButtonPos;
-data.RemoveSpecifyTrialsButton.Position=RemoveSpecifyTrialsButtonPos;
+% data.SpecifyTrialsUITree.Position=SpecifyTrialsUITreePos;
+% data.NewSpecifyTrialsButton.Position=NewSpecifyTrialsButtonPos;
+% data.RemoveSpecifyTrialsButton.Position=RemoveSpecifyTrialsButtonPos;
 data.ImportFcnDropDown.Position=ImportFcnDropDownPos;
 data.CheckAllLogVarsUITreeButton.Position=CheckAllLogVarsUITreeButtonPos;
 data.UncheckAllLogVarsUITreeButton.Position=UncheckAllLogVarsUITreeButtonPos;
-data.EditSpecifyTrialsButton.Position=EditSpecifyTrialsButtonPos;
+% data.EditSpecifyTrialsButton.Position=EditSpecifyTrialsButtonPos;
+data.SpecifyTrialsButton.Position=SpecifyTrialsButtonPos;
 
 data.LogsheetPathButton.FontSize=newFontSize;
 data.LogsheetPathField.FontSize=newFontSize;
@@ -180,10 +184,11 @@ data.TrialSubjectDropDown.FontSize=newFontSize;
 data.VarSearchField.FontSize=newFontSize;
 data.RunLogImportButton.FontSize=newFontSize;
 % data.CreateArgButton.FontSize=newFontSize;
-data.SpecifyTrialsUITree.FontSize=newFontSize;
-data.NewSpecifyTrialsButton.FontSize=newFontSize;
-data.RemoveSpecifyTrialsButton.FontSize=newFontSize;
+% data.SpecifyTrialsUITree.FontSize=newFontSize;
+% data.NewSpecifyTrialsButton.FontSize=newFontSize;
+% data.RemoveSpecifyTrialsButton.FontSize=newFontSize;
 data.ImportFcnDropDown.FontSize=newFontSize;
 data.CheckAllLogVarsUITreeButton.FontSize=newFontSize;
 data.UncheckAllLogVarsUITreeButton.FontSize=newFontSize;
-data.EditSpecifyTrialsButton.FontSize=newFontSize;
+% data.EditSpecifyTrialsButton.FontSize=newFontSize;
+data.SpecifyTrialsButton.FontSize=newFontSize;

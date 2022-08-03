@@ -7,7 +7,7 @@ pguiFig=evalin('base','gui;');
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectName=getappdata(pguiFig,'projectName');
+% projectName=getappdata(pguiFig,'projectName');
 
 if ismac==1
     slash='/';
@@ -16,7 +16,7 @@ elseif ispc==1
 end
 
 % Get the M file path
-filePath=[getappdata(pguiFig,'codePath') 'SpecifyTrials' slash handles.Top.specifyTrialsDropDown.Value '_' projectName '_specifyTrials.m'];
+filePath=[getappdata(pguiFig,'codePath') 'SpecifyTrials' slash handles.Top.specifyTrialsDropDown.Value '.m'];
 
 % Get whether this is Include or Exclude criteria
 type=handles.Top.includeExcludeTabGroup.SelectedTab.Title;
@@ -37,7 +37,7 @@ while a==0
     end
 end
 
-logVar=load(getappdata(pguiFig,'LogsheetMatPath'));
+logVar=load(getappdata(pguiFig,'logsheetPathMAT'));
 fldName=fieldnames(logVar);
 assert(length(fldName)==1);
 logVar=logVar.(fldName{1});

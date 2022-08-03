@@ -6,19 +6,28 @@ function []=conditionNameDropDownValueChanged(src)
 % type: Include or Exclude tab (char)
 % condNum: condition number (double)
 
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
 value=src.Value;
 condNum=find(ismember(src.Items,value)==1,1);
 fig=ancestor(src,'figure','toplevel');
-pguiFig=evalin('base','gui;');
-inclStruct=getappdata(fig,'inclStruct');
 handles=getappdata(fig,'handles');
+pguiFig=evalin('base','gui;');
+verName=handles.Top.specifyTrialsDropDown.Value;
+% verFileName=[getappdata(pguiFig,'codePath') 'SpecifyTrials' slash verName '.m'];
+inclStruct=eval(verName);
+% inclStruct=getappdata(fig,'inclStruct');
 
 type=handles.Top.includeExcludeTabGroup.SelectedTab.Title;
 
 % logsheetHandles=getappdata(fig,'logsheetEntryHandles');
 % structHandles=getappdata(fig,'structEntryHandles');
 
-logVar=load(getappdata(pguiFig,'LogsheetMatPath'));
+logVar=load(getappdata(pguiFig,'logsheetPathMAT'));
 fldName=fieldnames(logVar);
 assert(length(fldName)==1);
 logVar=logVar.(fldName{1});

@@ -30,6 +30,7 @@ assert(~any(diff(coords))==0 || length(coords)==1); % Check that no nodes have t
 
 fcnNames=fcnNames(idx);
 nodeNums=nodeNums(idx);
+specifyTrialsNames=Digraph.Nodes.SpecifyTrials(idx);
 
 %% 2. Run the functions in order
 if ismac==1
@@ -51,12 +52,12 @@ for i=1:length(fcnNames)
 
     fcnName=fcnNames{i};
     nodeNum=nodeNums(i);
-%     specTrialsName=specTrialsNames{i};
+    specifyTrialsName=specifyTrialsNames{i};
     level=readLevel([codePath 'Processing Functions' slash fcnName '.m']);
 
     setappdata(fig,'currNodeNum',nodeNum);
 
-    inclStruct=feval(specTrialsName);
+    inclStruct=feval(specifyTrialsName);
     trialNames=getTrialNames(inclStruct,logsheetVar,fig,0,projectStruct);
     subNames=fieldnames(trialNames);
 

@@ -39,3 +39,7 @@ if isprop(b,'Text') && ismember(b.Text,{'Inputs','Outputs'}) % Ensure that this 
     handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varRow};
     handles.Process.argNameInCodeFIeld.Value=VariableNamesList.SaveNames{varRow};
 end
+
+specifyTrialsName=Digraph.Nodes.SpecifyTrials{nodeRow};
+
+handles.Process.specifyTrialsLabel.Text=specifyTrialsName;

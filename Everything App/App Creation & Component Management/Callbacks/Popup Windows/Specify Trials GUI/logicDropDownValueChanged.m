@@ -5,8 +5,18 @@ function []=logicDropDownValueChanged(src)
 
 value=src.Value;
 fig=ancestor(src,'figure','toplevel');
-inclStruct=getappdata(fig,'inclStruct');
+% inclStruct=getappdata(fig,'inclStruct');
 handles=getappdata(fig,'handles');
+pguiFig=evalin('base','gui;');
+
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
+
+verName=handles.Top.specifyTrialsDropDown.Value;
+inclStruct=eval(verName);
 
 type=handles.Top.includeExcludeTabGroup.SelectedTab.Title;
 
@@ -18,10 +28,10 @@ srcNum=str2double(src.Tag(isstrprop(src.Tag,'digit')));
 
 inclStruct.(type).Condition(condNum).(subTabTitle)(srcNum).Logic=value;
 
-setappdata(fig,'inclStruct',inclStruct);
+% setappdata(fig,'inclStruct',inclStruct);
 
 % Get the m file name
-mName=getappdata(fig,'specifyTrialsMPath');
+mName=[getappdata(pguiFig,'codePath') 'SpecifyTrials' slash verName '.m'];
 
 % Read through every line to find where it matches the current criteria name, and replace the logic value.
 text=regexp(fileread(mName),'\n','split'); % Read in the file, where each line is one cell.

@@ -1,4 +1,4 @@
-function []=specifyTrialsButtonPushedPopupWindow(src,guiLocation)
+function []=specifyTrialsButtonPushedPopupWindow(src)
 
 %% PURPOSE: CREATE GUI TO FACILITATE SPECIFY TRIALS SELECTION.
 % Inputs:
@@ -10,15 +10,15 @@ function []=specifyTrialsButtonPushedPopupWindow(src,guiLocation)
 % 'Process Fcn fcnName': The Process > Run tab, for the function fcnName
 % 'Plot fcnName': The Plot tab, for the function fcnName
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+% if ismac==1
+%     slash='/';
+% elseif ispc==1
+%     slash='\';
+% end
 
 fig=ancestor(src,'figure','toplevel');
 assignin('base','gui',fig); % Send the fig handle to the base workspace.
-% handles=getappdata(fig,'handles');
+handles=getappdata(fig,'handles');
 
 codePath=getappdata(fig,'codePath');
 if isempty(codePath) || exist(codePath,'dir')~=7
@@ -36,13 +36,48 @@ for i=1:length(allHandles)
 
 end
 
+% Check which function is selected in the fcnArgsUITree
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+varNames=whos('-file',projectSettingsMATPath);
+varNames={varNames.name};
+assert(all(ismember({'Digraph'},varNames)));
+
+load(projectSettingsMATPath,'Digraph');
+
+tabName=handles.Tabs.tabGroup1.SelectedTab.Title;
+
+if ~isequal(tabName,'Import') && isempty(handles.Process.fcnArgsUITree.SelectedNodes)
+    handles.Process.fcnDescriptionTextArea.Value='Enter Fcn Description Here';
+    beep;
+    disp('Need to select a fcn in the UI tree first!');
+    return;
+end
+
+if ~isequal(tabName,'Import')
+    nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
+    a=handles.Process.fcnArgsUITree.SelectedNodes;
+    for i=1:2
+        if ~isempty(nodeNum)
+            break;
+        end
+        a=a.Parent;
+        nodeNum=a.NodeData;
+    end
+
+    assert(~isempty(nodeNum));
+
+    nodeRow=find(ismember(Digraph.Nodes.NodeNumber,nodeNum)==1);
+else
+    nodeRow=1;
+end
+
 %% Initialize GUI
 % clc;
 Q=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
 Q.Name='Specify Trials'; % Name the window
 defaultPos=get(0,'defaultfigureposition'); % Get the default figure position
 set(Q,'Position',defaultPos); % Set the figure to be at that position (redundant, I know, but should be clear)
-setappdata(Q,'guiLocation',guiLocation);
+% setappdata(Q,'guiLocation',guiLocation);
 % figSize=get(Q,'Position'); % Get the figure's position.
 % figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax: left offset, bottom offset, width, height (pixels)
 
@@ -82,76 +117,36 @@ Q.UserData=struct('IncludeExcludeTabGroup',newHandles.Top.includeExcludeTabGroup
 
 specifyTrialsResize(Q); % Initialize all components' positions.
 
-% Read the text file, and the pgui fig, to set the initial value of the specify trials drop down. Then, call the specifyTrialsVersionValueChanged
-% callback function to propagate those changes throughout the GUI.
-[text,allProjectsSpecifyTrialsPath]=readSpecifyTrials(getappdata(fig,'everythingPath'));
-setappdata(Q,'allProjectsSpecifyTrialsPath',allProjectsSpecifyTrialsPath);
-setappdata(fig,'allProjectsSpecifyTrialsPath',allProjectsSpecifyTrialsPath);
-setappdata(Q,'everythingPath',getappdata(fig,'everythingPath'));
-if iscell(text) % The file exists and has a pre-existing project in it.
-    allProjectsList=getAllProjectNames(text);
+if ~isequal(tabName,'Import')
+    specifyTrialsName=Digraph.Nodes.SpecifyTrials{nodeRow};
 else
-    allProjectsList='';
+    specifyTrialsName=Digraph.Nodes.SpecifyTrials{1};
 end
-assert(isempty(allProjectsList) || isequal(allProjectsList,getappdata(fig,'allProjectsList'))); % Check that this text file matches the allProjects_NamesPaths.txt file.
 
-currProjectLine=0; % Initialize that the project has not been found (i.e. on line 0).
-allNames={''}; % Contains all version names
-allNamesCount=0;
-if ~isempty(allProjectsList)
-    numLines=length(text);
-    projectNameLine=['Project Name: ' getappdata(fig,'projectName')];
-    for i=1:numLines
-
-        if length(text{i})>=length(projectNameLine) && isequal(text{i}(1:length(projectNameLine)),projectNameLine)
-            currProjectLine=i;            
-            continue;
-        end          
-
-        if currProjectLine==0
-            continue;
-        end
-
-        if isempty(text{i}) % Done with the current project.
-            break;
-        end
-
-        % Now in the current project. Read all pre-existing specify trials, and determine which one should be in the current drop down value.
-
-        colonIdx=strfind(text{i},':'); % All lines start with a semicolon, even if no gui location prefix.
-        colonIdx=colonIdx(1); % Isolate the first colon
-        mNameStartIdx=colonIdx+2; % Idx of the first char of the mfilename on this line
-
-        mName=text{i}(mNameStartIdx:end); % The m file path
-        mNameSplit=strsplit(mName,slash);
-        vName=strsplit(mNameSplit{end},['_' getappdata(fig,'projectName')]);
-        vName=vName{1}; % Cell to char
-        allNamesCount=allNamesCount+1;
-        allNames{allNamesCount}=vName;
-
-        currLoc=strfind(text{i}(1:colonIdx),guiLocation); % Find if the current location is in this line of text before the semicolon.
-
-        % If the current line is 
-        if ~isempty(vName) && any([isequal(guiLocation,'Import') contains(guiLocation,'Process Group') contains(guiLocation,'Process Fcn') contains(guiLocation,'Plot Fcn')]) && ~isempty(currLoc)
-            % Now in the desired specify trials version
-            currVName=vName;
-        end        
-
-    end
-
-    if ~exist('currVName','var')
-        currVName=allNames{1};
-    end
-
-    newHandles.Top.specifyTrialsDropDown.Items=allNames;
-    newHandles.Top.specifyTrialsDropDown.Value=currVName;
-
+specifyTrialsNames=dir([getappdata(fig,'codePath') 'SpecifyTrials']);
+specifyTrialsNames={specifyTrialsNames.name};
+varNamesIdx=false(length(specifyTrialsNames),1);
+for i=1:length(specifyTrialsNames)
+    varNamesIdx(i)=isvarname(specifyTrialsNames{i}(1:end-2));
 end
+for i=1:length(specifyTrialsNames)
+    specifyTrialsNames{i}=specifyTrialsNames{i}(1:end-2);
+end
+specifyTrialsNames=specifyTrialsNames(varNamesIdx);
+
+null=false;
+if all(cellfun(@isempty,specifyTrialsNames))
+    specifyTrialsName='Add Specify Trials Version';
+    specifyTrialsNames={'Add Specify Trials Version'};
+    null=true;
+end
+
+newHandles.Top.specifyTrialsDropDown.Items=specifyTrialsNames;
+newHandles.Top.specifyTrialsDropDown.Value=specifyTrialsName;
 
 setappdata(Q,'handles',newHandles);
+setappdata(Q,'nodeRow',nodeRow);
 
-if isempty(currVName)
-    return;
+if ~null
+    specifyTrialsVersionDropDownValueChanged(Q);
 end
-
-specifyTrialsVersionDropDownValueChanged(Q);

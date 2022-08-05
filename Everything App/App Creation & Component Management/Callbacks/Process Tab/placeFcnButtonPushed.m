@@ -37,7 +37,7 @@ end
 
 %% Have the user select which function it is building from
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
 % digraphFcnNames=Digraph.Nodes.FunctionNames;
 
 % msgbox('First select the origin function node, then select the location to place the new function node. To place between existing nodes, select the existing node as the second location');
@@ -97,6 +97,7 @@ splitNames=Digraph.Nodes.SplitNames{prevNodeRow};
 if isequal(coordOffset,[1 -1]) % Creating a new split    
     splitName=inputdlg('Enter split name','Split name');
     splitName=splitName{1};
+    splitCode=genSplitCode(projectSettingsMATPath,splitName);
     while true
 
         if isempty(splitName)
@@ -113,6 +114,8 @@ if isequal(coordOffset,[1 -1]) % Creating a new split
     end
 
     splitNames=[Digraph.Nodes.SplitNames{prevNodeRow}; splitName];
+
+    NonFcnSettingsStruct.Process.Splits.(splitName).Code=splitCode;
 
 end
 
@@ -132,6 +135,7 @@ Digraph.Nodes.SplitNames{end}=splitNames;
 Digraph.Nodes.SpecifyTrials{end}='';
 currNodeID=max(Digraph.Nodes.NodeNumber)+1;
 Digraph.Nodes.NodeNumber(end)=currNodeID; % Helps to differentiate nodes of the same function name
+Digraph.Nodes.IsImport(end)=false;
 
 currNodeRowNum=size(Digraph.Nodes,1);
 
@@ -182,4 +186,4 @@ end
 plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
 % axis(handles.Process.mapFigure,'equal');
 
-save(projectSettingsMATPath,'Digraph','-append');
+save(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct','-append');

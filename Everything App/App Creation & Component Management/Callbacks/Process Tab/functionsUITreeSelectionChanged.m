@@ -9,12 +9,16 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 varNames=whos('-file',projectSettingsMATPath);
 varNames={varNames.name};
 try
-    assert(all(ismember({'Digraph','VariableNamesList'},varNames)));
+    assert(all(ismember({'Digraph'},varNames)));
 catch
     return;
 end
 
-load(projectSettingsMATPath,'Digraph','VariableNamesList');
+if ismember(varNames,'VariableNamesList')
+    load(projectSettingsMATPath,'Digraph','VariableNamesList');
+else
+    load(projectSettingsMATPath,'Digraph');
+end
 
 if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     handles.Process.fcnDescriptionTextArea.Value='Enter Arg Description Here';
@@ -47,3 +51,5 @@ end
 specifyTrialsName=Digraph.Nodes.SpecifyTrials{nodeRow};
 
 handles.Process.specifyTrialsLabel.Text=specifyTrialsName;
+
+handles.Process.markImportFcnCheckbox.Value=Digraph.Nodes.IsImport(nodeRow);

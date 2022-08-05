@@ -30,4 +30,6 @@ end
 
 fullPath=[getappdata(fig,'codePath') 'Processing Functions' slash fcnName '.m'];
 
+oldPath=cd(getappdata(fig,'codePath'));
 open(fullPath); % Give whole path?
+cd(oldPath);

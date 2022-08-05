@@ -76,6 +76,7 @@ if ~any(nodeRows)
     nodeColors=[0 0.447 0.741];
     h.NodeColor=nodeColors;
     highlightedFcnsChanged(src,Digraph)
+    handles.Process.markImportFcnCheckbox.Value=false;
     return;
 end
 

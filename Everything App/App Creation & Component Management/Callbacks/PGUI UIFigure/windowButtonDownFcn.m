@@ -20,43 +20,44 @@ currPoint=handles.Process.mapFigure.CurrentPoint;
 
 currPoint=currPoint(1,1:2);
 
+% r1=drawrectangle(handles.Process.mapFigure);
+
 if isequal(fig.SelectionType,'open')
     openMFile(fig,currPoint);
 end
 
-if currPoint(1)<xlims(1) || currPoint(1)>xlims(2) || currPoint(2)<ylims(1) || currPoint(2)>ylims(2)        
-    if isequal(fig.CurrentObject.Tag,'VarsListbox')              
-        varName=handles.Process.varsListbox.Value;
-    elseif isprop(fig.CurrentObject,'NodeData') % isequal(fig.CurrentObject.Tag,'FunctionsUITree') %isequal(fig.CurrentObject,handles.Process.fcnArgsUITree)
-        if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
-            return;
-        end
-%         if ismember(fig.CurrentObject.Parent.Text,{'Inputs','Outputs'}
-        varName=handles.Process.fcnArgsUITree.SelectedNodes.Text;
-        a=handles.Process.fcnArgsUITree.SelectedNodes.Parent;
-        if ~isprop(a,'Text') || ~ismember(a.Text,{'Inputs','Outputs'}) % Ensure this is a variable name
-            return;
-        end        
-    else
-        return;
-    end
-
-    projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-
-    projectSettingsVars=whos('-file',projectSettingsMATPath);
-    projectSettingsVarNames={projectSettingsVars.name};
-
-    assert(ismember('VariableNamesList',projectSettingsVarNames));
-
-    load(projectSettingsMATPath,'VariableNamesList');
-
-    varIdx=ismember(VariableNamesList.GUINames,varName);
-    defaultName=VariableNamesList.SaveNames{varIdx};
-
-    handles.Process.argNameInCodeField.Value=defaultName;
-    handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varIdx};
-
-    return; % Clicked outside of the axes bounds
+if currPoint(1)>=xlims(1) && currPoint(1)<=xlims(2) && currPoint(2)>=ylims(1) && currPoint(2)<=ylims(2) % Ensure the cursor is within the uiaxes
+    setappdata(fig,'currentPointDown',currPoint);
+    return;
 end
 
-setappdata(fig,'currentPointDown',currPoint);
+if isequal(fig.CurrentObject.Tag,'VarsListbox')
+    varName=handles.Process.varsListbox.Value;
+elseif isprop(fig.CurrentObject,'NodeData') % isequal(fig.CurrentObject.Tag,'FunctionsUITree') %isequal(fig.CurrentObject,handles.Process.fcnArgsUITree)
+    if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
+        return;
+    end
+    %         if ismember(fig.CurrentObject.Parent.Text,{'Inputs','Outputs'}
+    varName=handles.Process.fcnArgsUITree.SelectedNodes.Text;
+    a=handles.Process.fcnArgsUITree.SelectedNodes.Parent;
+    if ~isprop(a,'Text') || ~ismember(a.Text,{'Inputs','Outputs'}) % Ensure this is a variable name
+        return;
+    end
+else
+    return;
+end
+
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+
+projectSettingsVars=whos('-file',projectSettingsMATPath);
+projectSettingsVarNames={projectSettingsVars.name};
+
+assert(ismember('VariableNamesList',projectSettingsVarNames));
+
+load(projectSettingsMATPath,'VariableNamesList');
+
+varIdx=ismember(VariableNamesList.GUINames,varName);
+defaultName=VariableNamesList.SaveNames{varIdx};
+
+handles.Process.argNameInCodeField.Value=defaultName;
+handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varIdx};

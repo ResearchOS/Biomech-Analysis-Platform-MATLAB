@@ -139,6 +139,8 @@ if all(cellfun(@isempty,specifyTrialsNames))
     specifyTrialsName='Add Specify Trials Version';
     specifyTrialsNames={'Add Specify Trials Version'};
     null=true;
+elseif isempty(specifyTrialsName)
+    specifyTrialsName=specifyTrialsNames{1};
 end
 
 newHandles.Top.specifyTrialsDropDown.Items=specifyTrialsNames;

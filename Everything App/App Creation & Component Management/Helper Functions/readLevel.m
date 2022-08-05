@@ -1,8 +1,10 @@
-function [levels]=readLevel(fcnPath)
+function [levels]=readLevel(fcnPath,isImport)
 
 %% PURPOSE: BASED OFF OF THE FIRST LINE OF A FUNCTION, ASCERTAIN THE LEVEL TO CALL THAT FUNCTION AT.
 % Inputs:
 % fcnPath: The full path name of the function to read (char)
+% isImport: 1 if the function imports from some file type to .mat, 0 if not
+% (logical)
 
 % Outputs:
 % levels: The processing levels in the current function (char)
@@ -41,4 +43,8 @@ if isequal(levels,'')
     disp('Subject & Trial: ''projectStruct, subName, trialNames''');
     disp('Subject: ''projectStruct, subName''');
     disp('Trial: ''projectStruct, subName, trialName, repNum''');
+end
+
+if isImport
+    levels='T'; % Easy version for now
 end

@@ -77,8 +77,7 @@ if ~(exist('dontRead','var') && exist(logsheetPathMAT,'file')==2) % Don't do MAT
         logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),targetTrialIDColHeader))=targetTrialIDs;
     end
 
-    save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the logsheet.
-    setappdata(fig,'logsheetPathMAT',logsheetPathMAT);
+    save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the logsheet.    
 
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT=logsheetPathMAT;    
 
@@ -90,6 +89,8 @@ else
     disp(['Logsheet MAT file missing from: ' logsheetPathMAT]);
     return;
 end
+
+setappdata(fig,'logsheetPathMAT',logsheetPathMAT);
 
 %% Initialize the logsheet variables in the MAT file
 % Fill in the logsheet list box, and save default values for each
@@ -140,6 +141,11 @@ else
     Digraph.Nodes.SplitNames={{'Default'}};
     Digraph.Nodes.NodeNumber=1;
     Digraph.Nodes.SpecifyTrials={''};
+    Digraph.Nodes.IsImport=false;
+
+    splitName=getUniqueMembers(Digraph.Nodes.SplitNames);
+    [splitCode]=genSplitCode(projectSettingsMATPath,splitName);
+    NonFcnSettingsStruct.Process.Splits.(splitName{1}).Code=splitCode;
 
     save(projectSettingsMATPath,'Digraph','-append');
 end

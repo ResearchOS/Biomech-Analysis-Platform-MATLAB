@@ -6,7 +6,13 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 assignin('base','gui',fig);
 
-%% 1. Get the list relevant metadata for each function:
+if isempty(handles.Process.splitsUITree.SelectedNodes)
+    beep;
+    disp('Need to select a Split first!');
+    return;
+end
+
+%% 1. Get the list of relevant metadata for each function:
 % function names
 % node numbers (node row numbers?)
 % specify trials names
@@ -25,12 +31,24 @@ end
 
 nodeRows=ismember(Digraph.Nodes.NodeNumber,nodeNums);
 coords=Digraph.Nodes.Coordinates(nodeRows,2);
+specifyTrialsNames=Digraph.Nodes.SpecifyTrials(nodeRows);
+isImportFcns=Digraph.Nodes.IsImport(nodeRows);
 assert(~any(diff(coords))==0 || length(coords)==1); % Check that no nodes have the same Y coordinate
 [~,idx]=sort(coords,'descend'); % Sorted from highest to lowest
 
+% fcnNames=Digraph.Nodes.FunctionNames(idx);
+% nodeNums=D
+
 fcnNames=fcnNames(idx);
 nodeNums=nodeNums(idx);
-specifyTrialsNames=Digraph.Nodes.SpecifyTrials(idx);
+specifyTrialsNames=specifyTrialsNames(idx);
+isImportFcns=isImportFcns(idx);
+
+emptySpecTrialsIdx=cellfun(@isempty,specifyTrialsNames);
+if any(emptySpecTrialsIdx)
+    disp('Missing specify trials in the following functions:');
+    return;
+end
 
 %% 2. Run the functions in order
 if ismac==1
@@ -39,7 +57,7 @@ elseif ispc==1
     slash='\';
 end
 
-splitName=handles.Process.splitsUITree.CheckedNodes.Text; % Checked or selected?
+splitName=handles.Process.splitsUITree.SelectedNodes.Text;
 splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
 
 setappdata(fig,'splitName',splitName);
@@ -48,12 +66,39 @@ macAddress=getComputerID();
 logsheetPathMAT=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT;
 load(logsheetPathMAT,'logsheetVar');
 codePath=getappdata(fig,'codePath');
+if exist('projectStruct','var')~=1
+    projectStruct=[];
+end
+
+% Check that the logsheet is all set up properly
+if handles.Import.numHeaderRowsField.Value<0
+    beep;
+    disp('Ensure that the number of headers rows is properly entered!');
+    return;
+end
+
+if ~ismember(handles.Import.subjIDColHeaderField.Value,logsheetVar(1,:))
+    beep;
+    disp('The subject ID column header field was improperly entered!');
+    return;
+end
+
+if ~ismember(handles.Import.targetTrialIDColHeaderField.Value,logsheetVar(1,:))
+    beep;
+    disp('The target trial ID column header field was improperly entered!');
+    return;
+end
+
+projectName=getappdata(fig,'projectName');
+dataPath=getappdata(fig,'dataPath');
+
 for i=1:length(fcnNames)
 
     fcnName=fcnNames{i};
     nodeNum=nodeNums(i);
     specifyTrialsName=specifyTrialsNames{i};
-    level=readLevel([codePath 'Processing Functions' slash fcnName '.m']);
+    isImport=isImportFcns(i);
+    level=readLevel([codePath 'Processing Functions' slash fcnName '.m'],isImport); % Look at the arguments of the processing function to determine what level to run it at    
 
     setappdata(fig,'currNodeNum',nodeNum);
 
@@ -61,13 +106,15 @@ for i=1:length(fcnNames)
     trialNames=getTrialNames(inclStruct,logsheetVar,fig,0,projectStruct);
     subNames=fieldnames(trialNames);
 
+    oldPath=cd(codePath);        
+
     if ismember('P',level)
 
         disp(['Running ' fcnName ' ' splitName]);
 
         if ismember('T',level)
             feval(fcnName,projectStruct,trialNames);
-        elseif ismember('S',currLevels)
+        elseif ismember('S',level)
             feval(fcnName,projectStruct,subNames);
         else
             feval(fcnName,projectStruct);
@@ -79,7 +126,7 @@ for i=1:length(fcnNames)
         subName=subNames{sub};
         currTrials=fieldnames(trialNames.(subName)); % The list of trial names in the current subject
 
-        if ismember('Subject',currLevels)
+        if ismember('Subject',level)
 
             disp(['Running ' fcnName ' ' splitName ' Subject ' subName]);
 
@@ -98,12 +145,19 @@ for i=1:length(fcnNames)
 
             for repNum=trialNames.(subName).(trialName)
 
-                feval(fcnName,projectStruct,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
+                if ~isImport
+                    feval(fcnName,projectStruct,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
+                else
+                    filePath=[dataPath subName slash trialName '_' subName '_' projectName '.c3d'];                    
+                    feval(fcnName,filePath,projectStruct,subName,trialName,repNum);                    
+                end
 
             end
         end
 
     end
+
+    cd(oldPath);
 
     % Create log of the function that just successfully finished running.
     disp(['Now Logging ' fcnName ' ' splitName])

@@ -1,4 +1,4 @@
-function [splitCode]=genSplitCode(projectSettingsMATPath,splitName)
+function [splitCode,NonFcnSettingsStruct]=genSplitCode(projectSettingsMATPath,splitName)
 
 %% PURPOSE: GENERATE A CODE FOR THE SPECIFIED SPLIT
 % Inputs:
@@ -19,7 +19,12 @@ end
 
 load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
-if isfield(NonFcnSettingsStruct.Process.Splits,splitName)
+if ~isfield(NonFcnSettingsStruct,'Process')
+    splitCode='001';
+    return;
+end
+
+if isfield(NonFcnSettingsStruct,'Process') && isfield(NonFcnSettingsStruct.Process.Splits,splitName)
     splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
     return;
 end

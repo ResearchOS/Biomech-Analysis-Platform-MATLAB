@@ -10,6 +10,10 @@ if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     return;
 end
 
+if isequal(handles.Process.varsListbox.Items,{'No Vars'})
+    return;
+end
+
 varNameInGUI=handles.Process.varsListbox.Value;
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');

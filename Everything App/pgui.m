@@ -229,7 +229,7 @@ handles.Process.addFcnButton=uibutton(processTab,'push','Text','F+','Tag','AddFc
 handles.Process.removeFcnButton=uibutton(processTab,'push','Text','F-','Tag','RemoveFcnButton','Tooltip','Remove Function','ButtonPushedFcn',@(removeFcnButton,event) removeFunctionButtonPushed(removeFcnButton));
 
 % 4. Add fcn type dropdown (same branch before selected, same branch after selected, new branch after selected)
-handles.Process.addFcnTypeDropDown=uidropdown(processTab,'Items',{'Same Branch Before Selected','Same Branch After Selected','New Branch Offshoot','Start New Branch'},'Tooltip','Specify Where the New Function Will Be Placed','Editable','off','Tag','AddFcnTypeDropDown','ValueChangedFcn',@(addFcnTypeDropDown,event) addFcnTypeDropDownValueChanged(addFcnTypeDropDown));
+% handles.Process.addFcnTypeDropDown=uidropdown(processTab,'Items',{'Same Branch Before Selected','Same Branch After Selected','New Branch Offshoot','Start New Branch'},'Tooltip','Specify Where the New Function Will Be Placed','Editable','off','Tag','AddFcnTypeDropDown','ValueChangedFcn',@(addFcnTypeDropDown,event) addFcnTypeDropDownValueChanged(addFcnTypeDropDown));
 
 % 5. Move fcn button (works with #4)
 handles.Process.moveFcnButton=uibutton(processTab,'push','Text','Move Fcn','Tag','MoveFcnButton','Tooltip','Move Function to New Place in Plot','ButtonPushedFcn',@(moveFcnButton,event) moveFunctionButtonPushed(moveFcnButton));
@@ -274,10 +274,10 @@ handles.Process.argDescriptionLabel=uilabel(processTab,'Text','Arg Description',
 handles.Process.argDescriptionTextArea=uitextarea(processTab,'Value','Enter Arg Description Here','Tag','ArgDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(argDescriptionTextArea,event) argDescriptionTextAreaValueChanged(argDescriptionTextArea));
 
 % 20. Show input vars button
-handles.Process.showInputVarsButton=uibutton(processTab,'push','Text','Show I','Tag','ShowInputVarsButton','Tooltip','Show Input Vars to Current Function','ButtonPushedFcn',@(showInputVarsButton,event) showInputVarsButtonPushed(showInputVarsButton));
+% handles.Process.showInputVarsButton=uibutton(processTab,'push','Text','Show I','Tag','ShowInputVarsButton','Tooltip','Show Input Vars to Current Function','ButtonPushedFcn',@(showInputVarsButton,event) showInputVarsButtonPushed(showInputVarsButton));
 
 % 21. Show output vars button
-handles.Process.showOutputVarsButton=uibutton(processTab,'push','Text','Show O','Tag','ShowOutputVarsButton','Tooltip','Show Output Vars of Current Function','ButtonPushedFcn',@(showOutputVarsButton,event) showOutputVarsButtonPushed(showOutputVarsButton));
+% handles.Process.showOutputVarsButton=uibutton(processTab,'push','Text','Show O','Tag','ShowOutputVarsButton','Tooltip','Show Output Vars of Current Function','ButtonPushedFcn',@(showOutputVarsButton,event) showOutputVarsButtonPushed(showOutputVarsButton));
 
 % 33. Specify trials label
 handles.Process.specifyTrialsLabel=uilabel(processTab,'Text','SpecifyTrials','Tag','SpecifyTrialsLabel','FontWeight','bold');
@@ -351,11 +351,11 @@ handles.Process.splitsDescButton=uibutton(processTab,'push','Text','Splits Desc'
 % 43. Place function button
 handles.Process.placeFcnButton=uibutton(processTab,'push','Text','Place Fcn','Tag','PlaceFcnButton','Tooltip','Place a function from the processing functions folder into the processing map figure','ButtonPushedFcn',@(placeFcnButton,event) placeFcnButtonPushed(placeFcnButton));
 
-processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',handles.Process.addFcnButton,'RemoveFcnButton',handles.Process.removeFcnButton,'AddFcnTypeDropDown',handles.Process.addFcnTypeDropDown,...
+processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',handles.Process.addFcnButton,'RemoveFcnButton',handles.Process.removeFcnButton,...
     'MoveFcnButton',handles.Process.moveFcnButton,'PropagateChangesButton',handles.Process.propagateChangesButton,'PropagateChangesCheckbox',handles.Process.propagateChangesCheckbox,'RunSelectedFcnsButton',handles.Process.runSelectedFcnsButton,...
     'CreateArgButton',handles.Process.createArgButton,'RemoveArgButton',handles.Process.removeArgButton,'FcnNameLabel',handles.Process.fcnNameLabel,'FcnArgsUITree',handles.Process.fcnArgsUITree,'ArgNameInCodeLabel',handles.Process.argNameInCodeLabel,...
     'ArgNameInCodeField',handles.Process.argNameInCodeField,'FcnDescriptionLabel',handles.Process.fcnDescriptionLabel,'FcnDescriptionTextArea',handles.Process.fcnDescriptionTextArea,'ArgDescriptionLabel',handles.Process.argDescriptionLabel,...
-    'ArgDescriptionTextArea',handles.Process.argDescriptionTextArea,'ShowInputVarsButton',handles.Process.showInputVarsButton,'ShowOutputVarsButton',handles.Process.showOutputVarsButton,'AssignExistingArg2InputButton',handles.Process.assignExistingArg2InputButton,...
+    'ArgDescriptionTextArea',handles.Process.argDescriptionTextArea,'AssignExistingArg2InputButton',handles.Process.assignExistingArg2InputButton,...
     'AssignExistingArg2OutputButton',handles.Process.assignExistingArg2OutputButton,'SplitsLabel',handles.Process.splitsLabel,'SplitsListbox',handles.Process.splitsUITree,...
     'FcnsArgsSearchField',handles.Process.fcnsArgsSearchField,'ConvertVarHardDynamicButton',handles.Process.convertVarHardDynamicButton,...
     'SpecifyTrialsButton',handles.Process.specifyTrialsButton,'MarkImportFcnCheckbox',handles.Process.markImportFcnCheckbox,...

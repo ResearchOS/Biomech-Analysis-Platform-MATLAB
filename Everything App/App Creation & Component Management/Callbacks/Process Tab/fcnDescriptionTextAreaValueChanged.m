@@ -5,6 +5,10 @@ function []=fcnDescriptionTextAreaValueChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
+    return;
+end
+
 desc=handles.Process.fcnDescriptionTextArea.Value;
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');

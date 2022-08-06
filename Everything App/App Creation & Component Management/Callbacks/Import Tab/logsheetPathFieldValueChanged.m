@@ -135,13 +135,15 @@ else
     Digraph=addnode(Digraph,1);
     Digraph.Nodes.FunctionNames={'Logsheet'};
     Digraph.Nodes.Descriptions={{''}};
-    Digraph.Nodes.InputVariableNames={{''}}; % Name in file
-    Digraph.Nodes.OutputVariableNames={{''}}; % Name in file
+    Digraph.Nodes.InputVariableNames={{''}}; % Name in GUI
+    Digraph.Nodes.OutputVariableNames={{''}}; % Name in GUI
     Digraph.Nodes.Coordinates=[0 0];  
     Digraph.Nodes.SplitNames={{'Default'}};
     Digraph.Nodes.NodeNumber=1;
     Digraph.Nodes.SpecifyTrials={''};
     Digraph.Nodes.IsImport=false;
+    Digraph.Nodes.InputVariableNamesInCode={{''}}; % Name in file/code
+    Digraph.Nodes.OutputVariableNamesInCode={{''}}; % Name in file/code
 
     splitName=getUniqueMembers(Digraph.Nodes.SplitNames);
     [splitCode]=genSplitCode(projectSettingsMATPath,splitName);

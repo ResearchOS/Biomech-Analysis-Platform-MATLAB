@@ -5,6 +5,12 @@ function []=createArgButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+if isempty(handles.Process.splitsUITree.SelectedNodes)
+    beep;
+    disp('Need to select a split to associate the variable to!');
+    return;
+end
+
 if ismac==1
     slash='/';
 elseif ispc==1
@@ -19,7 +25,7 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 varNames=whos('-file',projectSettingsMATPath);
 varNames={varNames.name};
 if ismember('VariableNamesList',varNames)
-    load(projectSettingsMATPath,'VariableNamesList');
+    load(projectSettingsMATPath,'Digraph','VariableNamesList','NonFcnSettingsStruct');
     guiNames=VariableNamesList.GUINames;
 else
     guiNames={''};
@@ -99,7 +105,7 @@ end
 
 switch input3
     case 'Yes'
-        isHC=1;
+        isHC=1;        
     case 'No'
         isHC=0;
 end
@@ -127,24 +133,34 @@ else
     rowNum=1;
 end
 
-VariableNamesList.GUINames{rowNum}=nameInGUI;
-VariableNamesList.SaveNames{rowNum}=defaultName;
-VariableNamesList.Descriptions{rowNum}={'Enter Arg Description Here'};
-VariableNamesList.SplitNames{rowNum}={''};
+VariableNamesList.GUINames{rowNum,1}=nameInGUI;
+VariableNamesList.SaveNames{rowNum,1}=defaultName;
+VariableNamesList.Descriptions{rowNum,1}={'Enter Arg Description Here'};
+VariableNamesList.SplitNames{rowNum,1}={''};
 % VariableNamesList.SplitCodes{rowNum}={''};
-VariableNamesList.Level{rowNum}=level;
-VariableNamesList.IsHardCoded{rowNum}=isHC;
+VariableNamesList.Level{rowNum,1}=level;
+VariableNamesList.IsHardCoded{rowNum,1}=isHC;
 
 % 7. Now, add this variable to the VariablesMainList
 if isHC==1
     % Create and store here the name of the .m file.
-    hardcodedPath=[getappdata(fig,'codePath') 'Hardcoded M Files' slash nameInGUI '.m'];
-    templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'PerArgFunctionTemplate.m'];
-    createFileFromTemplate(templatePath,hardcodedPath,nameInGUI);
+    folderName=[getappdata(fig,'codePath') 'Hard-Coded Variables'];
+    if exist(folderName,'dir')~=7
+        mkdir(folderName);
+    end
+    splitName=handles.Process.splitsUITree.SelectedNodes.Text;
+    splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
+    fileName=[folderName slash defaultName '_' splitCode '.m'];
+    
+    templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'hardCodedVar_Template.m'];
+    if exist(fileName,'file')~=2
+        createFileFromTemplate(templatePath,fileName,[defaultName '_' splitCode]);
+    end
+    edit(fileName);
 end
 
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 handles.Process.varsListbox.Items=VariableNamesList.GUINames(idx);
 handles.Process.varsListbox.Value=nameInGUI;
 
-save(projectSettingsMATPath,'VariableNamesList','-append');
+save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');

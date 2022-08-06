@@ -39,55 +39,75 @@ assert(~iscell(splitCode));
 
 NonFcnSettingsStruct.Process.Splits.(splitName{1}).Code=splitCode;
 
-numVars=length(guiNames);
+numVarsNoExist=length(guiNames);
 
 if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
     VariableNamesList.GUINames=guiNames;
     VariableNamesList.SaveNames=guiVarNames;
-    VariableNamesList.SplitNames=repmat(splitName,numVars,1);
-%     VariableNamesList.SplitCodes=repmat(splitCode,numVars,1);
-    VariableNamesList.Descriptions=repmat({'Enter Arg Description Here'},numVars,1);
-%     VariableNamesList.Level=level;
-%     VariableNamesList.IsHardCoded=isHC;
+    VariableNamesList.SplitNames=repmat({splitName},numVarsNoExist,1);
+    %     VariableNamesList.SplitCodes=repmat(splitCode,numVars,1);
+    VariableNamesList.Descriptions=repmat({'Enter Arg Description Here'},numVarsNoExist,1);
+    VariableNamesList.Level=repmat({'T'},numVarsNoExist,1);
+    VariableNamesList.IsHardCoded=repmat({0},numVarsNoExist,1);
+
     save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
+    handles.Process.varsListbox.Items=VariableNamesList.GUINames;
+    handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
+    handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
     return;
 end
 
-% Check if the split already exists. If so, check if those variables
-% already exist. Either overwrite, or append to VariableNamesList
-% depending
+noExistVarNames=~ismember(guiNames,VariableNamesList.GUINames);
+numVarsNoExist=sum(noExistVarNames);
 
-%% Split name does not yet exist
-if ~ismember(splitName,VariableNamesList.SplitNames)
-    VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames];
-    VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames]; % Does not include the split code
-    VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,numVars,1)];
-%     VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,numVars,1)];
-    VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVars,1)];
-    save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
-    return;
-end
+existVarsMat=ismember(VariableNamesList.GUINames,guiNames);
+numVarsExist=sum(existVarsMat);
 
 %% Split name already exists
-% Check if any/all of the variables being saved are part of the
-% split already
+% if ismember(splitName,getUniqueMembers(VariableNamesList.SplitNames))
+VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(noExistVarNames)];
+VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(noExistVarNames)]; % Does not include the split code
+VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat({splitName},numVarsNoExist,1)];
+%     VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,numVars,1)];
+VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVarsNoExist,1)];
+VariableNamesList.IsHardCoded=[VariableNamesList.IsHardCoded; repmat({0},numVarsNoExist,1)];
+VariableNamesList.Level=[VariableNamesList.Level; repmat({'T'},numVarsNoExist,1)];
 
-% Get the idx of the variables not already in the split
-currVarsNotInSplit=~(ismember(splitName,VariableNamesList.SplitNames) & ismember(guiNames,VariableNamesList.GUINames));
+VariableNamesList.GUINames{existVarsMat}=guiNames{~noExistVarNames};
+VariableNamesList.SaveNames{existVarsMat}=guiVarNames{~noExistVarNames};
+VariableNamesList.SplitNames{existVarsMat}=repmat({splitName},numVarsExist,1);
+VariableNamesList.Descriptions{existVarsMat}=repmat({'Enter Arg Description Here'},numVarsExist,1);
+VariableNamesList.IsHardCoded{existVarsMat}=zeros(numVarsExist,1);
+VariableNamesList.Level{existVarsMat}=repmat({'T'},numVarsExist,1);
 
-VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(currVarsNotInSplit)];
-VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(currVarsNotInSplit)]; % Does not include the split code
-VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,sum(currVarsNotInSplit),1)];
-% VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
-VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},sum(currVarsNotInSplit),1)];
-
+save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
 handles.Process.varsListbox.Items=VariableNamesList.GUINames;
 handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
 handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
 
+
+%% Split name does not yet exist
+% Check if any/all of the variables being saved are part of the
+% split already
+
+% Get the idx of the variables not already in the split
+% currVarsNotInSplit=~(ismember(splitName,getUniqueMembers(VariableNamesList.SplitNames)) & ismember(guiNames,VariableNamesList.GUINames));
+%
+% VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(currVarsNotInSplit)];
+% VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(currVarsNotInSplit)]; % Does not include the split code
+% VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,sum(currVarsNotInSplit),1)];
+% % VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
+% VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},sum(currVarsNotInSplit),1)];
+% VariableNamesList.IsHardCoded=[VariableNamesList.IsHardCoded; repmat({0},sum(currVarsNotInSplit),1)];
+% VariableNamesList.Level=[VariableNamesList.Level; repmat({''},sum(currVarsNotInSplit),1)];
+
+% handles.Process.varsListbox.Items=VariableNamesList.GUINames;
+% handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
+% handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
+
 if isequal(Digraph.Nodes.SplitNames{1},{''})
     Digraph.Nodes.SplitNames{1}={splitName};
-elseif ~ismember(splitName,Digraph.Nodes.SplitNames{1})    
+elseif ~ismember(splitName,Digraph.Nodes.SplitNames{1})
     Digraph.Nodes.SplitNames{1}=[Digraph.Nodes.SplitNames{1}; {splitName}];
 end
 

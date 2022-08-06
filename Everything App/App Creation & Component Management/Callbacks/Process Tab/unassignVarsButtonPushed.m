@@ -38,10 +38,14 @@ nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 varName=handles.Process.fcnArgsUITree.SelectedNodes.Text;
 
 if ismember({'Inputs'},b.Text)
-    Digraph.Nodes.InputVariableNames{nodeRow}=Digraph.Nodes.InputVariableNames{nodeRow}(~ismember(Digraph.Nodes.InputVariableNames{nodeRow},varName));
+    varIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow},varName);
+    Digraph.Nodes.InputVariableNames{nodeRow}=Digraph.Nodes.InputVariableNames{nodeRow}(~varIdx);
+    Digraph.Nodes.InputVariableNamesInCode{nodeRow}=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(~varIdx);
     b=findobj(a,'Text','Inputs');
 elseif ismember('Outputs',b.Text)
-    Digraph.Nodes.OutputVariableNames{nodeRow}=Digraph.Nodes.OutputVariableNames{nodeRow}(~ismember(Digraph.Nodes.OutputVariableNames{nodeRow},varName));
+    varIdx=ismember(Digraph.Nodes.OutputVariableNames{nodeRow},varName);
+    Digraph.Nodes.OutputVariableNames{nodeRow}=Digraph.Nodes.OutputVariableNames{nodeRow}(~varIdx);
+    Digraph.Nodes.OutputVariableNamesInCode{nodeRow}=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}(~varIdx);
     b=findobj(a,'Text','Outputs');
 end
 
@@ -49,6 +53,9 @@ c=findobj(b,'Text',varName);
 delete(c);
 
 handles.Process.fcnArgsUITree.SelectedNodes=a;
+handles.Process.argDescriptionTextArea.Value={''};
+handles.Process.convertVarHardDynamicButton.Value=0;
+handles.Process.argNameInCodeField.Value='';
 
 % highlightedFcnsChanged(fig,Digraph,nodeNum);
 

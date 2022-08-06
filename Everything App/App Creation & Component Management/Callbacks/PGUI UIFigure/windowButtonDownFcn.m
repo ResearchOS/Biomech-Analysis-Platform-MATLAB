@@ -20,15 +20,22 @@ currPoint=handles.Process.mapFigure.CurrentPoint;
 
 currPoint=currPoint(1,1:2);
 
-% r1=drawrectangle(handles.Process.mapFigure);
-
-if isequal(fig.SelectionType,'open')
-    openMFile(fig,currPoint);
+if currPoint(1)>=xlims(1) && currPoint(1)<=xlims(2) && currPoint(2)>=ylims(1) && currPoint(2)<=ylims(2) % Ensure the cursor is within the uiaxes
+    setappdata(fig,'currentPointDown',currPoint);    
+    if isequal(fig.SelectionType,'open')
+        isIn=1;
+        openMFile(fig,currPoint,isIn);
+    end
+    return;
 end
 
-if currPoint(1)>=xlims(1) && currPoint(1)<=xlims(2) && currPoint(2)>=ylims(1) && currPoint(2)<=ylims(2) % Ensure the cursor is within the uiaxes
-    setappdata(fig,'currentPointDown',currPoint);
-    return;
+isIn=0;
+if isequal(fig.SelectionType,'open')
+    openMFile(fig,currPoint,isIn);
+end
+
+if isIn==1
+    return; % Stop processing this if the click was inside the UIAxes.
 end
 
 if isequal(fig.CurrentObject.Tag,'VarsListbox')
@@ -47,17 +54,17 @@ else
     return;
 end
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% 
+% projectSettingsVars=whos('-file',projectSettingsMATPath);
+% projectSettingsVarNames={projectSettingsVars.name};
+% 
+% assert(ismember('VariableNamesList',projectSettingsVarNames));
 
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
+% load(projectSettingsMATPath,'VariableNamesList');
 
-assert(ismember('VariableNamesList',projectSettingsVarNames));
-
-load(projectSettingsMATPath,'VariableNamesList');
-
-varIdx=ismember(VariableNamesList.GUINames,varName);
-defaultName=VariableNamesList.SaveNames{varIdx};
-
-handles.Process.argNameInCodeField.Value=defaultName;
-handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varIdx};
+% varIdx=ismember(VariableNamesList.GUINames,varName);
+% defaultName=VariableNamesList.SaveNames{varIdx};
+% 
+% handles.Process.argNameInCodeField.Value=defaultName;
+% handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varIdx};

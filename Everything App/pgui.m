@@ -316,7 +316,7 @@ handles.Process.fcnsArgsSearchField=uieditfield(processTab,'text','Value','Searc
 % handles.Process.subVarUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(functionsUITree,event) functionsUITreeSelectionChanged(functionsUITree),'CheckedNodesChangedFcn',@(functionsUITree,event) functionsUITreeCheckedNodesChanged(functionsUITree),'Tag','FunctionsUITree');
 
 % 32. Convert variable between hard-coded and dynamic
-handles.Process.convertVarHardDynamicButton=uibutton(processTab,'push','Text','Var Dynamic <=> Hard-coded','Tag','ConvertVarHardDynamicButton','Tooltip','Convert Selected Var Between Hard-Coded and Dynamic','ButtonPushedFcn',@(convertVarHardDynamicButton,event) convertVarHardDynamicButtonPushed(convertVarHardDynamicButton));
+handles.Process.convertVarHardDynamicButton=uibutton(processTab,'state','Text','Var Dynamic <=> Hard-coded','Tag','ConvertVarHardDynamicButton','Tooltip','Convert Selected Var Between Hard-Coded and Dynamic','ValueChangedFcn',@(convertVarHardDynamicButton,event) convertVarHardDynamicValueChanged(convertVarHardDynamicButton));
 
 % 33. Remove specify trials button
 % handles.Process.removeSpecifyTrialsButton=uibutton(processTab,'push','Text','ST-','Tag','RemoveSpecifyTrialsButton','Tooltip','Remove Specify Trials Condition','ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));

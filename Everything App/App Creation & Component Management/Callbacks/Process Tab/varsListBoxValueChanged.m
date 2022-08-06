@@ -16,18 +16,21 @@ assert(ismember('VariableNamesList',projectSettingsVarNames));
 load(projectSettingsMATPath,'VariableNamesList');
 
 % splitName=handles.Process.splitsUITree.SelectedNode.Text;
-splitName='Default';
+% splitName='Default';
 
 varName=handles.Process.varsListbox.Value;
 
 % varRowDesc=ismember(VariableNamesList.GUINames,varName) & ismember(VariableNamesList.SplitNames,splitName);
 varRow=ismember(VariableNamesList.GUINames,varName); % & ismember(VariableNamesList.SplitNames,splitName);
 
-if ~isempty(varRow)
-    handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varRow};
-
-    defaultName=VariableNamesList.SaveNames{varRow};
-
-    handles.Process.argNameInCodeField.Value=defaultName;
+if isempty(varRow)
+    return;
 end
 
+handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varRow};
+
+defaultName=VariableNamesList.SaveNames{varRow};
+
+handles.Process.argNameInCodeField.Value=defaultName;
+
+handles.Process.convertVarHardDynamicButton.Value=VariableNamesList.IsHardCoded{varRow};

@@ -35,6 +35,10 @@ else
     levels=''; % The user changed the input variables
 end
 
+if isImport
+    levels='T'; % Easy version for now
+end
+
 if isequal(levels,'')
     disp('The input arguments were changed! Here are the list of available input arguments:');
     disp('Project: ''projectStruct''');
@@ -43,8 +47,4 @@ if isequal(levels,'')
     disp('Subject & Trial: ''projectStruct, subName, trialNames''');
     disp('Subject: ''projectStruct, subName''');
     disp('Trial: ''projectStruct, subName, trialName, repNum''');
-end
-
-if isImport
-    levels='T'; % Easy version for now
 end

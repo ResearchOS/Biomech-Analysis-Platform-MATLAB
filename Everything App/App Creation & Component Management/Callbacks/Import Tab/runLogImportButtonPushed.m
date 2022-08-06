@@ -14,7 +14,7 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 splitName='Default'; % The name of the current processing split
 splitCode=genSplitCode(projectSettingsMATPath,splitName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct');
+load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
 
 macAddress=getComputerID();
 
@@ -87,8 +87,38 @@ if ~any(targetTrialIDCol)
     return;
 end
 
+if exist('projectStruct','var')~=1
+    projectStruct=[];
+end
+
+% Get the specify trials name
+specTrialsName=Digraph.Nodes.SpecifyTrials{1};
+if isempty(specTrialsName)
+    beep;
+    disp('Select the specify trials for the logsheet import!');
+    return;
+end
+oldPath=cd([getappdata(fig,'codePath') 'SpecifyTrials']);
+inclStruct=feval(specTrialsName);
+allTrialNames=getTrialNames(inclStruct,logsheetVar,fig,0,projectStruct);
+rowNums=[1:size(logsheetVar,1)]'; % Initialize the row numbers
+rowsIdx=false(size(logsheetVar,1),1);
+subNames=fieldnames(allTrialNames);
+
+for i=1:length(subNames)    
+    subName=subNames{i};
+    trialNames=allTrialNames.(subName);
+    trialNames=fieldnames(trialNames);
+%     rowsIdxCurrent=false(size(rowsIdx)); % Current subject initialize
+    rowsIdxCurrent=ismember(logsheetVar(:,subjIDCol),subName) & ismember(logsheetVar(:,targetTrialIDCol),trialNames);
+    rowsIdx(rowsIdxCurrent)=true;
+
+end
+cd(oldPath);
+
 % Get the row numbers from the specify trials selected
-rowNums=numHeaderRows+1:size(logsheetVar,1); % Temporarily use all rows until specify trials is completed.
+rowNums=find(rowsIdx==1);
+rowNums=rowNums(rowNums>=numHeaderRows+1); % Temporarily use all rows until specify trials is completed.
 
 dataPath=getappdata(fig,'dataPath');
 
@@ -100,7 +130,8 @@ end
 
 %% Trial level data
 if any(trialCheckedVarsIdx) % There is at least one trial level variable
-    for rowNum=rowNums
+    for rowNumIdx=1:length(rowNums)
+        rowNum=rowNums(rowNumIdx);
 
         rowDataTrial=logsheetVar(rowNum,useHeadersIdxNumsTrial);
         subName=logsheetVar{rowNum,subjIDCol};
@@ -242,7 +273,7 @@ if any(subjectCheckedVarsIdx)
 end
 
 % Save the saved variables' metadata to the project settings .mat file
-setSavedVarsList_Logsheet(splitName,useHeaderNames)
+setSavedVarsList_Logsheet(splitName,useHeaderNames);
 
 a=toc;
 disp(['Variables successfully imported from logsheet in ' num2str(round(a,2)) ' seconds: ']);

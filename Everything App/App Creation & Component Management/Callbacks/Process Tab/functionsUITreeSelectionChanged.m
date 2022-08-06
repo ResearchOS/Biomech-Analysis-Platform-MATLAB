@@ -14,7 +14,7 @@ catch
     return;
 end
 
-if ismember(varNames,'VariableNamesList')
+if ismember('VariableNamesList',varNames)
     load(projectSettingsMATPath,'Digraph','VariableNamesList');
 else
     load(projectSettingsMATPath,'Digraph');
@@ -45,7 +45,28 @@ b=handles.Process.fcnArgsUITree.SelectedNodes.Parent;
 if isprop(b,'Text') && ismember(b.Text,{'Inputs','Outputs'}) % Ensure that this is a variable
     varRow=ismember(VariableNamesList.GUINames,handles.Process.fcnArgsUITree.SelectedNodes.Text);
     handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varRow};
-    handles.Process.argNameInCodeFIeld.Value=VariableNamesList.SaveNames{varRow};
+
+    if VariableNamesList.IsHardCoded{varRow}==1
+        handles.Process.convertVarHardDynamicButton.Value=1;
+    else
+        handles.Process.convertVarHardDynamicButton.Value=0;
+    end
+    
+    if ismember('Inputs',b.Text)
+        [~,idx]=sort(upper(Digraph.Nodes.InputVariableNames{nodeRow}));
+        varIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow}(idx),VariableNamesList.GUINames{varRow});
+        namesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(idx);
+        handles.Process.argNameInCodeField.Value=namesInCode{varIdx};
+    elseif ismember('Outputs',b.Text)
+        [~,idx]=sort(upper(Digraph.Nodes.OutputVariableNames{nodeRow}));
+        varIdx=ismember(Digraph.Nodes.OutputVariableNames{nodeRow}(idx),VariableNamesList.GUINames{varRow});
+        namesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}(idx);
+        handles.Process.argNameInCodeField.Value=namesInCode{varIdx};
+    end
+else
+    handles.Process.argNameInCodeField.Value='';
+    handles.Process.argDescriptionTextArea.Value={''};
+    handles.Process.convertVarHardDynamicButton.Value=0;
 end
 
 specifyTrialsName=Digraph.Nodes.SpecifyTrials{nodeRow};

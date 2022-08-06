@@ -92,6 +92,8 @@ end
 projectName=getappdata(fig,'projectName');
 dataPath=getappdata(fig,'dataPath');
 
+nodeRowNums=find(nodeRows==1);
+
 for i=1:length(fcnNames)
 
     fcnName=fcnNames{i};
@@ -100,7 +102,7 @@ for i=1:length(fcnNames)
     isImport=isImportFcns(i);
     level=readLevel([codePath 'Processing Functions' slash fcnName '.m'],isImport); % Look at the arguments of the processing function to determine what level to run it at    
 
-    setappdata(fig,'currNodeNum',nodeNum);
+    setappdata(fig,'nodeRow',nodeRowNums(i));
 
     inclStruct=feval(specifyTrialsName);
     trialNames=getTrialNames(inclStruct,logsheetVar,fig,0,projectStruct);

@@ -77,6 +77,10 @@ if ~any(nodeRows)
     h.NodeColor=nodeColors;
     highlightedFcnsChanged(src,Digraph)
     handles.Process.markImportFcnCheckbox.Value=false;
+    handles.Process.convertVarHardDynamicButton.Value=false;
+    handles.Process.argDescriptionTextArea.Value={''};
+    handles.Process.fcnDescriptionTextArea.Value={''};
+    handles.Process.argNameInCodeField.Value='';
     return;
 end
 

@@ -24,7 +24,17 @@ if ~iscell(inputNamesinCode)
     inputNamesinCode={inputNamesinCode}; % There's only one input argument, so make it a cell if not already.
 end
 
+if length(inputNamesinCode)~=length(unique(inputNamesinCode))
+    beep;
+    disp('Argument names in code must be unique!');
+    return;
+end
+
 fig=evalin('base','gui;');
+
+nodeRow=getappdata(fig,'nodeRow');
+
+projectName=getappdata(fig,'projectName');
 
 if ~isempty(repNum) && ~isempty(trialName) % Trial level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
@@ -35,49 +45,71 @@ else % Project level
 end
 
 if exist(matFilePath,'file')~=2
-    disp(['No save file found at: ' matFilePath]);
+    disp(['No saved file found at: ' matFilePath]);
     return;
 end
 
-argNames=cell(length(varargin),1);
-nArgs=length(varargin);
-for i=4:nArgs+3
-    argNames{i-3}=inputname(i); % NOTE THE LIMITATION THAT THERE CAN BE NO INDEXING USED IN THE INPUT VARIABLE NAMES
-    if isempty(argNames{i-3})
-        error(['Argument #' num2str(i) ' (output variable #' num2str(i-3) ') is not a scalar name in ' fcnName ' line #' num2str(st(2).line)]);
-    end
+load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+
+fileVarNames=whos('-file',matFilePath);
+fileVarNames={fileVarNames.name};
+
+currVarsIdx=ismember(Digraph.Nodes.InputVariableNamesInCode{nodeRow},inputNamesinCode); % The idx of the variables currently being accessed
+inputVarNamesInGUI=Digraph.Nodes.InputVariableNames{nodeRow}(currVarsIdx); % The GUI names of the variables currently being accessed.
+varRows=ismember(VariableNamesList.GUINames,inputVarNamesInGUI); % The rows in the VariableNamesList matrix of the variables currently being accessed
+
+hardCodedIdx=cellfun(@isequal,VariableNamesList.IsHardCoded,repmat({1},length(VariableNamesList.IsHardCoded),1)) & varRows==1; % The indices in the VariableNamesList matrix of the variables currently being accessed
+hardCodedVarNamesInGUI=VariableNamesList.GUINames(hardCodedIdx); % The names of the hard-coded variables currently being accessed.
+hardCodedVarNamesIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow},hardCodedVarNamesInGUI); % The idx of the Digraph fcn input variables currently being accessed
+hardCodedNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(hardCodedVarNamesIdx); % The names in code of the hard-coded variables being accessed
+hardCodedInputIdx=ismember(inputNamesinCode,hardCodedNamesInCode); % The idx of the variables (in the inputNamesinCode) that are hard-coded
+hardCodedSaveNames=VariableNamesList.SaveNames(hardCodedIdx); % The save name of the hard-coded variable. This is how the .m file was named.
+
+dynamicIdx=cellfun(@isequal,VariableNamesList.IsHardCoded,repmat({0},length(VariableNamesList.IsHardCoded),1)) & varRows==1;
+dynamicVarNamesInGUI=VariableNamesList.GUINames(dynamicIdx);
+dynamicVarNamesIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow},dynamicVarNamesInGUI);
+dynamicNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(dynamicVarNamesIdx);
+dynamicInputIdx=ismember(inputNamesinCode,dynamicNamesInCode);
+dynamicSaveNames=VariableNamesList.SaveNames(dynamicIdx);
+
+% Check that all hard-coded variables have existing .m files
+hardCodedInputIdxNums=find(hardCodedInputIdx==1);
+folderName=[getappdata(fig,'codePath') 'Hard-Coded Variables'];
+oldPath=cd(folderName);
+% splitName=handles.Process.splitsUITree.SelectedNodes.Text;
+splitCode=getappdata(fig,'splitCode');
+% splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
+for i=1:length(hardCodedSaveNames)
+
+    % Get .m full file path and ensure that it exists
+    idx=hardCodedInputIdxNums(i);    
+    varargout{idx}=feval([hardCodedSaveNames{i} '_' splitCode]);
+
+end
+cd(oldPath);
+
+if isempty(dynamicSaveNames)
+    return;
 end
 
-if length(argNames)<length(unique(argNames))
-    error('Argument names in code must be unique!');
+% Append the split code onto the variable name to load from the file
+for i=1:length(dynamicSaveNames)
+    dynamicSaveNames{i}=[dynamicSaveNames{i} '_' splitCode];
 end
 
-% methodLetter=getappdata(fig,'methodLetter'); % Get the method letter from the base workspace
+% Check that all non-hard-coded variables have existing data in .mat files
+if ~all(ismember(dynamicSaveNames,fileVarNames))
+    disp('Missing variables in mat file!'); % Specify which variables
+    return;
+end
 
-varargout=cell(length(inputNamesinCode),1); % Initialize the output variables.
+S=load(matFilePath,'-mat',dynamicSaveNames{:});
 
-VariablesMetadata=load(matFilePath,'VariablesMetadata'); % Get the metadata for all variables in the MAT file.
+dynamicInputIdx=find(dynamicInputIdx==1);
+assert(isequal(sort(dynamicSaveNames),sort(fieldnames(S))));
+for i=1:length(dynamicSaveNames)
 
-for varNum=1:length(inputNamesinCode)
-
-    projectIdx=ismember(VariablesMetadata.ProjectName,getappdata(fig,'projectName'));
-    analysisIdx=ismember(VariablesMetadata.AnalysisName,getappdata(fig,'analysisName'));
-    fcnIdx=ismember(VariablesMetadata.OutputFunctionName,getappdata(fig,'fcnName')); % Includes method number & letter
-    varsIdx=ismember(VariablesMetadata.NameInCode,inputNamesinCode{varNum});
-
-    currIdx=projectIdx & analysisIdx & fcnIdx & varsIdx; % The idx for the current variable to load.
-
-    if sum(currIdx)==1 % Exactly one variable found. Correct!
-        saveName=VariablesMetadata.NameInMAT{currIdx};
-        varargout{varNum}=load(matFilePath,'-mat',saveName);
-    elseif ~any(currIdx) % No vars found, data not saved.
-        nameInGUI=VariablesMetadata.NameInGUI{currIdx};
-        error(['Variable ''' nameInGUI ''' missing from file: ' matFilePath]);
-    elseif sum(currIdx)>1 % Multiple vars found. Should never happen, because setArg should check for this and throw an error!
-        nameInGUI=VariablesMetadata.NameInGUI{currIdx};
-        error(['Variable ''' nameInGUI ''' found ''' num2str(sum(currIdx)) ''' times in file: ' matFilePath]);
-    else % What happened here?
-        error('What happened here?');
-    end
+    inIdx=dynamicInputIdx(i);
+    varargout{inIdx}=S.(dynamicSaveNames{i});
 
 end

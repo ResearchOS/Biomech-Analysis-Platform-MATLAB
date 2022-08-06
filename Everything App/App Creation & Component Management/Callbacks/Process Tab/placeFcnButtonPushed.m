@@ -135,6 +135,8 @@ Digraph.Nodes.SplitNames{end}=splitNames;
 Digraph.Nodes.SpecifyTrials{end}='';
 currNodeID=max(Digraph.Nodes.NodeNumber)+1;
 Digraph.Nodes.NodeNumber(end)=currNodeID; % Helps to differentiate nodes of the same function name
+Digraph.Nodes.InputVariableNamesInCode{end}={''}; % Name in file/code
+Digraph.Nodes.OutputVariableNamesInCode{end}={''}; % Name in file/code
 Digraph.Nodes.IsImport(end)=false;
 
 currNodeRowNum=size(Digraph.Nodes,1);

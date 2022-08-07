@@ -11,8 +11,8 @@ function [varargout]=getArg(inputNamesinCode,subName,trialName,repNum)
 % Outputs:
 % argIn: The argument to pass in to the processing function
 
-st=dbstack;
-fcnName=st(2).name; % The name of the calling function.
+% st=dbstack;
+% fcnName=st(2).name; % The name of the calling function.
 
 if ismac==1
     slash='/';
@@ -79,6 +79,7 @@ oldPath=cd(folderName);
 % splitName=handles.Process.splitsUITree.SelectedNodes.Text;
 splitCode=getappdata(fig,'splitCode');
 % splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
+varargout=cell(length(inputNamesinCode),1);
 for i=1:length(hardCodedSaveNames)
 
     % Get .m full file path and ensure that it exists

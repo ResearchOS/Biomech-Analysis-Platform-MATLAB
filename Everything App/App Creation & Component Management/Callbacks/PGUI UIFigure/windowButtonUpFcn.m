@@ -1,11 +1,17 @@
 function []=windowButtonUpFcn(src,event)
 
-%% PURPOSE: RECORD WHEN THE MOUSE BUTTON IS CLICKED (DOWN). ONLY ACTIVATES IF THE CLICK WAS ON THE UIAXES OBJECT
+%% PURPOSE: RECORD WHEN THE MOUSE BUTTON IS CLICKED (UP). ONLY ACTIVATES IF THE CLICK WAS ON THE UIAXES OBJECT
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 if ~isequal(handles.Tabs.tabGroup1.SelectedTab.Title,'Process')
+    return;
+end
+
+doNothing=getappdata(fig,'doNothingOnButtonUp');
+if isequal(doNothing,1)
+    setappdata(fig,'doNothingOnButtonUp',0);
     return;
 end
 

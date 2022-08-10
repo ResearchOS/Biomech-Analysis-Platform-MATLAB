@@ -35,157 +35,56 @@ if isequal(fcnName(end-1:end),'.m')
     fcnName=fcnName(1:end-2);
 end
 
+setappdata(fig,'placeFcnName',fcnName);
+
 %% Have the user select which function it is building from
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+load(projectSettingsMATPath,'Digraph');
 % digraphFcnNames=Digraph.Nodes.FunctionNames;
 
 % msgbox('First select the origin function node, then select the location to place the new function node. To place between existing nodes, select the existing node as the second location');
-Q=figure; % Plot the digraph on a separate figure to use ginput
-xlims=handles.Process.mapFigure.XLim;
-ylims=handles.Process.mapFigure.YLim;
-xlimRange=round(abs(diff(xlims)));
-ylimRange=round(abs(diff(ylims)));
+% Q=figure; % Plot the digraph on a separate figure to use ginput
+xMin=min(Digraph.Nodes.Coordinates(:,1));
+yMin=min(Digraph.Nodes.Coordinates(:,2));
+xMax=max(Digraph.Nodes.Coordinates(:,1));
+yMax=max(Digraph.Nodes.Coordinates(:,2));
+
+
+% xlims=handles.Process.mapFigure.XLim;
+% ylims=handles.Process.mapFigure.YLim;
+xlimRange=round(abs(xMax-xMin));
+ylimRange=round(abs(yMax-yMin));
 % hold on;
 
+
+iVals=linspace(-2*xlimRange+floor(xMin),ceil(xMax)+xlimRange*2,ceil(xMax)+xlimRange*2-(-2*xlimRange+floor(xMin))+1);
+if iVals==0 % Nothing has really been placed yet.
+    iVals=[-1 0 1];
+end
+jVals=linspace(-2*ylimRange+floor(yMin),ceil(yMax)+ylimRange*2,ceil(yMax)+ylimRange*2-(-2*ylimRange+floor(yMin))+1);
+if jVals==0
+    jVals=[-1 0 1];
+end
 count=0;
-for i=-2*xlimRange+floor(xlims(1)):ceil(xlims(2))+xlimRange*2
-    for j=-2*ylimRange+floor(ylims(1)):ceil(ylims(2))*ylimRange*2
+allCoords=NaN(length(iVals)*length(jVals),2);
+for i=iVals
+    for j=jVals
         count=count+1;
         allCoords(count,:)=[i j];
     end
 end
 
-figure(Q);
+allDigraphCoords=Digraph.Nodes.Coordinates;
+allCoords=allCoords(~ismember(allCoords,allDigraphCoords,'rows'),:); % Don't plot dots over existing nodes
+
+% figure(Q);
 % fig.CurrentAxes=handles.Process.mapFigure;
 % set(0,'CurrentUIFigure',handles.Process.mapFigure);
-allDots=scatter(allCoords(:,1),allCoords(:,2),30,'k','filled');
-plot(Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
-xlim([min(Digraph.Nodes.Coordinates(:,1)-0.8) max(Digraph.Nodes.Coordinates(:,1)+1.2)]);
-ylim([min(Digraph.Nodes.Coordinates(:,2)-1.2) max(Digraph.Nodes.Coordinates(:,2)+0.8)]);
-[x,y]=ginput(2);
-delete(allDots);
-pos=[x y];
-tol=0.1;
-allDigraphCoords=Digraph.Nodes.Coordinates;
-allDigraphDists=sqrt((allDigraphCoords(:,1)-repmat(pos(1,1),size(allDigraphCoords,1),1)).^2+(allDigraphCoords(:,2)-repmat(pos(1,2),size(allDigraphCoords,1),1)).^2);
-prevNodeRow=allDigraphDists<tol;
 
-if ~any(prevNodeRow)
-    disp('Did not click close enough to a node placement, try again!');
-    close(Q);
-    return;
-end
-
-prevNodeCoord=allDigraphCoords(prevNodeRow,:);
-prevFcnName=Digraph.Nodes.FunctionNames{prevNodeRow};
-prevNodeID=Digraph.Nodes.NodeNumber(prevNodeRow);
-newNodeCoord=round(pos(2,:));
-
-if sqrt(newNodeCoord(1)-pos(2,1).^2+newNodeCoord(2)-pos(2,2).^2)>=tol
-    disp('Did not click close enough to a node placement, try again!');
-    close(Q);
-    return;
-end
-
-close(Q);
-
-% Check if creating a new split
-coordOffset=newNodeCoord-prevNodeCoord;
-splitNames=Digraph.Nodes.SplitNames{prevNodeRow};
-
-if isequal(coordOffset,[1 -1]) % Creating a new split    
-    splitName=inputdlg('Enter split name','Split name');
-    splitName=splitName{1};
-    splitCode=genSplitCode(projectSettingsMATPath,splitName);
-    while true
-
-        if isempty(splitName)
-            return;
-        end
-
-        if isvarname(splitName)
-            uitreenode(handles.Process.splitsUITree,'Text',splitName);
-            break;
-        end
-
-        disp(['Split name must be a valid variable name!']);
-
-    end
-
-    splitNames=[Digraph.Nodes.SplitNames{prevNodeRow}; splitName];
-
-    NonFcnSettingsStruct.Process.Splits.(splitName).Code=splitCode;
-
-end
-
-% Add most node properties
-afterNodeRow=ismember(Digraph.Nodes.Coordinates,newNodeCoord,'rows'); % Empty if not splitting an existing connection, not empty if being split
-afterNodeID=Digraph.Nodes.NodeNumber(afterNodeRow);
-if ~isempty(afterNodeID)
-    afterNodeFcnName=Digraph.Nodes.FunctionNames{afterNodeRow};
-end
-Digraph=addnode(Digraph,1);
-Digraph.Nodes.FunctionNames{end}=fcnName;
-Digraph.Nodes.Descriptions{end}={''};
-Digraph.Nodes.Coordinates(end,:)=newNodeCoord;
-Digraph.Nodes.InputVariableNames{end}={''};
-Digraph.Nodes.OutputVariableNames{end}={''};
-Digraph.Nodes.SplitNames{end}=splitNames;
-Digraph.Nodes.SpecifyTrials{end}='';
-currNodeID=max(Digraph.Nodes.NodeNumber)+1;
-Digraph.Nodes.NodeNumber(end)=currNodeID; % Helps to differentiate nodes of the same function name
-Digraph.Nodes.InputVariableNamesInCode{end}={''}; % Name in file/code
-Digraph.Nodes.OutputVariableNamesInCode{end}={''}; % Name in file/code
-Digraph.Nodes.IsImport(end)=false;
-
-currNodeRowNum=size(Digraph.Nodes,1);
-
-prevNodeRowNum=find(prevNodeRow==1);
-
-% Add a new edge from the prior node to the new one.
-% ADD ONE EDGE FOR EVERY SPLIT FROM THE PRIOR NODE TO THE CURRENT ONE
-Digraph=addedge(Digraph,prevNodeRowNum,currNodeRowNum);
-
-% Add the function names of the new node to the digraph
-if ~any(ismember(Digraph.Edges.Properties.VariableNames,'FunctionNames'))   
-    currEdgeIdx=true; % The row number of the function names for the new edge
-else
-    currEdgeIdx=ismember(Digraph.Edges.EndNodes,[prevNodeRowNum,currNodeRowNum],'rows');
-end
-
-Digraph.Edges.FunctionNames{currEdgeIdx,1}=prevFcnName;
-Digraph.Edges.FunctionNames{currEdgeIdx,2}=fcnName;
-Digraph.Edges.NodeNumber(currEdgeIdx,1)=prevNodeID;
-Digraph.Edges.NodeNumber(currEdgeIdx,2)=currNodeID;
-
-if any(afterNodeRow) % If there is an edge to delete
-
-    Digraph=rmedge(Digraph,prevNodeID,afterNodeID); % Delete the edge
-
-    % ADD ONE EDGE FOR EVERY SPLIT FROM THE PRIOR NODE TO THE CURRENT ONE
-    Digraph=addedge(Digraph,currNodeRowNum,afterNodeID); % Add the new one from the current node to the next one
-
-    newEdgeIdx=ismember(Digraph.Edges.EndNodes,[currNodeRowNum afterNodeID],'rows');
-
-    Digraph.Edges.FunctionNames{newEdgeIdx,1}=fcnName;
-    Digraph.Edges.FunctionNames{newEdgeIdx,2}=afterNodeFcnName;
-    Digraph.Edges.NodeNumber(newEdgeIdx,1:2)=[currNodeID afterNodeID];
-
-    sameCol=ismember(Digraph.Nodes.Coordinates(:,1),Digraph.Nodes.Coordinates(currNodeRowNum,1));
-
-    belowCoord=Digraph.Nodes.Coordinates(:,2)<=Digraph.Nodes.Coordinates(currNodeRowNum,2);
-
-    nodesInCol=find((sameCol & belowCoord)==1);
-    nodesInCol(nodesInCol==currNodeRowNum)=[];
-
-    for i=1:length(nodesInCol)
-        Digraph.Nodes.Coordinates(nodesInCol(i),2)=Digraph.Nodes.Coordinates(nodesInCol(i),2)-1;
-    end
-
-end
-
-plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
-% axis(handles.Process.mapFigure,'equal');
-
-save(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct','-append');
+hold(handles.Process.mapFigure,'on');
+allDots=scatter(handles.Process.mapFigure,allCoords(:,1),allCoords(:,2),30,'k','filled');
+setappdata(fig,'allDots',allDots);
+% Need to change the WindowButtonDownFcn and WindowButtonUpFcn to place a function node at the
+% integer-coordinate location nearest to the selected coordinate.
+set(fig,'WindowButtonDownFcn',@(fig,event) placeNodeButtonPushed(fig),...
+    'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));

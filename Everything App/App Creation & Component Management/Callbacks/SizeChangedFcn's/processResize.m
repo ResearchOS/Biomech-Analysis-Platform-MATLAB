@@ -78,6 +78,7 @@ EditSubvarsButtonRelPos=[0.215 0.7];
 SplitsDescButtonRelPos=[0.22 0.3];
 PlaceFcnButtonRelPos=[0.82 0.95];
 SpecifyTrialsButtonRelPos=[0.01 0.16];
+ConnectNodesButtonRelPos=[0.75 0.95];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -126,6 +127,7 @@ EditSubvarsButtonSize=[0.08 compHeight];
 SplitsDescButtonSize=[0.07 compHeight];
 PlaceFcnButtonSize=[0.07 compHeight];
 SpecifyTrialsButtonSize=[0.2 compHeight];
+ConnectNodesButtonSize=[0.07 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 MapFigurePos=round([MapFigureRelPos.*figSize MapFigureSize.*figSize]);
@@ -172,6 +174,7 @@ EditSubvarsButtonPos=round([EditSubvarsButtonRelPos.*figSize EditSubvarsButtonSi
 SplitsDescButtonPos=round([SplitsDescButtonRelPos.*figSize SplitsDescButtonSize(1)*figSize(1) SplitsDescButtonSize(2)]);
 PlaceFcnButtonPos=round([PlaceFcnButtonRelPos.*figSize PlaceFcnButtonSize(1)*figSize(1) PlaceFcnButtonSize(2)]);
 SpecifyTrialsButtonPos=round([SpecifyTrialsButtonRelPos.*figSize SpecifyTrialsButtonSize(1)*figSize(1) SpecifyTrialsButtonSize(2)]);
+ConnectNodesButtonPos=round([ConnectNodesButtonRelPos.*figSize ConnectNodesButtonSize(1)*figSize(1) ConnectNodesButtonSize(2)]);
 
 data.MapFigure.Position=MapFigurePos;
 data.AddFcnButton.Position=AddFcnButtonPos;
@@ -217,6 +220,7 @@ data.EditSubvarsButton.Position=EditSubvarsButtonPos;
 data.SplitsDescButton.Position=SplitsDescButtonPos;
 data.PlaceFcnButton.Position=PlaceFcnButtonPos;
 data.SpecifyTrialsButton.Position=SpecifyTrialsButtonPos;
+data.ConnectNodesButton.Position=ConnectNodesButtonPos;
 
 data.MapFigure.FontSize=newFontSize;
 data.AddFcnButton.FontSize=newFontSize;
@@ -262,3 +266,4 @@ data.EditSubvarsButton.FontSize=newFontSize;
 data.SplitsDescButton.FontSize=newFontSize;
 data.PlaceFcnButton.FontSize=newFontSize;
 data.SpecifyTrialsButton.FontSize=newFontSize;
+data.ConnectNodesButton.FontSize=newFontSize;

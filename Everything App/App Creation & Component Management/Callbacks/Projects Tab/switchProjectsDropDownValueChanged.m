@@ -61,6 +61,8 @@ load(projectSettingsMATPath,'NonFcnSettingsStruct');
 codePath=NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath;
 dataPath=NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath;
 
+addpath(genpath(codePath));
+
 if exist(codePath,'dir')==7
     setappdata(fig,'codePath',codePath);
     handles.Projects.codePathField.Value=codePath;

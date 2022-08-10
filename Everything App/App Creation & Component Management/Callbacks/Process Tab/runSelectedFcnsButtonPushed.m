@@ -29,6 +29,12 @@ for i=1:length(fcnNodes)
     nodeNums(i)=fcnNodes(i).NodeData;
 end
 
+if ismember('Logsheet',fcnNames)
+    disp('To import data from the logsheet, please go to the "Import" tab. This will not run now.');
+    nodeNums=nodeNums(~ismember(fcnNames,'Logsheet'));
+    fcnNames=fcnNames(~ismember(fcnNames,'Logsheet'));    
+end
+
 nodeRows=ismember(Digraph.Nodes.NodeNumber,nodeNums);
 coords=Digraph.Nodes.Coordinates(nodeRows,2);
 specifyTrialsNames=Digraph.Nodes.SpecifyTrials(nodeRows);

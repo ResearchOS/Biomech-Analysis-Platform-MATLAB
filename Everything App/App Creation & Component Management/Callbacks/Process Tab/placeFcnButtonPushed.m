@@ -52,16 +52,16 @@ yMax=max(Digraph.Nodes.Coordinates(:,2));
 
 % xlims=handles.Process.mapFigure.XLim;
 % ylims=handles.Process.mapFigure.YLim;
-xlimRange=round(abs(xMax-xMin));
-ylimRange=round(abs(yMax-yMin));
+% xlimRange=round(abs(xMax-xMin));
+% ylimRange=round(abs(yMax-yMin));
 % hold on;
 
 
-iVals=linspace(-2*xlimRange+floor(xMin),ceil(xMax)+xlimRange*2,ceil(xMax)+xlimRange*2-(-2*xlimRange+floor(xMin))+1);
+iVals=linspace(-2+floor(xMin),ceil(xMax)+2,ceil(xMax)+2-(-2+floor(xMin))+1);
 if iVals==0 % Nothing has really been placed yet.
     iVals=[-1 0 1];
 end
-jVals=linspace(-2*ylimRange+floor(yMin),ceil(yMax)+ylimRange*2,ceil(yMax)+ylimRange*2-(-2*ylimRange+floor(yMin))+1);
+jVals=linspace(-2+floor(yMin),ceil(yMax)+2,ceil(yMax)+2-(-2+floor(yMin))+1);
 if jVals==0
     jVals=[-1 0 1];
 end

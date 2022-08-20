@@ -146,21 +146,35 @@ else
     Digraph.Nodes.OutputVariableNamesInCode={{''}}; % Name in file/code
 
     splitName=getUniqueMembers(Digraph.Nodes.SplitNames);
-    [splitCode]=genSplitCode(projectSettingsMATPath,splitName);
-    NonFcnSettingsStruct.Process.Splits.(splitName{1}).Code=splitCode;
+    [splitCode]=genSplitCode(projectSettingsMATPath,splitName); % Names must be unique (for now)
+    NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Code=splitCode;
+    NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Name=splitName;   
+    NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Color=[0 0.4470 0.7410]; % MATLAB R2021b first color in default color order
 
-    save(projectSettingsMATPath,'Digraph','-append');
+    save(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct','-append');
 end
 
-% Add the splits UI tree nodes on the Process tab
+%% Add the splits UI tree nodes on the Process tab
 delete(handles.Process.splitsUITree.Children);
-splitNames=getUniqueMembers(Digraph.Nodes.SplitNames);
-[~,idx]=sort(upper(splitNames));
-splitNames=splitNames(idx);
-for i=1:length(splitNames)
-    uitreenode(handles.Process.splitsUITree,'Text',splitNames{i});
-end
+getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
 
-plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
+if ~isempty(Digraph.Edges)
+    load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist');
+    for i=1:size(Digraph.Edges.Color,1)
+        edgeColorsIdx(i)=find(ismember(rgblist,Digraph.Edges.Color(i,:),'rows')==1);
+    end
+
+    Q=gcf;
+%     currMap=colormap(gcf);
+%     uifigure(handles.Process.mapFigure);
+    colormap(rgblist);
+%     figure(Q);
+
+    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],...
+        'EdgeColor',Digraph.Edges.Color);
+%     colormap(Q,currMap);
+else
+    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410]);
+end
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.

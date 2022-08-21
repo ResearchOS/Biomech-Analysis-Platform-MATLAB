@@ -144,14 +144,16 @@ else
     Digraph.Nodes.IsImport=false;
     Digraph.Nodes.InputVariableNamesInCode={{''}}; % Name in file/code
     Digraph.Nodes.OutputVariableNamesInCode={{''}}; % Name in file/code
-
-    splitName=getUniqueMembers(Digraph.Nodes.SplitNames);
-    [splitCode]=genSplitCode(projectSettingsMATPath,splitName); % Names must be unique (for now)
+    
+    splitName=getUniqueMembers(Digraph.Nodes.SplitNames); % {'Default'}
+%     [splitCode]=genSplitCode(projectSettingsMATPath,splitsList,splitName); % Names must be unique (for now)
+    splitCode='001';
+    maxSplitCode=splitCode;
     NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Code=splitCode;
     NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Name=splitName;   
     NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Color=[0 0.4470 0.7410]; % MATLAB R2021b first color in default color order
 
-    save(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct','-append');
+    save(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct','maxSplitCode','-append');
 end
 
 %% Add the splits UI tree nodes on the Process tab
@@ -164,7 +166,7 @@ if ~isempty(Digraph.Edges)
         edgeColorsIdx(i)=find(ismember(rgblist,Digraph.Edges.Color(i,:),'rows')==1);
     end
 
-    Q=gcf;
+%     Q=gcf;
 %     currMap=colormap(gcf);
 %     uifigure(handles.Process.mapFigure);
     colormap(rgblist);

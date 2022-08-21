@@ -75,7 +75,7 @@ end
 nodeID1=Digraph.Nodes.NodeNumber(idx1,:);
 nodeID2=Digraph.Nodes.NodeNumber(idx2,:);
 
-splitsOrder=getSplitsOrder(handles.Process.splitsUITree.SelectedNodes);
+splitsOrder=getSplitsOrder(handles.Process.splitsUITree.SelectedNodes,handles.Process.splitsUITree.Tag);
 if isempty(splitsOrder)
     return;
 end
@@ -102,13 +102,14 @@ color=splitsStruct.Color;
 Digraph.Edges.Color(currEdgeIdx,:)=color;
 
 load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist');
+edgeColorsIdx=NaN(size(Digraph.Edges.Color,1),1);
 for i=1:size(Digraph.Edges.Color,1)
-    edgeColorsIdx(i)=find(ismember(rgblist,Digraph.Edges.Color(i,:),'rows')==1);
+    edgeColorsIdx(i)=find(ismember(round(rgblist,3),round(Digraph.Edges.Color(i,:),3),'rows')==1);
 end
 
 % Q=gcf;
 % currMap=colormap(gcf);
-colormap(rgblist);
+colormap(handles.Process.mapFigure,rgblist);
 % figure(Q);
 
 %% Plot the new connection

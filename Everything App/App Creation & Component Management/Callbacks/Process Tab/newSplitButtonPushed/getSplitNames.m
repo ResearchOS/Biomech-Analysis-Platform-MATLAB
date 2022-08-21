@@ -1,4 +1,4 @@
-function [splitNames]=getSplitNames(splitsStruct,splitName,uitreeParent,plotTree)
+function [splitNames]=getSplitNames(splitsStruct,splitName,uitreeParent)
 % When calling this function non-recursively, leave splitName empty (i.e. [])    
 
     if ~exist('splitNames','var') && isempty(uitreeParent.Children)

@@ -1,4 +1,4 @@
-function [splitsStruct]=addToStruct(splitsStruct,selSplit,splitName,splitColor,splitCode)
+function [splitsStruct]=addSplitToStruct(splitsStruct,selSplit,splitName,splitColor,splitCode)
 
 if isempty(selSplit) % Top level
     splitsStruct.(splitName).Name=splitName;

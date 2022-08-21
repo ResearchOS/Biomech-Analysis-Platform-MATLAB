@@ -83,7 +83,10 @@ okbox=uibutton(Q,'push','Text','OK','Position',[450 200 100 50],'ButtonPushedFcn
 Qhandles.okbox=okbox;
 setappdata(Q,'handles',Qhandles);
 
-getSplitNames(splits,[],Qhandles.uitree);
+rootTag='Stop';
+rootNode=uitreenode(Qhandles.uitree,'Text','Root (Not a Split)','Tag',rootTag);
+
+getSplitNames(splits,[],rootNode);
 uiwait(Q);
 try
     selSplit=evalin('base','selSplit;'); % 1st entry is the root split, last entry is the split to branch off of.
@@ -92,38 +95,26 @@ catch
 end
 evalin('base','clear selSplit;');
 
-% splitCode=genSplitCode(projectSettingsMATPath,name); % Need to alter genSplitCode to be recursive
-splitCode='002';
-NonFcnSettingsStruct.Process.Splits=addToStruct(NonFcnSettingsStruct.Process.Splits,selSplit,name,splitColor,splitCode);
+selSplit=selSplit(~ismember(selSplit,'Root (Not a Split)'));
+
+splitCode=genSplitCode(projectSettingsMATPath,selSplit,name); % Need to alter genSplitCode to be recursive
+if isempty(splitCode)
+    return;
+end
+
+% Add the new split to the struct, using eval.
+structPath='NonFcnSettingsStruct.Process.Splits';
+for i=1:length(selSplit)
+    structPath=[structPath '.SubSplitNames.' selSplit{i} ''];
+end
+
+eval([structPath '.SubSplitNames.' name '.Color=[' num2str(splitColor(1)) ' ' num2str(splitColor(2)) ' ' num2str(splitColor(3)) '];']);
+eval([structPath '.SubSplitNames.' name '.Code=''' splitCode ''';']);
+eval([structPath '.SubSplitnames.' name '.Name=''' name ''';']);
+
+splits=NonFcnSettingsStruct.Process.Splits;
+
+delete(handles.Process.splitsUITree.Children);
+getSplitNames(splits,[],handles.Process.splitsUITree);
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
-
-
-%% 4. Ask the user which function on that branch this is branching from
-% nodeNums=0;
-% nodeCount=0;
-% fcnNames={''};
-% for i=1:length(Digraph.Nodes.FunctionNames)
-%     currSplitNames=Digraph.Nodes.SplitNames{i};
-% 
-%     if all(ismember(selSplit,currSplitNames))
-%         nodeCount=nodeCount+1;
-%         nodeNums(nodeCount)=Digraph.Nodes.NodeNumber(i);
-%         fcnNames{nodeCount}=Digraph.Nodes.FunctionNames{i};
-%     end
-% 
-% end
-% 
-% [sel,ok]=listdlg('PromptString','Select Fcn to Split From','ListString',fcnNames,'SelectionMode','single');
-% nodeNum=nodeNums(sel);
-
-%% 5. Select whether the branch is one of the following:
-% a. A duplicate arrow between the same functions (i.e. only inputs are changing, all function nodes are the same)
-% b. Place one new function to start the new split
-% c. Copy one or more functions (and their inputs & outputs) to a new location to start the new split
-
-
-%% 6. Create the new node(s), and initialize them with the split name and dependent splits names.
-
-% 
-% NonFcnSettingsStruct.Process.Splits.(name).Code=genSplitCode(projectSettingsMATPath,name);

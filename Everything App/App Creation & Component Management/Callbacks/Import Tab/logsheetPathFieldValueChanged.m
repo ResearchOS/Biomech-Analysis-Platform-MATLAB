@@ -36,8 +36,14 @@ setappdata(fig,'logsheetPath',logsheetPath);
 macAddress=getComputerID();
 
 projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
+projectVarNames=whos('-file',projectSettingsMATPath);
+projectVarNames={projectVarNames.name};
 
+if ismember('VariableNamesList',projectVarNames)
+    load(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList'); % Load the non-fcn settings struct from the project settings MAT file
+else
 load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+end
 % NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
 NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath=logsheetPath; % Store the computer-specific logsheet path to the struct
@@ -145,8 +151,7 @@ else
     Digraph.Nodes.InputVariableNamesInCode={{''}}; % Name in file/code
     Digraph.Nodes.OutputVariableNamesInCode={{''}}; % Name in file/code
     
-    splitName=getUniqueMembers(Digraph.Nodes.SplitNames); % {'Default'}
-%     [splitCode]=genSplitCode(projectSettingsMATPath,splitsList,splitName); % Names must be unique (for now)
+    splitName={'Default'};
     splitCode='001';
     maxSplitCode=splitCode;
     NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Code=splitCode;
@@ -162,21 +167,28 @@ getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITre
 
 if ~isempty(Digraph.Edges)
     load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist');
+    edgeColorsIdx=NaN(size(Digraph.Edges.Color,1),1);
     for i=1:size(Digraph.Edges.Color,1)
-        edgeColorsIdx(i)=find(ismember(rgblist,Digraph.Edges.Color(i,:),'rows')==1);
+        edgeColorsIdx(i)=find(ismember(round(rgblist,3),round(Digraph.Edges.Color(i,:),3),'rows')==1);
     end
 
-%     Q=gcf;
-%     currMap=colormap(gcf);
-%     uifigure(handles.Process.mapFigure);
-    colormap(rgblist);
-%     figure(Q);
+    colormap(handles.Process.mapFigure,rgblist);
 
-    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],...
-        'EdgeColor',Digraph.Edges.Color);
-%     colormap(Q,currMap);
+    plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],...
+        'EdgeCData',edgeColorsIdx);
 else
-    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410]);
+    plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410]);
 end
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
+
+%% Add the variable names to the vars listbox
+if exist('VariableNamesList','var')~=1
+    return;
+end
+
+[~,idx]=sort(upper(VariableNamesList.GUINames));
+handles.Process.varsListbox.Items=VariableNamesList.GUINames(idx);
+handles.Process.varsListbox.Value=VariableNamesList.GUINames{idx(1)};
+handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{idx(1)};
+handles.Process.argNameInCodeField.Value=VariableNamesList.SaveNames{idx(1)};

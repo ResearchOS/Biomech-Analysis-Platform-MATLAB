@@ -12,7 +12,8 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 % projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
 splitName='Default'; % The name of the current processing split
-splitCode=genSplitCode(projectSettingsMATPath,splitName);
+splitCode='001'; % Do logsheet variables ever need to be anything besides '001'?
+% splitCode=genSplitCode(projectSettingsMATPath,{''},splitName);
 
 load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
 
@@ -47,8 +48,11 @@ useHeaderTrialSubject=cell(length(checkedNodes),1);
 
 useHeaderNames={checkedNodes.Text};
 useHeaderVarNames=genvarname(useHeaderNames);
-useHeadersIdx=ismember(headerNames,useHeaderNames);
-useHeadersIdxNums=find(useHeadersIdx==1);
+for i=1:length(useHeaderNames)
+    useHeadersIdxNums(i)=find(ismember(headerNames,useHeaderNames{i})==1);
+end
+% useHeadersIdx=ismember(headerNames,useHeaderNames);
+% useHeadersIdxNums=find(useHeadersIdx==1);
 
 for i=1:length(checkedNodes)
     useHeaderDataTypes{i}=NonFcnSettingsStruct.Import.LogsheetVars.(useHeaderVarNames{i}).DataType;
@@ -101,7 +105,7 @@ end
 oldPath=cd([getappdata(fig,'codePath') 'SpecifyTrials']);
 inclStruct=feval(specTrialsName);
 allTrialNames=getTrialNames(inclStruct,logsheetVar,fig,0,projectStruct);
-rowNums=[1:size(logsheetVar,1)]'; % Initialize the row numbers
+% rowNums=(1:size(logsheetVar,1))'; % Initialize the row numbers
 rowsIdx=false(size(logsheetVar,1),1);
 subNames=fieldnames(allTrialNames);
 

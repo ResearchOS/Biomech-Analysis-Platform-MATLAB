@@ -133,11 +133,22 @@ else
     rowNum=1;
 end
 
+selSplit=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(selSplit,' ');
+splitName=selSplit(1:spaceIdx-1);
+splitCode=selSplit(spaceIdx+2:end-1);
+
+if exist('VariableNamesList','var')~=1 || ~isfield(VariableNamesList,'SplitCodes') || length(VariableNamesList.SplitCodes)<rowNum
+    VariableNamesList.SplitCodes{rowNum}={splitCode};
+    VariableNamesList.SplitNames{rowNum}={splitName};
+else
+    VariableNamesList.SplitNames{rowNum}=[VariableNamesList.SplitNames(rowNum); {splitName}];
+    VariableNamesList.SplitCodes{rowNum}=[VariableNamesList.SplitCodes(rowNum); {splitCode}];
+end
+
 VariableNamesList.GUINames{rowNum,1}=nameInGUI;
 VariableNamesList.SaveNames{rowNum,1}=defaultName;
 VariableNamesList.Descriptions{rowNum,1}={'Enter Arg Description Here'};
-VariableNamesList.SplitNames{rowNum,1}={''};
-% VariableNamesList.SplitCodes{rowNum}={''};
 VariableNamesList.Level{rowNum,1}=level;
 VariableNamesList.IsHardCoded{rowNum,1}=isHC;
 
@@ -148,7 +159,7 @@ if isHC==1
     if exist(folderName,'dir')~=7
         mkdir(folderName);
     end
-    splitName=handles.Process.splitsUITree.SelectedNodes.Text;
+%     splitName=handles.Process.splitsUITree.SelectedNodes.Text;
     splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
     fileName=[folderName slash defaultName '_' splitCode '.m'];
     
@@ -159,8 +170,31 @@ if isHC==1
     edit(fileName);
 end
 
-[~,idx]=sort(upper(VariableNamesList.GUINames));
-handles.Process.varsListbox.Items=VariableNamesList.GUINames(idx);
-handles.Process.varsListbox.Value=nameInGUI;
+[~,sortIdx]=sort(upper(VariableNamesList.GUINames));
+delete(handles.Process.varsListbox.Children);
+for i=1:length(VariableNamesList.GUINames)
+    varName=VariableNamesList.GUINames{sortIdx(i)};
+    varNode=uitreenode(handles.Process.varsListbox,'Text',varName);
+    splitNames=VariableNamesList.SplitNames{sortIdx(i)};
+    splitCodes=VariableNamesList.SplitCodes{sortIdx(i)};
+    for j=1:length(splitCodes)
+        splitName=splitNames{j};
+        splitCode=splitCodes{j};
+        a=uitreenode(varNode,'Text',[splitName ' (' splitCode ')']);
+        if i==1 && j==1
+            handles.Process.varsListbox.SelectedNodes=a;
+        end
+    end
 
-save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
+    if isequal(varName,nameInGUI)
+        handles.Process.varsListbox.SelectedNodes=varNode;
+    end
+
+end
+
+% handles.Process.varsListbox.Items=VariableNamesList.GUINames(idx);
+% handles.Process.varsListbox.Value=nameInGUI;
+varsListboxSelectionChanged(fig);
+% handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{rowNum};
+
+save(projectSettingsMATPath,'VariableNamesList','-append');

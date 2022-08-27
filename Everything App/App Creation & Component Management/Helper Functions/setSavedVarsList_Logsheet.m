@@ -27,6 +27,8 @@ if size(guiNames,1)<size(guiNames,2)
     guiNames=guiNames';
 end
 
+[~,sortIdx]=sort(upper(guiNames));
+
 guiVarNames=genvarname(guiNames);
 
 if ~iscell(splitName)
@@ -39,16 +41,31 @@ splitCode='001';
 numVarsNoExist=length(guiNames);
 
 if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
-    VariableNamesList.GUINames=guiNames;
-    VariableNamesList.SaveNames=guiVarNames;
-    VariableNamesList.SplitNames=repmat({splitName},numVarsNoExist,1);    
+    VariableNamesList.GUINames=guiNames(sortIdx);
+    VariableNamesList.SaveNames=guiVarNames(sortIdx);
+    VariableNamesList.SplitNames=repmat({splitName},numVarsNoExist,1); 
+    VariableNamesList.SplitCodes=repmat({splitCode},numVarsNoExist,1);
     VariableNamesList.Descriptions=repmat({'Enter Arg Description Here'},numVarsNoExist,1);
     VariableNamesList.Level=repmat({'T'},numVarsNoExist,1);
     VariableNamesList.IsHardCoded=repmat({0},numVarsNoExist,1);
 
     save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
-    handles.Process.varsListbox.Items=VariableNamesList.GUINames;
-    handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
+    % This is not part of "makeVarNodes.m" because it deals with
+    % initialization, and is therefore a slightly different operation.
+    % Maybe in the future.
+    for i=1:numVarsNoExist
+        varNode=uitreenode(handles.Process.varsListbox,'Text',guiNames{sortIdx(i)});
+        splitNames=VariableNamesList.SplitNames{i};
+        splitCodes=VariableNamesList.SplitCodes{i};
+        for j=1:length(splitCodes)
+            a=uitreenode(varNode,'Text',[splitNames{i} '(' splitCodes{j} ')']);
+            if i==1 && j==1
+                handles.Process.varsListbox.SelectedNodes=a;
+            end
+        end        
+    end
+%     handles.Process.varsListbox.Items=VariableNamesList.GUINames;
+%     handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
     handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
     return;
 end
@@ -63,6 +80,7 @@ numVarsExist=sum(existVarsMatIdx);
 VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(noExistVarIdx)];
 VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(noExistVarIdx)]; % Does not include the split code
 VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat({splitName},numVarsNoExist,1)];
+VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat({splitCode},numVarsNoExist,1)];
 VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVarsNoExist,1)];
 VariableNamesList.IsHardCoded=[VariableNamesList.IsHardCoded; repmat({0},numVarsNoExist,1)];
 VariableNamesList.Level=[VariableNamesList.Level; repmat({'T'},numVarsNoExist,1)];
@@ -74,7 +92,8 @@ if any(~noExistVarIdx)
     for i=1:length(existVarsMatIdx)
         VariableNamesList.GUINames{existVarsMatNums(i)}=guiNames{noExistVarsNums(i)};
         VariableNamesList.SaveNames{existVarsMatNums(i)}=guiVarNames{noExistVarsNums(i)};
-        VariableNamesList.SplitNames{existVarsMatNums(i)}={splitName};
+        VariableNamesList.SplitNames{existVarsMatNums(i)}=[VariableNamesList.SplitNames{existVarsMatNums(i)}; {splitName}];
+        VariableNamesList.SplitCodes{existVarsMatNums(i)}=[VariableNamesList.SplitCodes{existVarsMatNums(i)}; {splitCode}];
         VariableNamesList.Descriptions{existVarsMatNums(i)}='Enter Arg Description Here';
         VariableNamesList.IsHardCoded{existVarsMatNums(i)}=0;
         VariableNamesList.Level{existVarsMatNums(i)}='T';
@@ -82,9 +101,11 @@ if any(~noExistVarIdx)
 end
 
 save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
-handles.Process.varsListbox.Items=VariableNamesList.GUINames;
-handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
-handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
+
+makeVarNodes(fig,sortIdx);
+% handles.Process.varsListbox.Items=VariableNamesList.GUINames;
+% handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
+% handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
 
 
 %% Split name does not yet exist
@@ -97,7 +118,7 @@ handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
 % VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(currVarsNotInSplit)];
 % VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(currVarsNotInSplit)]; % Does not include the split code
 % VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,sum(currVarsNotInSplit),1)];
-% % VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
+% VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
 % VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},sum(currVarsNotInSplit),1)];
 % VariableNamesList.IsHardCoded=[VariableNamesList.IsHardCoded; repmat({0},sum(currVarsNotInSplit),1)];
 % VariableNamesList.Level=[VariableNamesList.Level; repmat({''},sum(currVarsNotInSplit),1)];
@@ -107,11 +128,11 @@ handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
 % handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
 
 % Index {1} because logsheet is always the first node.
-if isequal(Digraph.Nodes.SplitNames{1},{''})
-    Digraph.Nodes.SplitNames{1}={splitName};
-elseif ~ismember(splitName,Digraph.Nodes.SplitNames{1})
-    Digraph.Nodes.SplitNames{1}=[Digraph.Nodes.SplitNames{1}; {splitName}];
-end
+% if isequal(Digraph.Nodes.SplitNames{1},{''})
+%     Digraph.Nodes.SplitNames{1}={splitName};
+% elseif ~ismember(splitName,Digraph.Nodes.SplitNames{1})
+%     Digraph.Nodes.SplitNames{1}=[Digraph.Nodes.SplitNames{1}; {splitName}];
+% end
 
 save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','-append');
 

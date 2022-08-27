@@ -27,8 +27,8 @@ elseif ispc==1
     slash='\';
 end
 
-% xlims=handles.Process.mapFigure.XLim;
-% ylims=handles.Process.mapFigure.YLim;
+xlims=handles.Process.mapFigure.XLim;
+ylims=handles.Process.mapFigure.YLim;
 
 currPoint=handles.Process.mapFigure.CurrentPoint;
 
@@ -36,11 +36,18 @@ currPoint=currPoint(1,1:2);
 
 connectNodesCoords(rowNum,1:2)=currPoint;
 
+if all(isnan(getappdata(fig,'connectNodesCoords')),'all') && currPoint(1)<xlims(1) || currPoint(1)>xlims(2) || currPoint(2)<ylims(1) || currPoint(2)>ylims(2)
+    disp('Clicked outside of the axes');
+    return; % Clicked outside of the axes
+end
+
 setappdata(fig,'connectNodesCoords',connectNodesCoords);
 
 if rowNum==1
-    return;
+    return; % First click
 end
+
+setappdata(fig,'connectNodesCoords',NaN(2,2));
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
@@ -56,7 +63,7 @@ if isequal(idx1,idx2)
     disp('Cannot connect a node to itself!');
     setappdata(fig,'connectNodesCoords',NaN(2,2));
     setappdata(fig,'doNothingOnButtonUp',0);
-set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
+    set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
     'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
     return;
 end
@@ -80,7 +87,24 @@ if isempty(splitsOrder)
     return;
 end
 
-Digraph=addedge(Digraph,idx1,idx2);
+% a=array2table([{''} {''} 0 0 0 0 0]);
+% a.Properties.VariableNames={'StartFcn','EndFcn','NodeNumStart','NodeNumEnd','ColorR','ColorG','ColorB'};
+% a=mergevars(a,{'StartFcn','EndFcn'},'NewVariableName','FunctionNames');
+% % a=mergevars(a,{'StartNode','EndNode'},'NewVariableName','EndNodes');
+% a=mergevars(a,{'NodeNumStart','NodeNumEnd'},'NewVariableName','NodeNumber');
+% a=mergevars(a,{'ColorR','ColorG','ColorB'},'NewVariableName','Color');
+% 
+% a.NodeNumber=a.NodeNumber{:};
+
+if isempty(Digraph.Edges)    
+    newDigraph=digraph;
+    for i=1:size(Digraph.Nodes,1)
+        newDigraph=addnode(newDigraph,Digraph.Nodes(i,:));        
+    end
+    Digraph=newDigraph;
+end
+
+Digraph=addedge(Digraph,idx1,idx2);   
 
 if ~any(ismember(Digraph.Edges.Properties.VariableNames,'FunctionNames'))
     currEdgeIdx=true; % The row number of the function names for the new edge
@@ -101,23 +125,21 @@ end
 color=splitsStruct.Color;
 Digraph.Edges.Color(currEdgeIdx,:)=color;
 
-load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist');
+load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist','colorlist');
+% [~,sortColorsIdx]=sort(colorlist);
+% rgblist=rgblist(sortColorsIdx,:); % Sorted alphabetically
 edgeColorsIdx=NaN(size(Digraph.Edges.Color,1),1);
 for i=1:size(Digraph.Edges.Color,1)
     edgeColorsIdx(i)=find(ismember(round(rgblist,3),round(Digraph.Edges.Color(i,:),3),'rows')==1);
 end
 
-% Q=gcf;
-% currMap=colormap(gcf);
 colormap(handles.Process.mapFigure,rgblist);
-% figure(Q);
 
 %% Plot the new connection
 delete(handles.Process.mapFigure.Children);
 plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],...
     'EdgeCData',edgeColorsIdx);
 
-% colormap(Q,currMap);
 save(projectSettingsMATPath,'Digraph','-append');
 
 setappdata(fig,'doNothingOnButtonUp',0);

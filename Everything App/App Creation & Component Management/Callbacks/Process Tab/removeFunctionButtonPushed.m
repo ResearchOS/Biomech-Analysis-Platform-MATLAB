@@ -5,12 +5,22 @@ function []=removeFunctionButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
+    disp('Select a node in the function arguments UI tree first!');
+    return;
+end
+
 nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph');
 
 nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
+
+if nodeRow(1)
+    disp('Cannot delete the logsheet node, that is the origin node!');
+    return; % Logsheet node was selected
+end
 
 selNodeIDs=getappdata(fig,'selectedNodeNumbers');
 selNodeIDs=selNodeIDs(~ismember(selNodeIDs,nodeNum));

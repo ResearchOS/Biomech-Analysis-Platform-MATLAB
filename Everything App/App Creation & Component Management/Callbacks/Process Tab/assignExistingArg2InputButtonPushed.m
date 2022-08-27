@@ -11,6 +11,12 @@ if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
 end
 
 if isequal(handles.Process.varsListbox.Items,{'No Vars'})
+    disp('Create a variable first!');
+    return;
+end
+
+if isequal(handles.Process.fcnArgsUITree.SelectedNodes.Text,'Logsheet')
+    disp('Cannot add variables to the logsheet!');
     return;
 end
 

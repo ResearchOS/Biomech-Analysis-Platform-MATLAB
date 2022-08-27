@@ -56,7 +56,7 @@ end
 
 %% Get the desired level of the processing function from the user
 opts={'Project','Subject','Trial'};
-[idx,tf]=listdlg('Select Function Level(s)',opts);
+[idx,tf]=listdlg('PromptString','Select Function Level(s)','ListString',opts);
 if ~tf
     return;
 end

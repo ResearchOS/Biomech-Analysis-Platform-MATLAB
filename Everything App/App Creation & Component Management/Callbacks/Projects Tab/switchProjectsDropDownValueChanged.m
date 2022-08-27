@@ -125,12 +125,10 @@ projectSettingsVarNames={projectSettingsVars.name};
 if ismember('VariableNamesList',projectSettingsVarNames)
     load(projectSettingsMATPath,'VariableNamesList');
     [~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
-    handles.Process.varsListbox.Items=VariableNamesList.GUINames(alphabetIdx);
-    handles.Process.varsListbox.Value=VariableNamesList.GUINames{alphabetIdx(1)};
-    varsListBoxValueChanged(fig);    
-else
-    handles.Process.varsListbox.Items={'No Vars'};
-    handles.Process.varsListbox.Value='No Vars';    
+    makeVarNodes(fig,alphabetIdx,VariableNamesList);
+%     handles.Process.varsListbox.Items=VariableNamesList.GUINames(alphabetIdx);
+%     handles.Process.varsListbox.Value=VariableNamesList.GUINames{alphabetIdx(1)};
+%     varsListBoxSelectionChanged(fig);    
 end
 
 %% Plot tab

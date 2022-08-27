@@ -21,6 +21,7 @@ else
 end
 
 if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
+    handles.Process.specifyTrialsLabel.Text='';
     handles.Process.fcnDescriptionTextArea.Value='Enter Arg Description Here';
     return;
 end

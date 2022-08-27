@@ -14,7 +14,8 @@ function [splitNames]=getSplitNames(splitsStruct,splitName,uitreeParent)
     
     for i=1:length(currSplitNames)
         splitName=currSplitNames{i};   
-        uitreeParent=uitreenode(uitreeParent,'Text',splitName);
+        splitCode=splitsStruct.SubSplitNames.(splitName).Code;
+        uitreeParent=uitreenode(uitreeParent,'Text',[splitName ' (' splitCode ')']);
         splitNames.(splitName)=getSplitNames(splitsStruct.SubSplitNames.(splitName),splitName,uitreeParent);                
         uitreeParent=uitreeParent.Parent;
     end        

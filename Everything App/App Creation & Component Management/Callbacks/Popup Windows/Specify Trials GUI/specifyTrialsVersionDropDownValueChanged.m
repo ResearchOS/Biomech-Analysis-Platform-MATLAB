@@ -8,7 +8,7 @@ handles=getappdata(fig,'handles');
 name=handles.Top.specifyTrialsDropDown.Value;
 
 pguiFig=evalin('base','gui;');
-% pguiHandles=getappdata(pguiFig,'handles');
+pguiHandles=getappdata(pguiFig,'handles');
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -70,6 +70,8 @@ for inclExcl=1:2
 end
 
 handles.Top.includeExcludeTabGroup.SelectedTab=currSelectedTab;
+
+pguiHandles.Process.specifyTrialsLabel.Text=name;
 
 %% Assign the new specify trials name to the current function
 nodeRow=getappdata(fig,'nodeRow');

@@ -14,11 +14,12 @@ delete(handles.Process.fcnArgsUITree.Children);
 
 selNodeIDs=getappdata(fig,'selectedNodeNumbers'); % From the figure
 nodeRows=ismember(Digraph.Nodes.NodeNumber,selNodeIDs);
+nodesData=Digraph.Nodes.NodeNumber(nodeRows);
 nodeRowsNums=find(nodeRows==1);
 
 for i=1:length(nodeRowsNums)
 
-    fcnName=uitreenode(handles.Process.fcnArgsUITree,'Text',Digraph.Nodes.FunctionNames{nodeRowsNums(i)},'NodeData',nodeRowsNums(i));
+    fcnName=uitreenode(handles.Process.fcnArgsUITree,'Text',Digraph.Nodes.FunctionNames{nodeRowsNums(i)},'NodeData',nodesData(i));
     inputs=uitreenode(fcnName,'Text','Inputs');
     for j=1:length(Digraph.Nodes.InputVariableNames{nodeRowsNums(i)})
         if ~isempty(Digraph.Nodes.InputVariableNames{nodeRowsNums(i)}{j})
@@ -36,7 +37,7 @@ for i=1:length(nodeRowsNums)
         handles.Process.fcnArgsUITree.SelectedNodes=fcnName;
     end
 
-    if exist('selNodeNum','var')==1 && nodeRowsNums(i)==selNodeIDs
+    if exist('selNodeNum','var')==1
         handles.Process.fcnArgsUITree.SelectedNodes=fcnName;
     end
 

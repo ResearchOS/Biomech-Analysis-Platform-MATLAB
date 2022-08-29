@@ -1,3 +1,11 @@
-function []=splitsUITreeSelectionChanged(srv,event)
+function []=splitsUITreeSelectionChanged(src,event)
 
-%% PURPOSE:
+%% PURPOSE: SWITCH THE DISPLAY BETWEEN SPLITS.
+
+fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
+
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+load(projectSettingsMATPath,'Digraph');
+
+highlightedFcnsChanged(fig,Digraph);

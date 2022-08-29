@@ -15,10 +15,12 @@ assert(ismember('VariableNamesList',projectSettingsVarNames));
 
 load(projectSettingsMATPath,'VariableNamesList');
 
-% splitName=handles.Process.splitsUITree.SelectedNode.Text;
-% splitName='Default';
+text=handles.Process.varsListbox.SelectedNodes.Text;
+spaceIdx=strfind(text,' ');
+splitName=text(1:spaceIdx-1);
+splitCode=text(spaceIdx+2:end-1);
 
-varName=handles.Process.varsListbox.Value;
+varName=handles.Process.varsListbox.SelectedNodes.Parent.Text;
 
 % varRowDesc=ismember(VariableNamesList.GUINames,varName) & ismember(VariableNamesList.SplitNames,splitName);
 varRow=ismember(VariableNamesList.GUINames,varName); % & ismember(VariableNamesList.SplitNames,splitName);

@@ -90,6 +90,18 @@ if ~any(nodeRows)
     return;
 end
 
+% Check that all functions are connected first.
+nodeRowsNums=find(nodeRows==1);
+for i=1:length(nodeRowsNums)
+
+    if isempty(inedges(Digraph,nodeRowsNums(i)))
+        disp('Must connect functions before selecting them!');
+        disp(['Node at (' num2str(Digraph.Nodes.Coordinates(nodeRowsNums(i),:)) ') Not Connected']);
+        return;
+    end
+
+end
+
 % Visually highlight all selected nodes
 nodeSizes=h.MarkerSize;
 if isequal(size(nodeSizes),[1 1])

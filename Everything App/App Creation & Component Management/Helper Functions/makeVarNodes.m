@@ -1,6 +1,7 @@
 function []=makeVarNodes(fig,sortIdx,VariableNamesList)
 
 handles=getappdata(fig,'handles');
+delete(handles.Process.varsListbox.Children);
 
 for i=1:length(VariableNamesList.GUINames)
     varNode=uitreenode(handles.Process.varsListbox,'Text',VariableNamesList.GUINames{sortIdx(i)});

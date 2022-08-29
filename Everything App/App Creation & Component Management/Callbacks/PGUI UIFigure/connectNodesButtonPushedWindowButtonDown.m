@@ -87,14 +87,9 @@ if isempty(splitsOrder)
     return;
 end
 
-% a=array2table([{''} {''} 0 0 0 0 0]);
-% a.Properties.VariableNames={'StartFcn','EndFcn','NodeNumStart','NodeNumEnd','ColorR','ColorG','ColorB'};
-% a=mergevars(a,{'StartFcn','EndFcn'},'NewVariableName','FunctionNames');
-% % a=mergevars(a,{'StartNode','EndNode'},'NewVariableName','EndNodes');
-% a=mergevars(a,{'NodeNumStart','NodeNumEnd'},'NewVariableName','NodeNumber');
-% a=mergevars(a,{'ColorR','ColorG','ColorB'},'NewVariableName','Color');
-% 
-% a.NodeNumber=a.NodeNumber{:};
+splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(splitText,' ');
+splitCode=splitText(spaceIdx+2:end-1);
 
 if isempty(Digraph.Edges)    
     newDigraph=digraph;
@@ -124,6 +119,7 @@ for i=1:length(splitsOrder)
 end
 color=splitsStruct.Color;
 Digraph.Edges.Color(currEdgeIdx,:)=color;
+Digraph.Edges.SplitCode{currEdgeIdx}=splitCode;
 
 load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist','colorlist');
 % [~,sortColorsIdx]=sort(colorlist);
@@ -142,6 +138,6 @@ plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'Y
 
 save(projectSettingsMATPath,'Digraph','-append');
 
-setappdata(fig,'doNothingOnButtonUp',0);
+setappdata(fig,'doNothingOnButtonUp',1);
 set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
     'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));

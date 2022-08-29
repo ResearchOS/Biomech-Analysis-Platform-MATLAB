@@ -10,7 +10,7 @@ if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     return;
 end
 
-if isequal(handles.Process.varsListbox.Items,{'No Vars'})
+if isempty(handles.Process.varsListbox.Children)
     disp('Create a variable first!');
     return;
 end
@@ -20,7 +20,11 @@ if isequal(handles.Process.fcnArgsUITree.SelectedNodes.Text,'Logsheet')
     return;
 end
 
-varNameInGUI=handles.Process.varsListbox.Value;
+text=handles.Process.varsListbox.SelectedNodes;
+spaceIdx=strfind(text,' ');
+splitName=text(1:spaceIdx-1);
+splitCode=text(spaceIdx+2:end-1);
+varNameInGUI=handles.Process.varsListbox.SelectedNodes.Parent.Text;
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 varNames=whos('-file',projectSettingsMATPath);
@@ -48,37 +52,32 @@ assert(~isempty(nodeNum));
 nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
 varRow=ismember(VariableNamesList.GUINames,varNameInGUI); % The row of the variable names of interest
-namesInCode=VariableNamesList.SaveNames(varRow); % The default name in code
+namesInCode=VariableNamesList.SaveNames{varRow}; % The default name in code
 
-for i=1:length(varNameInGUI)
-    currName=varNameInGUI{i};
-    nameInCode=namesInCode{i};
+currName=varNameInGUI;
+nameInCode=namesInCode;
 
-    if ismember(currName,Digraph.Nodes.InputVariableNames{nodeRow})
-        disp(['No Args Added. Variable ''' currName ''' Already in Function ''' Digraph.Nodes.FunctionNames{nodeRow} '''']);
-        return;
-    end
+if ismember(currName,Digraph.Nodes.InputVariableNames{nodeRow})
+    disp(['No Args Added. Variable ''' currName ''' Already in Function ''' Digraph.Nodes.FunctionNames{nodeRow} '''']);
+    return;
+end
 
-    Digraph.Nodes.InputVariableNames{nodeRow}=[Digraph.Nodes.InputVariableNames{nodeRow}; currName];
-    Digraph.Nodes.InputVariableNamesInCode{nodeRow}=[Digraph.Nodes.InputVariableNamesInCode{nodeRow}; nameInCode];
+Digraph.Nodes.InputVariableNames{nodeRow}=[Digraph.Nodes.InputVariableNames{nodeRow}; currName];
+Digraph.Nodes.InputVariableNamesInCode{nodeRow}=[Digraph.Nodes.InputVariableNamesInCode{nodeRow}; nameInCode];
 
-    emptyIdx=cellfun(@isempty,Digraph.Nodes.InputVariableNames{nodeRow});
+emptyIdx=cellfun(@isempty,Digraph.Nodes.InputVariableNames{nodeRow});
 
-    Digraph.Nodes.InputVariableNames{nodeRow}=Digraph.Nodes.InputVariableNames{nodeRow}(~emptyIdx);
-    Digraph.Nodes.InputVariableNamesInCode{nodeRow}=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(~emptyIdx);
+Digraph.Nodes.InputVariableNames{nodeRow}=Digraph.Nodes.InputVariableNames{nodeRow}(~emptyIdx);
+Digraph.Nodes.InputVariableNamesInCode{nodeRow}=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(~emptyIdx);
 
-    b=findobj(a,'Text','Inputs');
+b=findobj(a,'Text','Inputs');
 
-    newNode=uitreenode(b,'Text',currName);
+newNode=uitreenode(b,'Text',currName);
 
-    if i==1
-        handles.Process.fcnArgsUITree.SelectedNodes=newNode;
-        handles.Process.argNameInCodeField.Value=nameInCode;
-    end
+handles.Process.fcnArgsUITree.SelectedNodes=newNode;
+handles.Process.argNameInCodeField.Value=nameInCode;
 
 %     highlightedFcnsChanged(fig,Digraph,nodeNum);
-
-end
 
 expand(b);
 

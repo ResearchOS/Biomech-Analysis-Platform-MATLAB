@@ -43,7 +43,11 @@ if ismember(newNodeCoord,Digraph.Nodes.Coordinates,'rows')
     return;
 end
 
-
+% Get the current split code
+% selNode=handles.Process.splitsUITree.SelectedNodes.Text;
+% spaceIdx=strfind(selNode,' ');
+% splitName=selNode(1:spaceIdx-1);
+% splitCode=selNode(spaceIdx+2:end-1);
 
 delete(allDots);
 
@@ -57,7 +61,7 @@ Digraph.Nodes.Descriptions{end}={''};
 Digraph.Nodes.Coordinates(end,:)=newNodeCoord;
 Digraph.Nodes.InputVariableNames{end}={''};
 Digraph.Nodes.OutputVariableNames{end}={''};
-% Digraph.Nodes.SplitNames{end}=splitNames;
+% Digraph.Nodes.SplitCodes{end}={splitCode};
 Digraph.Nodes.SpecifyTrials{end}='';
 currNodeID=max(Digraph.Nodes.NodeNumber)+1;
 Digraph.Nodes.NodeNumber(end)=currNodeID; % Helps to differentiate nodes of the same function name

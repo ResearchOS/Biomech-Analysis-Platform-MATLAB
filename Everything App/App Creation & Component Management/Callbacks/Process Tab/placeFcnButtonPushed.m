@@ -12,6 +12,11 @@ elseif ispc==1
     slash='\';
 end
 
+% if isempty(handles.Process.splitsUITree.SelectedNodes)
+%     disp('Select a split first!');
+%     return;
+% end
+
 fcnsDir=[getappdata(fig,'codePath') 'Processing Functions' slash];
 
 listing=dir([fcnsDir '*.m']);
@@ -37,7 +42,7 @@ end
 
 setappdata(fig,'placeFcnName',fcnName);
 
-%% Have the user select which function it is building from
+%% Have the user select where to place the fcn
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph');
 % digraphFcnNames=Digraph.Nodes.FunctionNames;

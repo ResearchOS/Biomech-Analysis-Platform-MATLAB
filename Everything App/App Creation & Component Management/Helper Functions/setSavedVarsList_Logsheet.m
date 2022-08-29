@@ -27,8 +27,6 @@ if size(guiNames,1)<size(guiNames,2)
     guiNames=guiNames';
 end
 
-[~,sortIdx]=sort(upper(guiNames));
-
 guiVarNames=genvarname(guiNames);
 
 if ~iscell(splitName)
@@ -36,11 +34,12 @@ if ~iscell(splitName)
 end
 
 % Is there ever a reason why the logsheet would not be part of the default split?
-splitCode='001'; 
+splitCode={'001'}; % Initialize as a cell
 
 numVarsNoExist=length(guiNames);
 
 if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
+    [~,sortIdx]=sort(upper(guiNames));
     VariableNamesList.GUINames=guiNames(sortIdx);
     VariableNamesList.SaveNames=guiVarNames(sortIdx);
     VariableNamesList.SplitNames=repmat({splitName},numVarsNoExist,1); 
@@ -76,33 +75,37 @@ numVarsNoExist=sum(noExistVarIdx);
 existVarsMatIdx=ismember(VariableNamesList.GUINames,guiNames); % The idx of previous vars that are in the current set.
 numVarsExist=sum(existVarsMatIdx);
 
-%% Append new variables to the structure.
-VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(noExistVarIdx)];
-VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(noExistVarIdx)]; % Does not include the split code
-VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat({splitName},numVarsNoExist,1)];
-VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat({splitCode},numVarsNoExist,1)];
-VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVarsNoExist,1)];
-VariableNamesList.IsHardCoded=[VariableNamesList.IsHardCoded; repmat({0},numVarsNoExist,1)];
-VariableNamesList.Level=[VariableNamesList.Level; repmat({'T'},numVarsNoExist,1)];
-
-%% Update the existing variables in the structure.
-if any(~noExistVarIdx)
-    existVarsMatNums=find(existVarsMatIdx==1);
-    noExistVarsNums=find(noExistVarIdx==0);
-    for i=1:length(existVarsMatIdx)
-        VariableNamesList.GUINames{existVarsMatNums(i)}=guiNames{noExistVarsNums(i)};
-        VariableNamesList.SaveNames{existVarsMatNums(i)}=guiVarNames{noExistVarsNums(i)};
-        VariableNamesList.SplitNames{existVarsMatNums(i)}=[VariableNamesList.SplitNames{existVarsMatNums(i)}; {splitName}];
-        VariableNamesList.SplitCodes{existVarsMatNums(i)}=[VariableNamesList.SplitCodes{existVarsMatNums(i)}; {splitCode}];
-        VariableNamesList.Descriptions{existVarsMatNums(i)}='Enter Arg Description Here';
-        VariableNamesList.IsHardCoded{existVarsMatNums(i)}=0;
-        VariableNamesList.Level{existVarsMatNums(i)}='T';
-    end
+%% Append new variables to the structure (if any)
+if any(~existVarsMatIdx)
+    VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(noExistVarIdx)];
+    VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(noExistVarIdx)]; % Does not include the split code
+    VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat({splitName},numVarsNoExist,1)];
+    VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat({splitCode},numVarsNoExist,1)];
+    VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVarsNoExist,1)];
+    VariableNamesList.IsHardCoded=[VariableNamesList.IsHardCoded; repmat({0},numVarsNoExist,1)];
+    VariableNamesList.Level=[VariableNamesList.Level; repmat({'T'},numVarsNoExist,1)];
 end
+
+%% Update the existing variables in the structure (if any)
+% if any(~noExistVarIdx)
+%     existVarsMatNums=find(existVarsMatIdx==1);
+%     noExistVarsNums=find(noExistVarIdx==0);
+%     for i=1:length(existVarsMatNums)
+%         assert(isequal(VariableNamesList.GUINames{existVarsMatNums(i)},guiNames{noExistVarsNums(i)}));
+%         assert(isequal(VariableNamesList.SaveNames{existVarsMatNums(i)},guiVarNames{noExistVarsNums(i)}));
+%         
+%         VariableNamesList.SplitNames{existVarsMatNums(i)}=[VariableNamesList.SplitNames{existVarsMatNums(i)}; {splitName}];
+%         VariableNamesList.SplitCodes{existVarsMatNums(i)}=[VariableNamesList.SplitCodes{existVarsMatNums(i)}; {splitCode}];
+%         VariableNamesList.Descriptions{existVarsMatNums(i)}='Enter Arg Description Here';
+%         VariableNamesList.IsHardCoded{existVarsMatNums(i)}=0;
+%         VariableNamesList.Level{existVarsMatNums(i)}='T';
+%     end
+% end
 
 save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
 
-makeVarNodes(fig,sortIdx);
+[~,sortIdx]=sort(upper(VariableNamesList.GUINames));
+makeVarNodes(fig,sortIdx,VariableNamesList);
 % handles.Process.varsListbox.Items=VariableNamesList.GUINames;
 % handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
 % handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};

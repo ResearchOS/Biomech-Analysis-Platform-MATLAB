@@ -8,7 +8,10 @@ if isempty(selNode)
     return;
 end
 
-splitName=selNode.Text;
+text=selNode.Text;
+spaceIdx=strfind(text,' ');
+splitName=text(1:spaceIdx-1);
+% splitName=selNode.Text;
 splitsOrder{1}=splitName;
 currObj=selNode;
 while ~isequal(currObj.Tag,rootTag) % Stop when the current object is the root object of the tree (i.e. top node or the tree itself)
@@ -21,7 +24,10 @@ while ~isequal(currObj.Tag,rootTag) % Stop when the current object is the root o
     if isequal(class(currObj),'matlab.ui.container.CheckBoxTree')
         break;
     end
-    splitName=currObj.Text;
+    text=currObj.Text;
+    spaceIdx=strfind(text,' ');
+    splitName=text(1:spaceIdx-1);
+%     splitName=currObj.Text;
     splitsOrder=[{splitName}; splitsOrder];
     
 end

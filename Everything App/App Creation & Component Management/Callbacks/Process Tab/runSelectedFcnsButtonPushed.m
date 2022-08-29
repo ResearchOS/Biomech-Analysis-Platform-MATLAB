@@ -12,6 +12,13 @@ if isempty(handles.Process.splitsUITree.SelectedNodes)
     return;
 end
 
+splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(splitText,' ');
+splitName=splitText(1:spaceIdx-1);
+splitCode=splitText(spaceIdx+2:end-1);
+setappdata(fig,'splitName',splitName);
+setappdata(fig,'splitCode',splitCode);
+
 %% 1. Get the list of relevant metadata for each function:
 % function names
 % node numbers (node row numbers?)
@@ -22,6 +29,12 @@ load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
 
 fcnNodes=handles.Process.fcnArgsUITree.Children;
 
+if isempty(fcnNodes)
+    beep;
+    disp('No functions selected!');
+    return;
+end
+
 fcnNames=cell(length(fcnNodes),1);
 nodeNums=NaN(length(fcnNodes),1);
 for i=1:length(fcnNodes)
@@ -29,17 +42,17 @@ for i=1:length(fcnNodes)
     nodeNums(i)=fcnNodes(i).NodeData;
 end
 
-if ismember('Logsheet',fcnNames)
-    disp('To import data from the logsheet, please go to the "Import" tab. This will not run now.');
-    nodeNums=nodeNums(~ismember(fcnNames,'Logsheet'));
-    fcnNames=fcnNames(~ismember(fcnNames,'Logsheet'));    
-end
+% if ismember('Logsheet',fcnNames)
+%     disp('To import data from the logsheet, please go to the "Import" tab. This will not run now.');
+%     nodeNums=nodeNums(~ismember(fcnNames,'Logsheet'));
+%     fcnNames=fcnNames(~ismember(fcnNames,'Logsheet'));    
+% end
 
 nodeRows=ismember(Digraph.Nodes.NodeNumber,nodeNums);
 coords=Digraph.Nodes.Coordinates(nodeRows,2);
 specifyTrialsNames=Digraph.Nodes.SpecifyTrials(nodeRows);
 isImportFcns=Digraph.Nodes.IsImport(nodeRows);
-assert(~any(diff(coords))==0 || length(coords)==1); % Check that no nodes have the same Y coordinate
+% assert(~any(diff(coords))==0 || length(coords)==1); % Check that no nodes have the same Y coordinate
 [~,idx]=sort(coords,'descend'); % Sorted from highest to lowest
 
 % fcnNames=Digraph.Nodes.FunctionNames(idx);
@@ -52,7 +65,7 @@ isImportFcns=isImportFcns(idx);
 
 emptySpecTrialsIdx=cellfun(@isempty,specifyTrialsNames);
 if any(emptySpecTrialsIdx)
-    disp('Missing specify trials in the following functions:');
+    disp('Missing specify trials in the following functions: ');
     return;
 end
 
@@ -63,8 +76,11 @@ elseif ispc==1
     slash='\';
 end
 
-splitName=handles.Process.splitsUITree.SelectedNodes.Text;
-splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
+splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(splitText,' ');
+splitName=splitText(1:spaceIdx-1);
+splitCode=splitText(spaceIdx+2:end-1);
+% splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
 
 setappdata(fig,'splitName',splitName);
 setappdata(fig,'splitCode',splitCode);

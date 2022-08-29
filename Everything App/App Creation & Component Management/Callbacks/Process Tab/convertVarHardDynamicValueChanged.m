@@ -12,7 +12,9 @@ if isempty(handles.Process.splitsUITree.SelectedNodes)
     return;
 end
 
-if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
+if isempty(handles.Process.fcnArgsUITree.SelectedNodes) || ...
+        isequal(class(handles.Process.fcnArgsUITree.SelectedNodes.Parent),'matlab.ui.container.CheckBoxTree') || ...
+        ~ismember(handles.Process.fcnArgsUITree.SelectedNodes.Parent.Text,{'Inputs','Outputs'})
     beep;
     disp('Need to have an argument selected in the function args pane!');
     handles.Process.convertVarHardDynamicButton.Value=~handles.Process.convertVarHardDynamicButton.Value;

@@ -48,7 +48,7 @@ end
 % Get the index in the inputVariableNames of the current split. For
 % that, need split code corresponding to the current split name
 if isempty(handles.Process.splitsUITree.SelectedNodes)
-    handles.Process.splitsUITree.SelectedNodes=handles.Process.splitsUITree.Children;
+    handles.Process.splitsUITree.SelectedNodes=handles.Process.splitsUITree.Children(1);
 end
 text=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(text,' ');
@@ -107,6 +107,7 @@ if getappdata(fig,'doHighlight')==1
 end
 
 % Fill in the functions UI tree
+nodesData=nodesData(nodesData~=1);
 for i=1:length(nodeRowsNums) % Each function    
 
 %     inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodesData(i)); % All inedges for the current function

@@ -36,15 +36,24 @@ for i=4:nArgs+3
 end
 
 splitCode=getappdata(fig,'splitCode');
+splitName=getappdata(fig,'splitName');
 
 load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
 
 nodeRow=getappdata(fig,'nodeRow');
-varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}; 
+varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]); 
 currVarsIdx=ismember(varNamesInCode,argNames); % Get the idx of the output var names being output currently
-guiVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}(currVarsIdx); % The names of the variables as seen in the GUI
+guiVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode])(currVarsIdx); % The names of the variables as seen in the GUI
+for i=1:length(guiVarNames)
+    guiVarNames{i}=guiVarNames{i}(1:end-6);
+end
 varNamesIdx=ismember(VariableNamesList.GUINames,guiVarNames); % The idx in the VariableNamesList of the current variables
 saveNames=VariableNamesList.SaveNames(varNamesIdx);
+
+if sum(varNamesIdx)>nArgs
+    disp('Too many output variables!');
+    return;
+end
 
 for i=1:length(saveNames)
     saveNames{i}=[saveNames{i} '_' splitCode];

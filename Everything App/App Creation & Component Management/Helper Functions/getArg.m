@@ -54,21 +54,31 @@ load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
 fileVarNames=whos('-file',matFilePath);
 fileVarNames={fileVarNames.name};
 
-currVarsIdx=ismember(Digraph.Nodes.InputVariableNamesInCode{nodeRow},inputNamesinCode); % The idx of the variables currently being accessed
-inputVarNamesInGUI=Digraph.Nodes.InputVariableNames{nodeRow}(currVarsIdx); % The GUI names of the variables currently being accessed.
+splitName=getappdata(fig,'splitName');
+splitCode=getappdata(fig,'splitCode');
+
+currVarsIdx=ismember(Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]),inputNamesinCode); % The idx of the variables currently being accessed
+inputVarNamesInGUI=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode])(currVarsIdx); % The GUI names of the variables currently being accessed.
+for i=1:length(inputVarNamesInGUI)
+    inputVarNamesInGUI{i}=inputVarNamesInGUI{i}(1:end-6); % Remove the split code
+end
 varRows=ismember(VariableNamesList.GUINames,inputVarNamesInGUI); % The rows in the VariableNamesList matrix of the variables currently being accessed
 
 hardCodedIdx=cellfun(@isequal,VariableNamesList.IsHardCoded,repmat({1},length(VariableNamesList.IsHardCoded),1)) & varRows==1; % The indices in the VariableNamesList matrix of the variables currently being accessed
 hardCodedVarNamesInGUI=VariableNamesList.GUINames(hardCodedIdx); % The names of the hard-coded variables currently being accessed.
-hardCodedVarNamesIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow},hardCodedVarNamesInGUI); % The idx of the Digraph fcn input variables currently being accessed
-hardCodedNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(hardCodedVarNamesIdx); % The names in code of the hard-coded variables being accessed
+allInputVarNamesInGUI=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode]);
+for i=1:length(allInputVarNamesInGUI)
+    allInputVarNamesInGUI{i}=allInputVarNamesInGUI{i}(1:end-6);
+end
+hardCodedVarNamesIdx=ismember(allInputVarNamesInGUI,hardCodedVarNamesInGUI); % The idx of the Digraph fcn input variables currently being accessed
+hardCodedNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])(hardCodedVarNamesIdx); % The names in code of the hard-coded variables being accessed
 hardCodedInputIdx=ismember(inputNamesinCode,hardCodedNamesInCode); % The idx of the variables (in the inputNamesinCode) that are hard-coded
 hardCodedSaveNames=VariableNamesList.SaveNames(hardCodedIdx); % The save name of the hard-coded variable. This is how the .m file was named.
 
 dynamicIdx=cellfun(@isequal,VariableNamesList.IsHardCoded,repmat({0},length(VariableNamesList.IsHardCoded),1)) & varRows==1;
 dynamicVarNamesInGUI=VariableNamesList.GUINames(dynamicIdx);
-dynamicVarNamesIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow},dynamicVarNamesInGUI);
-dynamicNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(dynamicVarNamesIdx);
+dynamicVarNamesIdx=ismember(allInputVarNamesInGUI,dynamicVarNamesInGUI);
+dynamicNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])(dynamicVarNamesIdx);
 dynamicInputIdx=ismember(inputNamesinCode,dynamicNamesInCode);
 dynamicSaveNames=VariableNamesList.SaveNames(dynamicIdx);
 
@@ -77,13 +87,17 @@ hardCodedInputIdxNums=find(hardCodedInputIdx==1);
 folderName=[getappdata(fig,'codePath') 'Hard-Coded Variables'];
 oldPath=cd(folderName);
 % splitName=handles.Process.splitsUITree.SelectedNodes.Text;
-splitCode=getappdata(fig,'splitCode');
+% splitCode=getappdata(fig,'splitCode');
 % splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
 varargout=cell(length(inputNamesinCode),1);
+hardCodedVarNamesIdxNums=find(hardCodedVarNamesIdx==1);
 for i=1:length(hardCodedSaveNames)
 
     % Get .m full file path and ensure that it exists
     idx=hardCodedInputIdxNums(i);    
+    varText=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode]){hardCodedVarNamesIdxNums(i)};
+    spaceIdx=strfind(varText,' ');
+    splitCode=varText(spaceIdx+2:end-1);
     varargout{idx}=feval([hardCodedSaveNames{i} '_' splitCode]);
 
 end
@@ -94,7 +108,11 @@ if isempty(dynamicSaveNames)
 end
 
 % Append the split code onto the variable name to load from the file
+dynamicVarNamesIdxNums=find(dynamicVarNamesIdx==1);
 for i=1:length(dynamicSaveNames)
+    varText=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode]){dynamicVarNamesIdxNums(i)};
+    spaceIdx=strfind(varText,' ');
+    splitCode=varText(spaceIdx+2:end-1);
     dynamicSaveNames{i}=[dynamicSaveNames{i} '_' splitCode];
 end
 

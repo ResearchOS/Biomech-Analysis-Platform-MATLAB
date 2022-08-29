@@ -145,10 +145,10 @@ else
     rowNum=1;
 end
 
-selSplit=handles.Process.splitsUITree.SelectedNodes.Text;
-spaceIdx=strfind(selSplit,' ');
-splitName=selSplit(1:spaceIdx-1);
-splitCode=selSplit(spaceIdx+2:end-1);
+selSplitText=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(selSplitText,' ');
+splitName=selSplitText(1:spaceIdx-1);
+splitCode=selSplitText(spaceIdx+2:end-1);
 
 if exist('VariableNamesList','var')~=1 || ~isfield(VariableNamesList,'SplitCodes') || length(VariableNamesList.SplitCodes)<rowNum
     VariableNamesList.SplitCodes{rowNum}={splitCode};
@@ -172,7 +172,14 @@ if isHC==1
         mkdir(folderName);
     end
 %     splitName=handles.Process.splitsUITree.SelectedNodes.Text;
-    splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
+
+    selSplit=getSplitsOrder(handles.Process.splitsUITree.SelectedNodes,handles.Process.splitsUITree.Tag);
+    structPath='NonFcnSettingsStruct.Process.Splits';    
+    for i=1:length(selSplit)
+        structPath=[structPath '.SubSplitNames.' selSplit{i} ''];
+    end
+    splitCode=eval([structPath '.Code']);
+%     splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
     fileName=[folderName slash defaultName '_' splitCode '.m'];
     
     templatePath=[getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'Project-Independent Templates' slash 'hardCodedVar_Template.m'];

@@ -25,8 +25,14 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
 load(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct');
 
-splitName=handles.Process.splitsUITree.SelectedNodes.Text;
-splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
+% splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+splitsList=getSplitsOrder(handles.Process.splitsUITree.SelectedNodes,handles.Process.splitsUITree.Tag);
+splitsListIn=splitsList(1:end-1);
+splitName=splitsList{end};
+% spaceIdx=strfind(splitText,' ');
+% splitName=splitText(1:spaceIdx-1);
+splitCode=genSplitCode(projectSettingsMATPath,splitsListIn,splitName);
+% splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
 
 if ispc==1
     slash='\';
@@ -37,7 +43,10 @@ end
 folderName=[getappdata(fig,'codePath') 'Hard-Coded Variables'];
 
 % Get the name in the GUI of the currently selected variable.
-varName=handles.Process.fcnArgsUITree.SelectedNodes.Text;
+varText=handles.Process.fcnArgsUITree.SelectedNodes.Text;
+spaceIdx=strfind(varText,' ');
+varName=varText(1:spaceIdx-1);
+
 varRow=ismember(VariableNamesList.GUINames,varName);
 saveName=VariableNamesList.SaveNames{varRow};
 

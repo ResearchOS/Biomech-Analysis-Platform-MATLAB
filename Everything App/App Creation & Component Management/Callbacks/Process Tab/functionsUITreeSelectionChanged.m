@@ -83,7 +83,7 @@ if isprop(b,'Text') && ismember(b.Text,{'Inputs','Outputs'}) % Ensure that this 
         varIdx=ismember(varsInSplit,VariableNamesList.GUINames{varRow});
         namesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]);
         handles.Process.argNameInCodeField.Value=namesInCode{varIdx};
-    end
+    end    
 else
     handles.Process.argNameInCodeField.Value='';
     handles.Process.argDescriptionTextArea.Value={''};

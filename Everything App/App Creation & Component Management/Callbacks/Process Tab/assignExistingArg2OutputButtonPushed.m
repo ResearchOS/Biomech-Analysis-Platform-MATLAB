@@ -26,7 +26,7 @@ if isequal(class(handles.Process.varsListbox.SelectedNodes.Parent),'matlab.ui.co
     return;
 end
 
-splitText=handles.Process.varsListbox.SelectedNodes.Text;
+splitText=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(splitText,' ');
 fcnSplitName=splitText(1:spaceIdx-1);
 fcnSplitCode=splitText(spaceIdx+2:end-1);
@@ -68,8 +68,7 @@ namesInCode=VariableNamesList.SaveNames{varRow};
 currName=varNameInGUI;
 nameInCode=namesInCode;
 
-outVarNames=Digraph.Nodes.OutputVariableNames{nodeRow};
-outVarNames=outVarNames.([fcnSplitName '_' fcnSplitCode]);
+outVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
 outVarNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
 
 if ismember(currName,outVarNames)
@@ -95,8 +94,10 @@ b=findobj(a,'Text','Outputs');
 newNode=uitreenode(b,'Text',currName);
 
 handles.Process.fcnArgsUITree.SelectedNodes=newNode;
-handles.Process.argNameInCodeField.Value=nameInCode;
+% handles.Process.argNameInCodeField.Value=nameInCode;
 
 expand(b);
 
 save(projectSettingsMATPath,'Digraph','-append');
+
+functionsUITreeSelectionChanged(fig);

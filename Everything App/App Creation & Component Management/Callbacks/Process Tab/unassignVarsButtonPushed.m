@@ -44,13 +44,13 @@ splitCode=text(spaceIdx+2:end-1); % Currently selected split.
 
 if ismember({'Inputs'},b.Text)
     varIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode]),varName);
-    Digraph.Nodes.InputVariableNames{nodeRow}=Digraph.Nodes.InputVariableNames{nodeRow}(~varIdx);
-    Digraph.Nodes.InputVariableNamesInCode{nodeRow}=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(~varIdx);
+    Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode])=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode])(~varIdx);
+    Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])=Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])(~varIdx);
     b=findobj(a,'Text','Inputs');
 elseif ismember('Outputs',b.Text)
-    varIdx=ismember(Digraph.Nodes.OutputVariableNames{nodeRow},varName);
-    Digraph.Nodes.OutputVariableNames{nodeRow}=Digraph.Nodes.OutputVariableNames{nodeRow}(~varIdx);
-    Digraph.Nodes.OutputVariableNamesInCode{nodeRow}=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}(~varIdx);
+    varIdx=ismember(Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode]),varName);
+    Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode])=Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode])(~varIdx);
+    Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])(~varIdx);
     b=findobj(a,'Text','Outputs');
 end
 
@@ -58,9 +58,10 @@ c=findobj(b,'Text',varName);
 delete(c);
 
 handles.Process.fcnArgsUITree.SelectedNodes=a;
-handles.Process.argDescriptionTextArea.Value={''};
-handles.Process.convertVarHardDynamicButton.Value=0;
-handles.Process.argNameInCodeField.Value='';
+functionsUITreeSelectionChanged(fig);
+% handles.Process.argDescriptionTextArea.Value={''};
+% handles.Process.convertVarHardDynamicButton.Value=0;
+% handles.Process.argNameInCodeField.Value='';
 
 % highlightedFcnsChanged(fig,Digraph,nodeNum);
 

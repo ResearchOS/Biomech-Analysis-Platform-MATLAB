@@ -68,9 +68,12 @@ namesInCode=VariableNamesList.SaveNames{varRow}; % The default name in code
 currName=varNameInGUI;
 nameInCode=namesInCode;
 
-inVarNames=Digraph.Nodes.InputVariableNames{nodeRow};
-inVarNames=inVarNames.([fcnSplitName '_' fcnSplitCode]);
+inVarNames=Digraph.Nodes.InputVariableNames{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
 inVarNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
+
+if ~isempty(inVarNames)
+    assert(length(inVarNames)==length(unique(inVarNames)));
+end
 
 if ismember(currName,inVarNames)
     disp(['No Args Added. Variable ''' currName ''' Already in Function ''' Digraph.Nodes.FunctionNames{nodeRow} '''']);
@@ -95,8 +98,10 @@ b=findobj(a,'Text','Inputs');
 newNode=uitreenode(b,'Text',currName);
 
 handles.Process.fcnArgsUITree.SelectedNodes=newNode;
-handles.Process.argNameInCodeField.Value=nameInCode;
 
 expand(b);
 
 save(projectSettingsMATPath,'Digraph','-append');
+
+functionsUITreeSelectionChanged(fig);
+% handles.Process.argNameInCodeField.Value=nameInCode;

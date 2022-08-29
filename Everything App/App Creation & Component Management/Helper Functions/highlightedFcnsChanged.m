@@ -38,7 +38,8 @@ for i=1:length(nodeRowsNums)
     end
 
     if ~(isfield(Digraph.Nodes.InputVariableNames{nodeRowsNums(i)},[splitName '_' splitCode]) || isfield(Digraph.Nodes.OutputVariableNames{nodeRowsNums(i)},[splitName '_' splitCode]))
-        disp(['All selected functions need to be connected to the selected split!']);
+        disp(['Function ' Digraph.Nodes.FunctionNames{nodeRowsNums(i)} ' Not Connected to Split ' splitName ' (' splitCode ')']);
+%         disp(['All selected functions need to be connected to the selected split!']);
         beep;
         delete(handles.Process.fcnArgsUITree.Children);
         delete(handles.Process.mapFigure.Children);

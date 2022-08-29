@@ -36,8 +36,12 @@ currPoint=currPoint(1,1:2);
 
 connectNodesCoords(rowNum,1:2)=currPoint;
 
-if all(isnan(getappdata(fig,'connectNodesCoords')),'all') && currPoint(1)<xlims(1) || currPoint(1)>xlims(2) || currPoint(2)<ylims(1) || currPoint(2)>ylims(2)
-    disp('Clicked outside of the axes');
+if currPoint(1)<xlims(1) || currPoint(1)>xlims(2) || currPoint(2)<ylims(1) || currPoint(2)>ylims(2)
+    setappdata(fig,'connectNodesCoords',NaN(2,2));
+    setappdata(fig,'doNothingOnButtonUp',0); % Allows functions to be highlighted as normal.
+    set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
+    'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
+%     disp('Clicked outside of the axes');
     return; % Clicked outside of the axes
 end
 
@@ -159,6 +163,6 @@ h.EdgeColor=Digraph.Edges.Color;
 
 save(projectSettingsMATPath,'Digraph','-append');
 
-setappdata(fig,'doNothingOnButtonUp',1);
+setappdata(fig,'doNothingOnButtonUp',0);
 set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
     'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));

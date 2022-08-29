@@ -166,16 +166,16 @@ delete(handles.Process.splitsUITree.Children);
 getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
 
 if ~isempty(Digraph.Edges)
-    load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist');
-    edgeColorsIdx=NaN(size(Digraph.Edges.Color,1),1);
-    for i=1:size(Digraph.Edges.Color,1)
-        edgeColorsIdx(i)=find(ismember(round(rgblist,3),round(Digraph.Edges.Color(i,:),3),'rows')==1);
-    end
+%     load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist');
+%     edgeColorsIdx=NaN(size(Digraph.Edges.Color,1),1);
+%     for i=1:size(Digraph.Edges.Color,1)
+%         edgeColorsIdx(i)=find(ismember(round(rgblist,3),round(Digraph.Edges.Color(i,:),3),'rows')==1);
+%     end
+% 
+%     colormap(handles.Process.mapFigure,rgblist);
 
-    colormap(handles.Process.mapFigure,rgblist);
-
-    plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],...
-        'EdgeCData',edgeColorsIdx);
+    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410]);
+    h.EdgeColor=Digraph.Edges.Color;
 else
     plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410]);
 end

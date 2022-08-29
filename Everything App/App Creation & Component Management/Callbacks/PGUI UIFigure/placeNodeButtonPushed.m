@@ -71,7 +71,8 @@ Digraph.Nodes.IsImport(end)=false;
 
 delete(handles.Process.mapFigure.Children);
 set(handles.Process.mapFigure,'ColorOrderIndex',1);
-plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
+h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
+h.EdgeColor=Digraph.Edges.Color;
 
 save(projectSettingsMATPath,'Digraph','-append');
 

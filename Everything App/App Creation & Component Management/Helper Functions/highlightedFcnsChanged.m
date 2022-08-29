@@ -1,4 +1,4 @@
-function []=highlightedFcnsChanged(src,Digraph,selNodeNum)
+function []=highlightedFcnsChanged(src,Digraph)
 
 %% PURPOSE: MODIFY THE GUI WITH THE CURRENTLY SELECTED FUNCTIONS' VARIABLES IN fcnArgsUITree
 % Inputs:
@@ -16,6 +16,32 @@ selNodeIDs=getappdata(fig,'selectedNodeNumbers'); % From the figure
 nodeRows=ismember(Digraph.Nodes.NodeNumber,selNodeIDs);
 nodesData=Digraph.Nodes.NodeNumber(nodeRows);
 nodeRowsNums=find(nodeRows==1);
+nodeRowsNums=nodeRowsNums(nodeRowsNums~=1);
+
+% Visually highlight all selected nodes
+plotH=handles.Process.mapFigure.Children;
+nodeSizes=plotH.MarkerSize;
+if isequal(size(nodeSizes),[1 1])
+    nodeSizes=repmat(nodeSizes,length(nodeRowsNums),1);
+end
+
+nodeSizes(nodeRowsNums)=8;
+if ~isempty(nodeRowsNums)
+    plotH.MarkerSize=nodeSizes;
+else
+    plotH.MarkerSize=4;
+end
+
+nodeColors=plotH.NodeColor;
+if isequal(size(nodeColors,1),1)
+    nodeColors=repmat(nodeColors,length(nodeRowsNums),1);
+end
+nodeColors(nodeRowsNums,:)=repmat([0 0 0],length(nodeRowsNums),1);
+if ~isempty(nodeRowsNums)
+    plotH.NodeColor=nodeColors;
+else
+    plotH.NodeColor=[0 0.447 0.741];
+end
 
 % Get the index in the inputVariableNames of the current split. For
 % that, need split code corresponding to the current split name
@@ -33,12 +59,12 @@ for i=1:length(nodeRowsNums)
     inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodesData(i)); % All inedges for the current function
     if isempty(inEdgesRows)
         beep;
-        disp('Need to connect this function to another before selecting it.')
+        disp('Need to connect this function to another before selecting it.');
         return;
     end
 
     if ~(isfield(Digraph.Nodes.InputVariableNames{nodeRowsNums(i)},[splitName '_' splitCode]) || isfield(Digraph.Nodes.OutputVariableNames{nodeRowsNums(i)},[splitName '_' splitCode]))
-        disp(['Function ' Digraph.Nodes.FunctionNames{nodeRowsNums(i)} ' Not Connected to Split ' splitName ' (' splitCode ')']);
+        disp(['Function ' Digraph.Nodes.FunctionNames{nodeRowsNums(i)} ' Not Connected to Split ' splitName ' (' splitCode ')']);        
 %         disp(['All selected functions need to be connected to the selected split!']);
         beep;
         delete(handles.Process.fcnArgsUITree.Children);

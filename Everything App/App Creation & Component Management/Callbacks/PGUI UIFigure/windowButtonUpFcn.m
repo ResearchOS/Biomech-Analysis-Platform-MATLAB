@@ -108,20 +108,4 @@ for i=1:length(nodeRowsNums)
 
 end
 
-% Visually highlight all selected nodes
-nodeSizes=h.MarkerSize;
-if isequal(size(nodeSizes),[1 1])
-    nodeSizes=repmat(nodeSizes,length(nodeRows),1);
-end
-
-nodeSizes(nodeRows)=8;
-h.MarkerSize=nodeSizes;
-
-nodeColors=h.NodeColor;
-if isequal(size(nodeColors,1),1)
-    nodeColors=repmat(nodeColors,length(nodeRows),1);
-end
-nodeColors(nodeRows,:)=repmat([0 0 0],sum(nodeRows),1);
-h.NodeColor=nodeColors;
-
 highlightedFcnsChanged(fig,Digraph); % Update the rest of the Process tab with the selections of the current functions

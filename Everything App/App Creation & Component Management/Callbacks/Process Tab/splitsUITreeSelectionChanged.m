@@ -8,4 +8,6 @@ fig=ancestor(src,'figure','toplevel');
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph');
 
+setappdata(fig,'doHighlight',1);
 highlightedFcnsChanged(fig,Digraph);
+setappdata(fig,'doHighlight',0);

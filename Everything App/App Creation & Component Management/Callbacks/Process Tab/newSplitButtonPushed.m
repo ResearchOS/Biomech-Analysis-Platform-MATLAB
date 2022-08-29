@@ -110,7 +110,7 @@ end
 
 eval([structPath '.SubSplitNames.' name '.Color=[' num2str(splitColor(1)) ' ' num2str(splitColor(2)) ' ' num2str(splitColor(3)) '];']);
 eval([structPath '.SubSplitNames.' name '.Code=''' splitCode ''';']);
-eval([structPath '.SubSplitnames.' name '.Name=''' name ''';']);
+eval([structPath '.SubSplitNames.' name '.Name=''' name ''';']);
 
 splits=NonFcnSettingsStruct.Process.Splits;
 

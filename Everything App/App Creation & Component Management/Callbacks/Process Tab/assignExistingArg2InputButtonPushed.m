@@ -26,7 +26,7 @@ if isequal(class(handles.Process.varsListbox.SelectedNodes.Parent),'matlab.ui.co
     return;
 end
 
-splitText=handles.Process.varsListbox.SelectedNodes.Text;
+splitText=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(splitText,' ');
 fcnSplitName=splitText(1:spaceIdx-1);
 fcnSplitCode=splitText(spaceIdx+2:end-1);

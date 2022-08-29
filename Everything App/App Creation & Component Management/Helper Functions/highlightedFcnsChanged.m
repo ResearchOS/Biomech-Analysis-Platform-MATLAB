@@ -16,16 +16,17 @@ selNodeIDs=getappdata(fig,'selectedNodeNumbers'); % From the figure
 nodeRows=ismember(Digraph.Nodes.NodeNumber,selNodeIDs);
 nodesData=Digraph.Nodes.NodeNumber(nodeRows);
 nodeRowsNums=find(nodeRows==1);
-nodeRowsNums=nodeRowsNums(nodeRowsNums~=1);
+% nodeRowsNums=nodeRowsNums(nodeRowsNums~=1);
 
 % Visually highlight all selected nodes
 plotH=handles.Process.mapFigure.Children;
 nodeSizes=plotH.MarkerSize;
 if isequal(size(nodeSizes),[1 1])
-    nodeSizes=repmat(nodeSizes,length(nodeRowsNums),1);
+    nodeSizes=repmat(nodeSizes,length(nodeRows),1);
 end
 
 nodeSizes(nodeRowsNums)=8;
+nodeSizes(1)=4;
 if ~isempty(nodeRowsNums)
     plotH.MarkerSize=nodeSizes;
 else
@@ -34,9 +35,10 @@ end
 
 nodeColors=plotH.NodeColor;
 if isequal(size(nodeColors,1),1)
-    nodeColors=repmat(nodeColors,length(nodeRowsNums),1);
+    nodeColors=repmat(nodeColors,length(nodeRows),1);
 end
 nodeColors(nodeRowsNums,:)=repmat([0 0 0],length(nodeRowsNums),1);
+nodeColors(1,:)=[0 0.447 0.741];
 if ~isempty(nodeRowsNums)
     plotH.NodeColor=nodeColors;
 else
@@ -69,7 +71,7 @@ for i=1:length(nodeRowsNums)
         beep;
         delete(handles.Process.fcnArgsUITree.Children);
         delete(handles.Process.mapFigure.Children);
-        h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741]);
+        h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
         if ~isempty(Digraph.Edges)
             h.EdgeColor=Digraph.Edges.Color;
         end

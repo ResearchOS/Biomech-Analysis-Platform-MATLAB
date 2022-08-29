@@ -14,7 +14,7 @@ end
 
 if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     beep;
-    disp('Need to have an argument selected!');
+    disp('Need to have an argument selected in the function args pane!');
     handles.Process.convertVarHardDynamicButton.Value=~handles.Process.convertVarHardDynamicButton.Value;
     return;
 end
@@ -23,7 +23,7 @@ isHC=handles.Process.convertVarHardDynamicButton.Value;
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-load(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct');
+load(projectSettingsMATPath,'VariableNamesList');
 
 % splitText=handles.Process.splitsUITree.SelectedNodes.Text;
 splitsList=getSplitsOrder(handles.Process.splitsUITree.SelectedNodes,handles.Process.splitsUITree.Tag);

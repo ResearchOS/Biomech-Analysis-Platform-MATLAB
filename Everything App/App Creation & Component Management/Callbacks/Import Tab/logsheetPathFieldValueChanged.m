@@ -174,10 +174,10 @@ if ~isempty(Digraph.Edges)
 % 
 %     colormap(handles.Process.mapFigure,rgblist);
 
-    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410]);
+    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
     h.EdgeColor=Digraph.Edges.Color;
 else
-    plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410]);
+    plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
 end
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.

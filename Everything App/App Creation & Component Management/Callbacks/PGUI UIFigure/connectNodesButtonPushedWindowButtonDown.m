@@ -89,6 +89,7 @@ end
 
 splitText=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(splitText,' ');
+splitName=splitText(1:spaceIdx-1);
 splitCode=splitText(spaceIdx+2:end-1);
 
 if isempty(Digraph.Edges)    
@@ -123,21 +124,33 @@ Digraph.Edges.SplitCode{currEdgeIdx}=splitCode;
 
 % Add the new split to Digraph.Nodes.InputVariableNames &
 % Digraph.Nodes.OutputVariableNames
-Digraph.Nodes.InputVariableNames{idx2}='';
-Digraph.Nodes.InputVariableNamesInCode{idx2}='';
-
-Digraph.Nodes.OutputVariableNames{idx1}='';
-Digraph.Nodes.OutputVariableNames{idx1}='';
-
-load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist','colorlist');
-% [~,sortColorsIdx]=sort(colorlist);
-% rgblist=rgblist(sortColorsIdx,:); % Sorted alphabetically
-edgeColorsIdx=NaN(size(Digraph.Edges.Color,1),1);
-for i=1:size(Digraph.Edges.Color,1)
-    edgeColorsIdx(i)=find(ismember(round(rgblist,3),round(Digraph.Edges.Color(i,:),3),'rows')==1);
+if isempty(Digraph.Nodes.InputVariableNames{idx2}) % First connection to this node.
+    Digraph.Nodes.InputVariableNames{idx2}=struct([splitName '_' splitCode],'');
+    Digraph.Nodes.InputVariableNamesInCode{idx2}=struct([splitName '_' splitCode],'');
+else % Create more fields for input vars for each new split.
+    varNames=Digraph.Nodes.InputVariableNames{idx2};
+    varNamesInCode=Digraph.Nodes.InputVariableNamesInCode{idx2};
+    if ~isfield(varNames,[splitName '_' splitCode])
+        varNames.([splitName '_' splitCode])='';
+        varNamesInCode.([splitName '_' splitCode])='';
+        Digraph.Nodes.InputVariableNames{idx2}=varNames;
+        Digraph.Nodes.InputVariableNamesInCode{idx2}=varNamesInCode;
+    end
 end
 
-colormap(handles.Process.mapFigure,rgblist);
+if isempty(Digraph.Nodes.OutputVariableNames{idx2})
+    Digraph.Nodes.OutputVariableNames{idx2}=struct([splitName '_' splitCode],'');
+    Digraph.Nodes.OutputVariableNamesInCode{idx2}=struct([splitName '_' splitCode],'');
+else
+    varNames=Digraph.Nodes.OutputVariableNames{idx2};
+    varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{idx2};
+    if ~isfield(varNames,[splitName '_' splitCode])
+        varNames.([splitName '_' splitCode])='';
+        varNamesInCode.([splitName '_' splitCode])='';
+        Digraph.Nodes.OutputVariableNames{idx2}=varNames;
+        Digraph.Nodes.OutputVariableNamesInCode{idx2}=varNamesInCode;
+    end
+end
 
 %% Plot the new connection
 delete(handles.Process.mapFigure.Children);

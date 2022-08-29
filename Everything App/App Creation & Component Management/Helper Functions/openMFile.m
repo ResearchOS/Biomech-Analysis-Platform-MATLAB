@@ -22,7 +22,7 @@ if isIn==0
     varName=handles.Process.fcnArgsUITree.SelectedNodes.Text;
     splitName=handles.Process.splitsUITree.SelectedNodes.Text;
     load(getappdata(fig,'projectSettingsMATPath'),'NonFcnSettingsStruct');
-    splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
+    splitCode=NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName).Code;
     isHC=handles.Process.convertVarHardDynamicButton.Value;
     fileName=[getappdata(fig,'codePath') 'Hard-Coded Variables' slash varName '_' splitCode '.m'];
     if isHC==1 && exist(fileName,'file')==2

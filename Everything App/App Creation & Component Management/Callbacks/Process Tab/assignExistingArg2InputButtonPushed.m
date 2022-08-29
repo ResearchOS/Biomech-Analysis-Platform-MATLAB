@@ -20,11 +20,22 @@ if isequal(handles.Process.fcnArgsUITree.SelectedNodes.Text,'Logsheet')
     return;
 end
 
-text=handles.Process.varsListbox.SelectedNodes;
-spaceIdx=strfind(text,' ');
-splitName=text(1:spaceIdx-1);
-splitCode=text(spaceIdx+2:end-1);
+if isequal(class(handles.Process.varsListbox.SelectedNodes.Parent),'matlab.ui.container.Tree')
+    beep;
+    disp('Must select a specific split from this variable!');
+    return;
+end
+
+splitText=handles.Process.varsListbox.SelectedNodes.Text;
+spaceIdx=strfind(splitText,' ');
+fcnSplitName=splitText(1:spaceIdx-1);
+fcnSplitCode=splitText(spaceIdx+2:end-1);
+
 varNameInGUI=handles.Process.varsListbox.SelectedNodes.Parent.Text;
+varText=handles.Process.varsListbox.SelectedNodes.Text;
+varSpaceIdx=strfind(varText,' ');
+varSplitName=varText(1:varSpaceIdx-1);
+varSplitCode=varText(varSpaceIdx+2:end-1);
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 varNames=whos('-file',projectSettingsMATPath);
@@ -57,18 +68,27 @@ namesInCode=VariableNamesList.SaveNames{varRow}; % The default name in code
 currName=varNameInGUI;
 nameInCode=namesInCode;
 
-if ismember(currName,Digraph.Nodes.InputVariableNames{nodeRow})
+inVarNames=Digraph.Nodes.InputVariableNames{nodeRow};
+inVarNames=inVarNames.([fcnSplitName '_' fcnSplitCode]);
+inVarNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
+
+if ismember(currName,inVarNames)
     disp(['No Args Added. Variable ''' currName ''' Already in Function ''' Digraph.Nodes.FunctionNames{nodeRow} '''']);
     return;
 end
 
-Digraph.Nodes.InputVariableNames{nodeRow}=[Digraph.Nodes.InputVariableNames{nodeRow}; currName];
-Digraph.Nodes.InputVariableNamesInCode{nodeRow}=[Digraph.Nodes.InputVariableNamesInCode{nodeRow}; nameInCode];
+currName=[currName ' (' varSplitCode ')']; % Append the code for the split that the variable is coming from.
 
-emptyIdx=cellfun(@isempty,Digraph.Nodes.InputVariableNames{nodeRow});
+if isempty(inVarNames)
+    inVarNames={currName};
+    inVarNamesInCode={nameInCode};
+else
+    inVarNames=[inVarNames; {currName}];
+    inVarNamesInCode=[inVarNamesInCode; {nameInCode}];
+end
 
-Digraph.Nodes.InputVariableNames{nodeRow}=Digraph.Nodes.InputVariableNames{nodeRow}(~emptyIdx);
-Digraph.Nodes.InputVariableNamesInCode{nodeRow}=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(~emptyIdx);
+Digraph.Nodes.InputVariableNames{nodeRow}.([fcnSplitName '_' fcnSplitCode])=inVarNames;
+Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([fcnSplitName '_' fcnSplitCode])=inVarNamesInCode;
 
 b=findobj(a,'Text','Inputs');
 
@@ -76,8 +96,6 @@ newNode=uitreenode(b,'Text',currName);
 
 handles.Process.fcnArgsUITree.SelectedNodes=newNode;
 handles.Process.argNameInCodeField.Value=nameInCode;
-
-%     highlightedFcnsChanged(fig,Digraph,nodeNum);
 
 expand(b);
 

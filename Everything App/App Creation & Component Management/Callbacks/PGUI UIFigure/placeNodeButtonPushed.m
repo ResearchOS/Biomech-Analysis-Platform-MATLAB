@@ -59,20 +59,22 @@ setappdata(fig,'placeFcnName','');
 Digraph.Nodes.FunctionNames{end}=fcnName;
 Digraph.Nodes.Descriptions{end}={''};
 Digraph.Nodes.Coordinates(end,:)=newNodeCoord;
-Digraph.Nodes.InputVariableNames{end}={''};
-Digraph.Nodes.OutputVariableNames{end}={''};
+Digraph.Nodes.InputVariableNames{end}='';
+Digraph.Nodes.OutputVariableNames{end}='';
 % Digraph.Nodes.SplitCodes{end}={splitCode};
 Digraph.Nodes.SpecifyTrials{end}='';
 currNodeID=max(Digraph.Nodes.NodeNumber)+1;
 Digraph.Nodes.NodeNumber(end)=currNodeID; % Helps to differentiate nodes of the same function name
-Digraph.Nodes.InputVariableNamesInCode{end}={''}; % Name in file/code
-Digraph.Nodes.OutputVariableNamesInCode{end}={''}; % Name in file/code
+Digraph.Nodes.InputVariableNamesInCode{end}=''; % Name in file/code
+Digraph.Nodes.OutputVariableNamesInCode{end}=''; % Name in file/code
 Digraph.Nodes.IsImport(end)=false;
 
 delete(handles.Process.mapFigure.Children);
 set(handles.Process.mapFigure,'ColorOrderIndex',1);
 h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames);
-h.EdgeColor=Digraph.Edges.Color;
+if ~isempty(Digraph.Edges)
+    h.EdgeColor=Digraph.Edges.Color;
+end
 
 save(projectSettingsMATPath,'Digraph','-append');
 

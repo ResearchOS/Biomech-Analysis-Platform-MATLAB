@@ -42,9 +42,17 @@ nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
 handles.Process.fcnDescriptionTextArea.Value=Digraph.Nodes.Descriptions{nodeRow};
 
+splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(splitText,' ');
+splitName=splitText(1:spaceIdx-1);
+splitCode=splitText(spaceIdx+2:end-1);
+
 b=handles.Process.fcnArgsUITree.SelectedNodes.Parent;
 if isprop(b,'Text') && ismember(b.Text,{'Inputs','Outputs'}) % Ensure that this is a variable
-    varRow=ismember(VariableNamesList.GUINames,handles.Process.fcnArgsUITree.SelectedNodes.Text);
+    text=handles.Process.fcnArgsUITree.SelectedNodes.Text;
+    spaceIdx=strfind(text,' ');
+    varName=text(1:spaceIdx-1);
+    varRow=ismember(VariableNamesList.GUINames,varName);
     handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varRow};
 
     if VariableNamesList.IsHardCoded{varRow}==1
@@ -54,14 +62,26 @@ if isprop(b,'Text') && ismember(b.Text,{'Inputs','Outputs'}) % Ensure that this 
     end
     
     if ismember('Inputs',b.Text)
-        [~,idx]=sort(upper(Digraph.Nodes.InputVariableNames{nodeRow}));
-        varIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow}(idx),VariableNamesList.GUINames{varRow});
-        namesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(idx);
+%         [~,idx]=sort(upper(Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode])));
+        varNamesAndSplits=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode]);
+        varsInSplit=cell(length(varNamesAndSplits),1);
+        for i=1:length(varNamesAndSplits)
+            spaceIdx=strfind(varNamesAndSplits{i},' ');
+            varsInSplit{i}=varNamesAndSplits{i}(1:spaceIdx-1);
+        end
+        varIdx=ismember(varsInSplit,VariableNamesList.GUINames{varRow});
+        namesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]);
         handles.Process.argNameInCodeField.Value=namesInCode{varIdx};
     elseif ismember('Outputs',b.Text)
-        [~,idx]=sort(upper(Digraph.Nodes.OutputVariableNames{nodeRow}));
-        varIdx=ismember(Digraph.Nodes.OutputVariableNames{nodeRow}(idx),VariableNamesList.GUINames{varRow});
-        namesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}(idx);
+%         [~,idx]=sort(upper(Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode])));
+        varNamesAndSplits=Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode]);
+        varsInSplit=cell(length(varNamesAndSplits),1);
+        for i=1:length(varNamesAndSplits)
+            spaceIdx=strfind(varNamesAndSplits{i},' ');
+            varsInSplit{i}=varNamesAndSplits{i}(1:spaceIdx-1);
+        end
+        varIdx=ismember(varsInSplit,VariableNamesList.GUINames{varRow});
+        namesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]);
         handles.Process.argNameInCodeField.Value=namesInCode{varIdx};
     end
 else

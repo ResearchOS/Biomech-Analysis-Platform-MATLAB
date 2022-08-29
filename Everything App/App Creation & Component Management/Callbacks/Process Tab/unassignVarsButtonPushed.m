@@ -37,8 +37,13 @@ nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
 varName=handles.Process.fcnArgsUITree.SelectedNodes.Text;
 
+text=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(text,' ');
+splitName=text(1:spaceIdx-1);
+splitCode=text(spaceIdx+2:end-1); % Currently selected split.
+
 if ismember({'Inputs'},b.Text)
-    varIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow},varName);
+    varIdx=ismember(Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode]),varName);
     Digraph.Nodes.InputVariableNames{nodeRow}=Digraph.Nodes.InputVariableNames{nodeRow}(~varIdx);
     Digraph.Nodes.InputVariableNamesInCode{nodeRow}=Digraph.Nodes.InputVariableNamesInCode{nodeRow}(~varIdx);
     b=findobj(a,'Text','Inputs');

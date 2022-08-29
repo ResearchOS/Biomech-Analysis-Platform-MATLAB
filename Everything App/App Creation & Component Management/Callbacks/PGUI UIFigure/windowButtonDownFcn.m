@@ -31,7 +31,8 @@ end
 
 isIn=0;
 if isequal(fig.SelectionType,'open')
-    openMFile(fig,currPoint,isIn);
+%     openMFile(fig,currPoint,isIn);
+    return;
 end
 
 if isIn==1

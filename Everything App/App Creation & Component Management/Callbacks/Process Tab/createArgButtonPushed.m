@@ -34,14 +34,17 @@ end
 %% Prompt for the name of the argument as shown in the GUI
 while ~nameInGUIOK
     % 1. Open a dialog box asking for the name to use for the argument
-    nameInGUI=inputdlg('Enter argument name in GUI');
+%     nameInGUI=inputdlg('Enter argument name in GUI');
+    nameInGUI=input('Enter argument name in GUI: '); % Avoids the inputdlg
 
-    if isempty(nameInGUI) || isempty(nameInGUI{1})
+    if isempty(nameInGUI) || (iscell(nameInGUI) && isempty(nameInGUI{1}))
         disp('Process cancelled, no argument added');
         return; % Operation cancelled or nothing entered.
     end
 
-    nameInGUI=nameInGUI{1};
+    if iscell(nameInGUI)
+        nameInGUI=nameInGUI{1};
+    end
 
     nameInGUI=strtrim(nameInGUI);
     nameInGUI(isspace(nameInGUI))='_'; % Replace spaces with underscores
@@ -70,15 +73,24 @@ end
 %% Prompt for the default name of the argument in the code.
 while ~defaultNameInCodeOK
     % 3. Ask for a default name in the code to use when adding a variable to a function.
-    input2=inputdlg('Enter default argument name in code (leave blank to not provide default)','Default name',[1 35],{genvarname(nameInGUI)});
+%     input2=inputdlg('Enter default argument name in code (leave blank to not provide default)','Default name',[1 35],{genvarname(nameInGUI)});
+    input2=input(['Enter default argument name in code (leave blank to use ''' genvarname(nameInGUI) ''': ']); % Avoids the inputdlg which has been SUPER buggy for me.
+    if isempty(input2)
+        input2=genvarname(nameInGUI);
+    end
+
     if isempty(input2)
         disp('Process cancelled, no argument added');
         return;
     end
-    if isempty(input2{1})
+    if iscell(input2) && isempty(input2{1})
         defaultName='';
     else
-        defaultName=input2{1};
+        if iscell(input2)
+            defaultName=input2{1};
+        else
+            defaultName=input2;
+        end
     end
 
     if ~isvarname(defaultName)

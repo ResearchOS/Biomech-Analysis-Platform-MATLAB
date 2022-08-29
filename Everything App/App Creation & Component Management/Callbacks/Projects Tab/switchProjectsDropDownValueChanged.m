@@ -42,7 +42,7 @@ end
 
 projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Get the file path of the project-specific settings MAT file
 
-if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist
+if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist    
     resetProjectAccess_Visibility(fig,1);
     setappdata(fig,'codePath','');
     codePathFieldValueChanged(fig); % Changing the code folder path changes all project-specific settings.

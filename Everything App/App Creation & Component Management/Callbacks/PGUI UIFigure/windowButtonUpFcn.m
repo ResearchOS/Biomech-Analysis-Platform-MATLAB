@@ -92,7 +92,13 @@ end
 
 % Check that all functions are connected first.
 nodeRowsNums=find(nodeRows==1);
+nodeRowsNums=nodeRowsNums(~ismember(nodeRowsNums,1));
 for i=1:length(nodeRowsNums)
+
+    if isequal(nodeRowsNums(i),1)
+%         disp('Selected logsheet node!');
+%         return;
+    end
 
     if isempty(inedges(Digraph,nodeRowsNums(i)))
         disp('Must connect functions before selecting them!');

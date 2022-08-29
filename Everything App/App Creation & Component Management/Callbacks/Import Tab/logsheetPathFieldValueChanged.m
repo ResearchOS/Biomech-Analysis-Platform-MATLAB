@@ -141,15 +141,15 @@ else
     Digraph=addnode(Digraph,1);
     Digraph.Nodes.FunctionNames={'Logsheet'};
     Digraph.Nodes.Descriptions={{''}};
-    Digraph.Nodes.InputVariableNames={{{''}}}; % Name in GUI
-    Digraph.Nodes.OutputVariableNames={{{''}}}; % Name in GUI
+    Digraph.Nodes.InputVariableNames{1}=''; % Name in GUI
+    Digraph.Nodes.OutputVariableNames{1}=''; % Name in GUI
     Digraph.Nodes.Coordinates=[0 0];  
 %     Digraph.Nodes.SplitCodes={{'001'}};
     Digraph.Nodes.NodeNumber=1;
     Digraph.Nodes.SpecifyTrials={''};
     Digraph.Nodes.IsImport=false;
-    Digraph.Nodes.InputVariableNamesInCode={{{''}}}; % Name in file/code
-    Digraph.Nodes.OutputVariableNamesInCode={{{''}}}; % Name in file/code
+    Digraph.Nodes.InputVariableNamesInCode{1}=''; % Name in file/code
+    Digraph.Nodes.OutputVariableNamesInCode{1}=''; % Name in file/code
     
     splitName={'Default'};
     splitCode='001';

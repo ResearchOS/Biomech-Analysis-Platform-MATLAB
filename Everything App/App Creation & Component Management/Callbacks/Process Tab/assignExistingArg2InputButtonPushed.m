@@ -75,12 +75,12 @@ if ~isempty(inVarNames)
     assert(length(inVarNames)==length(unique(inVarNames)));
 end
 
+currName=[currName ' (' varSplitCode ')']; % Append the code for the split that the variable is coming from.
+
 if ismember(currName,inVarNames)
     disp(['No Args Added. Variable ''' currName ''' Already in Function ''' Digraph.Nodes.FunctionNames{nodeRow} '''']);
     return;
 end
-
-currName=[currName ' (' varSplitCode ')']; % Append the code for the split that the variable is coming from.
 
 if isempty(inVarNames)
     inVarNames={currName};

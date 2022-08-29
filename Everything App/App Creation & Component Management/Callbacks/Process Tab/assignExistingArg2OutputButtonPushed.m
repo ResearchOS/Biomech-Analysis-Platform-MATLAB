@@ -71,12 +71,12 @@ nameInCode=namesInCode;
 outVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
 outVarNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
 
+currName=[currName ' (' fcnSplitCode ')']; % Append the code for the split that the variable is going to.
+
 if ismember(currName,outVarNames)
     disp(['No Args Added. Variable ''' currName ''' Already in Function ''' Digraph.Nodes.FunctionNames{nodeRow} '''']);
     return;
 end
-
-currName=[currName ' (' fcnSplitCode ')']; % Append the code for the split that the variable is going to.
 
 if isempty(outVarNames)
     outVarNames={currName};

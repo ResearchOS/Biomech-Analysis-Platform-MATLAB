@@ -95,7 +95,7 @@ catch
 end
 evalin('base','clear selSplit;');
 
-selSplit=selSplit(~ismember(selSplit,'Root (Not a Split)'));
+selSplit=selSplit(~ismember(selSplit,'Root'));
 
 splitCode=genSplitCode(projectSettingsMATPath,selSplit,name); % Need to alter genSplitCode to be recursive
 if isempty(splitCode)

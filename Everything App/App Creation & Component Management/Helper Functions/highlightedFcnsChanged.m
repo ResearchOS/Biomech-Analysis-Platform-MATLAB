@@ -43,7 +43,9 @@ for i=1:length(nodeRowsNums) % Each function
 
     fcnName=uitreenode(handles.Process.fcnArgsUITree,'Text',Digraph.Nodes.FunctionNames{nodeRowsNums(i)},'NodeData',nodesData(i));
     inputs=uitreenode(fcnName,'Text','Inputs');
-    splitIdx=ismember(splitCodes,splitCode); % This may be in the wrong order! Organize splits list for each function numerically?
+    splitIdx=find(ismember(splitCodes,splitCode)==1); % This may be in the wrong order! Organize splits list for each function numerically?
+
+    assert(length(splitIdx)==1);
 
     for j=1:length(Digraph.Nodes.InputVariableNames{nodeRowsNums(i)}{splitIdx})
         if ~isempty(Digraph.Nodes.InputVariableNames{nodeRowsNums(i)}{splitIdx}{j})

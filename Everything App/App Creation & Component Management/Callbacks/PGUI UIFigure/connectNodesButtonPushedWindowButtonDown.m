@@ -121,6 +121,14 @@ color=splitsStruct.Color;
 Digraph.Edges.Color(currEdgeIdx,:)=color;
 Digraph.Edges.SplitCode{currEdgeIdx}=splitCode;
 
+% Add the new split to Digraph.Nodes.InputVariableNames &
+% Digraph.Nodes.OutputVariableNames
+Digraph.Nodes.InputVariableNames{idx2}='';
+Digraph.Nodes.InputVariableNamesInCode{idx2}='';
+
+Digraph.Nodes.OutputVariableNames{idx1}='';
+Digraph.Nodes.OutputVariableNames{idx1}='';
+
 load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist','colorlist');
 % [~,sortColorsIdx]=sort(colorlist);
 % rgblist=rgblist(sortColorsIdx,:); % Sorted alphabetically
@@ -133,8 +141,8 @@ colormap(handles.Process.mapFigure,rgblist);
 
 %% Plot the new connection
 delete(handles.Process.mapFigure.Children);
-plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],...
-    'EdgeCData',edgeColorsIdx);
+h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741]);
+h.EdgeColor=Digraph.Edges.Color;
 
 save(projectSettingsMATPath,'Digraph','-append');
 

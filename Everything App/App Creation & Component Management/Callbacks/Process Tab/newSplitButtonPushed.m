@@ -30,6 +30,8 @@ elseif ispc==1
 end
 
 %% 2. Select the edge color for this split
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
 load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist','colorlist');
 Q=uifigure('Name',['Select Color for Split: ' name]);
 colorlist=colorlist(2:end); % Remove license row
@@ -37,6 +39,10 @@ rgblist=rgblist(2:end,:);
 [~,idx]=sort(colorlist);
 colorlist=colorlist(idx); % Sort alphabetically
 rgblist=rgblist(idx,:);
+% Remove all previously used colors.
+usedColorsIdx=ismember(round(rgblist,3),round(Digraph.Edges.Color,3),'rows');
+rgblist=rgblist(~usedColorsIdx,:);
+colorlist=colorlist(~usedColorsIdx,:);
 lb=uilistbox(Q,'Items',colorlist,'Position',[10 10 150 350],'ValueChangedFcn',@(Q,event) lbValChanged(Q,rgblist));
 lb.Value=colorlist{1};
 ax=uiaxes(Q,'XLim',[0 1],'YLim',[0 1],'Position',[200 10 200 350]);
@@ -63,8 +69,6 @@ end
 evalin('base','clear splitColor;');
 
 %% 3. Explicitly ask the user which split this is branching from
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
 splits=NonFcnSettingsStruct.Process.Splits;
 % splits.SubSplitNames.test1.SubSplitNames.test2.SubSplitNames=struct; % Testing
 % splits.SubSplitColors.test1.Color=[1 0 0];

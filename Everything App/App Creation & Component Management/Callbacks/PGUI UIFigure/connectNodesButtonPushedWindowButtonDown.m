@@ -85,6 +85,20 @@ for i=1:length(splitsOrder)
 end
 color=splitsStruct.Color;
 
+splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(splitText,' ');
+splitName=splitText(1:spaceIdx-1);
+splitCode=splitText(spaceIdx+2:end-1);
+
+% Check whether an existing split (not the current one) is already using
+% this color.
+if any(ismember(Digraph.Edges.Color,color) & ~ismember(Digraph.Edges.SplitCode,splitCode))
+    disp(['You are attempting to create an edge with split (' splitCode ') for the first time!']);
+    disp('However, another split already has the same color.');
+    disp('Please delete this split and re-create it with another color!');
+    return;
+end
+
 if ~isempty(sp) || isequal(sp,[idx1 idx2])
     prevConnectedRows=ismember(Digraph.Edges.EndNodes,[idx1 idx2],'rows');
     if ismember(color,Digraph.Edges.Color(prevConnectedRows,:),'rows')
@@ -99,11 +113,6 @@ end
 
 nodeID1=Digraph.Nodes.NodeNumber(idx1,:);
 nodeID2=Digraph.Nodes.NodeNumber(idx2,:);
-
-splitText=handles.Process.splitsUITree.SelectedNodes.Text;
-spaceIdx=strfind(splitText,' ');
-splitName=splitText(1:spaceIdx-1);
-splitCode=splitText(spaceIdx+2:end-1);
 
 if isempty(Digraph.Edges)    
     newDigraph=digraph;

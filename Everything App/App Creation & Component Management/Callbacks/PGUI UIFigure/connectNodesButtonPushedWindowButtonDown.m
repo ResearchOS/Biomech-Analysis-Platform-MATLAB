@@ -74,22 +74,31 @@ end
 
 sp=shortestpath(Digraph,idx1,idx2);
 
-if ~isempty(sp) && length(sp)>2
-    disp('Nodes already connected, cannot have redundant connections except for between neighboring nodes!'); % Redundant connections allowed between neighboring nodes only
-    setappdata(fig,'connectNodesCoords',NaN(2,2));
-    setappdata(fig,'doNothingOnButtonUp',0);
-    set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
-        'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
-    return;
-end
-
-nodeID1=Digraph.Nodes.NodeNumber(idx1,:);
-nodeID2=Digraph.Nodes.NodeNumber(idx2,:);
-
 splitsOrder=getSplitsOrder(handles.Process.splitsUITree.SelectedNodes,handles.Process.splitsUITree.Tag);
 if isempty(splitsOrder)
     return;
 end
+
+splitsStruct=NonFcnSettingsStruct.Process.Splits;
+for i=1:length(splitsOrder)
+    splitsStruct=splitsStruct.SubSplitNames.(splitsOrder{i});
+end
+color=splitsStruct.Color;
+
+if ~isempty(sp) || isequal(sp,[idx1 idx2])
+    prevConnectedRows=ismember(Digraph.Edges.EndNodes,[idx1 idx2],'rows');
+    if ismember(color,Digraph.Edges.Color(prevConnectedRows,:),'rows')
+        disp('Nodes already connected with this split!'); % Redundant connections allowed between neighboring nodes only
+        setappdata(fig,'connectNodesCoords',NaN(2,2));
+        setappdata(fig,'doNothingOnButtonUp',0);
+        set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
+            'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
+        return;
+    end
+end
+
+nodeID1=Digraph.Nodes.NodeNumber(idx1,:);
+nodeID2=Digraph.Nodes.NodeNumber(idx2,:);
 
 splitText=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(splitText,' ');
@@ -118,11 +127,6 @@ Digraph.Edges.FunctionNames{currEdgeIdx,1}=Digraph.Nodes.FunctionNames{idx1};
 Digraph.Edges.FunctionNames{currEdgeIdx,2}=Digraph.Nodes.FunctionNames{idx2};
 Digraph.Edges.NodeNumber(currEdgeIdx,1)=nodeID1;
 Digraph.Edges.NodeNumber(currEdgeIdx,2)=nodeID2;
-splitsStruct=NonFcnSettingsStruct.Process.Splits;
-for i=1:length(splitsOrder)
-    splitsStruct=splitsStruct.SubSplitNames.(splitsOrder{i});
-end
-color=splitsStruct.Color;
 Digraph.Edges.Color(currEdgeIdx,:)=color;
 Digraph.Edges.SplitCode{currEdgeIdx}=splitCode;
 

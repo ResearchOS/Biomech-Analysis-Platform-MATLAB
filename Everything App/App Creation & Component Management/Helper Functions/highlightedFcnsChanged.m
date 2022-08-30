@@ -92,7 +92,7 @@ if getappdata(fig,'doHighlight')==1
         splitText=currSplitNode.Text;
         spaceIdx=strfind(splitText,' ');
         splitName=splitText(1:spaceIdx-1);
-        splitsList=[splitsList; splitName];
+        splitsList=[splitName; splitsList];
         currSplitNode=currSplitNode.Parent;
     end
     
@@ -102,12 +102,13 @@ if getappdata(fig,'doHighlight')==1
     end
     splitColor=splitsStruct.Color;
     edgeIdx=find(ismember(Digraph.Edges.Color,splitColor,'rows')==1);
-    highlight(handles.Process.mapFigure.Children,1:size(Digraph.Edges.Color,1),'LineWidth',0.5); % Reset line widths.    
+    highlight(handles.Process.mapFigure.Children,'Edges',1:size(Digraph.Edges.Color,1),'LineWidth',0.5); % Reset line widths.    
     highlight(handles.Process.mapFigure.Children,'Edges',edgeIdx,'LineWidth',2); % Emphasize the current split.
 end
 
 % Fill in the functions UI tree
 nodesData=nodesData(nodesData~=1);
+splitName=splitsList{end};
 for i=1:length(nodeRowsNums) % Each function    
 
 %     inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodesData(i)); % All inedges for the current function

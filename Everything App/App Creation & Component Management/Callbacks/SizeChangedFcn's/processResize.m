@@ -36,9 +36,9 @@ end
 % All positions here are specified as relative positions
 MapFigureRelPos=[0.5 0.07];
 AddFcnButtonRelPos=[0.5 0.95];
-RemoveFcnButtonRelPos=[0.9 0.95];
+RemoveFcnButtonRelPos=[0.8 0.95];
 AddFcnTypeDropDownRelPos=[0.55 0.95];
-MoveFcnButtonRelPos=[0.75 0.95];
+MoveFcnButtonRelPos=[0.8 0.95];
 PropagateChangesButtonRelPos=[0.5 0.01];
 PropagateChangesCheckboxRelPos=[0.71 0.01];
 RunSelectedFcnsButtonRelPos=[0.76 0.01];
@@ -67,7 +67,7 @@ ConvertVarHardDynamicButtonRelPos=[0.3 0.49];
 SpecifyTrialsUITreeRelPos=[0.01 0.01];
 SpecifyTrialsLabelRelPos=[0.01 0.17];
 RemoveSpecifyTrialsButtonRelPos=[0.22 0.1];
-MarkImportFcnCheckboxRelPos=[0.62 0.95];
+MarkImportFcnCheckboxRelPos=[0.56 0.95];
 NewSpecifyTrialsButtonRelPos=[0.22 0.15];
 NewSplitButtonRelPos=[0.225 0.45];
 RemoveSplitButtonRelPos=[0.225 0.4];
@@ -76,9 +76,10 @@ VarsListboxRelPos=[0.01 0.50];
 UnassignVarsButtonRelPos=[0.225 0.8];
 EditSubvarsButtonRelPos=[0.215 0.7];
 SplitsDescButtonRelPos=[0.22 0.3];
-PlaceFcnButtonRelPos=[0.82 0.95];
+PlaceFcnButtonRelPos=[0.73 0.95];
 SpecifyTrialsButtonRelPos=[0.01 0.11];
-ConnectNodesButtonRelPos=[0.75 0.95];
+ConnectNodesButtonRelPos=[0.65 0.95];
+DisconnectNodesButtonRelPos=[0.9 0.95];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -128,6 +129,7 @@ SplitsDescButtonSize=[0.07 compHeight];
 PlaceFcnButtonSize=[0.07 compHeight];
 SpecifyTrialsButtonSize=[0.2 compHeight];
 ConnectNodesButtonSize=[0.07 compHeight];
+DisconnectNodesButtonSize=[0.07 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 MapFigurePos=round([MapFigureRelPos.*figSize MapFigureSize.*figSize]);
@@ -175,6 +177,7 @@ SplitsDescButtonPos=round([SplitsDescButtonRelPos.*figSize SplitsDescButtonSize(
 PlaceFcnButtonPos=round([PlaceFcnButtonRelPos.*figSize PlaceFcnButtonSize(1)*figSize(1) PlaceFcnButtonSize(2)]);
 SpecifyTrialsButtonPos=round([SpecifyTrialsButtonRelPos.*figSize SpecifyTrialsButtonSize(1)*figSize(1) SpecifyTrialsButtonSize(2)]);
 ConnectNodesButtonPos=round([ConnectNodesButtonRelPos.*figSize ConnectNodesButtonSize(1)*figSize(1) ConnectNodesButtonSize(2)]);
+DisconnectNodesButtonPos=round([DisconnectNodesButtonRelPos.*figSize DisconnectNodesButtonSize(1)*figSize(1) DisconnectNodesButtonSize(2)]);
 
 data.MapFigure.Position=MapFigurePos;
 data.AddFcnButton.Position=AddFcnButtonPos;
@@ -221,6 +224,7 @@ data.SplitsDescButton.Position=SplitsDescButtonPos;
 data.PlaceFcnButton.Position=PlaceFcnButtonPos;
 data.SpecifyTrialsButton.Position=SpecifyTrialsButtonPos;
 data.ConnectNodesButton.Position=ConnectNodesButtonPos;
+data.DisconnectNodesButton.Position=DisconnectNodesButtonPos;
 
 data.MapFigure.FontSize=newFontSize;
 data.AddFcnButton.FontSize=newFontSize;
@@ -267,3 +271,4 @@ data.SplitsDescButton.FontSize=newFontSize;
 data.PlaceFcnButton.FontSize=newFontSize;
 data.SpecifyTrialsButton.FontSize=newFontSize;
 data.ConnectNodesButton.FontSize=newFontSize;
+data.DisconnectNodesButton.FontSize=newFontSize;

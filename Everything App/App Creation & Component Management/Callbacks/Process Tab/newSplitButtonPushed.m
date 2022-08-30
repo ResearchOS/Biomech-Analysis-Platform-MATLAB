@@ -79,7 +79,7 @@ splits=NonFcnSettingsStruct.Process.Splits;
 
 Q=uifigure('Name',['Select Prior Split for ' name]);
 Qhandles.uitree=uitree(Q,'checkbox','Tag','Tree');
-okbox=uibutton(Q,'push','Text','OK','Position',[450 200 100 50],'ButtonPushedFcn',@(Q,event) okButtonPushedSplits(Q));
+okbox=uibutton(Q,'push','Text','OK','Position',[450 200 100 50],'ButtonPushedFcn',@(Q,event) okButtonPushedSplits(Q,0));
 Qhandles.okbox=okbox;
 setappdata(Q,'handles',Qhandles);
 

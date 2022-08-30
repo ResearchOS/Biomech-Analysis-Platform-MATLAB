@@ -19,6 +19,7 @@ end
 
 spaceIdx=strfind(selNode.Text,' ');
 splitCode=selNode.Text(spaceIdx(end)+2:end-1);
+splitName=selNode.Text(1:spaceIdx(end)-1);
 
 varNode=selNode.Parent;
 varName=varNode.Text;
@@ -36,8 +37,6 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'VariableNamesList','Digraph');
 
 doDelete=1; % Indicates to delete the variable (if not found).
-% outputRows=[];
-% count=0;
 for i=1:length(Digraph.Nodes.FunctionNames) % Look through each function to see if the variable is being used anywhere.
     % Inputs should have the name & splitCode matching exactly.
     % If about to delete the variable as a whole, then outputs should also
@@ -97,9 +96,13 @@ end
 %% Delete the variable from the VariableNamesList
 delete(selNode);
 
+varRow=ismember(VariableNamesList.GUINames,varName);
+
+VariableNamesList.SplitCodes{varRow}=VariableNamesList.SplitCodes{varRow}(~ismember(VariableNamesList.SplitCodes{varRow},splitCode));
+VariableNamesList.SplitNames{varRow}=VariableNamesList.SplitNames{varRow}(~ismember(VariableNamesList.SplitNames{varRow},splitName));
+
 if isempty(varNode.Children)
-    delete(varNode);
-    varRow=ismember(VariableNamesList.GUINames,varName);
+    delete(varNode);    
     VariableNamesList.GUINames(varRow)=[];
     VariableNamesList.SaveNames(varRow)=[];
     VariableNamesList.SplitCodes(varRow)=[];
@@ -112,22 +115,3 @@ if isempty(varNode.Children)
 else
     save(projectSettingsMATPath,'Digraph','-append');
 end
-
-%% Delete the variable from the Digraph.
-% outputRows=unique(outputRows);
-% for i=outputRows
-% 
-%     splitNamesOut=fieldnames(Digraph.Nodes.OutputVariableNames{i});
-% 
-%     for j=1:length(splitNamesOut)
-%         varNames=Digraph.Nodes.OutputVariableNames{i}.(splitNamesOut{j});
-%         % Remove the split from the end
-%         varNamesNoSplit=cell(length(varNames),1);
-%         for k=1:length(varNames)
-%             varNamesNoSplit{k}=varNames{k}(1:end-6);
-%         end
-%         varNames=varNames(~ismember(varNamesNoSplit,varName));
-%         Digraph.Nodes.OutputVariableNames{i}.(splitNamesOut{j})=varNames;
-%     end
-% 
-% end

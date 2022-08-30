@@ -42,7 +42,7 @@ projectVarNames={projectVarNames.name};
 if ismember('VariableNamesList',projectVarNames)
     load(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList'); % Load the non-fcn settings struct from the project settings MAT file
 else
-load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+    load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
 end
 % NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
@@ -176,37 +176,9 @@ if ~isempty(Digraph.Edges)
 
     h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
     h.EdgeColor=Digraph.Edges.Color;
+    splitsUITreeSelectionChanged(fig);
 else
     plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
 end
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
-
-%% Add the variable names to the vars listbox
-% if exist('VariableNamesList','var')~=1
-%     return;
-% end
-% 
-% [~,sortIdx]=sort(upper(VariableNamesList.GUINames));
-% makeVarNodes(fig,sortIdx,VariableNamesList);
-% for i=1:length(VariableNamesList.GUINames)
-%     varNode=uitreenode(handles.Process.varsListbox,'Text',VariableNamesList.GUINames{sortIdx(i)});
-%     splitNames=VariableNamesList.SplitNames{sortIdx(i)};
-%     splitCodes=VariableNamesList.SplitCodes{sortIdx(i)};
-%     for j=1:length(splitCodes)
-%         splitName=splitNames{j};
-%         splitCode=splitCodes{j};
-%         a=uitreenode(varNode,'Text',[splitName '(' splitCode ')']);
-%         if i==1 && j==1
-%             handles.Process.varsListbox.SelectedNodes=a;
-%         end
-%     end
-% end
-
-% handles.Process.varsListbox.SelectedNodes=handles.Process.varsListbox.Children.Children; % Select specific split
-% varsListboxSelectionChanged(fig);
-
-% handles.Process.varsListbox.Items=VariableNamesList.GUINames(sortIdx);
-% handles.Process.varsListbox.Value=VariableNamesList.GUINames{sortIdx(1)};
-% handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{sortIdx(1)};
-% handles.Process.argNameInCodeField.Value=VariableNamesList.SaveNames{sortIdx(1)};

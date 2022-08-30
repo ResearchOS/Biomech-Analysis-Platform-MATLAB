@@ -97,8 +97,8 @@ for i=1:length(hardCodedSaveNames)
     idx=hardCodedInputIdxNums(i);    
     varText=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode]){hardCodedVarNamesIdxNums(i)};
     spaceIdx=strfind(varText,' ');
-    splitCode=varText(spaceIdx+2:end-1);
-    varargout{idx}=feval([hardCodedSaveNames{i} '_' splitCode]);
+    splitCodeVar=varText(spaceIdx+2:end-1);
+    varargout{idx}=feval([hardCodedSaveNames{i} '_' splitCodeVar]);
 
 end
 cd(oldPath);
@@ -112,8 +112,8 @@ dynamicVarNamesIdxNums=find(dynamicVarNamesIdx==1);
 for i=1:length(dynamicSaveNames)
     varText=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode]){dynamicVarNamesIdxNums(i)};
     spaceIdx=strfind(varText,' ');
-    splitCode=varText(spaceIdx+2:end-1);
-    dynamicSaveNames{i}=[dynamicSaveNames{i} '_' splitCode];
+    splitCodeVar=varText(spaceIdx(end)+2:end-1);
+    dynamicSaveNames{i}=[dynamicSaveNames{i} '_' splitCodeVar];
 end
 
 % Check that all non-hard-coded variables have existing data in .mat files

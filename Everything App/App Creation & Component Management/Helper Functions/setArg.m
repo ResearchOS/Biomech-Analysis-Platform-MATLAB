@@ -16,6 +16,7 @@ end
 
 %% Get the level for the current arguments to store. Also get the file path for the current MAT file.
 fig=evalin('base','gui;');
+handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 if ~isempty(repNum) && ~isempty(trialName) % Trial level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
@@ -42,6 +43,11 @@ load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
 
 nodeRow=getappdata(fig,'nodeRow');
 varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]); 
+if isempty(varNamesInCode)
+    disp('No output arguments assigned to this function!');
+    return;
+end
+
 currVarsIdx=ismember(varNamesInCode,argNames); % Get the idx of the output var names being output currently
 guiVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode])(currVarsIdx); % The names of the variables as seen in the GUI
 for i=1:length(guiVarNames)
@@ -73,4 +79,27 @@ if exist(matFilePath,'file')~=2
     save(matFilePath,saveNames{:});
 else
     save(matFilePath,saveNames{:},'-append');
+end
+
+%% If there are new splits for a var, add those to the varsListbox
+anyNew=false(length(argNames),1); % No new variable splits to generate.
+splitText=[splitName ' (' splitCode ')'];
+for i=1:length(argNames)    
+    argRow=ismember(VariableNamesList.GUINames,guiVarNames{i});
+    if ismember(splitCode,VariableNamesList.SplitCodes{argRow})        
+        continue;
+    end
+
+    anyNew(i)=true;
+
+    VariableNamesList.SplitCodes{argRow}=[VariableNamesList.SplitCodes{argRow}; {splitCode}];
+    VariableNamesList.SplitNames{argRow}=[VariableNamesList.SplitNames{argRow}; {splitName}];
+
+    varNode=findobj(handles.Process.varsListbox,'Text',argNames{i});
+    uitreenode(varNode,'Text',splitText);
+
+end
+
+if any(anyNew)
+    save(getappdata(fig,'projectSettingsMATPath'),'VariableNamesList','-append'); % At least one variable had a new split, so save the VariableNamesList.
 end

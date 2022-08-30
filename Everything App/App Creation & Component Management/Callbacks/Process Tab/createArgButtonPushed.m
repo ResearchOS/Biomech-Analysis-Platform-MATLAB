@@ -27,8 +27,10 @@ varNames={varNames.name};
 if ismember('VariableNamesList',varNames)
     load(projectSettingsMATPath,'Digraph','VariableNamesList','NonFcnSettingsStruct');
     guiNames=VariableNamesList.GUINames;
+    saveNames=VariableNamesList.SaveNames;
 else
     guiNames={''};
+    saveNames={''};
 end
 
 %% Prompt for the name of the argument as shown in the GUI
@@ -105,6 +107,11 @@ while ~defaultNameInCodeOK
         continue;
     end
 
+    if ismember(defaultName,saveNames)
+        disp('This save name already exists for another variable! No argument added, try again.');
+        continue;
+    end
+
     defaultNameInCodeOK=1;
 end
 
@@ -151,11 +158,11 @@ splitName=selSplitText(1:spaceIdx-1);
 splitCode=selSplitText(spaceIdx+2:end-1);
 
 if exist('VariableNamesList','var')~=1 || ~isfield(VariableNamesList,'SplitCodes') || length(VariableNamesList.SplitCodes)<rowNum
-    VariableNamesList.SplitCodes{rowNum}={splitCode};
-    VariableNamesList.SplitNames{rowNum}={splitName};
+    VariableNamesList.SplitCodes{rowNum,1}={splitCode};
+    VariableNamesList.SplitNames{rowNum,1}={splitName};
 else
-    VariableNamesList.SplitNames{rowNum}=[VariableNamesList.SplitNames(rowNum); {splitName}];
-    VariableNamesList.SplitCodes{rowNum}=[VariableNamesList.SplitCodes(rowNum); {splitCode}];
+    VariableNamesList.SplitNames{rowNum,1}=[VariableNamesList.SplitNames(rowNum,1); {splitName}];
+    VariableNamesList.SplitCodes{rowNum,1}=[VariableNamesList.SplitCodes(rowNum,1); {splitCode}];
 end
 
 VariableNamesList.GUINames{rowNum,1}=nameInGUI;

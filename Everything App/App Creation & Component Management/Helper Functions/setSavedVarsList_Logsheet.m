@@ -79,6 +79,12 @@ numVarsExist=sum(existVarsMatIdx);
 if any(~existVarsMatIdx)
     VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(noExistVarIdx)];
     VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(noExistVarIdx)]; % Does not include the split code
+    if size(VariableNamesList.SplitNames,1)<size(VariableNamesList.SplitNames,2) % Row vector, but should be a column vector
+        VariableNamesList.SplitNames=VariableNamesList.SplitNames';
+    end
+    if size(VariableNamesList.SplitCodes,1)<size(VariableNamesList.SplitCodes,2)
+        VariableNamesList.SplitCodes=VariableNamesList.SplitCodes';
+    end
     VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat({splitName},numVarsNoExist,1)];
     VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat({splitCode},numVarsNoExist,1)];
     VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},numVarsNoExist,1)];
@@ -86,56 +92,10 @@ if any(~existVarsMatIdx)
     VariableNamesList.Level=[VariableNamesList.Level; repmat({'T'},numVarsNoExist,1)];
 end
 
-%% Update the existing variables in the structure (if any)
-% if any(~noExistVarIdx)
-%     existVarsMatNums=find(existVarsMatIdx==1);
-%     noExistVarsNums=find(noExistVarIdx==0);
-%     for i=1:length(existVarsMatNums)
-%         assert(isequal(VariableNamesList.GUINames{existVarsMatNums(i)},guiNames{noExistVarsNums(i)}));
-%         assert(isequal(VariableNamesList.SaveNames{existVarsMatNums(i)},guiVarNames{noExistVarsNums(i)}));
-%         
-%         VariableNamesList.SplitNames{existVarsMatNums(i)}=[VariableNamesList.SplitNames{existVarsMatNums(i)}; {splitName}];
-%         VariableNamesList.SplitCodes{existVarsMatNums(i)}=[VariableNamesList.SplitCodes{existVarsMatNums(i)}; {splitCode}];
-%         VariableNamesList.Descriptions{existVarsMatNums(i)}='Enter Arg Description Here';
-%         VariableNamesList.IsHardCoded{existVarsMatNums(i)}=0;
-%         VariableNamesList.Level{existVarsMatNums(i)}='T';
-%     end
-% end
-
 save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
 
 [~,sortIdx]=sort(upper(VariableNamesList.GUINames));
 makeVarNodes(fig,sortIdx,VariableNamesList);
-% handles.Process.varsListbox.Items=VariableNamesList.GUINames;
-% handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
-% handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
-
-
-%% Split name does not yet exist
-% Check if any/all of the variables being saved are part of the
-% split already
-
-% Get the idx of the variables not already in the split
-% currVarsNotInSplit=~(ismember(splitName,getUniqueMembers(VariableNamesList.SplitNames)) & ismember(guiNames,VariableNamesList.GUINames));
-%
-% VariableNamesList.GUINames=[VariableNamesList.GUINames; guiNames(currVarsNotInSplit)];
-% VariableNamesList.SaveNames=[VariableNamesList.SaveNames; guiVarNames(currVarsNotInSplit)]; % Does not include the split code
-% VariableNamesList.SplitNames=[VariableNamesList.SplitNames; repmat(splitName,sum(currVarsNotInSplit),1)];
-% VariableNamesList.SplitCodes=[VariableNamesList.SplitCodes; repmat(splitCode,sum(currVarsNotInSplit),1)];
-% VariableNamesList.Descriptions=[VariableNamesList.Descriptions; repmat({'Enter Arg Description Here'},sum(currVarsNotInSplit),1)];
-% VariableNamesList.IsHardCoded=[VariableNamesList.IsHardCoded; repmat({0},sum(currVarsNotInSplit),1)];
-% VariableNamesList.Level=[VariableNamesList.Level; repmat({''},sum(currVarsNotInSplit),1)];
-
-% handles.Process.varsListbox.Items=VariableNamesList.GUINames;
-% handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
-% handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
-
-% Index {1} because logsheet is always the first node.
-% if isequal(Digraph.Nodes.SplitNames{1},{''})
-%     Digraph.Nodes.SplitNames{1}={splitName};
-% elseif ~ismember(splitName,Digraph.Nodes.SplitNames{1})
-%     Digraph.Nodes.SplitNames{1}=[Digraph.Nodes.SplitNames{1}; {splitName}];
-% end
 
 save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','-append');
 

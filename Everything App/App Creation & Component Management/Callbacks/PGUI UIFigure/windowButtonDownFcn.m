@@ -54,18 +54,3 @@ elseif isprop(fig.CurrentObject,'NodeData') % isequal(fig.CurrentObject.Tag,'Fun
 else
     return;
 end
-
-% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-% 
-% projectSettingsVars=whos('-file',projectSettingsMATPath);
-% projectSettingsVarNames={projectSettingsVars.name};
-% 
-% assert(ismember('VariableNamesList',projectSettingsVarNames));
-
-% load(projectSettingsMATPath,'VariableNamesList');
-
-% varIdx=ismember(VariableNamesList.GUINames,varName);
-% defaultName=VariableNamesList.SaveNames{varIdx};
-% 
-% handles.Process.argNameInCodeField.Value=defaultName;
-% handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{varIdx};

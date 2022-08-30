@@ -7,6 +7,10 @@ function []=highlightedFcnsChanged(src,Digraph)
 % selNodeNum: The node number for the selected function in the
 % fcnArgsUITree. If not entered, use the first function.
 
+if isempty(Digraph.Edges)
+    return;
+end
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -80,31 +84,28 @@ for i=1:length(nodeRowsNums)
     end
 end
 
-% Re-plot with the current split highlighted.
-if getappdata(fig,'doHighlight')==1
-    projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-    load(projectSettingsMATPath,'NonFcnSettingsStruct');
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
-    % Get the list of splits from bottom to top in the splitsUITree
-    currSplitNode=handles.Process.splitsUITree.SelectedNodes;
-    splitsList={};
-    while ~isequal(class(currSplitNode),'matlab.ui.container.CheckBoxTree')
-        splitText=currSplitNode.Text;
-        spaceIdx=strfind(splitText,' ');
-        splitName=splitText(1:spaceIdx-1);
-        splitsList=[splitName; splitsList];
-        currSplitNode=currSplitNode.Parent;
-    end
-    
-    splitsStruct=NonFcnSettingsStruct.Process.Splits;
-    for i=1:length(splitsList)        
-        splitsStruct=splitsStruct.SubSplitNames.(splitsList{i});
-    end
-    splitColor=splitsStruct.Color;
-    edgeIdx=find(ismember(Digraph.Edges.Color,splitColor,'rows')==1);
-    highlight(handles.Process.mapFigure.Children,'Edges',1:size(Digraph.Edges.Color,1),'LineWidth',0.5); % Reset line widths.    
-    highlight(handles.Process.mapFigure.Children,'Edges',edgeIdx,'LineWidth',2); % Emphasize the current split.
+% Get the list of splits from bottom to top in the splitsUITree
+currSplitNode=handles.Process.splitsUITree.SelectedNodes;
+splitsList={};
+while ~isequal(class(currSplitNode),'matlab.ui.container.CheckBoxTree')
+    splitText=currSplitNode.Text;
+    spaceIdx=strfind(splitText,' ');
+    splitName=splitText(1:spaceIdx-1);
+    splitsList=[splitName; splitsList];
+    currSplitNode=currSplitNode.Parent;
 end
+
+splitsStruct=NonFcnSettingsStruct.Process.Splits;
+for i=1:length(splitsList)
+    splitsStruct=splitsStruct.SubSplitNames.(splitsList{i});
+end
+splitColor=splitsStruct.Color;
+edgeIdx=find(ismember(Digraph.Edges.Color,splitColor,'rows')==1);
+highlight(handles.Process.mapFigure.Children,'Edges',1:size(Digraph.Edges.Color,1),'LineWidth',0.5); % Reset line widths.
+highlight(handles.Process.mapFigure.Children,'Edges',edgeIdx,'LineWidth',2); % Emphasize the current split.
 
 % Fill in the functions UI tree
 nodesData=nodesData(nodesData~=1);
@@ -121,14 +122,22 @@ for i=1:length(nodeRowsNums) % Each function
 %     assert(length(splitIdx)==1);
 
     currInVarNames=Digraph.Nodes.InputVariableNames{nodeRowsNums(i)};
-    currInVarNames=currInVarNames.([splitName '_' splitCode]);
+    if isstruct(currInVarNames) && isfield(currInVarNames,[splitName '_' splitCode])
+        currInVarNames=currInVarNames.([splitName '_' splitCode]);
+    else
+        currInVarNames={};
+    end
 
     for j=1:length(currInVarNames)                
         uitreenode(inputs,'Text',currInVarNames{j});
     end
 
     currOutVarNames=Digraph.Nodes.OutputVariableNames{nodeRowsNums(i)};
-    currOutVarNames=currOutVarNames.([splitName '_' splitCode]);
+    if isstruct(currOutVarNames) && isfield(currOutVarNames,[splitName '_' splitCode])
+        currOutVarNames=currOutVarNames.([splitName '_' splitCode]);
+    else
+        currOutVarNames={};
+    end
 
     outputs=uitreenode(fcnName,'Text','Outputs');
     for j=1:length(currOutVarNames)        

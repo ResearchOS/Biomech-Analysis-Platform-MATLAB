@@ -67,6 +67,10 @@ end
 sp=shortestpath(Digraph,idx1,idx2); % Is this directional?
 
 %% HERE NEED TO PROMPT THE USER TO ASK WHICH SPLIT SHOULD BE REMOVED.
+if isempty(Digraph.Edges)
+    disp('No edges to remove!');
+    return;
+end
 edgeRows=ismember(Digraph.Edges.EndNodes,[idx1 idx2],'rows');
 splitCodes=Digraph.Edges.SplitCode(edgeRows);
 
@@ -75,7 +79,7 @@ while badCode==1
 
     Q=uifigure('Name','Select Split to Remove');
     Qhandles.uitree=uitree(Q,'checkbox','Tag','Tree');
-    okbox=uibutton(Q,'push','Text','OK','Position',[450 200 100 50],'ButtonPushedFcn',@(Q,event) okButtonPushedSplits(Q,1));
+    okbox=uibutton(Q,'push','Text','OK','Position',[450 200 100 50],'ButtonPushedFcn',@(Q,event) okButtonPushedSplits(Q));
     Qhandles.okbox=okbox;
     setappdata(Q,'handles',Qhandles);
 
@@ -93,6 +97,11 @@ while badCode==1
     evalin('base','clear selSplit;');
 
     selSplit=selSplit(~ismember(selSplit,'Root'));
+
+    if isempty(selSplit)
+        disp('Root node is not a valid split, try again!');
+        continue;
+    end
 
     name=selSplit{end};
     selSplit=selSplit(~ismember(selSplit,name));
@@ -149,6 +158,24 @@ end
 
 edgeIdx=find((ismember(Digraph.Edges.SplitCode,splitCode) & ismember(Digraph.Edges.NodeNumber,[nodeID1 nodeID2],'rows'))==1);
 Digraph=rmedge(Digraph,edgeIdx); 
+
+%% Remove the split from the Digraph input & output variables, & the names in code.
+% node1Row=ismember(Digraph.Nodes.NodeNumber,nodeID1);
+if isstruct(Digraph.Nodes.OutputVariableNames{idx1})
+    Digraph.Nodes.OutputVariableNames{idx1}=rmfield(Digraph.Nodes.OutputVariableNames{idx1},[name '_' splitCode]);
+    Digraph.Nodes.OutputVariableNamesInCode{idx1}=rmfield(Digraph.Nodes.OutputVariableNamesInCode{idx1},[name '_' splitCode]);
+end
+if isstruct(Digraph.Nodes.InputVariableNames{idx2})
+    Digraph.Nodes.InputVariableNames{idx2}=rmfield(Digraph.Nodes.InputVariableNames{idx2},[name '_' splitCode]);
+    Digraph.Nodes.InputVariableNamesInCode{idx2}=rmfield(Digraph.Nodes.InputVariableNamesInCode{idx2},[name '_' splitCode]);
+end
+
+% Remove output variables if no output edge, because the output variables
+% are initialized when the edge is created.
+if isstruct(Digraph.Nodes.OutputVariableNames{idx2}) && ~ismember(splitCode,Digraph.Edges.SplitCode(outedges(Digraph,idx2)))
+    Digraph.Nodes.OutputVariableNames{idx2}=rmfield(Digraph.Nodes.OutputVariableNames{idx2},[name '_' splitCode]);
+    Digraph.Nodes.OutputVariableNamesInCode{idx2}=rmfield(Digraph.Nodes.OutputVariableNamesInCode{idx2},[name '_' splitCode]);
+end
 
 %% Plot the new plot.
 delete(handles.Process.mapFigure.Children);

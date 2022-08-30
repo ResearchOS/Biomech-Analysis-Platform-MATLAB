@@ -39,7 +39,7 @@ rgblist=rgblist(2:end,:);
 [~,idx]=sort(colorlist);
 colorlist=colorlist(idx); % Sort alphabetically
 rgblist=rgblist(idx,:);
-% Remove all previously used colors.
+% Remove all previously used colors. STILL NOT DONE.
 usedColorsIdx=ismember(round(rgblist,3),round(Digraph.Edges.Color,3),'rows');
 rgblist=rgblist(~usedColorsIdx,:);
 colorlist=colorlist(~usedColorsIdx,:);

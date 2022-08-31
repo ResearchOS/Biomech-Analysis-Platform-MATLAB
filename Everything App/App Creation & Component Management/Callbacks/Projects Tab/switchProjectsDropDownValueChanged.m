@@ -58,8 +58,21 @@ setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the pro
 load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 %% Projects tab
-codePath=NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath;
-dataPath=NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath;
+if isfield(NonFcnSettingsStruct.Projects.Paths,macAddress)
+    if isfield(NonFcnSettingsStruct.Projects.Paths.(macAddress),'CodePath')
+        codePath=NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath;
+    else
+        codePath='';
+    end
+    if isfield(NonFcnSettingsStruct.Projects.Paths.(macAddress),'DataPath')
+        dataPath=NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath;
+    else
+        dataPath='';
+    end
+else
+    codePath='';
+    dataPath='';
+end
 
 addpath(genpath(codePath));
 

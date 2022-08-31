@@ -11,8 +11,9 @@ if ismac==1
 elseif ispc==1
     [~,a]=system('getmac');
     equalsIdx=ismember(a,'=');
-    shortA=a(equalsIdx(end)+1:end); % Trim after the last equals sign.
-    spaceIdx=ismember(shortA,' ');
+    lastEquals=find(equalsIdx==1,1,'last');
+    shortA=a(lastEquals+1:end); % Trim after the last equals sign.
+    spaceIdx=strfind(shortA,' ');
     id=shortA(1:spaceIdx(1)-1); % Isolate the physical address
 end
 

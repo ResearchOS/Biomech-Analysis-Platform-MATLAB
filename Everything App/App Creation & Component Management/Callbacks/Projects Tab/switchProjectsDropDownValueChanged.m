@@ -42,7 +42,9 @@ end
 
 projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Get the file path of the project-specific settings MAT file
 
-if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist    
+if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist
+    handles.Projects.codePathField.Value='Path to Project Processing Code Folder';
+    handles.Projects.dataPathField.Value='Data Path (contains ''Subject Data'' folder)';
     resetProjectAccess_Visibility(fig,1);
     setappdata(fig,'codePath','');
     codePathFieldValueChanged(fig); % Changing the code folder path changes all project-specific settings.
@@ -62,16 +64,16 @@ if isfield(NonFcnSettingsStruct.Projects.Paths,macAddress)
     if isfield(NonFcnSettingsStruct.Projects.Paths.(macAddress),'CodePath')
         codePath=NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath;
     else
-        codePath='';
+        codePath='Path to Project Processing Code Folder';
     end
     if isfield(NonFcnSettingsStruct.Projects.Paths.(macAddress),'DataPath')
         dataPath=NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath;
     else
-        dataPath='';
+        dataPath='Data Path (contains ''Subject Data'' folder)';
     end
 else
-    codePath='';
-    dataPath='';
+    codePath='Path to Project Processing Code Folder';
+    dataPath='Data Path (contains ''Subject Data'' folder)';
 end
 
 addpath(genpath(codePath));
@@ -107,14 +109,13 @@ version=getappdata(fig,'version');
 save(settingsMATPath,'version','-append');
 
 %% Import tab
-delete(handles.Process.mapFigure.Children);
 logsheetPath=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
 handles.Import.numHeaderRowsField.Value=NonFcnSettingsStruct.Import.NumHeaderRows;
 handles.Import.subjIDColHeaderField.Value=NonFcnSettingsStruct.Import.SubjectIDColHeader;
 handles.Import.targetTrialIDColHeaderField.Value=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
+handles.Import.logsheetPathField.Value=logsheetPath;
 
-if exist(logsheetPath,'file')==2
-    handles.Import.logsheetPathField.Value=logsheetPath;
+if exist(logsheetPath,'file')==2    
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
     resetProjectAccess_Visibility(fig,4); % Allow all tabs to be used.
     logsheetPathFieldValueChanged(fig,0); % 0 indicates to not re-read the logsheet file.
@@ -128,9 +129,11 @@ end
 
 %% Process tab
 % Delete all graphics objects in the plot, and all splits nodes
-% delete(handles.Process.splitsUITree.Children);
+delete(handles.Process.mapFigure.Children);
+delete(handles.Process.splitsUITree.Children);
+delete(handles.Process.fcnArgsUITree.Children);
 
-% Fill in processing map figure
+delete(handles.Process.varsListbox.Children); % Remove all variables from other projects.
 projectSettingsVars=whos('-file',projectSettingsMATPath);
 projectSettingsVarNames={projectSettingsVars.name};
 
@@ -138,11 +141,18 @@ projectSettingsVarNames={projectSettingsVars.name};
 if ismember('VariableNamesList',projectSettingsVarNames)
     load(projectSettingsMATPath,'VariableNamesList');
     [~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
-    makeVarNodes(fig,alphabetIdx,VariableNamesList);
-%     handles.Process.varsListbox.Items=VariableNamesList.GUINames(alphabetIdx);
-%     handles.Process.varsListbox.Value=VariableNamesList.GUINames{alphabetIdx(1)};
-%     varsListBoxSelectionChanged(fig);    
+    makeVarNodes(fig,alphabetIdx,VariableNamesList);   
 end
+
+if ismember('Digraph',projectSettingsVarNames)
+    load(projectSettingsMATPath,'Digraph');
+    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
+    if ~isempty(Digraph.Edges)
+        h.EdgeColor=Digraph.Edges.Color;
+    end
+end
+
+getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
 
 %% Plot tab
 handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;

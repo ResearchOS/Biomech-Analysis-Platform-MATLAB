@@ -76,7 +76,7 @@ if exist(folder,'dir')~=7
 end
 
 if exist(matFilePath,'file')~=2
-    save(matFilePath,saveNames{:});
+    save(matFilePath,saveNames{:},'-v6');
 else
     save(matFilePath,saveNames{:},'-append');
 end

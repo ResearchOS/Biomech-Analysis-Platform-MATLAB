@@ -36,7 +36,7 @@ end
 % All positions here are specified as relative positions
 MapFigureRelPos=[0.5 0.07];
 AddFcnButtonRelPos=[0.5 0.95];
-RemoveFcnButtonRelPos=[0.8 0.95];
+RemoveFcnButtonRelPos=[0.87 0.95];
 AddFcnTypeDropDownRelPos=[0.55 0.95];
 MoveFcnButtonRelPos=[0.8 0.95];
 PropagateChangesButtonRelPos=[0.5 0.01];
@@ -79,7 +79,7 @@ SplitsDescButtonRelPos=[0.22 0.3];
 PlaceFcnButtonRelPos=[0.73 0.95];
 SpecifyTrialsButtonRelPos=[0.01 0.11];
 ConnectNodesButtonRelPos=[0.65 0.95];
-DisconnectNodesButtonRelPos=[0.9 0.95];
+DisconnectNodesButtonRelPos=[0.93 0.95];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)

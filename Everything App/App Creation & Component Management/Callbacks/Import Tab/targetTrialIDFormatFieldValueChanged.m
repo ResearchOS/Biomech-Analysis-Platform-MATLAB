@@ -17,8 +17,7 @@ settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
 
-[~,macAddress]=system('ifconfig en0 | grep ether'); % Get the name of the current computer
-macAddress=genvarname(macAddress); % Generate a valid MATLAB variable name from the computer host name.
+macAddress=getComputerID();
 
 projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
 

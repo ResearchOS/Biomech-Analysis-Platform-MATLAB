@@ -57,7 +57,7 @@ if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
         splitNames=VariableNamesList.SplitNames{i};
         splitCodes=VariableNamesList.SplitCodes{i};
         for j=1:length(splitCodes)
-            a=uitreenode(varNode,'Text',[splitNames{i} '(' splitCodes{j} ')']);
+            a=uitreenode(varNode,'Text',[splitNames{j} '(' splitCodes{j} ')']);
             if i==1 && j==1
                 handles.Process.varsListbox.SelectedNodes=a;
             end

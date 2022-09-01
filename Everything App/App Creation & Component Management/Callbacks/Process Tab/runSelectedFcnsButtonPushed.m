@@ -86,7 +86,7 @@ setappdata(fig,'splitName',splitName);
 setappdata(fig,'splitCode',splitCode);
 macAddress=getComputerID();
 logsheetPathMAT=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT;
-load(logsheetPathMAT,'logsheetVar');
+load(logsheetPathMAT,'logVar');
 codePath=getappdata(fig,'codePath');
 if exist('projectStruct','var')~=1
     projectStruct=[];
@@ -99,13 +99,13 @@ if handles.Import.numHeaderRowsField.Value<0
     return;
 end
 
-if ~ismember(handles.Import.subjIDColHeaderField.Value,logsheetVar(1,:))
+if ~ismember(handles.Import.subjIDColHeaderField.Value,logVar(1,:))
     beep;
     disp('The subject ID column header field was improperly entered!');
     return;
 end
 
-if ~ismember(handles.Import.targetTrialIDColHeaderField.Value,logsheetVar(1,:))
+if ~ismember(handles.Import.targetTrialIDColHeaderField.Value,logVar(1,:))
     beep;
     disp('The target trial ID column header field was improperly entered!');
     return;
@@ -127,7 +127,7 @@ for i=1:length(fcnNames)
     setappdata(fig,'nodeRow',nodeRowNums(i));
 
     inclStruct=feval(specifyTrialsName);
-    trialNames=getTrialNames(inclStruct,logsheetVar,fig,0,projectStruct);
+    trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
     subNames=fieldnames(trialNames);
 
     oldPath=cd(codePath);        
@@ -184,8 +184,8 @@ for i=1:length(fcnNames)
     cd(oldPath);
 
     % Create log of the function that just successfully finished running.
-    disp(['Now Logging ' fcnName ' ' splitName])
-    generateLog(nodeNum);
-    disp(['Finished Logging ' fcnName ' ' splitName])
+%     disp(['Now Logging ' fcnName ' ' splitName])
+%     generateLog(nodeNum);
+%     disp(['Finished Logging ' fcnName ' ' splitName])
 
 end

@@ -84,7 +84,7 @@ else
     
 end
 matLogPath=[logPath(1:length(logPath)-length(ext)-1) '.mat'];
-setappdata(fig,'LogsheetMatPath',matLogPath);
+setappdata(fig,'logsheetPathMAT',matLogPath);
 save(matLogPath,'logVar');
 
 % Get all of the subject names from the logsheet variable (if the 'Subject ID Column Header' field has been entered)

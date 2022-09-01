@@ -30,9 +30,9 @@ if numHeaderRows<0
     return;
 end
 
-load(logsheetPathMAT,'logsheetVar');
+load(logsheetPathMAT,'logVar');
 
-headerNames=logsheetVar(1,:);
+headerNames=logVar(1,:);
 % headerVarNames=genvarname(headerNames);
 
 % Get the header names, data types, and trial/subject levels that are checked from the log vars UI tree
@@ -74,7 +74,7 @@ useHeaderDataTypesSubject=useHeaderDataTypes(subjectCheckedVarsIdx);
 subjIDCol=ismember(headerNames,subjIDColHeader);
 targetTrialIDCol=ismember(headerNames,targetTrialIDColHeader);
 
-missingSubNameRows=cellfun(@isempty,logsheetVar(:,subjIDCol));
+missingSubNameRows=cellfun(@isempty,logVar(:,subjIDCol));
 
 if any(missingSubNameRows)
     disp(['Data not saved! Logsheet missing subject names in the following rows: ' num2str(find(missingSubNameRows'==1))]);
@@ -104,9 +104,9 @@ if isempty(specTrialsName)
 end
 oldPath=cd([getappdata(fig,'codePath') 'SpecifyTrials']);
 inclStruct=feval(specTrialsName);
-allTrialNames=getTrialNames(inclStruct,logsheetVar,fig,0,projectStruct);
-% rowNums=(1:size(logsheetVar,1))'; % Initialize the row numbers
-rowsIdx=false(size(logsheetVar,1),1);
+allTrialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
+% rowNums=(1:size(logVar,1))'; % Initialize the row numbers
+rowsIdx=false(size(logVar,1),1);
 subNames=fieldnames(allTrialNames);
 
 for i=1:length(subNames)    
@@ -114,7 +114,7 @@ for i=1:length(subNames)
     trialNames=allTrialNames.(subName);
     trialNames=fieldnames(trialNames);
 %     rowsIdxCurrent=false(size(rowsIdx)); % Current subject initialize
-    rowsIdxCurrent=ismember(logsheetVar(:,subjIDCol),subName) & ismember(logsheetVar(:,targetTrialIDCol),trialNames);
+    rowsIdxCurrent=ismember(logVar(:,subjIDCol),subName) & ismember(logVar(:,targetTrialIDCol),trialNames);
     rowsIdx(rowsIdxCurrent)=true;
 
 end
@@ -137,9 +137,9 @@ if any(trialCheckedVarsIdx) % There is at least one trial level variable
     for rowNumIdx=1:length(rowNums)
         rowNum=rowNums(rowNumIdx);
 
-        rowDataTrial=logsheetVar(rowNum,useHeadersIdxNumsTrial);
-        subName=logsheetVar{rowNum,subjIDCol};
-        trialName=logsheetVar{rowNum,targetTrialIDCol};        
+        rowDataTrial=logVar(rowNum,useHeadersIdxNumsTrial);
+        subName=logVar{rowNum,subjIDCol};
+        trialName=logVar{rowNum,targetTrialIDCol};        
 
         % Handle trial level data
         for varNum=1:length(rowDataTrial)
@@ -192,7 +192,7 @@ end
 %% Subject level data
 % Need to incorporate specifyTrials here too
 
-subNamesAll=logsheetVar(numHeaderRows+1:end,subjIDCol);
+subNamesAll=logVar(numHeaderRows+1:end,subjIDCol);
 subNames=unique(subNamesAll); % The complete list of subject names
 
 rowNums=cell(length(subNames),1);
@@ -214,7 +214,7 @@ if any(subjectCheckedVarsIdx)
 
         for varNum=1:length(useHeadersIdxNumsSubject)
 
-            varAll=logsheetVar(currSubRows,useHeadersIdxNumsSubject(varNum));
+            varAll=logVar(currSubRows,useHeadersIdxNumsSubject(varNum));
 
             count=0;
             for i=1:length(varAll)

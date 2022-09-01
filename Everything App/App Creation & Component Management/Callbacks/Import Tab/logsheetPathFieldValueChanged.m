@@ -59,7 +59,7 @@ if ~(exist('dontRead','var') && exist(logsheetPathMAT,'file')==2) % Don't do MAT
 
     % IN THE FUTURE, DO OTHER EXTENSIONS TOO (CSV, OTHERS?)
     if contains(ext,'xls')
-        [~,~,logsheetVar]=xlsread(logsheetPath,1);
+        [~,~,logVar]=xlsread(logsheetPath,1);
     end
 
     % If numHeaderRows>=0 and subject ID codename column header and target trial ID column headers are found in the first row of the logsheet,
@@ -68,9 +68,9 @@ if ~(exist('dontRead','var') && exist(logsheetPathMAT,'file')==2) % Don't do MAT
     targetTrialIDColHeader=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
     numHeaderRows=NonFcnSettingsStruct.Import.NumHeaderRows;
 
-    if all(ismember({subjIDColHeader,targetTrialIDColHeader},logsheetVar(1,:))) && numHeaderRows>=0 % All logsheet-related fields have been properly filled out, except data type-specific ones (because they're used for read only)
-        subjCodenames=logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),subjIDColHeader));
-        targetTrialIDs=logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),targetTrialIDColHeader));
+    if all(ismember({subjIDColHeader,targetTrialIDColHeader},logVar(1,:))) && numHeaderRows>=0 % All logsheet-related fields have been properly filled out, except data type-specific ones (because they're used for read only)
+        subjCodenames=logVar(numHeaderRows+1:end,ismember(logVar(1,:),subjIDColHeader));
+        targetTrialIDs=logVar(numHeaderRows+1:end,ismember(logVar(1,:),targetTrialIDColHeader));
         for i=1:length(subjCodenames)
             if ~isvarname(subjCodenames{i}) && ~isempty(subjCodenames{i})
                 subjCodenames{i}=genvarname(subjCodenames{i});
@@ -79,18 +79,18 @@ if ~(exist('dontRead','var') && exist(logsheetPathMAT,'file')==2) % Don't do MAT
                 targetTrialIDs{i}=genvarname(targetTrialIDs{i});
             end
         end
-        logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),subjIDColHeader))=subjCodenames;
-        logsheetVar(numHeaderRows+1:end,ismember(logsheetVar(1,:),targetTrialIDColHeader))=targetTrialIDs;
+        logVar(numHeaderRows+1:end,ismember(logVar(1,:),subjIDColHeader))=subjCodenames;
+        logVar(numHeaderRows+1:end,ismember(logVar(1,:),targetTrialIDColHeader))=targetTrialIDs;
     end
 
-    save(logsheetPathMAT,'logsheetVar','-v6'); % Save the MAT file version of the logsheet.    
+    save(logsheetPathMAT,'logVar','-v6'); % Save the MAT file version of the logsheet.    
 
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT=logsheetPathMAT;    
 
     resetProjectAccess_Visibility(fig,4);
 
 elseif exist(logsheetPathMAT,'file')==2
-    load(logsheetPathMAT,'logsheetVar');
+    load(logsheetPathMAT,'logVar');
 else
     disp(['Logsheet MAT file missing from: ' logsheetPathMAT]);
     return;
@@ -102,12 +102,12 @@ setappdata(fig,'logsheetPathMAT',logsheetPathMAT);
 % Fill in the logsheet list box, and save default values for each
 % variable's attributes
 delete(handles.Import.logVarsUITree.Children);
-headerNames=logsheetVar(1,:);
+headerNames=logVar(1,:);
 headerNamesVars=genvarname(headerNames);
 [~,idx]=sort(upper(headerNamesVars));
 headerNamesVars=headerNamesVars(idx);
 headerNames=headerNames(idx);
-for i=1:size(logsheetVar,2)
+for i=1:size(logVar,2)
 
     headerName=headerNames{i};
     headerNameVar=headerNamesVars{i};
@@ -163,6 +163,7 @@ end
 
 %% Add the splits UI tree nodes on the Process tab
 delete(handles.Process.splitsUITree.Children);
+delete(handles.Process.mapFigure.Children);
 getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
 
 if ~isempty(Digraph.Edges)

@@ -18,17 +18,22 @@ end
 
 load(projectSettingsMATPath,'VariableNamesList');
 
-varGUIName=handles.Process.varsListbox.Value;
+selNode=handles.Process.varsListbox.SelectedNodes;
+if contains(selNode.Text,' (')
+    selNode=selNode.Parent; % If this is a split node that is selected, instead select the variable node itself.
+end
+
+varGUIName=selNode.Text;
 
 if ~iscell(varGUIName)
     varGUIName={varGUIName};
 end
 
-if length(varGUIName)>1
-    beep;
-    disp('To store an argument description only one variable can be selected!');
-    return;
-end
+% if length(varGUIName)>1
+%     beep;
+%     disp('To store an argument description only one variable can be selected!');
+%     return;
+% end
 % splitName=handles.Process.splitsUITree.SelectedNodes.Text;
 
 %% Find the row of the VariableNamesList pertaining to the current variable and split name. Then, change its description.

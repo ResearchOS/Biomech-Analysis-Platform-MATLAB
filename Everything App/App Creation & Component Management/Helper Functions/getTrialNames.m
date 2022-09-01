@@ -281,7 +281,7 @@ for inclExcl=1:2
 end
 
 if saveLog==1
-    save(getappdata(fig,'LogsheetMatPath'),'logVar'); % Save the logsheet variable because the subject names & trial names may have changed
+    save(getappdata(fig,'logsheetPathMAT'),'logVar'); % Save the logsheet variable because the subject names & trial names may have changed
 end
 
 if ~exist('exclNames','var')

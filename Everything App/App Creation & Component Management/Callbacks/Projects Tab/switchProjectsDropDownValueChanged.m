@@ -42,6 +42,9 @@ if ~isfield(settingsStruct,macAddress) % This project has never been accessed on
 end
 
 projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Get the file path of the project-specific settings MAT file
+if contains(projectSettingsMATPath,'_RunLog')
+    projectSettingsMATPath=[projectSettingsMATPath(1:end-11) '.mat'];
+end
 
 if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist
     handles.Projects.codePathField.Value='Path to Project Processing Code Folder';
@@ -64,6 +67,10 @@ if getappdata(fig,'isRunLog')
 end
 
 setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
+
+if exist(projectSettingsMATPath,'file')~=2
+    return;
+end
 
 load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
@@ -164,6 +171,10 @@ if ismember('Digraph',projectSettingsVarNames)
     if ~isempty(Digraph.Edges)
         h.EdgeColor=Digraph.Edges.Color;
     end
+end
+
+if ~isfield(NonFcnSettingsStruct,'Process')
+    return;
 end
 
 getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);

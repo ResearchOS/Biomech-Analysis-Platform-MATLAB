@@ -25,6 +25,8 @@ text{4,1}='pgui(true); % Open the uifigure';
 text{5,1}=['projectName = ' '''' projectName ''';'];
 text{6,1}=['addProjectButtonPushed(gui, projectName);'];
 text{7,1}='';
+text{8,1}='setappdata(gui,''isRunLog'',false);'; % Allow for user editing of the GUI again.
+text{9,1}='';
 
 fid=fopen(logPath,'w');
 fprintf(fid,'%s\n',text{1:end-1});

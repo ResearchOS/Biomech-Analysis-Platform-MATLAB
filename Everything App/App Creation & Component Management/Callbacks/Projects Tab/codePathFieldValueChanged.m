@@ -46,11 +46,13 @@ end
 setappdata(fig,'codePath',codePath);
 
 macAddress=getComputerID();
-projectSettingsMATPath=[codePath 'Settings_' projectName '.mat']; % The project-specific settings MAT file in the project's code folder
+projectSettingsMATPathNoRunLog=[codePath 'Settings_' projectName '.mat']; % The project-specific settings MAT file in the project's code folder
 
 if getappdata(fig,'isRunLog')
-    projectSettingsMATPath=[projectSettingsMATPath(1:end-4) '_RunLog.mat'];
+    projectSettingsMATPath=[projectSettingsMATPathNoRunLog(1:end-4) '_RunLog.mat'];
     setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Saves an alternate version
+else
+    projectSettingsMATPath=projectSettingsMATPathNoRunLog;
 end
 
 % 1. Load the project settings structure MAT file, if it exists.
@@ -115,7 +117,7 @@ settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
 
-settingsStruct.(macAddress).projectSettingsMATPath=projectSettingsMATPath; % Store the project's settings MAT file path to the project-independent settings structure.
+settingsStruct.(macAddress).projectSettingsMATPath=projectSettingsMATPathNoRunLog; % Store the project's settings MAT file path to the project-independent settings structure.
 
 eval([projectName '=settingsStruct;']); % Rename the settingsStruct to the projectName
 

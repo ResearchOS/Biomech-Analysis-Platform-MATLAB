@@ -23,7 +23,7 @@ projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Iso
 
 if getappdata(fig,'isRunLog')
     if ~contains(projectSettingsMATPath,'_RunLog')
-        projectSettingsMATPath=[projectSettingsMATPath '_RunLog.mat'];
+        projectSettingsMATPath=[projectSettingsMATPath(1:end-4) '_RunLog.mat'];
     end
 end
 

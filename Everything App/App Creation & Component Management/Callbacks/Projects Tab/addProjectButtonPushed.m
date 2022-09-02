@@ -42,6 +42,14 @@ eval([projectName '=settingsStruct;']); % Name the variable according to the cur
 setappdata(fig,'projectName',projectName);
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
 
+varNames=whos('-file',settingsMATPath);
+varNames={varNames.name};
+
+if ismember(projectName,varNames)
+    disp('Project already exists!');
+    return;
+end
+
 % Save to project-independent settings MAT file
 mostRecentProjectName=projectName;
 if exist(settingsMATPath','file')==2

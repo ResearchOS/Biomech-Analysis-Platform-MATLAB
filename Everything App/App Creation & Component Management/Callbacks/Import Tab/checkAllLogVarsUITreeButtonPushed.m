@@ -27,3 +27,8 @@ for i=1:length(handles.Import.logVarsUITree.Children)
     end
 
 end
+
+if ~getappdata(fig,'isRunLog')
+    desc='Check all variables in Import tab with previously entered metadata';
+    updateLog(fig,desc);
+end

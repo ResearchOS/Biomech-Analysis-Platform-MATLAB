@@ -22,10 +22,17 @@ if size(text,1)<size(text,2) % Row vector
     text=text';
 end
 
+if ~isempty(text{end})
+    text{end+1}='';
+end
+
 n=length(text);
 
 n=n+1;
 text{n}=['% ' desc]; % Insert the description
+
+n=n+1;
+text{n}=['% ' char(datetime('now'))];
 
 st=dbstack;
 fcnName=st(2).name;
@@ -45,7 +52,7 @@ for i=initNum:length(varargin)+initNum-1
         case 'struct'
 
         case 'double'
-
+            text{n}=[varNames{i-(initNum-1)} ' = ' '' num2str(varargin{i-(initNum-1)}) ';'];
     end
     if i==initNum
         argsChar=[argsChar varNames{i-(initNum-1)}];
@@ -55,6 +62,10 @@ for i=initNum:length(varargin)+initNum-1
 end
 
 argsChar=[argsChar ');'];
+
+if nargin<3
+    argsChar='(gui);';
+end
 
 n=n+1;
 text{n}=[fcnName argsChar]; % Insert the function call with the arguments

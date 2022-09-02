@@ -285,3 +285,8 @@ disp(['Variables successfully imported from logsheet in ' num2str(round(a,2)) ' 
 cellDisp(1,:)=useHeaderDataTypes';
 cellDisp(2,:)=useHeaderTrialSubject';
 disp(cell2table(cellDisp,'VariableNames',useHeaderNames));
+
+if ~getappdata(fig,'isRunLog')
+    desc='Imported data from the logsheet.';
+    updateLog(fig,desc);
+end

@@ -36,7 +36,7 @@ if ~isequal(dataPath(end),slash)
     dataPath=[dataPath slash];    
 end
 
-handles.Projects.dataPathField.Value=dataPath;
+% handles.Projects.dataPathField.Value=dataPath;
 
 if ~isempty(getappdata(fig,'dataPath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
@@ -47,7 +47,8 @@ end
 setappdata(fig,'dataPath',dataPath); % Store the data path name to the figure variable.
 
 macAddress=getComputerID();
-projectSettingsMATPath=[getappdata(fig,'codePath') 'Settings_' projectName '.mat'];
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% projectSettingsMATPath=[getappdata(fig,'codePath') 'Settings_' projectName '.mat'];
 
 % 1. Load the project settings structure MAT file. It should always exist
 % by this point!

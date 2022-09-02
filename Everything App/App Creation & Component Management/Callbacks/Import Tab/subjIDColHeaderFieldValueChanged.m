@@ -1,4 +1,4 @@
-function []=subjIDColHeaderFieldValueChanged(src,event)
+function []=subjIDColHeaderFieldValueChanged(src,subjIDColHeaderName)
 
 %% PURPOSE: SET & STORE THE SUBJECT ID COLUMN HEADER IN THE LOGSHEET
 
@@ -6,9 +6,15 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-headerName=handles.Import.subjIDColHeaderField.Value;
+if exist('subjIDColHeaderName','var')~=1
+    subjIDColHeaderName=handles.Import.subjIDColHeaderField.Value;
+    runLog=true;
+else
+    handles.Import.subjIDColHeaderField.Value=subjIDColHeaderName;
+    runLog=false;
+end
 
-if isempty(headerName)
+if isempty(subjIDColHeaderName)
     return;
 end
 
@@ -16,8 +22,15 @@ projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
 load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
-NonFcnSettingsStruct.Import.SubjectIDColHeader=headerName;
+NonFcnSettingsStruct.Import.SubjectIDColHeader=subjIDColHeaderName;
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
-logsheetPathFieldValueChanged(fig);
+if runLog
+    desc='Change the subject codename column header in the logsheet';
+    updateLog(fig,desc,subjIDColHeaderName);
+    logsheetPath=getappdata(fig,'logsheetPath');
+    logsheetPathFieldValueChanged(fig,logsheetPath);
+else
+    logsheetPathFieldValueChanged(fig);
+end

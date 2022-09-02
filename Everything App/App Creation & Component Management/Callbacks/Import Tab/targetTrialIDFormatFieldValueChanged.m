@@ -1,4 +1,4 @@
-function []=targetTrialIDFormatFieldValueChanged(src,event)
+function []=targetTrialIDFormatFieldValueChanged(src,targetTrialIDColHeaderName)
 
 %% PURPOSE: SET & STORE THE TARGET TRIAL ID COLUMN HEADER NAME FROM THE LOGSHEET   
 
@@ -6,9 +6,15 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-headerName=handles.Import.targetTrialIDColHeaderField.Value;
+if exist('targetTrialIDColHeaderName','var')~=1
+    targetTrialIDColHeaderName=handles.Import.targetTrialIDColHeaderField.Value;
+    runLog=true;
+else
+    handles.Import.targetTrialIDColHeaderField.Value=targetTrialIDColHeaderName;
+    runLog=false;
+end
 
-if isempty(headerName)
+if isempty(targetTrialIDColHeaderName)
     return;
 end
 
@@ -24,8 +30,15 @@ projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
 NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
 NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
-NonFcnSettingsStruct.Import.TargetTrialIDColHeader=headerName;
+NonFcnSettingsStruct.Import.TargetTrialIDColHeader=targetTrialIDColHeaderName;
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
-logsheetPathFieldValueChanged(fig);
+if runLog
+    desc='Change the target trial ID column header name from the logsheet';
+    updateLog(fig,desc,targetTrialIDColHeaderName);
+    logsheetPath=getappdata(fig,'logsheetPath');
+    logsheetPathFieldValueChanged(fig,logsheetPath);
+else
+    logsheetPathFieldValueChanged(fig);
+end

@@ -22,7 +22,9 @@ end
 projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath; % Isolate the path to the project settings MAT file.
 
 if getappdata(fig,'isRunLog')
-    projectSettingsMATPath=[projectSettingsMATPath '_RunLog.mat'];
+    if ~contains(projectSettingsMATPath,'_RunLog')
+        projectSettingsMATPath=[projectSettingsMATPath '_RunLog.mat'];
+    end
 end
 
 if exist(projectSettingsMATPath,'file')~=2

@@ -96,6 +96,12 @@ else
     return;
 end
 
+initializeLog(fig);
+logPath=getappdata(fig,'runLogPath');
+if exist(logPath,'file')==2
+    setappdata(fig,'logEverCreated',true);
+end
+
 if exist(dataPath,'dir')==7
     setappdata(fig,'dataPath',dataPath);
     handles.Projects.dataPathField.Value=dataPath;
@@ -126,7 +132,7 @@ handles.Import.logsheetPathField.Value=logsheetPath;
 if exist(logsheetPath,'file')==2    
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
     resetProjectAccess_Visibility(fig,4); % Allow all tabs to be used.
-    logsheetPathFieldValueChanged(fig);
+    logsheetPathFieldValueChanged(fig,logsheetPath);
     varName=handles.Import.logVarsUITree.SelectedNodes.Text;
     handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(varName).TrialSubject;
     handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(varName).DataType;
@@ -184,11 +190,3 @@ drawnow;
 a=toc;
 setappdata(fig,'switchingProjects',0);
 disp(['Success! Switched to project ' projectName ' in ' num2str(a) ' seconds']);
-
-logPath=getappdata(fig,'runLogPath');
-
-if exist(logPath,'file')~=2
-    initializeLog(fig);
-else
-    setappdata(fig,'logEverCreated',true);
-end

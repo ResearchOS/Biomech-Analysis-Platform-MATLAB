@@ -1,11 +1,17 @@
-function []=specifyTrialsVersionDropDownValueChanged(src,event)
+function []=specifyTrialsVersionDropDownValueChanged(src,specifyTrialsName)
 
 %% PURPOSE: SWITCH ALL SPECIFY TRIALS CRITERIA SHOWING BASED ON PRESET CONFIGURATIONS
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-name=handles.Top.specifyTrialsDropDown.Value;
+if exist('specifyTrialsName','var')~=1    
+    specifyTrialsName=handles.Top.specifyTrialsDropDown.Value;
+    runLog=true;
+else
+    handles.Top.specifyTrialsDropDown.Value=specifyTrialsName;
+    runLog=false;
+end
 
 pguiFig=evalin('base','gui;');
 pguiHandles=getappdata(pguiFig,'handles');
@@ -21,7 +27,7 @@ handles=getappdata(fig,'handles');
 
 % tabName=pguiHandles.Tabs.tabGroup1.SelectedTab.Title;
 
-inclStruct=feval(name);
+inclStruct=feval(specifyTrialsName);
 
 % Parse the inclStruct to populate the GUI.
 currSelectedTab=handles.Top.includeExcludeTabGroup.SelectedTab;
@@ -40,7 +46,7 @@ for inclExcl=1:2
 
     if ~isstruct(inclStruct) || ~isfield(inclStruct,'Include')
         disp('No trials to include');
-        condNames={'Add Condition Name'};
+        condNames={'Add Condition specifyTrialsName'};
         currCondDropDown.Items=condNames;
         currCondDropDown.Value=condNames{1};
 
@@ -71,12 +77,23 @@ end
 
 handles.Top.includeExcludeTabGroup.SelectedTab=currSelectedTab;
 
-pguiHandles.Process.specifyTrialsLabel.Text=name;
+pguiHandles.Process.specifyTrialsLabel.Text=specifyTrialsName;
 
-%% Assign the new specify trials name to the current function
+%% Assign the new specify trials specifyTrialsName to the current function
 nodeRow=getappdata(fig,'nodeRow');
 projectSettingsMATPath=getappdata(pguiFig,'projectSettingsMATPath');
 
 load(projectSettingsMATPath,'Digraph');
-Digraph.Nodes.SpecifyTrials{nodeRow}=name;
+if isequal(specifyTrialsName,Digraph.Nodes.SpecifyTrials{nodeRow})
+    runLog=false; % Don't put an entry in the logsheet just for modifying or looking at the specify trials. Has to change the selection to make an entry.
+end
+Digraph.Nodes.SpecifyTrials{nodeRow}=specifyTrialsName;
 save(projectSettingsMATPath,'Digraph','-append');
+
+fcnName=Digraph.Nodes.FunctionNames{nodeRow};
+nodeID=Digraph.Nodes.NodeNumber(nodeRow);
+
+if runLog
+    desc=['Changed specify trials for function ' fcnName ' node ID #' num2str(nodeID)];
+    updateLog(pguiFig,desc,specifyTrialsName);
+end

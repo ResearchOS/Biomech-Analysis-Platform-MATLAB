@@ -1,4 +1,4 @@
-function []=logsheetPathFieldValueChanged(src,dontRead)
+function []=logsheetPathFieldValueChanged(src,logsheetPath)
 
 %% PURPOSE: UPDATE THE LOGSHEET PATH FIELD VALUE, AND SAVE A COPY OF THE XLSX FILE TO MAT FILE
 % Inputs:
@@ -9,7 +9,13 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-logsheetPath=handles.Import.logsheetPathField.Value;
+if exist('logsheetPath','var')~=1
+    logsheetPath=handles.Import.logsheetPathField.Value;
+    runLog=true;
+else
+    handles.Import.logsheetPathField.Value=logsheetPath;
+    runLog=false;
+end
 
 if isempty(logsheetPath) || isequal(logsheetPath,'Logsheet Path (ends in .xlsx)')
     setappdata(fig,'logsheetPath','');
@@ -55,7 +61,7 @@ logsheetPathMAT=[logsheetFolder slash name '.mat'];
 %% Create MAT file from logsheet
 % Opening: dontRead=0, logsheetPathMAT may or may not exist
 % Changing: dontRead does not exist, logsheetPathMAT may or may not exist
-if ~(exist('dontRead','var') && exist(logsheetPathMAT,'file')==2) % Don't do MAT file from logsheet
+if getappdata(fig,'switchingProjects')==1 % Don't do MAT file from logsheet
 
     % IN THE FUTURE, DO OTHER EXTENSIONS TOO (CSV, OTHERS?)
     if contains(ext,'xls')
@@ -183,3 +189,8 @@ else
 end
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
+
+if runLog
+    desc='Update the logsheet path';
+    updateLog(fig,desc,logsheetPath);
+end

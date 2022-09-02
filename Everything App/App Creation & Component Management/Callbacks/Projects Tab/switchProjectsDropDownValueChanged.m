@@ -7,6 +7,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=handles.Projects.switchProjectsDropDown.Value;
 setappdata(fig,'projectName',projectName);
+setappdata(fig,'switchingProjects',1);
 
 % 1. Load the project-specific settings MAT file (if it exists)
 % Get the path to that file from the project-independent settings MAT file.
@@ -53,6 +54,13 @@ if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MA
     disp(['(2) Ensure that the project settings MAT file exists in the current code folder,']);
     disp(['(3) Check the accuracy of the project-independent settings MAT file located at: ' settingsMATPath]);
     return;
+end
+
+if getappdata(fig,'isRunLog')
+    if ~contains(projectSettingsMATPath,'_RunLog')
+        projectSettingsMATPath=[projectSettingsMATPath(1:end-4) '_RunLog.mat'];
+    end
+%     setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Saves an alternate version
 end
 
 setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
@@ -118,7 +126,7 @@ handles.Import.logsheetPathField.Value=logsheetPath;
 if exist(logsheetPath,'file')==2    
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
     resetProjectAccess_Visibility(fig,4); % Allow all tabs to be used.
-    logsheetPathFieldValueChanged(fig,0); % 0 indicates to not re-read the logsheet file.
+    logsheetPathFieldValueChanged(fig);
     varName=handles.Import.logVarsUITree.SelectedNodes.Text;
     handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(varName).TrialSubject;
     handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(varName).DataType;
@@ -171,7 +179,16 @@ save(getappdata(fig,'settingsMATPath'),'mostRecentProjectName','-append');
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 % setappdata(fig,'FcnSettingsStruct',FcnSettingsStruct);
 
-% 7. Tell the user that the project has successfully switched
+% 8. Tell the user that the project has successfully switched
 drawnow;
 a=toc;
+setappdata(fig,'switchingProjects',0);
 disp(['Success! Switched to project ' projectName ' in ' num2str(a) ' seconds']);
+
+logPath=getappdata(fig,'runLogPath');
+
+if exist(logPath,'file')~=2
+    initializeLog(fig);
+else
+    setappdata(fig,'logEverCreated',true);
+end

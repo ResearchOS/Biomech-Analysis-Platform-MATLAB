@@ -1,4 +1,4 @@
-function []=dataPathFieldValueChanged(src,event)
+function []=dataPathFieldValueChanged(src,dataPath)
 
 %% PURPOSE: SETS THE FOLDER LOCATION WHERE ALL OF THE DATA FOR THIS PROJECT IS LOCATED.
 % NOTE: CURRENTLY ASSUMES THAT ALL DATA IS IN SUBFOLDERS OF THIS DIRECTORY
@@ -7,7 +7,13 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-dataPath=handles.Projects.dataPathField.Value;
+if exist('dataPath','var')~=1
+    dataPath=handles.Projects.dataPathField.Value;
+    runLog=true;
+else
+    handles.Projects.dataPathField.Value=dataPath;
+    runLog=false;
+end
 
 if isempty(dataPath) || isequal(dataPath,'Data Path (contains ''Subject Data'' folder)')
     setappdata(fig,'dataPath','');
@@ -63,3 +69,8 @@ addpath(genpath(getappdata(fig,'dataPath')));
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
 resetProjectAccess_Visibility(fig,3);
+
+if runLog
+    desc='Update the data folder path for this project.';
+    updateLog(fig,desc,dataPath);
+end

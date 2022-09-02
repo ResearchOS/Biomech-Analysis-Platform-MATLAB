@@ -1,4 +1,4 @@
-function []=addProjectButtonPushed(src,event)
+function []=addProjectButtonPushed(src,projectName)
 
 %% PURPOSE: CREATE A NEW PROJECT. COULD BE FIRST TIME USE (NO EXISTING PROJECTS, ALL COMPONENTS INVISIBLE), OR JUST A NEW PROJECT (ALL COMPONENTS VISIBLE)
 
@@ -7,7 +7,13 @@ handles=getappdata(fig,'handles');
 
 %% 1. Prompt for the name of the new project
 while true
-    projectName=inputdlg('Enter the new project name','New Project Name');
+    if exist('projectName','var')~=1
+        projectName=inputdlg('Enter the new project name','New Project Name');
+        runLog=true;
+    else
+        projectName={projectName};
+        runLog=false;
+    end
 
     if isempty(projectName) || isempty(projectName{1})
         return; % Pressed Cancel, or did not enter anything.
@@ -15,8 +21,10 @@ while true
 
     projectName=projectName{1};
 
-    if isvarname(projectName)
+    if isvarname(projectName)        
         break;
+    elseif ~runLog
+        clear projectName; % Prevents an infinite loop if the project name in the log is not correct.
     end
 
     disp(['Project name needs to be valid variable name!']);
@@ -58,3 +66,8 @@ resetProjectAccess_Visibility(fig,1);
 handles.Projects.codePathField.Value='Path to Project Processing Code Folder';
 
 disp('Next, select or enter the full path to the folder where all of the code for this project will be stored.');
+
+if runLog
+    desc='Create the project';
+    updateLog(fig,desc,projectName);
+end

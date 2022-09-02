@@ -1,4 +1,4 @@
-function []=codePathFieldValueChanged(src,event)
+function []=codePathFieldValueChanged(src,codePath)
 
 %% PURPOSE: PROPAGATE CHANGES TO THE CODE PATH EDIT FIELD TO THE SAVED SETTINGS AND THE REST OF THE GUI
 
@@ -6,7 +6,13 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-codePath=handles.Projects.codePathField.Value;
+if ~exist('codePath','var')
+    codePath=handles.Projects.codePathField.Value;
+    runLog=true;
+else
+    handles.Projects.codePathField.Value=codePath;
+    runLog=false;
+end
 
 if isempty(codePath) || isequal(codePath,'Path to Project Processing Code Folder')
     setappdata(fig,'codePath','');
@@ -41,6 +47,11 @@ setappdata(fig,'codePath',codePath);
 
 macAddress=getComputerID();
 projectSettingsMATPath=[codePath 'Settings_' projectName '.mat']; % The project-specific settings MAT file in the project's code folder
+
+if getappdata(fig,'isRunLog')
+    projectSettingsMATPath=[projectSettingsMATPath(1:end-4) '_RunLog.mat'];
+    setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Saves an alternate version
+end
 
 % 1. Load the project settings structure MAT file, if it exists.
 if exist(projectSettingsMATPath,'file')==2
@@ -121,3 +132,10 @@ end
 
 % Propagate changes to the rest of the GUI.
 switchProjectsDropDownValueChanged(fig);
+
+% Initialize the log of all the actions taken.
+if runLog
+    initializeLog(fig);
+    desc='Update the code folder path for this project.';
+    updateLog(fig,desc,codePath);
+end

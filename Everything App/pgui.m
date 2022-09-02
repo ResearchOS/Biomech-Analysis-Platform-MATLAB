@@ -1,11 +1,11 @@
-function []=pgui()
+function []=pgui(isRunLog)
 
 tic;
 %% PURPOSE: THIS IS THE FUNCTION THAT IS CALLED IN THE COMMAND WINDOW TO OPEN THE GUI FOR IMPORTING/PROCESSING/PLOTTING DATA
 % THIS FUNCTION CREATES ALL COMPONENTS, AND CONTAINS THE CALLBACKS FOR ALL COMPONENTS IN THE GUI.
 
 % WRITTEN BY: MITCHELL TILLMAN, 11/06/2021
-% IN HONOR AND LOVING MEMORY OF MY FATHER DOUGLAS ERIC TILLMAN, 10/29/1961-07/05/2021
+% IN HONOR AND LOVING MEMORY OF MY FATHER DOUGLAS ERIC TILLMAN, 10/29/1963-07/05/2021
 
 version='3.0'; % Current version of the pgui package.
 
@@ -30,6 +30,13 @@ figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax:
 setappdata(fig,'version',version);
 
 %% Initialize app data
+if exist('isRunLog','var')
+    isRunLog=true;
+else
+    isRunLog=false;
+end
+setappdata(fig,'isRunLog',isRunLog); % Indicates if this is a run log-generated session, or a user-controlled session. Changes settings path depending, just in case.
+setappdata(fig,'logEverCreated',false); % Initialize that the logsheet has ever been created.
 setappdata(fig,'everythingPath',[fileparts(mfilename('fullpath')) slash]); % Path to the 'Everything App' folder.
 warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
 rmpath(genpath([getappdata(fig,'everythingPath') slash 'm File Library'])); % Ensure that the function library files are not on the path, because I don't want to run those files, I want to copy them to my local project.
@@ -50,6 +57,7 @@ setappdata(fig,'currentPointUp',[0 0]); % The location of the mouse on the figur
 setappdata(fig,'selectedNodeNumbers',0); % The node ID numbers of the selected nodes
 setappdata(fig,'splitName',''); % The name of the current processing split
 setappdata(fig,'splitCode',''); % The code to append to variables for the current processing split
+setappdata(fig,'runLogPath',''); % The path for the running log of all actions taken for a project.
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
@@ -588,8 +596,7 @@ switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged 
 % 10. Set components according to the project-independent settings from the
 % settings tab (not done yet)
 
-% 11. Finish pgui creation
-% 0. Assign component handles to GUI and send GUI variable to base workspace
+% 11. Finish pgui creation. Assign component handles to GUI and send GUI variable to base workspace
 drawnow;
 assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected
 a=toc;

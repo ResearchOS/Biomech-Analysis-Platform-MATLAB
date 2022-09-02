@@ -155,17 +155,17 @@ else % Create more fields for input vars for each new split.
     end
 end
 
-if isempty(Digraph.Nodes.OutputVariableNames{idx2})
-    Digraph.Nodes.OutputVariableNames{idx2}=struct([splitName '_' splitCode],'');
-    Digraph.Nodes.OutputVariableNamesInCode{idx2}=struct([splitName '_' splitCode],'');
+if isempty(Digraph.Nodes.OutputVariableNames{idx1})
+    Digraph.Nodes.OutputVariableNames{idx1}=struct([splitName '_' splitCode],'');
+    Digraph.Nodes.OutputVariableNamesInCode{idx1}=struct([splitName '_' splitCode],'');
 else
-    varNames=Digraph.Nodes.OutputVariableNames{idx2};
-    varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{idx2};
+    varNames=Digraph.Nodes.OutputVariableNames{idx1};
+    varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{idx1};
     if ~isfield(varNames,[splitName '_' splitCode])
         varNames.([splitName '_' splitCode])='';
         varNamesInCode.([splitName '_' splitCode])='';
-        Digraph.Nodes.OutputVariableNames{idx2}=varNames;
-        Digraph.Nodes.OutputVariableNamesInCode{idx2}=varNamesInCode;
+        Digraph.Nodes.OutputVariableNames{idx1}=varNames;
+        Digraph.Nodes.OutputVariableNamesInCode{idx1}=varNamesInCode;
     end
 end
 

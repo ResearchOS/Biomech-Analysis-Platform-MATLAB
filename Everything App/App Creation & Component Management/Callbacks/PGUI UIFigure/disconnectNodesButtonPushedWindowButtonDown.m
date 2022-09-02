@@ -162,19 +162,25 @@ Digraph=rmedge(Digraph,edgeIdx);
 %% Remove the split from the Digraph input & output variables, & the names in code.
 % node1Row=ismember(Digraph.Nodes.NodeNumber,nodeID1);
 if isstruct(Digraph.Nodes.OutputVariableNames{idx1})
-    Digraph.Nodes.OutputVariableNames{idx1}=rmfield(Digraph.Nodes.OutputVariableNames{idx1},[name '_' splitCode]);
-    Digraph.Nodes.OutputVariableNamesInCode{idx1}=rmfield(Digraph.Nodes.OutputVariableNamesInCode{idx1},[name '_' splitCode]);
+    if isfield(Digraph.Nodes.OutputVariableNames{idx1},[name '_' splitCode])
+        Digraph.Nodes.OutputVariableNames{idx1}=rmfield(Digraph.Nodes.OutputVariableNames{idx1},[name '_' splitCode]);
+        Digraph.Nodes.OutputVariableNamesInCode{idx1}=rmfield(Digraph.Nodes.OutputVariableNamesInCode{idx1},[name '_' splitCode]);
+    end
 end
 if isstruct(Digraph.Nodes.InputVariableNames{idx2})
-    Digraph.Nodes.InputVariableNames{idx2}=rmfield(Digraph.Nodes.InputVariableNames{idx2},[name '_' splitCode]);
-    Digraph.Nodes.InputVariableNamesInCode{idx2}=rmfield(Digraph.Nodes.InputVariableNamesInCode{idx2},[name '_' splitCode]);
+    if isfield(Digraph.Nodes.InputVariableNames{idx2},[name '_' splitCode])
+        Digraph.Nodes.InputVariableNames{idx2}=rmfield(Digraph.Nodes.InputVariableNames{idx2},[name '_' splitCode]);
+        Digraph.Nodes.InputVariableNamesInCode{idx2}=rmfield(Digraph.Nodes.InputVariableNamesInCode{idx2},[name '_' splitCode]);
+    end
 end
 
 % Remove output variables if no output edge, because the output variables
 % are initialized when the edge is created.
 if isstruct(Digraph.Nodes.OutputVariableNames{idx2}) && ~ismember(splitCode,Digraph.Edges.SplitCode(outedges(Digraph,idx2)))
-    Digraph.Nodes.OutputVariableNames{idx2}=rmfield(Digraph.Nodes.OutputVariableNames{idx2},[name '_' splitCode]);
-    Digraph.Nodes.OutputVariableNamesInCode{idx2}=rmfield(Digraph.Nodes.OutputVariableNamesInCode{idx2},[name '_' splitCode]);
+    if isfield(Digraph.Nodes.OutputVariableNames{idx2},[name '_' splitCode])
+        Digraph.Nodes.OutputVariableNames{idx2}=rmfield(Digraph.Nodes.OutputVariableNames{idx2},[name '_' splitCode]);
+        Digraph.Nodes.OutputVariableNamesInCode{idx2}=rmfield(Digraph.Nodes.OutputVariableNamesInCode{idx2},[name '_' splitCode]);
+    end
 end
 
 %% Plot the new plot.

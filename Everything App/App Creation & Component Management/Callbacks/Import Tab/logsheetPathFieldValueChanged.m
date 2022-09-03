@@ -189,6 +189,7 @@ else
 end
 
 save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
+resetProjectAccess_Visibility(fig,4);
 
 if runLog
     desc='Update the logsheet path';

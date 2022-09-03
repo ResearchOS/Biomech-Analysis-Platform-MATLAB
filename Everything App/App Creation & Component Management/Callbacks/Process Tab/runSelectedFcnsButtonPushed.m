@@ -1,4 +1,4 @@
-function []=runSelectedFcnsButtonPushed(src,event)
+function []=runSelectedFcnsButtonPushed(src,splitName_Code)
 
 %% PURPOSE: RUN THE PROCESS FUNCTIONS SELECTED IN THE MAP FIGURE
 
@@ -76,10 +76,10 @@ elseif ispc==1
     slash='\';
 end
 
-splitText=handles.Process.splitsUITree.SelectedNodes.Text;
-spaceIdx=strfind(splitText,' ');
-splitName=splitText(1:spaceIdx-1);
-splitCode=splitText(spaceIdx+2:end-1);
+% splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+% spaceIdx=strfind(splitText,' ');
+% splitName=splitText(1:spaceIdx-1);
+% splitCode=splitText(spaceIdx+2:end-1);
 % splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
 
 setappdata(fig,'splitName',splitName);
@@ -184,8 +184,9 @@ for i=1:length(fcnNames)
     cd(oldPath);
 
     % Create log of the function that just successfully finished running.
-%     disp(['Now Logging ' fcnName ' ' splitName])
-%     generateLog(nodeNum);
-%     disp(['Finished Logging ' fcnName ' ' splitName])
+    if runLog
+        desc=['Ran function ' fcnName];
+        updateLog(fig,desc,splitName_Code);
+    end
 
 end

@@ -1,4 +1,4 @@
-function []=assignExistingArg2OutputButtonPushed(src,event)
+function []=assignExistingArg2OutputButtonPushed(src,event,nodeNum,varNameInGUI,splitCode)
 
 %% PURPOSE:
 

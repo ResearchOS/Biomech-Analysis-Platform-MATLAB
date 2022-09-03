@@ -1,4 +1,4 @@
-function []=windowButtonDownFcn(src,event)
+function []=windowButtonDownFcn(src,currPoint)
 
 %% PURPOSE: RECORD WHEN THE MOUSE BUTTON IS CLICKED (DOWN). ONLY ACTIVATES IF THE CLICK WAS ON THE UIAXES OBJECT
 
@@ -16,9 +16,13 @@ end
 xlims=handles.Process.mapFigure.XLim;
 ylims=handles.Process.mapFigure.YLim;
 
-currPoint=handles.Process.mapFigure.CurrentPoint;
-
-currPoint=currPoint(1,1:2);
+if exist('currPoint','var')~=1
+    currPoint=handles.Process.mapFigure.CurrentPoint;
+    currPoint=currPoint(1,1:2);
+    runLog=true;
+else
+    runLog=false;
+end
 
 if currPoint(1)>=xlims(1) && currPoint(1)<=xlims(2) && currPoint(2)>=ylims(1) && currPoint(2)<=ylims(2) % Ensure the cursor is within the uiaxes
     setappdata(fig,'currentPointDown',currPoint);    
@@ -41,6 +45,7 @@ end
 
 if isequal(fig.CurrentObject.Tag,'VarsListbox')
     varName=handles.Process.varsListbox.Value;
+    desc='Clicked on the variables UI tree';
 elseif isprop(fig.CurrentObject,'NodeData') % isequal(fig.CurrentObject.Tag,'FunctionsUITree') %isequal(fig.CurrentObject,handles.Process.fcnArgsUITree)
     if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
         return;
@@ -48,9 +53,14 @@ elseif isprop(fig.CurrentObject,'NodeData') % isequal(fig.CurrentObject.Tag,'Fun
     %         if ismember(fig.CurrentObject.Parent.Text,{'Inputs','Outputs'}
     varName=handles.Process.fcnArgsUITree.SelectedNodes.Text;
     a=handles.Process.fcnArgsUITree.SelectedNodes.Parent;
+    desc='Clicked on a variable in the functions UI tree';
     if ~isprop(a,'Text') || ~ismember(a.Text,{'Inputs','Outputs'}) % Ensure this is a variable name
         return;
     end
 else
     return;
+end
+
+if runLog    
+    updateLog(fig,desc);
 end

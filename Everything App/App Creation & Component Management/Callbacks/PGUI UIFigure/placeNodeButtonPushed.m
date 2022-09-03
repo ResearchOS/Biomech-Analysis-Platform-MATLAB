@@ -1,4 +1,4 @@
-function []=placeNodeButtonPushed(src,event)
+function []=placeNodeButtonPushed(src,currPoint)
 
 %% PURPOSE: THE PLACE FCN WAS PUSHED, WHICH REQUIRES CLICKING ON THE UIAXES, SO THE WINDOWBUTTONDOWN FCN WAS CHANGED TO THIS.
 
@@ -13,9 +13,13 @@ if isempty(fig.CurrentObject)
     return;
 end
 
-currPoint=handles.Process.mapFigure.CurrentPoint;
-
-currPoint=currPoint(1,1:2);
+if exist('currPoint','var')~=1
+    currPoint=handles.Process.mapFigure.CurrentPoint;
+    currPoint=currPoint(1,1:2);
+    runLog=true;
+else
+    runLog=false;
+end
 
 xlims=handles.Process.mapFigure.XLim;
 ylims=handles.Process.mapFigure.YLim;
@@ -25,15 +29,25 @@ if ~(currPoint(1)>=xlims(1) && currPoint(1)<=xlims(2) && currPoint(2)>=ylims(1) 
     return;
 end
 
-allDots=getappdata(fig,'allDots');
+if exist('currPoint','var')~=1
 
-allCoords=[allDots.XData' allDots.YData'];
+    allDots=getappdata(fig,'allDots');
 
-allCoordsDists=sqrt((allCoords(:,1)-repmat(currPoint(1,1),size(allCoords,1),1)).^2+(allCoords(:,2)-repmat(currPoint(1,2),size(allCoords,1),1)).^2);
+    allCoords=[allDots.XData' allDots.YData'];
 
-[~,I]=min(allCoordsDists);
+    allCoordsDists=sqrt((allCoords(:,1)-repmat(currPoint(1,1),size(allCoords,1),1)).^2+(allCoords(:,2)-repmat(currPoint(1,2),size(allCoords,1),1)).^2);
 
-newNodeCoord=allCoords(I,:);
+    [~,I]=min(allCoordsDists);
+
+    newNodeCoord=allCoords(I,:);
+
+    delete(allDots);
+    
+    runLog=true;
+else
+    runLog=false;
+    newNodeCoord=currPoint;
+end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph');
@@ -42,14 +56,6 @@ if ismember(newNodeCoord,Digraph.Nodes.Coordinates,'rows')
     disp('Cannot place a function node on top of an existing node! Click elsewhere');
     return;
 end
-
-% Get the current split code
-% selNode=handles.Process.splitsUITree.SelectedNodes.Text;
-% spaceIdx=strfind(selNode,' ');
-% splitName=selNode(1:spaceIdx-1);
-% splitCode=selNode(spaceIdx+2:end-1);
-
-delete(allDots);
 
 % Add most node properties
 Digraph=addnode(Digraph,1);
@@ -81,3 +87,8 @@ save(projectSettingsMATPath,'Digraph','-append');
 setappdata(fig,'doNothingOnButtonUp',1);
 set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
     'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
+
+if runLog
+    desc='Inserted new function node';
+    updateLog(fig,desc);
+end

@@ -1,4 +1,4 @@
-function []=removeFunctionButtonPushed(src,event)
+function []=removeFunctionButtonPushed(src,nodeNum)
 
 %% PURPOSE: REMOVE THE FUNCTION SELECTED IN THE FCNARGSUITREE
 
@@ -10,7 +10,13 @@ if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     return;
 end
 
+if exist('nodeNum','var')~=1    
 nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
+runLog=true;
+else
+    handles.Process.fcnArgsUITree.SelectedNodes=findobj(handles.Process.fcnArgsUITree,'NodeData',nodeNum);
+    runLog=false;
+end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph');
@@ -41,3 +47,8 @@ if isempty(selNodeIDs)
 end
 
 highlightedFcnsChanged(fig,Digraph,selNodeIDs(1));
+
+if runLog
+    desc='Removed a function node';
+    updateLog(fig,desc,nodeNum);
+end

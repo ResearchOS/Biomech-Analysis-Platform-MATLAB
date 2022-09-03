@@ -1,4 +1,4 @@
-function []=trialSubjectDropDownValueChanged(src,trialSubject)
+function []=trialSubjectDropDownValueChanged(src,headerName,trialSubject)
 
 %% PURPOSE:
 
@@ -6,16 +6,17 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-headerName=handles.Import.logVarsUITree.SelectedNodes.Text;
-headerNameVar=genvarname(headerName);
-
 if exist('trialSubject','var')~=1
     trialSubject=handles.Import.trialSubjectDropDown.Value;
+    headerName=handles.Import.logVarsUITree.SelectedNodes.Text;
     runLog=true;
 else
-    handles.Import.trialSubjectDropDown.Value=trialSubject;
+    handles.Import.trialSubjectDropDown.Value=trialSubject;   
+    handles.Import.logVarsUITree.SelectedNodes=findobj(handles.Import.logVarsUITree,'Text',headerName);
     runLog=false;
 end
+
+headerNameVar=genvarname(headerName);
 
 projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
@@ -27,5 +28,5 @@ save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
 if runLog
     desc=['Changed the level of variable ' headerName ' to read in from the logsheet'];
-    updateLog(fig,desc,trialSubject);
+    updateLog(fig,desc,headerName,trialSubject);
 end

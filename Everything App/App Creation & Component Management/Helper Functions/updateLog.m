@@ -16,7 +16,7 @@ if exist(logPath,'file')~=2
 end
 
 text=regexp(fileread(logPath),'\n','split');
-text=text(1:end-2); % Remove the setappdata(fig,'isRunLog','false')
+text=text(1:end-3); % Remove the 'setappdata(fig,'isRunLog','false')' & the 'toc'
 
 if size(text,1)<size(text,2) % Row vector
     text=text';
@@ -42,22 +42,36 @@ argsChar='(gui, ';
 varNames=cell(length(varargin),1);
 initNum=3; % The number of non-varargin input variables plus 1.
 for i=initNum:length(varargin)+initNum-1
-    varNames{i-(initNum-1)}=inputname(i);
+    idx=i-(initNum-1);
+    varNames{idx}=inputname(i);
     n=n+1;
-    varClass=class(varargin{i-(initNum-1)});
+    varClass=class(varargin{idx});    
     switch varClass
         case 'char'
-            text{n}=[varNames{i-(initNum-1)} ' = ' '''' varargin{i-(initNum-1)} ''';']; % Insert the argument definitions
+            text{n}=[varNames{idx} ' = ' '''' varargin{idx} ''';']; % Insert the argument definitions
 
         case 'struct'
 
         case 'double'
-            text{n}=[varNames{i-(initNum-1)} ' = ' '' num2str(varargin{i-(initNum-1)}) ';'];
+            if max(size(varargin{idx}))==1
+                text{n}=[varNames{idx} ' = ' '' num2str(varargin{idx}) ';'];
+            else
+                if size(varargin{idx},1)>size(varargin{idx},2)
+                    varargin{idx}=varargin{idx}';
+                end
+                var='[';
+                for j=1:length(varargin{idx})
+                    var=[var num2str(varargin{idx}(j)) ' '];
+                end
+                var=[var(1:end-1) ']']; % Remove the final space
+                text{n}=[varNames{idx} ' = ' var ';'];
+                clear var;
+            end
     end
     if i==initNum
-        argsChar=[argsChar varNames{i-(initNum-1)}];
+        argsChar=[argsChar varNames{idx}];
     else
-        argsChar=[argsChar ', ' varNames{i-(initNum-1)}];
+        argsChar=[argsChar ', ' varNames{idx}];
     end
 end
 
@@ -75,6 +89,9 @@ text{n}=''; % Space
 
 n=n+1;
 text{n}='setappdata(gui,''isRunLog'',false);'; % Allow for user editing of the GUI again.
+
+n=n+1;
+text{n}='toc;';
 
 n=n+1;
 text{n}=''; % Always end with a space

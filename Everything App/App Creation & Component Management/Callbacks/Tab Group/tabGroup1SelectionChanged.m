@@ -1,4 +1,4 @@
-function []=tabGroup1SelectionChanged(src,event)
+function []=tabGroup1SelectionChanged(src,currTab)
 
 %% PURPOSE: STORE THE MOST RECENTLY SELECTED TAB SO THE PGUI CAN OPEN TO IT THE NEXT TIME
 % Also, set the parent tab of the processing map figure objects to the
@@ -14,7 +14,14 @@ if exist(settingsMATPath,'file')==2
     settingsVarNames={settingsVarNames.name};
 end
 
-currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
+if exist('tabName','var')~=1
+    currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
+    runLog=true;
+else
+    handles.Tabs.tabGroup1.SelectedTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
+    drawnow;
+    runLog=false;
+end
 
 if exist(settingsMATPath,'file')~=2
     prevTab='Projects';
@@ -45,4 +52,8 @@ else
     save(settingsMATPath,'currTab','-mat','-append'); % Save the most recent (i.e. current) project name, and the project's settings struct with the path name to the code folder
 end
 
-%% Set the parent tab of the processing map figure objects to the currently selected tab.
+if runLog
+    tabName=currTab;
+    desc='Changed tabs';
+    updateLog(fig,desc,tabName);
+end

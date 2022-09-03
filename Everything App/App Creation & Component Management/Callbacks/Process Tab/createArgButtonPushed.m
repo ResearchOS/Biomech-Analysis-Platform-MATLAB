@@ -1,4 +1,4 @@
-function []=createArgButtonPushed(src,event)
+function []=createArgButtonPushed(src,nameInGUI,input2,input3,input4)
 
 %% PURPOSE: ADD NEW ARG TO THE ALL ARGS LIST, UPDATE THE LIST BOXES.
 
@@ -36,8 +36,13 @@ end
 %% Prompt for the name of the argument as shown in the GUI
 while ~nameInGUIOK
     % 1. Open a dialog box asking for the name to use for the argument
-%     nameInGUI=inputdlg('Enter argument name in GUI');
-    nameInGUI=input('Enter argument name in GUI: '); % Avoids the inputdlg
+    if exist('nameInGUI','var')~=1
+%         nameInGUI=inputdlg('Enter argument name in GUI');
+        nameInGUI=input('Enter argument name in GUI: '); % Avoids the inputdlg
+        runLog=true;
+    else
+        runLog=false;
+    end
 
     if isempty(nameInGUI) || (iscell(nameInGUI) && isempty(nameInGUI{1}))
         disp('Process cancelled, no argument added');
@@ -65,8 +70,13 @@ while ~nameInGUIOK
 
     % 2. Check if this argument name already exists in the list.
     if ismember(nameInGUI,guiNames)
-        disp('This variable already exists! No argument added, try again.');
-        continue;
+        if runLog
+            disp('This variable already exists! No argument added, try again.');
+            continue;
+        else
+            disp('This variable already exists! No argument added, terminating the process.'); % Avoid an infinite loop
+            return;
+        end
     end
 
     nameInGUIOK=1;
@@ -75,8 +85,11 @@ end
 %% Prompt for the default name of the argument in the code.
 while ~defaultNameInCodeOK
     % 3. Ask for a default name in the code to use when adding a variable to a function.
-%     input2=inputdlg('Enter default argument name in code (leave blank to not provide default)','Default name',[1 35],{genvarname(nameInGUI)});
-    input2=input(['Enter default argument name in code (leave blank to use ''' genvarname(nameInGUI) ''': ']); % Avoids the inputdlg which has been SUPER buggy for me.
+    if runLog
+%         input2=inputdlg('Enter default argument name in code (leave blank to not provide default)','Default name',[1 35],{genvarname(nameInGUI)});
+        input2=input(['Enter default argument name in code (leave blank to use ''' genvarname(nameInGUI) ''': ']); % Avoids the inputdlg which has been SUPER buggy for me.
+    end
+
     if isempty(input2)
         input2=genvarname(nameInGUI);
     end
@@ -108,15 +121,22 @@ while ~defaultNameInCodeOK
     end
 
     if ismember(defaultName,saveNames)
-        disp('This save name already exists for another variable! No argument added, try again.');
-        continue;
+        if runLog
+            disp('This save name already exists for another variable! No argument added, try again.');
+            continue;
+        else
+            disp('This save name already exists! No argument added, terminating the process.'); % Avoid an infinite loop
+            return;
+        end
     end
 
     defaultNameInCodeOK=1;
 end
 
 %% 4. Ask whether the variable will be hard-coded
-input3=questdlg('Is this a hard-coded variable?','Hard-coded variable?','Yes','No','No');
+if runLog
+    input3=questdlg('Is this a hard-coded variable?','Hard-coded variable?','Yes','No','No');
+end
 if isempty(input3)
     disp('Process cancelled, no argument added');
     return;
@@ -130,7 +150,9 @@ switch input3
 end
 
 %% 5. Ask what level the variable will be stored at (Project, Subject, or Trial)
-input4=questdlg({'Project, Subject, or Trial level variable?','This can be changed later.'},'Variable Level','Project','Subject','Trial','Trial');
+if runLog
+    input4=questdlg({'Project, Subject, or Trial level variable?','This can be changed later.'},'Variable Level','Project','Subject','Trial','Trial');
+end
 if isempty(input4)
     disp('Process cancelled, no argument added');
     return;
@@ -224,3 +246,12 @@ varsListboxSelectionChanged(fig);
 % handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{rowNum};
 
 save(projectSettingsMATPath,'VariableNamesList','-append');
+
+if runLog
+    varNameInGUI=nameInGUI;
+    varDefaultNameInCode=input2;
+    isHC=input3;
+    level=input4;
+    desc='Create a new variable';
+    updateLog(fig,desc,varNameInGUI,varDefaultNameInCode,isHC,level);
+end

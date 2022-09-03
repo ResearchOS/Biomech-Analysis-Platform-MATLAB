@@ -28,9 +28,8 @@ save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
 if runLog
     desc='Change the subject codename column header in the logsheet';
-    updateLog(fig,desc,subjIDColHeaderName);
-    logsheetPath=getappdata(fig,'logsheetPath');
-    logsheetPathFieldValueChanged(fig,logsheetPath);
-else
-    logsheetPathFieldValueChanged(fig);
+    updateLog(fig,desc,subjIDColHeaderName);       
 end
+
+logsheetPath=getappdata(fig,'logsheetPath');
+logsheetPathFieldValueChanged(fig,logsheetPath);

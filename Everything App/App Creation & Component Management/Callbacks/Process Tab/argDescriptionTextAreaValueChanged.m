@@ -1,10 +1,16 @@
-function []=argDescriptionTextAreaValueChanged(src,event)
+function []=argDescriptionTextAreaValueChanged(src,argDesc,varGUIName)
 
 %% PURPOSE: STORE THE MODIFIED DESCRIPTION TO THE APPROPRIATE VARIABLE
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
-description=handles.Process.argDescriptionTextArea.Value;
+if exist('argDesc','var')~=1
+argDesc=handles.Process.argDescriptionTextArea.Value;
+runLog=true;
+else
+    handles.Process.argDescriptionTextArea.Value=argDesc;
+    runLog=false;
+end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
@@ -18,12 +24,16 @@ end
 
 load(projectSettingsMATPath,'VariableNamesList');
 
-selNode=handles.Process.varsListbox.SelectedNodes;
+if runLog
+    selNode=handles.Process.varsListbox.SelectedNodes;
+    varGUIName=selNode.Text;
+else
+    handles.Process.varsListbox.SelectedNodes=findobj(handles.Process.varsListbox,'Text',varGUIName);
+    selNode=handles.Process.varsListbox.SelectedNodes;
+end
 if contains(selNode.Text,' (')
     selNode=selNode.Parent; % If this is a split node that is selected, instead select the variable node itself.
 end
-
-varGUIName=selNode.Text;
 
 if ~iscell(varGUIName)
     varGUIName={varGUIName};
@@ -42,6 +52,11 @@ varIdx=ismember(VariableNamesList.GUINames,varGUIName); % & ismember(VariableNam
 
 assert(sum(varIdx)==1); % Ensure that it is unique
 
-VariableNamesList.Descriptions{varIdx}=description;
+VariableNamesList.Descriptions{varIdx}=argDesc;
 
 save(projectSettingsMATPath,'VariableNamesList','-append');
+
+if runLog
+    desc='Changed argument description';
+    updateLog(fig,desc,argDesc,varGUIName);
+end

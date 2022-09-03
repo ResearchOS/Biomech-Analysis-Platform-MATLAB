@@ -1,4 +1,4 @@
-function []=assignExistingArg2InputButtonPushed(src,event)
+function []=assignExistingArg2InputButtonPushed(src,nodeNum,varNameInGUI,splitCode)
 
 %% PURPOSE: ASSIGN A VARIABLE FROM THE ALL VARS LIST TO THE CURRENT FUNCTION AS INPUT
 

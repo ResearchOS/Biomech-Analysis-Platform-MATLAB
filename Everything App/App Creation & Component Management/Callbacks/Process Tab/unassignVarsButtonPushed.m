@@ -1,4 +1,4 @@
-function []=unassignVarsButtonPushed(src,event)
+function []=unassignVarsButtonPushed(src,nodeNum,varNameInGUI,splitCode)
 
 %% PURPOSE: REMOVE AN INPUT OR OUTPUT VARIABLE FROM THE CURRENT FUNCTION
 

@@ -1,11 +1,19 @@
-function []=removeArgButtonPushed(src,event)
+function []=removeArgButtonPushed(src,varNameInGUI,splitName_Code)
 
 %% PURPOSE: DELETE A SPLIT OF A VARIABLE FROM THE ALL ARGS LIST, AND FROM ALL FUNCTIONS TOO. IF IT'S BEING USED, PROMPT TO ASK IF IT SHOULD STILL BE REMOVED.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-selNode=handles.Process.varsListbox.SelectedNodes;
+if exist('varNameInGUI','var')~=1
+    runLog=true;
+    selNode=handles.Process.varsListbox.SelectedNodes;
+else
+    runLog=false;
+    handles.Process.varsListbox.SelectedNodes=findobj(handles.Process.varsListbox,'Text',varNameInGUI);
+    handles.Process.varsListbox.SelectedNodes=findobj(handles.Process.varsListbox.SelectedNodes,'Text',splitName_Code);
+    selNode=handles.Process.varsListbox.SelectedNodes;
+end
 if isempty(selNode)
     disp('Must select a variable first!');
     return;
@@ -26,7 +34,11 @@ varName=varNode.Text;
 
 searchOutputs=0;
 if length(varNode.Children)==1 % Removing the variable in its entirety.
-    response=questdlg(['This will remove the variable ''' varName ''' entirely. Are you sure you want to do this?'],'Confirm','No');
+    if runLog
+        response=questdlg(['This will remove the variable ''' varName ''' entirely. Are you sure you want to do this?'],'Confirm','No');
+    else
+        response='Yes'; % Auto-select to delete the variable.
+    end
     if ~isequal(response,'Yes')
         return;
     end
@@ -114,4 +126,11 @@ if isempty(varNode.Children)
     save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
 else
     save(projectSettingsMATPath,'Digraph','-append');
+end
+
+if runLog
+    varNameInGUI=varName;
+    splitName_Code=text;
+    desc='Delete a variable';
+    updateLog(fig,desc,varNameInGUI,splitName_Code);
 end

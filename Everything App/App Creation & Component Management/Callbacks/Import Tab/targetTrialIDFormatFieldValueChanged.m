@@ -36,9 +36,8 @@ save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
 if runLog
     desc='Change the target trial ID column header name from the logsheet';
-    updateLog(fig,desc,targetTrialIDColHeaderName);
-    logsheetPath=getappdata(fig,'logsheetPath');
-    logsheetPathFieldValueChanged(fig,logsheetPath);
-else
-    logsheetPathFieldValueChanged(fig);
+    updateLog(fig,desc,targetTrialIDColHeaderName);    
 end
+
+logsheetPath=getappdata(fig,'logsheetPath');
+logsheetPathFieldValueChanged(fig,logsheetPath);

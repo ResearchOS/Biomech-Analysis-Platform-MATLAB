@@ -1,4 +1,4 @@
-function []=markImportFcnCheckboxValueChanged(src,event)
+function []=markImportFcnCheckboxValueChanged(src,nodeNum)
 
 %% PURPOSE: INDICATE WHETHER A FUNCTION NODE IS AN IMPORT FUNCTION
 
@@ -10,7 +10,13 @@ if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     return;
 end
 
-nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
+if exist('nodeNum','var')~=1
+    nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
+    runLog=true;
+else
+    handles.Process.fcnArgsUITree.SelectedNodes=findobj(handles.Process.fcnArgsUITree,'NodeData',nodeNum);
+    runLog=false;
+end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph');
@@ -20,3 +26,8 @@ nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 Digraph.Nodes.IsImport(nodeRow)=true;
 
 save(projectSettingsMATPath,'Digraph','-append');
+
+if runLog
+    desc='Marked function as import';
+    updateLog(fig,desc,nodeNum);
+end

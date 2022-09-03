@@ -33,9 +33,9 @@ save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
 if runLog
     desc='Change the number of header rows in the logsheet';
-    updateLog(fig,desc,numHeaderRows);
+    updateLog(fig,desc,numHeaderRows);    
+    logsheetPathFieldValueChanged(fig);
+else    
     logsheetPath=getappdata(fig,'logsheetPath');
     logsheetPathFieldValueChanged(fig,logsheetPath);
-else
-    logsheetPathFieldValueChanged(fig);
 end

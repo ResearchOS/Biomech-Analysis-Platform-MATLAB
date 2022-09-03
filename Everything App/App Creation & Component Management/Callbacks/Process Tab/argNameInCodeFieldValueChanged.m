@@ -1,17 +1,27 @@
-function []=argNameInCodeFieldValueChanged(src,event)
+function []=argNameInCodeFieldValueChanged(src,nameInCode,nodeNum)
 
 %% PURPOSE: SAVE CHANGES TO THE ARGUMENT'S NAME IN CODE.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-nameInCode=handles.Process.argNameInCodeField.Value;
+if exist('nameInCode','var')~=1
+    nameInCode=handles.Process.argNameInCodeField.Value;
+    runLog=true;
+else
+    handles.Process.argNameInCodeField.Value=nameInCode;
+    runLog=false;
+end
 
 if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     return;
 end
 
-nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
+if exist('nodeNum','var')~=1
+    nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
+else
+    handles.Process.fcnArgsUITree.SelectedNodes=findobj(handles.Process.fcnArgsUITree,'NodeData',nodeNum);
+end
 a=handles.Process.fcnArgsUITree.SelectedNodes;
 for i=1:2
     if ~isempty(nodeNum)
@@ -46,3 +56,8 @@ else
 end
 
 save(projectSettingsMATPath,'Digraph','-append');
+
+if runLog
+    desc='Changed argument name in code';
+    updateLog(fig,desc,nameInCode,nodeNum);
+end

@@ -114,11 +114,23 @@ handles.Projects.openCodePathButton=uibutton(projectsTab,'push','Text','O','Tag'
 % 11. Show project-independent settings file
 handles.Projects.openPISettingsPathButton=uibutton(projectsTab,'push','Text','Open P-I Settings','Tag','OpenPISettingsPathButton','Tooltip','Open project-independent settings folder','ButtonPushedFcn',@(openPISettingsPathButton,event) openPISettingsPathButtonPushed(openPISettingsPathButton));
 
+% 12. Dropdown to select between VariableNamesList, Digraph, and
+% NonFcnSettingsStruct
+handles.Projects.showVarDropDown=uidropdown(projectsTab,'Items',{'VariableNamesList','Digraph','NonFcnSettingsStruct'},'Value','VariableNamesList','Tooltip','Select a Variable to Display','Editable','off','Tag','ShowVarDropDown','ValueChangedFcn',@(showVarDropDown,event) showVarDropDownValueChanged(showVarDropDown));
+
+% 13. Show variable button
+handles.Projects.showVarButton=uibutton(projectsTab,'push','Text','Show Var','Tag','ShowVarButton','Tooltip','Show selected variable','ButtonPushedFcn',@(showVarButton,event) showVarButtonPushed(showVarButton));
+
+% 14. Update GUI button
+handles.Projects.saveVarButton=uibutton(projectsTab,'Text','Save','Tag','SaveVarButton','ButtonPushedFcn',@(saveVarButton,event) saveVarButtonPushed(saveVarButton));
+
 projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectNameLabel,'DataPathButton',handles.Projects.dataPathButton,'CodePathButton',handles.Projects.codePathButton,...
     'AddProjectButton',handles.Projects.addProjectButton,'SwitchProjectsDropDown',handles.Projects.switchProjectsDropDown,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenCodePathButton',handles.Projects.openCodePathButton,...
-    'ArchiveProjectButton',handles.Projects.archiveProjectButton,'DataPathField',handles.Projects.dataPathField,'CodePathField',handles.Projects.codePathField,'OpenPISettingsPathButton',handles.Projects.openPISettingsPathButton);
+    'ArchiveProjectButton',handles.Projects.archiveProjectButton,'DataPathField',handles.Projects.dataPathField,'CodePathField',handles.Projects.codePathField,'OpenPISettingsPathButton',handles.Projects.openPISettingsPathButton,...
+    'ShowVarDropDown',handles.Projects.showVarDropDown,'ShowVarButton',handles.Projects.showVarButton,'SaveVarButton',handles.Projects.saveVarButton);
 
 @projectsResize;
+set(handles.Projects.saveVarButton,'Visible','off');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.

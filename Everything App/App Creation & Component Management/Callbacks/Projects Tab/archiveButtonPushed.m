@@ -69,12 +69,20 @@ logsheetPathMAT=getappdata(fig,'logsheetPathMAT');
 copyfile(logsheetPath,[currArchiveFolderName slash logsheetPathName ext]);
 copyfile(logsheetPathMAT,[currArchiveFolderName slash logsheetPathMATName '.mat']);
 
+%% Create run code
+runCodeFilePath=[currArchiveFolderName slash 'RunCode_' projectName '_' currDate '.m'];
+createRunCode(fig,runCodeFilePath,currArchiveFolderName,logsheetPathMAT,codePath,dataPath);
+% Copy the 'runCodeFunc.m' file to the archive folder
+
+%% Copy the entirety of the PGUI folder to the archive folder
+
+
+%% Check if archiving data as well as the code.
 load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 archiveData=NonFcnSettingsStruct.Projects.ArchiveData;
-
-%% If not archiving data, compress and end here.
 if archiveData==0
+    %% If not archiving data, compress and end here.
     zip(currArchiveFolderName,currArchiveFolderName);
     rmdir(currArchiveFolderName,'s');
 else

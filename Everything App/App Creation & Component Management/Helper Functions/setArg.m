@@ -15,7 +15,19 @@ elseif ispc==1
 end
 
 %% Get the level for the current arguments to store. Also get the file path for the current MAT file.
-fig=evalin('base','gui;');
+try
+    fig=evalin('base','gui;');
+    isRunCode=0;
+catch
+    try
+        fig=evalin('base','runCodeGUI;');
+        isRunCode=1;
+    catch
+        disp('Missing the GUI!');
+        return;
+    end
+end
+
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 if ~isempty(repNum) && ~isempty(trialName) % Trial level
@@ -39,7 +51,18 @@ end
 splitCode=getappdata(fig,'splitCode');
 splitName=getappdata(fig,'splitName');
 
-load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+if isRunCode==0
+    load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+else
+    try
+        VariableNamesList=evalin('base','VariableNamesList;');
+        Digraph=evalin('base','Digraph;');
+%         NonFcnSettingsStruct=evalin('base','NonFcnSettingsStruct;');
+    catch
+        disp('Missing settings variables from the base workspace!');
+        return;
+    end
+end
 
 nodeRow=getappdata(fig,'nodeRow');
 varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]); 
@@ -79,6 +102,10 @@ if exist(matFilePath,'file')~=2
     save(matFilePath,saveNames{:},'-v6');
 else
     save(matFilePath,saveNames{:},'-append');
+end
+
+if isRunCode==1
+    return; % Can't save new VariableNamesList when using a run code. Run code is for re-running analyses only!
 end
 
 %% If there are new splits for a var, add those to the varsListbox

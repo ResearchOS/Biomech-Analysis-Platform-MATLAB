@@ -30,7 +30,18 @@ if length(inputNamesinCode)~=length(unique(inputNamesinCode))
     return;
 end
 
-fig=evalin('base','gui;');
+try
+    fig=evalin('base','gui;');
+    isRunCode=0;
+catch
+    try
+        fig=evalin('base','runCodeGUI;');
+        isRunCode=1;
+    catch
+        disp('Missing the GUI!');
+        return;
+    end
+end
 
 nodeRow=getappdata(fig,'nodeRow');
 
@@ -49,7 +60,17 @@ if exist(matFilePath,'file')~=2
     return;
 end
 
-load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+if isRunCode==0
+    load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+else
+    try
+        VariableNamesList=evalin('base','VariableNamesList;');
+        Digraph=evalin('base','Digraph;');
+    catch
+        disp('Missing settings variables from the base workspace!');
+        return;
+    end
+end
 
 fileVarNames=whos('-file',matFilePath);
 fileVarNames={fileVarNames.name};
@@ -129,6 +150,6 @@ assert(isequal(sort(dynamicSaveNames),sort(fieldnames(S))));
 for i=1:length(dynamicSaveNames)
 
     inIdx=dynamicInputIdx(i);
-    varargout{inIdx}=S.(dynamicSaveNames{i});
+    varargout{inIdx}=S.(dynamicSaveNames{i}); % This requires copying variables, which is inherently slow. Faster way?
 
 end

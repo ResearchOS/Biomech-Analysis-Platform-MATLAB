@@ -18,18 +18,21 @@ if ~exist('org','var')
 end
 
 fig=ancestor(src,'figure','toplevel');
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+
+load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 % Subject ID Column Header Name
-subjIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
-subjIDHeaderName=subjIDColHeaderField.Value;
+% subjIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');
+subjIDHeaderName=NonFcnSettingsStruct.Import.SubjectIDColHeader;
 
 % Target Trial ID Column Header Name
-targetTrialIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
-targetTrialIDColHeaderName=targetTrialIDColHeaderField.Value;
+% targetTrialIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
+targetTrialIDColHeaderName=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
 
 % Number of Header Rows
-numHeaderRowsField=findobj(fig,'Type','uinumericeditfield','Tag','NumHeaderRowsField');
-numHeaderRows=numHeaderRowsField.Value;
+% numHeaderRowsField=findobj(fig,'Type','uinumericeditfield','Tag','NumHeaderRowsField');
+numHeaderRows=NonFcnSettingsStruct.Import.NumHeaderRows;
 
 %% LOGSHEET-SPECIFIC CRITERIA
 % Iterate over Inclusion vs. Exclusion criteria in Logsheet

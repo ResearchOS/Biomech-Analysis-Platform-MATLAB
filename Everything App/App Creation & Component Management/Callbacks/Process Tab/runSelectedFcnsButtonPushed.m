@@ -76,12 +76,6 @@ elseif ispc==1
     slash='\';
 end
 
-% splitText=handles.Process.splitsUITree.SelectedNodes.Text;
-% spaceIdx=strfind(splitText,' ');
-% splitName=splitText(1:spaceIdx-1);
-% splitCode=splitText(spaceIdx+2:end-1);
-% splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
-
 setappdata(fig,'splitName',splitName);
 setappdata(fig,'splitCode',splitCode);
 macAddress=getComputerID();
@@ -130,7 +124,7 @@ for i=1:length(fcnNames)
     trialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
     subNames=fieldnames(trialNames);
 
-    oldPath=cd(codePath);        
+    oldPath=cd([codePath 'Processing Functions']);        
 
     if ismember('P',level)
 
@@ -150,7 +144,7 @@ for i=1:length(fcnNames)
         subName=subNames{sub};
         currTrials=fieldnames(trialNames.(subName)); % The list of trial names in the current subject
 
-        if ismember('Subject',level)
+        if ismember('S',level)
 
             disp(['Running ' fcnName ' ' splitName ' Subject ' subName]);
 

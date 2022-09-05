@@ -33,6 +33,7 @@ else
 end
 if contains(selNode.Text,' (')
     selNode=selNode.Parent; % If this is a split node that is selected, instead select the variable node itself.
+    varGUIName=selNode.Text;
 end
 
 if ~iscell(varGUIName)
@@ -50,7 +51,13 @@ end
 % varIdx=ismember(VariableNamesList.GUINames,varGUIName) & ismember(VariableNamesList.SplitNames,splitName);
 varIdx=ismember(VariableNamesList.GUINames,varGUIName); % & ismember(VariableNamesList.SplitNames,splitName);
 
-assert(sum(varIdx)==1); % Ensure that it is unique
+try
+    assert(sum(varIdx)==1); % Ensure that it is unique
+catch
+    handles.Process.argDescriptionTextArea.Value='';
+    disp(['Variable ' varNameInGUI ' Not Found in VariableNamesList! Check the settings file']);
+    return;
+end
 
 VariableNamesList.Descriptions{varIdx}=argDesc;
 

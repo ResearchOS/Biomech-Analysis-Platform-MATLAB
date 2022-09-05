@@ -1,4 +1,4 @@
-function []=newSplitButtonPushed(src,splitName,splitColorName,splitCode,parentSplitName)
+function []=newSplitButtonPushed(src,splitName,splitColorName,splitCode,parentSplitName,parentSplitCode)
 
 %% PURPOSE: CREATE A NEW SPLIT, WHETHER FOR EXISTING OR NEW FUNCTIONS
 
@@ -158,5 +158,5 @@ save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct
 if runLog
     desc='Created a new split';
     splitName=name;
-    updateLog(fig,desc,splitName,splitColorName,splitCode,parentSplitName);
+    updateLog(fig,desc,splitName,splitColorName,splitCode,parentSplitName,parentSplitCode);
 end

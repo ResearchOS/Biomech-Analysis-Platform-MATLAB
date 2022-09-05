@@ -12,6 +12,12 @@ elseif ispc==1
     slash='\';
 end
 
+if ~isempty(getappdata(fig,'allDots'))
+    delete(getappdata(fig,'allDots'));
+end
+
+setappdata(fig,'allDots','');
+
 % if isempty(handles.Process.splitsUITree.SelectedNodes)
 %     disp('Select a split first!');
 %     return;
@@ -84,8 +90,8 @@ if runLog
     % integer-coordinate location nearest to the selected coordinate.
     set(fig,'WindowButtonDownFcn',@(fig,event) placeNodeButtonPushed(fig),...
         'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-    desc='Clicked place new function node button';
-    updateLog(fig,desc,fcnName,currPoint);
+%     desc='Clicked place new function node button';
+%     updateLog(fig,desc,fcnName,currPoint);
 else
     set(fig,'WindowButtonDownFcn',@(fig,event) placeNodeButtonPushed(fig,currPoint),...
         'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));

@@ -42,11 +42,12 @@ if exist('currPoint','var')~=1
     newNodeCoord=allCoords(I,:);
 
     delete(allDots);
+    setappdata(fig,'allDots','');
     
     runLog=true;
 else
     runLog=false;
-    newNodeCoord=currPoint;
+    newNodeCoord=round(currPoint);
 end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');

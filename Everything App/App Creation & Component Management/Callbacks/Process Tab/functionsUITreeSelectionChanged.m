@@ -23,6 +23,7 @@ end
 if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
     handles.Process.specifyTrialsLabel.Text='';
     handles.Process.fcnDescriptionTextArea.Value='';
+    handles.Process.fcnsRunOrderField.Value=0;
     return;
 end
 
@@ -95,3 +96,7 @@ specifyTrialsName=Digraph.Nodes.SpecifyTrials{nodeRow};
 handles.Process.specifyTrialsLabel.Text=specifyTrialsName;
 
 handles.Process.markImportFcnCheckbox.Value=Digraph.Nodes.IsImport(nodeRow);
+
+edgeRow=ismember(Digraph.Edges.SplitCode,splitCode) & ismember(Digraph.Edges.NodeNumber(:,2),nodeNum);
+
+handles.Process.fcnsRunOrderField.Value=Digraph.Edges.RunOrder(edgeRow);

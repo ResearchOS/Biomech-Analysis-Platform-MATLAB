@@ -67,7 +67,7 @@ ConvertVarHardDynamicButtonRelPos=[0.3 0.49];
 SpecifyTrialsUITreeRelPos=[0.01 0.01];
 SpecifyTrialsLabelRelPos=[0.01 0.17];
 RemoveSpecifyTrialsButtonRelPos=[0.22 0.1];
-MarkImportFcnCheckboxRelPos=[0.56 0.95];
+MarkImportFcnCheckboxRelPos=[0.38 0.95];
 NewSpecifyTrialsButtonRelPos=[0.22 0.15];
 NewSplitButtonRelPos=[0.225 0.45];
 RemoveSplitButtonRelPos=[0.225 0.4];
@@ -80,6 +80,7 @@ PlaceFcnButtonRelPos=[0.73 0.95];
 SpecifyTrialsButtonRelPos=[0.01 0.11];
 ConnectNodesButtonRelPos=[0.65 0.95];
 DisconnectNodesButtonRelPos=[0.93 0.95];
+FcnsRunOrderFieldRelPos=[0.56 0.95];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -130,6 +131,7 @@ PlaceFcnButtonSize=[0.07 compHeight];
 SpecifyTrialsButtonSize=[0.2 compHeight];
 ConnectNodesButtonSize=[0.07 compHeight];
 DisconnectNodesButtonSize=[0.07 compHeight];
+FcnsRunOrderFieldSize=[0.05 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 MapFigurePos=round([MapFigureRelPos.*figSize MapFigureSize.*figSize]);
@@ -178,6 +180,7 @@ PlaceFcnButtonPos=round([PlaceFcnButtonRelPos.*figSize PlaceFcnButtonSize(1)*fig
 SpecifyTrialsButtonPos=round([SpecifyTrialsButtonRelPos.*figSize SpecifyTrialsButtonSize(1)*figSize(1) SpecifyTrialsButtonSize(2)]);
 ConnectNodesButtonPos=round([ConnectNodesButtonRelPos.*figSize ConnectNodesButtonSize(1)*figSize(1) ConnectNodesButtonSize(2)]);
 DisconnectNodesButtonPos=round([DisconnectNodesButtonRelPos.*figSize DisconnectNodesButtonSize(1)*figSize(1) DisconnectNodesButtonSize(2)]);
+FcnsRunOrderFieldPos=round([FcnsRunOrderFieldRelPos.*figSize FcnsRunOrderFieldSize(1)*figSize(1) FcnsRunOrderFieldSize(2)]);
 
 data.MapFigure.Position=MapFigurePos;
 data.AddFcnButton.Position=AddFcnButtonPos;
@@ -225,6 +228,7 @@ data.PlaceFcnButton.Position=PlaceFcnButtonPos;
 data.SpecifyTrialsButton.Position=SpecifyTrialsButtonPos;
 data.ConnectNodesButton.Position=ConnectNodesButtonPos;
 data.DisconnectNodesButton.Position=DisconnectNodesButtonPos;
+data.FcnsRunOrderField.Position=FcnsRunOrderFieldPos;
 
 data.MapFigure.FontSize=newFontSize;
 data.AddFcnButton.FontSize=newFontSize;
@@ -272,3 +276,4 @@ data.PlaceFcnButton.FontSize=newFontSize;
 data.SpecifyTrialsButton.FontSize=newFontSize;
 data.ConnectNodesButton.FontSize=newFontSize;
 data.DisconnectNodesButton.FontSize=newFontSize;
+data.FcnsRunOrderField.FontSize=newFontSize;

@@ -138,6 +138,7 @@ Digraph.Edges.NodeNumber(currEdgeIdx,1)=nodeID1;
 Digraph.Edges.NodeNumber(currEdgeIdx,2)=nodeID2;
 Digraph.Edges.Color(currEdgeIdx,:)=color;
 Digraph.Edges.SplitCode{currEdgeIdx}=splitCode;
+Digraph.Edges.RunOrder(currEdgeIdx)=max(Digraph.Edges.RunOrder)+1;
 
 % Add the new split to Digraph.Nodes.InputVariableNames &
 % Digraph.Nodes.OutputVariableNames

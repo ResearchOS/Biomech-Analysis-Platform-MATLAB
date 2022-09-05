@@ -183,7 +183,7 @@ if ~isempty(Digraph.Edges)
 
     h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
     h.EdgeColor=Digraph.Edges.Color;
-    splitsUITreeSelectionChanged(fig);
+    splitsUITreeSelectionChanged(fig,'Default (001)');
 else
     plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
 end

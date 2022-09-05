@@ -49,6 +49,8 @@ OpenPISettingsPathButtonRelPos=[0.7 0.95];
 ShowVarDropDownRelPos=[0.01 0.75];
 ShowVarButtonRelPos=[0.22 0.75];
 SaveVarButtonRelPos=[0.33 0.75];
+ArchiveButtonRelPos=[0.9 0.05];
+ArchiveDataCheckboxRelPos=[0.9 0.15];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -68,6 +70,8 @@ OpenPISettingsPathButtonSize=[0.15 compHeight];
 ShowVarDropDownSize=[0.2 compHeight];
 ShowVarButtonSize=[0.1 compHeight];
 SaveVarButtonSize=[0.1 compHeight];
+ArchiveButtonSize=[0.1 compHeight];
+ArchiveDataCheckboxSize=[0.1 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 ProjectNameLabelPos=round([ProjectNameLabelRelPos.*figSize ProjectNameLabelSize(1)*figSize(1) ProjectNameLabelSize(2)]);
@@ -85,6 +89,8 @@ OpenPISettingsPathButtonPos=round([OpenPISettingsPathButtonRelPos.*figSize OpenP
 ShowVarDropDownPos=round([ShowVarDropDownRelPos.*figSize ShowVarDropDownSize(1)*figSize(1) ShowVarDropDownSize(2)]);
 ShowVarButtonPos=round([ShowVarButtonRelPos.*figSize ShowVarButtonSize(1)*figSize(1) ShowVarButtonSize(2)]);
 SaveVarButtonPos=round([SaveVarButtonRelPos.*figSize SaveVarButtonSize(1)*figSize(1) SaveVarButtonSize(2)]);
+ArchiveButtonPos=round([ArchiveButtonRelPos.*figSize ArchiveButtonSize(1)*figSize(1) ArchiveButtonSize(2)]);
+ArchiveDataCheckboxPos=round([ArchiveDataCheckboxRelPos.*figSize ArchiveDataCheckboxSize(1)*figSize(1) ArchiveDataCheckboxSize(2)]);
 
 data.ProjectNameLabel.Position=ProjectNameLabelPos;
 data.DataPathButton.Position=DataPathButtonPos;
@@ -101,6 +107,8 @@ data.OpenPISettingsPathButton.Position=OpenPISettingsPathButtonPos;
 data.ShowVarDropDown.Position=ShowVarDropDownPos;
 data.ShowVarButton.Position=ShowVarButtonPos;
 data.SaveVarButton.Position=SaveVarButtonPos;
+data.ArchiveButton.Position=ArchiveButtonPos;
+data.ArchiveDataCheckbox.Position=ArchiveDataCheckboxPos;
 
 data.ProjectNameLabel.FontSize=newFontSize;
 data.DataPathButton.FontSize=newFontSize;
@@ -117,3 +125,5 @@ data.OpenPISettingsPathButton.FontSize=newFontSize;
 data.ShowVarDropDown.FontSize=newFontSize;
 data.ShowVarButton.FontSize=newFontSize;
 data.SaveVarButton.FontSize=newFontSize;
+data.ArchiveButton.FontSize=newFontSize;
+data.ArchiveDataCheckbox.FontSize=newFontSize;

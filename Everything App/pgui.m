@@ -124,13 +124,18 @@ handles.Projects.showVarButton=uibutton(projectsTab,'push','Text','Show Var','Ta
 % 14. Update GUI button
 handles.Projects.saveVarButton=uibutton(projectsTab,'Text','Save','Tag','SaveVarButton','ButtonPushedFcn',@(saveVarButton,event) saveVarButtonPushed(saveVarButton));
 
+% 15. Archive button
+handles.Projects.archiveButton=uibutton(projectsTab,'Text','Archive','Tag','ArchiveButton','ButtonPushedFcn',@(archiveButton,event) archiveButtonPushed(archiveButton));
+
+% 16. Archive data checkbox
+handles.Projects.archiveDataCheckbox=uicheckbox(projectsTab,'Text','Archive Data','Value',0,'Tag','ArchiveDataCheckbox','Tooltip','If checked, will archive the project data along with the code. If unchecked, archives code only.','ValueChangedFcn',@(archiveDataCheckbox,event) archiveDataCheckboxValueChanged(archiveDataCheckbox),'Visible','on');
+
 projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectNameLabel,'DataPathButton',handles.Projects.dataPathButton,'CodePathButton',handles.Projects.codePathButton,...
     'AddProjectButton',handles.Projects.addProjectButton,'SwitchProjectsDropDown',handles.Projects.switchProjectsDropDown,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenCodePathButton',handles.Projects.openCodePathButton,...
     'ArchiveProjectButton',handles.Projects.archiveProjectButton,'DataPathField',handles.Projects.dataPathField,'CodePathField',handles.Projects.codePathField,'OpenPISettingsPathButton',handles.Projects.openPISettingsPathButton,...
-    'ShowVarDropDown',handles.Projects.showVarDropDown,'ShowVarButton',handles.Projects.showVarButton,'SaveVarButton',handles.Projects.saveVarButton);
+    'ShowVarDropDown',handles.Projects.showVarDropDown,'ShowVarButton',handles.Projects.showVarButton,'SaveVarButton',handles.Projects.saveVarButton,'ArchiveButton',handles.Projects.archiveButton,'ArchiveDataCheckbox',handles.Projects.archiveDataCheckbox);
 
 @projectsResize;
-set(handles.Projects.saveVarButton,'Visible','off');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.

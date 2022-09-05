@@ -129,6 +129,12 @@ handles.Tabs.tabGroup1.SelectedTab=hTab;
 version=getappdata(fig,'version');
 save(settingsMATPath,'version','-append');
 
+if ~isfield(NonFcnSettingsStruct.Projects,'ArchiveData')
+    NonFcnSettingsStruct.Projects.ArchiveData=0;
+else
+    handles.Projects.archiveDataCheckbox.Value=NonFcnSettingsStruct.Projects.ArchiveData;
+end
+
 %% Import tab
 logsheetPath=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
 handles.Import.numHeaderRowsField.Value=NonFcnSettingsStruct.Import.NumHeaderRows;

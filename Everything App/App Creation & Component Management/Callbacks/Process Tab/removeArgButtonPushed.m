@@ -62,13 +62,28 @@ for i=1:length(Digraph.Nodes.FunctionNames) % Look through each function to see 
 
     for j=1:length(splitNamesIn)
         currVars=Digraph.Nodes.InputVariableNames{i}.(splitNamesIn{j});
+        spaceIdx=strfind(splitNamesIn{j},'_');
+        splitCodeNode=splitNamesIn{j}(spaceIdx+1:end);
         if isempty(currVars)
             continue;
         end
         varIdx=ismember(currVars,[varName ' (' splitCode ')']);
         if any(varIdx)
-            doDelete=0; % Indicates to not delete the variable.
-            disp(['Input Variable ''' currVars{varIdx} ''' is used by Function ''' Digraph.Nodes.FunctionNames{i} ''' in Split ''' splitNamesIn{j}  '''']);
+            % Check whether the input variable is being used in a currently
+            % visible split of an existing node (iterate over all splits of
+            % all *visible* nodes). Do this by checking for an inedge to
+            % the node of that split.
+           inEdgeRows=inedges(Digraph,Digraph.Nodes.NodeNumber(i));
+           splitCodes=Digraph.Edges.SplitCode(inEdgeRows); % The splits of the inedges
+           if ismember(splitCodeNode,splitCodes) % If there is an edge of this split going into this node, don't delete the variable.
+               doDelete=0; % Indicates to not delete the variable.
+               disp(['Input Variable ''' currVars{varIdx} ''' is used by Function ''' Digraph.Nodes.FunctionNames{i} ''' in Split ''' splitNamesIn{j}  '''']);
+           else  % Delete that input variable from that split. If no more input variables are left in that split, delete the split entirely.
+                Digraph.Nodes.InputVariableNames{i}.(splitNamesIn{j})=Digraph.Nodes.InputVariableNames{i}.(splitNamesIn{j})(~ismember(Digraph.Nodes.InputVariableNames{i}.(splitNamesIn{j}),[varName ' (' splitCode ')']));
+                if isempty(Digraph.Nodes.InputVariableNames{i}.(splitNamesIn{j}))
+                    Digraph.Nodes.InputVariableNames{i}=rmfield(Digraph.Nodes.InputVariableNames{i},splitNamesIn{j});
+                end
+           end
         end
     end
 

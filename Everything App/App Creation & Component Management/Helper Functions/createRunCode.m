@@ -30,7 +30,7 @@ text{15}='macAddress=getComputerID(); % Get the unique ID for this computer';
 text{16}='';
 text{17}='% Initialize figure just for storing data';
 text{18}='if exist(''gui'',''var'')==1';
-text{19}='    close(gui); clear gui;';
+text{19}='    close(gui); clear gui; % Close and delete the processing GUI';
 text{20}='end';
 text{21}='runCodeGUI=uifigure(''Visible'',''off'');';
 text{22}=['setappdata(runCodeGUI,''projectName'',''' projectName ''');'];

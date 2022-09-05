@@ -121,5 +121,5 @@ if ismac==1
 
     system(['open ' newPath slash]);
 elseif ispc==1
-    winopen(currArchiveFolderName);
+    winopen(allArchivesFolderName);
 end

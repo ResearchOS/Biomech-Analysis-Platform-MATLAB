@@ -69,10 +69,13 @@ while ~nameInGUIOK
     end
 
     % 2. Check if this argument name already exists in the list.
-    if ismember(nameInGUI,guiNames)
+    idx=ismember(guiNames,nameInGUI);
+    if any(idx)
         if runLog
-            disp('This variable already exists! No argument added, try again.');
-            continue;
+            if VariableNamesList.IsHardCoded{idx}==0
+                disp('This variable already exists! No argument added, try again.');
+                continue;
+            end
         else
             disp('This variable already exists! No argument added, terminating the process.'); % Avoid an infinite loop
             return;
@@ -80,6 +83,24 @@ while ~nameInGUIOK
     end
 
     nameInGUIOK=1;
+end
+
+selSplitText=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(selSplitText,' ');
+splitName=selSplitText(1:spaceIdx-1);
+splitCode=selSplitText(spaceIdx+2:end-1);
+
+if any(idx) && VariableNamesList.IsHardCoded{idx}==1
+    defaultName=VariableNamesList.SaveNames{idx};
+    defaultNameInCodeOK=true;
+    input2=defaultName;
+    newVer=1; % Indicates that this is a new version of an existing hard-coded variable.
+    if ismember(splitCode,VariableNamesList.SplitCodes{idx})
+        disp('Cannot add the same variable to the same split twice!');
+        return;
+    end
+else
+    newVer=0;
 end
 
 %% Prompt for the default name of the argument in the code.
@@ -120,8 +141,9 @@ while ~defaultNameInCodeOK
         continue;
     end
 
-    if ismember(defaultName,saveNames)
-        if runLog
+    saveIdx=ismember(defaultName,saveNames);
+    if any(saveIdx)
+        if runLog            
             disp('This save name already exists for another variable! No argument added, try again.');
             continue;
         else
@@ -134,37 +156,47 @@ while ~defaultNameInCodeOK
 end
 
 %% 4. Ask whether the variable will be hard-coded
-if runLog
-    input3=questdlg('Is this a hard-coded variable?','Hard-coded variable?','Yes','No','No');
-end
-if isempty(input3)
-    disp('Process cancelled, no argument added');
-    return;
-end
+if newVer==0
+    if runLog
+        input3=questdlg('Is this a hard-coded variable?','Hard-coded variable?','Yes','No','No');
+    end
+    if isempty(input3)
+        disp('Process cancelled, no argument added');
+        return;
+    end
 
-switch input3
-    case 'Yes'
-        isHC=1;        
-    case 'No'
-        isHC=0;
+    switch input3
+        case 'Yes'
+            isHC=1;
+        case 'No'
+            isHC=0;
+    end
+else
+    isHC=1;
+    input3='Yes';
 end
 
 %% 5. Ask what level the variable will be stored at (Project, Subject, or Trial)
-if runLog
-    input4=questdlg({'Project, Subject, or Trial level variable?','This can be changed later.'},'Variable Level','Project','Subject','Trial','Trial');
-end
-if isempty(input4)
-    disp('Process cancelled, no argument added');
-    return;
-end
+if newVer==0
+    if runLog
+        input4=questdlg({'Project, Subject, or Trial level variable?','This can be changed later.'},'Variable Level','Project','Subject','Trial','Trial');
+    end
+    if isempty(input4)
+        disp('Process cancelled, no argument added');
+        return;
+    end
 
-switch input4
-    case 'Project'
-        level='P';
-    case 'Subject'
-        level='S';
-    case 'Trial'
-        level='T';
+    switch input4
+        case 'Project'
+            level='P';
+        case 'Subject'
+            level='S';
+        case 'Trial'
+            level='T';
+    end
+else
+    level=VariableNamesList.Level{idx};
+    input4=level;
 end
 
 % 6. Add this variable to the GUI
@@ -174,22 +206,23 @@ else
     rowNum=1;
 end
 
-selSplitText=handles.Process.splitsUITree.SelectedNodes.Text;
-spaceIdx=strfind(selSplitText,' ');
-splitName=selSplitText(1:spaceIdx-1);
-splitCode=selSplitText(spaceIdx+2:end-1);
+if newVer==1
+    rowNum=find(idx==1);
+end
 
 if exist('VariableNamesList','var')~=1 || ~isfield(VariableNamesList,'SplitCodes') || length(VariableNamesList.SplitCodes)<rowNum
     VariableNamesList.SplitCodes{rowNum,1}={splitCode};
     VariableNamesList.SplitNames{rowNum,1}={splitName};
 else
-    VariableNamesList.SplitNames{rowNum,1}=[VariableNamesList.SplitNames(rowNum,1); {splitName}];
-    VariableNamesList.SplitCodes{rowNum,1}=[VariableNamesList.SplitCodes(rowNum,1); {splitCode}];
+    VariableNamesList.SplitNames{rowNum,1}=[VariableNamesList.SplitNames{rowNum,1}; {splitName}];
+    VariableNamesList.SplitCodes{rowNum,1}=[VariableNamesList.SplitCodes{rowNum,1}; {splitCode}];
 end
 
 VariableNamesList.GUINames{rowNum,1}=nameInGUI;
 VariableNamesList.SaveNames{rowNum,1}=defaultName;
-VariableNamesList.Descriptions{rowNum,1}={'Enter Arg Description Here'};
+if newVer==0
+    VariableNamesList.Descriptions{rowNum,1}={'Enter Arg Description Here'}; % Don't overwrite the description.
+end
 VariableNamesList.Level{rowNum,1}=level;
 VariableNamesList.IsHardCoded{rowNum,1}=isHC;
 

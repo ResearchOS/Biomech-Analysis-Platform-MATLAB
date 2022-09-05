@@ -158,5 +158,5 @@ save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct
 if runLog
     desc='Created a new split';
     splitName=name;
-    updateLog(fig,desc,splitName,splitColorName,splitCode,parentSplitName,parentSplitCode);
+%     updateLog(fig,desc,splitName,splitColorName,splitCode,parentSplitName,parentSplitCode);
 end

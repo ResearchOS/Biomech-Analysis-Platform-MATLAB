@@ -53,13 +53,12 @@ else
     return; % Already a char
 end
 
-switch splitCode
-    case splitCode>=100
-        splitCode=num2str(splitCode);
-    case splitCode>=10
-        splitCode=['0' num2str(splitCode)];
-    otherwise
-        splitCode=['00' num2str(splitCode)];
+if splitCode>=100
+    splitCode=num2str(splitCode);
+elseif splitCode>=10
+    splitCode=['0' num2str(splitCode)];
+else
+    splitCode=['00' num2str(splitCode)];
 end
 
 maxSplitCode=splitCode;

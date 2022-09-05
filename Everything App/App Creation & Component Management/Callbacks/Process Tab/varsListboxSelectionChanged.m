@@ -8,6 +8,9 @@ handles=getappdata(fig,'handles');
 selNode=handles.Process.varsListbox.SelectedNodes;
 text=selNode.Text;
 if ~contains(text,'(') 
+    expand(handles.Process.varsListbox.SelectedNodes);
+    handles.Process.varsListbox.SelectedNodes=selNode.Children(1);
+    varsListboxSelectionChanged(fig);
     return; % This is a variable name, not a split name & code
 end
 

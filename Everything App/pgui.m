@@ -327,7 +327,7 @@ handles.Process.splitsUITree=uitree(processTab,'checkbox','SelectionChangedFcn',
 % handles.Process.splitsTextArea=uitextarea(processTab,'Value','Enter Split Description Here','Tag','SplitsDescriptionTextArea','Editable','on','Visible','on','ValueChangedFcn',@(splitsDescriptionTextArea,event) splitsDescriptionTextAreaValueChanged(splitsDescriptionTextArea));
 
 % 29. Fcn search field
-handles.Process.fcnsArgsSearchField=uieditfield(processTab,'text','Value','Search','Tag','FcnsArgsSearchField','ValueChangedFcn',@(fcnsArgsSearchField,event) fcnsArgsSearchFieldValueChanged(fcnsArgsSearchField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
+handles.Process.fcnsArgsSearchField=uieditfield(processTab,'text','Value','Search','Tag','FcnsArgsSearchField','ValueChangingFcn',@(fcnsArgsSearchField,event) fcnsArgsSearchFieldValueChanged(fcnsArgsSearchField,event)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 
 % 30. Subvariable label
 % handles.Process.subVarLabel=uilabel(processTab,'Text','Subvariable(s)','Tag','SubVarLabel');

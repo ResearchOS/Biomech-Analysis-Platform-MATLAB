@@ -97,6 +97,7 @@ handles.Process.specifyTrialsLabel.Text=specifyTrialsName;
 
 handles.Process.markImportFcnCheckbox.Value=Digraph.Nodes.IsImport(nodeRow);
 
-edgeRow=ismember(Digraph.Edges.SplitCode,splitCode) & (ismember(Digraph.Edges.NodeNumber(:,1),nodeNum) | ismember(Digraph.Edges.NodeNumber(:,2),nodeNum));
+% edgeRow=ismember(Digraph.Edges.SplitCode,splitCode) & (ismember(Digraph.Edges.NodeNumber(:,1),nodeNum) | ismember(Digraph.Edges.NodeNumber(:,2),nodeNum));
 
-handles.Process.fcnsRunOrderField.Value=Digraph.Edges.RunOrder(edgeRow);
+handles.Process.fcnsRunOrderField.Value=Digraph.Nodes.RunOrder{nodeRow}.([splitName '_' splitCode]);
+

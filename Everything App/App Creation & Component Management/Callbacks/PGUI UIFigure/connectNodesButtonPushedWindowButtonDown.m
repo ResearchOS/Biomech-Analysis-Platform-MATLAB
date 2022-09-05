@@ -138,35 +138,42 @@ Digraph.Edges.NodeNumber(currEdgeIdx,1)=nodeID1;
 Digraph.Edges.NodeNumber(currEdgeIdx,2)=nodeID2;
 Digraph.Edges.Color(currEdgeIdx,:)=color;
 Digraph.Edges.SplitCode{currEdgeIdx}=splitCode;
-Digraph.Edges.RunOrder(currEdgeIdx)=max(Digraph.Edges.RunOrder)+1;
 
 % Add the new split to Digraph.Nodes.InputVariableNames &
 % Digraph.Nodes.OutputVariableNames
 if isempty(Digraph.Nodes.InputVariableNames{idx2}) % First connection to this node.
     Digraph.Nodes.InputVariableNames{idx2}=struct([splitName '_' splitCode],'');
     Digraph.Nodes.InputVariableNamesInCode{idx2}=struct([splitName '_' splitCode],'');
+    Digraph.Nodes.RunOrder{idx2}=struct([splitName '_' splitCode],0);
 else % Create more fields for input vars for each new split.
     varNames=Digraph.Nodes.InputVariableNames{idx2};
     varNamesInCode=Digraph.Nodes.InputVariableNamesInCode{idx2};
+    runOrders=Digraph.Nodes.RunOrder{idx2};
     if ~isfield(varNames,[splitName '_' splitCode])
         varNames.([splitName '_' splitCode])='';
         varNamesInCode.([splitName '_' splitCode])='';
+        runOrders.([splitName '_' splitCode])=0;
         Digraph.Nodes.InputVariableNames{idx2}=varNames;
         Digraph.Nodes.InputVariableNamesInCode{idx2}=varNamesInCode;
+        Digraph.Nodes.RunOrder{idx2}=runOrders;
     end
 end
 
 if isempty(Digraph.Nodes.OutputVariableNames{idx1})
     Digraph.Nodes.OutputVariableNames{idx1}=struct([splitName '_' splitCode],'');
     Digraph.Nodes.OutputVariableNamesInCode{idx1}=struct([splitName '_' splitCode],'');
+    Digraph.Nodes.RunOrder{idx1}=struct([splitName '_' splitCode],0);
 else
     varNames=Digraph.Nodes.OutputVariableNames{idx1};
     varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{idx1};
+    runOrders=Digraph.Nodes.RunOrder{idx1};
     if ~isfield(varNames,[splitName '_' splitCode])
         varNames.([splitName '_' splitCode])='';
         varNamesInCode.([splitName '_' splitCode])='';
+        runOrders.([splitName '_' splitCode])=0;
         Digraph.Nodes.OutputVariableNames{idx1}=varNames;
         Digraph.Nodes.OutputVariableNamesInCode{idx1}=varNamesInCode;
+        Digraph.Nodes.RunOrder{idx1}=runOrders;
     end
 end
 

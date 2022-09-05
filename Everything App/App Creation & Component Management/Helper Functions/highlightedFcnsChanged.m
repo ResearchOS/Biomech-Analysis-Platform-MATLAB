@@ -64,13 +64,18 @@ nodeRowsNums=nodeRowsNums(~ismember(nodeRowsNums,1));
 % Do checks to ensure that the pre-conditions are properly met.
 for i=1:length(nodeRowsNums)
     inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodesData(i)); % All inedges for the current function
-    if isempty(inEdgesRows)
+    outEdgesRows=ismember(Digraph.Edges.EndNodes(:,1),nodesData(i)); % All outedges for the current function
+    if isempty(inEdgesRows) && isempty(outEdgesRows)
         beep;
         disp('Need to connect this function to another before selecting it.');
         return;
     end
 
-    if ~(isfield(Digraph.Nodes.InputVariableNames{nodeRowsNums(i)},[splitName '_' splitCode]) || isfield(Digraph.Nodes.OutputVariableNames{nodeRowsNums(i)},[splitName '_' splitCode]))
+    % Check which splits the inedges and outedges belong to, to determine
+    % whether this node is connected to the current split (instead of
+    % looking at the input variable names, which may not perfectly reflect
+    % that)
+    if ~ismember(splitCode,Digraph.Edges.SplitCode(inEdgesRows | outEdgesRows))
         disp(['Function ' Digraph.Nodes.FunctionNames{nodeRowsNums(i)} ' Not Connected to Split ' splitName ' (' splitCode ')']);        
 %         disp(['All selected functions need to be connected to the selected split!']);
         beep;

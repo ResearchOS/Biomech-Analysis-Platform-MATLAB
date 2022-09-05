@@ -82,7 +82,7 @@ if isequal('Digraph',varName)
                         nodeArray{j,i}=Digraph.Nodes.(nodeHeader)(j,:);
                     end
                 end
-            case {'InputVariableNames','OutputVariableNames','InputVariableNamesInCode','OutputVariableNamesInCode'} % Cell arrays            
+            case {'InputVariableNames','OutputVariableNames','InputVariableNamesInCode','OutputVariableNamesInCode','RunOrder'} % Cell arrays            
                 for j=1:size(Digraph.Nodes.(nodeHeader),1)
                     if iscell(Digraph.Nodes.(nodeHeader))
                         nodeArray{j,i}=Digraph.Nodes.(nodeHeader){j};

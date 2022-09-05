@@ -122,11 +122,10 @@ if isempty(varNode.Children)
     VariableNamesList.IsHardCoded(varRow)=[];
     VariableNamesList.Descriptions(varRow)=[];
     VariableNamesList.Level(varRow)=[];
-    highlightedFcnsChanged(fig,Digraph);
-    save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
-else
-    save(projectSettingsMATPath,'Digraph','-append');
+    highlightedFcnsChanged(fig,Digraph);    
 end
+
+save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
 
 if runLog
     varNameInGUI=varName;

@@ -22,6 +22,7 @@ end
 splitName_Code=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(splitName_Code,' ');
 splitCode=splitName_Code(spaceIdx+2:end-1);
+splitName=splitName_Code(1:spaceIdx-1);
 selNode=handles.Process.fcnArgsUITree.SelectedNodes;
 
 if isempty(selNode)
@@ -43,9 +44,10 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 load(projectSettingsMATPath,'Digraph');
 
 % Get the unique index of the desired edge.
-edgeIdx=ismember(Digraph.Edges.SplitCode,splitCode) & ismember(Digraph.Edges.NodeNumber(:,2),nodeNum);
+% edgeIdx=ismember(Digraph.Edges.SplitCode,splitCode) & ismember(Digraph.Edges.NodeNumber(:,2),nodeNum);
+nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
-prevOrderNum=Digraph.Edges.RunOrder(edgeIdx);
+prevOrderNum=Digraph.Nodes.RunOrder{nodeRow}.([splitName '_' splitCode]);
 
 if orderNum==prevOrderNum
     return;
@@ -60,7 +62,7 @@ end
 %     Digraph.Edges.RunOrder(largerThanNewNumIdx)=Digraph.Edges.RunOrder(largerThanNewNumIdx)+1;
 % end
 
-Digraph.Edges.RunOrder(edgeIdx)=orderNum;
+Digraph.Nodes.RunOrder{nodeRow}.([splitName '_' splitCode])=orderNum;
 
 save(projectSettingsMATPath,'Digraph','-append');
 

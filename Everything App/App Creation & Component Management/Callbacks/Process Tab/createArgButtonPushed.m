@@ -275,10 +275,11 @@ end
 
 % handles.Process.varsListbox.Items=VariableNamesList.GUINames(idx);
 % handles.Process.varsListbox.Value=nameInGUI;
-varsListboxSelectionChanged(fig);
 % handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{rowNum};
 
 save(projectSettingsMATPath,'VariableNamesList','-append');
+
+varsListboxSelectionChanged(fig);
 
 if runLog
     varNameInGUI=nameInGUI;

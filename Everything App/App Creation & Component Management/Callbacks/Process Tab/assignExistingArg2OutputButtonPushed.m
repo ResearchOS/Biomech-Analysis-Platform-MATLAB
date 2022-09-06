@@ -68,8 +68,13 @@ namesInCode=VariableNamesList.SaveNames{varRow};
 currName=varNameInGUI;
 nameInCode=namesInCode;
 
-outVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
-outVarNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
+if isempty(Digraph.Nodes.OutputVariableNames{nodeRow}) % Adding output variables to a node with no outedges
+    outVarNames='';
+    outVarNamesInCode='';
+else
+    outVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
+    outVarNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([fcnSplitName '_' fcnSplitCode]);
+end
 
 currName=[currName ' (' fcnSplitCode ')']; % Append the code for the split that the variable is going to.
 

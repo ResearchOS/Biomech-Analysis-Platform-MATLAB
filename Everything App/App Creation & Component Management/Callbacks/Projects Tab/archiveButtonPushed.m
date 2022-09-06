@@ -42,22 +42,16 @@ matFileNames={projectSettingsMATName};
 
 %% Copy the folders to the archive folder.
 for i=1:length(folderNames)
-
     currFolderLoc=[codePath folderNames{i}];
     archiveFolderLoc=[currArchiveFolderName slash folderNames{i}];
-
     copyfile(currFolderLoc,archiveFolderLoc);
-
 end
 
-%% Copy the .mat file to the archive folder
+%% Copy the .mat settings files to the archive folder
 for i=1:length(matFileNames)
-
     currFileLoc=[codePath matFileNames{i}];
     archiveFileLoc=[currArchiveFolderName slash matFileNames{i}];
-
     copyfile(currFileLoc,archiveFileLoc);
-
 end
 
 %% Copy the logsheet to the archive folder
@@ -70,12 +64,13 @@ copyfile(logsheetPath,[currArchiveFolderName slash logsheetPathName ext]);
 copyfile(logsheetPathMAT,[currArchiveFolderName slash logsheetPathMATName '.mat']);
 
 %% Create run code
+% Write the 'runCodeFunc.m' file to the archive folder
 runCodeFilePath=[currArchiveFolderName slash 'RunCode_' projectName '_' currDate '.m'];
 createRunCode(fig,runCodeFilePath,currArchiveFolderName,logsheetPathMAT,codePath,dataPath);
-% Copy the 'runCodeFunc.m' file to the archive folder
 
 %% Copy the entirety of the PGUI folder to the archive folder
-
+everythingPath=getappdata(fig,'everythingPath');
+copyfile(everythingPath,[currArchiveFolderName slash 'PGUI']);
 
 %% Check if archiving data as well as the code.
 load(projectSettingsMATPath,'NonFcnSettingsStruct');
@@ -86,7 +81,6 @@ if archiveData==0
     zip(currArchiveFolderName,currArchiveFolderName);
     rmdir(currArchiveFolderName,'s');
 else
-
     %% Copy the data over.
     matDataFilesFolder=[dataPath 'MAT Data Files'];
     matDataFilesArchiveFolder=[currArchiveFolderName slash 'MAT Data Files'];

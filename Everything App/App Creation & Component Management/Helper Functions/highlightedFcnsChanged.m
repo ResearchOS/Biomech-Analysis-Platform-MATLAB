@@ -121,6 +121,7 @@ for i=1:length(nodeRowsNums) % Each function
 %     splitCodes=unique(Digraph.Edges.SplitCode(inEdgesRows)); % The list of all splits for the current function
 
     fcnName=uitreenode(handles.Process.fcnArgsUITree,'Text',Digraph.Nodes.FunctionNames{nodeRowsNums(i)},'NodeData',nodesData(i));
+    fcnName.ContextMenu=handles.Process.openFcnContextMenu;
     inputs=uitreenode(fcnName,'Text','Inputs');
 %     splitIdx=find(ismember(splitCodes,splitCode)==1); % This may be in the wrong order! Organize splits list for each function numerically?
 % 
@@ -134,7 +135,7 @@ for i=1:length(nodeRowsNums) % Each function
     end
 
     for j=1:length(currInVarNames)                
-        uitreenode(inputs,'Text',currInVarNames{j});
+        uitreenode(inputs,'Text',currInVarNames{j},'ContextMenu',handles.Process.openFcnContextMenu);
     end
 
     currOutVarNames=Digraph.Nodes.OutputVariableNames{nodeRowsNums(i)};

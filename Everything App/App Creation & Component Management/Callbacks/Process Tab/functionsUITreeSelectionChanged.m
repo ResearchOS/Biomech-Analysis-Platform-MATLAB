@@ -45,8 +45,8 @@ handles.Process.fcnDescriptionTextArea.Value=Digraph.Nodes.Descriptions{nodeRow}
 
 splitText=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(splitText,' ');
-splitName=splitText(1:spaceIdx-1);
-splitCode=splitText(spaceIdx+2:end-1);
+splitName=splitText(1:spaceIdx(end)-1);
+splitCode=splitText(spaceIdx(end)+2:end-1);
 
 b=handles.Process.fcnArgsUITree.SelectedNodes.Parent;
 if isprop(b,'Text') && ismember(b.Text,{'Inputs','Outputs'}) % Ensure that this is a variable
@@ -79,7 +79,7 @@ if isprop(b,'Text') && ismember(b.Text,{'Inputs','Outputs'}) % Ensure that this 
         varsInSplit=cell(length(varNamesAndSplits),1);
         for i=1:length(varNamesAndSplits)
             spaceIdx=strfind(varNamesAndSplits{i},' ');
-            varsInSplit{i}=varNamesAndSplits{i}(1:spaceIdx-1);
+            varsInSplit{i}=varNamesAndSplits{i}(1:spaceIdx(end)-1);
         end
         varIdx=ismember(varsInSplit,VariableNamesList.GUINames{varRow});
         namesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]);

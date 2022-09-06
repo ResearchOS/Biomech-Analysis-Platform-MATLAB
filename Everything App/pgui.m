@@ -390,9 +390,14 @@ handles.Process.disconnectNodesButton=uibutton(processTab,'push','Text','Rem PS'
 % 46. Function order edit field
 handles.Process.fcnsRunOrderField=uieditfield(processTab,'numeric','Value',0,'Tag','FcnsRunOrderField','ValueChangedFcn',@(fcnsRunOrderField,event) fcnsRunOrderFieldValueChanged(fcnsRunOrderField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 
+% 47. Collapse all variables context menu
 handles.Process.collapseAllContextMenu=uicontextmenu(fig);
 handles.Process.collapseAllContextMenuItem1=uimenu(handles.Process.collapseAllContextMenu,'Text','Collapse All','MenuSelectedFcn',{@collapseAllContextMenuClicked});
 % handles.Process.collapseAllContextMenuItem2=uimenu(handles.Process.collapseAllContextMenu,'Text','Test2');
+
+% 48. Open function context menu
+handles.Process.openFcnContextMenu=uicontextmenu(fig);
+handles.Process.openFcnContextMenuItem1=uimenu(handles.Process.openFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFile});
 
 processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',handles.Process.addFcnButton,'RemoveFcnButton',handles.Process.removeFcnButton,...
     'MoveFcnButton',handles.Process.moveFcnButton,'PropagateChangesButton',handles.Process.propagateChangesButton,'PropagateChangesCheckbox',handles.Process.propagateChangesCheckbox,'RunSelectedFcnsButton',handles.Process.runSelectedFcnsButton,...

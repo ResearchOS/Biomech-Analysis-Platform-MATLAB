@@ -46,7 +46,7 @@ if ~(isempty(Digraph.Nodes.RunOrder{1}) || Digraph.Nodes.RunOrder{1}.Default_001
     return;
 end
 
-allNums=NaN(length(Digraph.Nodes.RunOrder),1);
+allNums=NaN(length(Digraph.Nodes.RunOrder)-1,1);
 fcnNames=cell(length(Digraph.Nodes.FunctionNames),1);
 splitNames_Codes=cell(length(Digraph.Nodes.FunctionNames),1);
 nodeNums=NaN(length(Digraph.Nodes.RunOrder),1);

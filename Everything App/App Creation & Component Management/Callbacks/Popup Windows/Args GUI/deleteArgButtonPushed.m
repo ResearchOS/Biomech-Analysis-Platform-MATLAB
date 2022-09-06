@@ -1,2 +1,0 @@
-function []=deleteArgButtonPushed(src,event)
-

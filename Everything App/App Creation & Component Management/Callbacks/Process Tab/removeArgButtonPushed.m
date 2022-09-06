@@ -142,6 +142,11 @@ end
 
 save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
 
+handles.Process.fcnsArgsSearchField.Value='';
+
+[~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
+makeVarNodes(fig,alphabetIdx,VariableNamesList);
+
 if runLog
     varNameInGUI=varName;
     splitName_Code=text;

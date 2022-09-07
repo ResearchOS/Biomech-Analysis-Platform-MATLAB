@@ -12,7 +12,14 @@ if isempty(handles.Process.splitsUITree.SelectedNodes)
     return;
 end
 
-splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+if exist('splitName_Code','var')~=1
+    splitText=handles.Process.splitsUITree.SelectedNodes.Text;
+    splitName_Code=splitText;
+    runLog=true;
+else
+    splitText=splitName_Code;
+    runLog=false;
+end
 spaceIdx=strfind(splitText,' ');
 splitName=splitText(1:spaceIdx-1);
 splitCode=splitText(spaceIdx+2:end-1);
@@ -179,7 +186,7 @@ for i=1:length(fcnNames)
 
     % Create log of the function that just successfully finished running.
     if runLog
-        desc=['Ran function ' fcnName];
+        desc=['Ran function ' fcnName ' ' splitName_Code];
         updateLog(fig,desc,splitName_Code);
     end
 

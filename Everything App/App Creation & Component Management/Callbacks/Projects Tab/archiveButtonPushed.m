@@ -30,6 +30,7 @@ currDate=char(datetime('now','TimeZone','America/New_York')); % All times in New
 currDate=currDate(1:end-3); % Remove the seconds
 currDate=[currDate(1:end-3) currDate(end-1:end)]; % Remove the colon from the time, leaving strictly military time in US date format
 currDate(isspace(currDate))='_';
+currDate=strrep(currDate,'-','_');
 
 currArchiveFolderName=[allArchivesFolderName slash 'Archive_' projectName '_' currDate '_ET'];
 
@@ -97,7 +98,7 @@ else
 end
 
 disp(['Completed archive in ' num2str(toc) ' seconds!']);
-disp(currArchiveFolderName);
+disp(['Saved to: ' currArchiveFolderName]);
 
 if ismac==1
     path=allArchivesFolderName;

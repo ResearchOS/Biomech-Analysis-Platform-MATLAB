@@ -51,6 +51,7 @@ ShowVarButtonRelPos=[0.22 0.75];
 SaveVarButtonRelPos=[0.33 0.75];
 ArchiveButtonRelPos=[0.9 0.05];
 ArchiveDataCheckboxRelPos=[0.9 0.15];
+LoadArchiveButtonRelPos=[0.2 0.05];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -72,6 +73,7 @@ ShowVarButtonSize=[0.1 compHeight];
 SaveVarButtonSize=[0.1 compHeight];
 ArchiveButtonSize=[0.1 compHeight];
 ArchiveDataCheckboxSize=[0.1 compHeight];
+LoadArchiveButtonSize=[0.1 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 ProjectNameLabelPos=round([ProjectNameLabelRelPos.*figSize ProjectNameLabelSize(1)*figSize(1) ProjectNameLabelSize(2)]);
@@ -91,6 +93,7 @@ ShowVarButtonPos=round([ShowVarButtonRelPos.*figSize ShowVarButtonSize(1)*figSiz
 SaveVarButtonPos=round([SaveVarButtonRelPos.*figSize SaveVarButtonSize(1)*figSize(1) SaveVarButtonSize(2)]);
 ArchiveButtonPos=round([ArchiveButtonRelPos.*figSize ArchiveButtonSize(1)*figSize(1) ArchiveButtonSize(2)]);
 ArchiveDataCheckboxPos=round([ArchiveDataCheckboxRelPos.*figSize ArchiveDataCheckboxSize(1)*figSize(1) ArchiveDataCheckboxSize(2)]);
+LoadArchiveButtonPos=round([LoadArchiveButtonRelPos.*figSize LoadArchiveButtonSize(1)*figSize(1) LoadArchiveButtonSize(2)]);
 
 data.ProjectNameLabel.Position=ProjectNameLabelPos;
 data.DataPathButton.Position=DataPathButtonPos;
@@ -109,6 +112,7 @@ data.ShowVarButton.Position=ShowVarButtonPos;
 data.SaveVarButton.Position=SaveVarButtonPos;
 data.ArchiveButton.Position=ArchiveButtonPos;
 data.ArchiveDataCheckbox.Position=ArchiveDataCheckboxPos;
+data.LoadArchiveButton.Position=LoadArchiveButtonPos;
 
 data.ProjectNameLabel.FontSize=newFontSize;
 data.DataPathButton.FontSize=newFontSize;
@@ -127,3 +131,4 @@ data.ShowVarButton.FontSize=newFontSize;
 data.SaveVarButton.FontSize=newFontSize;
 data.ArchiveButton.FontSize=newFontSize;
 data.ArchiveDataCheckbox.FontSize=newFontSize;
+data.LoadArchiveButton.FontSize=newFontSize;

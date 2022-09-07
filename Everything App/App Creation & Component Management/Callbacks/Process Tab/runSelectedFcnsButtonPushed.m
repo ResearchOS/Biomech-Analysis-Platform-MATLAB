@@ -117,7 +117,13 @@ dataPath=getappdata(fig,'dataPath');
 
 nodeRowNums=find(nodeRows==1);
 
+a=tic;
 for i=1:length(fcnNames)
+
+    b=tic;
+    load(projectSettingsMATPath,'VariableNamesList','Digraph');
+    setappdata(fig,'VariableNamesList',VariableNamesList);
+    setappdata(fig,'Digraph',Digraph);
 
     fcnName=fcnNames{i};
     nodeNum=nodeNums(i);
@@ -144,6 +150,7 @@ for i=1:length(fcnNames)
         else
             feval(fcnName,projectStruct);
         end
+        disp([fcnName ' finished running in ' num2str(toc(a)) ' seconds']);
         continue;
     end
 
@@ -155,10 +162,13 @@ for i=1:length(fcnNames)
 
             disp(['Running ' fcnName ' ' splitName ' Subject ' subName]);
 
-            if ismember('Trial',currLevels)
+            if ismember('T',level)
                 feval(fcnName,projectStruct,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
             else
                 feval(fcnName,projectStruct,subName);
+            end
+            if sub==length(subNames)
+                disp([fcnName ' finished running in ' num2str(toc(a)) ' seconds']);
             end
             continue; % Don't iterate through trials, that's done within the processing function if necessary
         end
@@ -190,4 +200,10 @@ for i=1:length(fcnNames)
         updateLog(fig,desc,splitName_Code);
     end
 
+    if isequal(level,'T')
+        disp([fcnName ' finished running in ' num2str(toc(a)) ' seconds']);
+    end
+
 end
+
+disp(['Finished running all selected functions in ' num2str(toc(b)) ' seconds']);

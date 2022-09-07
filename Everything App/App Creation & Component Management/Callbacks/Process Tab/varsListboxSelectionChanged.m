@@ -6,6 +6,9 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 selNode=handles.Process.varsListbox.SelectedNodes;
+if isempty(selNode)
+    return;
+end
 text=selNode.Text;
 if ~contains(text,'(') 
     expand(handles.Process.varsListbox.SelectedNodes);

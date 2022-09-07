@@ -46,7 +46,7 @@ for inclExcl=1:2
 
     if ~isstruct(inclStruct) || ~isfield(inclStruct,'Include')
         disp('No trials to include');
-        condNames={'Add Condition specifyTrialsName'};
+        condNames={'Add Condition Name'};
         currCondDropDown.Items=condNames;
         currCondDropDown.Value=condNames{1};
 

@@ -143,6 +143,12 @@ elseif isempty(specifyTrialsName)
     specifyTrialsName=specifyTrialsNames{1};
 end
 
+if ~ismember(specifyTrialsName,specifyTrialsNames)
+    disp('Specify trials file deleted! Defaulting to the first item in the list');
+    specifyTrialsName=specifyTrialsNames{1};
+%     return;
+end
+
 newHandles.Top.specifyTrialsDropDown.Items=specifyTrialsNames;
 newHandles.Top.specifyTrialsDropDown.Value=specifyTrialsName;
 

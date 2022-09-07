@@ -11,13 +11,20 @@ function [varargout]=getArg(inputNamesInCode,subName,trialName,repNum)
 % Outputs:
 % argIn: The argument to pass in to the processing function
 
-% st=dbstack;
-% fcnName=st(2).name; % The name of the calling function.
-
 if ismac==1
     slash='/';
 elseif ispc==1
     slash='\';
+end
+
+if exist('trialName','var')~=1
+    trialName='';
+end
+if exist('repNum','var')~=1
+    repNum='';
+end
+if exist('subName','var')~=1
+    subName='';
 end
 
 if ~iscell(inputNamesInCode)
@@ -55,13 +62,12 @@ else % Project level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat'];
 end
 
-if exist(matFilePath,'file')~=2
-    disp(['No saved file found at: ' matFilePath]);
-    return;
-end
-
 if isRunCode==0
-    load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+    Digraph=getappdata(fig,'Digraph');
+    VariableNamesList=getappdata(fig,'VariableNamesList');
+    if isempty(Digraph) || isempty(VariableNamesList)
+        load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+    end
 else
     try
         VariableNamesList=evalin('base','VariableNamesList;');
@@ -72,19 +78,20 @@ else
     end
 end
 
-fileVarNames=whos('-file',matFilePath);
-fileVarNames={fileVarNames.name};
-
 splitName=getappdata(fig,'splitName');
 splitCode=getappdata(fig,'splitCode');
 
 %% All input vars
 % The idx/subset of the variables currently being accessed
 [~,~,currVarsIdx]=intersect(inputNamesInCode,Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]),'stable');
-% inputVarNamesInCode=Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])(currVarsIdx); % Get the current subset
-% if length(inputNamesInCode)==length(Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]))
-%     assert(isequal(inputVarNamesInCode,inputNamesInCode'));
-% end
+try
+    assert(isequal(Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])(currVarsIdx)',inputNamesInCode));
+catch
+    a=inputNamesInCode(~ismember(inputNamesInCode,Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])(currVarsIdx)'));
+    disp(a);
+    error('Check your input variable names in code!');
+end
+% [~,a,currVarsIdx]=intersect(inputNamesInCode,Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]),'stable');
 % The GUI names of the variables currently being accessed (in the order of the inputNamesInCode).
 inputVarNamesInGUI_Split=Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode])(currVarsIdx);
 inputVarNamesInGUI=cell(size(inputVarNamesInGUI_Split));
@@ -105,21 +112,26 @@ hardCodedStatus=VariableNamesList.IsHardCoded(varRowsIdxNums);
 hardCodedIdxNums=find(cellfun(@isequal,hardCodedStatus,repmat({1},length(hardCodedStatus),1))==1); % The idx of hard-coded vars (in the order of the inputNamesInCode)
 hardCodedSaveNames=saveNames(hardCodedIdxNums);
 
-folderName=[getappdata(fig,'codePath') 'Hard-Coded Variables'];
-oldPath=cd(folderName);
+if ~isempty(hardCodedIdxNums)
+    folderName=[getappdata(fig,'codePath') 'Hard-Coded Variables'];
+    oldPath=cd(folderName);
 
-for i=1:length(hardCodedSaveNames)
+    for i=1:length(hardCodedSaveNames)
 
-    % Get .m full file path and ensure that it exists  
-    varName=hardCodedSaveNames{i};
-    splitCodeVar=varSplits{hardCodedIdxNums(i)};
-    varargout{hardCodedIdxNums(i)}=feval([varName '_' splitCodeVar]);
+        % Get .m full file path and ensure that it exists
+        varName=hardCodedSaveNames{i};
+        splitCodeVar=varSplits{hardCodedIdxNums(i)};
+        varargout{hardCodedIdxNums(i)}=feval([varName '_' splitCodeVar]);
 
+    end
+    cd(oldPath);
 end
-cd(oldPath);
 
 %% Dynamic variables
 dynamicIdxNums=find(cellfun(@isequal,hardCodedStatus,repmat({0},length(hardCodedStatus),1))==1);
+if isempty(dynamicIdxNums)
+    return;
+end
 dynamicSaveNames=saveNames(dynamicIdxNums);
 
 for i=1:length(dynamicSaveNames)
@@ -127,12 +139,22 @@ for i=1:length(dynamicSaveNames)
     dynamicSaveNames{i}=[dynamicSaveNames{i} '_' splitCodeVar];
 end
 
-if ~all(ismember(dynamicSaveNames,fileVarNames))
-    disp('Missing variables in mat file!'); % Specify which variables
-    return;
-end
+try
+    S=load(matFilePath,'-mat',dynamicSaveNames{:});
+catch
+    if exist(matFilePath,'file')~=2
+        disp(['No saved file found at: ' matFilePath]);
+        return;
+    end
 
-S=load(matFilePath,'-mat',dynamicSaveNames{:});
+    fileVarNames=whos('-file',matFilePath);
+    fileVarNames={fileVarNames.name};
+
+    if ~all(ismember(dynamicSaveNames,fileVarNames))
+        disp('Missing variables in mat file!'); % Specify which variables
+        return;
+    end
+end
 
 for i=1:length(dynamicSaveNames)
     varargout{dynamicIdxNums(i)}=S.(dynamicSaveNames{i}); % This requires copying variables, which is inherently slow. Faster way?

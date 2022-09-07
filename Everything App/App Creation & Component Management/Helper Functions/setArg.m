@@ -23,7 +23,7 @@ catch
         fig=evalin('base','runCodeGUI;');
         isRunCode=1;
     catch
-        disp('Missing the GUI!');
+        disp('Missing the GUI fig!');
         return;
     end
 end
@@ -44,7 +44,7 @@ nArgs=length(varargin);
 for i=4:nArgs+3
     argNames{i-3}=inputname(i); % NOTE THE LIMITATION THAT THERE CAN BE NO INDEXING USED IN THE INPUT VARIABLE NAMES
     if isempty(argNames{i-3})
-        error(['Argument #' num2str(i) ' (output variable #' num2str(i-3) ') is not a scalar name in ' fcnName ' line #' num2str(st(2).line)]);
+        error(['Argument #' num2str(i) ' (output variable #' num2str(i-3) ') is not a scalar variable name in ' fcnName ' line #' num2str(st(2).line)]);
     end
 end
 
@@ -52,7 +52,11 @@ splitCode=getappdata(fig,'splitCode');
 splitName=getappdata(fig,'splitName');
 
 if isRunCode==0
-    load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+    Digraph=getappdata(fig,'Digraph');
+    VariableNamesList=getappdata(fig,'VariableNamesList');
+    if isempty(Digraph) || isempty(VariableNamesList)
+        load(getappdata(fig,'projectSettingsMATPath'),'Digraph','VariableNamesList');
+    end
 else
     try
         VariableNamesList=evalin('base','VariableNamesList;');
@@ -71,17 +75,28 @@ if isempty(varNamesInCode)
     return;
 end
 
-currVarsIdx=ismember(varNamesInCode,argNames); % Get the idx of the output var names being output currently
+[~,~,currVarsIdx]=intersect(argNames,varNamesInCode,'stable'); % Get the idx of the output var names being output currently
+try
+    assert(isequal(varNamesInCode(currVarsIdx),argNames));
+catch
+    error('Check the arg name in code for the output variables!');
+end
 guiVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode])(currVarsIdx); % The names of the variables as seen in the GUI
+
 for i=1:length(guiVarNames)
     guiVarNames{i}=guiVarNames{i}(1:end-6);
 end
-varNamesIdx=ismember(VariableNamesList.GUINames,guiVarNames); % The idx in the VariableNamesList of the current variables
+[~,~,varNamesIdx]=intersect(guiVarNames,VariableNamesList.GUINames,'stable'); % The idx in the VariableNamesList of the current variables
+assert(isequal(guiVarNames,VariableNamesList.GUINames(varNamesIdx)));
 saveNames=VariableNamesList.SaveNames(varNamesIdx);
 
-if sum(varNamesIdx)>nArgs
-    disp('Too many output variables!');
-    return;
+if length(argNames)>length(guiVarNames)
+    error('Insufficient number of output arguments specified in the GUI!');
+end
+
+if length(varNamesIdx)>nArgs
+    error('Too many output variables!');
+%     return;
 end
 
 for i=1:length(saveNames)
@@ -89,7 +104,7 @@ for i=1:length(saveNames)
 end
 
 for i=1:length(saveNames)
-    eval([saveNames{i} '=varargin{' num2str(i) '};']);
+    eval([saveNames{i} '=varargin{' num2str(i) '};']); % Copies the data
 end
 
 folder=fileparts(matFilePath);
@@ -98,10 +113,14 @@ if exist(folder,'dir')~=7
     mkdir(folder);
 end
 
-if exist(matFilePath,'file')~=2
-    save(matFilePath,saveNames{:},'-v6');
-else
+try
     save(matFilePath,saveNames{:},'-append');
+catch
+    if exist(matFilePath,'file')~=2
+        save(matFilePath,saveNames{:},'-v6');
+    else
+        error('Unknown error during saving!');
+    end
 end
 
 if isRunCode==1
@@ -129,4 +148,5 @@ end
 
 if any(anyNew)
     save(getappdata(fig,'projectSettingsMATPath'),'VariableNamesList','-append'); % At least one variable had a new split, so save the VariableNamesList.
+    setappdata(fig,'VariableNamesList',VariableNamesList);
 end

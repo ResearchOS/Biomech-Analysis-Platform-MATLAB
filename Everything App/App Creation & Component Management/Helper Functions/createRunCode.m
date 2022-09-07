@@ -59,6 +59,10 @@ for i=2:length(Digraph.Nodes.RunOrder) % Start with the logsheet
     for j=1:length(currSplits)
 
         orderNum=Digraph.Nodes.RunOrder{i}.(currSplits{j});
+        if orderNum==0
+            disp('Archive failed. Cannot have a run order of zero!');
+            return;
+        end
         allNums(orderNum)=orderNum;
         fcnNames{orderNum}=Digraph.Nodes.FunctionNames{i};
         splitNames_Codes{orderNum}=currSplits{j};

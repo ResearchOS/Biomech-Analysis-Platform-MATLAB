@@ -27,12 +27,14 @@ macAddress=getComputerID();
 
 projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
 
-NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
-NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+% NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+% NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 NonFcnSettingsStruct.Import.TargetTrialIDColHeader=targetTrialIDColHeaderName;
 
-save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 if runLog
     desc='Change the target trial ID column header name from the logsheet';

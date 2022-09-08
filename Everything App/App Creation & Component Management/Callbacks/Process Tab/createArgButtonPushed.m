@@ -25,7 +25,10 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 varNames=whos('-file',projectSettingsMATPath);
 varNames={varNames.name};
 if ismember('VariableNamesList',varNames)
-    load(projectSettingsMATPath,'Digraph','VariableNamesList','NonFcnSettingsStruct');
+%     load(projectSettingsMATPath,'Digraph','VariableNamesList','NonFcnSettingsStruct');
+%     Digraph=getappdata(fig,'Digraph');
+    VariableNamesList=getappdata(fig,'VariableNamesList');
+%     NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
     guiNames=VariableNamesList.GUINames;
     saveNames=VariableNamesList.SaveNames;
 else
@@ -277,7 +280,8 @@ end
 % handles.Process.varsListbox.Value=nameInGUI;
 % handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{rowNum};
 
-save(projectSettingsMATPath,'VariableNamesList','-append');
+% save(projectSettingsMATPath,'VariableNamesList','-append');
+setappdata(fig,'VariableNamesList',VariableNamesList);
 
 varsListboxSelectionChanged(fig);
 

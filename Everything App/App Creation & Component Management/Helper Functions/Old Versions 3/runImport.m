@@ -300,8 +300,8 @@ end
 
 %% Run the getTrialNames
 % Load the logsheet Excel file (first tab only).
-logVar=load(getappdata(fig,'logsheetPathMAT'),'logVar'); % Loads in as 'logVar' variable.
-logVar=logVar.logVar; % Convert struct to cell array
+load(getappdata(fig,'logsheetPathMAT'),'logVar'); % Loads in as 'logVar' variable.
+% logVar=logVar.logVar; % Convert struct to cell array
 % Run specifyTrials
 hSpecifyTrialsButton=handles.Import.openGroupSpecifyTrialsButton;
 % hSpecifyTrialsButton=findobj(fig,'Type','uibutton','Tag','OpenSpecifyTrialsButton');

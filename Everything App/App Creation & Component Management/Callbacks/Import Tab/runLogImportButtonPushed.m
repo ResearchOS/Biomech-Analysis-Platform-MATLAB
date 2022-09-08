@@ -8,14 +8,16 @@ projectName=getappdata(fig,'projectName');
 
 assignin('base','gui',fig);
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 % projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
 splitName='Default'; % The name of the current processing split
 splitCode='001'; % Do logsheet variables ever need to be anything besides '001'?
 % splitCode=genSplitCode(projectSettingsMATPath,{''},splitName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
+Digraph=getappdata(fig,'Digraph');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 macAddress=getComputerID();
 

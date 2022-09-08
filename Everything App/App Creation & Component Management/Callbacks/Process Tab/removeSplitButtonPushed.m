@@ -24,7 +24,9 @@ if ~isempty(selNode.Children)
 end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+Digraph=getappdata(fig,'Digraph');
 
 if ~isempty(Digraph.Edges) && ismember({splitCode},Digraph.Edges.SplitCode)
     disp('Cannot delete a split that still has existing edges!');
@@ -43,7 +45,8 @@ eval([structPath '=rmfield(' structPath ',''' splitList{end} ''');']);
 
 delete(selNode);
 
-save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 if runLog
     desc='Removed split';

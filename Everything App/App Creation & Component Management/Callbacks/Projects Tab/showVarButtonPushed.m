@@ -17,7 +17,9 @@ end
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
 if isequal('NonFcnSettingsStruct',varName)
-    load(projectSettingsMATPath,'NonFcnSettingsStruct');
+%     load(projectSettingsMATPath,'NonFcnSettingsStruct');
+    NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+    save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
     assignin('base',varName,NonFcnSettingsStruct);
     evalin('base',['openvar(''' varName ''');']);
     return;
@@ -25,7 +27,9 @@ end
 
 % Organize the var data in table form, & display it
 if isequal('VariableNamesList',varName)
-    load(projectSettingsMATPath,'VariableNamesList');
+%     load(projectSettingsMATPath,'VariableNamesList');
+    VariableNamesList=getappdata(fig,'VariableNamesList');
+    save(projectSettingsMATPath,'VariableNamesList','-append');
     headers=fieldnames(VariableNamesList);
     for i=1:length(headers)
         array(:,i)=VariableNamesList.(headers{i});
@@ -37,7 +41,9 @@ if isequal('VariableNamesList',varName)
 end 
 
 if isequal('Digraph',varName)
-    load(projectSettingsMATPath,'Digraph');
+%     load(projectSettingsMATPath,'Digraph');
+    Digraph=getappdata(fig,'Digraph');
+    save(projectSettingsMATPath,'Digraph','-append');
     newDigraph.Edges=Digraph.Edges;
     edgeHeaders=fieldnames(Digraph.Edges);
     edgeHeaders=edgeHeaders(~ismember(edgeHeaders,{'Properties','Row','Variables'}));

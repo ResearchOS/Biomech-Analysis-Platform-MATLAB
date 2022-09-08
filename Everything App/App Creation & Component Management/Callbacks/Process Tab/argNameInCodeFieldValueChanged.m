@@ -33,8 +33,9 @@ end
 
 assert(~isempty(nodeNum));
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+Digraph=getappdata(fig,'Digraph');
+% load(projectSettingsMATPath,'Digraph');
 
 nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
@@ -55,7 +56,8 @@ else
     return;
 end
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);
 
 if runLog
     desc='Changed argument name in code';

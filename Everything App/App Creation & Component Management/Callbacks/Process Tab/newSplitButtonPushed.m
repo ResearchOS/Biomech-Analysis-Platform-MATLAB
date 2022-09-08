@@ -38,7 +38,9 @@ end
 
 %% 2. Select the edge color for this split
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+Digraph=getappdata(fig,'Digraph');
 load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist','colorlist');
 if runLog
     Q=uifigure('Name',['Select Color for Split: ' name]);
@@ -153,7 +155,8 @@ splits=NonFcnSettingsStruct.Process.Splits;
 delete(handles.Process.splitsUITree.Children);
 getSplitNames(splits,[],handles.Process.splitsUITree);
 
-save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
+setappdata(fig,'NonFcnSettingsStruct');
 
 if runLog
     desc='Created a new split';

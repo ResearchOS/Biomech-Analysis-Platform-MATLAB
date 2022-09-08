@@ -46,7 +46,9 @@ if length(varNode.Children)==1 % Removing the variable in its entirety.
 end    
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'VariableNamesList','Digraph');
+% load(projectSettingsMATPath,'VariableNamesList','Digraph');
+Digraph=getappdata(fig,'Digraph');
+VariableNamesList=getappdata(fig,'VariableNamesList');
 
 doDelete=1; % Indicates to delete the variable (if not found).
 for i=1:length(Digraph.Nodes.FunctionNames) % Look through each function to see if the variable is being used anywhere.
@@ -140,7 +142,9 @@ if isempty(varNode.Children)
     highlightedFcnsChanged(fig,Digraph);    
 end
 
-save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
+% save(projectSettingsMATPath,'VariableNamesList','Digraph','-append');
+setappdata(fig,'VariableNamesList',VariableNamesList);
+setappdata(fig,'Digraph',Digraph);
 
 handles.Process.fcnsArgsSearchField.Value='';
 

@@ -19,6 +19,10 @@ elseif ismac==1
 end
 
 selNode=handles.Process.fcnArgsUITree.SelectedNodes;
+if isempty(selNode)
+    return;
+end
+
 if isequal(class(selNode.Parent),'matlab.ui.container.CheckBoxTree') % Open the function
     name=selNode.Text;
     filePath=[getappdata(fig,'codePath') 'Processing Functions' slash name '.m'];

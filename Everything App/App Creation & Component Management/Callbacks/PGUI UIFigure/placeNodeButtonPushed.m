@@ -51,7 +51,8 @@ else
 end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
 
 if ismember(newNodeCoord,Digraph.Nodes.Coordinates,'rows')
     disp('Cannot place a function node on top of an existing node! Click elsewhere');
@@ -83,7 +84,8 @@ if ~isempty(Digraph.Edges)
     h.EdgeColor=Digraph.Edges.Color;
 end
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);
 
 setappdata(fig,'doNothingOnButtonUp',1);
 set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...

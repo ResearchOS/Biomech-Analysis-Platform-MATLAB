@@ -10,8 +10,8 @@ if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
 end
 
 if exist('fcnDesc','var')~=1
-fcnDesc=handles.Process.fcnDescriptionTextArea.Value;
-runLog=true;
+    fcnDesc=handles.Process.fcnDescriptionTextArea.Value;
+    runLog=true;
 else
     handles.Process.fcnDescriptionTextArea.Value=fcnDesc;
     runLog=false;
@@ -21,7 +21,8 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 varNames=whos('-file',projectSettingsMATPath);
 varNames={varNames.name};
 if ismember('Digraph',varNames)
-    load(projectSettingsMATPath,'Digraph');
+%     load(projectSettingsMATPath,'Digraph');
+    Digraph=getappdata(fig,'Digraph');
 end
 
 if runLog
@@ -44,7 +45,8 @@ nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
 Digraph.Nodes.Descriptions{nodeRow}=fcnDesc;
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);
 
 if runLog
     desc='Changed function description';

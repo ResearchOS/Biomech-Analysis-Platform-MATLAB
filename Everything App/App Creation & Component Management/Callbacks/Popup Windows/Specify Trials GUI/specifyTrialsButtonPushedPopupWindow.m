@@ -42,7 +42,8 @@ varNames=whos('-file',projectSettingsMATPath);
 varNames={varNames.name};
 assert(all(ismember({'Digraph'},varNames)));
 
-load(projectSettingsMATPath,'Digraph');
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
 
 tabName=handles.Tabs.tabGroup1.SelectedTab.Title;
 

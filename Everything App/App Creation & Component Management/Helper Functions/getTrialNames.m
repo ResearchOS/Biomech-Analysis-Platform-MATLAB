@@ -20,7 +20,8 @@ end
 fig=ancestor(src,'figure','toplevel');
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 % Subject ID Column Header Name
 % subjIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','SubjIDColumnHeaderField');

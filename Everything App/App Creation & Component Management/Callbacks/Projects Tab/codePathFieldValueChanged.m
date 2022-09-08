@@ -57,8 +57,9 @@ end
 
 % 1. Load the project settings structure MAT file, if it exists.
 if exist(projectSettingsMATPath,'file')==2
-    NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
-    NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+    NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+%     NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+%     NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 end
 
 % 3. If the project settings structure MAT file does not exist, initialize the project-specific settings with default values for all GUI components.
@@ -104,13 +105,15 @@ NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath=codePath;
 if exist(projectSettingsMATPath,'file')==2    
     varNames=who('-file',projectSettingsMATPath);
     if ~ismember('FcnSettingsStruct',varNames)
-        save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-append');
+%         save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-append');
     else
-        save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % FcnSettingsStruct not changed here, so it's not loaded here.
+%         save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % FcnSettingsStruct not changed here, so it's not loaded here.
     end
 else
-    save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-mat','-v6');
+%     save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-mat','-v6');
 end
+
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 % Add the projectSettingsMATPath to the project-independent settings MAT path
 settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path

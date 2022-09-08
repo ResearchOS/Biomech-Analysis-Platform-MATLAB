@@ -5,8 +5,9 @@ function []=splitsUITreeSelectionChanged(src,splitName_Code)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
 
 if exist('splitName_Code','var')==1
     handles.Process.splitsUITree.SelectedNodes=findobj(handles.Process.splitsUITree,'Text',splitName_Code);

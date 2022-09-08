@@ -53,8 +53,9 @@ end
 setappdata(fig,'placeFcnName',fcnName);
 
 %% Have the user select where to place the fcn
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
 
 if runLog
     xMin=min(Digraph.Nodes.Coordinates(:,1));

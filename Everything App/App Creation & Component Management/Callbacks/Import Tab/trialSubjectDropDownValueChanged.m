@@ -20,11 +20,13 @@ headerNameVar=genvarname(headerName);
 
 projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+% load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject=trialSubject;
 
-save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 if runLog
     desc=['Changed the level of variable ' headerName ' to read in from the logsheet'];

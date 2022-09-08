@@ -4,7 +4,7 @@ function []=logVarsUITreeSelectionChanged(src,logVarHeaderName)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
-projectName=getappdata(fig,'projectName');
+% projectName=getappdata(fig,'projectName');
 
 if exist('logVarHeaderName','var')~=1
     logVarHeaderName=handles.Import.logVarsUITree.SelectedNodes.Text;
@@ -16,9 +16,10 @@ else
 end
 headerNameVar=genvarname(logVarHeaderName);
 
-projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
+% projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
 handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;

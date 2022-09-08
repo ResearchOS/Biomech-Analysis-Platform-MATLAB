@@ -18,13 +18,15 @@ end
 
 headerNameVar=genvarname(headerName);
 
-projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
+% projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+% load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType=dataType;
 
-save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 
 if runLog
     desc=['Changed data type for logsheet variable ' headerName];

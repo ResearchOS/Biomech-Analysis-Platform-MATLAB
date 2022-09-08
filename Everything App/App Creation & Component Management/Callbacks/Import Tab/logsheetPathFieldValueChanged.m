@@ -46,10 +46,12 @@ projectVarNames=whos('-file',projectSettingsMATPath);
 projectVarNames={projectVarNames.name};
 
 if ismember('VariableNamesList',projectVarNames)
-    load(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList'); % Load the non-fcn settings struct from the project settings MAT file
+%     load(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList'); % Load the non-fcn settings struct from the project settings MAT file
+    VariableNamesList=getappdata(fig,'VariableNamesList');
 else
-    load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+%     load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file    
 end
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 % NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 
 NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath=logsheetPath; % Store the computer-specific logsheet path to the struct
@@ -141,7 +143,8 @@ projectSettingsVars=whos('-file',projectSettingsMATPath);
 projectSettingsVarNames={projectSettingsVars.name};
 
 if ismember('Digraph',projectSettingsVarNames)
-    load(projectSettingsMATPath,'Digraph');    
+%     load(projectSettingsMATPath,'Digraph');    
+    Digraph=getappdata(fig,'Digraph');
 else
     Digraph=digraph;
     Digraph=addnode(Digraph,1);
@@ -164,7 +167,10 @@ else
     NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Name=splitName;   
     NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Color=[0 0.4470 0.7410]; % MATLAB R2021b first color in default color order
 
-    save(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct','maxSplitCode','-append');
+%     save(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct','maxSplitCode','-append');
+    save(projectSettingsMATPath,'maxSplitCode','-append');
+    setappdata(fig,'Digraph',Digraph);
+    setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 end
 
 %% Add the splits UI tree nodes on the Process tab
@@ -188,7 +194,8 @@ else
     plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
 end
 
-save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 resetProjectAccess_Visibility(fig,4);
 
 if runLog

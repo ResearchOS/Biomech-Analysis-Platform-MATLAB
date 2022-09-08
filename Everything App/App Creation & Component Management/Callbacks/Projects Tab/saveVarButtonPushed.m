@@ -19,7 +19,7 @@ try
     var=evalin('base',[varName ';']);
 catch
     beep;
-    disp(['Missing variable ' varName ' from the base workspace!']);
+    disp(['Missing variable ' varName ' from the base workspace, cannot save!']);
     return;
 end
 
@@ -27,6 +27,7 @@ switch varName
     case 'NonFcnSettingsStruct'
         eval([varName '=var;']);
         save(projectSettingsMATPath,varName,'-append');
+        setappdata(fig,'NonFcnSettingsStruct',varName);
     case 'VariableNamesList'
         % Convert table back to structure
         names=var.Properties.VariableNames;
@@ -35,10 +36,12 @@ switch varName
         end
         eval([varName '=structVar;']);
         save(projectSettingsMATPath,varName,'-append');
+        setappdata(fig,'VariableNamesList',varName);
     case 'Digraph'
         % Modify the tables to make Nx2 columns        
         Digraph=digraph(var.Edges,var.Nodes);
         save(projectSettingsMATPath,'Digraph','-append');
+        setappdata(fig,'Digraph',Digraph);
 end
 
 evalin('base',['clear ' varName ';']);

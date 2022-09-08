@@ -54,7 +54,9 @@ end
 setappdata(fig,'connectNodesCoords',NaN(2,2));
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+Digraph=getappdata(fig,'Digraph');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
 
 digraphCoords=Digraph.Nodes.Coordinates;
 digraphDists1=sqrt((digraphCoords(:,1)-repmat(connectNodesCoords(1,1),size(digraphCoords,1),1)).^2+(digraphCoords(:,2)-repmat(connectNodesCoords(1,2),size(digraphCoords,1),1)).^2);
@@ -182,7 +184,8 @@ delete(handles.Process.mapFigure.Children);
 h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
 h.EdgeColor=Digraph.Edges.Color;
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);
 
 setappdata(fig,'doNothingOnButtonUp',0);
 set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...

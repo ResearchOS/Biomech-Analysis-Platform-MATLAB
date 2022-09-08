@@ -37,16 +37,23 @@ varSpaceIdx=strfind(varText,' ');
 varSplitName=varText(1:varSpaceIdx-1);
 varSplitCode=varText(varSpaceIdx+2:end-1);
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-varNames=whos('-file',projectSettingsMATPath);
-varNames={varNames.name};
-assert(ismember('Digraph',varNames));
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% varNames=whos('-file',projectSettingsMATPath);
+% varNames={varNames.name};
+% assert(ismember('Digraph',varNames));
 
-if ~ismember('VariableNamesList',varNames)
-    load(projectSettingsMATPath,'Digraph');
-else
-    load(projectSettingsMATPath,'Digraph','VariableNamesList');
+VariableNamesList=getappdata(fig,'VariableNamesList');
+Digraph=getappdata(fig,'Digraph');
+
+if isempty(VariableNamesList) || isempty(Digraph)
+    return;
 end
+
+% if ~ismember('VariableNamesList',varNames)
+%     load(projectSettingsMATPath,'Digraph');
+% else
+%     load(projectSettingsMATPath,'Digraph','VariableNamesList');
+% end
 
 nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
 a=handles.Process.fcnArgsUITree.SelectedNodes;
@@ -101,7 +108,8 @@ handles.Process.fcnArgsUITree.SelectedNodes=newNode;
 
 expand(b);
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);
 
 functionsUITreeSelectionChanged(fig);
 % handles.Process.argNameInCodeField.Value=nameInCode;

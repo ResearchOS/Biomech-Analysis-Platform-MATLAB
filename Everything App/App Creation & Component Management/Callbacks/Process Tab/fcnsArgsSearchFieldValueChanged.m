@@ -4,8 +4,9 @@ function []=fcnsArgsSearchFieldValueChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'VariableNamesList');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% load(projectSettingsMATPath,'VariableNamesList');
+VariableNamesList=getappdata(fig,'VariableNamesList');
 
 % searchTerm=handles.Process.fcnsArgsSearchField.Value;
 searchTerm=event.Value;

@@ -32,7 +32,11 @@ end
 nodeSizes(nodeRowsNums)=8;
 nodeSizes(1)=4;
 if ~isempty(nodeRowsNums)
-    plotH.MarkerSize=nodeSizes;
+    try
+        plotH.MarkerSize=nodeSizes;
+    catch
+        plotH.MarkerSize=4;
+    end
 else
     plotH.MarkerSize=4;
 end
@@ -63,8 +67,8 @@ nodeRowsNums=nodeRowsNums(~ismember(nodeRowsNums,1));
 
 % Do checks to ensure that the pre-conditions are properly met.
 for i=1:length(nodeRowsNums)
-    inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodesData(i)); % All inedges for the current function
-    outEdgesRows=ismember(Digraph.Edges.EndNodes(:,1),nodesData(i)); % All outedges for the current function
+    inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodeRowsNums(i)); % All inedges for the current function
+    outEdgesRows=ismember(Digraph.Edges.EndNodes(:,1),nodeRowsNums(i)); % All outedges for the current function
     if isempty(inEdgesRows) && isempty(outEdgesRows)
         beep;
         disp('Need to connect this function to another before selecting it.');
@@ -89,8 +93,9 @@ for i=1:length(nodeRowsNums)
     end
 end
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'NonFcnSettingsStruct');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 % Get the list of splits from bottom to top in the splitsUITree
 currSplitNode=handles.Process.splitsUITree.SelectedNodes;

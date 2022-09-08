@@ -22,9 +22,10 @@ if ~ismember(checkedNode,handles.Import.logVarsUITree.CheckedNodes)
     return; % Unchecked this node
 end
 
-projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
+% projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+% load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 dataType=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
 trialSubject=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;

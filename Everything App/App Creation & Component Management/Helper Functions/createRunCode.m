@@ -7,7 +7,8 @@ function []=createRunCode(fig,path,archiveFolder,logsheetPathMAT,codePath,dataPa
 projectName=getappdata(fig,'projectName');
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
+% load(projectSettingsMATPath,'Digraph');
 
 [folderPath,name]=fileparts(path);
 

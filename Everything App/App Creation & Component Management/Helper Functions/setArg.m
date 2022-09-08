@@ -147,6 +147,6 @@ for i=1:length(argNames)
 end
 
 if any(anyNew)
-    save(getappdata(fig,'projectSettingsMATPath'),'VariableNamesList','-append'); % At least one variable had a new split, so save the VariableNamesList.
+%     save(getappdata(fig,'projectSettingsMATPath'),'VariableNamesList','-append'); % At least one variable had a new split, so save the VariableNamesList.
     setappdata(fig,'VariableNamesList',VariableNamesList);
 end

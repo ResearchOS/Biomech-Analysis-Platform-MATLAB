@@ -60,14 +60,16 @@ if exist(projectSettingsMATPath,'file')~=2
     return;
 end
 
-NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
-NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+% NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+% NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath=dataPath;
 
 addpath(genpath(getappdata(fig,'dataPath')));
 
-save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 resetProjectAccess_Visibility(fig,3);
 

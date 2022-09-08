@@ -6,9 +6,10 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
-projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
+% projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file
 
 for i=1:length(handles.Import.logVarsUITree.Children)
 

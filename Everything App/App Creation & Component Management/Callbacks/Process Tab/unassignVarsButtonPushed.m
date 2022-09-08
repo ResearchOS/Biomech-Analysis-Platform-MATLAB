@@ -5,14 +5,19 @@ function []=unassignVarsButtonPushed(src,nodeNum,varNameInGUI,splitCode)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
+% projectSettingsVars=whos('-file',projectSettingsMATPath);
+% projectSettingsVarNames={projectSettingsVars.name};
+% 
+% assert(ismember('Digraph',projectSettingsVarNames));
 
-assert(ismember('Digraph',projectSettingsVarNames));
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
 
-load(projectSettingsMATPath,'Digraph');
+if isempty(Digraph)
+    return;
+end
 
 nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
 a=handles.Process.fcnArgsUITree.SelectedNodes;
@@ -65,4 +70,5 @@ functionsUITreeSelectionChanged(fig);
 
 % highlightedFcnsChanged(fig,Digraph,nodeNum);
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);

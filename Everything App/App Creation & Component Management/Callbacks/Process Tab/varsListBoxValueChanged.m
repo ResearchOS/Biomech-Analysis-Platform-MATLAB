@@ -13,7 +13,8 @@ projectSettingsVarNames={projectSettingsVars.name};
 
 assert(ismember('VariableNamesList',projectSettingsVarNames));
 
-load(projectSettingsMATPath,'VariableNamesList');
+% load(projectSettingsMATPath,'VariableNamesList');
+VariableNamesList=getappdata(fig,'VariableNamesList');
 
 text=handles.Process.varsListbox.SelectedNodes.Text;
 spaceIdx=strfind(text,' ');

@@ -81,14 +81,16 @@ pguiHandles.Process.specifyTrialsLabel.Text=specifyTrialsName;
 
 %% Assign the new specify trials specifyTrialsName to the current function
 nodeRow=getappdata(fig,'nodeRow');
-projectSettingsMATPath=getappdata(pguiFig,'projectSettingsMATPath');
+% projectSettingsMATPath=getappdata(pguiFig,'projectSettingsMATPath');
 
-load(projectSettingsMATPath,'Digraph');
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(pguiFig,'Digraph');
 if isequal(specifyTrialsName,Digraph.Nodes.SpecifyTrials{nodeRow})
     runLog=false; % Don't put an entry in the logsheet just for modifying or looking at the specify trials. Has to change the selection to make an entry.
 end
 Digraph.Nodes.SpecifyTrials{nodeRow}=specifyTrialsName;
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(pguiFig,'Digraph',Digraph);
 
 fcnName=Digraph.Nodes.FunctionNames{nodeRow};
 nodeID=Digraph.Nodes.NodeNumber(nodeRow);

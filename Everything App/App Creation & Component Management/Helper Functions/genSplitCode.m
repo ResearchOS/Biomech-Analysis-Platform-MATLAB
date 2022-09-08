@@ -21,7 +21,8 @@ if ~ismember('NonFcnSettingsStruct',projectSettingsVarNames) && ~ismember('maxSp
     return;
 end
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 if ~isfield(NonFcnSettingsStruct,'Process') && ~ismember('maxSplitCode',projectSettingsVarNames)
     splitCode='001';

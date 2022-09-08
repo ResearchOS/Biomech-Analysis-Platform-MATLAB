@@ -74,7 +74,8 @@ everythingPath=getappdata(fig,'everythingPath');
 copyfile(everythingPath,[currArchiveFolderName slash 'PGUI']);
 
 %% Check if archiving data as well as the code.
-load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(projectSettingsMATPath,'NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 archiveData=NonFcnSettingsStruct.Projects.ArchiveData;
 if archiveData==0

@@ -22,8 +22,9 @@ splitName=text(1:spaceIdx-1);
 % splitCode=text(spaceIdx+2:end-1);
 guiVarName=selNode.Parent.Text; % The name of the current variable
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'VariableNamesList');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% load(projectSettingsMATPath,'VariableNamesList');
+VariableNamesList=getappdata(fig,'VariableNamesList');
 
 varGUINameRowIdx=ismember(VariableNamesList.GUINames,guiVarName);
 

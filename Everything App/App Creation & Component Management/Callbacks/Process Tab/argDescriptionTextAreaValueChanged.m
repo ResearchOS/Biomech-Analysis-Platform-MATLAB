@@ -5,8 +5,8 @@ function []=argDescriptionTextAreaValueChanged(src,argDesc,varGUIName)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 if exist('argDesc','var')~=1
-argDesc=handles.Process.argDescriptionTextArea.Value;
-runLog=true;
+    argDesc=handles.Process.argDescriptionTextArea.Value;
+    runLog=true;
 else
     handles.Process.argDescriptionTextArea.Value=argDesc;
     runLog=false;
@@ -14,15 +14,20 @@ end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
+% projectSettingsVars=whos('-file',projectSettingsMATPath);
+% projectSettingsVarNames={projectSettingsVars.name};
+% 
+% if ~ismember('VariableNamesList',projectSettingsVarNames)
+%     disp(['No variables present yet!']);
+%     return;
+% end
 
-if ~ismember('VariableNamesList',projectSettingsVarNames)
-    disp(['No variables present yet!']);
+VariableNamesList=getappdata(fig,'VariableNamesList');
+if isempty(VariableNamesList)
+    disp('No variables present yet!');
     return;
 end
-
-load(projectSettingsMATPath,'VariableNamesList');
+% load(projectSettingsMATPath,'VariableNamesList');
 
 if runLog
     selNode=handles.Process.varsListbox.SelectedNodes;
@@ -61,7 +66,8 @@ end
 
 VariableNamesList.Descriptions{varIdx}=argDesc;
 
-save(projectSettingsMATPath,'VariableNamesList','-append');
+% save(projectSettingsMATPath,'VariableNamesList','-append');
+setappdata(fig,'VariableNamesList',VariableNamesList);
 
 if runLog
     desc='Changed argument description';

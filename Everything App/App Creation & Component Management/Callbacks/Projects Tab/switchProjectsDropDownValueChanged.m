@@ -73,6 +73,7 @@ if exist(projectSettingsMATPath,'file')~=2
 end
 
 load(projectSettingsMATPath,'NonFcnSettingsStruct');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 %% Projects tab
 if isfield(NonFcnSettingsStruct.Projects.Paths,macAddress)
@@ -128,6 +129,7 @@ hTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
 handles.Tabs.tabGroup1.SelectedTab=hTab;
 version=getappdata(fig,'version');
 save(settingsMATPath,'version','-append');
+setappdata(fig,'currTab',currTab);
 
 if ~isfield(NonFcnSettingsStruct.Projects,'ArchiveData')
     NonFcnSettingsStruct.Projects.ArchiveData=0;
@@ -141,6 +143,14 @@ handles.Import.numHeaderRowsField.Value=NonFcnSettingsStruct.Import.NumHeaderRow
 handles.Import.subjIDColHeaderField.Value=NonFcnSettingsStruct.Import.SubjectIDColHeader;
 handles.Import.targetTrialIDColHeaderField.Value=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
 handles.Import.logsheetPathField.Value=logsheetPath;
+
+projectSettingsVars=whos('-file',projectSettingsMATPath);
+projectSettingsVarNames={projectSettingsVars.name};
+
+if ismember('Digraph',projectSettingsVarNames)
+    load(projectSettingsMATPath,'Digraph');
+    setappdata(fig,'Digraph',Digraph);
+end
 
 if exist(logsheetPath,'file')==2    
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
@@ -161,18 +171,16 @@ delete(handles.Process.splitsUITree.Children);
 delete(handles.Process.fcnArgsUITree.Children);
 
 delete(handles.Process.varsListbox.Children); % Remove all variables from other projects.
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
 
 % Fill in metadata
 if ismember('VariableNamesList',projectSettingsVarNames)
     load(projectSettingsMATPath,'VariableNamesList');
+    setappdata(fig,'VariableNamesList',VariableNamesList);
     [~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
-    makeVarNodes(fig,alphabetIdx,VariableNamesList);   
+    makeVarNodes(fig,alphabetIdx,VariableNamesList);       
 end
 
-if ismember('Digraph',projectSettingsVarNames)
-    load(projectSettingsMATPath,'Digraph');
+if ismember('Digraph',projectSettingsVarNames)    
     h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
     if ~isempty(Digraph.Edges)
         h.EdgeColor=Digraph.Edges.Color;
@@ -199,7 +207,7 @@ mostRecentProjectName=projectName;
 save(getappdata(fig,'settingsMATPath'),'mostRecentProjectName','-append');
 
 % 6. Store all of the project-specific settings to the GUI.
-setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
+% setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 % setappdata(fig,'FcnSettingsStruct',FcnSettingsStruct);
 
 % 8. Tell the user that the project has successfully switched

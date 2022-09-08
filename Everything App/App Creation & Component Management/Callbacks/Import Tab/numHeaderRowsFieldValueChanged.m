@@ -23,13 +23,15 @@ if numHeaderRows<0
     return;
 end
 
-projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
+% projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-load(projectSettingsMATPath,'NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 NonFcnSettingsStruct.Import.NumHeaderRows=numHeaderRows;
 
-save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 if runLog
     desc='Change the number of header rows in the logsheet';

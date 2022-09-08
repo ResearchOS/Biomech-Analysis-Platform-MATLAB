@@ -18,10 +18,13 @@ projectSettingsVarNames={projectSettingsVars.name};
 assert(ismember('Digraph',projectSettingsVarNames));
 
 if ismember('VariableNamesList',projectSettingsVarNames)
-    load(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct');
+%     load(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct');
+    VariableNamesList=getappdata(fig,'VariableNamesList');
 else
-    load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+%     load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
 end
+Digraph=getappdata(fig,'Digraph');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 if size(guiNames,1)<size(guiNames,2)
     guiNames=guiNames';
@@ -48,7 +51,9 @@ if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
     VariableNamesList.Level=repmat({'T'},numVarsNoExist,1);
     VariableNamesList.IsHardCoded=repmat({0},numVarsNoExist,1);
 
-    save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
+%     save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
+    setappdata(fig,'VariableNamesList',VariableNamesList);
+    setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
     % This is not part of "makeVarNodes.m" because it deals with
     % initialization, and is therefore a slightly different operation.
     % Maybe in the future.
@@ -92,11 +97,16 @@ if any(~existVarsMatIdx)
     VariableNamesList.Level=[VariableNamesList.Level; repmat({'T'},numVarsNoExist,1)];
 end
 
-save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
+% save(projectSettingsMATPath,'VariableNamesList','NonFcnSettingsStruct','-append');
+setappdata(fig,'VariableNamesList',VariableNamesList);
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 [~,sortIdx]=sort(upper(VariableNamesList.GUINames));
 makeVarNodes(fig,sortIdx,VariableNamesList);
 
-save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','-append');
+% save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','-append');
+setappdata(fig,'VariableNamesList',VariableNamesList);
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
+setappdata(fig,'Digraph',Digraph);
 
 varsListBoxValueChanged(fig);

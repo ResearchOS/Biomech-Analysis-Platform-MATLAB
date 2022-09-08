@@ -41,7 +41,8 @@ end
 % fcnName=selNode.Text;
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
+% load(projectSettingsMATPath,'Digraph');
 
 % Get the unique index of the desired edge.
 % edgeIdx=ismember(Digraph.Edges.SplitCode,splitCode) & ismember(Digraph.Edges.NodeNumber(:,2),nodeNum);
@@ -64,7 +65,8 @@ end
 
 Digraph.Nodes.RunOrder{nodeRow}.([splitName '_' splitCode])=orderNum;
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);
 
 if runLog
     desc='Change the order in which the functions are run';

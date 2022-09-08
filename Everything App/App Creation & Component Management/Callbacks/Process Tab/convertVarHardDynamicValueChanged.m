@@ -25,7 +25,8 @@ isHC=handles.Process.convertVarHardDynamicButton.Value;
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-load(projectSettingsMATPath,'VariableNamesList');
+% load(projectSettingsMATPath,'VariableNamesList');
+VariableNamesList=getappdata(fig,'VariableNamesList');
 
 % splitText=handles.Process.splitsUITree.SelectedNodes.Text;
 splitsList=getSplitsOrder(handles.Process.splitsUITree.SelectedNodes,handles.Process.splitsUITree.Tag);
@@ -60,7 +61,8 @@ if isequal(fig.SelectionType,'open') % Double click
 end
 
 VariableNamesList.IsHardCoded{varRow}=isHC;
-save(projectSettingsMATPath,'VariableNamesList','-append');
+% save(projectSettingsMATPath,'VariableNamesList','-append');
+setappdata(fig,'VariableNamesList',VariableNamesList);
 
 if ~isHC        
     return;

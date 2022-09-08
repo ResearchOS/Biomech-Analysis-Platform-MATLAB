@@ -32,7 +32,9 @@ setappdata(fig,'splitCode',splitCode);
 % specify trials names
 % processing level (project/subject/trial
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+% load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+Digraph=getappdata(fig,'Digraph');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
 fcnNodes=handles.Process.fcnArgsUITree.Children;
 
@@ -121,9 +123,11 @@ a=tic;
 for i=1:length(fcnNames)
 
     b=tic;
-    load(projectSettingsMATPath,'VariableNamesList','Digraph');
-    setappdata(fig,'VariableNamesList',VariableNamesList);
-    setappdata(fig,'Digraph',Digraph);
+%     load(projectSettingsMATPath,'VariableNamesList','Digraph');
+%     Digraph=getappdata(fig,'Digraph');
+%     VariableNamesList=getappdata(fig,'VariableNamesList');
+%     setappdata(fig,'VariableNamesList',VariableNamesList);
+%     setappdata(fig,'Digraph',Digraph);
 
     fcnName=fcnNames{i};
     nodeNum=nodeNums(i);

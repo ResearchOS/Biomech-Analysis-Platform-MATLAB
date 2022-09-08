@@ -5,19 +5,29 @@ function []=functionsUITreeSelectionChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-varNames=whos('-file',projectSettingsMATPath);
-varNames={varNames.name};
-try
-    assert(all(ismember({'Digraph'},varNames)));
-catch
-    return;
-end
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% varNames=whos('-file',projectSettingsMATPath);
+% varNames={varNames.name};
+% try
+%     assert(all(ismember({'Digraph'},varNames)));
+% catch
+%     return;
+% end
 
-if ismember('VariableNamesList',varNames)
-    load(projectSettingsMATPath,'Digraph','VariableNamesList');
-else
-    load(projectSettingsMATPath,'Digraph');
+% if ismember('VariableNamesList',varNames)
+%     load(projectSettingsMATPath,'Digraph','VariableNamesList');
+% else
+%     load(projectSettingsMATPath,'Digraph');
+% end
+
+% if ismember('VariableNamesList',varNames)
+VariableNamesList=getappdata(fig,'VariableNamesList');
+% end
+
+Digraph=getappdata(fig,'Digraph');
+
+if isempty(VariableNamesList) || isempty(Digraph)
+    return;
 end
 
 if isempty(handles.Process.fcnArgsUITree.SelectedNodes)

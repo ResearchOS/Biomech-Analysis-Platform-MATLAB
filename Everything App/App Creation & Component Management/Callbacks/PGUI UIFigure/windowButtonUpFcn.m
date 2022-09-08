@@ -55,8 +55,9 @@ if multi==0
     h.NodeColor=[0 0.447 0.741];
 end
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
 
 digraphCoords=Digraph.Nodes.Coordinates;
 

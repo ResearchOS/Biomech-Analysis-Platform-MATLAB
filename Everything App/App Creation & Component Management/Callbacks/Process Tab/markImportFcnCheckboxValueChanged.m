@@ -19,13 +19,15 @@ else
 end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
 
 nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
 Digraph.Nodes.IsImport(nodeRow)=true;
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);
 
 if runLog
     desc='Marked function as import';

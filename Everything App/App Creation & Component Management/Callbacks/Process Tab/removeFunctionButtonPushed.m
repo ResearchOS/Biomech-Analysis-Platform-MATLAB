@@ -19,7 +19,8 @@ else
 end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-load(projectSettingsMATPath,'Digraph');
+% load(projectSettingsMATPath,'Digraph');
+Digraph=getappdata(fig,'Digraph');
 
 nodeRow=ismember(Digraph.Nodes.NodeNumber,nodeNum);
 
@@ -35,7 +36,8 @@ setappdata(fig,'selectedNodeNumbers',selNodeIDs);
 nodeRowNum=find(nodeRow==1);
 Digraph=rmnode(Digraph,nodeRowNum);
 
-save(projectSettingsMATPath,'Digraph','-append');
+% save(projectSettingsMATPath,'Digraph','-append');
+setappdata(fig,'Digraph',Digraph);
 
 if isempty(selNodeIDs)
     delete(handles.Process.fcnArgsUITree.Children);

@@ -21,7 +21,7 @@ elseif ismac==1
 end
 
 %% Create figure
-fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig)); % Create the figure window for the app
+fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig),'DeleteFcn',@(fig,event) saveGUIState(fig)); % Create the figure window for the app
 fig.Name='pgui'; % Name the window
 defaultPos=get(0,'defaultfigureposition'); % Get the default figure position
 set(fig,'Position',[defaultPos(1:2) defaultPos(3)*2 defaultPos(4)]); % Set the figure to be at that position (redundant, I know, but should be clear)

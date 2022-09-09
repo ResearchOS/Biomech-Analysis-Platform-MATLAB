@@ -68,7 +68,7 @@ if isClickAndDrag==1
     nodeRows=digraphCoords(:,1)>=min(rect(:,1)) & digraphCoords(:,1)<=max(rect(:,1)) ...
         & digraphCoords(:,2)>=min(rect(:,2)) & digraphCoords(:,2)<=max(rect(:,2));
 else
-    selTol=0.1;
+    selTol=0.5;
     pos=currPointDown;
     allDigraphDists=sqrt((digraphCoords(:,1)-repmat(pos(1,1),size(digraphCoords,1),1)).^2+(digraphCoords(:,2)-repmat(pos(1,2),size(digraphCoords,1),1)).^2);
     nodeRows=allDigraphDists<selTol;

@@ -31,7 +31,7 @@ setappdata(fig,'splitCode',splitCode);
 % node numbers (node row numbers?)
 % specify trials names
 % processing level (project/subject/trial
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 % load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
 Digraph=getappdata(fig,'Digraph');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
@@ -51,21 +51,16 @@ for i=1:length(fcnNodes)
     nodeNums(i)=fcnNodes(i).NodeData;
 end
 
-% if ismember('Logsheet',fcnNames)
-%     disp('To import data from the logsheet, please go to the "Import" tab. This will not run now.');
-%     nodeNums=nodeNums(~ismember(fcnNames,'Logsheet'));
-%     fcnNames=fcnNames(~ismember(fcnNames,'Logsheet'));    
-% end
-
 nodeRows=ismember(Digraph.Nodes.NodeNumber,nodeNums);
-coords=Digraph.Nodes.Coordinates(nodeRows,2);
+nodeRowNums=find(nodeRows==1);
+% coords=Digraph.Nodes.Coordinates(nodeRows,2);
 specifyTrialsNames=Digraph.Nodes.SpecifyTrials(nodeRows);
 isImportFcns=Digraph.Nodes.IsImport(nodeRows);
-% assert(~any(diff(coords))==0 || length(coords)==1); % Check that no nodes have the same Y coordinate
-[~,idx]=sort(coords,'descend'); % Sorted from highest to lowest
-
-% fcnNames=Digraph.Nodes.FunctionNames(idx);
-% nodeNums=D
+orderNums=zeros(length(nodeRowNums),1);
+for i=1:length(nodeRowNums)
+    orderNums(i)=Digraph.Nodes.RunOrder{nodeRowNums(i)}.([splitName '_' splitCode]);
+end
+[~,idx]=sort(orderNums,'ascend'); % Sort the functions by their run order
 
 fcnNames=fcnNames(idx);
 nodeNums=nodeNums(idx);
@@ -117,17 +112,10 @@ end
 projectName=getappdata(fig,'projectName');
 dataPath=getappdata(fig,'dataPath');
 
-nodeRowNums=find(nodeRows==1);
-
 a=tic;
 for i=1:length(fcnNames)
 
     b=tic;
-%     load(projectSettingsMATPath,'VariableNamesList','Digraph');
-%     Digraph=getappdata(fig,'Digraph');
-%     VariableNamesList=getappdata(fig,'VariableNamesList');
-%     setappdata(fig,'VariableNamesList',VariableNamesList);
-%     setappdata(fig,'Digraph',Digraph);
 
     fcnName=fcnNames{i};
     nodeNum=nodeNums(i);

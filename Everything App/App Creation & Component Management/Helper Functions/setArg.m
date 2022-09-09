@@ -15,15 +15,13 @@ elseif ispc==1
 end
 
 %% Get the level for the current arguments to store. Also get the file path for the current MAT file.
-try
-    fig=evalin('base','gui;');
-    isRunCode=0;
-catch
-    try
-        fig=evalin('base','runCodeGUI;');
-        isRunCode=1;
-    catch
-        disp('Missing the GUI fig!');
+fig=findall(0,'Name','pgui');
+isRunCode=0;
+if isempty(fig)
+    fig=findall(0,'Name','runCodeHiddenGUI');
+    isRunCode=1;
+    if isempty(fig)
+        disp('Missing the GUI!');
         return;
     end
 end

@@ -21,7 +21,7 @@ elseif ismac==1
 end
 
 %% Create figure
-fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig),'DeleteFcn',@(fig,event) saveGUIState(fig)); % Create the figure window for the app
+fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig),'DeleteFcn',@(fig,event) saveGUIState(fig),'KeyPressFcn',@(fig,event) keyPressFcn(fig,event)); % Create the figure window for the app
 fig.Name='pgui'; % Name the window
 defaultPos=get(0,'defaultfigureposition'); % Get the default figure position
 set(fig,'Position',[defaultPos(1:2) defaultPos(3)*2 defaultPos(4)]); % Set the figure to be at that position (redundant, I know, but should be clear)
@@ -58,6 +58,10 @@ setappdata(fig,'selectedNodeNumbers',0); % The node ID numbers of the selected n
 setappdata(fig,'splitName',''); % The name of the current processing split
 setappdata(fig,'splitCode',''); % The code to append to variables for the current processing split
 setappdata(fig,'runLogPath',''); % The path for the running log of all actions taken for a project.
+
+%% Create the uimenu at the top of the figure
+uiFileMenu=uimenu(fig,'Text','File');
+uimenu(uiFileMenu,'Text','Archive Project','Accelerator','S','MenuSelectedFcn',@archiveButtonPushed);
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing

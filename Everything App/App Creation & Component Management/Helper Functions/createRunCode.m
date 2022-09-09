@@ -1,8 +1,14 @@
-function []=createRunCode(fig,path,archiveFolder,logsheetPathMAT,codePath,dataPath)
+function []=createRunCode(fig,path,archiveFolder,codePath)
 
 %% PURPOSE: GENERATE A RUN CODE TO BE STORED IN THE PROJECT'S ARCHIVE
 
 % handles=getappdata(fig,'handles');
+
+if ismac==1
+    slash='/';
+elseif ispc==1
+    slash='\';
+end
 
 projectName=getappdata(fig,'projectName');
 
@@ -29,50 +35,96 @@ text{13}='load(projectSettingsMATPath,''Digraph'',''VariableNamesList'',''NonFcn
 text{14}='';
 text{15}='macAddress=getComputerID(); % Get the unique ID for this computer';
 text{16}='';
-text{17}='% Initialize figure just for storing data';
-text{18}='if exist(''gui'',''var'')==1';
-text{19}='    close(gui); clear gui; % Close and delete the processing GUI';
-text{20}='end';
-text{21}='runCodeGUI=uifigure(''Visible'',''off'');';
-text{22}=['setappdata(runCodeGUI,''projectName'',''' projectName ''');'];
-text{23}='% close(runCodeGUI); clear runCodeGUI; % To close and delete the uifigure (which deletes all of the data)';
-text{24}=['setappdata(runCodeGUI,''logsheetPathMAT'', NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT);'];
-text{25}=['setappdata(runCodeGUI,''dataPath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath);'];
-text{26}=['setappdata(runCodeGUI,''codePath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath);'];
-text{27}='';
+text{17}='% Initialize a figure just for storing data';
+text{18}='pguiHandle=findall(0,''Name'',''pgui''); % Get the handle to the processing GUI, if it exists';
+text{19}='close(pguiHandle); clear pguiHandle; % Close and delete the processing GUI (does nothing if not open)';
+text{20}='runCodeHiddenGUI=uifigure(''Visible'',''off'',''Name'',''runCodeHiddenGUI'');';
+text{21}=['setappdata(runCodeHiddenGUI,''projectName'',''' projectName ''');'];
+text{22}='% close(runCodeHiddenGUI); clear runCodeHiddenGUI; % To close and delete the uifigure (which deletes all of its data)';
+text{23}='setappdata(runCodeHiddenGUI,''logsheetPathMAT'', NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT);';
+text{24}='setappdata(runCodeHiddenGUI,''dataPath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath);';
+text{25}='setappdata(runCodeHiddenGUI,''codePath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath);';
+text{26}='logsheetPathMAT=getappdata(runCodeHiddenGUI,''logsheetPathMAT'');';
+text{27}='load(logsheetPathMAT,''logVar''); % Load the logsheet variable';
+text{28}='dataPath=getappdata(runCodeHiddenGUI,''dataPath'');';
+text{29}='';
+text{30}='if ismac==1';
+text{31}='    slash=''/'';';
+text{32}='elseif ispc==1';
+text{33}='    slash=''\'';';
+text{34}='end';
+text{35}='';
+text{36}='setappdata(runCodeHiddenGUI,''NonFcnSettingsStruct'',NonFcnSettingsStruct);';
+text{37}='setappdata(runCodeHiddenGUI,''Digraph'',Digraph);';
+text{38}='setappdata(runCodeHiddenGUI,''VariableNamesList'',VariableNamesList);';
+text{39}=['projectName=' '''' projectName '''' ';'];
+text{40}='';
+text{41}='%% Initialize the projectStruct';
+text{42}='projectStruct=[];';
+text{43}='';
 
-%% Check that the function numbers are 1-N (logsheet is 0) with no doubles or skips.
+%% Set up metadata for the run code
 if ~(isempty(Digraph.Nodes.RunOrder{1}) || Digraph.Nodes.RunOrder{1}.Default_001==0)
     disp('Logsheet wrong, but do I care?');
     return;
 end
 
-allNums=NaN(length(Digraph.Nodes.RunOrder)-1,1);
-fcnNames=cell(length(Digraph.Nodes.FunctionNames),1);
-splitNames_Codes=cell(length(Digraph.Nodes.FunctionNames),1);
-nodeNums=NaN(length(Digraph.Nodes.RunOrder),1);
-for i=2:length(Digraph.Nodes.RunOrder) % Start with the logsheet
+numNodes=length(Digraph.Nodes.RunOrder)-1;
+
+allNums=NaN(numNodes,1);
+fcnNames=cell(numNodes,1);
+splitNames_Codes=cell(numNodes,1);
+nodeNums=NaN(numNodes,1);
+isImport=NaN(numNodes,1);
+desc=cell(numNodes,1);
+varNamesIn=cell(numNodes,1);
+varNamesOut=cell(numNodes,1);
+varNamesInCodeIn=cell(numNodes,1);
+varNamesInCodeOut=cell(numNodes,1);
+specifyTrials=cell(numNodes,1);
+coords=NaN(numNodes,2);
+levels=cell(numNodes,1);
+
+for i=2:length(Digraph.Nodes.RunOrder) % Iterate over each function node, excluding the logsheet
     if ~isstruct(Digraph.Nodes.RunOrder{i})
         continue;
     end
-    currSplits=fieldnames(Digraph.Nodes.RunOrder{i});
+    currSplits=fieldnames(Digraph.Nodes.RunOrder{i}); % The splits for the current function node.
 
-    for j=1:length(currSplits)
+    for j=1:length(currSplits) % Iterate over each split for this function node
 
-        orderNum=Digraph.Nodes.RunOrder{i}.(currSplits{j});
+        orderNum=Digraph.Nodes.RunOrder{i}.(currSplits{j}); % Get the run order for this node/split
         if orderNum==0
-            disp('Archive failed. Cannot have a run order of zero!');
+            beep;
+            disp('Archive terminated. Cannot have a run order of zero!');
             return;
         end
+
+        % Get all of the metadata for this function node
         allNums(orderNum)=orderNum;
         fcnNames{orderNum}=Digraph.Nodes.FunctionNames{i};
         splitNames_Codes{orderNum}=currSplits{j};
         nodeNums(orderNum)=Digraph.Nodes.NodeNumber(i);
+        isImport(orderNum)=Digraph.Nodes.IsImport(i);
+        desc{orderNum}=Digraph.Nodes.Descriptions{i};
+        specifyTrials{orderNum}=Digraph.Nodes.SpecifyTrials{i};
+        coords(orderNum,1:2)=Digraph.Nodes.Coordinates(i,:);
+        levels{orderNum}=readLevel([codePath 'Processing Functions' slash fcnNames{orderNum} '.m'],isImport(orderNum));
+        if isfield(Digraph.Nodes.InputVariableNames{i},currSplits{j})
+            varNamesIn{orderNum}=Digraph.Nodes.InputVariableNames{i}.(currSplits{j});            
+            varNamesInCodeIn{orderNum}=Digraph.Nodes.InputVariableNamesInCode{i}.(currSplits{j});            
+        end     
+
+        if isstruct(Digraph.Nodes.OutputVariableNames{i}) && isfield(Digraph.Nodes.OutputVariableNames{i},currSplits{j})
+            varNamesOut{orderNum}=Digraph.Nodes.OutputVariableNames{i}.(currSplits{j});
+            varNamesInCodeOut{orderNum}=Digraph.Nodes.OutputVariableNamesInCode{i}.(currSplits{j});
+        end
 
     end
 
 end
 
+%% Check that the function numbers are 1-N (logsheet is 0) with no doubles or skips.
 try
     assert(isequal(allNums,(1:length(allNums))')); % Assert that all numbers are present with no doubles or skips
 catch
@@ -80,15 +132,170 @@ catch
 end
 n=length(text); % Number of lines initialized
 
-%% Fill in each function in the script
+%% Fill in each function in the script. First, add the function to the settings variables. Then, run the function.
 for i=1:length(allNums)
     
     n=n+1; % Line to put comment on
-    text{n}=['% #' num2str(i) ' ' fcnNames{i}];
+    text{n}=['%% ' fcnNames{i} ' Node # ' num2str(nodeNums(i))];
     n=n+1;
-    text{n}=['runCodeFunc(runCodeGUI, ''' fcnNames{i} ''', ''' splitNames_Codes{i} ''', ' num2str(nodeNums(i)) ');'];
+    text{n}=['fcnName = ' '''' fcnNames{i} '''' ';'];
+    n=n+1;
+    text{n}=['fcnSplit = ' '''' splitNames_Codes{i} '''' ';'];
+    n=n+1;
+    text{n}=['nodeNumber = ' num2str(nodeNums(i)) ';'];
+    n=n+1;
+    if ~isempty(specifyTrials{i})
+        text{n}=['inclStruct = ' specifyTrials{i} ';'];
+    else
+        text{n}=['inclStruct = ' '''''' ';'];
+    end
+    n=n+1;
+    text{n}=['runOrder = ' num2str(i) ';'];
+    n=n+1;
+    text{n}=['prevFcnNodeNumber = ' num2str(1) ';'];
+    n=n+1;
+    text{n}=['isImport = ' num2str(isImport(i)) ';'];
+    n=n+1;
+    text{n}=['coordinate = [' num2str(coords(i,1)) ', ' num2str(coords(i,2)) '];'];    
+
+    % Input variable names
+    varNamesInText='';
+    for j=1:length(varNamesIn{i})
+        if j>1
+            varNamesInText=[varNamesInText ', ' '''' varNamesIn{i}{j} ''''];
+        else
+            varNamesInText=['{''' varNamesIn{i}{j} ''''];
+        end
+    end
+    varNamesInText=[varNamesInText '}'];
+    if isempty(varNamesIn{i})
+        varNamesInText='{''''}';
+    end
+    n=n+1;
+    text{n}=['inputVarNames = ' varNamesInText ';'];
+
+    % Input variable names in code
+    varNamesInCodeText='';
+    for j=1:length(varNamesInCodeIn{i})
+        if j>1
+            varNamesInCodeText=[varNamesInCodeText ', ' '''' varNamesInCodeIn{i}{j} ''''];
+        else
+            varNamesInCodeText=['{''' varNamesInCodeIn{i}{j} ''''];
+        end
+    end
+    varNamesInCodeText=[varNamesInCodeText '}'];
+    if isempty(varNamesInCodeIn{i})
+        varNamesInCodeText='{''''}';
+    end
+    n=n+1;
+    text{n}=['inputVarNamesInCode = ' varNamesInCodeText ';'];
+
+    % Output variable names
+    varNamesInText='';
+    for j=1:length(varNamesOut{i})
+        if j>1
+            varNamesInText=[varNamesInText ', ' '''' varNamesOut{i}{j} ''''];
+        else
+            varNamesInText=['{''' varNamesOut{i}{j} ''''];
+        end
+    end
+    varNamesInText=[varNamesInText '}'];
+    if isempty(varNamesOut{i})
+        varNamesInText='{''''}';
+    end
+    n=n+1;
+    text{n}=['outputVarNames = ' varNamesInText ';'];
+
+    % Output variable names in code
+    varNamesInCodeText='';
+    for j=1:length(varNamesInCodeOut{i})
+        if j>1
+            varNamesInCodeText=[varNamesInCodeText ', ' '''' varNamesInCodeOut{i}{j} ''''];
+        else
+            varNamesInCodeText=['{''' varNamesInCodeOut{i}{j} ''''];
+        end
+    end
+    varNamesInCodeText=[varNamesInCodeText '}'];
+    if isempty(varNamesInCodeOut{i})
+        varNamesInCodeText='{''''}';
+    end
+    n=n+1;
+    text{n}=['outputVarNamesInCode = ' varNamesInCodeText ';'];
+
+    n=n+1;
+    text{n}='addFunc(fcnName, fcnSplit, inputVarNames, inputVarNamesInCode, outputVarNames, outputVarNamesInCode, nodeNumber, specifyTrials, runOrder, prevFcnNodeNumber, isImport, coordinate);';
+
+    %% Run the function
+%     n=n+1;
+%     text{n}='inclStruct=feval(specifyTrials); % Returns the structure specifying metadata for which trials to include';
+    n=n+1;
+    text{n}='allTrialNames=getTrialNames(inclStruct, logVar, runCodeHiddenGUI, 0, []);';
+
+    level=levels{i};
+    n=n+1;
+    if ismember('P',level)
+        if ismember('T',level)
+            text{n}=[fcnNames{i} '(projectStruct, allTrialNames);'];
+        elseif ismember('S',level)
+            text{n}='subNames=fieldnames(allTrialNames);';
+            n=n+1;
+            text{n}=[fcnNames{i} '(projectStruct, subNames);'];
+        else
+            text{n}=[fcnNames{i} '(projectStruct);'];
+        end
+        continue;
+    end
+
+    text{n}='subNames=fieldnames(allTrialNames);';
+    n=n+1;
+    text{n}='for sub = 1:length(subNames)';
+    n=n+1;
+    text{n}='    subName=subNames{sub};';
+    n=n+1;
+    text{n}='    currTrials=fieldnames(allTrialNames.(subName));';
+    
+    n=n+1;
+    if ismember('S',level)
+        if ismember('T',level)
+            text{n}=['    ' fcnNames{i} '(projectStruct, subName, trialNames.(subName));'];
+        else
+            text{n}=['    ' fcnNames{i} '(projectStruct, subName);'];
+        end
+%         continue;
+    end
+
+    n=n+1;
+    if ismember('T',level) && ~ismember('S',level)
+        text{n}='    for trialNum=1:length(currTrials)';
+        n=n+1;
+        text{n}='        trialName=currTrials{trialNum};';
+        n=n+1;
+        text{n}='        for repNum=allTrialNames.(subName).(trialName)';
+        n=n+1;
+        switch isImport(i)            
+            case 0
+                text{n}=['            ' fcnNames{i} '(projectStruct, subName, trialName, repNum);'];
+            case 1
+                text{n}='            filePath = [dataPath subName slash trialName ''_'' subName ''_'' projectName ''.c3d''];';
+                n=n+1;
+                text{n}=['            ' fcnNames{i} '(filePath, projectStruct, subName, trialName, repNum);'];
+        end
+
+        n=n+1;
+        text{n}='        end';
+        n=n+1;
+        text{n}='    end';
+        
+    elseif ~ismember('S',level) % Improperly read level
+        error('Read error!');
+    end
+
+    n=n+1;
+    text{n}='end';
     n=n+1;
     text{n}=''; % Space between functions
+
+    %     text{n}=['runCodeFunc(runCodeHiddenGUI, ''' fcnNames{i} ''', ''' splitNames_Codes{i} ''', ' num2str(nodeNums(i)) ');'];
 
 end
 

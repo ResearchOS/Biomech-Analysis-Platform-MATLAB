@@ -1,4 +1,4 @@
-function []=archiveButtonPushed(src)
+function []=archiveButtonPushed(src,event)
 
 %% PURPOSE: CREATE A DATED ARCHIVE OF THE CURRENT PROJECT'S CODE, AND DATA TOO IF THE CHECKBOX IS CHECKED.
 tic;
@@ -67,14 +67,14 @@ copyfile(logsheetPathMAT,[currArchiveFolderName slash logsheetPathMATName '.mat'
 %% Create run code
 % Write the 'runCodeFunc.m' file to the archive folder
 runCodeFilePath=[currArchiveFolderName slash 'RunCode_' projectName '_' currDate '.m'];
-createRunCode(fig,runCodeFilePath,currArchiveFolderName,logsheetPathMAT,codePath,dataPath);
+createRunCode(fig,runCodeFilePath,currArchiveFolderName,codePath);
 
 %% Copy the entirety of the PGUI folder to the archive folder
-everythingPath=getappdata(fig,'everythingPath');
-copyfile(everythingPath,[currArchiveFolderName slash 'PGUI']);
+% everythingPath=getappdata(fig,'everythingPath');
+% copyfile(everythingPath,[currArchiveFolderName slash 'PGUI']);
 
 %% Check if archiving data as well as the code.
-NonFcnSettingsStruct=getappdata(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 % load(projectSettingsMATPath,'NonFcnSettingsStruct');
 
 archiveData=NonFcnSettingsStruct.Projects.ArchiveData;

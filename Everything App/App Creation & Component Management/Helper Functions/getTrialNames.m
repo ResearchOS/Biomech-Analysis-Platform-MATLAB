@@ -18,7 +18,7 @@ if ~exist('org','var')
 end
 
 fig=ancestor(src,'figure','toplevel');
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
 % load(projectSettingsMATPath,'NonFcnSettingsStruct');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');

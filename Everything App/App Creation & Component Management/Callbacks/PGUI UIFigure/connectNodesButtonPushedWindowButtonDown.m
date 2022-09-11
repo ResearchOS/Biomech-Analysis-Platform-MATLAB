@@ -199,11 +199,30 @@ getSplitNames(splits,[],rootNode);
 uiwait(Q);
 try
     selSplit=evalin('base','selSplit;'); % 1st entry is the root split, last entry is the split to copy the variables from.
+    copyVars=1;
+    evalin('base','clear selSplit;');
+    selSplit=selSplit(~ismember(selSplit,'Root'));
+    if isempty(selSplit)
+        copyVars=0;
+    end
 catch
-    return; % The process was aborted.
+    copyVars=0;
+%     return; % The process was aborted.
 end
-evalin('base','clear selSplit;');
-selSplit=selSplit(~ismember(selSplit,'Root'));
+
+if copyVars==0 % No split was chosen
+    %% Plot the new connection
+    delete(handles.Process.mapFigure.Children);
+    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
+    h.EdgeColor=Digraph.Edges.Color;
+   
+    setappdata(fig,'Digraph',Digraph);
+
+    setappdata(fig,'doNothingOnButtonUp',0);
+    set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
+        'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
+    return;
+end
 
 for i=1:length(selSplit)
     splits=splits.SubSplitNames.(selSplit{i});

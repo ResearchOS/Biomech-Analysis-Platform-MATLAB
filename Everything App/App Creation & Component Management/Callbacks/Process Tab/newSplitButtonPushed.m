@@ -116,7 +116,7 @@ if runLog
         parentSplitName='Root'; % Top-level split
     end
 
-    splitCode=genSplitCode(projectSettingsMATPath,selSplit,name); % Need to alter genSplitCode to be recursive
+    splitCode=genSplitCode(fig,projectSettingsMATPath,selSplit,name); % Need to alter genSplitCode to be recursive
     if isempty(splitCode)
         return;
     end
@@ -156,7 +156,7 @@ delete(handles.Process.splitsUITree.Children);
 getSplitNames(splits,[],handles.Process.splitsUITree);
 
 % save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
-setappdata(fig,'NonFcnSettingsStruct');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 if runLog
     desc='Created a new split';

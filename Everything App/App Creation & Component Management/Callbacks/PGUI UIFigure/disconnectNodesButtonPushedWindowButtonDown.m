@@ -116,7 +116,7 @@ if runLog
         name=selSplit{end};
         selSplit=selSplit(~ismember(selSplit,name));
 
-        splitCode=genSplitCode(projectSettingsMATPath,selSplit,name); % Need to alter genSplitCode to be recursive
+        splitCode=genSplitCode(fig,projectSettingsMATPath,selSplit,name); % Need to alter genSplitCode to be recursive
         %     if isempty(splitCode)
         %         return;
         %     end

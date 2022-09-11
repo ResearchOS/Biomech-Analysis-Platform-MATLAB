@@ -34,7 +34,7 @@ splitsListIn=splitsList(1:end-1);
 splitName=splitsList{end};
 % spaceIdx=strfind(splitText,' ');
 % splitName=splitText(1:spaceIdx-1);
-splitCode=genSplitCode(projectSettingsMATPath,splitsListIn,splitName);
+splitCode=genSplitCode(fig,projectSettingsMATPath,splitsListIn,splitName);
 % splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
 
 if ispc==1

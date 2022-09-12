@@ -58,7 +58,7 @@ end
 
 %% Add new edge to the Digraph.
 prevRowIdx=find(ismember(Digraph.Nodes.NodeNumber,prevFcnNodeNumber)==1);
-if ~ismember([prevRowIdx rowIdx],Digraph.Edges.EndNodes,'rows') % Skip adding an edge if the edge has already been added
+if ~ismember([prevFcnNodeNumber nodeNumber],Digraph.Edges.NodeNumber,'rows') % Skip adding an edge if the edge has already been added
     digraphEdgeVarNames=Digraph.Edges.Properties.VariableNames;    
     cellVar=cell(1,size(Digraph.Edges,2));
     cellVar{1}=[prevRowIdx rowIdx];
@@ -102,21 +102,21 @@ newSaveVarNames={}; % All input & output vars save names
 
 if any(~ismember(inputVarNamesVarList,guiNames)) % At least one of the input variables are new.
     newVarIdx=~ismember(inputVarNamesVarList,guiNames); % The idx of the new variables.
-    newVarNames=[newVarNames inputVarNamesVarList(newVarIdx)]; 
-    newSaveVarNames=[newSaveVarNames inputVarNamesSaveNames(newVarIdx)];
+    newVarNames=[newVarNames; inputVarNamesVarList(newVarIdx)]; 
+    newSaveVarNames=[newSaveVarNames; inputVarNamesSaveNames(newVarIdx)];
 end
 
 if any(~ismember(outputVarNamesVarList,guiNames))
     newVarIdx=~ismember(outputVarNamesVarList,guiNames); % The idx of the new variables.
-    newVarNames=[newVarNames outputVarNamesVarList(newVarIdx)]; 
-    newSaveVarNames=[newSaveVarNames outputVarNamesSaveNames(newVarIdx)];
+    newVarNames=[newVarNames; outputVarNamesVarList(newVarIdx)]; 
+    newSaveVarNames=[newSaveVarNames; outputVarNamesSaveNames(newVarIdx)];
 end
 
 % Add the variable GUI names
-VariableNamesList.GUINames=[VariableNamesList.GUINames; newVarNames'];
+VariableNamesList.GUINames=[VariableNamesList.GUINames; newVarNames];
 
 % Add the variable names in code
-VariableNamesList.SaveNames=[VariableNamesList.SaveNames; newSaveVarNames'];
+VariableNamesList.SaveNames=[VariableNamesList.SaveNames; newSaveVarNames];
 
 % Add the split names & codes
 for i=1:length(newVarNames)

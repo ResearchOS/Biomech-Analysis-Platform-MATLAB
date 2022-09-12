@@ -38,30 +38,28 @@ text{16}='';
 text{17}='% Initialize a figure just for storing data';
 text{18}='pguiHandle=findall(0,''Name'',''pgui''); % Get the handle to the processing GUI, if it exists';
 text{19}='close(pguiHandle); clear pguiHandle; % Close and delete the processing GUI (does nothing if not open)';
-text{20}='runCodeHiddenGUI=uifigure(''Visible'',''off'',''Name'',''runCodeHiddenGUI'');';
-text{21}=['setappdata(runCodeHiddenGUI,''projectName'',''' projectName ''');'];
-text{22}='% close(runCodeHiddenGUI); clear runCodeHiddenGUI; % To close and delete the uifigure (which deletes all of its data)';
-text{23}='setappdata(runCodeHiddenGUI,''logsheetPathMAT'', NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT);';
-text{24}='setappdata(runCodeHiddenGUI,''dataPath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath);';
-text{25}='setappdata(runCodeHiddenGUI,''codePath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath);';
-text{26}='logsheetPathMAT=getappdata(runCodeHiddenGUI,''logsheetPathMAT'');';
-text{27}='load(logsheetPathMAT,''logVar''); % Load the logsheet variable';
-text{28}='dataPath=getappdata(runCodeHiddenGUI,''dataPath'');';
-text{29}='';
-text{30}='if ismac==1';
-text{31}='    slash=''/'';';
-text{32}='elseif ispc==1';
-text{33}='    slash=''\'';';
-text{34}='end';
-text{35}='';
-text{36}='setappdata(runCodeHiddenGUI,''NonFcnSettingsStruct'',NonFcnSettingsStruct);';
-text{37}='setappdata(runCodeHiddenGUI,''Digraph'',Digraph);';
-text{38}='setappdata(runCodeHiddenGUI,''VariableNamesList'',VariableNamesList);';
-text{39}=['projectName=' '''' projectName '''' ';'];
-text{40}='';
-text{41}='%% Initialize the projectStruct';
-text{42}='projectStruct=[];';
-text{43}='';
+text{20}='runCodeHiddenGUI=findall(0,''Name'',''runCodeHiddenGUI''); % Find all prior iterations of the hidden GUI';
+text{21}='close(runCodeHiddenGUI); % Close prior iterations of the hidden GUI';
+text{22}='runCodeHiddenGUI=uifigure(''Visible'',''off'',''Name'',''runCodeHiddenGUI'',''HandleVisibility'',''On'');';
+text{23}=['setappdata(runCodeHiddenGUI,''projectName'',''' projectName ''');'];
+text{24}='% close(runCodeHiddenGUI); clear runCodeHiddenGUI; % To close and delete the uifigure (which deletes all of its data)';
+text{25}='setappdata(runCodeHiddenGUI,''logsheetPathMAT'', NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT);';
+text{26}='setappdata(runCodeHiddenGUI,''dataPath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath);';
+text{27}='setappdata(runCodeHiddenGUI,''codePath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath);';
+text{28}='logsheetPathMAT=getappdata(runCodeHiddenGUI,''logsheetPathMAT'');';
+text{29}='load(logsheetPathMAT,''logVar''); % Load the logsheet variable';
+text{30}='dataPath=getappdata(runCodeHiddenGUI,''dataPath'');';
+text{31}='';
+text{32}='slash=filesep;';
+text{33}='';
+text{34}='setappdata(runCodeHiddenGUI,''NonFcnSettingsStruct'',NonFcnSettingsStruct);';
+text{35}='setappdata(runCodeHiddenGUI,''Digraph'',Digraph);';
+text{36}='setappdata(runCodeHiddenGUI,''VariableNamesList'',VariableNamesList);';
+text{37}=['projectName=' '''' projectName '''' ';'];
+text{38}='';
+text{39}='%% Initialize the projectStruct';
+text{40}='projectStruct=[];';
+text{41}='';
 
 %% Set up metadata for the run code
 if ~(isempty(Digraph.Nodes.RunOrder{1}) || Digraph.Nodes.RunOrder{1}.Default_001==0)
@@ -136,7 +134,7 @@ n=length(text); % Number of lines initialized
 for i=1:length(allNums)
     
     n=n+1; % Line to put comment on
-    text{n}=['%% ' fcnNames{i} ' (Node #' num2str(nodeNums(i)) 'Split ' splitNames_Codes{i} ')'];
+    text{n}=['%% ' fcnNames{i} ' (Node #' num2str(nodeNums(i)) ' Split ' splitNames_Codes{i} ')'];
     n=n+1;
     text{n}=['fcnName = ' '''' fcnNames{i} '''' ';'];
     n=n+1;
@@ -152,8 +150,17 @@ for i=1:length(allNums)
     end
     n=n+1;
     text{n}=['runOrder = ' num2str(i) ';'];
+
+    underscoreIdx=strfind(splitNames_Codes{i},'_');
+    splitCode=splitNames_Codes{i}(underscoreIdx+1:end);
+    splitName=splitNames_Codes{i}(1:underscoreIdx-1);
+    nodeRow=find(ismember(Digraph.Nodes.NodeNumber,nodeNums(i))==1);
+%     edgeRow=find((ismember(Digraph.Edges.NodeNumber(:,2),nodeNums(i)) & ismember(Digraph.Edges.SplitCode,splitCode))==1);
+    edgeRow=find(ismember(Digraph.Edges.NodeNumber(:,2),nodeNums(i))==1);
+    edgeRow=edgeRow(1); % Because all entries should be identical.
+
     n=n+1;
-    text{n}=['prevFcnNodeNumber = ' num2str(1) ';'];
+    text{n}=['prevFcnNodeNumber = ' num2str(Digraph.Edges.NodeNumber(edgeRow,1)) ';'];
     n=n+1;
     text{n}=['isImport = ' num2str(isImport(i)) ';'];
     n=n+1;
@@ -163,7 +170,7 @@ for i=1:length(allNums)
     varNamesInText='';
     for j=1:length(varNamesIn{i})
         if j>1
-            varNamesInText=[varNamesInText ', ' '''' varNamesIn{i}{j} ''''];
+            varNamesInText=[varNamesInText '; ' '''' varNamesIn{i}{j} ''''];
         else
             varNamesInText=['{''' varNamesIn{i}{j} ''''];
         end
@@ -179,7 +186,7 @@ for i=1:length(allNums)
     varNamesInCodeText='';
     for j=1:length(varNamesInCodeIn{i})
         if j>1
-            varNamesInCodeText=[varNamesInCodeText ', ' '''' varNamesInCodeIn{i}{j} ''''];
+            varNamesInCodeText=[varNamesInCodeText '; ' '''' varNamesInCodeIn{i}{j} ''''];
         else
             varNamesInCodeText=['{''' varNamesInCodeIn{i}{j} ''''];
         end
@@ -195,7 +202,7 @@ for i=1:length(allNums)
     varNamesInText='';
     for j=1:length(varNamesOut{i})
         if j>1
-            varNamesInText=[varNamesInText ', ' '''' varNamesOut{i}{j} ''''];
+            varNamesInText=[varNamesInText '; ' '''' varNamesOut{i}{j} ''''];
         else
             varNamesInText=['{''' varNamesOut{i}{j} ''''];
         end
@@ -211,7 +218,7 @@ for i=1:length(allNums)
     varNamesInCodeText='';
     for j=1:length(varNamesInCodeOut{i})
         if j>1
-            varNamesInCodeText=[varNamesInCodeText ', ' '''' varNamesInCodeOut{i}{j} ''''];
+            varNamesInCodeText=[varNamesInCodeText '; ' '''' varNamesInCodeOut{i}{j} ''''];
         else
             varNamesInCodeText=['{''' varNamesInCodeOut{i}{j} ''''];
         end
@@ -231,6 +238,12 @@ for i=1:length(allNums)
     text{n}='inclStruct=feval(specifyTrials); % Returns the structure specifying metadata for which trials to include';
     n=n+1;
     text{n}='allTrialNames=getTrialNames(inclStruct, logVar, runCodeHiddenGUI, 0, []);';
+    n=n+1;    
+    text{n}=['setappdata(runCodeHiddenGUI,''splitName'',' '''' splitName '''' ');'];
+    n=n+1;
+    text{n}=['setappdata(runCodeHiddenGUI,''splitCode'',' '''' splitCode '''' ');'];
+    n=n+1;
+    text{n}=['setappdata(runCodeHiddenGUI,''nodeRow'',' num2str(nodeRow) ');'];
 
     level=levels{i};
     n=n+1;
@@ -251,18 +264,23 @@ for i=1:length(allNums)
     n=n+1;
     text{n}='for sub = 1:length(subNames)';
     n=n+1;
-    text{n}='    subName=subNames{sub};';
-    n=n+1;
-    text{n}='    currTrials=fieldnames(allTrialNames.(subName));';
+    text{n}='    subName=subNames{sub};';    
+
+    if ~ismember('S',level)
+        n=n+1;
+        text{n}='    currTrials=fieldnames(allTrialNames.(subName));';
+    else
+        n=n+1;
+        text{n}=['    disp([''Running ' fcnNames{i} ' '' fcnSplit '' Subject '' subName]);'];
+    end
     
     n=n+1;
     if ismember('S',level)
         if ismember('T',level)
-            text{n}=['    ' fcnNames{i} '(projectStruct, subName, trialNames.(subName));'];
+            text{n}=['    ' fcnNames{i} '(projectStruct, subName, allTrialNames.(subName));'];
         else
             text{n}=['    ' fcnNames{i} '(projectStruct, subName);'];
         end
-%         continue;
     end
 
     n=n+1;
@@ -270,6 +288,8 @@ for i=1:length(allNums)
         text{n}='    for trialNum=1:length(currTrials)';
         n=n+1;
         text{n}='        trialName=currTrials{trialNum};';
+        n=n+1;
+        text{n}=['        disp([''Running ' fcnNames{i} ' '' fcnSplit '' Subject '' subName '' Trial '' trialName]);'];
         n=n+1;
         text{n}='        for repNum=allTrialNames.(subName).(trialName)';
         n=n+1;
@@ -295,8 +315,6 @@ for i=1:length(allNums)
     text{n}='end';
     n=n+1;
     text{n}=''; % Space between functions
-
-    %     text{n}=['runCodeFunc(runCodeHiddenGUI, ''' fcnNames{i} ''', ''' splitNames_Codes{i} ''', ' num2str(nodeNums(i)) ');'];
 
 end
 

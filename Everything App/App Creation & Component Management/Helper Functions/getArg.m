@@ -48,19 +48,6 @@ if isempty(fig)
     end
 end
 
-% try
-%     fig=evalin('base','gui;');
-%     isRunCode=0;
-% catch
-%     try
-%         fig=evalin('base','runCodeHiddenGUI;');
-%         isRunCode=1;
-%     catch
-%         disp('Missing the GUI!');
-%         return;
-%     end
-% end
-
 nodeRow=getappdata(fig,'nodeRow');
 
 projectName=getappdata(fig,'projectName');

@@ -136,7 +136,7 @@ n=length(text); % Number of lines initialized
 for i=1:length(allNums)
     
     n=n+1; % Line to put comment on
-    text{n}=['%% ' fcnNames{i} ' Node # ' num2str(nodeNums(i))];
+    text{n}=['%% ' fcnNames{i} ' (Node #' num2str(nodeNums(i)) 'Split ' splitNames_Codes{i} ')'];
     n=n+1;
     text{n}=['fcnName = ' '''' fcnNames{i} '''' ';'];
     n=n+1;
@@ -144,10 +144,11 @@ for i=1:length(allNums)
     n=n+1;
     text{n}=['nodeNumber = ' num2str(nodeNums(i)) ';'];
     n=n+1;
+%     text{n}=['specifyTrials = ' '''' specifyTrials{i} '''' ';'];
     if ~isempty(specifyTrials{i})
-        text{n}=['inclStruct = ' specifyTrials{i} ';'];
+        text{n}=['specifyTrials = ' '''' specifyTrials{i} '''' ';'];
     else
-        text{n}=['inclStruct = ' '''''' ';'];
+        text{n}=['specifyTrials = ' '''''' ';'];
     end
     n=n+1;
     text{n}=['runOrder = ' num2str(i) ';'];
@@ -223,11 +224,11 @@ for i=1:length(allNums)
     text{n}=['outputVarNamesInCode = ' varNamesInCodeText ';'];
 
     n=n+1;
-    text{n}='addFunc(fcnName, fcnSplit, inputVarNames, inputVarNamesInCode, outputVarNames, outputVarNamesInCode, nodeNumber, specifyTrials, runOrder, prevFcnNodeNumber, isImport, coordinate);';
+    text{n}='addFuncRunCode(fcnName, fcnSplit, inputVarNames, inputVarNamesInCode, outputVarNames, outputVarNamesInCode, nodeNumber, specifyTrials, runOrder, prevFcnNodeNumber, isImport, coordinate);';
 
     %% Run the function
-%     n=n+1;
-%     text{n}='inclStruct=feval(specifyTrials); % Returns the structure specifying metadata for which trials to include';
+    n=n+1;
+    text{n}='inclStruct=feval(specifyTrials); % Returns the structure specifying metadata for which trials to include';
     n=n+1;
     text{n}='allTrialNames=getTrialNames(inclStruct, logVar, runCodeHiddenGUI, 0, []);';
 

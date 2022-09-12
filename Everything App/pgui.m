@@ -20,6 +20,10 @@ elseif ismac==1
     slash='/';
 end
 
+%% Delete the run code figure
+runCodeFig=findall(0,'Name','runCodeHiddenGUI');
+close(runCodeFig);
+
 %% Create figure
 fig=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@appResize,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig),'DeleteFcn',@(fig,event) saveGUIState(fig),'KeyPressFcn',@(fig,event) keyPressFcn(fig,event)); % Create the figure window for the app
 fig.Name='pgui'; % Name the window

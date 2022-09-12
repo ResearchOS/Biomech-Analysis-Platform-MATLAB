@@ -13,7 +13,7 @@ assignin('base','gui',fig);
 
 splitName='Default'; % The name of the current processing split
 splitCode='001'; % Do logsheet variables ever need to be anything besides '001'?
-% splitCode=genSplitCode(projectSettingsMATPath,{''},splitName);
+% splitCode=genSplitCode(fig,projectSettingsMATPath,{''},splitName);
 
 % load(projectSettingsMATPath,'NonFcnSettingsStruct','Digraph');
 Digraph=getappdata(fig,'Digraph');

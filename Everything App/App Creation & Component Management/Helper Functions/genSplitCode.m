@@ -1,4 +1,4 @@
-function [splitCode,NonFcnSettingsStruct]=genSplitCode(projectSettingsMATPath,splitsList,name)
+function [splitCode,NonFcnSettingsStruct]=genSplitCode(fig,projectSettingsMATPath,splitsList,name)
 
 %% PURPOSE: GENERATE A CODE FOR THE SPECIFIED SPLIT
 % Inputs:
@@ -21,6 +21,7 @@ if ~ismember('NonFcnSettingsStruct',projectSettingsVarNames) && ~ismember('maxSp
     return;
 end
 
+% fig=evalin('base','gui;');
 % load(projectSettingsMATPath,'NonFcnSettingsStruct');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 

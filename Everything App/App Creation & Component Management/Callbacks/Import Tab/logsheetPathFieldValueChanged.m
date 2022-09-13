@@ -175,7 +175,8 @@ end
 
 %% Add the splits UI tree nodes on the Process tab
 delete(handles.Process.splitsUITree.Children);
-delete(handles.Process.mapFigure.Children);
+h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
+delete(h);
 getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
 
 if ~isempty(Digraph.Edges)

@@ -166,7 +166,8 @@ end
 
 %% Process tab
 % Delete all graphics objects in the plot, and all splits nodes
-delete(handles.Process.mapFigure.Children);
+h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
+delete(h);
 delete(handles.Process.splitsUITree.Children);
 delete(handles.Process.fcnArgsUITree.Children);
 

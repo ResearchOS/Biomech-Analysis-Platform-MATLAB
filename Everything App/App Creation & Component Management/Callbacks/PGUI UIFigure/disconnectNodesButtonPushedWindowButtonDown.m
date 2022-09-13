@@ -196,7 +196,8 @@ Digraph=rmedge(Digraph,edgeIdx);
 % end
 
 %% Plot the new plot.
-delete(handles.Process.mapFigure.Children);
+h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
+delete(h);
 h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
 h.EdgeColor=Digraph.Edges.Color;
 

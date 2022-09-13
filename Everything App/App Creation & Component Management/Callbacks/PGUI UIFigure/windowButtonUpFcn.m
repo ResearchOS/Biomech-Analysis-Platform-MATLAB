@@ -47,7 +47,7 @@ else
     multi=0; % Only the current selections
 end
 
-h=handles.Process.mapFigure.Children;
+h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
 
 % Remove all current selections, and their visuals
 if multi==0

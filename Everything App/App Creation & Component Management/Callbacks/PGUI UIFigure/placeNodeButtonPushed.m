@@ -77,7 +77,8 @@ Digraph.Nodes.InputVariableNamesInCode{end}=''; % Name in file/code
 Digraph.Nodes.OutputVariableNamesInCode{end}=''; % Name in file/code
 Digraph.Nodes.IsImport(end)=false;
 
-delete(handles.Process.mapFigure.Children);
+h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
+delete(h);
 set(handles.Process.mapFigure,'ColorOrderIndex',1);
 h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'Interpreter','none');
 if ~isempty(Digraph.Edges)

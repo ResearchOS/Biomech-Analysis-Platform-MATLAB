@@ -63,9 +63,11 @@ setappdata(fig,'splitName',''); % The name of the current processing split
 setappdata(fig,'splitCode',''); % The code to append to variables for the current processing split
 setappdata(fig,'runLogPath',''); % The path for the running log of all actions taken for a project.
 
-%% Create the uimenu at the top of the figure
+%% Create the uimenus at the top of the figure
 uiFileMenu=uimenu(fig,'Text','File');
 uimenu(uiFileMenu,'Text','Archive Project','Accelerator','S','MenuSelectedFcn',@archiveButtonPushed);
+uiMapMenu=uimenu(fig,'Text','Map');
+uimenu(uiMapMenu,'Text','Axis Equal','Accelerator','E','MenuSelectedFcn',@mapFigureAxisEqual)
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing

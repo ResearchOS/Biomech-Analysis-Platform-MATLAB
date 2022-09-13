@@ -41,7 +41,8 @@ setappdata(fig,'Digraph',Digraph);
 
 if isempty(selNodeIDs)
     delete(handles.Process.fcnArgsUITree.Children);
-    delete(handles.Process.mapFigure.Children);
+    h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
+    delete(h);
 %     set(handles.Process.mapFigure,'ColorOrderIndex',1);
     h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
     h.EdgeColor=Digraph.Edges.Color;

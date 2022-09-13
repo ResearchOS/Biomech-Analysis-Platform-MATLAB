@@ -23,7 +23,7 @@ nodeRowsNums=find(nodeRows==1);
 % nodeRowsNums=nodeRowsNums(nodeRowsNums~=1);
 
 % Visually highlight all selected nodes
-plotH=handles.Process.mapFigure.Children;
+plotH=findobj(handles.Process.mapFigure,'Type','GraphPlot');
 nodeSizes=plotH.MarkerSize;
 if isequal(size(nodeSizes),[1 1])
     nodeSizes=repmat(nodeSizes,length(nodeRows),1);
@@ -84,7 +84,8 @@ for i=1:length(nodeRowsNums)
 %         disp(['All selected functions need to be connected to the selected split!']);
         beep;
         delete(handles.Process.fcnArgsUITree.Children);
-        delete(handles.Process.mapFigure.Children);
+        h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
+        delete(h);
         h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
         if ~isempty(Digraph.Edges)
             h.EdgeColor=Digraph.Edges.Color;
@@ -114,8 +115,9 @@ for i=1:length(splitsList)
 end
 splitColor=splitsStruct.Color;
 edgeIdx=find(ismember(Digraph.Edges.Color,splitColor,'rows')==1);
-highlight(handles.Process.mapFigure.Children,'Edges',1:size(Digraph.Edges.Color,1),'LineWidth',0.5); % Reset line widths.
-highlight(handles.Process.mapFigure.Children,'Edges',edgeIdx,'LineWidth',2); % Emphasize the current split.
+h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
+highlight(h,'Edges',1:size(Digraph.Edges.Color,1),'LineWidth',0.5); % Reset line widths.
+highlight(h,'Edges',edgeIdx,'LineWidth',2); % Emphasize the current split.
 
 % Fill in the functions UI tree
 nodesData=nodesData(nodesData~=1);

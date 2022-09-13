@@ -46,6 +46,17 @@ if ~ismember(currTab,okTabs)
     drawnow;
 end
 
+switch currTab
+    case 'Import'
+        set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
+    case 'Process'
+        set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
+    case 'Plot'
+        set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
+    otherwise
+
+end
+
 if exist(settingsMATPath,'file')~=2
     save(settingsMATPath,'currTab','-mat','-v6');
 else

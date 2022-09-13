@@ -379,7 +379,7 @@ handles.Plot.allComponentsUITree=uitree(plotTab,'checkbox','SelectionChangedFcn'
 handles.Plot.plotFcnSearchField=uieditfield(plotTab,'text','Value','Search','Tag','PlotFcnSearchField','ValueChangingFcn',@(plotFcnSearchField,event) plotFcnSearchFieldValueChanged(plotFcnSearchField));
 
 % 4. Plot function UI tree
-handles.Plot.plotFcnUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(plotFcnUITree,event) plotFcnUITreeSelectionChanged(plotFcnUITree),'CheckedNodesChangedFcn',@(plotFcnUITree,event) plotFcnUITreeCheckedNodesChanged(plotFcnUITree),'Tag','AllComponentsUITree');
+handles.Plot.plotFcnUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(plotFcnUITree,event) plotFcnUITreeSelectionChanged(plotFcnUITree),'CheckedNodesChangedFcn',@(plotFcnUITree,event) plotFcnUITreeCheckedNodesChanged(plotFcnUITree),'Tag','PlotFcnUITree');
 
 % 5. Assign variables button
 handles.Plot.assignVarsButton=uibutton(plotTab,'push','Text','Assign Vars','Tag','AssignVarsButton','Tooltip','Assign variables to the currently selected graphics object','ButtonPushedFcn',@(assignVarsButton,event) assignVarsButtonPushed(assignVarsButton));
@@ -394,43 +394,51 @@ handles.Plot.unassignComponentButton=uibutton(plotTab,'push','Text','<-','Tag','
 handles.Plot.createFcnButton=uibutton(plotTab,'push','Text','F+','Tag','CreateFcnButton','Tooltip','Unassign graphics object from the currently selected function version','ButtonPushedFcn',@(createFcnButton,event) createFcnButtonPushed(createFcnButton));
 
 % 9. Set axis limits button
-handles.Plot.axLimsButton
+handles.Plot.axLimsButton=uibutton(plotTab,'push','Text','Ax Lims','Tag','AxLimsButton','Tooltip','Set axes limits','ButtonPushedFcn',@(axLimsButton,event) axLimsButtonPushed(axLimsButton));
 
 % 10. Figure size button
-handles.Plot.figSizeButton
+handles.Plot.figSizeButton=uibutton(plotTab,'push','Text','Fig Size','Tag','FigSizeButton','Tooltip','Set figure size','ButtonPushedFcn',@(figSizeButton,event) figSizeButtonPushed(figSizeButton));
 
 % 11. Object properties button
-handles.Plot.objectPropsButton
+handles.Plot.objectPropsButton=uibutton(plotTab,'push','Text','Obj Props','Tag','ObjectPropsButton','Tooltip','Set object properties','ButtonPushedFcn',@(objectPropsButton,event) objectPropsButtonPushed(objectPropsButton));
 
 % 12. Example trial button
-handles.Plot.exTrialButton
+handles.Plot.exTrialButton=uibutton(plotTab,'push','Text','Ex Trial','Tag','ExTrialButton','Tooltip','Set example trial being plotted in app','ButtonPushedFcn',@(exTrialButton,event) exTrialButtonPushed(exTrialButton));
 
 % 13. Example plot figure
-handles.Plot.exTrialFigure
+handles.Plot.exTrialFigure=uiaxes(plotTab,'Tag','ExTrialFigure','HandleVisibility','on','Visible','on');
 
 % 14. Current component UI tree
-handles.Plot.currCompUITree
+handles.Plot.currCompUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(currCompUITree,event) currCompUITreeSelectionChanged(currCompUITree),'CheckedNodesChangedFcn',@(currCompUITree,event) currCompUITreeCheckedNodesChanged(currCompUITree),'Tag','CurrComponentsUITree');
 
 % 15. Current component description label
-handles.Plot.componentDescLabel
+handles.Plot.componentDescLabel=uilabel(plotTab,'Text','Component Desc','Tag','ComponentDescLabel','FontWeight','bold');
 
 % 16. Current component description text area
-handles.Plot.componentDescTextArea
+handles.Plot.componentDescTextArea=uitextarea(plotTab,'Value','Enter Component Description Here','Tag','ComponentDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(componentDescTextArea,event) componentDescTextAreaValueChanged(componentDescTextArea));
 
 % 17. Function version description label
-handles.Plot.fcnVerDescLabel
+handles.Plot.fcnVerDescLabel=uilabel(plotTab,'Text','Fcn Ver Desc','Tag','FcnVerDescLabel','FontWeight','bold');
 
 % 18. Function version description text area
-handles.Plot.fcnVerDescTextArea
+handles.Plot.fcnVerDescTextArea=uitextarea(plotTab,'Value','Enter Fcn Version Description Here','Tag','FcnVerDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(fcnVerDescTextArea,event) fcnVerDescTextAreaValueChanged(fcnVerDescTextArea));
 
 % 19. Specify trials button
-handles.Plot.specifyTrialsButton
+handles.Plot.specifyTrialsButton=uibutton(plotTab,'push','Text','Specify Trials','Tag','SpecifyTrialsButton','Tooltip','Set the trials to plot','ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushedPopupWindow(specifyTrialsButton));
 
 % 20. Run plot button
-handles.Plot.runPlotButton
+handles.Plot.runPlotButton=uibutton(plotTab,'push','Text','Run Plot','Tag','RunPlotButton','Tooltip','Run the plot on the specified trials','ButtonPushedFcn',@(runPlotButton,event) runPlotButtonPushed(runPlotButton));
 
 % 21. Plot level dropdown
-handles.Plot.plotLevelDropDown
+handles.Plot.plotLevelDropDown=uidropdown(plotTab,'Items',{'P','C','S','SC','T'},'Tooltip','Specify the level to run this at','Editable','off','Tag','PlotLevelDropDown','ValueChangedFcn',@(plotLevelDropDown,event) plotLevelDropDownValueChanged(plotLevelDropDown));
+
+plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
+    'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,...
+    'CreateFcnButton',handles.Plot.createFcnButton,'AxLimsButton',handles.Plot.axLimsButton,'FigSizeButton',handles.Plot.figSizeButton,'ObjectPropsButton',handles.Plot.objectPropsButton,'ExTrialButton',handles.Plot.exTrialButton,...
+    'ExTrialFigure',handles.Plot.exTrialFigure,'CurrComponentsUITree',handles.Plot.currCompUITree,'ComponentDescLabel',handles.Plot.componentDescLabel,'ComponentDescTextArea',handles.Plot.componentDescTextArea,'FcnVerDescLabel',handles.Plot.fcnVerDescLabel,...
+    'FcnVerDescTextArea',handles.Plot.fcnVerDescTextArea,'SpecifyTrialsButton',handles.Plot.specifyTrialsButton,'RunPlotButton',handles.Plot.runPlotButton,'PlotLevelDropDown',handles.Plot.plotLevelDropDown);
+
+@plotResize;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the stats tab

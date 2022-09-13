@@ -11,11 +11,7 @@ function [varargout]=getArg(inputNamesInCode,subName,trialName,repNum)
 % Outputs:
 % argIn: The argument to pass in to the processing function
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 if exist('trialName','var')~=1
     trialName='';

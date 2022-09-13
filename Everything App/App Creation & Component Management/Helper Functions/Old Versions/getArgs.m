@@ -14,11 +14,7 @@ if nargin==0
     error('Missing method letter for input arguments');
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 % Get the projectStruct from the base workspace.
 projectStruct=evalin('base','projectStruct;');

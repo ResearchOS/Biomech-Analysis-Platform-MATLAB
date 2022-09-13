@@ -9,11 +9,7 @@ handles=getappdata(fig,'handles');
 
 % projectName=getappdata(pguiFig,'projectName');
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 % Get the M file path
 filePath=[getappdata(pguiFig,'codePath') 'SpecifyTrials' slash handles.Top.specifyTrialsDropDown.Value '.m'];

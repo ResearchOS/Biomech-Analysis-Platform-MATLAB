@@ -12,11 +12,7 @@ function []=openMFile(src,currPoint,isIn)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-if ispc==1
-    slash='\';
-elseif ismac==1
-    slash='/';
-end
+slash=filesep;
 
 selNode=handles.Process.fcnArgsUITree.SelectedNodes;
 if isempty(selNode)

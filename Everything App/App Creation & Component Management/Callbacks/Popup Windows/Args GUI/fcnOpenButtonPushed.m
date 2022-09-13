@@ -14,11 +14,7 @@ if isequal(currVals,{'No Args'})
     return;
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 for i=1:length(currVals)
 

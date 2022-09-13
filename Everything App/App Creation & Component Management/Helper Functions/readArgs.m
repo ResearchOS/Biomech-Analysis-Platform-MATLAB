@@ -4,11 +4,7 @@ function [inputArgNamesInCode,outputArgNamesInCode]=readArgs(fig,fcnName)
 % NOTE: ASSIGNING A VARIABLE TO ALL OF THE ARGUMENT NAMES AND THEN USING THAT INPUT VARIABLE WILL NOT WORK, THE ACTUAL CELL ARRAY MUST BE PART OF THE
 % GETARG CALL.
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 codePath=getappdata(fig,'codePath');
 filePath=[codePath 'Processing Functions' slash fcnName '.m'];

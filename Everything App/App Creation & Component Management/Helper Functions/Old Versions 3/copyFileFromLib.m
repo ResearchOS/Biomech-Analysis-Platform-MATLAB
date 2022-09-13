@@ -9,11 +9,7 @@ function [copyDone]=copyFileFromLib(fig,type,currFcnFileName)
 % Outputs:
 % copyDone: Returns 1 if the file exists, 0 if not.
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 listing=dir([getappdata(fig,'everythingPath') 'm File Library' slash type slash]); % All elements are folders, where folder names are function names (without number or letter)
 

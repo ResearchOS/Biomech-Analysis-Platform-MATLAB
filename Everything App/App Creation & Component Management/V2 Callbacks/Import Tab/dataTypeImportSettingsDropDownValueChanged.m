@@ -103,11 +103,7 @@ if foundType==0
     hText.Value='Set Trial ID Col Header';
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 % Change the button prefix to be either 'Create' or 'Open'
 % importMetadata

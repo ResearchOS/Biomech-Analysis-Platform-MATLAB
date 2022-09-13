@@ -15,11 +15,7 @@ if exist(data,'dir')~=7
     warning(['Incorrect path: ' data]);
     return;
 end
-if ispc==1 % On PC
-    slash='\';
-elseif ismac==1 % On Mac
-    slash='/';
-end
+slash=filesep;
 if ~isequal(data(end),slash)
     data=[data slash];
     src.Value=data;

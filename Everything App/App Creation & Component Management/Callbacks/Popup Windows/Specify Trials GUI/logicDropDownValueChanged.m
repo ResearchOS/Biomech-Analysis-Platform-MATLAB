@@ -9,11 +9,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 pguiFig=evalin('base','gui;');
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 verName=handles.Top.specifyTrialsDropDown.Value;
 inclStruct=eval(verName);

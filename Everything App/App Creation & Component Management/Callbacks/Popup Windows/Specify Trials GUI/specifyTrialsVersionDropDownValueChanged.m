@@ -19,11 +19,7 @@ pguiHandles=getappdata(pguiFig,'handles');
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-% if ismac==1
-%     slash='/';
-% elseif ispc==1
-%     slash='\';
-% end
+% slash=filesep;
 
 % tabName=pguiHandles.Tabs.tabGroup1.SelectedTab.Title;
 

@@ -14,11 +14,7 @@ function []=saveAndStoreVars(outVar,dataPath)
 % outVar(n).Data=dataVar; % The actual data to be stored & saved.
 % outVar(n).Path=path; % The path to store the data to in the struct. Also convert this path to a file path to save the data to file.
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 if isequal(dataPath(end),slash)
     dataPath=dataPath(1:end-1);

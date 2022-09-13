@@ -25,11 +25,7 @@ if exist(codePath,'dir')~=7
     return;
 end
 
-if ispc==1 % On PC
-    slash='\';
-elseif ismac==1 % On Mac
-    slash='/';
-end
+slash=filesep;
 
 if ~isequal(codePath(end),slash)
     codePath=[codePath slash];    

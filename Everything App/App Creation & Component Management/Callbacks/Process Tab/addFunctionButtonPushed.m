@@ -41,11 +41,7 @@ while true
 end
 
 %% Check if the function already exists
-if ispc==1
-    slash='\';
-elseif ismac==1
-    slash='/';
-end
+slash=filesep;
 
 newFcnPath=[processFcnsDir slash fcnName '.m'];
 

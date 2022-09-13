@@ -6,11 +6,7 @@ function []=conditionNameDropDownValueChanged(src)
 % type: Include or Exclude tab (char)
 % condNum: condition number (double)
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 value=src.Value;
 condNum=find(ismember(src.Items,value)==1,1);

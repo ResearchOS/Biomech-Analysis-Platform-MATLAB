@@ -10,11 +10,7 @@ function []=argsButtonPushedPopupWindow(src,guiTab,fcnName,groupName)
 % 'Plot fcnName': The Plot tab, for the function fcnName
 % fcnName: The current function to change args for (char)
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 fig=ancestor(src,'figure','toplevel');
 

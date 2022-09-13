@@ -2,11 +2,7 @@ function [text,fullFileName]=readAllProjects(everythingPath)
 
 %% PURPOSE: RETURN THE TEXT OF THE PROJECT LEVEL PATH NAMES, IF THE FILE EXISTS. OTHERWISE RETURN EMPTY CHAR
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 fullFileName=[everythingPath 'App Creation & Component Management' slash 'allProjects_ProjectNamesPaths.txt'];
 if exist(fullFileName,'file')==2 % If the file exists.
     text=regexp(fileread(fullFileName),'\n','split'); % Read in the file, where each line is one cell.

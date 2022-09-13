@@ -6,11 +6,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 %% Get the list of function names for this project
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 if ~isempty(getappdata(fig,'allDots'))
     delete(getappdata(fig,'allDots'));

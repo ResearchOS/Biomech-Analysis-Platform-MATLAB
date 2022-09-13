@@ -4,11 +4,7 @@ function []=createRunCode(fig,path,archiveFolder,codePath)
 
 % handles=getappdata(fig,'handles');
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 projectName=getappdata(fig,'projectName');
 

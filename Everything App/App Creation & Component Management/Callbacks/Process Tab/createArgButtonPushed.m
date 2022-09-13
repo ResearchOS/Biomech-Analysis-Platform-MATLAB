@@ -11,11 +11,7 @@ if isempty(handles.Process.splitsUITree.SelectedNodes)
     return;
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 nameInGUIOK=0;
 defaultNameInCodeOK=0;

@@ -13,12 +13,7 @@ version='3.0'; % Current version of the pgui package.
 pguiPath=mfilename('fullpath'); % The path where the pgui function is stored.
 addpath(genpath(fileparts(pguiPath))); % Add all subfolders to the path so that app creation & management is unencumbered.
 
-% Check if Mac or PC
-if ispc==1
-    slash='\';
-elseif ismac==1
-    slash='/';
-end
+slash=filesep; % File separator
 
 %% Delete the run code figure
 runCodeFig=findall(0,'Name','runCodeHiddenGUI');

@@ -9,11 +9,7 @@ if ~isempty(findall(0,'Name','pgui'))
     try
         subName=evalin('caller','subName;');
         trialName=evalin('caller','trialName;');
-        if ismac==1
-            slash='/';
-        elseif ispc==1
-            slash='\';
-        end
+        slash=filesep;
         fullPath=[defaultPath slash subName slash trialName '_' subName '_' projectName '.mat'];
         [~,file]=fileparts(fullPath);
         saveName=['aaData_' file];

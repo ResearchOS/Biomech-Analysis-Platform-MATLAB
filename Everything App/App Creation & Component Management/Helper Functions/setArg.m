@@ -8,11 +8,7 @@ function setArg(subName,trialName,repNum,varargin)
 % repNum: The repetition number for the current trial (double)
 % varargin: The value of each output argument. The name passed in to this function must exactly match what is in the input arguments function (any data type)
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 %% Get the level for the current arguments to store. Also get the file path for the current MAT file.
 fig=findall(0,'Name','pgui');

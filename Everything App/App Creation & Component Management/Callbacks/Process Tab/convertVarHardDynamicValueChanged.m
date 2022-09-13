@@ -37,11 +37,7 @@ splitName=splitsList{end};
 splitCode=genSplitCode(fig,projectSettingsMATPath,splitsListIn,splitName);
 % splitCode=NonFcnSettingsStruct.Process.Splits.(splitName).Code;
 
-if ispc==1
-    slash='\';
-elseif ismac==1
-    slash='/';
-end
+slash=filesep;
 
 folderName=[getappdata(fig,'codePath') 'Hard-Coded Variables'];
 

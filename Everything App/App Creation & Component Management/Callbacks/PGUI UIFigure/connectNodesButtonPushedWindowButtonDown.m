@@ -21,11 +21,7 @@ if isempty(fig.CurrentObject)
     return;
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 xlims=handles.Process.mapFigure.XLim;
 ylims=handles.Process.mapFigure.YLim;

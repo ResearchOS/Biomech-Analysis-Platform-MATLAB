@@ -13,11 +13,7 @@ projectName=getappdata(gui,'projectName');
 
 load(getappdata(gui,'logsheetPathMAT'),'logVar');
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 nodeRows=find(ismember(Digraph.Nodes.NodeNumber,nodeNum)==1);
 

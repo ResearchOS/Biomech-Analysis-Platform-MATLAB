@@ -14,11 +14,7 @@ function []=generateLog(fig,nodeNum)
 currDate=char(datetime('now'));
 currDate=currDate(1:11);
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 logFolder=[getappdata(fig,'codePath') 'Running Log'];
 

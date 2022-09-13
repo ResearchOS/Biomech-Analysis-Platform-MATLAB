@@ -74,11 +74,7 @@ if any(emptySpecTrialsIdx)
 end
 
 %% 2. Run the functions in order
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 setappdata(fig,'splitName',splitName);
 setappdata(fig,'splitCode',splitCode);

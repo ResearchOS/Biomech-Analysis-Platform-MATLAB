@@ -16,11 +16,7 @@ end
 
 % 2. Ensure that there is always a slash at the end of the code path.
 codePath=path;
-if ispc==1 % On PC
-    slash='\';
-elseif ismac==1 % On Mac
-    slash='/';
-end
+slash=filesep;
 if ~isequal(codePath(end),slash)
     codePath=[codePath slash]; % Ensure that there is always a slash at the end of the code path.
 end

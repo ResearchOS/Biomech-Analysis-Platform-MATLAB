@@ -30,11 +30,7 @@ while true
 
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 %% 2. Select the edge color for this split
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');

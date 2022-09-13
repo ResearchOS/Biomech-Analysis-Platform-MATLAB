@@ -16,11 +16,7 @@ if length(handles.Top.specifyTrialsDropDown.Items)==1
     return;
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 specifyTrialsPath=getappdata(fig,'allProjectsSpecifyTrialsPath');
 % guiLocation=getappdata(fig,'guiLocation');

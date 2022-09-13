@@ -141,11 +141,7 @@ if prevExist==1
     hImportMetadataButton=findobj(fig,'Type','uibutton','Tag','OpenImportMetadataButton');
     hImportFcnButton=findobj(fig,'Type','uibutton','Tag','OpenImportFcnButton');
     
-    if ismac==1
-        slash='/';
-    elseif ispc==1
-        slash='\';
-    end    
+    slash=filesep;   
     
     if exist([getappdata(fig,'codePath') 'Import_' projectName slash 'Arguments' slash dataType '_Import' methodNum '.m'],'file')==2
         prefix='Open';

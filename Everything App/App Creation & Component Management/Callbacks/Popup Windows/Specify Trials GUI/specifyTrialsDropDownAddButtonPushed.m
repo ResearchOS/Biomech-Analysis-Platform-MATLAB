@@ -27,11 +27,7 @@ while true
 
 end
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 %% If the name entered already exists, just update the GUI but don't create any files.
 verFileName=[getappdata(pguiFig,'codePath') 'SpecifyTrials' slash verName '.m'];

@@ -26,11 +26,7 @@ end
 
 unzip(fullPath,destPath);
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 archiveFile=archiveFile(1:end-4);
 

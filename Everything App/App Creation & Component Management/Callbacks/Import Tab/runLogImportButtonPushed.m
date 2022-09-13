@@ -128,11 +128,7 @@ rowNums=rowNums(rowNums>=numHeaderRows+1); % Temporarily use all rows until spec
 
 dataPath=getappdata(fig,'dataPath');
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 %% Trial level data
 if any(trialCheckedVarsIdx) % There is at least one trial level variable

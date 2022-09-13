@@ -14,11 +14,7 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 [~,projectSettingsMATName]=fileparts(projectSettingsMATPath); % Get just the file name.
 projectSettingsMATName=[projectSettingsMATName '.mat']; % Add extension
 
-if ismac==1
-    slash='/';
-elseif ispc==1
-    slash='\';
-end
+slash=filesep;
 
 allArchivesFolderName=[codePath 'Project Archives'];
 

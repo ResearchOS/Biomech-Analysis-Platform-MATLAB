@@ -10,11 +10,7 @@ function []=specifyTrialsButtonPushedPopupWindow(src)
 % 'Process Fcn fcnName': The Process > Run tab, for the function fcnName
 % 'Plot fcnName': The Plot tab, for the function fcnName
 
-% if ismac==1
-%     slash='/';
-% elseif ispc==1
-%     slash='\';
-% end
+% slash=filesep;
 
 fig=ancestor(src,'figure','toplevel');
 assignin('base','gui',fig); % Send the fig handle to the base workspace.

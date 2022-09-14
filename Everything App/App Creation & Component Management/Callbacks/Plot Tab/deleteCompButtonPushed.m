@@ -12,10 +12,17 @@ end
 
 compName=handles.Plot.allComponentsUITree.SelectedNodes.Text;
 
+if isequal(compName,'Axes')
+    disp('Cannot delete the Axes component!');
+    return;
+end
+
 if ~isfield(Plotting,'Plots')
-    Plotting.CompNames=Plotting.CompNames(~ismember(Plotting.CompNames,compName));
+    idx=~ismember(Plotting.Components.Names,compName);
+    Plotting.Components.Names=Plotting.Components.Names(idx);
+    Plotting.Components.DefaultProperties=Plotting.Components.DefaultProperties(idx);
     setappdata(fig,'Plotting',Plotting);
-    makeCompNodes(fig,1:length(Plotting.CompNames),Plotting.CompNames);
+    makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names);
 end
 
 % Need to check for where this is being used in each individual plot
@@ -32,6 +39,9 @@ for i=1:length(plotNames)
 
 end
 
-Plotting.CompNames=Plotting.CompNames(~ismember(Plotting.CompNames,compName));
+idx=~ismember(Plotting.Components.Names,compName);
+Plotting.Components.Names=Plotting.Components.Names(idx);
+Plotting.Components.DefaultProperties=Plotting.Components.DefaultProperties(idx);
+
 setappdata(fig,'Plotting',Plotting);
-makeCompNodes(fig,1:length(Plotting.CompNames),Plotting.CompNames);
+makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names);

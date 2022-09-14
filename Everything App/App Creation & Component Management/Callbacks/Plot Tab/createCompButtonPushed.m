@@ -12,7 +12,7 @@ Plotting=getappdata(fig,'Plotting');
 if isempty(Plotting) || ~isfield(Plotting,'CompNames')
     allCompNames='';
 else
-    allCompNames=Plotting.CompNames;
+    allCompNames=Plotting.Components.Names;
 end
 
 %% Ask the user for the component name
@@ -54,16 +54,30 @@ while ~compNameOK
     compNameOK=1;
 end
 
-%% Add the component name to the list of component names
-if isempty(Plotting)  || ~isfield(Plotting,'CompNames') % The first component being added
-    Plotting.CompNames{1}=compName;
-else    
-    Plotting.CompNames=[Plotting.CompNames; {compName}];
-    [~,idx]=sort(upper(Plotting.CompNames));
-    Plotting.CompNames=Plotting.CompNames(idx); % Keep the component names in alphabetical order
+%% Ask the user what kind of graphics object this is
+types={'line','scatter3','scatter','plot','image (Image Processing Toolbox needed)'};
+type=listdlg('SelectionMode','single','PromptString','Select graphics object for this component','ListString',types);
+
+if isempty(type)
+    disp('Process aborted, no component added');
+    return;
 end
 
-makeCompNodes(fig,1:length(Plotting.CompNames),Plotting.CompNames)
+defVals=getProps(type);
+
+%% Add the component name & default properties to the list of component names
+if isempty(Plotting)  || ~isfield(Plotting,'CompNames') % The first component being added
+    Plotting.Components.Names{1}=compName;
+    Plotting.Components.DefaultProperties{1}=defVals;
+else    
+    Plotting.Components.Names=[Plotting.CompNames; {compName}];
+    Plotting.Components.DefaultProperties=[Plotting.Components.DefaultProperties; {defVals}];
+    [~,idx]=sort(upper(Plotting.Components.Names));
+    Plotting.Components.Names=Plotting.Components.Names(idx); % Keep the component names in alphabetical order
+    Plotting.Components.DefaultProperties=Plotting.Components.DefaultProperties(idx);
+end
+
+makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names)
 
 %% Create & open the component .m file
 codePath=getappdata(fig,'codePath');

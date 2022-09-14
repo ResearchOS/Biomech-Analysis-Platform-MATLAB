@@ -197,19 +197,21 @@ getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITre
 %% Plot tab
 if ismember('Plotting',projectSettingsVarNames)
     load(projectSettingsMATPath,'Plotting');
-else
-    Plotting.CompNames={'Axes'};
 end
-if isfield(Plotting,'CompNames')
-    if ~ismember('Axes',Plotting.CompNames)
-        Plotting.CompNames=[Plotting.CompNames; {'Axes'}];
-        [~,idx]=sort(upper(Plotting.CompNames));
-        Plotting.CompNames=Plotting.CompNames(idx);
-    end
+if isempty(Plotting)
+    Plotting.Components.Names={'Axes'};
+    defVals=getProps('axes');
+    Plotting.Components.DefaultProperties{1}=defVals;
+end
+
+if ~ismember('Axes',Plotting.Components.Names)
+    Plotting.CompNames=[Plotting.Components.Names; {'Axes'}];
+    [~,idx]=sort(upper(Plotting.Components.Names));
+    Plotting.Components.Names=Plotting.Components.Names(idx);
 end
 setappdata(fig,'Plotting',Plotting);
 
-makeCompNodes(fig,1:length(Plotting.CompNames),Plotting.CompNames);
+makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names);
 if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
     makePlotNodes(fig,1:length(Plotting.Plots),fieldnames(Plotting.Plots));
     plotNames=fieldnames(Plotting.Plots);

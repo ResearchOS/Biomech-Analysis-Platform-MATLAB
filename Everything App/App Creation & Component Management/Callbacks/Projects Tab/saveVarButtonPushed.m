@@ -42,6 +42,10 @@ switch varName
         Digraph=digraph(var.Edges,var.Nodes);
         save(projectSettingsMATPath,'Digraph','-append');
         setappdata(fig,'Digraph',Digraph);
+    case 'Plotting'
+        eval([varName '=var;']);
+        save(projectSettingsMATPath,varName,'-append');
+        setappdata(fig,'Plotting',varName);
 end
 
 evalin('base',['clear ' varName ';']);

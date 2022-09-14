@@ -121,7 +121,7 @@ handles.Projects.openPISettingsPathButton=uibutton(projectsTab,'push','Text','Op
 
 % 12. Dropdown to select between VariableNamesList, Digraph, and
 % NonFcnSettingsStruct
-handles.Projects.showVarDropDown=uidropdown(projectsTab,'Items',{'VariableNamesList','Digraph','NonFcnSettingsStruct'},'Value','VariableNamesList','Tooltip','Select a Variable to Display','Editable','off','Tag','ShowVarDropDown','ValueChangedFcn',@(showVarDropDown,event) showVarDropDownValueChanged(showVarDropDown));
+handles.Projects.showVarDropDown=uidropdown(projectsTab,'Items',{'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting'},'Value','VariableNamesList','Tooltip','Select a Variable to Display','Editable','off','Tag','ShowVarDropDown','ValueChangedFcn',@(showVarDropDown,event) showVarDropDownValueChanged(showVarDropDown));
 
 % 13. Show variable button
 handles.Projects.showVarButton=uibutton(projectsTab,'push','Text','Show Var','Tag','ShowVarButton','Tooltip','Show selected variable','ButtonPushedFcn',@(showVarButton,event) showVarButtonPushed(showVarButton));
@@ -391,7 +391,7 @@ handles.Plot.assignComponentButton=uibutton(plotTab,'push','Text','->','Tag','As
 handles.Plot.unassignComponentButton=uibutton(plotTab,'push','Text','<-','Tag','UnassignComponentButton','Tooltip','Unassign graphics object from the currently selected function version','ButtonPushedFcn',@(unassignComponentButton,event) unassignComponentButtonPushed(unassignComponentButton));
 
 % 8. Create new function button
-handles.Plot.createFcnButton=uibutton(plotTab,'push','Text','F+','Tag','CreateFcnButton','Tooltip','Unassign graphics object from the currently selected function version','ButtonPushedFcn',@(createFcnButton,event) createFcnButtonPushed(createFcnButton));
+handles.Plot.createPlotButton=uibutton(plotTab,'push','Text','P+','Tag','CreateFcnButton','Tooltip','Create a new plot (collection of graphics objects)','ButtonPushedFcn',@(createPlotButton,event) createFcnButtonPushed(createPlotButton));
 
 % 9. Set axis limits button
 handles.Plot.axLimsButton=uibutton(plotTab,'push','Text','Ax Lims','Tag','AxLimsButton','Tooltip','Set axes limits','ButtonPushedFcn',@(axLimsButton,event) axLimsButtonPushed(axLimsButton));
@@ -432,11 +432,31 @@ handles.Plot.runPlotButton=uibutton(plotTab,'push','Text','Run Plot','Tag','RunP
 % 21. Plot level dropdown
 handles.Plot.plotLevelDropDown=uidropdown(plotTab,'Items',{'P','C','S','SC','T'},'Tooltip','Specify the level to run this at','Editable','off','Tag','PlotLevelDropDown','ValueChangedFcn',@(plotLevelDropDown,event) plotLevelDropDownValueChanged(plotLevelDropDown));
 
+% 22. All components label
+handles.Plot.allComponentsLabel=uilabel(plotTab,'Text','All Components','Tag','AllComponentsLabel','FontWeight','bold');
+
+% 23. All functions label
+handles.Plot.allPlotsLabel=uilabel(plotTab,'Text','Plots','Tag','AllFunctionsLabel','FontWeight','bold');
+
+% 24. Current components label
+handles.Plot.currComponentsLabel=uilabel(plotTab,'Text','Current Components','Tag','CurrComponentsLabel','FontWeight','bold');
+
+% 25. Create new component button
+handles.Plot.createCompButton=uibutton(plotTab,'push','Text','C+','Tag','CreateCompButton','Tooltip','Create a new component','ButtonPushedFcn',@(createCompButton,event) createCompButtonPushed(createCompButton));
+
+% 26. Delete component button
+handles.Plot.deleteCompButton=uibutton(plotTab,'push','Text','C-','Tag','DeleteCompButton','Tooltip','Delete a component','ButtonPushedFcn',@(deleteCompButton,event) deleteCompButtonPushed(deleteCompButton));
+
+% 27. Delete plot button
+handles.Plot.deletePlotButton=uibutton(plotTab,'push','Text','P-','Tag','DeletePlotButton','Tooltip','Delete a plot','ButtonPushedFcn',@(deletePlotButton,event) deletePlotButtonPushed(deletePlotButton));
+
 plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
     'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,...
-    'CreateFcnButton',handles.Plot.createFcnButton,'AxLimsButton',handles.Plot.axLimsButton,'FigSizeButton',handles.Plot.figSizeButton,'ObjectPropsButton',handles.Plot.objectPropsButton,'ExTrialButton',handles.Plot.exTrialButton,...
+    'CreateFcnButton',handles.Plot.createPlotButton,'AxLimsButton',handles.Plot.axLimsButton,'FigSizeButton',handles.Plot.figSizeButton,'ObjectPropsButton',handles.Plot.objectPropsButton,'ExTrialButton',handles.Plot.exTrialButton,...
     'ExTrialFigure',handles.Plot.exTrialFigure,'CurrComponentsUITree',handles.Plot.currCompUITree,'ComponentDescLabel',handles.Plot.componentDescLabel,'ComponentDescTextArea',handles.Plot.componentDescTextArea,'FcnVerDescLabel',handles.Plot.fcnVerDescLabel,...
-    'FcnVerDescTextArea',handles.Plot.fcnVerDescTextArea,'SpecifyTrialsButton',handles.Plot.specifyTrialsButton,'RunPlotButton',handles.Plot.runPlotButton,'PlotLevelDropDown',handles.Plot.plotLevelDropDown);
+    'FcnVerDescTextArea',handles.Plot.fcnVerDescTextArea,'SpecifyTrialsButton',handles.Plot.specifyTrialsButton,'RunPlotButton',handles.Plot.runPlotButton,'PlotLevelDropDown',handles.Plot.plotLevelDropDown,...
+    'AllComponentsLabel',handles.Plot.allComponentsLabel,'AllFunctionsLabel',handles.Plot.allPlotsLabel,'CurrComponentsLabel',handles.Plot.currComponentsLabel,'CreateCompButton',handles.Plot.createCompButton,...
+    'DeleteCompButton',handles.Plot.deleteCompButton,'DeletePlotButton',handles.Plot.deletePlotButton);
 
 @plotResize;
 

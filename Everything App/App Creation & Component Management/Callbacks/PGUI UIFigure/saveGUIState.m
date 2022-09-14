@@ -8,7 +8,8 @@ fig=ancestor(fig,'figure','toplevel');
 VariableNamesList=getappdata(fig,'VariableNamesList');
 Digraph=getappdata(fig,'Digraph');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+Plotting=getappdata(fig,'Plotting');
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','-append');
+save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting','-append');

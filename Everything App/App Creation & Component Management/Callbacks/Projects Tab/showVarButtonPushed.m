@@ -106,3 +106,10 @@ if isequal('Digraph',varName)
     assignin('base',varName,newDigraph);
     evalin('base',['openvar(''' varName ''');']);
 end
+
+if isequal('Plotting',varName)
+    Plotting=getappdata(fig,'Plotting');
+    save(projectSettingsMATPath,'Plotting','-append');
+    assignin('base',varName,Plotting);
+    evalin('base',['openvar(''' varName ''');']);
+end

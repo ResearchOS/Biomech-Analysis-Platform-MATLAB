@@ -195,14 +195,36 @@ end
 getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
 
 %% Plot tab
-handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;
-
-if exist(handles.Plot.rootSavePathEditField.Value,'dir')==7
-    setappdata(fig,'rootSavePlotPath',handles.Plot.rootSavePathEditField.Value);
+if ismember('Plotting',projectSettingsVarNames)
+    load(projectSettingsMATPath,'Plotting');
 else
-    setappdata(fig,'rootSavePlotPath','');
+    Plotting.CompNames={'Axes'};
+end
+if isfield(Plotting,'CompNames')
+    if ~ismember('Axes',Plotting.CompNames)
+        Plotting.CompNames=[Plotting.CompNames; {'Axes'}];
+        [~,idx]=sort(upper(Plotting.CompNames));
+        Plotting.CompNames=Plotting.CompNames(idx);
+    end
+end
+setappdata(fig,'Plotting',Plotting);
+
+makeCompNodes(fig,1:length(Plotting.CompNames),Plotting.CompNames);
+if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
+    makePlotNodes(fig,1:length(Plotting.Plots),fieldnames(Plotting.Plots));
+    plotNames=fieldnames(Plotting.Plots);
+    makeCurrCompNodes(fig,Plotting.Plots.(plotNames{1}));
 end
 
+% handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;
+
+% if exist(handles.Plot.rootSavePathEditField.Value,'dir')==7
+%     setappdata(fig,'rootSavePlotPath',handles.Plot.rootSavePathEditField.Value);
+% else
+%     setappdata(fig,'rootSavePlotPath','');
+% end
+
+%% Finalize setup
 % 5. Set the most recent project to the current project name.
 mostRecentProjectName=projectName;
 save(getappdata(fig,'settingsMATPath'),'mostRecentProjectName','-append');

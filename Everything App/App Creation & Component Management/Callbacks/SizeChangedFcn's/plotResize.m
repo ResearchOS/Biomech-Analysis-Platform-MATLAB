@@ -41,7 +41,7 @@ PlotFcnUITreeRelPos=[0.01 0.01];
 AssignVarsButtonRelPos=[0.22 0.8];
 AssignComponentButtonRelPos=[0.22 0.75];
 UnassignComponentButtonRelPos=[0.22 0.7];
-CreateFcnButtonRelPos=[0.22 0.95];
+CreateFcnButtonRelPos=[0.15 0.455];
 AxLimsButtonRelPos=[0.5 0.95];
 FigSizeButtonRelPos=[0.6 0.95];
 ObjectPropsButtonRelPos=[0.7 0.95];
@@ -55,6 +55,12 @@ FcnVerDescTextAreaRelPos=[0.3 0.05];
 SpecifyTrialsButtonRelPos=[0.5 0.01];
 RunPlotButtonRelPos=[0.8 0.01];
 PlotLevelDropDownRelPos=[0.7 0.01];
+AllComponentsLabelRelPos=[0.01 0.95];
+AllFunctionsLabelRelPos=[0.01 0.45];
+CurrComponentsLabelRelPos=[0.3 0.95];
+CreateCompButtonRelPos=[0.15 0.95];
+DeleteCompButtonRelPos=[0.08 0.95];
+DeletePlotButtonRelPos=[0.08 0.455];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -80,6 +86,12 @@ FcnVerDescTextAreaSize=[0.2 0.2];
 SpecifyTrialsButtonSize=[0.1 compHeight];
 RunPlotButtonSize=[0.1 compHeight];
 PlotLevelDropDownSize=[0.06 compHeight];
+AllComponentsLabelSize=[0.2 compHeight];
+AllFunctionsLabelSize=[0.1 compHeight];
+CurrComponentsLabelSize=[0.2 compHeight];
+CreateCompButtonSize=[0.05 compHeight];
+DeleteCompButtonSize=[0.05 compHeight];
+DeletePlotButtonSize=[0.05 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 AllComponentsSearchFieldPos=round([AllComponentsSearchFieldRelPos.*figSize AllComponentsSearchFieldSize(1)*figSize(1) AllComponentsSearchFieldSize(2)]);
@@ -103,6 +115,12 @@ FcnVerDescTextAreaPos=round([FcnVerDescTextAreaRelPos.*figSize FcnVerDescTextAre
 SpecifyTrialsButtonPos=round([SpecifyTrialsButtonRelPos.*figSize SpecifyTrialsButtonSize(1)*figSize(1) SpecifyTrialsButtonSize(2)]);
 RunPlotButtonPos=round([RunPlotButtonRelPos.*figSize RunPlotButtonSize(1)*figSize(1) RunPlotButtonSize(2)]);
 PlotLevelDropDownPos=round([PlotLevelDropDownRelPos.*figSize PlotLevelDropDownSize(1)*figSize(1) PlotLevelDropDownSize(2)]);
+AllComponentsLabelPos=round([AllComponentsLabelRelPos.*figSize AllComponentsLabelSize(1)*figSize(1) AllComponentsLabelSize(2)]);
+AllFunctionsLabelPos=round([AllFunctionsLabelRelPos.*figSize AllFunctionsLabelSize(1)*figSize(1) AllFunctionsLabelSize(2)]);
+CurrComponentsLabelPos=round([CurrComponentsLabelRelPos.*figSize CurrComponentsLabelSize(1)*figSize(1) CurrComponentsLabelSize(2)]);
+CreateCompButtonPos=round([CreateCompButtonRelPos.*figSize CreateCompButtonSize(1)*figSize(1) CreateCompButtonSize(2)]);
+DeleteCompButtonPos=round([DeleteCompButtonRelPos.*figSize DeleteCompButtonSize(1)*figSize(1) DeleteCompButtonSize(2)]);
+DeletePlotButtonPos=round([DeletePlotButtonRelPos.*figSize DeletePlotButtonSize(1)*figSize(1) DeletePlotButtonSize(2)]);
 
 data.AllComponentsSearchField.Position=AllComponentsSearchFieldPos;
 data.AllComponentsUITree.Position=AllComponentsUITreePos;
@@ -125,6 +143,12 @@ data.FcnVerDescTextArea.Position=FcnVerDescTextAreaPos;
 data.SpecifyTrialsButton.Position=SpecifyTrialsButtonPos;
 data.RunPlotButton.Position=RunPlotButtonPos;
 data.PlotLevelDropDown.Position=PlotLevelDropDownPos;
+data.AllComponentsLabel.Position=AllComponentsLabelPos;
+data.AllFunctionsLabel.Position=AllFunctionsLabelPos;
+data.CurrComponentsLabel.Position=CurrComponentsLabelPos;
+data.CreateCompButton.Position=CreateCompButtonPos;
+data.DeleteCompButton.Position=DeleteCompButtonPos;
+data.DeletePlotButton.Position=DeletePlotButtonPos;
 
 data.AllComponentsSearchField.FontSize=newFontSize;
 data.AllComponentsUITree.FontSize=newFontSize;
@@ -147,3 +171,9 @@ data.FcnVerDescTextArea.FontSize=newFontSize;
 data.SpecifyTrialsButton.FontSize=newFontSize;
 data.RunPlotButton.FontSize=newFontSize;
 data.PlotLevelDropDown.FontSize=newFontSize;
+data.AllComponentsLabel.FontSize=newFontSize;
+data.AllFunctionsLabel.FontSize=newFontSize;
+data.CurrComponentsLabel.FontSize=newFontSize;
+data.CreateCompButton.FontSize=newFontSize;
+data.DeleteCompButton.FontSize=newFontSize;
+data.DeletePlotButton.FontSize=newFontSize;

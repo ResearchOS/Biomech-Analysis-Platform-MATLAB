@@ -48,6 +48,14 @@ Plotting.Plots.(plotName).(compName).(newLetters).Variables=struct(); % Initiali
 compIdx=ismember(Plotting.Components.Names,compName);
 Plotting.Plots.(plotName).(compName).(newLetters).Properties=Plotting.Components.DefaultProperties{compIdx};
 
+if isequal(compName,'Axes')
+    h=axes(handles.Plot.Tab,'OuterPosition',[0.5 0.07 0.5 0.87],'InnerPosition',[0.52 0.12 0.47 0.8],'Visible','on');
+else
+    h=createUIComp(fig,plotName,compName,newLetters);
+end
+
+Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
+
 %% Make the component appear in the current components UI tree
 makeCurrCompNodes(fig,Plotting.Plots.(plotName))
 

@@ -27,3 +27,6 @@ compName=compNode.Parent.Text;
 plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
 
 currComp=Plotting.Plots.(plotName).(compName).(letter);
+
+% Edit the current component
+editCompPopupWindow(fig,currComp,compName,plotName,letter);

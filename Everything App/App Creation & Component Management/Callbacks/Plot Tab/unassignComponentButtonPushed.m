@@ -35,6 +35,8 @@ end
 
 compName=currNode.Parent.Text;
 
+
+delete(Plotting.Plots.(plotName).(compName).(currLetter).Handle); % Delete the graphics object.
 Plotting.Plots.(plotName).(compName)=rmfield(Plotting.Plots.(plotName).(compName),currLetter);
 
 if isempty(fieldnames(Plotting.Plots.(plotName).(compName)))

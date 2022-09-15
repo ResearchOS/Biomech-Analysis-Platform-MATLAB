@@ -18,7 +18,7 @@ if isempty(Plotting) % No components or plots yet. Not sure how this function wo
     return;
 end
 
-if ~isfield(Plotting.Plots,plotName)
+if ~isfield(Plotting,'Plots') || ~isfield(Plotting.Plots,plotName)
     disp(['Plot ' plotName ' missing metadata! Cannot show components.']);
     delete(handles.Plot.currCompUITree.Children);
     return;

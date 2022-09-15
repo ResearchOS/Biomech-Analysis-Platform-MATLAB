@@ -45,6 +45,8 @@ else
 end
 
 Plotting.Plots.(plotName).(compName).(newLetters).Variables=struct(); % Initialize this component in this plot's metadata
+compIdx=ismember(Plotting.Components.Names,compName);
+Plotting.Plots.(plotName).(compName).(newLetters).Properties=Plotting.Components.DefaultProperties{compIdx};
 
 %% Make the component appear in the current components UI tree
 makeCurrCompNodes(fig,Plotting.Plots.(plotName))

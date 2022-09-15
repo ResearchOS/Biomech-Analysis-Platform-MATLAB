@@ -31,3 +31,5 @@ if isempty(compNames) % No components in this plot yet.
     return;
 end
 
+currPlot=Plotting.Plots.(plotName);
+makeCurrCompNodes(fig,currPlot);

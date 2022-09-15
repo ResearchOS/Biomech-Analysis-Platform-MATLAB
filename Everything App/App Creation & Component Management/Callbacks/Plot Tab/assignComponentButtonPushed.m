@@ -45,8 +45,8 @@ else
 end
 
 Plotting.Plots.(plotName).(compName).(newLetters).Variables=struct(); % Initialize this component in this plot's metadata
-compIdx=ismember(Plotting.Components.Names,compName);
-Plotting.Plots.(plotName).(compName).(newLetters).Properties=Plotting.Components.DefaultProperties{compIdx};
+% compIdx=ismember(Plotting.Components.Names,compName);
+% Plotting.Plots.(plotName).(compName).(newLetters).Properties=Plotting.Components.DefaultProperties{compIdx};
 
 if isequal(compName,'Axes')
     h=axes(handles.Plot.Tab,'OuterPosition',[0.5 0.07 0.5 0.87],'InnerPosition',[0.52 0.12 0.47 0.8],'Visible','on');
@@ -57,6 +57,6 @@ end
 Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
 
 %% Make the component appear in the current components UI tree
-makeCurrCompNodes(fig,Plotting.Plots.(plotName))
+makeCurrCompNodes(fig,Plotting.Plots.(plotName),compName,newLetters)
 
 setappdata(fig,'Plotting',Plotting);

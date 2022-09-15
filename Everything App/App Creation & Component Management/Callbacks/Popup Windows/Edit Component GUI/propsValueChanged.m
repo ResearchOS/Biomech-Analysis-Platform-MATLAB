@@ -6,7 +6,7 @@ handles=getappdata(fig,'handles');
 
 propName=handles.propsList.Value;
 
-props=handles.props;
+props=getappdata(fig,'props');
 % propNames=fieldnames(props);
 
 % Manage the various property types to convert them to characters

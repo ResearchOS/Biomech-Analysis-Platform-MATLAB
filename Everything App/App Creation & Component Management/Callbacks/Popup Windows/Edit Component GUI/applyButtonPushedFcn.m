@@ -8,18 +8,28 @@ compName=getappdata(fig,'compName');
 letter=getappdata(fig,'letter');
 plotName=getappdata(fig,'plotName');
 
-props=Qhandles.props;
+props=getappdata(fig,'props');
+% props=Qhandles.props;
 
-propNamesChanged=Qhandles.propNamesChanged;
+propNamesChanged=getappdata(fig,'propNamesChanged');
 
 Plotting=getappdata(pgui,'Plotting');
 
 %% Set each of the changed properties for the current graphics object.
 h=Plotting.Plots.(plotName).(compName).(letter).Handle;
 
+propNamesChangedTemp=propNamesChanged;
 for i=1:length(propNamesChanged)
     propName=propNamesChanged{i}; % Current property name.
 
-    h.(propName)=props.(propName);
+    try
+        h.(propName)=props.(propName);
+        propNamesChangedTemp=propNamesChangedTemp(~ismember(propNamesChangedTemp,propName));
+    catch
+        disp([propName ' Invalid as Specified:']);
+        props.(propName)
+    end
 
 end
+
+setappdata(fig,'propNamesChanged',propNamesChangedTemp);

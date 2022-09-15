@@ -1,4 +1,4 @@
-function []=makeCurrCompNodes(fig,currPlot)
+function []=makeCurrCompNodes(fig,currPlot,compName,letter)
 
 %% PURPOSE: CREATE THE NODES FOR THE CURRENT COMPONENTS IN THIS PLOT.
 handles=getappdata(fig,'handles');
@@ -22,10 +22,19 @@ for i=1:length(compNames)
         letNode=uitreenode(compNode,'Text',letters{j});
 
         if i==1 && j==1
-            handles.Plot.currCompUITree.SelectedNodes=letNode;
-            expand(compNode);
+%             handles.Plot.currCompUITree.SelectedNodes=letNode;
+%             expand(compNode);
         end
 
     end
 
+end
+
+selNodeParent=findobj(handles.Plot.currCompUITree,'Text',compName);
+expand(selNodeParent);
+selNode=findobj(selNodeParent,'Text',letter);
+if ~isempty(selNode)
+    handles.Plot.currCompUITree.SelectedNodes=selNode;
+else
+    handles.Plot.currCompUITree.SelectedNodes=selNodeParent.Children(1);
 end

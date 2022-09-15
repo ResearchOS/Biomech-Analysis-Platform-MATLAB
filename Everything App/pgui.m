@@ -451,7 +451,7 @@ handles.Plot.deleteCompButton=uibutton(plotTab,'push','Text','C-','Tag','DeleteC
 handles.Plot.deletePlotButton=uibutton(plotTab,'push','Text','P-','Tag','DeletePlotButton','Tooltip','Delete a plot','ButtonPushedFcn',@(deletePlotButton,event) deletePlotButtonPushed(deletePlotButton));
 
 % 28. Edit component button
-handles.Plot.editCompButton=uibutton(plotTab,'push','Text','Edit','Tag','EditCompButton','Tooltip','Edit component','ButtonPushedFcn',@(editCompButton,event) editCompButtonPushed(editCompButton));
+handles.Plot.editCompButton=uibutton(plotTab,'push','Text','Edit Props','Tag','EditCompButton','Tooltip','Edit component','ButtonPushedFcn',@(editCompButton,event) editCompButtonPushed(editCompButton));
 
 plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
     'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,...

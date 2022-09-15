@@ -15,11 +15,7 @@ switch class(var)
         end
 
     case 'matlab.graphics.primitive.Text'
-        if ~isvalid(var)
-            varText='';
-        else
-            varText=char(var);
-        end
+            varText=var.String;
     case 'matlab.lang.OnOffSwitchState'
         if isequal(var,'off')
             varText='off';
@@ -28,6 +24,16 @@ switch class(var)
         end
     case 'char'
         varText=var;
+    case 'cell'        
+        if iscellstr(var) % This variable is a cell array of character vectors
+            varText=['{' var{1}];
+            for i=2:length(var)
+                varText=[varText ', ' var{i}];
+            end
+            varText=[varText '}'];            
+        else
+
+        end
     otherwise
         varText='Cannot be displayed';
 

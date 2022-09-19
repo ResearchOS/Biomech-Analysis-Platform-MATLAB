@@ -352,6 +352,12 @@ handles.Process.collapseAllContextMenuItem1=uimenu(handles.Process.collapseAllCo
 handles.Process.openFcnContextMenu=uicontextmenu(fig);
 handles.Process.openFcnContextMenuItem1=uimenu(handles.Process.openFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFile});
 
+% 49. Copy variables context menu
+% handles.Process.copyVarsContextMenu=uicontextmenu(fig);
+handles.Process.openFcnContextMenuItem2=uimenu(handles.Process.openFcnContextMenu,'Text','Copy Vars','MenuSelectedFcn',{@copyFcnVars});
+handles.Process.openFcnContextMenuItem3=uimenu(handles.Process.openFcnContextMenu,'Text','Paste Vars','MenuSelectedFcn',{@pasteFcnVars});
+handles.Process.openFcnContextMenuItem3=uimenu(handles.Process.openFcnContextMenu,'Text','Paste Vars','MenuSelectedFcn',{@expandFcnVars});
+
 processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',handles.Process.addFcnButton,'RemoveFcnButton',handles.Process.removeFcnButton,...
     'MoveFcnButton',handles.Process.moveFcnButton,'PropagateChangesButton',handles.Process.propagateChangesButton,'PropagateChangesCheckbox',handles.Process.propagateChangesCheckbox,'RunSelectedFcnsButton',handles.Process.runSelectedFcnsButton,...
     'CreateArgButton',handles.Process.createArgButton,'RemoveArgButton',handles.Process.removeArgButton,'FcnNameLabel',handles.Process.fcnNameLabel,'FcnArgsUITree',handles.Process.fcnArgsUITree,'ArgNameInCodeLabel',handles.Process.argNameInCodeLabel,...

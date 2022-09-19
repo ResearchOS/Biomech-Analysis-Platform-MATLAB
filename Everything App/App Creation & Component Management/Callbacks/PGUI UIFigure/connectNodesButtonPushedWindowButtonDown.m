@@ -195,7 +195,12 @@ getSplitNames(splits,[],rootNode);
 uiwait(Q);
 try
     selSplit=evalin('base','selSplit;'); % 1st entry is the root split, last entry is the split to copy the variables from.
-    copyVars=1;
+    existEdges=ismember(Digraph.Edges.NodeNumber,[nodeID1 nodeID2],'rows');
+    if sum(existEdges)>1
+        copyVars=1;
+    else
+        copyVars=0;
+    end
     evalin('base','clear selSplit;');
     selSplit=selSplit(~ismember(selSplit,'Root'));
     if isempty(selSplit)

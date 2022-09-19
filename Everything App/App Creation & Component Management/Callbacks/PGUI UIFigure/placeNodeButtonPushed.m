@@ -29,7 +29,7 @@ if ~(currPoint(1)>=xlims(1) && currPoint(1)<=xlims(2) && currPoint(2)>=ylims(1) 
     return;
 end
 
-if exist('currPoint','var')~=1
+if exist('currPoint','var')==1
 
     allDots=getappdata(fig,'allDots');
 

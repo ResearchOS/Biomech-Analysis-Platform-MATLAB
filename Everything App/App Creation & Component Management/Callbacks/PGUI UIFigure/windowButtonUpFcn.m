@@ -101,7 +101,7 @@ for i=1:length(nodeRowsNums)
 %         return;
     end
 
-    if isempty(inedges(Digraph,nodeRowsNums(i)))
+    if isempty(inedges(Digraph,nodeRowsNums(i))) && isempty(outedges(Digraph,nodeRowsNums(i)))
         disp('Must connect functions before selecting them!');
         disp(['Node at (' num2str(Digraph.Nodes.Coordinates(nodeRowsNums(i),:)) ') Not Connected']);
         return;

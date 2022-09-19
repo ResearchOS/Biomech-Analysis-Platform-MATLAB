@@ -117,20 +117,6 @@ if runLog
         selSplit=selSplit(~ismember(selSplit,name));
 
         splitCode=genSplitCode(fig,projectSettingsMATPath,selSplit,name); % Need to alter genSplitCode to be recursive
-        %     if isempty(splitCode)
-        %         return;
-        %     end
-
-        %     splitsOrder=getSplitsOrder(handles.Process.splitsUITree.SelectedNodes,handles.Process.splitsUITree.Tag);
-        %     if isempty(splitsOrder)
-        %         return;
-        %     end
-        %
-        %     for i=1:length(splitsOrder)
-        %         splitsStruct=splitsStruct.SubSplitNames.(splitsOrder{i});
-        %     end
-        %     code=splitsStruct.Code;
-        %     color=splitsStruct.Color;
 
         if ~ismember({splitCode},splitCodes)
             disp('Must select a split with an arrow pointing towards the second node selected');
@@ -154,11 +140,6 @@ end
 nodeID1=Digraph.Nodes.NodeNumber(idx1,:);
 nodeID2=Digraph.Nodes.NodeNumber(idx2,:);
 
-% splitText=handles.Process.splitsUITree.SelectedNodes.Text;
-% spaceIdx=strfind(splitText,' ');
-% splitName=splitText(1:spaceIdx(end)-1);
-% splitCode=splitText(spaceIdx(end)+2:end-1);
-
 if isempty(Digraph.Edges)
     newDigraph=digraph;
     for i=1:size(Digraph.Nodes,1)
@@ -171,29 +152,6 @@ edgeIdx=find((ismember(Digraph.Edges.SplitCode,splitCode) & ismember(Digraph.Edg
 Digraph=rmedge(Digraph,edgeIdx);
 
 %% NOW I AM KEEPING ALL VARIABLES FOR ALL SPLITS SO THAT DISCONNECTING AND RE-CONNECTING A NODE FROM A SPLIT DOES NOT DELETE ITS VARIABLES.
-%%% Remove the split from the Digraph input & output variables, & the names in code.
-% node1Row=ismember(Digraph.Nodes.NodeNumber,nodeID1);
-% if isstruct(Digraph.Nodes.OutputVariableNames{idx1})
-%     if isfield(Digraph.Nodes.OutputVariableNames{idx1},[name '_' splitCode])
-%         Digraph.Nodes.OutputVariableNames{idx1}=rmfield(Digraph.Nodes.OutputVariableNames{idx1},[name '_' splitCode]);
-%         Digraph.Nodes.OutputVariableNamesInCode{idx1}=rmfield(Digraph.Nodes.OutputVariableNamesInCode{idx1},[name '_' splitCode]);
-%     end
-% end
-% if isstruct(Digraph.Nodes.InputVariableNames{idx2})
-%     if isfield(Digraph.Nodes.InputVariableNames{idx2},[name '_' splitCode])
-%         Digraph.Nodes.InputVariableNames{idx2}=rmfield(Digraph.Nodes.InputVariableNames{idx2},[name '_' splitCode]);
-%         Digraph.Nodes.InputVariableNamesInCode{idx2}=rmfield(Digraph.Nodes.InputVariableNamesInCode{idx2},[name '_' splitCode]);
-%     end
-% end
-% 
-% % Remove output variables if no output edge, because the output variables
-% % are initialized when the edge is created.
-% if isstruct(Digraph.Nodes.OutputVariableNames{idx2}) && ~ismember(splitCode,Digraph.Edges.SplitCode(outedges(Digraph,idx2)))
-%     if isfield(Digraph.Nodes.OutputVariableNames{idx2},[name '_' splitCode])
-%         Digraph.Nodes.OutputVariableNames{idx2}=rmfield(Digraph.Nodes.OutputVariableNames{idx2},[name '_' splitCode]);
-%         Digraph.Nodes.OutputVariableNamesInCode{idx2}=rmfield(Digraph.Nodes.OutputVariableNamesInCode{idx2},[name '_' splitCode]);
-%     end
-% end
 
 %% Plot the new plot.
 h=findobj(handles.Process.mapFigure,'Type','GraphPlot');

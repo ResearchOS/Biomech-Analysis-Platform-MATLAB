@@ -5,10 +5,12 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 if isempty(handles.Plot.currCompUITree.SelectedNodes)
+    disp('Select a component first!');
     return;
 end
 
 if isempty(handles.Plot.plotFcnUITree.SelectedNodes)
+    disp('Select a plot first!');
     return;
 end
 

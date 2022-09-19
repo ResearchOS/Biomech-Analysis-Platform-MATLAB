@@ -76,22 +76,36 @@ handles.Top.includeExcludeTabGroup.SelectedTab=currSelectedTab;
 pguiHandles.Process.specifyTrialsLabel.Text=specifyTrialsName;
 
 %% Assign the new specify trials specifyTrialsName to the current function
-nodeRow=getappdata(fig,'nodeRow');
-% projectSettingsMATPath=getappdata(pguiFig,'projectSettingsMATPath');
+tabName=pguiHandles.Tabs.tabGroup1.SelectedTab.Title;
+if isequal(tabName,'Process')
+    nodeRow=getappdata(fig,'nodeRow');
+    % projectSettingsMATPath=getappdata(pguiFig,'projectSettingsMATPath');
 
-% load(projectSettingsMATPath,'Digraph');
-Digraph=getappdata(pguiFig,'Digraph');
-if isequal(specifyTrialsName,Digraph.Nodes.SpecifyTrials{nodeRow})
-    runLog=false; % Don't put an entry in the logsheet just for modifying or looking at the specify trials. Has to change the selection to make an entry.
+    % load(projectSettingsMATPath,'Digraph');
+    Digraph=getappdata(pguiFig,'Digraph');
+    if isequal(specifyTrialsName,Digraph.Nodes.SpecifyTrials{nodeRow})
+        runLog=false; % Don't put an entry in the logsheet just for modifying or looking at the specify trials. Has to change the selection to make an entry.
+    end
+    Digraph.Nodes.SpecifyTrials{nodeRow}=specifyTrialsName;
+    % save(projectSettingsMATPath,'Digraph','-append');
+    setappdata(pguiFig,'Digraph',Digraph);
+
+    fcnName=Digraph.Nodes.FunctionNames{nodeRow};
+    nodeID=Digraph.Nodes.NodeNumber(nodeRow);
+
+    if runLog
+        desc=['Changed specify trials for function ' fcnName ' node ID #' num2str(nodeID)];
+        updateLog(pguiFig,desc,specifyTrialsName);
+    end
 end
-Digraph.Nodes.SpecifyTrials{nodeRow}=specifyTrialsName;
-% save(projectSettingsMATPath,'Digraph','-append');
-setappdata(pguiFig,'Digraph',Digraph);
 
-fcnName=Digraph.Nodes.FunctionNames{nodeRow};
-nodeID=Digraph.Nodes.NodeNumber(nodeRow);
+if isequal(tabName,'Plot')
+    Plotting=getappdata(pguiFig,'Plotting');
 
-if runLog
-    desc=['Changed specify trials for function ' fcnName ' node ID #' num2str(nodeID)];
-    updateLog(pguiFig,desc,specifyTrialsName);
+    plotName=pguiHandles.Plot.plotFcnUITree.SelectedNodes.Text;
+
+    Plotting.Plots.(plotName).SpecifyTrials=specifyTrialsName;
+    
+    setappdata(pguiFig,'Plotting',Plotting);
+
 end

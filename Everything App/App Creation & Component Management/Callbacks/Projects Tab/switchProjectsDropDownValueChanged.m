@@ -75,6 +75,10 @@ end
 load(projectSettingsMATPath,'NonFcnSettingsStruct');
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
+%% NEED TO: ADD THE PATH OF THE CURRENT PROJECT (CODE & DATA FOLDERS) & REMOVE ALL OTHER PROJECTS FROM THE PATH.
+
+
+
 %% Projects tab
 if isfield(NonFcnSettingsStruct.Projects.Paths,macAddress)
     if isfield(NonFcnSettingsStruct.Projects.Paths.(macAddress),'CodePath')

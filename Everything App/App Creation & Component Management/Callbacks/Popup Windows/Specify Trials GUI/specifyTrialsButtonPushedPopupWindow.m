@@ -43,14 +43,15 @@ Digraph=getappdata(fig,'Digraph');
 
 tabName=handles.Tabs.tabGroup1.SelectedTab.Title;
 
-if ~isequal(tabName,'Import') && isempty(handles.Process.fcnArgsUITree.SelectedNodes)
-    handles.Process.fcnDescriptionTextArea.Value='Enter Fcn Description Here';
-    beep;
-    disp('Need to select a fcn in the UI tree first!');
-    return;
-end
+nodeRow=1;
+if isequal(tabName,'Process')
+    if isempty(handles.Process.fcnArgsUITree.SelectedNodes)
+        handles.Process.fcnDescriptionTextArea.Value='Enter Fcn Description Here';
+        beep;
+        disp('Need to select a fcn in the UI tree first!');
+        return;
+    end
 
-if ~isequal(tabName,'Import')
     nodeNum=handles.Process.fcnArgsUITree.SelectedNodes.NodeData;
     a=handles.Process.fcnArgsUITree.SelectedNodes;
     for i=1:2
@@ -64,8 +65,12 @@ if ~isequal(tabName,'Import')
     assert(~isempty(nodeNum));
 
     nodeRow=find(ismember(Digraph.Nodes.NodeNumber,nodeNum)==1);
-else
-    nodeRow=1;
+end
+
+if isequal(tabName,'Plot')
+
+
+
 end
 
 %% Initialize GUI
@@ -114,14 +119,23 @@ Q.UserData=struct('IncludeExcludeTabGroup',newHandles.Top.includeExcludeTabGroup
 
 specifyTrialsResize(Q); % Initialize all components' positions.
 
-if ~isequal(tabName,'Import')
+specifyTrialsNames=dir([getappdata(fig,'codePath') 'SpecifyTrials']);
+specifyTrialsNames={specifyTrialsNames.name};
+
+if isequal(tabName,'Process')
     specifyTrialsName=Digraph.Nodes.SpecifyTrials{nodeRow};
-else
+elseif isequal(tabName,'Plot')
+    Plotting=getappdata(fig,'Plotting');
+    plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
+    if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')
+        specifyTrialsName=specifyTrialsNames{1};
+    else
+        specifyTrialsName=Plotting.Plots.(plotName).SpecifyTrials;
+    end
+elseif isequal(tabName,'Import')
     specifyTrialsName=Digraph.Nodes.SpecifyTrials{1};
 end
 
-specifyTrialsNames=dir([getappdata(fig,'codePath') 'SpecifyTrials']);
-specifyTrialsNames={specifyTrialsNames.name};
 varNamesIdx=false(length(specifyTrialsNames),1);
 for i=1:length(specifyTrialsNames)
     varNamesIdx(i)=isvarname(specifyTrialsNames{i}(1:end-2));

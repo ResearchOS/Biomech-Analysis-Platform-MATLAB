@@ -28,7 +28,13 @@ for i=1:length(compNames)
             spaceIdx=strfind(parentAx,' ');
             axLetter=parentAx(spaceIdx+1:end);
             parentObj=findall(handles.Plot.currCompUITree,'Text','Axes');
-            parentObj=findall(parentObj,'Text',axLetter);
+            for k=1:length(parentObj.Children) % Each Axes letter
+                if isequal(parentObj.Children(k).Text,axLetter)
+                    parentObj=parentObj.Children(k);
+                    break;
+                end
+            end
+%             parentObj=findall(parentObj.Children,'Text',axLetter);
             if isempty(parentObj)
                 return; % All components have been removed.
             end

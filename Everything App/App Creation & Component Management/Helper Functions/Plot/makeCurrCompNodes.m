@@ -7,6 +7,8 @@ delete(handles.Plot.currCompUITree.Children);
 
 compNames=fieldnames(currPlot);
 
+compNames=compNames(~ismember(compNames,'SpecifyTrials'));
+
 if isempty(compNames)
     return;
 end

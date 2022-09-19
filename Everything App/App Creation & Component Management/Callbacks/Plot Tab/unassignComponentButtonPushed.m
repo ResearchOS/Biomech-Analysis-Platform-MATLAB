@@ -59,18 +59,19 @@ end
 
 if isequal(compName,'Axes')
     compNames=fieldnames(Plotting.Plots.(plotName));
+    compNames=compNames(~ismember(compNames,'SpecifyTrials'));
     for i=1:length(compNames)
-        compName=compNames{i};
-        if isequal(compName,'Axes')
+        compNameIter=compNames{i};
+        if isequal(compNameIter,'Axes')
             continue;
         end
-        letters=fieldnames(Plotting.Plots.(plotName).(compName));
+        letters=fieldnames(Plotting.Plots.(plotName).(compNameIter));
         for j=1:length(letters)
             letter=letters{j};
-            if isequal(Plotting.Plots.(plotName).(compName).(letter).Parent,['Axes ' currLetter])
-                Plotting.Plots.(plotName).(compName)=rmfield(Plotting.Plots.(plotName).(compName),letter);
-                if isempty(fieldnames(Plotting.Plots.(plotName).(compName)))
-                    Plotting.Plots.(plotName)=rmfield(Plotting.Plots.(plotName),compName); % If no more of this component in the current plot, remove it entirely.
+            if isequal(Plotting.Plots.(plotName).(compNameIter).(letter).Parent,['Axes ' currLetter])
+                Plotting.Plots.(plotName).(compNameIter)=rmfield(Plotting.Plots.(plotName).(compNameIter),letter);
+                if isempty(fieldnames(Plotting.Plots.(plotName).(compNameIter)))
+                    Plotting.Plots.(plotName)=rmfield(Plotting.Plots.(plotName),compNameIter); % If no more of this component in the current plot, remove it entirely.
                 end
             end
         end

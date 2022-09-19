@@ -19,15 +19,19 @@ Plotting=getappdata(pgui,'Plotting');
 h=Plotting.Plots.(plotName).(compName).(letter).Handle;
 
 propNamesChangedTemp=propNamesChanged;
-for i=1:length(propNamesChanged)
-    propName=propNamesChanged{i}; % Current property name.
+for j=1:length(h.Children)
 
-    try
-        h.(propName)=props.(propName);
-        propNamesChangedTemp=propNamesChangedTemp(~ismember(propNamesChangedTemp,propName));
-    catch
-        disp([propName ' Invalid as Specified:']);
-        props.(propName)
+    for i=1:length(propNamesChanged)
+        propName=propNamesChanged{i}; % Current property name.
+
+        try
+            h.Children(j).(propName)=props.(propName);
+            propNamesChangedTemp=propNamesChangedTemp(~ismember(propNamesChangedTemp,propName));
+        catch
+            disp([propName ' Invalid as Specified:']);
+            props.(propName)
+        end
+
     end
 
 end

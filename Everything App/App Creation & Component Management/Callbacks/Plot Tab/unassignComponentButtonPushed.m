@@ -11,17 +11,14 @@ if isempty(Plotting)
     return;
 end
 
-% if isempty(handles.Plot.allComponentsUITree.SelectedNodes)
-%     disp('Need to select a component!');
-%     return;
-% end
-
 if isempty(handles.Plot.plotFcnUITree.SelectedNodes)
     disp('Need to select a plot!');
     return;
 end
 
 plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
+
+compNames=fieldnames(Plotting.Plots.(plotName));
 
 % compName=handles.Plot.allComponentsUITree.SelectedNodes.Text;
 
@@ -32,6 +29,11 @@ end
 
 currNode=handles.Plot.currCompUITree.SelectedNodes;
 currLetter=currNode.Text;
+
+if ismember(currLetter,compNames)
+    disp('Need to select a letter, not a component name!');
+    return;
+end
 
 if ~isequal(class(currNode.Parent),'matlab.ui.container.TreeNode')
     disp('Need to select a letter, not the component itself!');
@@ -45,7 +47,7 @@ if ~isfield(Plotting.Plots.(plotName),compName)
     return;
 end
 
-h=Plotting.Plots.(plotName).(compName).(currLetter).Handle;
+h=Plotting.Plots.(plotName).(compName).(currLetter).Handle; % Handle to the component's hggroup
 if isvalid(h)
     delete(h); % Delete the graphics object.
 end
@@ -53,6 +55,26 @@ Plotting.Plots.(plotName).(compName)=rmfield(Plotting.Plots.(plotName).(compName
 
 if isempty(fieldnames(Plotting.Plots.(plotName).(compName)))
     Plotting.Plots.(plotName)=rmfield(Plotting.Plots.(plotName),compName); % If no more of this component in the current plot, remove it entirely.
+end
+
+if isequal(compName,'Axes')
+    compNames=fieldnames(Plotting.Plots.(plotName));
+    for i=1:length(compNames)
+        compName=compNames{i};
+        if isequal(compName,'Axes')
+            continue;
+        end
+        letters=fieldnames(Plotting.Plots.(plotName).(compName));
+        for j=1:length(letters)
+            letter=letters{j};
+            if isequal(Plotting.Plots.(plotName).(compName).(letter).Parent,['Axes ' currLetter])
+                Plotting.Plots.(plotName).(compName)=rmfield(Plotting.Plots.(plotName).(compName),letter);
+                if isempty(fieldnames(Plotting.Plots.(plotName).(compName)))
+                    Plotting.Plots.(plotName)=rmfield(Plotting.Plots.(plotName),compName); % If no more of this component in the current plot, remove it entirely.
+                end
+            end
+        end
+    end
 end
 
 makeCurrCompNodes(fig,Plotting.Plots.(plotName),compName,currLetter);

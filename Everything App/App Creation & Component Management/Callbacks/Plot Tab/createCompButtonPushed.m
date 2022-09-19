@@ -55,7 +55,7 @@ while ~compNameOK
 end
 
 %% Ask the user what kind of graphics object this is
-types={'line','scatter3','scatter','plot','image (Image Processing Toolbox needed)'};
+types={'line','xyzline','scatter3','scatter','plot','image (Image Processing Toolbox needed)'};
 type=listdlg('SelectionMode','single','PromptString','Select graphics object for this component','ListString',types);
 
 if isempty(type)
@@ -63,14 +63,14 @@ if isempty(type)
     return;
 end
 
-defVals=getProps(type);
+defVals=getProps(types{type});
 
 %% Add the component name & default properties to the list of component names
-if isempty(Plotting)  || ~isfield(Plotting,'CompNames') % The first component being added
+if isempty(Plotting)  || ~isfield(Plotting,'Components') % The first component being added
     Plotting.Components.Names{1}=compName;
     Plotting.Components.DefaultProperties{1}=defVals;
 else    
-    Plotting.Components.Names=[Plotting.CompNames; {compName}];
+    Plotting.Components.Names=[Plotting.Components.Names; {compName}];
     Plotting.Components.DefaultProperties=[Plotting.Components.DefaultProperties; {defVals}];
     [~,idx]=sort(upper(Plotting.Components.Names));
     Plotting.Components.Names=Plotting.Components.Names(idx); % Keep the component names in alphabetical order
@@ -86,10 +86,16 @@ if exist(plotFolder,'dir')~=7
     mkdir(plotFolder);
 end
 
-compPath=[plotFolder slash compName '.m'];
+compPath=[plotFolder slash compName '_P.m'];
 
 % NEED TO CREATE THE TEMPLATE TO COPY FOR EACH COMPONENT (COULD ALSO JUST BE CELL ARRAY THAT I WRITE TO THE FILE)
-% copyfile(compTemplatePath,compPath); 
-% edit(compPath);
+text{1}=['function []=' compName '_P(allTrialNames)'];
+text{2}='';
+
+fid=fopen(compPath,'w');
+fprintf(fid,'%s\n',text{1:end-1});
+fprintf(fid,'%s',text{end});
+fclose(fid);
+edit(compPath);
 
 setappdata(fig,'Plotting',Plotting);

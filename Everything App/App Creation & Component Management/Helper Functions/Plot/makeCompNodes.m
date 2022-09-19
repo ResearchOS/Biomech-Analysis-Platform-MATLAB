@@ -13,7 +13,13 @@ end
 
 for i=1:length(sortIdx)
 
-    compNode=uitreenode(handles.Plot.allComponentsUITree,'Text',names{sortIdx(i)});
+    compName=names{sortIdx(i)};
+
+    compNode=uitreenode(handles.Plot.allComponentsUITree,'Text',compName);
+
+    if ~isequal(compName,'Axes')        
+        compNode.ContextMenu=handles.Process.openPlotFcnContextMenu;
+    end
 
     if i==1
         handles.Plot.allComponentsUITree.SelectedNodes=compNode;

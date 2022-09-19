@@ -8,7 +8,9 @@ switch type
     case 'axes'
         h=axes;
     case 'line'
-        h=line;        
+        h=line;   
+    case 'xyzline'
+        h=xline(0);
     case 'scatter3'
         h=scatter3(0,0,0);
     case 'scatter'

@@ -50,11 +50,30 @@ Plotting.Plots.(plotName).(compName).(newLetters).Variables=struct(); % Initiali
 
 if isequal(compName,'Axes')
     h=axes(handles.Plot.Tab,'OuterPosition',[0.5 0.07 0.5 0.87],'InnerPosition',[0.52 0.12 0.47 0.8],'Visible','on');
+    Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
+    idx=ismember(Plotting.Components.Names,compName);
+    Plotting.Plots.(plotName).(compName).(newLetters).Properties=Plotting.Components.DefaultProperties{idx};
+    Plotting.Plots.(plotName).(compName).(newLetters).Properties.OuterPosition=[0.5 0.07 0.5 0.87];
+    Plotting.Plots.(plotName).(compName).(newLetters).Properties.InnerPosition=[0.52 0.12 0.47 0.8];
 else
-    h=createUIComp(fig,plotName,compName,newLetters);
+    currSelNode=handles.Plot.currCompUITree.SelectedNodes;
+    if isempty(currSelNode)
+        disp('Must have axes letter selected in current components UI tree!');
+        return;
+    end
+    currSelNodeParent=currSelNode.Parent;
+    props=properties(currSelNodeParent);
+    if ~ismember('Text',props) || ~isequal(currSelNodeParent.Text,'Axes')
+        disp('Must have axes letter selected in current components UI tree!');
+        return;
+    end
+    axLetter=currSelNode.Text;
+    h=hggroup(Plotting.Plots.(plotName).Axes.(axLetter).Handle);
+    Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
+    Plotting.Plots.(plotName).(compName).(newLetters).Parent=['Axes ' axLetter];
+    idx=ismember(Plotting.Components.Names,compName);
+    Plotting.Plots.(plotName).(compName).(newLetters).Properties=Plotting.Components.DefaultProperties{idx};
 end
-
-Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
 
 %% Make the component appear in the current components UI tree
 makeCurrCompNodes(fig,Plotting.Plots.(plotName),compName,newLetters)

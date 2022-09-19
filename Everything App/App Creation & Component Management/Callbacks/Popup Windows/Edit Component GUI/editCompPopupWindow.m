@@ -5,20 +5,20 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 Q=uifigure('Visible','on','Name','Edit Comp Props');
-props=get(currComp);
-propNames=fieldnames(props);
+% props=get(currComp);
+propNames=fieldnames(currComp);
 [~,idx]=sort(upper(propNames));
 propNames=propNames(idx);
 Qhandles.propsList=uilistbox(Q,'Position',[10 10 200 450],'Items',propNames,'Value',propNames{1},'MultiSelect','off','ValueChangedFcn',@(Q,event) propsValueChanged(Q,fig));
 
 % Manage the various property types to convert them to characters
-var=props.(propNames{1});
+var=currComp.(propNames{1});
 varText=convertVarToChar(var);
 
 Qhandles.propTextArea=uitextarea(Q,'Position',[250 10 250 450],'Value',varText,'Editable','on','Visible','on','ValueChangedFcn',@(Q,event) propTextAreaValueChanged(Q,fig));
 Qhandles.applyButton=uibutton(Q,'Position',[510 250 80 40],'Text','Apply','Visible','on','ButtonPushedFcn',@(Q,event) applyButtonPushedFcn(Q,fig));
 
-setappdata(Q,'props',props);
+setappdata(Q,'props',currComp);
 setappdata(Q,'propNamesChanged',{})
 % Qhandles.props=props;
 % 

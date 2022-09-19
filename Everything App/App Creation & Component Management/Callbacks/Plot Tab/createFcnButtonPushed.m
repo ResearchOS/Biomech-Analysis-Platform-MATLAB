@@ -67,6 +67,20 @@ orderedStruct=struct(args{:});
 Plotting.Plots=orderfields(Plotting.Plots,orderedStruct);
 plotNames=fieldnames(Plotting.Plots);
 
+%% ASK FOR WHAT LEVEL THIS PLOT IS
+levels={'Project','Subject','Trial'};
+level=listdlg('ListString',levels);
+level=levels{level};
+
+switch level
+    case 'Project'
+
+    case 'Subject'
+
+    case 'Trial'
+
+end
+
 makePlotNodes(fig,1:length(plotNames),plotNames);
 
 setappdata(fig,'Plotting',Plotting);

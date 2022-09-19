@@ -453,6 +453,9 @@ handles.Plot.deletePlotButton=uibutton(plotTab,'push','Text','P-','Tag','DeleteP
 % 28. Edit component button
 handles.Plot.editCompButton=uibutton(plotTab,'push','Text','Edit Props','Tag','EditCompButton','Tooltip','Edit component','ButtonPushedFcn',@(editCompButton,event) editCompButtonPushed(editCompButton));
 
+handles.Process.openPlotFcnContextMenu=uicontextmenu(fig);
+handles.Process.openPlotFcnContextMenuItem1=uimenu(handles.Process.openPlotFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFilePlot});
+
 plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
     'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,...
     'CreateFcnButton',handles.Plot.createPlotButton,'AxLimsButton',handles.Plot.axLimsButton,'FigSizeButton',handles.Plot.figSizeButton,'ObjectPropsButton',handles.Plot.objectPropsButton,'ExTrialButton',handles.Plot.exTrialButton,...

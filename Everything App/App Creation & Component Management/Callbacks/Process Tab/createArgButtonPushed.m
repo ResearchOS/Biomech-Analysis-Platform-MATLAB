@@ -24,7 +24,7 @@ if ismember('VariableNamesList',varNames)
 %     load(projectSettingsMATPath,'Digraph','VariableNamesList','NonFcnSettingsStruct');
 %     Digraph=getappdata(fig,'Digraph');
     VariableNamesList=getappdata(fig,'VariableNamesList');
-%     NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+    NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
     guiNames=VariableNamesList.GUINames;
     saveNames=VariableNamesList.SaveNames;
 else

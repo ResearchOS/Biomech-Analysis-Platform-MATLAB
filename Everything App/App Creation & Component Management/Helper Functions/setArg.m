@@ -77,6 +77,7 @@ catch
 end
 guiVarNames=Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode])(currVarsIdx); % The names of the variables as seen in the GUI
 
+% guiVarNames=cell(size(guiVarNamesWithSuffix));
 for i=1:length(guiVarNames)
     guiVarNames{i}=guiVarNames{i}(1:end-6);
 end
@@ -135,7 +136,7 @@ for i=1:length(argNames)
     VariableNamesList.SplitCodes{argRow}=[VariableNamesList.SplitCodes{argRow}; {splitCode}];
     VariableNamesList.SplitNames{argRow}=[VariableNamesList.SplitNames{argRow}; {splitName}];
 
-    varNode=findobj(handles.Process.varsListbox,'Text',argNames{i});
+    varNode=findobj(handles.Process.varsListbox,'Text',guiVarNames{i});
     uitreenode(varNode,'Text',splitText);
 
 end

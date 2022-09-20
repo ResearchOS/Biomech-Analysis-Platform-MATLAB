@@ -23,6 +23,10 @@ splitCode=splitText(spaceIdx+2:end-1);
 
 copiedVars=getappdata(fig,'copiedVars');
 
+if isempty(copiedVars)
+    return;
+end
+
 Digraph.Nodes.InputVariableNames{nodeRow}.([splitName '_' splitCode])=copiedVars.inputVarNames;
 Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])=copiedVars.inputVarNamesInCode;
 
@@ -30,5 +34,6 @@ Digraph.Nodes.OutputVariableNames{nodeRow}.([splitName '_' splitCode])=copiedVar
 Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])=copiedVars.outputVarNamesInCode;
 
 setappdata(fig,'Digraph',Digraph);
+setappdata(fig,'copiedVars','');
 
 highlightedFcnsChanged(fig,Digraph);

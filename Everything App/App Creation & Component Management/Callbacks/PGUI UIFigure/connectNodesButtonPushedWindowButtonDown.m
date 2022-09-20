@@ -231,7 +231,10 @@ for i=1:length(selSplit)
 end
 
 splitCodePrev=splits.Code;
-splitNamePrev=splits.Name{1};
+if iscell(splits.Name)
+    splits.Name=splits.Name{1};
+end
+splitNamePrev=splits.Name;
 
 %% Get the list of all nodes in the current split.
 newSplitEdgesIdx=ismember(Digraph.Edges.SplitCode,splitCode);

@@ -356,7 +356,7 @@ handles.Process.openFcnContextMenuItem1=uimenu(handles.Process.openFcnContextMen
 % handles.Process.copyVarsContextMenu=uicontextmenu(fig);
 handles.Process.openFcnContextMenuItem2=uimenu(handles.Process.openFcnContextMenu,'Text','Copy Vars','MenuSelectedFcn',{@copyFcnVars});
 handles.Process.openFcnContextMenuItem3=uimenu(handles.Process.openFcnContextMenu,'Text','Paste Vars','MenuSelectedFcn',{@pasteFcnVars});
-handles.Process.openFcnContextMenuItem3=uimenu(handles.Process.openFcnContextMenu,'Text','Paste Vars','MenuSelectedFcn',{@expandFcnVars});
+handles.Process.openFcnContextMenuItem4=uimenu(handles.Process.openFcnContextMenu,'Text','Expand Vars','MenuSelectedFcn',{@expandFcnVars});
 
 processTab.UserData=struct('MapFigure',handles.Process.mapFigure,'AddFcnButton',handles.Process.addFcnButton,'RemoveFcnButton',handles.Process.removeFcnButton,...
     'MoveFcnButton',handles.Process.moveFcnButton,'PropagateChangesButton',handles.Process.propagateChangesButton,'PropagateChangesCheckbox',handles.Process.propagateChangesCheckbox,'RunSelectedFcnsButton',handles.Process.runSelectedFcnsButton,...

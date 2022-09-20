@@ -7,10 +7,15 @@ handles=getappdata(fig,'handles');
 propName=handles.propsList.Value;
 
 props=getappdata(fig,'props');
-% propNames=fieldnames(props);
 
 % Manage the various property types to convert them to characters
-var=props.(propName);
+propClass=class(props.(propName));
+
+if isequal(propClass,'matlab.graphics.primitive.Text')
+    var=props.(propName).String;
+else
+    var=props.(propName);
+end
 varText=convertVarToChar(var);
 
 ta=handles.propTextArea;

@@ -6,7 +6,7 @@ Q=figure('Visible','off');
 % types={'line','scatter3','scatter','plot (timeseries)','image (Image Processing Toolbox needed)'};
 switch type
     case 'axes'
-        h=axes;
+        h=axes(Q);
     case 'line'
         h=line;   
     case 'xyzline'

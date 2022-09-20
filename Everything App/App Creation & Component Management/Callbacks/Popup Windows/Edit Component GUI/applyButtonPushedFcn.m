@@ -18,14 +18,18 @@ Plotting=getappdata(pgui,'Plotting');
 %% Set each of the changed properties for the current graphics object.
 h=Plotting.Plots.(plotName).(compName).(letter).Handle;
 
+if ~isequal(compName,'Axes')
+    h=h.Children;
+end
+
 propNamesChangedTemp=propNamesChanged;
-for j=1:length(h.Children)
+for j=1:length(h)
 
     for i=1:length(propNamesChanged)
         propName=propNamesChanged{i}; % Current property name.
 
         try
-            h.Children(j).(propName)=props.(propName);
+            h(j).(propName)=props.(propName);
             propNamesChangedTemp=propNamesChangedTemp(~ismember(propNamesChangedTemp,propName));
         catch
             disp([propName ' Invalid as Specified:']);

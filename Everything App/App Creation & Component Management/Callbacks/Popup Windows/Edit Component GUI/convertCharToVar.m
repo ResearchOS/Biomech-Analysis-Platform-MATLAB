@@ -4,7 +4,7 @@ function [props,isChanged]=convertCharToVar(fig,pgui,propName,varText,props)
 
 % Plotting=getappdata(pgui,'Plotting');
 
-compName=getappdata(fig,'compName');
+% compName=getappdata(fig,'compName');
 % idx=ismember(Plotting.Components.Names,compName);
 
 % defProps=Plotting.Components.DefaultProperties{idx};
@@ -42,8 +42,9 @@ switch defClass
         var=var(~emptyIdx);
         props.(propName)=var;
     case 'matlab.graphics.primitive.Text'
-        props.(propName).String=varText;
-
+        if isvalid(props.(propName))
+            props.(propName).String=varText;
+        end
     otherwise % Character vector already
         var=varText;
         props.(propName)=var;

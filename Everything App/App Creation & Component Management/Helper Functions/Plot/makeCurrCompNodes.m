@@ -7,7 +7,7 @@ delete(handles.Plot.currCompUITree.Children);
 
 compNames=fieldnames(currPlot);
 
-compNames=compNames(~ismember(compNames,'SpecifyTrials'));
+compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial'}));
 
 if isempty(compNames)
     return;
@@ -20,6 +20,7 @@ for i=1:length(compNames)
     if isequal(compNames{i},'Axes')
         parentObj=handles.Plot.currCompUITree;
         compNode=uitreenode(parentObj,'Text',compNames{i});
+        compNode.ContextMenu=handles.Plot.openPlotFcnContextMenu;
     end
 
     for j=1:length(letters)        
@@ -36,7 +37,6 @@ for i=1:length(compNames)
                     break;
                 end
             end
-%             parentObj=findall(parentObj.Children,'Text',axLetter);
             if isempty(parentObj)
                 return; % All components have been removed.
             end
@@ -47,6 +47,7 @@ for i=1:length(compNames)
         end
 
         letNode=uitreenode(compNode,'Text',letters{j});
+        letNode.ContextMenu=handles.Plot.refreshComponentContextMenu;
 
     end
 

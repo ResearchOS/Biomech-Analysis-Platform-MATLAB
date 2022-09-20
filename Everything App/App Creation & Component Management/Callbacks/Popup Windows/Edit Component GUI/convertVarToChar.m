@@ -15,7 +15,11 @@ switch class(var)
         end
 
     case 'matlab.graphics.primitive.Text'
+        if isvalid(var)
             varText=var.String;
+        else
+            varText='';
+        end
     case 'matlab.lang.OnOffSwitchState'
         if isequal(var,'off')
             varText='off';

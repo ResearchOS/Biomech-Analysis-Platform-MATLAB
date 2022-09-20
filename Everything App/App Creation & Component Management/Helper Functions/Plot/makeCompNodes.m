@@ -18,7 +18,7 @@ for i=1:length(sortIdx)
     compNode=uitreenode(handles.Plot.allComponentsUITree,'Text',compName);
 
     if ~isequal(compName,'Axes')        
-        compNode.ContextMenu=handles.Process.openPlotFcnContextMenu;
+        compNode.ContextMenu=handles.Plot.openPlotFcnContextMenu;
     end
 
     if i==1

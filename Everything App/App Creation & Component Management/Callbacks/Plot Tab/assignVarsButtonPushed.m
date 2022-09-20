@@ -24,6 +24,10 @@ end
 
 compName=currComp.Parent.Text;
 
+if isequal(compName,'Axes')
+    return;
+end
+
 structComp=Plotting.Plots.(plotName).(compName).(letter).Variables;
 
 if ~isfield(structComp,'Names') % Initialize

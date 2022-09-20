@@ -62,6 +62,7 @@ CreateCompButtonRelPos=[0.15 0.95];
 DeleteCompButtonRelPos=[0.08 0.95];
 DeletePlotButtonRelPos=[0.08 0.455];
 EditCompButtonRelPos=[0.41 0.95];
+PlotPanelRelPos=[0.5 0.07];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -94,6 +95,7 @@ CreateCompButtonSize=[0.05 compHeight];
 DeleteCompButtonSize=[0.05 compHeight];
 DeletePlotButtonSize=[0.05 compHeight];
 EditCompButtonSize=[0.06 compHeight];
+PlotPanelSize=[0.5 0.87];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 AllComponentsSearchFieldPos=round([AllComponentsSearchFieldRelPos.*figSize AllComponentsSearchFieldSize(1)*figSize(1) AllComponentsSearchFieldSize(2)]);
@@ -124,6 +126,7 @@ CreateCompButtonPos=round([CreateCompButtonRelPos.*figSize CreateCompButtonSize(
 DeleteCompButtonPos=round([DeleteCompButtonRelPos.*figSize DeleteCompButtonSize(1)*figSize(1) DeleteCompButtonSize(2)]);
 DeletePlotButtonPos=round([DeletePlotButtonRelPos.*figSize DeletePlotButtonSize(1)*figSize(1) DeletePlotButtonSize(2)]);
 EditCompButtonPos=round([EditCompButtonRelPos.*figSize EditCompButtonSize(1)*figSize(1) EditCompButtonSize(2)]);
+PlotPanelPos=round([PlotPanelRelPos.*figSize PlotPanelSize.*figSize]);
 
 data.AllComponentsSearchField.Position=AllComponentsSearchFieldPos;
 data.AllComponentsUITree.Position=AllComponentsUITreePos;
@@ -153,6 +156,7 @@ data.CreateCompButton.Position=CreateCompButtonPos;
 data.DeleteCompButton.Position=DeleteCompButtonPos;
 data.DeletePlotButton.Position=DeletePlotButtonPos;
 data.EditCompButton.Position=EditCompButtonPos;
+data.PlotPanel.Position=PlotPanelPos;
 
 data.AllComponentsSearchField.FontSize=newFontSize;
 data.AllComponentsUITree.FontSize=newFontSize;
@@ -182,3 +186,4 @@ data.CreateCompButton.FontSize=newFontSize;
 data.DeleteCompButton.FontSize=newFontSize;
 data.DeletePlotButton.FontSize=newFontSize;
 data.EditCompButton.FontSize=newFontSize;
+data.PlotPanel.FontSize=newFontSize;

@@ -204,14 +204,17 @@ if ismember('Plotting',projectSettingsVarNames)
 end
 if isempty(Plotting)
     Plotting.Components.Names={'Axes'};
-    defVals=getProps('axes');
-    Plotting.Components.DefaultProperties{1}=defVals;
+%     defVals=getProps('axes');
+%     Plotting.Components.DefaultProperties{1}=defVals;
 end
 
 if ~ismember('Axes',Plotting.Components.Names)
-    Plotting.CompNames=[Plotting.Components.Names; {'Axes'}];
+    Plotting.Components.Names=[Plotting.Components.Names; {'Axes'}];
     [~,idx]=sort(upper(Plotting.Components.Names));
     Plotting.Components.Names=Plotting.Components.Names(idx);
+%     defVals=getProps('axes');
+%     Plotting.Components.DefaultProperties=[Plotting.Components.DefaultProperties; {defVals}];
+%     Plotting.Components.DefaultProperties=Plotting.Components.DefaultProperties(idx);
 end
 setappdata(fig,'Plotting',Plotting);
 
@@ -221,6 +224,7 @@ if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
     makePlotNodes(fig,1:length(Plotting.Plots),fieldnames(Plotting.Plots));
     plotNames=fieldnames(Plotting.Plots);
     makeCurrCompNodes(fig,Plotting.Plots.(plotNames{1}));
+    refreshPlotComp(src,[],plotNames{1});
 end
 
 % handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;

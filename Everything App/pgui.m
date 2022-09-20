@@ -459,8 +459,14 @@ handles.Plot.deletePlotButton=uibutton(plotTab,'push','Text','P-','Tag','DeleteP
 % 28. Edit component button
 handles.Plot.editCompButton=uibutton(plotTab,'push','Text','Edit Props','Tag','EditCompButton','Tooltip','Edit component','ButtonPushedFcn',@(editCompButton,event) editCompButtonPushed(editCompButton));
 
-handles.Process.openPlotFcnContextMenu=uicontextmenu(fig);
-handles.Process.openPlotFcnContextMenuItem1=uimenu(handles.Process.openPlotFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFilePlot});
+% 29. Plot panel
+handles.Plot.plotPanel=uipanel(plotTab);
+
+handles.Plot.openPlotFcnContextMenu=uicontextmenu(fig);
+handles.Plot.openPlotFcnContextMenuItem1=uimenu(handles.Plot.openPlotFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFilePlot});
+
+handles.Plot.refreshComponentContextMenu=uicontextmenu(fig);
+handles.Plot.refreshComponentContextMenuItem1=uimenu(handles.Plot.refreshComponentContextMenu,'Text','Refresh Component','MenuSelectedFcn',{@refreshPlotComp});
 
 plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
     'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,...
@@ -468,7 +474,7 @@ plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSea
     'CurrComponentsUITree',handles.Plot.currCompUITree,'ComponentDescLabel',handles.Plot.componentDescLabel,'ComponentDescTextArea',handles.Plot.componentDescTextArea,'FcnVerDescLabel',handles.Plot.fcnVerDescLabel,...
     'FcnVerDescTextArea',handles.Plot.fcnVerDescTextArea,'SpecifyTrialsButton',handles.Plot.specifyTrialsButton,'RunPlotButton',handles.Plot.runPlotButton,'PlotLevelDropDown',handles.Plot.plotLevelDropDown,...
     'AllComponentsLabel',handles.Plot.allComponentsLabel,'AllFunctionsLabel',handles.Plot.allPlotsLabel,'CurrComponentsLabel',handles.Plot.currComponentsLabel,'CreateCompButton',handles.Plot.createCompButton,...
-    'DeleteCompButton',handles.Plot.deleteCompButton,'DeletePlotButton',handles.Plot.deletePlotButton,'EditCompButton',handles.Plot.editCompButton);
+    'DeleteCompButton',handles.Plot.deleteCompButton,'DeletePlotButton',handles.Plot.deletePlotButton,'EditCompButton',handles.Plot.editCompButton,'PlotPanel',handles.Plot.plotPanel);
 
 @plotResize;
 

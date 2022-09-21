@@ -4,6 +4,8 @@ function []=plotFcnUITreeSelectionChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+delete(handles.Plot.plotPanel.Children);
+
 if isempty(handles.Plot.plotFcnUITree.SelectedNodes)
     delete(handles.Plot.currCompUITree.Children);
     return;
@@ -33,3 +35,5 @@ end
 
 currPlot=Plotting.Plots.(plotName);
 makeCurrCompNodes(fig,currPlot);
+
+refreshPlotComp(src,[],plotName);

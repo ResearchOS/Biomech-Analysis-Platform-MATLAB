@@ -92,10 +92,12 @@ compPath=[plotFolder slash compName '_P.m'];
 text{1}=['function []=' compName '_P(allTrialNames)'];
 text{2}='';
 
-fid=fopen(compPath,'w');
-fprintf(fid,'%s\n',text{1:end-1});
-fprintf(fid,'%s',text{end});
-fclose(fid);
+if exist(compPath,'file')~=2
+    fid=fopen(compPath,'w');
+    fprintf(fid,'%s\n',text{1:end-1});
+    fprintf(fid,'%s',text{end});
+    fclose(fid);
+end
 edit(compPath);
 
 setappdata(fig,'Plotting',Plotting);

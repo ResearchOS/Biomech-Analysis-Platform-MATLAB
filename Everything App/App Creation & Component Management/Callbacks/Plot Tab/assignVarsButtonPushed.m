@@ -33,20 +33,28 @@ structComp=Plotting.Plots.(plotName).(compName).(letter).Variables;
 if ~isfield(structComp,'Names') % Initialize
     structComp.Names={};
     structComp.NamesInCode={};
-    structComp.IsHardCoded=[];
+    structComp.IsHardCoded=0;
+    structComp.HardCodedValue='';
+end
+
+% Backwards compatibility
+if any(structComp.IsHardCoded==0)
+    structComp.IsHardCoded=0;
 end
 
 %% Create popup window to assign variables to component.
 VariableNamesList=getappdata(fig,'VariableNamesList');
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 Q=uifigure('Visible','on','Name','Assign Variables','DeleteFcn',@(Q,event) assignVarsDeleteFcn(Q));
-Qhandles.varsListbox=uitree(Q,'Position',[10 10 200 450]);
-Qhandles.selVarsListbox=uitree(Q,'Position',[270 10 200 300],'SelectionChangedFcn',@(Q,event) selVarsListboxValueChanged(Q));
-Qhandles.varNameInCodeEditField=uieditfield(Q,'Position',[270 310 200 50],'ValueChangedFcn',@(Q,event) varNameInCodeEditFieldValueChanged(Q));
-Qhandles.isHardCoded=uicheckbox(Q,'Position',[10 460 300 50],'Value',0,'Text','Is Hard Coded?','ValueChangedFcn',@(Q,event) isHardCodedCheckboxValueChanged(Q));
-Qhandles.hardCodedTextArea=uitextarea(Q,'Position',[120 10 100 300],'Visible',Qhandles.isHardCoded.Value,'ValueChangedFcn',@(Q,event) hardCodedValueChanged(Q));
-Qhandles.assignVarButton=uibutton(Q,'Position',[210 150 50 50],'Text','->','ButtonPushedFcn',@(Q,event) assignVarButtonPushed(Q));
-Qhandles.unassignVarButton=uibutton(Q,'Position',[210 100 50 50],'Text','<-','ButtonPushedFcn',@(Q,event) unassignVarButtonPushed(Q));
+Qhandles.varsListbox=uitree(Q,'Position',[10 10 200 450],'Visible',~structComp.IsHardCoded);
+Qhandles.selVarsListbox=uitree(Q,'Position',[270 10 200 300],'SelectionChangedFcn',@(Q,event) selVarsListboxValueChanged(Q),'Visible',~structComp.IsHardCoded);
+Qhandles.varNameInCodeEditField=uieditfield(Q,'Position',[270 310 200 50],'ValueChangedFcn',@(Q,event) varNameInCodeEditFieldValueChanged(Q),'Visible',~structComp.IsHardCoded);
+Qhandles.isHardCoded=uicheckbox(Q,'Position',[10 460 150 50],'Value',structComp.IsHardCoded,'Text','Is Hard Coded?','ValueChangedFcn',@(Q,event) isHardCodedCheckboxValueChanged(Q));
+Qhandles.hardCodedTextArea=uitextarea(Q,'Position',[10 250 450 200],'Visible',Qhandles.isHardCoded.Value,'ValueChangedFcn',@(Q,event) hardCodedValueChanged(Q),'Visible',structComp.IsHardCoded);
+Qhandles.assignVarButton=uibutton(Q,'Position',[210 150 50 50],'Text','->','ButtonPushedFcn',@(Q,event) assignVarButtonPushed(Q),'Visible',~structComp.IsHardCoded);
+Qhandles.unassignVarButton=uibutton(Q,'Position',[210 100 50 50],'Text','<-','ButtonPushedFcn',@(Q,event) unassignVarButtonPushed(Q),'Visible',~structComp.IsHardCoded);
+Qhandles.subvarsTextArea=uitextarea(Q,'Position',[270 370 200 50],'Visible',~Qhandles.isHardCoded.Value,'ValueChangedFcn',@(Q,event) subvarsTextAreaValueChanged(Q),'Visible',~structComp.IsHardCoded);
+
 setappdata(Q,'handles',Qhandles);
 setappdata(Q,'plotName',plotName);
 setappdata(Q,'compName',compName);

@@ -13,6 +13,9 @@ function [varargout]=getArg(inputNamesInCode,subName,trialName,repNum)
 
 slash=filesep;
 
+if exist('inputNamesInCode','var')~=1
+    inputNamesInCode='';
+end
 if exist('trialName','var')~=1
     trialName='';
 end
@@ -23,7 +26,7 @@ if exist('subName','var')~=1
     subName='';
 end
 
-if ~isempty(inputname(1)) % Ensure that the getArg is specified as a cell array in-line, and not provided as a variable containing a cell array
+if nargin>0 && ~isempty(inputname(1)) % Ensure that the getArg is specified as a cell array in-line, and not provided as a variable containing a cell array
     disp('Input names must be a hard-coded cell array or character vector, not a variable!');
     return;
 end
@@ -49,21 +52,23 @@ if isempty(fig)
     end
 end
 
+varargout=cell(length(inputNamesInCode),1); % Initialize the output variables.
+
 projectName=getappdata(fig,'projectName');
 handles=getappdata(fig,'handles');
 tabName=handles.Tabs.tabGroup1.SelectedTab.Title;
 
+if ~isempty(repNum) && ~isempty(trialName) % Trial level
+    matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
+elseif ~isempty(subName) % Subject level
+    matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash subName '_' projectName '.mat'];
+else % Project level
+    matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat'];
+end
+
 if isequal(tabName,'Process')
 
-    nodeRow=getappdata(fig,'nodeRow');    
-
-    if ~isempty(repNum) && ~isempty(trialName) % Trial level
-        matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
-    elseif ~isempty(subName) % Subject level
-        matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash subName '_' projectName '.mat'];
-    else % Project level
-        matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat'];
-    end
+    nodeRow=getappdata(fig,'nodeRow');        
 
     if isRunCode==0
         Digraph=getappdata(fig,'Digraph');
@@ -106,9 +111,7 @@ if isequal(tabName,'Process')
 
     [~,~,varRowsIdxNums]=intersect(inputVarNamesInGUI,VariableNamesList.GUINames,'stable'); % The rows in the VariableNamesList matrix of the variables currently being accessed
     assert(isequal(inputVarNamesInGUI,VariableNamesList.GUINames(varRowsIdxNums)));
-    saveNames=VariableNamesList.SaveNames(varRowsIdxNums); % The save names of all vars in inputNamesInCode (in the same order)
-
-    varargout=cell(length(inputNamesInCode),1); % Initialize the output variables.
+    saveNames=VariableNamesList.SaveNames(varRowsIdxNums); % The save names of all vars in inputNamesInCode (in the same order)    
 
     %% Hard-coded variables
     hardCodedStatus=VariableNamesList.IsHardCoded(varRowsIdxNums);
@@ -164,5 +167,118 @@ if isequal(tabName,'Process')
     end
 
 elseif isequal(tabName,'Plot')
+    if isRunCode==0
+        Plotting=getappdata(fig,'Plotting');
+        VariableNamesList=getappdata(fig,'VariableNamesList');
+        if isempty(Plotting) || isempty(VariableNamesList)
+            load(getappdata(fig,'projectSettingsMATPath'),'Plotting','VariableNamesList');
+        end
+    else
+        try
+            VariableNamesList=evalin('base','VariableNamesList;');
+            Plotting=evalin('base','Plotting;');
+        catch
+            disp('Missing settings variables from the base workspace!');
+            return;
+        end
+    end
+    plotName=getappdata(fig,'plotName');
+    compName=getappdata(fig,'compName');
+    letter=getappdata(fig,'letter');
+
+    if ~isfield(Plotting.Plots.(plotName).(compName).(letter).Variables,'NamesInCode')
+        error('Must assign variables to component first!');
+%         return;
+    end
+
+    if nargin==0
+        vars=Plotting.Plots.(plotName).(compName).(letter).Variables;
+        varargout{1}=vars.HardCodedValue;
+        return;
+    end
+
+    [~,~,currVarsIdx]=intersect(inputNamesInCode,Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode,'stable');
+    try
+        assert(isequal(Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode(currVarsIdx)',inputNamesInCode));
+    catch
+        a=inputNamesInCode(~ismember(inputNamesInCode,Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode(currVarsIdx)'));
+        disp(a);
+        error('Check your input variable names in code!');
+    end
+
+    namesSuffix=Plotting.Plots.(plotName).(compName).(letter).Variables.Names(currVarsIdx);
+    names=cell(size(namesSuffix));
+    varSplits=cell(size(names));
+    for i=1:length(namesSuffix)
+        names{i}=namesSuffix{i}(1:end-6);
+        varSplits{i}=namesSuffix{i}(end-3:end-1);
+    end
+
+    [~,~,varRowsIdxNums]=intersect(names,VariableNamesList.GUINames,'stable'); % The rows in the VariableNamesList matrix of the variables currently being accessed
+    assert(isequal(names,VariableNamesList.GUINames(varRowsIdxNums)));
+    saveNames=VariableNamesList.SaveNames(varRowsIdxNums); % The save names of all vars in inputNamesInCode (in the same order)    
+
+    %% Hard-coded variables
+    hardCodedStatus=VariableNamesList.IsHardCoded(varRowsIdxNums);
+    hardCodedIdxNums=find(cellfun(@isequal,hardCodedStatus,repmat({1},length(hardCodedStatus),1))==1); % The idx of hard-coded vars (in the order of the inputNamesInCode)
+    hardCodedSaveNames=saveNames(hardCodedIdxNums);
+
+    if ~isempty(hardCodedIdxNums)
+        folderName=[getappdata(fig,'codePath') 'Hard-Coded Variables'];
+        oldPath=cd(folderName);
+
+        for i=1:length(hardCodedSaveNames)
+
+            % Get .m full file path and ensure that it exists
+            varName=hardCodedSaveNames{i};
+            splitCodeVar=varSplits{hardCodedIdxNums(i)};
+            varargout{hardCodedIdxNums(i)}=feval([varName '_' splitCodeVar]);
+
+        end
+        cd(oldPath);
+    end
+
+    %% Dynamic variables
+    dynamicIdxNums=find(cellfun(@isequal,hardCodedStatus,repmat({0},length(hardCodedStatus),1))==1);
+    if isempty(dynamicIdxNums)
+        return;
+    end
+    dynamicSaveNames=saveNames(dynamicIdxNums);
+
+    for i=1:length(dynamicSaveNames)
+        splitCodeVar=varSplits{dynamicIdxNums(i)};
+        dynamicSaveNames{i}=[dynamicSaveNames{i} '_' splitCodeVar];
+    end
+
+    try
+        S=load(matFilePath,'-mat',dynamicSaveNames{:});
+    catch
+        if exist(matFilePath,'file')~=2
+            disp(['No saved file found at: ' matFilePath]);
+            return;
+        end
+
+        fileVarNames=whos('-file',matFilePath);
+        fileVarNames={fileVarNames.name};
+
+        if ~all(ismember(dynamicSaveNames,fileVarNames))
+            disp('Missing variables in mat file!'); % Specify which variables
+            return;
+        end
+    end
+
+    subVars=Plotting.Plots.(plotName).(compName).(letter).Variables.Subvars;
+
+    for i=1:length(dynamicSaveNames)
+        if ~isempty(subVars{i})
+            varargout{dynamicIdxNums(i)}=eval(['S.(dynamicSaveNames{i})' subVars{i} ';']); % This requires copying variables, which is inherently slow. Faster way?
+            dims=size(varargout{dynamicIdxNums(i)});
+            if any(dims==1) && length(dims(varargout{dynamicIdxNums(i)}))>2
+                varargout{dynamicIdxNums(i)}=squeeze(varargout{dynamicIdxNums(i)}); % Remove unnecessary dimensions, if needed.
+            end
+        else
+            varargout{dynamicIdxNums(i)}=S.(dynamicSaveNames{i});
+        end
+    end
 
 end

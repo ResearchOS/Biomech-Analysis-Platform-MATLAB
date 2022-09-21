@@ -36,3 +36,20 @@ for i=1:length(structComp.Names)
     end
 
 end
+
+if isfield(structComp,'HardCodedValue')
+    if ischar(structComp.HardCodedValue)
+        handles.hardCodedTextArea.Value=structComp.HardCodedValue;
+    elseif isa(structComp.HardCodedValue,'double')
+        if length(structComp.HardCodedValue)==1
+            handles.hardCodedTextArea.Value=num2str(structComp.HardCodedValue);
+        else
+            text='[';
+            for i=1:length(structComp.HardCodedValue)
+                text=[text num2str(structComp.HardCodedValue(i)) ' '];
+            end
+            text=[text(1:end-1) ']'];
+            handles.hardCodedTextArea.Value=text;
+        end
+    end
+end

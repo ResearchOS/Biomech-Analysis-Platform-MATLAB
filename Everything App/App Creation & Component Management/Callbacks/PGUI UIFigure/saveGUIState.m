@@ -10,6 +10,25 @@ Digraph=getappdata(fig,'Digraph');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 Plotting=getappdata(fig,'Plotting');
 
+varsList={'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting'};
+
+if isempty(VariableNamesList)
+    varsList=varsList(~ismember(varsList,'VariableNamesList'));
+end
+
+if isempty(Digraph)
+    varsList=varsList(~ismember(varsList,'Digraph'));
+end
+
+if isempty(NonFcnSettingsStruct)
+    varsList=varsList(~ismember(varsList,'NonFcnSettingsStruct'));
+end
+
+if isempty(Plotting)
+    varsList=varsList(~ismember(varsList,'Plotting'));
+end
+
+
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting','-append');
+save(projectSettingsMATPath,'VariableNamesList',varsList{:},'-append');

@@ -221,20 +221,9 @@ setappdata(fig,'Plotting',Plotting);
 makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names);
 
 if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
-    makePlotNodes(fig,1:length(Plotting.Plots),fieldnames(Plotting.Plots));
-%     plotNames=fieldnames(Plotting.Plots);
-%     plotFcnUITreeSelectionChanged(src,event)
-%     makeCurrCompNodes(fig,Plotting.Plots.(plotNames{1}));
-%     refreshPlotComp(src,[],plotNames{1});
+    plotNames=fieldnames(Plotting.Plots);
+    makePlotNodes(fig,1:length(plotNames),plotNames);
 end
-
-% handles.Plot.rootSavePathEditField.Value=NonFcnSettingsStruct.Plot.RootSavePath;
-
-% if exist(handles.Plot.rootSavePathEditField.Value,'dir')==7
-%     setappdata(fig,'rootSavePlotPath',handles.Plot.rootSavePathEditField.Value);
-% else
-%     setappdata(fig,'rootSavePlotPath','');
-% end
 
 %% Finalize setup
 % 5. Set the most recent project to the current project name.

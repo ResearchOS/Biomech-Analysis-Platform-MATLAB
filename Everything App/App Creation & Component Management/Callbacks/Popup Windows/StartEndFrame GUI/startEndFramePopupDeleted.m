@@ -54,6 +54,12 @@ if ~isscalar(a)
     return;
 end
 
+if isnan(a)
+    disp('Idx cannot be NaN! Pick a different trial or a different variable');
+    disp([subName '_' trialName]);
+    return;
+end
+
 %% Assign it to the plot.
 switch idxType
     case 'startFrame'

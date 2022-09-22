@@ -33,6 +33,21 @@ if isempty(compNames) % No components in this plot yet.
     return;
 end
 
+if ~isfield(Plotting.Plots.(plotName),'Movie') || ~isfield(Plotting.Plots.(plotName).Movie,'IsMovie')
+    Plotting.Plots.(plotName).Movie.IsMovie=0;
+end
+handles.Plot.isMovieCheckbox.Value=Plotting.Plots.(plotName).Movie.IsMovie;
+isMovie=handles.Plot.isMovieCheckbox.Value;
+setappdata(fig,'Plotting',Plotting);
+isMovieCheckboxButtonPushed(fig);
+if isMovie==1    
+    handles.Plot.incEditField.Value=Plotting.Plots.(plotName).Movie.Increment;
+    handles.Plot.startFrameEditField.Value=Plotting.Plots.(plotName).Movie.startFrame;
+    handles.Plot.endFrameEditField.Value=Plotting.Plots.(plotName).Movie.endFrame;
+    handles.Plot.currFrameEditField.Value=Plotting.Plots.(plotName).Movie.currFrame;
+
+end
+
 currPlot=Plotting.Plots.(plotName);
 makeCurrCompNodes(fig,currPlot);
 

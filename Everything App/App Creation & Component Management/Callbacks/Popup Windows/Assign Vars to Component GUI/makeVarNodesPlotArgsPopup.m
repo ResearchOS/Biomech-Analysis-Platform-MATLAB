@@ -24,6 +24,7 @@ for i=1:length(sortIdx)
     end
 end
 
+%% Selected variables listbox
 delete(handles.selVarsListbox.Children);
 
 for i=1:length(structComp.Names)
@@ -37,6 +38,7 @@ for i=1:length(structComp.Names)
 
 end
 
+%% Hard-coded variables text area
 if isfield(structComp,'HardCodedValue')
     if ischar(structComp.HardCodedValue)
         handles.hardCodedTextArea.Value=structComp.HardCodedValue;

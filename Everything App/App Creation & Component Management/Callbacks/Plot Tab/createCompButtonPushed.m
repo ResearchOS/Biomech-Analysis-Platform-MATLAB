@@ -55,7 +55,7 @@ while ~compNameOK
 end
 
 %% Ask the user what kind of graphics object this is
-types={'line','xyzline','scatter3','scatter','plot','image (Image Processing Toolbox needed)'};
+types={'line','xyzline','scatter3','scatter','plot','plot3','image (Image Processing Toolbox needed)'};
 type=listdlg('SelectionMode','single','PromptString','Select graphics object for this component','ListString',types);
 
 if isempty(type)
@@ -89,8 +89,9 @@ end
 compPath=[plotFolder slash compName '_P.m'];
 
 % NEED TO CREATE THE TEMPLATE TO COPY FOR EACH COMPONENT (COULD ALSO JUST BE CELL ARRAY THAT I WRITE TO THE FILE)
-text{1}=['function []=' compName '_P(allTrialNames)'];
+text{1}=['function []=' compName '_P(subName,trialName,repNum)'];
 text{2}='';
+text{3}='subNames=allTrialNames.Subjects;';
 
 if exist(compPath,'file')~=2
     fid=fopen(compPath,'w');

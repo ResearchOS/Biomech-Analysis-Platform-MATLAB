@@ -51,7 +51,7 @@ Plotting.Plots.(plotName).(compName).(newLetters).Variables=struct(); % Initiali
 if isequal(compName,'Axes')
 %     h=axes(handles.Plot.Tab,'OuterPosition',[0.5 0.07 0.5 0.87],'InnerPosition',[0.52 0.12 0.47 0.8],'Visible','on');
 %     hg=hggroup(handles.Plot.plotPanel);
-    h=axes(handles.Plot.plotPanel,'Visible','on');
+    h=axes(handles.Plot.plotPanel,'Visible','on','Tag',['Axes ' newLetters]);
     Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
 %     idx=ismember(Plotting.Components.Names,compName);
     Plotting.Plots.(plotName).(compName).(newLetters).Properties=properties(h);

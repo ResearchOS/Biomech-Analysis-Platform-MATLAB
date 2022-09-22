@@ -83,4 +83,16 @@ end
 
 makePlotNodes(fig,1:length(plotNames),plotNames);
 
+Plotting.Plots.(plotName).Movie.IsMovie=0;
+Plotting.Plots.(plotName).Movie.Increment=1;
+Plotting.Plots.(plotName).Movie.startFrame=1;
+Plotting.Plots.(plotName).Movie.endFrame=2;
+Plotting.Plots.(plotName).Movie.currFrame=1;
+Plotting.Plots.(plotName).Movie.startFrameVar='';
+Plotting.Plots.(plotName).Movie.endFrameVar='';
+
 setappdata(fig,'Plotting',Plotting);
+
+plotNode=findobj(handles.Plot.plotFcnUITree,'Text',plotName);
+handles.Plot.plotFcnUITree.SelectedNodes=plotNode;
+plotFcnUITreeSelectionChanged(fig);

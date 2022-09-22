@@ -59,10 +59,18 @@ setappdata(fig,'splitCode',''); % The code to append to variables for the curren
 setappdata(fig,'runLogPath',''); % The path for the running log of all actions taken for a project.
 
 %% Create the uimenus at the top of the figure
+% File menu
 uiFileMenu=uimenu(fig,'Text','File');
 uimenu(uiFileMenu,'Text','Archive Project','Accelerator','S','MenuSelectedFcn',@archiveButtonPushed);
+% Map menu
 uiMapMenu=uimenu(fig,'Text','Map');
-uimenu(uiMapMenu,'Text','Axis Equal','Accelerator','E','MenuSelectedFcn',@mapFigureAxisEqual)
+uimenu(uiMapMenu,'Text','Axis Equal','Accelerator','A','MenuSelectedFcn',@mapFigureAxisEqual);
+% Plot menu
+uiPlotMenu=uimenu(fig,'Text','Plot');
+uimenu(uiPlotMenu,'Text','Axes Limits','Accelerator','L','MenuSelectedFcn',@axLimsButtonPushed);
+uimenu(uiPlotMenu,'Text','Fig Size','Accelerator','F','MenuSelectedFcn',@figSizeButtonPushed);
+uimenu(uiPlotMenu,'Text','Save Ex Fig','Accelerator','E','MenuSelectedFcn',@saveExFigButtonPushed);
+uimenu(uiPlotMenu,'Text','Set Ex Trial','Accelerator','T','MenuSelectedFcn',@exTrialButtonPushed);
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
@@ -400,16 +408,16 @@ handles.Plot.unassignComponentButton=uibutton(plotTab,'push','Text','<-','Tag','
 handles.Plot.createPlotButton=uibutton(plotTab,'push','Text','P+','Tag','CreateFcnButton','Tooltip','Create a new plot (collection of graphics objects)','ButtonPushedFcn',@(createPlotButton,event) createFcnButtonPushed(createPlotButton));
 
 % 9. Set axis limits button
-handles.Plot.axLimsButton=uibutton(plotTab,'push','Text','Ax Lims','Tag','AxLimsButton','Tooltip','Set axes limits','ButtonPushedFcn',@(axLimsButton,event) axLimsButtonPushed(axLimsButton));
+% handles.Plot.axLimsButton=uibutton(plotTab,'push','Text','Ax Lims','Tag','AxLimsButton','Tooltip','Set axes limits','ButtonPushedFcn',@(axLimsButton,event) axLimsButtonPushed(axLimsButton));
 
 % 10. Figure size button
-handles.Plot.figSizeButton=uibutton(plotTab,'push','Text','Fig Size','Tag','FigSizeButton','Tooltip','Set figure size','ButtonPushedFcn',@(figSizeButton,event) figSizeButtonPushed(figSizeButton));
+% handles.Plot.figSizeButton=uibutton(plotTab,'push','Text','Fig Size','Tag','FigSizeButton','Tooltip','Set figure size','ButtonPushedFcn',@(figSizeButton,event) figSizeButtonPushed(figSizeButton));
 
 % 11. Object properties button
-handles.Plot.objectPropsButton=uibutton(plotTab,'push','Text','Obj Props','Tag','ObjectPropsButton','Tooltip','Set object properties','ButtonPushedFcn',@(objectPropsButton,event) objectPropsButtonPushed(objectPropsButton));
+% handles.Plot.saveExFigButton=uibutton(plotTab,'push','Text','Save Ex Fig','Tag','SaveExFigButton','Tooltip','Save current state of example figure','ButtonPushedFcn',@(objectPropsButton,event) saveExFigButtonPushed(objectPropsButton));
 
 % 12. Example trial button
-handles.Plot.exTrialButton=uibutton(plotTab,'push','Text','Ex Trial','Tag','ExTrialButton','Tooltip','Set example trial being plotted in app','ButtonPushedFcn',@(exTrialButton,event) exTrialButtonPushed(exTrialButton));
+% handles.Plot.exTrialButton=uibutton(plotTab,'push','Text','Ex Trial','Tag','ExTrialButton','Tooltip','Set example trial being plotted in app','ButtonPushedFcn',@(exTrialButton,event) exTrialButtonPushed(exTrialButton));
 
 % 13. Example plot figure
 % handles.Plot.exTrialFigure=uiaxes(plotTab,'Tag','ExTrialFigure','HandleVisibility','on','Visible','on');
@@ -462,6 +470,33 @@ handles.Plot.editCompButton=uibutton(plotTab,'push','Text','Edit Props','Tag','E
 % 29. Plot panel
 handles.Plot.plotPanel=uipanel(plotTab);
 
+% 30. Movie checkbox
+handles.Plot.isMovieCheckbox=uicheckbox(plotTab,'Text','Movie','Value',0,'Tag','IsMovieCheckbox','Tooltip','Plots a movie one frame at a time','ValueChangedFcn',@(isMovieCheckbox,event) isMovieCheckboxButtonPushed(isMovieCheckbox));
+
+% 31. Movie increment edit field
+handles.Plot.incEditField=uieditfield(plotTab,'numeric','Value',1,'Tag','IncEditField','ValueChangedFcn',@(incEditField,event) incEditFieldValueChanged(incEditField));
+
+% 32. Increment frame number up by inc
+handles.Plot.incFrameUpButton=uibutton(plotTab,'push','Text','->','Tag','IncFrameUpButton','Tooltip','Increment frame up','ButtonPushedFcn',@(incFrameUpButton,event) incFrameUpButtonPushed(incFrameUpButton));
+
+% 33. Increment frame number down by inc
+handles.Plot.incFrameDownButton=uibutton(plotTab,'push','Text','<-','Tag','IncFrameDownButton','Tooltip','Increment frame down','ButtonPushedFcn',@(incFrameDownButton,event) incFrameDownButtonPushed(incFrameDownButton));
+
+% 34. Button to set the start frame as a variable
+handles.Plot.startFrameButton=uibutton(plotTab,'push','Text','Start Frame','Tag','StartFrameButton','Tooltip','Set start frame based on a variable','ButtonPushedFcn',@(startFrameButton,event) startFrameButtonPushed(startFrameButton));
+
+% 35. Button to set the end frame as a variable
+handles.Plot.endFrameButton=uibutton(plotTab,'push','Text','End Frame','Tag','EndFrameButton','Tooltip','Set end frame based on a variable','ButtonPushedFcn',@(endFrameButton,event) endFrameButtonPushed(endFrameButton));
+
+% 35. Edit field to set the start frame hard-coded
+handles.Plot.startFrameEditField=uieditfield(plotTab,'numeric','Value',1,'Tag','StartFrameEditField','ValueChangedFcn',@(startFrameEditField,event) startFrameEditFieldValueChanged(startFrameEditField));
+
+% 36. Edit field to set the end frame hard-coded
+handles.Plot.endFrameEditField=uieditfield(plotTab,'numeric','Value',2,'Tag','EndFrameEditField','ValueChangedFcn',@(endFrameEditField,event) endFrameEditFieldValueChanged(endFrameEditField));
+
+% 37. Edit field to set the current frame number
+handles.Plot.currFrameEditField=uieditfield(plotTab,'numeric','Value',1,'Tag','CurrFrameEditField','ValueChangedFcn',@(currFrameEditField,event) currFrameEditFieldValueChanged(currFrameEditField));
+
 handles.Plot.openPlotFcnContextMenu=uicontextmenu(fig);
 handles.Plot.openPlotFcnContextMenuItem1=uimenu(handles.Plot.openPlotFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFilePlot});
 
@@ -469,12 +504,13 @@ handles.Plot.refreshComponentContextMenu=uicontextmenu(fig);
 handles.Plot.refreshComponentContextMenuItem1=uimenu(handles.Plot.refreshComponentContextMenu,'Text','Refresh Component','MenuSelectedFcn',{@refreshPlotComp});
 
 plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
-    'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,...
-    'CreateFcnButton',handles.Plot.createPlotButton,'AxLimsButton',handles.Plot.axLimsButton,'FigSizeButton',handles.Plot.figSizeButton,'ObjectPropsButton',handles.Plot.objectPropsButton,'ExTrialButton',handles.Plot.exTrialButton,...
+    'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,'CreateFcnButton',handles.Plot.createPlotButton,...
     'CurrComponentsUITree',handles.Plot.currCompUITree,'ComponentDescLabel',handles.Plot.componentDescLabel,'ComponentDescTextArea',handles.Plot.componentDescTextArea,'FcnVerDescLabel',handles.Plot.fcnVerDescLabel,...
     'FcnVerDescTextArea',handles.Plot.fcnVerDescTextArea,'SpecifyTrialsButton',handles.Plot.specifyTrialsButton,'RunPlotButton',handles.Plot.runPlotButton,'PlotLevelDropDown',handles.Plot.plotLevelDropDown,...
     'AllComponentsLabel',handles.Plot.allComponentsLabel,'AllFunctionsLabel',handles.Plot.allPlotsLabel,'CurrComponentsLabel',handles.Plot.currComponentsLabel,'CreateCompButton',handles.Plot.createCompButton,...
-    'DeleteCompButton',handles.Plot.deleteCompButton,'DeletePlotButton',handles.Plot.deletePlotButton,'EditCompButton',handles.Plot.editCompButton,'PlotPanel',handles.Plot.plotPanel);
+    'DeleteCompButton',handles.Plot.deleteCompButton,'DeletePlotButton',handles.Plot.deletePlotButton,'EditCompButton',handles.Plot.editCompButton,'PlotPanel',handles.Plot.plotPanel,...
+    'IsMovieCheckbox',handles.Plot.isMovieCheckbox,'IncEditField',handles.Plot.incEditField,'IncFrameUpButton',handles.Plot.incFrameUpButton,'IncFrameDownButton',handles.Plot.incFrameDownButton,...
+    'StartFrameButton',handles.Plot.startFrameButton,'EndFrameButton',handles.Plot.endFrameButton,'StartFrameEditField',handles.Plot.startFrameEditField,'EndFrameEditField',handles.Plot.endFrameEditField,'CurrFrameEditField',handles.Plot.currFrameEditField);
 
 @plotResize;
 

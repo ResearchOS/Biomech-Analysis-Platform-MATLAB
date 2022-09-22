@@ -3,7 +3,6 @@ function [defVals,props]=getProps(type)
 %% PURPOSE: GET THE PROPERTIES FOR THE SPECIFIED TYPE OF GRAPHICS OBJECT
 
 Q=figure('Visible','off');
-% types={'line','scatter3','scatter','plot (timeseries)','image (Image Processing Toolbox needed)'};
 switch type
     case 'axes'
         h=axes(Q);
@@ -17,6 +16,8 @@ switch type
         h=scatter(0,0);
     case 'plot'
         h=plot(1,1);
+    case 'plot3'
+        h=plot3(1,1,1);
     case 'image (Image Processing Toolbox needed)'
         h=[];
 end

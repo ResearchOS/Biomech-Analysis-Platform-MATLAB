@@ -23,3 +23,24 @@ end
 Plotting.Plots.(plotName).Movie.currFrame=value;
 
 setappdata(fig,'Plotting',Plotting);
+
+axLetters=fieldnames(Plotting.Plots.(plotName).Axes);
+for axNum=1:length(axLetters)
+
+    axLetter=axLetters{axNum};
+    axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
+    childGroups={axHandle.Children.Tag};
+
+    for compNum=1:length(childGroups)
+
+        currName=childGroups{compNum};
+        spaceIdx=strfind(currName,' ');
+        compName=currName(1:spaceIdx-1);
+        letter=currName(spaceIdx+1:end);
+
+        refreshPlotComp(fig,[],plotName,compName,letter,axLetter)
+
+    end
+
+end
+

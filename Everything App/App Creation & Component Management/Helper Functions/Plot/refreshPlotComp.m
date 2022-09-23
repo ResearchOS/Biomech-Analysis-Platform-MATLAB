@@ -48,13 +48,10 @@ switch compName
         setappdata(fig,'plotName',plotName);
         setappdata(fig,'compName',compName);
         setappdata(fig,'letter',letter);
-%         Q=fig;
-%         Qax=axes(Q,'Visible','off');
         if exist('axLetter','var')~=1
             axLetter=compNode.Parent.Parent.Text;
         end
         axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
-%         delete(axHandle.Children(~cellfun(@isempty,{axHandle.Children.Tag}))); % Unclear why these random groups show up, but delete them
         currGroupHandle=findobj(axHandle,'Type','hggroup','Tag',[compName ' ' letter]);
         if isempty(currGroupHandle)
             currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]); % First time
@@ -62,13 +59,39 @@ switch compName
         end               
         Q=figure('Visible','off');
         Qax=axes(Q);
-%         delete(currGroupHandle.Children);
-%         axes(axHandle);     
-%         set(fig,'CurrentObject',axHandle);
         delete(currGroupHandle.Children); % Get rid of the old components
-        feval([compName '_P'],subName,trialName,repNum);               
-        set(Qax.Children,'Parent',currGroupHandle); % Add the new components
+
+        isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
+
+        if isMovie==0
+            feval([compName '_P'],subName,trialName,repNum);               
+        else
+            namesInCode=Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode;
+            namesInCodeChar='{';
+            for i=1:length(namesInCode)
+                namesInCodeChar=[namesInCodeChar '''' namesInCode{i} '''' ','];
+            end
+            namesInCodeChar=[namesInCodeChar(1:end-1) '}'];
+            namesInCodeOut=namesInCodeChar(2:end-1);
+            namesInCodeOut=['[' namesInCodeOut ']'];
+            namesInCodeOut=strrep(namesInCodeOut,'''',''); % Remove apostrophes
+
+            eval([namesInCodeOut '=getArg(' namesInCodeChar ',subName,trialName,repNum);']);
+
+            for i=1:length(namesInCode)
+                eval(['allData.var' num2str(i) '=' namesInCode{i} ';']);
+            end
+            idx=Plotting.Plots.(plotName).Movie.currFrame;
+            feval([compName '_Movie'],allData,idx);
+        end
+        set(Qax.Children,'Parent',currGroupHandle); % Add the new components        
         close(Q);
+%         currView=view(axHandle);
+%         if isequal(currView,view(2))
+% 
+%         else
+% 
+%         end
 end
 
 setappdata(fig,'Plotting',Plotting);

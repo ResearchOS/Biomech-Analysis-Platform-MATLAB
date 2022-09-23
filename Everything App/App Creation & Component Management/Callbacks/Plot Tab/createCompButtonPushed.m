@@ -86,19 +86,39 @@ if exist(plotFolder,'dir')~=7
     mkdir(plotFolder);
 end
 
-compPath=[plotFolder slash compName '_P.m'];
+compPathStatic=[plotFolder slash compName '_P.m']; % Static plot file
+compPathMovie=[plotFolder slash compName '_Movie.m']; % Movie plot file (has different arguments
 
 % NEED TO CREATE THE TEMPLATE TO COPY FOR EACH COMPONENT (COULD ALSO JUST BE CELL ARRAY THAT I WRITE TO THE FILE)
-text{1}=['function []=' compName '_P(subName,trialName,repNum)'];
-text{2}='';
-text{3}='subNames=allTrialNames.Subjects;';
+textStatic{1}=['function []=' compName '_P(subName,trialName,repNum)'];
+textStatic{2}='';
+textStatic{3}='subNames=allTrialNames.Subjects;';
 
-if exist(compPath,'file')~=2
-    fid=fopen(compPath,'w');
-    fprintf(fid,'%s\n',text{1:end-1});
-    fprintf(fid,'%s',text{end});
+if exist(compPathStatic,'file')~=2
+    fid=fopen(compPathStatic,'w');
+    fprintf(fid,'%s\n',textStatic{1:end-1});
+    fprintf(fid,'%s',textStatic{end});
     fclose(fid);
 end
-edit(compPath);
+
+textMovie{1}=['function []=' compName '_Movie(allVars,idx)'];
+textMovie{2}='';
+textMovie{3}='var1=allVars.var1;';
+
+if exist(compPathMovie,'file')~=2
+    fid=fopen(compPathMovie,'w');
+    fprintf(fid,'%s\n',textMovie{1:end-1});
+    fprintf(fid,'%s',textMovie{end});
+    fclose(fid);
+end
+
+plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
+isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
+
+if isMovie==0
+    edit(compPathStatic);
+else
+    edit(compPathMovie);
+end
 
 setappdata(fig,'Plotting',Plotting);

@@ -71,6 +71,7 @@ uimenu(uiPlotMenu,'Text','Axes Limits','Accelerator','L','MenuSelectedFcn',@axLi
 uimenu(uiPlotMenu,'Text','Fig Size','Accelerator','F','MenuSelectedFcn',@figSizeButtonPushed);
 uimenu(uiPlotMenu,'Text','Save Ex Fig','Accelerator','E','MenuSelectedFcn',@saveExFigButtonPushed);
 uimenu(uiPlotMenu,'Text','Set Ex Trial','Accelerator','T','MenuSelectedFcn',@exTrialButtonPushed);
+uimenu(uiPlotMenu,'Text','Change View','Accelerator','V','MenuSelectedFcn',@changeViewButtonPushed);
 
 %% Create tab group with the four primary tabs
 tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing

@@ -273,7 +273,7 @@ elseif isequal(tabName,'Plot')
         if ~isempty(subVars{i})
             varargout{dynamicIdxNums(i)}=eval(['S.(dynamicSaveNames{i})' subVars{i} ';']); % This requires copying variables, which is inherently slow. Faster way?
             dims=size(varargout{dynamicIdxNums(i)});
-            if any(dims==1) && length(dims(varargout{dynamicIdxNums(i)}))>2
+            if any(dims==1) && length(dims)>2
                 varargout{dynamicIdxNums(i)}=squeeze(varargout{dynamicIdxNums(i)}); % Remove unnecessary dimensions, if needed.
             end
         else

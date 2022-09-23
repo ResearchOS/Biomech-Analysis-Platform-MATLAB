@@ -40,6 +40,8 @@ switch compName
         delete(h);
         h=axes('Parent',handles.Plot.plotPanel,'Visible','on','Tag',['Axes ' letter]);
         Plotting.Plots.(plotName).(compName).(letter).Handle=h;
+        hold(h,'on');
+        axis(h,'equal');
     otherwise
         plotExTrial=Plotting.Plots.(plotName).ExTrial;
         subName=plotExTrial.Subject;
@@ -57,14 +59,15 @@ switch compName
             currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]); % First time
             Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
         end               
-        Q=figure('Visible','off');
-        Qax=axes(Q);
+%         Q=figure('Visible','off');
+%         Qax=axes(Q);
+%         hold(Qax,'on');
         delete(currGroupHandle.Children); % Get rid of the old components
 
         isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
 
         if isMovie==0
-            feval([compName '_P'],subName,trialName,repNum);               
+            h=feval([compName '_P'],axHandle,subName,trialName,repNum);               
         else
             namesInCode=Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode;
             namesInCodeChar='{';
@@ -82,16 +85,16 @@ switch compName
                 eval(['allData.var' num2str(i) '=' namesInCode{i} ';']);
             end
             idx=Plotting.Plots.(plotName).Movie.currFrame;
-            feval([compName '_Movie'],allData,idx);
+            h=feval([compName '_Movie'],axHandle,allData,idx);
+        end      
+        drawnow;
+        if ~isempty(properties(h))
+            for i=1:length(h)
+                h(i).Parent=currGroupHandle;
+            end
         end
-        set(Qax.Children,'Parent',currGroupHandle); % Add the new components        
-        close(Q);
-%         currView=view(axHandle);
-%         if isequal(currView,view(2))
-% 
-%         else
-% 
-%         end
+
 end
 
 setappdata(fig,'Plotting',Plotting);
+evalin('base','toc;');

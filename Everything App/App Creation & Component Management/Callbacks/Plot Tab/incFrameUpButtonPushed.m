@@ -2,14 +2,17 @@ function []=incFrameUpButtonPushed(src,event)
 
 %% PURPOSE: INCREMENT THE FRAME NUMBER OF THE PLOT UP
 
+evalin('base','tic;');
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-if isempty(handles.Plot.plotFcnUITree.SelectedNodes)
+selNode=handles.Plot.plotFcnUITree.SelectedNodes;
+
+if isempty(selNode)
     return;
 end
 
-plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
+plotName=selNode.Text;
 
 Plotting=getappdata(fig,'Plotting');
 
@@ -20,7 +23,7 @@ end
 
 Plotting.Plots.(plotName).Movie.currFrame=newIdx;
 
-handles.Plot.currFrameEditField.Value=Plotting.Plots.(plotName).Movie.currFrame;
+handles.Plot.currFrameEditField.Value=newIdx;
 
 setappdata(fig,'Plotting',Plotting);
 

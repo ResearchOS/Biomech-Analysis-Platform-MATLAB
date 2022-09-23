@@ -29,8 +29,10 @@ for axNum=1:length(axLetters)
 
     axLetter=axLetters{axNum};
     axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
+    childGroupsNoTag=findobj(axHandle,'Tag',' ','Type','Group');
+    delete(childGroupsNoTag);
     childGroups={axHandle.Children.Tag};
-
+    childGroups=childGroups(~cellfun(@isempty,childGroups));
     for compNum=1:length(childGroups)
 
         currName=childGroups{compNum};

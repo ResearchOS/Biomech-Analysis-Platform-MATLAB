@@ -2,6 +2,7 @@ function []=incFrameDownButtonPushed(src,event)
 
 %% PURPOSE: INCREMENT THE FRAME NUMBER OF THE PLOT DOWN
 
+evalin('base','tic;');
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 

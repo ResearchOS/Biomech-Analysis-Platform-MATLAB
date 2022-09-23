@@ -26,6 +26,19 @@ if ~isfield(Plotting,'Plots') || ~isfield(Plotting.Plots,plotName)
     return;
 end
 
+%% Save the previous plot to file when switching to a new one. Requires keeping a history of the current plot
+slash=filesep;
+Q=figure('Visible','off');
+set(handles.Plot.plotPanel.Children,'Parent',Q);
+plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
+codePath=getappdata(fig,'codePath');
+
+folderName=[codePath  'Plot' slash 'Stashed GUI Plots'];
+if ~isfolder(folderName)
+    mkdir(folderName);
+end
+saveas(Q,[folderName slash plotName '.fig']);
+
 compNames=fieldnames(Plotting.Plots.(plotName));
 
 if isempty(compNames) % No components in this plot yet.
@@ -51,4 +64,8 @@ end
 currPlot=Plotting.Plots.(plotName);
 makeCurrCompNodes(fig,currPlot);
 
-refreshPlotComp(src,[],plotName);
+%% Load plot from file
+Q=openfig([folderName slash plotName '.fig']);
+set(Q.Children,'Parent',handles.Plot.plotPanel);
+
+% refreshPlotComp(src,[],plotName);

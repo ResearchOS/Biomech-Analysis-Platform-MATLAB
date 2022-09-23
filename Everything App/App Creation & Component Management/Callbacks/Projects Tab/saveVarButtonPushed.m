@@ -59,3 +59,4 @@ elseif runLog
 end
 
 close(fig);
+closevar(varName);

@@ -88,11 +88,11 @@ switch compName
             h=feval([compName '_Movie'],axHandle,allData,idx);
         end      
         drawnow;
-        if ~isempty(properties(h))
-            for i=1:length(h)
+        for i=1:length(h)
+            if ~isempty(properties(h(i)))
                 h(i).Parent=currGroupHandle;
             end
-        end
+        end        
 
 end
 

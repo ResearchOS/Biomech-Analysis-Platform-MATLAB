@@ -86,13 +86,13 @@ switch compName
             end
             idx=Plotting.Plots.(plotName).Movie.currFrame;
             h=feval([compName '_Movie'],axHandle,allData,idx);
-        end      
-        drawnow;
+        end              
         for i=1:length(h)
-            if ~isempty(properties(h(i)))
+            if ~isempty(properties(h(i))) % There is a graphics object here
                 h(i).Parent=currGroupHandle;
             end
         end        
+        Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
 
 end
 

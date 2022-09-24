@@ -36,9 +36,11 @@ if isequal(class(compNode.Parent),'matlab.ui.container.CheckBoxTree')
 end
 
 h=Plotting.Plots.(plotName).(compName).(letter).Handle; % Handle to the hggroup for this component
-currProps=Plotting.Plots.(plotName).(compName).(letter).Properties;
-
-assignin('base','h',h);
+if ~isequal(compName,'Axes')
+    currProps=properties(h.Children(1));
+else
+    currProps=properties(h);
+end
 
 % Edit the current component
-% editCompPopupWindow(fig,currProps,compName,plotName,letter);
+editCompPopupWindow(fig,h,currProps,compName,plotName,letter);

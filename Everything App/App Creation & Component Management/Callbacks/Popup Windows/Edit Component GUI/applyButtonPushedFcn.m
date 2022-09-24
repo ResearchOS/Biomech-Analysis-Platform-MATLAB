@@ -7,37 +7,28 @@ Qhandles=getappdata(fig,'handles');
 compName=getappdata(fig,'compName');
 letter=getappdata(fig,'letter');
 plotName=getappdata(fig,'plotName');
+h=getappdata(fig,'objH');
+currProp=getappdata(fig,'currProp');
 
-props=getappdata(fig,'props');
-% props=Qhandles.props;
-
-propNamesChanged=getappdata(fig,'propNamesChanged');
-
-Plotting=getappdata(pgui,'Plotting');
-
-%% Set each of the changed properties for the current graphics object.
-h=Plotting.Plots.(plotName).(compName).(letter).Handle;
+val=evalin('base','currentPropertyValue;');
 
 if ~isequal(compName,'Axes')
     h=h.Children;
 end
 
-propNamesChangedTemp=propNamesChanged;
-for j=1:length(h)
-
-    for i=1:length(propNamesChanged)
-        propName=propNamesChanged{i}; % Current property name.
-
-        try
-            h(j).(propName)=props.(propName);
-            propNamesChangedTemp=propNamesChangedTemp(~ismember(propNamesChangedTemp,propName));
-        catch
-            disp([propName ' Invalid as Specified:']);
-            props.(propName)
+for i=1:length(h)
+    if ~isempty(properties(h(i)))
+        if isequal(h(i).(currProp),val)
+%             h(i).(currProp)=val;
+            continue;
         end
+        % Add this property to the list of manually edited properties. Every time the graphics objects are updated, they should use these property
+        % values to keep the graphics objects the same.
+        h(i).(currProp)=val;
+
 
     end
-
 end
 
-setappdata(fig,'propNamesChanged',propNamesChangedTemp);
+evalin('base','closevar(''currentPropertyValue'');');
+

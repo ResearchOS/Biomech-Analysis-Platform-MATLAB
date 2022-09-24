@@ -4,8 +4,6 @@ function []=plotFcnUITreeSelectionChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-delete(handles.Plot.plotPanel.Children);
-
 if isempty(handles.Plot.plotFcnUITree.SelectedNodes)
     delete(handles.Plot.currCompUITree.Children);
     return;
@@ -26,18 +24,24 @@ if ~isfield(Plotting,'Plots') || ~isfield(Plotting.Plots,plotName)
     return;
 end
 
-%% Save the previous plot to file when switching to a new one. Requires keeping a history of the current plot
+%% Save the previous plot to file when switching to a new one.
 slash=filesep;
-Q=figure('Visible','off');
-set(handles.Plot.plotPanel.Children,'Parent',Q);
-plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
 codePath=getappdata(fig,'codePath');
-
 folderName=[codePath  'Plot' slash 'Stashed GUI Plots'];
-if ~isfolder(folderName)
-    mkdir(folderName);
+if ~isempty(handles.Plot.plotPanel.Children)    
+    prevSelectedPlotName=getappdata(fig,'prevSelectedPlotName');
+    Q=figure('Visible','off');
+    set(handles.Plot.plotPanel.Children,'Parent',Q);
+%     plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;    
+    if ~isfolder(folderName)
+        mkdir(folderName);
+    end
+    if ~isempty(prevSelectedPlotName)
+        saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
+    end
 end
-saveas(Q,[folderName slash plotName '.fig']);
+
+setappdata(fig,'prevSelectedPlotName',plotName);
 
 compNames=fieldnames(Plotting.Plots.(plotName));
 
@@ -65,7 +69,13 @@ currPlot=Plotting.Plots.(plotName);
 makeCurrCompNodes(fig,currPlot);
 
 %% Load plot from file
-Q=openfig([folderName slash plotName '.fig']);
-set(Q.Children,'Parent',handles.Plot.plotPanel);
+delete(handles.Plot.plotPanel.Children);
+try
+    Q=openfig([folderName slash plotName '.fig']);
+    Plotting.Plots.(plotName).Axes.A.Handle=Q.Children; % Needs to be updated for multiple axes. Probably by assigning tags with the axes letters to each axes
+    set(Q.Children,'Parent',handles.Plot.plotPanel);    
+    setappdata(fig,'Plotting',Plotting);
+catch
+end
 
 % refreshPlotComp(src,[],plotName);

@@ -26,3 +26,4 @@ handles.Plot.currFrameEditField.Value=Plotting.Plots.(plotName).Movie.currFrame;
 setappdata(fig,'Plotting',Plotting);
 
 currFrameEditFieldValueChanged(fig);
+% drawnow;

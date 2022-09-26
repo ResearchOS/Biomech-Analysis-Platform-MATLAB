@@ -11,10 +11,18 @@ function setArg(subName,trialName,repNum,varargin)
 slash=filesep;
 
 %% Get the level for the current arguments to store. Also get the file path for the current MAT file.
-fig=findall(0,'Name','pgui');
+try
+    fig=evalin('base','gui;');
+catch
+    fig='';
+end
 isRunCode=0;
 if isempty(fig)
-    fig=findall(0,'Name','runCodeHiddenGUI');
+    try
+        fig=evalin('base','runCodeHiddenGUI;');
+    catch
+        fig='';
+    end
     isRunCode=1;
     if isempty(fig)
         disp('Missing the GUI!');

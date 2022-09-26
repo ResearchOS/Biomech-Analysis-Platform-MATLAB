@@ -44,7 +44,11 @@ try
     a=load([codePath 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'],varName);
     a=a.(varName);
 catch
-    disp('Error with loading the data!');
+    if ~isfield(Plotting.Plots.(plotName),'ExTrial')
+        disp('Specify the specific trials data to load!');
+    else
+        disp('Error with loading the data!');
+    end
     return;
 end
 

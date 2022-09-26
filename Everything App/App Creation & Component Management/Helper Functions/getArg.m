@@ -41,10 +41,18 @@ if length(inputNamesInCode)~=length(unique(inputNamesInCode))
     return;
 end
 
-fig=findall(0,'Name','pgui');
+try
+    fig=evalin('base','gui;');
+catch
+    fig='';
+end
 isRunCode=0;
 if isempty(fig)
-    fig=findall(0,'Name','runCodeHiddenGUI');
+    try
+        fig=evalin('base','runCodeHiddenGUI;');
+    catch
+        fig='';
+    end
     isRunCode=1;
     if isempty(fig)
         disp('Missing the GUI!');

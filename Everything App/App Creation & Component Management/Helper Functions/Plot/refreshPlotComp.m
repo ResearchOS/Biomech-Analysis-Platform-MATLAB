@@ -34,6 +34,7 @@ end
 %     compName=compNode.Parent.Text;
 % end
 
+isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
 switch compName
     case 'Axes'
         h=findobj(handles.Plot.plotPanel,'Tag',['Axes ' letter]);
@@ -41,8 +42,15 @@ switch compName
         h=axes('Parent',handles.Plot.plotPanel,'Visible','on','Tag',['Axes ' letter]);
         Plotting.Plots.(plotName).(compName).(letter).Handle=h;
         hold(h,'on');
-        axis(h,'equal');
+        if isMovie==1
+            axis(h,'equal');
+        end
     otherwise
+        if ~isfield(Plotting.Plots.(plotName),'ExTrial')
+            beep;
+            disp('Need to specify a trial!');
+            return;
+        end
         plotExTrial=Plotting.Plots.(plotName).ExTrial;
         subName=plotExTrial.Subject;
         trialName=plotExTrial.Trial;
@@ -53,18 +61,7 @@ switch compName
         if exist('axLetter','var')~=1
             axLetter=compNode.Parent.Parent.Text;
         end
-        axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
-        currGroupHandle=findobj(axHandle,'Type','hggroup','Tag',[compName ' ' letter]);
-        if isempty(currGroupHandle)
-            currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]); % First time
-            Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
-        end               
-%         Q=figure('Visible','off');
-%         Qax=axes(Q);
-%         hold(Qax,'on');
-        delete(currGroupHandle.Children); % Get rid of the old components
-
-        isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
+        axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;             
 
         if isMovie==0
             h=feval([compName '_P'],axHandle,subName,trialName,repNum);               
@@ -79,14 +76,26 @@ switch compName
             namesInCodeOut=['[' namesInCodeOut ']'];
             namesInCodeOut=strrep(namesInCodeOut,'''',''); % Remove apostrophes
 
-            eval([namesInCodeOut '=getArg(' namesInCodeChar ',subName,trialName,repNum);']);
-
-            for i=1:length(namesInCode)
-                eval(['allData.var' num2str(i) '=' namesInCode{i} ';']);
+            if ~isempty(namesInCode)
+                eval([namesInCodeOut '=getArg(' namesInCodeChar ',subName,trialName,repNum);']);
+                for i=1:length(namesInCode)
+                    eval(['allData.var' num2str(i) '=' namesInCode{i} ';']);
+                end
+            else
+                allData.var1=getArg;
+%                 namesInCodeOut='var1';
+%                 eval([namesInCodeOut '=getArg;']);
             end
+            
             idx=Plotting.Plots.(plotName).Movie.currFrame;
             h=feval([compName '_Movie'],axHandle,allData,idx);
-        end              
+        end      
+        currGroupHandle=findobj(axHandle,'Type','hggroup','Tag',[compName ' ' letter]);
+        if isempty(currGroupHandle)
+            currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]); % First time
+            Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
+        end               
+        delete(currGroupHandle.Children); % Get rid of the old components  
         for i=1:length(h)
             if ~isempty(properties(h(i))) % There is a graphics object here
                 h(i).Parent=currGroupHandle;

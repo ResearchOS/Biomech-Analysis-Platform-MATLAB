@@ -21,7 +21,7 @@ varName=selVarNode.Text;
 idx=ismember(comp.Names,varName);
 comp.Names=comp.Names(~idx);
 comp.NamesInCode=comp.NamesInCode(~idx);
-comp.IsHardCoded=comp.IsHardCoded(~idx);
+% comp.IsHardCoded=comp.IsHardCoded(~idx);
 
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 setappdata(fig,'structComp',comp);

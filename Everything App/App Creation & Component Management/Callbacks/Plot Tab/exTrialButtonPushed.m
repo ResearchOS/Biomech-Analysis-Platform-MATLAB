@@ -11,6 +11,11 @@ plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
 
 Plotting=getappdata(fig,'Plotting');
 
+if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')
+    disp('Do the specify trials first!');
+    return;
+end
+
 specTrials=Plotting.Plots.(plotName).SpecifyTrials;
 
 codePath=getappdata(fig,'codePath');
@@ -50,6 +55,7 @@ cd(oldPath);
 setappdata(fig,'Plotting',Plotting);
 
 if Plotting.Plots.(plotName).Movie.IsMovie==1
+    err=0;
     projectName=getappdata(fig,'projectName');
     if ~isempty(Plotting.Plots.(plotName).Movie.startFrameVar)
         varName=Plotting.Plots.(plotName).Movie.startFrameVar;

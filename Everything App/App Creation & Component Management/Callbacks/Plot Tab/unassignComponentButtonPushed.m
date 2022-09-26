@@ -59,7 +59,7 @@ end
 
 if isequal(compName,'Axes')
     compNames=fieldnames(Plotting.Plots.(plotName));
-    compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial','Movie'}));
+    compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial','Movie','IsMovie','Increment'}));
     for i=1:length(compNames)
         compNameIter=compNames{i};
         if isequal(compNameIter,'Axes')

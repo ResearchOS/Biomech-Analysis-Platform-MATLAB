@@ -90,6 +90,7 @@ for i=2:length(Digraph.Nodes.RunOrder) % Iterate over each function node, exclud
         orderNum=Digraph.Nodes.RunOrder{i}.(currSplits{j}); % Get the run order for this node/split
         if orderNum==0
             beep;
+            disp([Digraph.Nodes.FunctionNames{i} ' ' currSplits{j}])
             disp('Archive terminated. Cannot have a run order of zero!');
             return;
         end

@@ -41,6 +41,7 @@ matFileNames={projectSettingsMATName};
 for i=1:length(folderNames)
     currFolderLoc=[codePath folderNames{i}];
     archiveFolderLoc=[currArchiveFolderName slash folderNames{i}];
+    disp(['Copying folder ' folderNames{i}]); drawnow;
     copyfile(currFolderLoc,archiveFolderLoc);
 end
 
@@ -48,6 +49,7 @@ end
 for i=1:length(matFileNames)
     currFileLoc=[codePath matFileNames{i}];
     archiveFileLoc=[currArchiveFolderName slash matFileNames{i}];
+    disp(['Copying settings file ' matFileNames{i}]); drawnow;
     copyfile(currFileLoc,archiveFileLoc);
 end
 
@@ -57,11 +59,13 @@ logsheetPathMAT=getappdata(fig,'logsheetPathMAT');
 [~,logsheetPathName,ext]=fileparts(logsheetPath);
 [~,logsheetPathMATName]=fileparts(logsheetPathMAT);
 
+disp('Copying logsheet'); drawnow;
 copyfile(logsheetPath,[currArchiveFolderName slash logsheetPathName ext]);
 copyfile(logsheetPathMAT,[currArchiveFolderName slash logsheetPathMATName '.mat']);
 
 %% Create run code
 % Write the 'runCodeFunc.m' file to the archive folder
+disp('Creating run code'); drawnow;
 runCodeFilePath=[currArchiveFolderName slash 'RunCode_' projectName '_' currDate '.m'];
 createRunCode(fig,runCodeFilePath,currArchiveFolderName,codePath);
 
@@ -76,19 +80,22 @@ NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 archiveData=NonFcnSettingsStruct.Projects.ArchiveData;
 if archiveData==0
     %% If not archiving data, compress and end here.
+    disp('Compressing archive'); drawnow;
     zip(currArchiveFolderName,currArchiveFolderName);
     rmdir(currArchiveFolderName,'s');
 else
     %% Copy the data over.
-    matDataFilesFolder=[dataPath 'MAT Data Files'];
-    matDataFilesArchiveFolder=[currArchiveFolderName slash 'MAT Data Files'];
+%     matDataFilesFolder=[dataPath 'MAT Data Files'];
+%     matDataFilesArchiveFolder=[currArchiveFolderName slash 'MAT Data Files'];
 
     rawDataFilesFolder=[dataPath 'Raw Data Files'];
     rawDataFilesArchiveFolder=[currArchiveFolderName slash 'Raw Data Files'];
 
+    disp('Copying raw data files'); drawnow;
     copyfile(rawDataFilesFolder,rawDataFilesArchiveFolder); % No compression on the raw data because they're likely small enough!
 
-    zip(matDataFilesArchiveFolder,matDataFilesFolder);
+%     zip(matDataFilesArchiveFolder,matDataFilesFolder);
+    disp('Compressing archive'); drawnow;
     zip(currArchiveFolderName,currArchiveFolderName);
     rmdir(currArchiveFolderName,'s');
 

@@ -1,4 +1,4 @@
-function []=runLogImportButtonPushed(src,event)
+function []=runLogImportButtonPushed(src,event,useHeaderNames)
 
 %% PURPOSE: BRING IN THE DATA FROM THE LOGSHEET TO A MAT VARIABLE
 tic;
@@ -38,17 +38,23 @@ headerNames=logVar(1,:);
 % headerVarNames=genvarname(headerNames);
 
 % Get the header names, data types, and trial/subject levels that are checked from the log vars UI tree
-checkedNodes=handles.Import.logVarsUITree.CheckedNodes;
+if exist('useHeaderNames','var')~=1
+    checkedNodes=handles.Import.logVarsUITree.CheckedNodes;
 
-if isempty(checkedNodes)
-    disp('Check a box to import a variable from the logsheet!');
-    return;
+    if isempty(checkedNodes)
+        disp('Check a box to import a variable from the logsheet!');
+        return;
+    end
+
+    useHeaderDataTypes=cell(length(checkedNodes),1);
+    useHeaderTrialSubject=cell(length(checkedNodes),1);
+
+    useHeaderNames={checkedNodes.Text};
+else
+    if ~iscell(useHeaderNames)
+        useHeaderNames={useHeaderNames};
+    end
 end
-
-useHeaderDataTypes=cell(length(checkedNodes),1);
-useHeaderTrialSubject=cell(length(checkedNodes),1);
-
-useHeaderNames={checkedNodes.Text};
 useHeaderVarNames=genvarname(useHeaderNames);
 for i=1:length(useHeaderNames)
     useHeadersIdxNums(i)=find(ismember(headerNames,useHeaderNames{i})==1);
@@ -56,10 +62,24 @@ end
 % useHeadersIdx=ismember(headerNames,useHeaderNames);
 % useHeadersIdxNums=find(useHeadersIdx==1);
 
-for i=1:length(checkedNodes)
+for i=1:length(useHeaderNames)
     useHeaderDataTypes{i}=NonFcnSettingsStruct.Import.LogsheetVars.(useHeaderVarNames{i}).DataType;
     useHeaderTrialSubject{i}=NonFcnSettingsStruct.Import.LogsheetVars.(useHeaderVarNames{i}).TrialSubject;
 end
+
+% Determine which header names are empty (should only happen when using run code)
+useHeaderDataTypesEmptyIdx=cellfun(@isempty,useHeaderDataTypes);
+useHeaderTrialSubjectEmptyIdx=cellfun(@isempty,useHeaderTrialSubject);
+
+% Omit the empty header names
+useHeaderDataTypes=useHeaderDataTypes(~useHeaderDataTypesEmptyIdx);
+useHeaderTrialSubject=useHeaderTrialSubject(~useHeaderTrialSubjectEmptyIdx);
+
+if isempty(useHeaderDataTypes)
+    disp('No metadata found for these variables!');
+    return;
+end
+
 
 trialCheckedVarsIdx=ismember(useHeaderTrialSubject,'Trial');
 subjectCheckedVarsIdx=ismember(useHeaderTrialSubject,'Subject');

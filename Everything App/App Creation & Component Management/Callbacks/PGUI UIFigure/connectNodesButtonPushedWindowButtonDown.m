@@ -21,7 +21,7 @@ if isempty(fig.CurrentObject)
     return;
 end
 
-slash=filesep;
+% slash=filesep;
 
 xlims=handles.Process.mapFigure.XLim;
 ylims=handles.Process.mapFigure.YLim;
@@ -49,7 +49,7 @@ end
 
 setappdata(fig,'connectNodesCoords',NaN(2,2));
 
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 Digraph=getappdata(fig,'Digraph');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 % load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');

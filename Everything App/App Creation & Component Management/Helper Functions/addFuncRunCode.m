@@ -6,23 +6,41 @@ function []=addFuncRunCode(fcnName,fcnSplit,inputVarNames,inputVarNamesInCode,ou
 try
     VariableNamesList=evalin('base','VariableNamesList;');
 catch
-    disp('VaribleNamesList missing from base workspace!');
-    return;
+    disp('VariableNamesList missing from base workspace, initializing as empty!');
+    VariableNamesList.GUINames=cell(0,1);
+    VariableNamesList.SaveNames=cell(0,1);
+    VariableNamesList.SplitNames=cell(0,1);
+    VariableNamesList.SplitCodes=cell(0,1);
+    VariableNamesList.Descriptions=cell(0,1);
+    VariableNamesList.Level=cell(0,1);
+    VariableNamesList.IsHardCoded=cell(0,1);
 end
 
 try
     Digraph=evalin('base','Digraph;');
 catch
-    disp('Digraph missing from base workspace!');
-    return;
+    disp('Digraph missing from base workspace, initializing as empty!');
+    Digraph=digraph;
+    Digraph=addnode(Digraph,1);
+    Digraph.Nodes.FunctionNames={'Logsheet'};
+    Digraph.Nodes.Descriptions={{''}};
+    Digraph.Nodes.InputVariableNames{1}=''; % Name in GUI
+    Digraph.Nodes.OutputVariableNames{1}=''; % Name in GUI
+    Digraph.Nodes.Coordinates=[0 0];  
+%     Digraph.Nodes.SplitCodes={{'001'}};
+    Digraph.Nodes.NodeNumber=1;
+    Digraph.Nodes.SpecifyTrials={''};
+    Digraph.Nodes.IsImport=false;
+    Digraph.Nodes.InputVariableNamesInCode{1}=''; % Name in file/code
+    Digraph.Nodes.OutputVariableNamesInCode{1}=''; % Name in file/code
 end
 
-% try
-%     NonFcnSettingsStruct=evalin('base','NonFcnSettingsStruct');
-% catch
-%     disp('NonFcnSettingsStruct missing from base workspace!');
-%     return;
-% end
+try
+    projectSettingsMATPath=evalin('base','projectSettingsMATPath;');
+catch
+    disp('Missing the projectSettingsMATPath variable from the base workspace! Stopping.');
+    return;
+end
     
 %% Add the function to the Digraph. If the node number already exists, modify that row instead of creating a new one at the end.
 if ~ismember(nodeNumber,Digraph.Nodes.NodeNumber) % Add a new node
@@ -39,9 +57,9 @@ if ~ismember(nodeNumber,Digraph.Nodes.NodeNumber) % Add a new node
     cellVar{9}=struct(fcnSplit,inputVarNamesInCode);
     cellVar{10}=struct(fcnSplit,outputVarNamesInCode);
     cellVar{11}=struct(fcnSplit,runOrder);
-    Digraph=addnode(Digraph,cell2table(cellVar),'VariableNames',digraphNodeVarNames);  
+    Digraph=addnode(Digraph,cell2table(cellVar,'VariableNames',digraphNodeVarNames));  
     rowIdx=length(Digraph.Nodes.NodeNumber);
-else
+else % Modify existing node
     rowIdx=find(ismember(Digraph.Nodes.NodeNumber,nodeNumber)==1);
     Digraph.Nodes.FunctionNames{rowIdx}=fcnName;
 %     Digraph.Nodes.Descriptions{rowIdx}='';
@@ -58,21 +76,28 @@ end
 
 %% Add new edge to the Digraph.
 prevRowIdx=find(ismember(Digraph.Nodes.NodeNumber,prevFcnNodeNumber)==1);
-if ~ismember([prevFcnNodeNumber nodeNumber],Digraph.Edges.NodeNumber,'rows') % Skip adding an edge if the edge has already been added
-    digraphEdgeVarNames=Digraph.Edges.Properties.VariableNames;    
-    cellVar=cell(1,size(Digraph.Edges,2));
+if isfield(Digraph.Edges,'NodeNumber')
+    if ~ismember([prevFcnNodeNumber nodeNumber],Digraph.Edges.NodeNumber,'rows') % Skip adding an edge if the edge has already been added
+        digraphEdgeVarNames=Digraph.Edges.Properties.VariableNames;
+        cellVar=cell(1,size(Digraph.Edges,2));
+        cellVar{1}=[prevRowIdx rowIdx];
+        cellVar{2}=[Digraph.Nodes.FunctionNames{prevRowIdx} Digraph.Nodes.FunctionNames{rowIdx}];
+        cellVar{3}=[Digraph.Nodes.NodeNumber{prevRowIdx} Digraph.Nodes.NodeNumber{rowIdx}];
+        underscoreIdx=strfind(fcnSplit,'_');
+        splitCode=fcnSplit(underscoreIdx+1:end);
+        cellVar{5}=splitCode;
+        splitRows=find(ismember(Digraph.Edges.SplitCode,splitCode)==1);
+        cellVar{4}=Digraph.Edges.Color{splitRows(1)};
+        Digraph=addedge(Digraph,cell2table(cellVar),'VariableNames',digraphEdgeVarNames);
+    end
+else % Initializing the Digraph edges
     cellVar{1}=[prevRowIdx rowIdx];
     cellVar{2}=[Digraph.Nodes.FunctionNames{prevRowIdx} Digraph.Nodes.FunctionNames{rowIdx}];
     cellVar{3}=[Digraph.Nodes.NodeNumber{prevRowIdx} Digraph.Nodes.NodeNumber{rowIdx}];
-    underscoreIdx=strfind(fcnSplit,'_');
-    splitCode=fcnSplit(underscoreIdx+1:end);
-    cellVar{5}=splitCode;
-    splitRows=find(ismember(Digraph.Edges.SplitCode,splitCode)==1);
-    cellVar{4}=Digraph.Edges.Color{splitRows(1)};
-    Digraph=addedge(Digraph,cell2table(cellVar),'VariableNames',digraphEdgeVarNames);
 end
 
 assignin('base','Digraph',Digraph);
+save(projectSettingsMATPath,'Digraph','-append');
 
 %% Check for variables that are not yet represented in the VariableNamesList. If there are any, add them to the VariableNamesList.
 guiNames=VariableNamesList.GUINames;
@@ -124,6 +149,10 @@ for i=1:length(newVarNames)
     splitName=newVarNames{i}(1:spaceIdx-1);
     splitCode=newVarNames{i}(spaceIdx+2:end-1);
     varRow=ismember(VariableNamesList.GUINames,newVarNames{i});
+    if isempty(varRow)
+        varRow=1; % Initializing the VariableNamesList.
+        assert(isempty(VariableNamesList.GUINames));
+    end
     VariableNamesList.SplitNames{varRow}=splitName;
     VariableNamesList.SplitCodes{varRow}=splitCode;
     VariableNamesList.Descriptions{varRow}='Enter Arg Description Here';
@@ -132,3 +161,4 @@ for i=1:length(newVarNames)
 end
 
 assignin('base','VariableNamesList',VariableNamesList);
+save(projectSettingsMATPath,'VariableNamesList','-append');

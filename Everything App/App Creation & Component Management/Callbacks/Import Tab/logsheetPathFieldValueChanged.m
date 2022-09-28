@@ -38,15 +38,15 @@ setappdata(fig,'logsheetPath',logsheetPath);
 macAddress=getComputerID();
 
 projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
-projectVarNames=whos('-file',projectSettingsMATPath);
-projectVarNames={projectVarNames.name};
+% projectVarNames=whos('-file',projectSettingsMATPath);
+% projectVarNames={projectVarNames.name};
 
-if ismember('VariableNamesList',projectVarNames)
+% if ismember('VariableNamesList',projectVarNames)
 %     load(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList'); % Load the non-fcn settings struct from the project settings MAT file
-    VariableNamesList=getappdata(fig,'VariableNamesList');
-else
+% VariableNamesList=getappdata(fig,'VariableNamesList');
+% else
 %     load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file    
-end
+% end
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 % NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
 

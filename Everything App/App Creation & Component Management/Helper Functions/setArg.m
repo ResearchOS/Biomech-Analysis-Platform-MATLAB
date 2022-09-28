@@ -71,6 +71,10 @@ else
 end
 
 nodeRow=getappdata(fig,'nodeRow');
+if isempty(Digraph.Nodes.OutputVariableNamesInCode{nodeRow})
+    error('Forgot to enter output arguments!');
+%     return;
+end
 varNamesInCode=Digraph.Nodes.OutputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]); 
 if isempty(varNamesInCode)
     disp('No output arguments assigned to this function!');
@@ -144,8 +148,12 @@ for i=1:length(argNames)
     VariableNamesList.SplitCodes{argRow}=[VariableNamesList.SplitCodes{argRow}; {splitCode}];
     VariableNamesList.SplitNames{argRow}=[VariableNamesList.SplitNames{argRow}; {splitName}];
 
-    varNode=findobj(handles.Process.varsListbox,'Text',guiVarNames{i});
-    uitreenode(varNode,'Text',splitText);
+    % If there is a search term filtering what is shown in the list box, then don't update.
+    % The list will update when the search term is removed
+    if isempty(handles.Process.fcnsArgsSearchField.Value) || isequal(handles.Process.fcnsArgsSearchField.Value,'Search')
+        varNode=findobj(handles.Process.varsListbox,'Text',guiVarNames{i});
+        uitreenode(varNode,'Text',splitText);
+    end
 
 end
 

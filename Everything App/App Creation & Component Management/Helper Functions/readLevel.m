@@ -40,6 +40,7 @@ if isImport
 end
 
 if isequal(levels,'')
+    beep;
     disp('The input arguments were changed! Here are the list of available input arguments:');
     disp('Project: ''projectStruct''');
     disp('Project & Subject: ''projectStruct, subNames''');

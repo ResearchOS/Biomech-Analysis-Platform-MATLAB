@@ -75,7 +75,7 @@ for i=1:length(Digraph.Nodes.FunctionNames) % Look through each function to see 
             % visible split of an existing node (iterate over all splits of
             % all *visible* nodes). Do this by checking for an inedge to
             % the node of that split.
-           inEdgeRows=inedges(Digraph,Digraph.Nodes.NodeNumber(i));
+           inEdgeRows=inedges(Digraph,find(ismember(Digraph.Nodes.NodeNumber,Digraph.Nodes.NodeNumber(i))==1));
            splitCodes=Digraph.Edges.SplitCode(inEdgeRows); % The splits of the inedges
            if ismember(splitCodeNode,splitCodes) % If there is an edge of this split going into this node, don't delete the variable.
                doDelete=0; % Indicates to not delete the variable.
@@ -93,7 +93,11 @@ for i=1:length(Digraph.Nodes.FunctionNames) % Look through each function to see 
         continue;
     end
 
-    splitNamesOut=fieldnames(Digraph.Nodes.OutputVariableNames{i});
+    if ~isempty(Digraph.Nodes.OutputVariableNames{i})
+        splitNamesOut=fieldnames(Digraph.Nodes.OutputVariableNames{i});
+    else
+        splitNamesOut='';
+    end
 %     spaceIdx=strind(varName,' ');
 %     varNameOut=varName(1:spaceIdx(end)-1); % Ignoring the split.
 

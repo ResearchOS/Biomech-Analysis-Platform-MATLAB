@@ -80,7 +80,7 @@ varNames=Digraph.Edges.Properties.VariableNames;
 if ismember('NodeNumber',varNames)
     if ~ismember([prevFcnNodeNumber nodeNumber],Digraph.Edges.NodeNumber,'rows') % Skip adding an edge if the edge has already been added
         Digraph=addedge(Digraph,prevRowIdx,rowIdx);
-        edgeIdx=length(Digraph.Edges);
+        edgeIdx=length(Digraph.Edges.NodeNumber);
         Digraph.Edges.FunctionNames{edgeIdx,1}=Digraph.Nodes.FunctionNames{prevRowIdx};
         Digraph.Edges.FunctionNames{edgeIdx,2}=Digraph.Nodes.FunctionNames{rowIdx};
         Digraph.Edges.NodeNumber(edgeIdx,1)=Digraph.Nodes.NodeNumber(prevRowIdx);
@@ -88,8 +88,12 @@ if ismember('NodeNumber',varNames)
         underscoreIdx=strfind(fcnSplit,'_');
         splitCode=fcnSplit(underscoreIdx+1:end);
         Digraph.Edges.SplitCodes{edgeIdx}=splitCode;
-        Digraph.Edges.Color(edgeIdx,:)=[0 0.4470 0.7410];        
-        splitRows=find(ismember(Digraph.Edges.SplitCode,splitCode)==1);
+        Digraph.Edges.Color(edgeIdx,:)=[0 0.4470 0.7410];   
+        isCharArray=cellfun(@ischar, Digraph.Edges.SplitCodes);
+        if any(~isCharArray)
+            Digraph.Edges.SplitCodes{~isCharArray}=''; % Error management
+        end
+        splitRows=find(ismember(Digraph.Edges.SplitCodes,splitCode)==1);
         Digraph.Edges.Color(edgeIdx,:)=Digraph.Edges.Color(splitRows(1),:);        
     end
 else % Initializing the Digraph edges
@@ -120,13 +124,17 @@ for i=1:length(inputVarNames)
     inputVarNamesVarList{i}=inputVarNames{i}(1:spaceIdx(end)-1);
     inputVarNamesSaveNames{i}=genvarname(inputVarNamesVarList{i});
 end
-for i=1:length(outputVarNames)
-    spaceIdx=strfind(outputVarNames{i},' ');
-    outputVarNamesVarList{i}=outputVarNames{i}(1:spaceIdx(end)-1);
-    outputVarNamesSaveNames{i}=genvarname(outputVarNamesVarList{i});
+if ~isempty(outputVarNames{1})
+    for i=1:length(outputVarNames)
+        spaceIdx=strfind(outputVarNames{i},' ');
+        outputVarNamesVarList{i}=outputVarNames{i}(1:spaceIdx(end)-1);
+        outputVarNamesSaveNames{i}=genvarname(outputVarNamesVarList{i});
+    end
+else
+    outputVarNamesVarList{1}='';
 end
 
-if all(ismember(inputVarNamesVarList,guiNames)) && all(ismember(outputVarNamesVarList,guiNames))
+if all(ismember(inputVarNamesVarList,guiNames)) && (all(ismember(outputVarNamesVarList,guiNames)) || isempty(outputVarNamesVarList{1}))
     return; % There are no new variables here, don't do anything else, the function has been fully added.
 end
 

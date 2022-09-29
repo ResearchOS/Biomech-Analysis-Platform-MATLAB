@@ -64,7 +64,11 @@ varargout=cell(length(inputNamesInCode),1); % Initialize the output variables.
 
 projectName=getappdata(fig,'projectName');
 handles=getappdata(fig,'handles');
-tabName=handles.Tabs.tabGroup1.SelectedTab.Title;
+if isempty(handles)
+    tabName='Process';
+else
+    tabName=handles.Tabs.tabGroup1.SelectedTab.Title;
+end
 
 if ~isempty(repNum) && ~isempty(trialName) % Trial level
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];

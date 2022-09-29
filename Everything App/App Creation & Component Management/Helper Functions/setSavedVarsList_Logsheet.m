@@ -8,21 +8,28 @@ function []=setSavedVarsList_Logsheet(splitName,guiNames)
 % guiNames: The names of the variables as specified in the GUI (cell array
 % of chars)
 
-fig=evalin('base','gui;');
+try
+    fig=evalin('base','gui;');
+catch
+    fig=evalin('base','runCodeHiddenGUI;');
+end
 handles=getappdata(fig,'handles');
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
+% projectSettingsVars=whos('-file',projectSettingsMATPath);
+% projectSettingsVarNames={projectSettingsVars.name};
 
-assert(ismember('Digraph',projectSettingsVarNames));
+% assert(ismember('Digraph',projectSettingsVarNames));
 
-if ismember('VariableNamesList',projectSettingsVarNames)
+% if ismember('VariableNamesList',projectSettingsVarNames)
 %     load(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct');
-    VariableNamesList=getappdata(fig,'VariableNamesList');
-else
-%     load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+VariableNamesList=getappdata(fig,'VariableNamesList');
+if isempty(VariableNamesList)
+    clear VariableNamesList;
 end
+% else
+%     load(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct');
+% end
 Digraph=getappdata(fig,'Digraph');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 
@@ -57,20 +64,22 @@ if exist('VariableNamesList','var')~=1 % Initialize the VariableNamesList
     % This is not part of "makeVarNodes.m" because it deals with
     % initialization, and is therefore a slightly different operation.
     % Maybe in the future.
-    for i=1:numVarsNoExist
-        varNode=uitreenode(handles.Process.varsListbox,'Text',guiNames{sortIdx(i)});
-        splitNames=VariableNamesList.SplitNames{i};
-        splitCodes=VariableNamesList.SplitCodes{i};
-        for j=1:length(splitCodes)
-            a=uitreenode(varNode,'Text',[splitNames{j} '(' splitCodes{j} ')']);
-            if i==1 && j==1
-                handles.Process.varsListbox.SelectedNodes=a;
+    if ~isempty(handles)
+        for i=1:numVarsNoExist
+            varNode=uitreenode(handles.Process.varsListbox,'Text',guiNames{sortIdx(i)});
+            splitNames=VariableNamesList.SplitNames{i};
+            splitCodes=VariableNamesList.SplitCodes{i};
+            for j=1:length(splitCodes)
+                a=uitreenode(varNode,'Text',[splitNames{j} '(' splitCodes{j} ')']);
+                if i==1 && j==1
+                    handles.Process.varsListbox.SelectedNodes=a;
+                end
             end
-        end        
+        end
+        %     handles.Process.varsListbox.Items=VariableNamesList.GUINames;
+        %     handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
+        handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
     end
-%     handles.Process.varsListbox.Items=VariableNamesList.GUINames;
-%     handles.Process.varsListbox.Value=VariableNamesList.GUINames{1};
-    handles.Process.argDescriptionTextArea.Value=VariableNamesList.Descriptions{1};
     return;
 end
 
@@ -102,11 +111,17 @@ setappdata(fig,'VariableNamesList',VariableNamesList);
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
 [~,sortIdx]=sort(upper(VariableNamesList.GUINames));
-makeVarNodes(fig,sortIdx,VariableNamesList);
+if ~isempty(handles)
+    makeVarNodes(fig,sortIdx,VariableNamesList);
+end
 
 % save(projectSettingsMATPath,'VariableNamesList','Digraph','NonFcnSettingsStruct','-append');
 setappdata(fig,'VariableNamesList',VariableNamesList);
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 setappdata(fig,'Digraph',Digraph);
 
-varsListBoxValueChanged(fig);
+save(projectSettingsMATPath,'NonFcnSettingsStruct','VariableNamesList','Digraph','-append');
+
+if ~isempty(handles)
+    varsListBoxValueChanged(fig);
+end

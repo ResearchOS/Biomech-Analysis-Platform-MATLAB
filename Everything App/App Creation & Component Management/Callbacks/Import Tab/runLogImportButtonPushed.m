@@ -1,5 +1,4 @@
 function []=runLogImportButtonPushed(src,event,useHeaderNames)
-
 %% PURPOSE: BRING IN THE DATA FROM THE LOGSHEET TO A MAT VARIABLE
 tic;
 fig=ancestor(src,'figure','toplevel');
@@ -22,6 +21,7 @@ NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 macAddress=getComputerID();
 
 logsheetPathMAT=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT;
+logsheetPath=NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath;
 
 numHeaderRows=NonFcnSettingsStruct.Import.NumHeaderRows;
 subjIDColHeader=NonFcnSettingsStruct.Import.SubjectIDColHeader;

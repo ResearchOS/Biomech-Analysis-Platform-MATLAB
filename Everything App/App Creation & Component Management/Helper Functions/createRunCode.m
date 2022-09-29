@@ -11,6 +11,7 @@ projectName=getappdata(fig,'projectName');
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 Digraph=getappdata(fig,'Digraph');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+VariableNamesList=getappdata(fig,'VariableNamesList');
 
 load(getappdata(fig,'logsheetPathMAT'),'logVar');
 
@@ -35,43 +36,55 @@ text{9}='% Set the projectSettingsMATPath';
 text{10}=['projectSettingsMATPath = ''' projectSettingsMATPath ''';'];
 text{11}='';
 text{12}='% Load the project settings variables';
-text{13}='load(projectSettingsMATPath,''Digraph'',''VariableNamesList'',''NonFcnSettingsStruct'');';
-text{14}='';
-text{15}=['logsheetPath = ''' logsheetPath ''';'];
-text{16}=['dataPath = ''' dataPath ''';'];
-text{17}=['codePath = ''' codePath ''';'];
-text{18}='NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath = logsheetPath;';
-text{19}='[path,name] = fileparts(logsheetPath);';
-text{20}='slash = filesep;';
-text{21}='logsheetPathMAT = [path slash name ''.mat'']; % The path name to the MAT file copy of the logsheet';
+text{13}='if exist(projectSettingsMATPath,''file'')==2';
+text{14}='    load(projectSettingsMATPath,''Digraph'',''VariableNamesList'',''NonFcnSettingsStruct'');';
+text{15}='end';
+text{16}='';
+text{17}=['logsheetPath = ''' logsheetPath ''';'];
+text{18}=['dataPath = ''' dataPath ''';'];
+text{19}=['codePath = ''' codePath ''';'];
+text{20}='';
+text{21}='macAddress=getComputerID(); % Get the unique ID for this computer';
 text{22}='';
-text{23}='macAddress=getComputerID(); % Get the unique ID for this computer';
-text{24}='NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT = logsheetPathMAT;';
-text{25}='NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath = dataPath;';
-text{26}='NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath = codePath;';
+text{23}='NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath = logsheetPath;';
+text{24}='[path,name] = fileparts(logsheetPath);';
+text{25}='slash = filesep;';
+text{26}='logsheetPathMAT = [path slash name ''.mat'']; % The path name to the MAT file copy of the logsheet';
 text{27}='';
-text{28}='% Initialize a figure just for storing data';
-text{29}='pguiHandle=findall(0,''Name'',''pgui''); % Get the handle to the processing GUI, if it exists';
-text{30}='close(pguiHandle); clear pguiHandle; % Close and delete the processing GUI (does nothing if not open)';
-text{31}='runCodeHiddenGUI=findall(0,''Name'',''runCodeHiddenGUI''); % Find all prior iterations of the hidden GUI';
-text{32}='close(runCodeHiddenGUI); % Close prior iterations of the hidden GUI';
-text{33}='runCodeHiddenGUI=uifigure(''Visible'',''off'',''Name'',''runCodeHiddenGUI'',''HandleVisibility'',''On'');';
-text{34}=['setappdata(runCodeHiddenGUI,''projectName'',''' projectName ''');'];
-text{35}='% close(runCodeHiddenGUI); clear runCodeHiddenGUI; % To close and delete the uifigure (which deletes all of its data)';
-text{36}='setappdata(runCodeHiddenGUI, ''logsheetPath'', NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath);';
-text{37}='setappdata(runCodeHiddenGUI, ''logsheetPathMAT'', NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT);';
-text{38}='setappdata(runCodeHiddenGUI, ''dataPath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath);';
-text{39}='setappdata(runCodeHiddenGUI, ''codePath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath);';
-text{40}='load(logsheetPathMAT, ''logVar''); % Load the logsheet variable';
-text{41}='';
-text{42}='setappdata(runCodeHiddenGUI, ''NonFcnSettingsStruct'', NonFcnSettingsStruct);';
-text{43}='setappdata(runCodeHiddenGUI, ''Digraph'', Digraph);';
-text{44}='setappdata(runCodeHiddenGUI, ''VariableNamesList'', VariableNamesList);';
-text{45}=['projectName=' '''' projectName '''' ';'];
-text{46}='';
-text{47}='%% Initialize the projectStruct';
-text{48}='projectStruct=[];';
-text{49}='';
+text{28}='NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT = logsheetPathMAT;';
+text{29}='NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath = dataPath;';
+text{30}='NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath = codePath;';
+text{31}='';
+text{32}='% Initialize a figure just for storing data';
+text{33}='pguiHandle=findall(0,''Name'',''pgui''); % Get the handle to the processing GUI, if it exists';
+text{34}='close(pguiHandle); clear pguiHandle; % Close and delete the processing GUI (does nothing if not open)';
+text{35}='runCodeHiddenGUI=findall(0,''Name'',''runCodeHiddenGUI''); % Find all prior iterations of the hidden GUI';
+text{36}='close(runCodeHiddenGUI); % Close prior iterations of the hidden GUI';
+text{37}='runCodeHiddenGUI=uifigure(''Visible'',''off'',''Name'',''runCodeHiddenGUI'',''HandleVisibility'',''On'');';
+text{38}=['setappdata(runCodeHiddenGUI,''projectName'',''' projectName ''');'];
+text{39}='% close(runCodeHiddenGUI); clear runCodeHiddenGUI; % To close and delete the uifigure (which deletes all of its data)';
+text{40}='setappdata(runCodeHiddenGUI, ''logsheetPath'', NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath);';
+text{41}='setappdata(runCodeHiddenGUI, ''logsheetPathMAT'', NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT);';
+text{42}='setappdata(runCodeHiddenGUI, ''dataPath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath);';
+text{43}='setappdata(runCodeHiddenGUI, ''codePath'', NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath);';
+text{44}='if exist(logsheetPathMAT,''file'')==2';
+text{45}='    load(logsheetPathMAT, ''logVar''); % Load the logsheet variable';
+text{46}='end';
+text{47}='';
+text{48}='setappdata(runCodeHiddenGUI, ''NonFcnSettingsStruct'', NonFcnSettingsStruct);';
+text{49}='if exist(''Digraph'',''var'')';
+text{50}='    setappdata(runCodeHiddenGUI, ''Digraph'', Digraph);';
+text{51}='end';
+text{52}='if exist(''VariableNamesList'',''var'')';
+text{53}='    setappdata(runCodeHiddenGUI, ''VariableNamesList'', VariableNamesList);';
+text{54}='end';
+text{55}=['projectName=' '''' projectName '''' ';'];
+text{56}='';
+text{57}='%% Initialize the projectStruct';
+text{58}='projectStruct=[];';
+text{59}='';
+text{60}='setappdata(runCodeHiddenGUI, ''projectSettingsMATPath'', projectSettingsMATPath);';
+text{61}='';
 
 %% Set up logsheet import code
 if ~(isempty(Digraph.Nodes.RunOrder{1}) || Digraph.Nodes.RunOrder{1}.Default_001==0)
@@ -104,6 +117,7 @@ trialSubjectChar=[trialSubjectChar(1:end-2) '}'];
 numHeaderRows=NonFcnSettingsStruct.Import.NumHeaderRows;
 subjIDColHeader=NonFcnSettingsStruct.Import.SubjectIDColHeader;
 trialIDColHeader=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
+specifyTrialsName=Digraph.Nodes.SpecifyTrials{1};
 
 text{n}=['columnHeaders = ' columnHeadersChar ';'];
 n=n+1;
@@ -111,7 +125,7 @@ text{n}=['dataTypes = ' dataTypesChar ';'];
 n=n+1;
 text{n}=['trialSubject = ' trialSubjectChar ';'];
 n=n+1;
-text{n}='addLogVarsRunCode(columnHeaders, dataTypes, trialSubject); % Add the logsheet info metadata to the NonFcnSettingsStruct variable'; 
+text{n}=['specifyTrials = ''' specifyTrialsName ''';'];
 n=n+1;
 text{n}=['numHeaderRows = ' num2str(numHeaderRows) ';'];
 n=n+1;
@@ -119,7 +133,11 @@ text{n}=['subjIDColHeader = ''' subjIDColHeader ''';'];
 n=n+1;
 text{n}=['trialIDColHeader = ''' trialIDColHeader ''';'];
 n=n+1;
-text{n}='runLogImportButtonPushed(runCodeHiddenGUI, [], columnHeaders, numHeaderRows, subjIDColHeader, trialIDColHeader); % Import the metadata from the logsheet.';
+text{n}='addLogVarsRunCode(columnHeaders, dataTypes, trialSubject, specifyTrials, numHeaderRows, subjIDColHeader, trialIDColHeader); % Add the logsheet info metadata to the NonFcnSettingsStruct variable'; 
+n=n+1;
+text{n}='logsheetPathFieldValueChanged(runCodeHiddenGUI, logsheetPath);';
+n=n+1;
+text{n}='runLogImportButtonPushed(runCodeHiddenGUI, [], columnHeaders); % Import the metadata from the logsheet.';
 n=n+1;
 text{n}='';
 
@@ -257,6 +275,27 @@ for i=1:length(allNums)
     n=n+1;
     text{n}=['inputVarNamesInCode = ' varNamesInCodeText ';'];
 
+    % Is hard coded
+    isHardCodedText='';
+    for j=1:length(varNamesIn{i})
+        fullVarName=varNamesIn{i}{j};
+        spaceIdx=strfind(fullVarName,' ');
+        varName=fullVarName(1:spaceIdx(end)-1);
+        varRow=ismember(VariableNamesList.GUINames,varName);
+        isHardCoded=VariableNamesList.IsHardCoded{varRow};
+        if j>1
+            isHardCodedText=[isHardCodedText '; ' num2str(isHardCoded)];
+        else
+            isHardCodedText=['{' num2str(isHardCoded)];
+        end
+    end
+    isHardCodedText=[isHardCodedText '}'];
+    if isempty(varNamesIn{i})
+        isHardCodedText='{''''}';
+    end
+    n=n+1;
+    text{n}=['isHardCoded = ' isHardCodedText ';'];
+
     % Output variable names
     varNamesInText='';
     for j=1:length(varNamesOut{i})
@@ -290,7 +329,7 @@ for i=1:length(allNums)
     text{n}=['outputVarNamesInCode = ' varNamesInCodeText ';'];
 
     n=n+1;
-    text{n}='addFuncRunCode(fcnName, fcnSplit, inputVarNames, inputVarNamesInCode, outputVarNames, outputVarNamesInCode, nodeNumber, specifyTrials, runOrder, prevFcnNodeNumber, isImport, coordinate);';
+    text{n}='addFuncRunCode(fcnName, fcnSplit, inputVarNames, inputVarNamesInCode, isHardCoded, outputVarNames, outputVarNamesInCode, nodeNumber, specifyTrials, runOrder, prevFcnNodeNumber, isImport, coordinate);';
 
     %% Run the function
     n=n+1;

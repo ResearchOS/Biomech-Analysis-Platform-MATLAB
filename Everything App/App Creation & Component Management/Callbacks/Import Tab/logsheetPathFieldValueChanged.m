@@ -2,18 +2,26 @@ function []=logsheetPathFieldValueChanged(src,logsheetPath)
 
 %% PURPOSE: UPDATE THE LOGSHEET PATH FIELD VALUE, AND SAVE A COPY OF THE XLSX FILE TO MAT FILE
 % Inputs:
-% dontRead: If present (likely 0), do not read the logsheet file. Just
-% opening the GUI.
+% when the logsheetPath is present AND using the GUI, that means not to
+% re-read the Excel file. If the logsheet path is not present OR not using
+% the GUI, then re-read the Excel file.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
 
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+macAddress=getComputerID();
+
 if exist('logsheetPath','var')~=1
-    logsheetPath=handles.Import.logsheetPathField.Value;
+    logsheetPath=handles.Import.logsheetPathField.Value;    
+    readLogsheet=0; % Indicates that the logsheet should just be read, because I entered it in the textbox.
     runLog=true;
 else
-    handles.Import.logsheetPathField.Value=logsheetPath;
+    if ~isempty(handles)
+        handles.Import.logsheetPathField.Value=logsheetPath;
+    end
+    readLogsheet=1;
     runLog=false;
 end
 
@@ -29,15 +37,19 @@ if exist(logsheetPath,'file')~=2
     return;
 end
 
+NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath=logsheetPath; % Store the computer-specific logsheet path to the struct
+
 slash=filesep;
 
-handles.Import.logsheetPathField.Value=logsheetPath;
+if ~isempty(handles)
+    handles.Import.logsheetPathField.Value=logsheetPath; % GUI only
+end
 
 setappdata(fig,'logsheetPath',logsheetPath);
 
-macAddress=getComputerID();
+projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 
-projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
+% projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 % projectVarNames=whos('-file',projectSettingsMATPath);
 % projectVarNames={projectVarNames.name};
 
@@ -47,10 +59,7 @@ projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 % else
 %     load(projectSettingsMATPath,'NonFcnSettingsStruct'); % Load the non-fcn settings struct from the project settings MAT file    
 % end
-NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 % NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
-
-NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath=logsheetPath; % Store the computer-specific logsheet path to the struct
 
 % Convert the logsheet to .mat file format.
 [logsheetFolder,name,ext]=fileparts(logsheetPath);
@@ -59,7 +68,7 @@ logsheetPathMAT=[logsheetFolder slash name '.mat'];
 %% Create MAT file from logsheet
 % Opening: dontRead=0, logsheetPathMAT may or may not exist
 % Changing: dontRead does not exist, logsheetPathMAT may or may not exist
-if getappdata(fig,'switchingProjects')==1 % Don't do MAT file from logsheet
+if readLogsheet==1 % Don't do MAT file from logsheet
 
     % IN THE FUTURE, DO OTHER EXTENSIONS TOO (CSV, OTHERS?)
     if contains(ext,'xls')
@@ -87,11 +96,16 @@ if getappdata(fig,'switchingProjects')==1 % Don't do MAT file from logsheet
         logVar(numHeaderRows+1:end,ismember(logVar(1,:),targetTrialIDColHeader))=targetTrialIDs;
     end
 
-    save(logsheetPathMAT,'logVar','-v6'); % Save the MAT file version of the logsheet.    
+    save(logsheetPathMAT,'logVar','-v6'); % Save the MAT file version of the logsheet.
+    if isempty(handles)
+        assignin('base','logVar',logVar);
+    end
 
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT=logsheetPathMAT;    
 
-    resetProjectAccess_Visibility(fig,4);
+    if ~isempty(handles)
+        resetProjectAccess_Visibility(fig,4);
+    end
 
 elseif exist(logsheetPathMAT,'file')==2
     load(logsheetPathMAT,'logVar');
@@ -105,7 +119,9 @@ setappdata(fig,'logsheetPathMAT',logsheetPathMAT);
 %% Initialize the logsheet variables in the MAT file
 % Fill in the logsheet list box, and save default values for each
 % variable's attributes
-delete(handles.Import.logVarsUITree.Children);
+if ~isempty(handles)
+    delete(handles.Import.logVarsUITree.Children);
+end
 headerNames=logVar(1,:);
 headerNamesVars=genvarname(headerNames);
 [~,idx]=sort(upper(headerNamesVars));
@@ -116,7 +132,9 @@ for i=1:size(logVar,2)
     headerName=headerNames{i};
     headerNameVar=headerNamesVars{i};
 
-    a=uitreenode(handles.Import.logVarsUITree,'Text',headerName,'Tag',headerName);
+    if ~isempty(handles)
+        a=uitreenode(handles.Import.logVarsUITree,'Text',headerName,'Tag',headerName);
+    end
 
     if ~(isfield(NonFcnSettingsStruct.Import,'LogsheetVars') && isfield(NonFcnSettingsStruct.Import.LogsheetVars,headerNameVar))
         NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType='';
@@ -124,10 +142,12 @@ for i=1:size(logVar,2)
 %         NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).VarName=headerNameVar;
     end
 
-    if i==1
-        handles.Import.logVarsUITree.SelectedNodes=a;
-        handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
-        handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;
+    if ~isempty(handles)
+        if i==1
+            handles.Import.logVarsUITree.SelectedNodes=a;
+            handles.Import.dataTypeDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).DataType;
+            handles.Import.trialSubjectDropDown.Value=NonFcnSettingsStruct.Import.LogsheetVars.(headerNameVar).TrialSubject;
+        end
     end
 
 end
@@ -135,65 +155,61 @@ end
 % If there's no Digraph in the projectSettingsMATPath, make one and plot
 % it.
 % Fill in processing map figure
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
+% projectSettingsVars=whos('-file',projectSettingsMATPath);
+% projectSettingsVarNames={projectSettingsVars.name};
 
-if ismember('Digraph',projectSettingsVarNames)
+% if ismember('Digraph',projectSettingsVarNames)
 %     load(projectSettingsMATPath,'Digraph');    
-    Digraph=getappdata(fig,'Digraph');
-else
+Digraph=getappdata(fig,'Digraph');
+if isempty(Digraph)
     Digraph=digraph;
     Digraph=addnode(Digraph,1);
     Digraph.Nodes.FunctionNames={'Logsheet'};
     Digraph.Nodes.Descriptions={{''}};
     Digraph.Nodes.InputVariableNames{1}=''; % Name in GUI
     Digraph.Nodes.OutputVariableNames{1}=''; % Name in GUI
-    Digraph.Nodes.Coordinates=[0 0];  
-%     Digraph.Nodes.SplitCodes={{'001'}};
+    Digraph.Nodes.Coordinates=[0 0];
+    %     Digraph.Nodes.SplitCodes={{'001'}};
     Digraph.Nodes.NodeNumber=1;
     Digraph.Nodes.SpecifyTrials={''};
     Digraph.Nodes.IsImport=false;
     Digraph.Nodes.InputVariableNamesInCode{1}=''; % Name in file/code
     Digraph.Nodes.OutputVariableNamesInCode{1}=''; % Name in file/code
-    
+%     Digraph.Nodes.RunOrder{1}=[];
+
     splitName={'Default'};
     splitCode='001';
     maxSplitCode=splitCode;
     NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Code=splitCode;
-    NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Name=splitName;   
+    NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Name=splitName;
     NonFcnSettingsStruct.Process.Splits.SubSplitNames.(splitName{1}).Color=[0 0.4470 0.7410]; % MATLAB R2021b first color in default color order
 
-%     save(projectSettingsMATPath,'Digraph','NonFcnSettingsStruct','maxSplitCode','-append');
     save(projectSettingsMATPath,'maxSplitCode','-append');
     setappdata(fig,'Digraph',Digraph);
     setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 end
 
 %% Add the splits UI tree nodes on the Process tab
-delete(handles.Process.splitsUITree.Children);
-h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
-delete(h);
-getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
+if ~isempty(handles)
+    delete(handles.Process.splitsUITree.Children);
+    h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
+    delete(h);
+    getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
 
-if ~isempty(Digraph.Edges)
-%     load([getappdata(fig,'everythingPath') 'App Creation & Component Management' slash 'RGB XKCD - Custom' slash 'xkcd_rgb_data.mat'],'rgblist');
-%     edgeColorsIdx=NaN(size(Digraph.Edges.Color,1),1);
-%     for i=1:size(Digraph.Edges.Color,1)
-%         edgeColorsIdx(i)=find(ismember(round(rgblist,3),round(Digraph.Edges.Color(i,:),3),'rows')==1);
-%     end
-% 
-%     colormap(handles.Process.mapFigure,rgblist);
-
-    h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
-    h.EdgeColor=Digraph.Edges.Color;
-    splitsUITreeSelectionChanged(fig,'Default (001)');
-else
-    plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
+    if ~isempty(Digraph.Edges)
+        h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
+        h.EdgeColor=Digraph.Edges.Color;
+        splitsUITreeSelectionChanged(fig,'Default (001)');
+    else
+        plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.4470 0.7410],'Interpreter','none');
+    end
 end
 
 % save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Save the struct back to file.
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
-resetProjectAccess_Visibility(fig,4);
+if ~isempty(handles)
+    resetProjectAccess_Visibility(fig,4);
+end
 
 if runLog
     desc='Update the logsheet path';

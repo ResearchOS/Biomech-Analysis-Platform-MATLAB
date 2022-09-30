@@ -1,5 +1,6 @@
 function [projectNamesInfo,lineNums]=isolateProjectNamesInfo(text,projectName)
 
+
 %% PURPOSE: READ AN EXISTING TEXT FILE VARIABLE TO ISOLATE THE SPECIFIED PROJECT NAME & ASSOCIATED INFO
 % Inputs:
 % text: Cell array where each element contains one line of text from the 'allProjects_ProjectNamesPaths.txt' file.

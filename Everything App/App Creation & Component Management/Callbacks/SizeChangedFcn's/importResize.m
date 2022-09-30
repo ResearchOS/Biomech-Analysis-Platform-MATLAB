@@ -164,6 +164,7 @@ data.SpecifyTrialsButton.Position=SpecifyTrialsButtonPos;
 
 data.LogsheetPathButton.FontSize=newFontSize;
 data.LogsheetPathField.FontSize=newFontSize;
+
 data.LogsheetLabel.FontSize=newFontSize;
 data.NumHeaderRowsLabel.FontSize=newFontSize;
 data.NumHeaderRowsField.FontSize=newFontSize;

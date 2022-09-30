@@ -8,6 +8,7 @@ function [text]=addProjInfoToFile(text,projectName,prefix,data,appendBool)
 % data: The metadata to add/replace in the file. (char)
 % appendBool: 1 to append to existing data, 0 to replace the line entirely (double)
 
+
 % Outputs:
 % newText: The new text file, either with the data modified (if previously existing) or added (if new metadata field for the project)
 

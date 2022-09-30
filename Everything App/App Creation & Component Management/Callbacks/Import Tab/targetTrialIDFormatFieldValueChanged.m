@@ -1,35 +1,45 @@
-function []=targetTrialIDFormatFieldValueChanged(src)
+function []=targetTrialIDFormatFieldValueChanged(src,targetTrialIDColHeaderName)
 
-%% PURPOSE: STORE THE SUBJECT ID COLUMN HEADER IN THE LOGSHEET TO A FILE AND TO THE APP DATA
-
-data=src.Value;
-if isempty(data)
-    return;
-end
-
-if ispc==1 % On PC
-    slash='\';
-elseif ismac==1 % On Mac
-    slash='/';
-end
+%% PURPOSE: SET & STORE THE TARGET TRIAL ID COLUMN HEADER NAME FROM THE LOGSHEET   
 
 fig=ancestor(src,'figure','toplevel');
-
-setappdata(fig,'targetTrialIDFormat',data);
+handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
-allProjectsPathTxt=getappdata(fig,'allProjectsTxtPath');
 
-% The project name should ALWAYS be in this file at this point. If not, it's because it's the first time and they've never entered a project name before.
-if exist(allProjectsPathTxt,'file')~=2
-    warning('ENTER A PROJECT NAME!');
+if exist('targetTrialIDColHeaderName','var')~=1
+    targetTrialIDColHeaderName=handles.Import.targetTrialIDColHeaderField.Value;
+    runLog=true;
+else
+    handles.Import.targetTrialIDColHeaderField.Value=targetTrialIDColHeaderName;
+    runLog=false;
+end
+
+if isempty(targetTrialIDColHeaderName)
     return;
 end
 
-text=regexp(fileread(allProjectsPathTxt),'\n','split'); % Read in the file, where each line is one cell.
+% Save the target trial ID column header to the project-specific settings
+settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
+settingsStruct=load(settingsMATPath,projectName);
+settingsStruct=settingsStruct.(projectName);
 
-prefix='Target Trial ID Format:';
-text=addProjInfoToFile(text,projectName,prefix,data);
-fid=fopen(allProjectsPathTxt,'w');
-fprintf(fid,'%s\n',text{1:end-1});
-fprintf(fid,'%s',text{end});
-fclose(fid);
+macAddress=getComputerID();
+
+projectSettingsMATPath=settingsStruct.(macAddress).projectSettingsMATPath;
+
+% NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
+% NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+
+NonFcnSettingsStruct.Import.TargetTrialIDColHeader=targetTrialIDColHeaderName;
+
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
+
+if runLog
+    desc='Change the target trial ID column header name from the logsheet';
+    updateLog(fig,desc,targetTrialIDColHeaderName);    
+end
+
+logsheetPath=getappdata(fig,'logsheetPath');
+logsheetPathFieldValueChanged(fig,logsheetPath);

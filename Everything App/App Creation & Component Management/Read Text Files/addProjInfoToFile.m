@@ -1,4 +1,4 @@
-function [text]=addProjInfoToFile(text,projectName,prefix,data)
+function [text]=addProjInfoToFile(text,projectName,prefix,data,appendBool)
 
 %% PURPOSE: HELPER FUNCTION TO EASILY PUT NEW METADATA INTO THE TEXT FILE 'allProjects_ProjectNamesPaths.txt'
 % Inputs:
@@ -6,9 +6,15 @@ function [text]=addProjInfoToFile(text,projectName,prefix,data)
 % projectName: The project to be modifying data for. (char)
 % prefix: The specific metadata field to modify. (char)
 % data: The metadata to add/replace in the file. (char)
+% appendBool: 1 to append to existing data, 0 to replace the line entirely (double)
+
 
 % Outputs:
 % newText: The new text file, either with the data modified (if previously existing) or added (if new metadata field for the project)
+
+if ~exist('appendBool','var')
+    appendBool=0; % Default behavior is to overwrite the entire line
+end
 
 % Check if the current project name is in the text file
 allProjectsList=getAllProjectNames(text);
@@ -46,7 +52,11 @@ for i=1:length(text)
     
     % Now have found the project, checking if the prefix was found.
     if length(text{i})>=length(prefix) && isequal(text{i}(1:length(prefix)),prefix)
-        text{i}(length(prefix)+2:length(prefix)+1+length(data))=data;
+        if appendBool==0
+            text{i}=[prefix ' ' data]; % Replaces the data
+        elseif appendBool==1
+            text{i}=[text{i} data];
+        end
         return; % After modifying an existing data, stop this function.
     end
     

@@ -1,35 +1,37 @@
-function []=subjIDColHeaderFieldValueChanged(src)
+function []=subjIDColHeaderFieldValueChanged(src,subjIDColHeaderName)
 
-%% PURPOSE: STORE THE SUBJECT ID COLUMN HEADER IN THE LOGSHEET TO A FILE AND TO THE APP DATA
-
-data=src.Value;
-if isempty(data)
-    return;
-end
-
-if ispc==1 % On PC
-    slash='\';
-elseif ismac==1 % On Mac
-    slash='/';
-end
+%% PURPOSE: SET & STORE THE SUBJECT ID COLUMN HEADER IN THE LOGSHEET
 
 fig=ancestor(src,'figure','toplevel');
-
-setappdata(fig,'subjIDColHeader',data);
+handles=getappdata(fig,'handles');
 projectName=getappdata(fig,'projectName');
-allProjectsPathTxt=getappdata(fig,'allProjectsTxtPath');
 
-% The project name should ALWAYS be in this file at this point. If not, it's because it's the first time and they've never entered a project name before.
-if exist(allProjectsPathTxt,'file')~=2
-    warning('ENTER A PROJECT NAME!');
+if exist('subjIDColHeaderName','var')~=1
+    subjIDColHeaderName=handles.Import.subjIDColHeaderField.Value;
+    runLog=true;
+else
+    handles.Import.subjIDColHeaderField.Value=subjIDColHeaderName;
+    runLog=false;
+end
+
+if isempty(subjIDColHeaderName)
     return;
 end
 
-text=regexp(fileread(allProjectsPathTxt),'\n','split'); % Read in the file, where each line is one cell.
+projectSettingsMATPath=getProjectSettingsMATPath(fig,projectName);
 
-prefix='Subject ID Column Header:';
-text=addProjInfoToFile(text,projectName,prefix,data);
-fid=fopen(allProjectsPathTxt,'w');
-fprintf(fid,'%s\n',text{1:end-1});
-fprintf(fid,'%s',text{end});
-fclose(fid);
+% load(projectSettingsMATPath,'NonFcnSettingsStruct');
+NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
+
+NonFcnSettingsStruct.Import.SubjectIDColHeader=subjIDColHeaderName;
+
+% save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
+setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
+
+if runLog
+    desc='Change the subject codename column header in the logsheet';
+    updateLog(fig,desc,subjIDColHeaderName);       
+end
+
+logsheetPath=getappdata(fig,'logsheetPath');
+logsheetPathFieldValueChanged(fig,logsheetPath);

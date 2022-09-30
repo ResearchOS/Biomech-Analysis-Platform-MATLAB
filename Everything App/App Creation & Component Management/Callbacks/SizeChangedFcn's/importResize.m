@@ -3,12 +3,9 @@ function [fontSizeRelToHeight]=importResize(src, event)
 %% PURPOSE: RESIZE THE COMPONENTS WITHIN THE IMPORT TAB
 
 data=src.UserData; % Get UserData to access components.
-
 if isempty(data)
     return; % Called on uifigure creation
 end
-
-% Set components to be invisible
 
 % Modify component location
 figSize=src.Position(3:4); % Width x height
@@ -17,177 +14,182 @@ figSize=src.Position(3:4); % Width x height
 fig=ancestor(src,'figure','toplevel');
 ancSize=fig.Position(3:4);
 defaultPos=get(0,'defaultfigureposition');
-if isequal(ancSize,defaultPos(3:4)) % If currently in default figure size
+if isequal(ancSize,[defaultPos(3)*2 defaultPos(4)]) % If currently in default figure size
     if ~isempty(getappdata(fig,'fontSizeRelToHeight')) % If the figure has been restored to default size after previously being resized.
         fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight'); % Get the original ratio.
     else % Figure initialized as default size
-        initFontSize=get(data.ProjectNameField,'FontSize'); % Get the initial font size
+        initFontSize=get(data.LogsheetPathField,'FontSize'); % Get the initial font size
         fontSizeRelToHeight=initFontSize/ancSize(2); % Font size relative to figure height.
         setappdata(fig,'fontSizeRelToHeight',fontSizeRelToHeight); % Store the font size relative to figure height.
-    end    
+    end 
 else
     fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight');
 end
 
 % Set new font size
-newFontSize=round(fontSizeRelToHeight*ancSize(2)); % Multiply relative font size by the figure's height
-
+newFontSize=round(fontSizeRelToHeight*ancSize(2)); % Multiply relative font size by the figures height
 if newFontSize>20
     newFontSize=20; % Cap the font size (and therefore the text box/button sizes too)
 end
 
 %% Positions specified as relative to tab width & height
 % All positions here are specified as relative positions
-projectNameLabelRelPos=[0.02 0.9];
-logsheetNameButtonRelPos=[0.02 0.85];
-dataPathButtonRelPos=[0.02 0.8];
-codePathButtonRelPos=[0.02 0.75];
-projectNameEditFieldRelPos=[0.2 0.9]; % Width (relative) by height (relative)
-logsheetNameEditFieldRelPos=[0.2 0.85];
-dataPathEditFieldRelPos=[0.2 0.8];
-codePathEditFieldRelPos=[0.2 0.75];
-openImportSettingsButtonRelPos=[0.08 0.7];
-openSpecifyTrialsButtonRelPos=[0.08 0.65];
-projectDropDownRelPos=[0.65 0.9];
-runImportButtonRelPos=[0.75 0.2];
-redoImportCheckboxRelPos=[0.7 0.85];
-updateMetadataCheckboxRelPos=[0.7 0.8];
-dataTypeImportSettingsDropDownRelPos=[0.65 0.75];
-logsheetLabelRelPos=[0.5 0.6];
-numHeaderRowsLabelRelPos=[0.5 0.55];
-numHeaderRowsFieldRelPos=[0.7 0.55];
-subjectIDColHeaderLabelRelPos=[0.5 0.5];
-subjectIDColHeaderFieldRelPos=[0.7 0.5];
-trialIDColHeaderLabelRelPos=[0.5 0.45];
-trialIDColHeaderFieldRelPos=[0.7 0.45];
-trialIDFormatLabelRelPos=[0.5 0.4];
-trialIDFormatFieldRelPos=[0.7 0.4];
-targetTrialIDFormatLabelRelPos=[0.5 0.35];
-targetTrialIDFormatFieldRelPos=[0.7 0.35];
-saveAllButtonRelPos=[0.75 0.25];
-selectDataPanelRelPos=[0.05 0.05];
-    
+LogsheetPathButtonRelPos=[0.01 0.9];
+LogsheetPathFieldRelPos=[0.08 0.9];
+LogsheetLabelRelPos=[0.01 0.95];
+NumHeaderRowsLabelRelPos=[0.01 0.85];
+NumHeaderRowsFieldRelPos=[0.26 0.85];
+SubjectIDColHeaderLabelRelPos=[0.01 0.8];
+SubjectIDColHeaderFieldRelPos=[0.26 0.8];
+TrialIDColHeaderDataTypeLabelRelPos=[0.01 0.75];
+TrialIDColHeaderDataTypeFieldRelPos=[0.26 0.75];
+TargetTrialIDColHeaderLabelRelPos=[0.01 0.7];
+TargetTrialIDColHeaderFieldRelPos=[0.26 0.7];
+OpenLogsheetButtonRelPos=[0.28 0.9];
+LogVarsUITreeRelPos=[0.01 0.5];
+DataTypeLabelRelPos=[0.22 0.65];
+DataTypeDropDownRelPos=[0.31 0.65];
+TrialSubjectDropDownRelPos=[0.22 0.6];
+AssignVariableButtonRelPos=[0.22 0.55];
+LogVarNameFieldRelPos=[0.32 0.55];
+VariableNamesListboxRelPos=[0.5 0.1];
+VarSearchFieldRelPos=[0.5 0.9];
+RunLogImportButtonRelPos=[0.75 0.75];
+CreateArgButtonRelPos=[0.75 0.9];
+SpecifyTrialsUITreeRelPos=[0.01 0.01];
+NewSpecifyTrialsButtonRelPos=[0.22 0.15];
+RemoveSpecifyTrialsButtonRelPos=[0.22 0.1];
+ImportFcnDropDownRelPos=[0.75 0.5];
+CheckAllLogVarsUITreeButtonRelPos=[0.01 0.45];
+UncheckAllLogVarsUITreeButtonRelPos=[0.12 0.45];
+EditSpecifyTrialsButtonRelPos=[0.22 0.05];
+SpecifyTrialsButtonRelPos=[0.01 0.16];
+
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
-compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text
-projectNameLabelSize=[0.18 compHeight];
-logsheetNameButtonSize=[0.17 compHeight];
-dataPathButtonSize=[0.15 compHeight];
-codePathButtonSize=[0.15 compHeight];
-projectNameEditFieldSize=[0.25 compHeight]; % Width (relative) by height (absolute)
-logsheetNameEditFieldSize=[0.4 compHeight];
-dataPathEditFieldSize=[0.4 compHeight];
-codePathEditFieldSize=[0.4 compHeight];
-openImportSettingsButtonSize=[0.4 compHeight];
-openSpecifyTrialsButtonSize=[0.4 compHeight];
-projectDropDownSize=[0.35 compHeight];
-runImportButtonSize=[0.2 compHeight];
-redoImportCheckboxSize=[0.3 compHeight];
-updateMetadataCheckboxSize=[0.3 compHeight];
-dataTypeImportSettingsDropDownSize=[0.25 compHeight];
-logsheetLabelSize=[0.2 compHeight];
-numHeaderRowsLabelSize=[0.2 compHeight];
-numHeaderRowsFieldSize=[0.1 compHeight];
-subjectIDColHeaderLabelSize=[0.2 compHeight];
-subjectIDColHeaderFieldSize=[0.2 compHeight];
-trialIDColHeaderLabelSize=[0.2 compHeight];
-trialIDColHeaderFieldSize=[0.2 compHeight];
-trialIDFormatLabelSize=[0.2 compHeight];
-trialIDFormatFieldSize=[0.2 compHeight];
-targetTrialIDFormatLabelSize=[0.2 compHeight];
-targetTrialIDFormatFieldSize=[0.2 compHeight];
-saveAllButtonSize=[0.2 compHeight];
-selectDataPanelSize=[0.4 0.55*figSize(2)];
+compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
+LogsheetPathButtonSize=[0.07 compHeight];
+LogsheetPathFieldSize=[0.2 compHeight];
+LogsheetLabelSize=[0.2 compHeight];
+NumHeaderRowsLabelSize=[0.2 compHeight];
+NumHeaderRowsFieldSize=[0.08 compHeight];
+SubjectIDColHeaderLabelSize=[0.25 compHeight];
+SubjectIDColHeaderFieldSize=[0.2 compHeight];
+TrialIDColHeaderDataTypeLabelSize=[0.25 compHeight];
+TrialIDColHeaderDataTypeFieldSize=[0.2 compHeight];
+TargetTrialIDColHeaderLabelSize=[0.25 compHeight];
+TargetTrialIDColHeaderFieldSize=[0.2 compHeight];
+OpenLogsheetButtonSize=[0.05 compHeight];
+LogVarsUITreeSize=[0.2 0.2];
+DataTypeLabelSize=[0.2 compHeight];
+DataTypeDropDownSize=[0.1 compHeight];
+TrialSubjectDropDownSize=[0.1 compHeight];
+AssignVariableButtonSize=[0.1 compHeight];
+LogVarNameFieldSize=[0.1 compHeight];
+VariableNamesListboxSize=[0.2 0.8];
+VarSearchFieldSize=[0.2 compHeight];
+RunLogImportButtonSize=[0.2 compHeight];
+CreateArgButtonSize=[0.2 compHeight];
+SpecifyTrialsUITreeSize=[0.2 0.2];
+NewSpecifyTrialsButtonSize=[0.08 compHeight];
+RemoveSpecifyTrialsButtonSize=[0.08 compHeight];
+ImportFcnDropDownSize=[0.2 compHeight];
+CheckAllLogVarsUITreeButtonSize=[0.1 compHeight];
+UncheckAllLogVarsUITreeButtonSize=[0.1 compHeight];
+EditSpecifyTrialsButtonSize=[0.08 compHeight];
+SpecifyTrialsButtonSize=[0.2 compHeight];
 
-% Multiply the relative positions by the figure size to get the actual position.
-projectNameLabelPos=round([projectNameLabelRelPos.*figSize projectNameLabelSize(1)*figSize(1) projectNameLabelSize(2)]);
-logsheetNameButtonPos=round([logsheetNameButtonRelPos.*figSize logsheetNameButtonSize(1)*figSize(1) logsheetNameButtonSize(2)]);
-dataPathButtonPos=round([dataPathButtonRelPos.*figSize dataPathButtonSize(1)*figSize(1) dataPathButtonSize(2)]);
-codePathButtonPos=round([codePathButtonRelPos.*figSize codePathButtonSize(1)*figSize(1) codePathButtonSize(2)]);
-projectNameEditFieldPos=round([projectNameEditFieldRelPos.*figSize projectNameEditFieldSize(1)*figSize(1) projectNameEditFieldSize(2)]);
-logsheetNameEditFieldPos=round([logsheetNameEditFieldRelPos.*figSize logsheetNameEditFieldSize(1)*figSize(1) logsheetNameEditFieldSize(2)]);
-dataPathEditFieldPos=round([dataPathEditFieldRelPos.*figSize dataPathEditFieldSize(1)*figSize(1) dataPathEditFieldSize(2)]);
-codePathEditFieldPos=round([codePathEditFieldRelPos.*figSize codePathEditFieldSize(1)*figSize(1) codePathEditFieldSize(2)]);
-openImportSettingsButtonPos=round([openImportSettingsButtonRelPos.*figSize openImportSettingsButtonSize(1)*figSize(1) openImportSettingsButtonSize(2)]);
-openSpecifyTrialsButtonPos=round([openSpecifyTrialsButtonRelPos.*figSize openSpecifyTrialsButtonSize(1)*figSize(1) openSpecifyTrialsButtonSize(2)]);
-projectDropDownPos=round([projectDropDownRelPos.*figSize projectDropDownSize(1)*figSize(1) projectDropDownSize(2)]);
-runImportButtonPos=round([runImportButtonRelPos.*figSize runImportButtonSize(1)*figSize(1) runImportButtonSize(2)]);
-redoImportCheckboxPos=round([redoImportCheckboxRelPos.*figSize redoImportCheckboxSize(1)*figSize(1) redoImportCheckboxSize(2)]);
-updateMetadataCheckBoxPos=round([updateMetadataCheckboxRelPos.*figSize updateMetadataCheckboxSize(1)*figSize(1) updateMetadataCheckboxSize(2)]);
-dataTypeImportSettingsDropDownPos=round([dataTypeImportSettingsDropDownRelPos.*figSize dataTypeImportSettingsDropDownSize(1)*figSize(1) dataTypeImportSettingsDropDownSize(2)]);
+%% Multiply the relative positions by the figure size to get the actual position.}
+LogsheetPathButtonPos=round([LogsheetPathButtonRelPos.*figSize LogsheetPathButtonSize(1)*figSize(1) LogsheetPathButtonSize(2)]);
+LogsheetPathFieldPos=round([LogsheetPathFieldRelPos.*figSize LogsheetPathFieldSize(1)*figSize(1) LogsheetPathFieldSize(2)]);
+LogsheetLabelPos=round([LogsheetLabelRelPos.*figSize LogsheetLabelSize(1)*figSize(1) LogsheetLabelSize(2)]);
+NumHeaderRowsLabelPos=round([NumHeaderRowsLabelRelPos.*figSize NumHeaderRowsLabelSize(1)*figSize(1) NumHeaderRowsLabelSize(2)]);
+NumHeaderRowsFieldPos=round([NumHeaderRowsFieldRelPos.*figSize NumHeaderRowsFieldSize(1)*figSize(1) NumHeaderRowsFieldSize(2)]);
+SubjectIDColHeaderLabelPos=round([SubjectIDColHeaderLabelRelPos.*figSize SubjectIDColHeaderLabelSize(1)*figSize(1) SubjectIDColHeaderLabelSize(2)]);
+SubjectIDColHeaderFieldPos=round([SubjectIDColHeaderFieldRelPos.*figSize SubjectIDColHeaderFieldSize(1)*figSize(1) SubjectIDColHeaderFieldSize(2)]);
+TrialIDColHeaderDataTypeLabelPos=round([TrialIDColHeaderDataTypeLabelRelPos.*figSize TrialIDColHeaderDataTypeLabelSize(1)*figSize(1) TrialIDColHeaderDataTypeLabelSize(2)]);
+TrialIDColHeaderDataTypeFieldPos=round([TrialIDColHeaderDataTypeFieldRelPos.*figSize TrialIDColHeaderDataTypeFieldSize(1)*figSize(1) TrialIDColHeaderDataTypeFieldSize(2)]);
+TargetTrialIDColHeaderLabelPos=round([TargetTrialIDColHeaderLabelRelPos.*figSize TargetTrialIDColHeaderLabelSize(1)*figSize(1) TargetTrialIDColHeaderLabelSize(2)]);
+TargetTrialIDColHeaderFieldPos=round([TargetTrialIDColHeaderFieldRelPos.*figSize TargetTrialIDColHeaderFieldSize(1)*figSize(1) TargetTrialIDColHeaderFieldSize(2)]);
+OpenLogsheetButtonPos=round([OpenLogsheetButtonRelPos.*figSize OpenLogsheetButtonSize(1)*figSize(1) OpenLogsheetButtonSize(2)]);
+LogVarsUITreePos=round([LogVarsUITreeRelPos.*figSize LogVarsUITreeSize.*figSize]);
+DataTypeLabelPos=round([DataTypeLabelRelPos.*figSize DataTypeLabelSize(1)*figSize(1) DataTypeLabelSize(2)]);
+DataTypeDropDownPos=round([DataTypeDropDownRelPos.*figSize DataTypeDropDownSize(1)*figSize(1) DataTypeDropDownSize(2)]);
+TrialSubjectDropDownPos=round([TrialSubjectDropDownRelPos.*figSize TrialSubjectDropDownSize(1)*figSize(1) TrialSubjectDropDownSize(2)]);
+AssignVariableButtonPos=round([AssignVariableButtonRelPos.*figSize AssignVariableButtonSize(1)*figSize(1) AssignVariableButtonSize(2)]);
+LogVarNameFieldPos=round([LogVarNameFieldRelPos.*figSize LogVarNameFieldSize(1)*figSize(1) LogVarNameFieldSize(2)]);
+VariableNamesListboxPos=round([VariableNamesListboxRelPos.*figSize VariableNamesListboxSize.*figSize]);
+VarSearchFieldPos=round([VarSearchFieldRelPos.*figSize VarSearchFieldSize(1)*figSize(1) VarSearchFieldSize(2)]);
+RunLogImportButtonPos=round([RunLogImportButtonRelPos.*figSize RunLogImportButtonSize(1)*figSize(1) RunLogImportButtonSize(2)]);
+CreateArgButtonPos=round([CreateArgButtonRelPos.*figSize CreateArgButtonSize(1)*figSize(1) CreateArgButtonSize(2)]);
+SpecifyTrialsUITreePos=round([SpecifyTrialsUITreeRelPos.*figSize SpecifyTrialsUITreeSize.*figSize]);
+NewSpecifyTrialsButtonPos=round([NewSpecifyTrialsButtonRelPos.*figSize NewSpecifyTrialsButtonSize(1)*figSize(1) NewSpecifyTrialsButtonSize(2)]);
+RemoveSpecifyTrialsButtonPos=round([RemoveSpecifyTrialsButtonRelPos.*figSize RemoveSpecifyTrialsButtonSize(1)*figSize(1) RemoveSpecifyTrialsButtonSize(2)]);
+ImportFcnDropDownPos=round([ImportFcnDropDownRelPos.*figSize ImportFcnDropDownSize(1)*figSize(1) ImportFcnDropDownSize(2)]);
+CheckAllLogVarsUITreeButtonPos=round([CheckAllLogVarsUITreeButtonRelPos.*figSize CheckAllLogVarsUITreeButtonSize(1)*figSize(1) CheckAllLogVarsUITreeButtonSize(2)]);
+UncheckAllLogVarsUITreeButtonPos=round([UncheckAllLogVarsUITreeButtonRelPos.*figSize UncheckAllLogVarsUITreeButtonSize(1)*figSize(1) UncheckAllLogVarsUITreeButtonSize(2)]);
+EditSpecifyTrialsButtonPos=round([EditSpecifyTrialsButtonRelPos.*figSize EditSpecifyTrialsButtonSize(1)*figSize(1) EditSpecifyTrialsButtonSize(2)]);
+SpecifyTrialsButtonPos=round([SpecifyTrialsButtonRelPos.*figSize SpecifyTrialsButtonSize(1)*figSize(1) SpecifyTrialsButtonSize(2)]);
 
-logsheetLabelPos=round([logsheetLabelRelPos.*figSize logsheetLabelSize(1)*figSize(1) logsheetLabelSize(2)]);
-numHeaderRowsLabelPos=round([numHeaderRowsLabelRelPos.*figSize numHeaderRowsLabelSize(1)*figSize(1) numHeaderRowsLabelSize(2)]);
-numHeaderRowsFieldPos=round([numHeaderRowsFieldRelPos.*figSize numHeaderRowsFieldSize(1)*figSize(1) numHeaderRowsFieldSize(2)]);
-subjectIDColHeaderLabelPos=round([subjectIDColHeaderLabelRelPos.*figSize subjectIDColHeaderLabelSize(1)*figSize(1) subjectIDColHeaderLabelSize(2)]);
-subjectIDColHeaderFieldPos=round([subjectIDColHeaderFieldRelPos.*figSize subjectIDColHeaderFieldSize(1)*figSize(1) subjectIDColHeaderFieldSize(2)]);
-trialIDColHeaderLabelPos=round([trialIDColHeaderLabelRelPos.*figSize trialIDColHeaderLabelSize(1)*figSize(1) trialIDColHeaderLabelSize(2)]);
-trialIDColHeaderFieldPos=round([trialIDColHeaderFieldRelPos.*figSize trialIDColHeaderFieldSize(1)*figSize(1) trialIDColHeaderFieldSize(2)]);
-trialIDFormatLabelPos=round([trialIDFormatLabelRelPos.*figSize trialIDFormatLabelSize(1)*figSize(1) trialIDFormatLabelSize(2)]);
-trialIDFormatFieldPos=round([trialIDFormatFieldRelPos.*figSize trialIDFormatFieldSize(1)*figSize(1) trialIDFormatFieldSize(2)]);
-targetTrialIDFormatLabelPos=round([targetTrialIDFormatLabelRelPos.*figSize targetTrialIDFormatLabelSize(1)*figSize(1) targetTrialIDFormatLabelSize(2)]);
-targetTrialIDFormatFieldPos=round([targetTrialIDFormatFieldRelPos.*figSize targetTrialIDFormatFieldSize(1)*figSize(1) targetTrialIDFormatFieldSize(2)]);
-saveAllButtonPos=round([saveAllButtonRelPos.*figSize saveAllButtonSize(1)*figSize(1) saveAllButtonSize(2)]);
-selectDataPanelPos=round([selectDataPanelRelPos.*figSize selectDataPanelSize(1)*figSize(1) selectDataPanelSize(2)]);
+data.LogsheetPathButton.Position=LogsheetPathButtonPos;
+data.LogsheetPathField.Position=LogsheetPathFieldPos;
+data.LogsheetLabel.Position=LogsheetLabelPos;
+data.NumHeaderRowsLabel.Position=NumHeaderRowsLabelPos;
+data.NumHeaderRowsField.Position=NumHeaderRowsFieldPos;
+data.SubjectIDColHeaderLabel.Position=SubjectIDColHeaderLabelPos;
+data.SubjectIDColHeaderField.Position=SubjectIDColHeaderFieldPos;
+data.TrialIDColHeaderDataTypeLabel.Position=TrialIDColHeaderDataTypeLabelPos;
+data.TrialIDColHeaderDataTypeField.Position=TrialIDColHeaderDataTypeFieldPos;
+data.TargetTrialIDColHeaderLabel.Position=TargetTrialIDColHeaderLabelPos;
+data.TargetTrialIDColHeaderField.Position=TargetTrialIDColHeaderFieldPos;
+data.OpenLogsheetButton.Position=OpenLogsheetButtonPos;
+data.LogVarsUITree.Position=LogVarsUITreePos;
+data.DataTypeLabel.Position=DataTypeLabelPos;
+data.DataTypeDropDown.Position=DataTypeDropDownPos;
+data.TrialSubjectDropDown.Position=TrialSubjectDropDownPos;
+% data.AssignVariableButton.Position=AssignVariableButtonPos;
+% data.LogVarNameField.Position=LogVarNameFieldPos;
+% data.VariableNamesListbox.Position=VariableNamesListboxPos;
+data.VarSearchField.Position=VarSearchFieldPos;
+data.RunLogImportButton.Position=RunLogImportButtonPos;
+% data.CreateArgButton.Position=CreateArgButtonPos;
+% data.SpecifyTrialsUITree.Position=SpecifyTrialsUITreePos;
+% data.NewSpecifyTrialsButton.Position=NewSpecifyTrialsButtonPos;
+% data.RemoveSpecifyTrialsButton.Position=RemoveSpecifyTrialsButtonPos;
+data.ImportFcnDropDown.Position=ImportFcnDropDownPos;
+data.CheckAllLogVarsUITreeButton.Position=CheckAllLogVarsUITreeButtonPos;
+data.UncheckAllLogVarsUITreeButton.Position=UncheckAllLogVarsUITreeButtonPos;
+% data.EditSpecifyTrialsButton.Position=EditSpecifyTrialsButtonPos;
+data.SpecifyTrialsButton.Position=SpecifyTrialsButtonPos;
 
-% Set the actual positions for each component
-data.ProjectNameLabel.Position=projectNameLabelPos;
-data.LogsheetPathButton.Position=logsheetNameButtonPos;
-data.DataPathButton.Position=dataPathButtonPos;
-data.CodePathButton.Position=codePathButtonPos;
-data.ProjectNameField.Position=projectNameEditFieldPos;
-data.LogsheetPathField.Position=logsheetNameEditFieldPos;
-data.DataPathField.Position=dataPathEditFieldPos;
-data.CodePathField.Position=codePathEditFieldPos;
-data.OpenImportSettingsButton.Position=openImportSettingsButtonPos;
-data.OpenSpecifyTrialsButton.Position=openSpecifyTrialsButtonPos;
-data.SwitchProjectsDropDown.Position=projectDropDownPos;
-data.RunImportButton.Position=runImportButtonPos;
-data.RedoImportCheckBox.Position=redoImportCheckboxPos;
-data.UpdateMetadataCheckBox.Position=updateMetadataCheckBoxPos;
-data.DataTypeImportSettingsDropDown.Position=dataTypeImportSettingsDropDownPos;
-data.LogsheetLabel.Position=logsheetLabelPos;
-data.NumHeaderRowsLabel.Position=numHeaderRowsLabelPos;
-data.NumHeaderRowsField.Position=numHeaderRowsFieldPos;
-data.SubjectIDColHeaderLabel.Position=subjectIDColHeaderLabelPos;
-data.SubjectIDColHeaderField.Position=subjectIDColHeaderFieldPos;
-data.TrialIDColHeaderLabel.Position=trialIDColHeaderLabelPos;
-data.TrialIDColHeaderField.Position=trialIDColHeaderFieldPos;
-data.TrialIDFormatLabel.Position=trialIDFormatLabelPos;
-data.TrialIDFormatField.Position=trialIDFormatFieldPos;
-data.TargetTrialIDFormatLabel.Position=targetTrialIDFormatLabelPos;
-data.TargetTrialIDFormatField.Position=targetTrialIDFormatFieldPos;
-data.SaveAllButton.Position=saveAllButtonPos;
-data.SelectDataPanel.Position=selectDataPanelPos;
-
-% Set the font sizes for all components that use text
-data.ProjectNameLabel.FontSize=newFontSize;
 data.LogsheetPathButton.FontSize=newFontSize;
-data.DataPathButton.FontSize=newFontSize;
-data.CodePathButton.FontSize=newFontSize;
-data.ProjectNameField.FontSize=newFontSize;
 data.LogsheetPathField.FontSize=newFontSize;
-data.DataPathField.FontSize=newFontSize;
-data.CodePathField.FontSize=newFontSize;
-data.OpenImportSettingsButton.FontSize=newFontSize;
-data.OpenSpecifyTrialsButton.FontSize=newFontSize;
-data.SwitchProjectsDropDown.FontSize=newFontSize;
-data.RunImportButton.FontSize=newFontSize;
-data.RedoImportCheckBox.FontSize=newFontSize;
-data.UpdateMetadataCheckBox.FontSize=newFontSize;
-data.DataTypeImportSettingsDropDown.FontSize=newFontSize;
+
 data.LogsheetLabel.FontSize=newFontSize;
 data.NumHeaderRowsLabel.FontSize=newFontSize;
 data.NumHeaderRowsField.FontSize=newFontSize;
 data.SubjectIDColHeaderLabel.FontSize=newFontSize;
 data.SubjectIDColHeaderField.FontSize=newFontSize;
-data.TrialIDColHeaderLabel.FontSize=newFontSize;
-data.TrialIDColHeaderField.FontSize=newFontSize;
-data.TrialIDFormatLabel.FontSize=newFontSize;
-data.TrialIDFormatField.FontSize=newFontSize;
-data.TargetTrialIDFormatLabel.FontSize=newFontSize;
-data.TargetTrialIDFormatField.FontSize=newFontSize;
-data.SaveAllButton.FontSize=newFontSize;
-data.SelectDataPanel.FontSize=newFontSize;
-
-% Restore component visibility
+data.TrialIDColHeaderDataTypeLabel.FontSize=newFontSize;
+data.TrialIDColHeaderDataTypeField.FontSize=newFontSize;
+data.TargetTrialIDColHeaderLabel.FontSize=newFontSize;
+data.TargetTrialIDColHeaderField.FontSize=newFontSize;
+data.OpenLogsheetButton.FontSize=newFontSize;
+data.LogVarsUITree.FontSize=newFontSize;
+data.DataTypeLabel.FontSize=newFontSize;
+data.DataTypeDropDown.FontSize=newFontSize;
+data.TrialSubjectDropDown.FontSize=newFontSize;
+% data.AssignVariableButton.FontSize=newFontSize;
+% data.LogVarNameField.FontSize=newFontSize;
+% data.VariableNamesListbox.FontSize=newFontSize;
+data.VarSearchField.FontSize=newFontSize;
+data.RunLogImportButton.FontSize=newFontSize;
+% data.CreateArgButton.FontSize=newFontSize;
+% data.SpecifyTrialsUITree.FontSize=newFontSize;
+% data.NewSpecifyTrialsButton.FontSize=newFontSize;
+% data.RemoveSpecifyTrialsButton.FontSize=newFontSize;
+data.ImportFcnDropDown.FontSize=newFontSize;
+data.CheckAllLogVarsUITreeButton.FontSize=newFontSize;
+data.UncheckAllLogVarsUITreeButton.FontSize=newFontSize;
+% data.EditSpecifyTrialsButton.FontSize=newFontSize;
+data.SpecifyTrialsButton.FontSize=newFontSize;

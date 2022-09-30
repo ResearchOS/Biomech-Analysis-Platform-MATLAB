@@ -1,0 +1,5 @@
+function [arg]=hardCodedVar_Template()
+
+%% PURPOSE: CREATE A HARD-CODED VARIABLE. THERE ARE NO INPUTS, BECAUSE THIS IS HARD-CODED!
+
+arg=[];

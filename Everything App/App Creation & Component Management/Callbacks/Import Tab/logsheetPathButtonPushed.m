@@ -1,24 +1,23 @@
-function []=logsheetPathButtonPushed(src)
+function []=logsheetPathButtonPushed(src,event)
 
-%% PURPOSE: OPEN THE UI FILE PICKER WHEN THE BUTTON IS CLICKED. THEN PUT THE PATH INTO THE LOGSHEET PATH FIELD AND RUN THAT CALLBACK
+%% PURPOSE: OPEN A UI FILE PICKER TO SELECT THE LOGSHEET FILE FOR THE CURRENT PROJECT.
 
-% If a data (should it be code?) directory was already provided, open the file picker to that folder path.
 fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
+% projectName=getappdata(fig,'projectName');
 
-dataPath=getappdata(fig,'dataPath'); % dataPath always begins empty.
-% codePath=getappdata(fig,'codePath'); % codePath always begins empty.
-[file,path]=uigetfile({'*.xlsx';'*.xls'},'Select the logsheet file',dataPath);
+% 1. Prompt for the logsheet path
+logsheetPath=getappdata(fig,'logsheetPath');
+codePath=handles.Projects.codePathField.Value;
+[file,path]=uigetfile({'*.xlsx';'*.xls'},'Select the logsheet file',codePath);
 if isequal(file,0) && isequal(path,0) % 'Cancel' or 'Close' button was clicked
+    figure(fig);
     return;
 end
 
+% 2. Update the value of the logsheet path edit field
 logsheetPath=[path file];
-setappdata(fig,'logsheetPath',logsheetPath);
-disp(logsheetPath);
+handles.Import.logsheetPathField.Value=logsheetPath;
 
-% Set the logsheetPathField to display the new path
-h=findobj(fig,'Type','uieditfield','Tag','LogsheetPathField');
-h.Value=logsheetPath;
-
-% Run the logsheetPathFieldValueChanged callback.
-logsheetPathFieldValueChanged(h);
+% 3. Run the logsheetPathEditFieldValueChanged callback
+logsheetPathFieldValueChanged(fig);

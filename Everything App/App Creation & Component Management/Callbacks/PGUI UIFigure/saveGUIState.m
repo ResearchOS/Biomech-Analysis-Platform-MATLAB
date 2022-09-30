@@ -45,3 +45,6 @@ if ~isfolder(folderName)
     mkdir(folderName);
 end
 saveas(Q,[folderName slash plotName '.fig']);
+
+% Remove the PGUI variable from the workspace now that it is closed.
+evalin('base','clear gui;');

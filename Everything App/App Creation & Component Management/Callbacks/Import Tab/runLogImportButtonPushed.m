@@ -131,6 +131,7 @@ allTrialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
 rowsIdx=false(size(logVar,1),1);
 subNames=fieldnames(allTrialNames);
 
+%% Apply specify trials
 for i=1:length(subNames)    
     subName=subNames{i};
     trialNames=allTrialNames.(subName);
@@ -144,7 +145,38 @@ cd(oldPath);
 
 % Get the row numbers from the specify trials selected
 rowNums=find(rowsIdx==1);
-rowNums=rowNums(rowNums>=numHeaderRows+1); % Temporarily use all rows until specify trials is completed.
+rowNums=rowNums(rowNums>=numHeaderRows+1); % Specify trials has already been applied
+
+%% Remove rep numbers that are not desired (from desired trials)
+rowNumsReps=[];
+count=0;
+for i=1:length(rowNums) % Iterate over each row to decide at the repetition level if it should be included.
+    subName=logVar{rowNums(i),subjIDCol};
+    trialName=logVar{rowNums(i),targetTrialIDCol};
+    if i==1
+        repNum=1;
+        if allTrialNames.(subName).(trialName)==1
+            trialNamePrev=trialName;
+            count=count+1;
+            rowNumsReps(count)=rowNums(i);
+            continue;
+        end
+    end
+
+    if isequal(trialNamePrev,trialName)
+        repNum=repNum+1;
+    else
+        repNum=1;
+    end
+
+    if allTrialNames.(subName).(trialName)==repNum
+        count=count+1;
+        rowNumsReps(count,1)=rowNums(i);
+    end
+
+    trialNamePrev=trialName;
+
+end
 
 dataPath=getappdata(fig,'dataPath');
 
@@ -152,8 +184,8 @@ slash=filesep;
 
 %% Trial level data
 if any(trialCheckedVarsIdx) % There is at least one trial level variable
-    for rowNumIdx=1:length(rowNums)
-        rowNum=rowNums(rowNumIdx);
+    for rowNumIdx=1:length(rowNumsReps)
+        rowNum=rowNumsReps(rowNumIdx);
 
         rowDataTrial=logVar(rowNum,useHeadersIdxNumsTrial);
         subName=logVar{rowNum,subjIDCol};

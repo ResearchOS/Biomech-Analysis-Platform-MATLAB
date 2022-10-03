@@ -51,11 +51,13 @@ for i=1:length(fcnNodes)
     nodeNums(i)=fcnNodes(i).NodeData;
 end
 
-nodeRows=ismember(Digraph.Nodes.NodeNumber,nodeNums);
-nodeRowNums=find(nodeRows==1);
+% nodeRows=ismember(Digraph.Nodes.NodeNumber,nodeNums);
+[~,~,nodeRowNums]=intersect(nodeNums,Digraph.Nodes.NodeNumber);
+% nodeRowNums=intersect(nodeRows)
+% nodeRowNums=find(nodeRowNums==1);
 % coords=Digraph.Nodes.Coordinates(nodeRows,2);
-specifyTrialsNames=Digraph.Nodes.SpecifyTrials(nodeRows);
-isImportFcns=Digraph.Nodes.IsImport(nodeRows);
+specifyTrialsNames=Digraph.Nodes.SpecifyTrials(nodeRowNums);
+isImportFcns=Digraph.Nodes.IsImport(nodeRowNums);
 orderNums=zeros(length(nodeRowNums),1);
 for i=1:length(nodeRowNums)
     orderNums(i)=Digraph.Nodes.RunOrder{nodeRowNums(i)}.([splitName '_' splitCode]);

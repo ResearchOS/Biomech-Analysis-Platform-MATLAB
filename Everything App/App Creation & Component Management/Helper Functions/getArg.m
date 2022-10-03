@@ -158,8 +158,8 @@ if isequal(tabName,'Process')
     end
 
     try
-%         S=load(matFilePath,'-mat',dynamicSaveNames{:});
-        S=load(matFilePath,dynamicSaveNames{:});
+        S=load(matFilePath,'-mat',dynamicSaveNames{:});
+%         S=load(matFilePath,dynamicSaveNames{:});
 %         load(matFilePath,'Mocap_Marker_Data_001');
     catch
         if exist(matFilePath,'file')~=2

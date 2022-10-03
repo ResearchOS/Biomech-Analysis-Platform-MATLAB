@@ -17,6 +17,8 @@ handles=getappdata(fig,'handles');
 delete(handles.Process.fcnArgsUITree.Children);
 
 selNodeIDs=getappdata(fig,'selectedNodeNumbers'); % From the figure
+
+%% NOTE: HERE I NEED TO ORDER THE SELECTED FUNCTIONS, BASED ON INEDGES & OUTEDGES (IN THE FUTURE THIS SHOULD BE SYNONYMOUS WITH RUN ORDER)
 nodeRows=ismember(Digraph.Nodes.NodeNumber,selNodeIDs);
 nodesData=Digraph.Nodes.NodeNumber(nodeRows);
 nodeRowsNums=find(nodeRows==1);
@@ -63,7 +65,7 @@ spaceIdx=strfind(text,' ');
 splitName=text(1:spaceIdx-1);
 splitCode=text(spaceIdx+2:end-1); % Currently selected split.
 
-nodeRowsNums=nodeRowsNums(~ismember(nodeRowsNums,1));
+nodeRowsNums=nodeRowsNums(~ismember(nodeRowsNums,1)); % Remove the logsheet, if it's been selected.
 
 % Do checks to ensure that the pre-conditions are properly met.
 for i=1:length(nodeRowsNums)

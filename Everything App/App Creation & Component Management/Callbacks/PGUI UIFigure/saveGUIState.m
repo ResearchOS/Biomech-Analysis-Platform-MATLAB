@@ -30,7 +30,7 @@ if isempty(Plotting)
 end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-if exist(projectSettingsMATPath,'file')~=7
+if exist(projectSettingsMATPath,'file')~=2
     disp('Nothing saved upon exit!');
     return;
 end

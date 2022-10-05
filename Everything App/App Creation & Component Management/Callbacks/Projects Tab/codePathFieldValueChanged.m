@@ -74,6 +74,8 @@ NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath=codePath;
 % eval([projectName '=NonFcnSettingsStruct;']); % Rename the NonFcnSettingsStruct to the projectName
 if exist(projectSettingsMATPath,'file')~=2    
     save(projectSettingsMATPath,'NonFcnSettingsStruct','-mat','-v6');
+else
+    save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Have to save this because the switchProjectsDropDownValueChanged fcn references the file, not the app data.
 end
 
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);

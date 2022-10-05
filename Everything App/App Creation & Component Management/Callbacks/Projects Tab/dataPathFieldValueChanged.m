@@ -67,7 +67,9 @@ addpath(genpath(getappdata(fig,'dataPath')));
 % save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
-resetProjectAccess_Visibility(fig,3);
+if handles.Import.logsheetPathField.Visible==0
+    resetProjectAccess_Visibility(fig,3); % Only set the visibility to this if the logsheet path field is not visible (likely because setting up new project).
+end
 
 if runLog
     desc='Update the data folder path for this project.';

@@ -98,7 +98,12 @@ end
 
 addpath(genpath(codePath));
 
+slash=filesep;
+
 if exist(codePath,'dir')==7
+    if ~isequal(codePath(end),slash)
+        codePath=[codePath slash]; % Ensure that there is always a slash at the end of the path.
+    end
     setappdata(fig,'codePath',codePath);
     handles.Projects.codePathField.Value=codePath;
 else
@@ -115,6 +120,9 @@ if exist(logPath,'file')==2
 end
 
 if exist(dataPath,'dir')==7
+    if ~isequal(dataPath(end),slash)
+        dataPath=[dataPath slash]; % Ensure that there is always a slash at the end of the path.
+    end
     setappdata(fig,'dataPath',dataPath);
     handles.Projects.dataPathField.Value=dataPath;
 else

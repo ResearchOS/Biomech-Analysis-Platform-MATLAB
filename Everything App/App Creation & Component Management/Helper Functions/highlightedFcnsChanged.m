@@ -18,11 +18,37 @@ delete(handles.Process.fcnArgsUITree.Children);
 
 selNodeIDs=getappdata(fig,'selectedNodeNumbers'); % From the figure
 
-%% NOTE: HERE I NEED TO ORDER THE SELECTED FUNCTIONS, BASED ON INEDGES & OUTEDGES (IN THE FUTURE THIS SHOULD BE SYNONYMOUS WITH RUN ORDER)
+%% NOTE: HERE I NEED TO ORDER THE SELECTED FUNCTIONS, BASED ON INEDGES & OUTEDGES (IN THE FUTURE THIS SHOULD BE SYNONYMOUS WITH RUN ORDER AS THAT IS MORE AUTOMATICALLY SET)
+currSplit=handles.Process.splitsUITree.SelectedNodes.Text;
+spaceIdx=strfind(currSplit,' ');
+splitName=currSplit(1:spaceIdx-1);
+splitCode=currSplit(spaceIdx+2:end-1);
+% [nodeRows,a,b]=intersect(Digraph.Nodes.NodeNumber,selNodeIDs);
 nodeRows=ismember(Digraph.Nodes.NodeNumber,selNodeIDs);
-nodesData=Digraph.Nodes.NodeNumber(nodeRows);
 nodeRowsNums=find(nodeRows==1);
-% nodeRowsNums=nodeRowsNums(nodeRowsNums~=1);
+nodeRowsNums=nodeRowsNums(~ismember(nodeRowsNums,1)); % Remove the logsheet, if it's been selected.
+runOrders=Digraph.Nodes.RunOrder(nodeRows);
+runOrderNums=NaN(size(runOrders));
+count=0;
+for i=1:length(runOrderNums)
+    inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodeRowsNums(i)); % All inedges for the current function
+    outEdgesRows=ismember(Digraph.Edges.EndNodes(:,1),nodeRowsNums(i)); % All outedges for the current function
+    splitCodes=Digraph.Edges.SplitCode(inEdgesRows | outEdgesRows);
+    if ismember(splitCode,splitCodes)
+        count=count+1;
+        runOrderNums(count)=runOrders{i}.([splitName '_' splitCode]);
+    end
+end
+runOrderNums=runOrderNums(~isnan(runOrderNums));
+if isempty(runOrderNums) && ~(isempty(nodeRows) || ~any(nodeRows))
+    disp('No selected nodes are in the current split!');
+    return;
+end
+[~,sortIdx]=sort(runOrderNums);
+
+nodeRowsNums=nodeRowsNums(sortIdx); % The node row numbers, IN ORDER OF RUN ORDER
+nodesData=Digraph.Nodes.NodeNumber(nodeRowsNums);
+% nodesData=nodesData(sortIdx); 
 
 % Visually highlight all selected nodes
 plotH=findobj(handles.Process.mapFigure,'Type','GraphPlot');
@@ -64,8 +90,6 @@ text=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(text,' ');
 splitName=text(1:spaceIdx-1);
 splitCode=text(spaceIdx+2:end-1); % Currently selected split.
-
-nodeRowsNums=nodeRowsNums(~ismember(nodeRowsNums,1)); % Remove the logsheet, if it's been selected.
 
 % Do checks to ensure that the pre-conditions are properly met.
 for i=1:length(nodeRowsNums)
@@ -122,19 +146,14 @@ highlight(h,'Edges',1:size(Digraph.Edges.Color,1),'LineWidth',0.5); % Reset line
 highlight(h,'Edges',edgeIdx,'LineWidth',2); % Emphasize the current split.
 
 % Fill in the functions UI tree
-nodesData=nodesData(nodesData~=1);
+keepNodesDataIdx=nodesData~=1; % Removes the logsheet node
+nodesData=nodesData(keepNodesDataIdx);
 splitName=splitsList{end};
 for i=1:length(nodeRowsNums) % Each function    
-
-%     inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodesData(i)); % All inedges for the current function
-%     splitCodes=unique(Digraph.Edges.SplitCode(inEdgesRows)); % The list of all splits for the current function
 
     fcnName=uitreenode(handles.Process.fcnArgsUITree,'Text',Digraph.Nodes.FunctionNames{nodeRowsNums(i)},'NodeData',nodesData(i));
     fcnName.ContextMenu=handles.Process.openFcnContextMenu;
     inputs=uitreenode(fcnName,'Text','Inputs');
-%     splitIdx=find(ismember(splitCodes,splitCode)==1); % This may be in the wrong order! Organize splits list for each function numerically?
-% 
-%     assert(length(splitIdx)==1);
 
     currInVarNames=Digraph.Nodes.InputVariableNames{nodeRowsNums(i)};
     if isstruct(currInVarNames) && isfield(currInVarNames,[splitName '_' splitCode])
@@ -170,4 +189,3 @@ for i=1:length(nodeRowsNums) % Each function
 end
 
 functionsUITreeSelectionChanged(fig);
-% handles.Process.fcnDescriptionTextArea=Digraph.Nodes.Descriptions{nodeRows};

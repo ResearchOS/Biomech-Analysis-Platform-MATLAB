@@ -112,13 +112,13 @@ handles.Projects.dataPathButton=uibutton(projectsTab,'push','Tooltip','Select Da
 handles.Projects.codePathButton=uibutton(projectsTab,'push','Tooltip','Select Code Path','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
 
 % 6. The text edit field for the data path
-handles.Projects.dataPathField=uieditfield(projectsTab,'text','Value','Data Path (contains ''Subject Data'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
+handles.Projects.dataPathField=uieditfield(projectsTab,'text','Value','Data Path (contains ''Raw Data Files'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 
 % 7. The text edit field for the code path
 handles.Projects.codePathField=uieditfield(projectsTab,'text','Value','Path to Project Processing Code Folder','Tag','CodePathField','ValueChangedFcn',@(codePathField,event) codePathFieldValueChanged(codePathField)); % Code path name edit field (to the folder containing all code for this project).
 
 % 8. Archive project button
-handles.Projects.archiveProjectButton=uibutton(projectsTab,'push','Text','P-','Tag','ArchiveProjectButton','Tooltip','Archive current project','ButtonPushedFcn',@(archiveProjectButton,event) archiveProjectButtonPushed(archiveProjectButton));
+handles.Projects.removeProjectButton=uibutton(projectsTab,'push','Text','P-','Tag','ArchiveProjectButton','Tooltip','Archive current project','ButtonPushedFcn',@(removeProjectButton,event) removeProjectButtonPushed(removeProjectButton));
 
 % 9. Open data path button
 handles.Projects.openDataPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenDataPathButton','Tooltip','Open data folder','ButtonPushedFcn',@(openDataPathButton,event) openDataPathButtonPushed(openDataPathButton));
@@ -150,7 +150,7 @@ handles.Projects.loadArchiveButton=uibutton(projectsTab,'Text','Load Archive','T
 
 projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectNameLabel,'DataPathButton',handles.Projects.dataPathButton,'CodePathButton',handles.Projects.codePathButton,...
     'AddProjectButton',handles.Projects.addProjectButton,'SwitchProjectsDropDown',handles.Projects.switchProjectsDropDown,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenCodePathButton',handles.Projects.openCodePathButton,...
-    'ArchiveProjectButton',handles.Projects.archiveProjectButton,'DataPathField',handles.Projects.dataPathField,'CodePathField',handles.Projects.codePathField,'OpenPISettingsPathButton',handles.Projects.openPISettingsPathButton,...
+    'RemoveProjectButton',handles.Projects.removeProjectButton,'DataPathField',handles.Projects.dataPathField,'CodePathField',handles.Projects.codePathField,'OpenPISettingsPathButton',handles.Projects.openPISettingsPathButton,...
     'ShowVarDropDown',handles.Projects.showVarDropDown,'ShowVarButton',handles.Projects.showVarButton,'SaveVarButton',handles.Projects.saveVarButton,'ArchiveButton',handles.Projects.archiveButton,'ArchiveDataCheckbox',handles.Projects.archiveDataCheckbox,...
     'LoadArchiveButton',handles.Projects.loadArchiveButton);
 

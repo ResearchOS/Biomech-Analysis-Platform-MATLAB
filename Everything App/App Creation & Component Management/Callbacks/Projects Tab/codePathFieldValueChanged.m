@@ -61,7 +61,7 @@ end
 % 3. If the project settings structure MAT file does not exist, initialize the project-specific settings with default values for all GUI components.
 if exist(projectSettingsMATPath,'file')~=2
     % Just missing the data type-specific trial ID column header, and of course the UI trees and description text areas
-    NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath='Data Path (contains ''Subject Data'' folder)';
+    NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath='Data Path (contains ''Raw Data Files'' folder)';
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath='Logsheet Path (ends in .xlsx)';
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT='';
     NonFcnSettingsStruct.Import.NumHeaderRows=-1;

@@ -34,17 +34,19 @@ projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 save(projectSettingsMATPath,'VariableNamesList',varsList{:},'-append');
 
 %% SAVE THE CURRENT PLOT
-slash=filesep;
-Q=figure('Visible','off');
-set(handles.Plot.plotPanel.Children,'Parent',Q);
-plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
-codePath=getappdata(fig,'codePath');
+if ~isempty(handles.Plot.plotFcnUITree.SelectedNodes)
+    slash=filesep;
+    Q=figure('Visible','off');
+    set(handles.Plot.plotPanel.Children,'Parent',Q);
+    plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
+    codePath=getappdata(fig,'codePath');
 
-folderName=[codePath  'Plot' slash 'Stashed GUI Plots'];
-if ~isfolder(folderName)
-    mkdir(folderName);
+    folderName=[codePath  'Plot' slash 'Stashed GUI Plots'];
+    if ~isfolder(folderName)
+        mkdir(folderName);
+    end
+    saveas(Q,[folderName slash plotName '.fig']);
 end
-saveas(Q,[folderName slash plotName '.fig']);
 
 % Remove the PGUI variable from the workspace now that it is closed.
 evalin('base','clear gui;');

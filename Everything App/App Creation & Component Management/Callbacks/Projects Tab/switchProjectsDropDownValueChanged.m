@@ -46,9 +46,11 @@ if contains(projectSettingsMATPath,'_RunLog')
     projectSettingsMATPath=[projectSettingsMATPath(1:end-11) '.mat'];
 end
 
+setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Change the project-specific settings file being referenced for saving.
+
 if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist
     handles.Projects.codePathField.Value='Path to Project Processing Code Folder';
-    handles.Projects.dataPathField.Value='Data Path (contains ''Subject Data'' folder)';
+    handles.Projects.dataPathField.Value='Data Path (contains ''Raw Data Files'' folder)';
     resetProjectAccess_Visibility(fig,1);
     setappdata(fig,'codePath','');
     codePathFieldValueChanged(fig); % Changing the code folder path changes all project-specific settings.
@@ -65,8 +67,6 @@ if getappdata(fig,'isRunLog')
     end
 %     setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Saves an alternate version
 end
-
-setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
 
 if exist(projectSettingsMATPath,'file')~=2
     return;
@@ -89,11 +89,11 @@ if isfield(NonFcnSettingsStruct.Projects.Paths,macAddress)
     if isfield(NonFcnSettingsStruct.Projects.Paths.(macAddress),'DataPath')
         dataPath=NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath;
     else
-        dataPath='Data Path (contains ''Subject Data'' folder)';
+        dataPath='Data Path (contains ''Raw Data Files'' folder)';
     end
 else
     codePath='Path to Project Processing Code Folder';
-    dataPath='Data Path (contains ''Subject Data'' folder)';
+    dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
 
 addpath(genpath(codePath));
@@ -120,7 +120,7 @@ if exist(dataPath,'dir')==7
 else
     resetProjectAccess_Visibility(fig,2);
     setappdata(fig,'dataPath','');
-    handles.Projects.dataPathField.Value='Data Path (contains ''Subject Data'' folder';
+    handles.Projects.dataPathField.Value='Data Path (contains ''Raw Data Files'' folder)';
     return;
 end
 

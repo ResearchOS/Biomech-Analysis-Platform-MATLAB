@@ -15,7 +15,7 @@ else
     runLog=false;
 end
 
-if isempty(dataPath) || isequal(dataPath,'Data Path (contains ''Subject Data'' folder)')
+if isempty(dataPath) || isequal(dataPath,'Data Path (contains ''Raw Data Files'' folder)')
     setappdata(fig,'dataPath','');
     return;
 end

@@ -16,5 +16,10 @@ codePathFieldValueChanged(gui, codePath);
 tabName = 'Projects';
 tabGroup1SelectionChanged(gui, tabName);
 
+% Update the code folder path for this project.
+% 05-Oct-2022 13:40:04
+codePath = 'C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr21-TWW-Biomechanics\';
+codePathFieldValueChanged(gui, codePath);
+
 setappdata(gui,'isRunLog',false);
 toc;

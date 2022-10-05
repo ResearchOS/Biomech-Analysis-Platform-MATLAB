@@ -30,8 +30,12 @@ if isempty(Plotting)
 end
 
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+if exist(projectSettingsMATPath,'file')~=7
+    disp('Nothing saved upon exit!');
+    return;
+end
 
-save(projectSettingsMATPath,'VariableNamesList',varsList{:},'-append');
+save(projectSettingsMATPath,varsList{:},'-append');
 
 %% SAVE THE CURRENT PLOT
 if ~isempty(handles.Plot.plotFcnUITree.SelectedNodes)

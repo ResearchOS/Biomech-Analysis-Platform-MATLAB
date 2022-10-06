@@ -82,7 +82,7 @@ projectsTab=uitab(tabGroup1,'Title','Projects','Tag','Projects','AutoResizeChild
 importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off','SizeChangedFcn',@importResize); % Create the import tab
 processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off','SizeChangedFcn',@processResize); % Create the process tab
 plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off','SizeChangedFcn',@plotResize); % Create the plot tab
-statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off'); % Create the stats tab
+statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off','SizeChangedFcn',@statsResize); % Create the stats tab
 settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
 handles.Tabs.tabGroup1=tabGroup1;
 

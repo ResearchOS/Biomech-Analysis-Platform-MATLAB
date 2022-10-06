@@ -58,6 +58,8 @@ switch currTab
         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
     case 'Projects'
         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
+    case 'Stats'
+        set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
     otherwise
 
 end

@@ -518,7 +518,87 @@ plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSea
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the stats tab
+% 1. Variables UI Tree
+handles.Stats.varsUITree=uitree(statsTab,'SelectionChangedFcn',@(varsUITree,event) varsUITreeSelectionChanged(varsUITree),'Tag','VarsUITree');
 
+% 2. Create new table
+handles.Stats.createTableButton=uibutton(statsTab,'push','Text','T+','Tag','CreateTableButton','Tooltip','Create new stats table','ButtonPushedFcn',@(createTableButton,event) createTableButtonPushed(createTableButton));
+
+% 3. Remove table
+handles.Stats.removeTableButton=uibutton(statsTab,'push','Text','T-','Tag','RemoveTableButton','Tooltip','Remove stats table','ButtonPushedFcn',@(removeTableButton,event) removeTableButtonPushed(removeTableButton));
+
+% 4. Tables UI tree
+handles.Stats.tablesUITree=uitree(statsTab,'SelectionChangedFcn',@(tablesUITree,event) tablesUITreeSelectionChanged(tablesUITree),'Tag','TablesUITree');
+
+% 5. Specify trials button
+handles.Stats.specifyTrialsButton=uibutton(statsTab,'push','Text','Specify Trials','Tag','SpecifyTrialsButton','Tooltip','Specify the trials','ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushed(specifyTrialsButton));
+
+% 6. Add repetition variable button
+handles.Stats.addRepsVarButton=uibutton(statsTab,'push','Text','R+','Tag','AddRepsVarButton','Tooltip','Add repetition variable','ButtonPushedFcn',@(addRepsVarButton,event) addRepsVarButtonPushed(addRepsVarButton));
+
+% 7. Add variables button
+handles.Stats.addVarsButton=uibutton(statsTab,'push','Text','V+','Tag','AddVarsButton','Tooltip','Add variable','ButtonPushedFcn',@(addVarsButton,event) addVarsButtonPushed(addVarsButton));
+
+% 8. Remove variables button
+handles.Stats.removeVarsButton=uibutton(statsTab,'push','Text','<=','Tag','RemoveVarsButton','Tooltip','Remove variable','ButtonPushedFcn',@(removeVarsButton,event) removeVarsButtonPushed(removeVarsButton));
+
+% 9. Move var left/up button
+handles.Stats.varUpButton=uibutton(statsTab,'push','Text',{'/\','||'},'Tag','VarUpButton','Tooltip','Move variable up/left','ButtonPushedFcn',@(varUpButton,event) varUpButtonPushed(varUpButton));
+
+% 10. Move var right/down button
+handles.Stats.varDownButton=uibutton(statsTab,'push','Text',{'||','\/'},'Tag','VarDownButton','Tooltip','Move variable down/right','ButtonPushedFcn',@(varDownButton,event) varDownButtonPushed(varDownButton));
+
+% 11. Assigned variables UI tree
+handles.Stats.assignedVarsUITree=uitree(statsTab,'SelectionChangedFcn',@(assignedVarsUITree,event) assignedVarsUITreeSelectionChanged(assignedVarsUITree),'Tag','AssignedVarsUITree');
+
+% 12. Assign function to variable
+handles.Stats.assignFcnButton=uibutton(statsTab,'push','Text','<=','Tag','AssignFcnButton','Tooltip','Assign function to variable','ButtonPushedFcn',@(assignFcnButton,event) assignFcnButtonPushed(assignFcnButton));
+
+% 13. Unassign function from variable
+handles.Stats.unassignFcnButton=uibutton(statsTab,'push','Text','=>','Tag','UnassignFcnButton','Tooltip','Unassign function from variable','ButtonPushedFcn',@(unassignFcnButton,event) unassignFcnButtonPushed(unassignFcnButton));
+
+% 14. Create function button
+handles.Stats.createFcnButton=uibutton(statsTab,'push','Text','F+','Tag','CreateFcnButton','Tooltip','Create new function','ButtonPushedFcn',@(createFcnButton,event) createFcnButtonPushed(createFcnButton));
+
+% 15. Remove function button
+handles.Stats.removeFcnButton=uibutton(statsTab,'push','Text','F-','Tag','RemoveFcnButton','Tooltip','Remove function','ButtonPushedFcn',@(removeFcnButton,event) removeFcnButtonPushed(removeFcnButton));
+
+% 16. Functions UI tree
+handles.Stats.fcnsUITree=uitree(statsTab,'SelectionChangedFcn',@(fcnsUITree,event) fcnsUITreeSelectionChanged(fcnsUITree),'Tag','FcnsUITree');
+
+% 17. Run button
+handles.Stats.runButton=uibutton(statsTab,'push','Text','Run','Tag','RunButton','Tooltip','Create the specified stats table','ButtonPushedFcn',@(runButton,event) runButtonPushed(runButton));
+
+% 18. Assign vars button
+handles.Stats.assignVarsButton=uibutton(statsTab,'push','Text',{'Assign','Vars'},'Tag','AssignVarsButton','Tooltip','Assign additional variables to this function','ButtonPushedFcn',@(assignVarsButton,event) assignVarsButtonPushed(assignVarsButton));
+
+% 19. Variable description label
+handles.Stats.varsDescLabel=uilabel(statsTab,'Text','Vars Description','FontWeight','bold');
+
+% 20. Variable description text area
+handles.Stats.varsDescTextArea=uitextarea(statsTab,'Value','Enter Var Description Here','Tag','VarsDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(varsDescTextArea,event) varsDescTextAreaValueChanged(varsDescTextArea));
+
+% 21. Table description label
+handles.Stats.tableDescLabel=uilabel(statsTab,'Text','Table Description','FontWeight','bold');
+
+% 22. Table description text area
+handles.Stats.tableDescTextArea=uitextarea(statsTab,'Value','Enter Table Description Here','Tag','TableDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(tableDescTextArea,event) tableDescTextAreaValueChanged(tableDescTextArea));
+
+% 23. Convert stats table to MATLAB matrix button
+handles.Stats.matrixButton=uibutton(statsTab,'push','Text','Matrix','Tag','MatrixButton','Tooltip','Convert the pre-made stats table to a MATLAB matrix','ButtonPushedFcn',@(matrixButton,event) matrixButtonPushed(matrixButton));
+
+% 24. Repetitions checkbox UI tree
+handles.Stats.matrixRepsUITree=uitree(statsTab,'checkbox','SelectionChangedFcn',@(matrixRepsUITree,event) matrixRepsUITreeSelectionChanged(matrixRepsUITree),'CheckedNodesChangedFcn',@(matrixRepsUITree,event) matrixRepsUITreeCheckedNodesChanged(matrixRepsUITree),'Tag','MatrixRepsUITree');
+
+statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButton',handles.Stats.createTableButton,'RemoveTableButton',handles.Stats.removeTableButton,...
+    'TablesUITree',handles.Stats.tablesUITree,'SpecifyTrialsButton',handles.Stats.specifyTrialsButton,'AddRepsVarButton',handles.Stats.addRepsVarButton,...
+    'AddVarsButton',handles.Stats.addVarsButton,'RemoveVarsButton',handles.Stats.removeVarsButton,'VarUpButton',handles.Stats.varUpButton,'VarDownButton',handles.Stats.varDownButton,...
+    'AsssignedVarsUITree',handles.Stats.assignedVarsUITree,'AssignFcnButton',handles.Stats.assignFcnButton,'UnassignFcnButton',handles.Stats.unassignFcnButton,...
+    'CreateFcnButton',handles.Stats.createFcnButton,'RemoveFcnButton',handles.Stats.removeFcnButton,'FcnsUITree',handles.Stats.fcnsUITree,'RunButton',handles.Stats.runButton,...
+    'AssignVarsButton',handles.Stats.assignVarsButton,'VarsDescLabel',handles.Stats.varsDescLabel,'VarsDescTextArea',handles.Stats.varsDescTextArea,'TableDescLabel',handles.Stats.tableDescLabel,...
+    'TableDescTextArea',handles.Stats.tableDescTextArea,'MatrixButton',handles.Stats.matrixButton,'MatrixRepsUITree',handles.Stats.matrixRepsUITree);
+
+@statsResize;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the settings tab

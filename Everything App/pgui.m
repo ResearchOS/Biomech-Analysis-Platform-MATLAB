@@ -531,7 +531,7 @@ handles.Stats.removeTableButton=uibutton(statsTab,'push','Text','T-','Tag','Remo
 handles.Stats.tablesUITree=uitree(statsTab,'SelectionChangedFcn',@(tablesUITree,event) tablesUITreeSelectionChanged(tablesUITree),'Tag','TablesUITree');
 
 % 5. Specify trials button
-handles.Stats.specifyTrialsButton=uibutton(statsTab,'push','Text','Specify Trials','Tag','SpecifyTrialsButton','Tooltip','Specify the trials','ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushed(specifyTrialsButton));
+handles.Stats.specifyTrialsButton=uibutton(statsTab,'push','Text','Specify Trials','Tag','SpecifyTrialsButton','Tooltip','Specify the trials','ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushedPopupWindow(specifyTrialsButton));
 
 % 6. Add repetition variable button
 handles.Stats.addRepsVarButton=uibutton(statsTab,'push','Text','R+','Tag','AddRepsVarButton','Tooltip','Add repetition variable','ButtonPushedFcn',@(addRepsVarButton,event) addRepsVarButtonPushed(addRepsVarButton));

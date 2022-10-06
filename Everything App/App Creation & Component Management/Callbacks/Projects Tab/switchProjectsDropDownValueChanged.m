@@ -249,12 +249,18 @@ setappdata(fig,'Stats',Stats);
 makeVarNodesStats(fig,alphabetIdx,VariableNamesList); 
 
 % Set list of stats tables
+tableNames=fieldnames(Stats.Tables);
+makeTableNodes(fig,1:length(tableNames),tableNames);
 % handles.Stats.tablesUITree=0;
 
 % Set list of summary functions
 % handles.Stats.fcnsUITree=0;
 
 % For first stats table, initialize the assignedVarsUITree
+if ~isempty(handles.Stats.tablesUITree.Children)
+    handles.Stats.tablesUITree.SelectedNodes=handles.Stats.tablesUITree.Children(1);
+end
+tablesUITreeSelectionChanged(fig);
 % handles.Stats.assignedVarsUITree=0;
 
 

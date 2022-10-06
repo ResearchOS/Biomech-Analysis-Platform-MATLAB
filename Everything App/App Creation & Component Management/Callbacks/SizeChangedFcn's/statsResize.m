@@ -35,8 +35,8 @@ end
 %% Positions specified as relative to tab width & height
 % All positions here are specified as relative positions
 VarsUITreeRelPos=[0.01 0.59];
-CreateTableButtonRelPos=[0.01 0.5];
-RemoveTableButtonRelPos=[0.1 0.5];
+CreateTableButtonRelPos=[0.1 0.5];
+RemoveTableButtonRelPos=[0.01 0.5];
 TablesUITreeRelPos=[0.01 0.1];
 SpecifyTrialsButtonRelPos=[0.01 0.01];
 AddRepsVarButtonRelPos=[0.22 0.9];

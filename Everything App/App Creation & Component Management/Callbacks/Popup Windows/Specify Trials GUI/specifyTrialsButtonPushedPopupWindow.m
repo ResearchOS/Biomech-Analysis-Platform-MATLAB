@@ -73,6 +73,12 @@ if isequal(tabName,'Plot')
 
 end
 
+if isequal(tabName,'Stats')
+
+
+
+end
+
 %% Initialize GUI
 % clc;
 Q=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
@@ -134,6 +140,14 @@ elseif isequal(tabName,'Plot')
     end
 elseif isequal(tabName,'Import')
     specifyTrialsName=Digraph.Nodes.SpecifyTrials{1};
+elseif isequal(tabName,'Stats')
+    Stats=getappdata(fig,'Stats');
+    tableName=handles.Stats.tablesUITree.SelectedNodes.Text;
+    if ~isfield(Stats.Tables.(tableName),'SpecifyTrials')
+        specifyTrialsName=specifyTrialsNames{1};
+    else
+        specifyTrialsName=Stats.Tables.(tableName).SpecifyTrials;
+    end
 end
 
 varNamesIdx=false(length(specifyTrialsNames),1);

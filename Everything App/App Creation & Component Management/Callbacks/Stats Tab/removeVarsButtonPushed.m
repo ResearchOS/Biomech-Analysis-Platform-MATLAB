@@ -1,0 +1,3 @@
+function []=removeVarsButtonPushed(src,event)
+
+%% PURPOSE: REMOVE A REPETITION OR DATA VARIABLE FROM THE ASSIGNED VARS UI TREE

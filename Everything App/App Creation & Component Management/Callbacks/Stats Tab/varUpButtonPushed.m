@@ -1,0 +1,3 @@
+function []=varUpButtonPushed(src,event)
+
+%% PURPOSE: MOVE A REPETITION OR DATA VARIABLE UP IN THE UITREE (LEFT IN THE TABLE)

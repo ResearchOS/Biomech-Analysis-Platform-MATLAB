@@ -1,0 +1,3 @@
+function []=varsDescTextAreaValueChanged(src,event)
+
+%% PURPOSE: CHANGE THE DESCRIPTION OF THE CURRENTLY SELECTED VARIABLE

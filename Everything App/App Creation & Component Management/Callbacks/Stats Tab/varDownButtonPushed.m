@@ -1,0 +1,3 @@
+function []=varDownButtonPushed(src,event)
+
+%% PURPOSE: MOVE A REPETITION OR DATA VARIABLE DOWN IN THE LIST (RIGHT IN THE TABLE)

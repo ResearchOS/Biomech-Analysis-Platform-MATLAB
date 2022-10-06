@@ -19,6 +19,11 @@ delete(handles.Process.fcnArgsUITree.Children);
 selNodeIDs=getappdata(fig,'selectedNodeNumbers'); % From the figure
 
 %% NOTE: HERE I NEED TO ORDER THE SELECTED FUNCTIONS, BASED ON INEDGES & OUTEDGES (IN THE FUTURE THIS SHOULD BE SYNONYMOUS WITH RUN ORDER AS THAT IS MORE AUTOMATICALLY SET)
+if isempty(handles.Process.splitsUITree.SelectedNodes)
+    disp('Select a split first!');
+    return;
+end
+
 currSplit=handles.Process.splitsUITree.SelectedNodes.Text;
 spaceIdx=strfind(currSplit,' ');
 splitName=currSplit(1:spaceIdx-1);
@@ -48,7 +53,6 @@ end
 
 nodeRowsNums=nodeRowsNums(sortIdx); % The node row numbers, IN ORDER OF RUN ORDER
 nodesData=Digraph.Nodes.NodeNumber(nodeRowsNums);
-% nodesData=nodesData(sortIdx); 
 
 % Visually highlight all selected nodes
 plotH=findobj(handles.Process.mapFigure,'Type','GraphPlot');

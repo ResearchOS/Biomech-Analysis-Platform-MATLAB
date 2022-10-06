@@ -233,6 +233,31 @@ if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
     makePlotNodes(fig,1:length(plotNames),plotNames);
 end
 
+%% Stats tab
+if ismember('Stats',projectSettingsVarNames)
+    load(projectSettingsMATPath,'Stats');
+else
+    Stats='';
+end
+if isempty(Stats)
+    Stats.Tables=struct();
+    Stats.Functions=struct();
+end
+
+setappdata(fig,'Stats',Stats);
+
+makeVarNodesStats(fig,alphabetIdx,VariableNamesList); 
+
+% Set list of stats tables
+% handles.Stats.tablesUITree=0;
+
+% Set list of summary functions
+% handles.Stats.fcnsUITree=0;
+
+% For first stats table, initialize the assignedVarsUITree
+% handles.Stats.assignedVarsUITree=0;
+
+
 %% Finalize setup
 % 5. Set the most recent project to the current project name.
 mostRecentProjectName=projectName;

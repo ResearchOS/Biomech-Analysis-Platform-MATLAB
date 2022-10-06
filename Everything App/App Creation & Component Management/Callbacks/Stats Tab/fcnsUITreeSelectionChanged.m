@@ -1,0 +1,3 @@
+function []=fcnsUITreeSelectionChanged(src,event)
+
+%% PURPOSE: CHANGE WHICH SUMMARY FUNCTION IS CURRENTLY SELECTED IN THE LIST

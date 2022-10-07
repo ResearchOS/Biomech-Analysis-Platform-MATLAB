@@ -29,7 +29,7 @@ if ~isfield(Stats.Tables.(tableName),'SpecifyTrials')
 end
 
 %% Create the current stats table
-statsTable=generateStatsTable(fig,Stats,tableName);
+[statsTable,numRepCols,numDataCols]=generateStatsTable(fig,Stats,tableName);
 
 currDate=char(datetime('now','TimeZone','America/New_York'));
 % currDate=currDate(1:11);

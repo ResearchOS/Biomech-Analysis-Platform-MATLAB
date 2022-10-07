@@ -33,7 +33,7 @@ varNodeIdxNum=find(ismember(selNode.Parent.Parent.Children,varNode)==1);
 if ~isfield(Stats.Tables.(tableName).DataColumns,'GUINames') || isempty(Stats.Tables.(tableName).DataColumns(varNodeIdxNum).GUINames)
     Stats.Tables.(tableName).DataColumns(varNodeIdxNum).GUINames={varName};
     Stats.Tables.(tableName).DataColumns(varNodeIdxNum).NamesInCode={'data'};
-    Stats.Tables.(tableName).DataColumns(varNodeIdxNum).SubVars={''};
+    Stats.Tables.(tableName).DataColumns(varNodeIdxNum).Subvars={''};
     setappdata(fig,'Stats',Stats);
 end
 

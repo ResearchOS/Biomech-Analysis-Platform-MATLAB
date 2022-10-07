@@ -35,11 +35,11 @@ if ~isempty(selNode.Children)
     return;
 end
 
-currVar=selNode.Text;
+% currVar=selNode.Text;
 
 tableName=handles.Stats.tablesUITree.SelectedNodes.Text;
 
-varIdx=ismember({Stats.Tables.(tableName).DataColumns.Name},currVar);
+varIdx=ismember(selNode.Parent.Children,selNode);
 
 fcnName=handles.Stats.fcnsUITree.SelectedNodes.Text;
 

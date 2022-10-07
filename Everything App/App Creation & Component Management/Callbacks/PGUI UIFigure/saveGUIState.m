@@ -10,8 +10,9 @@ VariableNamesList=getappdata(fig,'VariableNamesList');
 Digraph=getappdata(fig,'Digraph');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 Plotting=getappdata(fig,'Plotting');
+Stats=getappdata(fig,'Stats');
 
-varsList={'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting'};
+varsList={'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting','Stats'};
 
 if isempty(VariableNamesList)
     varsList=varsList(~ismember(varsList,'VariableNamesList'));
@@ -29,8 +30,12 @@ if isempty(Plotting)
     varsList=varsList(~ismember(varsList,'Plotting'));
 end
 
+if isempty(Stats)
+    varsList=varsList(~ismember(varsList,'Stats'));
+end
+
 projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-if exist(projectSettingsMATPath,'file')~=2
+if exist(projectSettingsMATPath,'file')~=2 || isempty(varsList)
     disp('Nothing saved upon exit!');
     return;
 end

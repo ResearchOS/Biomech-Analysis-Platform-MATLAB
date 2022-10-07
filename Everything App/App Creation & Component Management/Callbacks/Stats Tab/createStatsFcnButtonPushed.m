@@ -77,6 +77,8 @@ text{1}=['function [summ]=' fcnName '_Stats(projectStruct,subName,trialName,repN
 text{2}='';
 text{3}='%% PURPOSE: SUMMARIZE A VARIABLE';
 text{4}='';
+text{5}='[data]=getArg({''data''},subName,trialName,repNum);';
+text{6}='';
 
 slash=filesep;
 fileName=[getappdata(fig,'codePath') 'Statistics' slash fcnName '_Stats.m'];
@@ -87,6 +89,8 @@ if exist(fileName,'file')~=2 % Don't overwrite!
     fprintf(fid,'%s',text{end});
     fclose(fid);
 end
+
+edit(fileName);
 
 %% Set the Stats struct back to the fig
 setappdata(fig,'Stats',Stats);

@@ -37,6 +37,7 @@ end
 if ~isempty(getappdata(fig,'dataPath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
     rmpath(genpath(getappdata(fig,'dataPath')));
+    addpath(genpath(getappdata(fig,'codePath'))); % In case those two dir's are the same, don't remove code path just because the data path was the same but is now different
     warning on MATLAB:rmpath:DirNotFound; % Turn the warning back on.
 end
 

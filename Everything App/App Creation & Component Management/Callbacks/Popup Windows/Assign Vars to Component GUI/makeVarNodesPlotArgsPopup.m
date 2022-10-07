@@ -27,9 +27,9 @@ end
 %% Selected variables listbox
 delete(handles.selVarsListbox.Children);
 
-for i=1:length(structComp.Names)
+for i=1:length(structComp.GUINames)
 
-    varNode=uitreenode(handles.selVarsListbox,'Text',structComp.Names{i});
+    varNode=uitreenode(handles.selVarsListbox,'Text',structComp.GUINames{i});
 
     if i==1
         handles.selVarsListbox.SelectedNodes=varNode;

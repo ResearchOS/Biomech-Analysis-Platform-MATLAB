@@ -241,7 +241,7 @@ else
 end
 if isempty(Stats)
     Stats.Tables=struct();
-    Stats.Functions=struct();
+    Stats.Functions={};
 end
 
 setappdata(fig,'Stats',Stats);

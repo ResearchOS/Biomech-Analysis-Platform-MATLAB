@@ -29,16 +29,35 @@ if ~isfield(Stats.Tables.(tableName),'SpecifyTrials')
 end
 
 %% Create the current stats table
-[statsTable,numRepCols,numDataCols]=generateStatsTable(fig,Stats,tableName);
+[statsTable,numRepCols,numDataCols,repNames,dataNames]=generateStatsTable(fig,Stats,tableName);
 
 currDate=char(datetime('now','TimeZone','America/New_York'));
 % currDate=currDate(1:11);
 varName=[tableName '_' currDate];
+varName=strrep(varName,'-','');
+varName=strrep(varName,':','');
+varName=strrep(varName,' ','_');
 varName=genvarname(varName);
+
+slash=filesep;
 
 matFileName=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat'];
 
+varNames={'Trial Name', repNames{:}, 'Trial Number', dataNames{:}};
+statsTable=[varNames; statsTable];
 varOut.(varName)=statsTable;
 
-save(matFileName,varName,'-struct','-v6');
+if exist(matFileName,'file')~=2
+    save(matFileName,'-struct','varOut','-v6');
+else
+    save(matFileName,'-struct','varOut','-append');
+end
 
+xlsFolder=[getappdata(fig,'dataPath') 'Statistics' slash 'Excel Files'];
+if ~isfolder(xlsFolder)
+    mkdir(xlsFolder);
+end
+
+xlsFileName=[xlsFolder slash varName '.xlsx'];
+
+writecell(statsTable,xlsFileName,'Sheet','1','Range','A1');

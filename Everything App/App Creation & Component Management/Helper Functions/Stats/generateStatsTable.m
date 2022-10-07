@@ -1,4 +1,4 @@
-function [statsTable,numRepCols,numDataCols]=generateStatsTable(fig,Stats,tableName)
+function [statsTable,numRepCols,numDataCols,repVars,dataVarNames]=generateStatsTable(fig,Stats,tableName)
 
 %% PURPOSE: CREATE THE STATS TABLE IN AN EXCEL FILE AND MATLAB MATRIX.
 handles=getappdata(fig,'handles');
@@ -24,11 +24,13 @@ numRepCols=length(varNamesInFile);
 dataVars={Stats.Tables.(tableName).DataColumns.Name};
 % varNames=cell(size(dataVars));
 fcnNames=cell(size(dataVars));
+dataVarNames=fcnNames;
 for i=1:length(dataVars)    
 %     spaceIdx=strfind(dataVars{i},' ');
 %     varNames{i}=dataVars{i}(1:spaceIdx-1);
 %     varCodes{i}=dataVars{i}(spaceIdx+2:end-1);
     fcnNames{i}=[Stats.Tables.(tableName).DataColumns(i).Function '_Stats'];
+    dataVarNames{i}=[dataVars{i} '_' Stats.Tables.(tableName).DataColumns(i).Function];
 end
 
 numDataCols=length(fcnNames);

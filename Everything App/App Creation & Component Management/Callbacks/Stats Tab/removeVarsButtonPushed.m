@@ -23,8 +23,6 @@ tableName=handles.Stats.tablesUITree.SelectedNodes.Text;
 
 cat=selNode.Parent.Text;
 
-parentNode=selNode.Parent;
-
 % Remove the variable from the struct.
 varNames={Stats.Tables.(tableName).([cat 'Columns']).Name};
 
@@ -32,11 +30,7 @@ varIdx=ismember(varNames,varName);
 
 Stats.Tables.(tableName).([cat 'Columns'])=Stats.Tables.(tableName).([cat 'Columns'])(~varIdx); % Remove the variable
 
-repNum=length(Stats.Tables.(tableName).([cat 'Columns']));
-
-delete(parentNode.Children);
-for i=1:repNum
-    a=uitreenode(parentNode,'Text',Stats.Tables.(tableName).([cat 'Columns'])(i));
-end
-
 setappdata(fig,'Stats',Stats);
+
+makeAssignedVarsNodes(fig,Stats,tableName);
+

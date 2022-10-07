@@ -38,10 +38,6 @@ end
 
 Stats.Tables.(tableName).DataColumns(repNum).Name=[currVar ' (' splitCode ')'];
 
-dataNode=findobj(handles.Stats.assignedVarsUITree,'Text','Data');
-delete(dataNode.Children);
-for i=1:repNum
-    a=uitreenode(dataNode,'Text',Stats.Tables.(tableName).DataColumns(repNum).Name);
-end
-
 setappdata(fig,'Stats',Stats);
+
+makeAssignedVarsNodes(fig,Stats,tableName);

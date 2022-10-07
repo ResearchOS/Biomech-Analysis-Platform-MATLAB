@@ -29,7 +29,6 @@ splitCode=currSplit(spaceIdx+2:end-1);
 
 tableName=handles.Stats.tablesUITree.SelectedNodes.Text;
 
-% reps=Stats.Tables.(tableName).RepetitionColumns;
 if ~isfield(Stats.Tables.(tableName),'RepetitionColumns') || isempty(Stats.Tables.(tableName).RepetitionColumns)
     repNum=1;
 else
@@ -38,10 +37,7 @@ end
 
 Stats.Tables.(tableName).RepetitionColumns(repNum).Name=[currVar ' (' splitCode ')'];
 
-repNode=findobj(handles.Stats.assignedVarsUITree,'Text','Repetition');
-delete(repNode.Children);
-for i=1:repNum
-    a=uitreenode(repNode,'Text',Stats.Tables.(tableName).RepetitionColumns(repNum).Name);
-end
-
 setappdata(fig,'Stats',Stats);
+
+makeAssignedVarsNodes(fig,Stats,tableName);
+

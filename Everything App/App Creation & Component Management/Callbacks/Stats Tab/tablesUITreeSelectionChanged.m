@@ -12,19 +12,4 @@ end
 
 tableName=handles.Stats.tablesUITree.SelectedNodes.Text;
 
-delete(handles.Stats.assignedVarsUITree.Children);
-
-repNode=uitreenode(handles.Stats.assignedVarsUITree,'Text','Repetition');
-dataNode=uitreenode(handles.Stats.assignedVarsUITree,'Text','Data');
-
-if isfield(Stats.Tables.(tableName),'RepetitionColumns')
-    for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
-        uitreenode(repNode,'Text',Stats.Tables.(tableName).RepetitionColumns(i).Name);
-    end
-end
-
-if isfield(Stats.Tables.(tableName),'DataColumns')
-    for i=1:length(Stats.Tables.(tableName).DataColumns)
-        uitreenode(dataNode,'Text',Stats.Tables.(tableName).DataColumns(i).Name);
-    end
-end
+makeAssignedVarsNodes(fig,Stats,tableName);

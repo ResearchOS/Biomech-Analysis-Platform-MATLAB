@@ -28,6 +28,8 @@ if ~isfield(Stats.Tables.(tableName),'SpecifyTrials')
     return;
 end
 
+disp('Generating stats table');
+
 %% Create the current stats table
 [statsTable,numRepCols,numDataCols,repNames,dataNames]=generateStatsTable(fig,Stats,tableName);
 

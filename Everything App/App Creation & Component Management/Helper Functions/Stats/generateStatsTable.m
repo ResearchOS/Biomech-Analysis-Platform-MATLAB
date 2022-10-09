@@ -179,23 +179,104 @@ for sub=1:length(subNames)
 end
 
 %% Rearrange the stats table so that the repetitions are in blocks, incrementing from left to right (e.g. all trials of one subject clumped together, then all trials of one condition)
-% origTable=statsTable;
-% for colNum=2:numRepCols+1
-%     uniqueEntries=unique(statsTable(:,colNum));
-%     prevEntryRows=0;
-% 
-%     for i=1:length(uniqueEntries)
-% 
-%         entryRows=find(ismember(statsTable(:,colNum),uniqueEntries{i})==1);
-%         newTable2(prevEntryRows+1:prevEntryRows+length(entryRows),1:size(statsTable,2))=origTable(entryRows,:);
-% 
-%         prevEntryRows=size(newTable2,1);
-% 
-%     end
-% 
-%     newTable=newTable2;
-%     clear newTable2;
-% 
-% end
+for colNum=numRepCols+1:-1:2
+    [~,sortIdx]=sort(statsTable(:,colNum));
+    statsTable=statsTable(sortIdx,:);
+end
 
 %% Add in the trial number now that everything is in the proper order
+trialNumCol=numRepCols+2;
+uniqueEntries=unique(statsTable(:,trialNumCol-1)); % Last repetition variable column
+maxEntriesNum=0;
+
+for i=1:length(uniqueEntries)
+
+    entryIdx=ismember(statsTable(:,trialNumCol-1),uniqueEntries{i}); % 1 where the current entry is
+
+    entriesDiff=diff([0; entryIdx; 0]); % 1 where the current entry starts, -1 where it ends
+    entriesStart=find(entriesDiff==1); % The indices where the current entry starts
+    entriesEnd=find(entriesDiff==-1)-1; % -1 to account for the additional zero at the start/end
+
+    assert(isequal(length(entriesStart),length(entriesEnd)));
+
+    for j=1:length(entriesStart)
+
+        if entriesEnd(j)-entriesStart(j)+1>maxEntriesNum
+            maxEntriesNum=entriesEnd(j)-entriesStart(j)+1; % The number of repetitions to ensure that every rep block has
+        end
+
+        for k=1:entriesEnd(j)-entriesStart(j)+1
+            statsTable{entriesStart(j)+k-1,trialNumCol}=k; % Add the number
+        end
+
+    end
+
+end
+
+%% Ensure that all conditions have the same number of repetitions
+for i=1:length(uniqueEntries)
+
+    entryIdx=ismember(statsTable(:,trialNumCol-1),uniqueEntries{i}); % 1 where the current entry is
+
+    entriesDiff=diff([0; entryIdx; 0]); % 1 where the current entry starts, -1 where it ends
+    entriesStart=find(entriesDiff==1); % The indices where the current entry starts
+    entriesEnd=find(entriesDiff==-1)-1; % -1 to account for the additional zero at the start/end
+
+    assert(isequal(length(entriesStart),length(entriesEnd)));
+
+    for j=1:length(entriesStart)
+
+        if entriesEnd(j)-entriesStart(j)+1>maxEntriesNum
+            error('Logic error! How are there more entries than the max?');
+        end
+
+        if entriesEnd(j)-entriesStart(j)+1==maxEntriesNum
+            continue;
+        end
+
+        % Need to pad the table with entries to ensure that they are all the same length
+        numExistReps=entriesEnd(j)-entriesStart(j)+1;
+        numRows=maxEntriesNum-numExistReps; % The number of rows to add to the table
+
+        % Determine if repetition & data variables are chars or numeric
+        insertData=cell(size(statsTable,2),1);
+        for k=2:trialNumCol-1
+            if all(cellfun(@isnumeric,statsTable(:,k)))
+                insertData{k}=NaN;
+            elseif all(cellfun(@ischar,statsTable(:,k)))
+                insertData{k}='NaN';
+            else
+                error(['Mixed chars & numeric in table row ' num2str(k)]);
+            end
+        end
+
+        for k=trialNumCol+1:size(statsTable,2)
+            if all(cellfun(@isnumeric,statsTable(:,k)))
+                insertData{k}=NaN;
+            elseif all(cellfun(@ischar,statsTable(:,k)))
+                insertData{k}='NaN';
+            else
+                error(['Mixed chars & numeric in table row ' num2str(k)]);
+            end
+        end
+
+        statsTable=[statsTable(1:entriesStart(j)+numExistReps-1,:); cell(numRows,size(statsTable,2)); statsTable(entriesStart(j)+numExistReps:end,:)];
+
+        entriesEnd(j)=entriesEnd(j)+numRows;
+
+        statsTable(entriesStart(j)+numExistReps:entriesEnd(j),1)={'Missing'}; % Trial name
+
+        for k=2:trialNumCol-1
+            statsTable(entriesStart(j)+numExistReps:entriesEnd(j),k)=insertData(k); % Repetition variables
+        end
+        for k=trialNumCol+1:size(statsTable,2)
+            statsTable(entriesStart(j)+numExistReps:entriesEnd(j),k)=insertData(k); % Data variables
+        end
+
+        for k=1:numRows
+            statsTable{entriesStart(j)+numExistReps+k-1,trialNumCol}=numExistReps+k;
+        end
+
+    end
+
+end

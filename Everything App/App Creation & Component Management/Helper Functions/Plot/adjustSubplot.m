@@ -1,4 +1,4 @@
-function []=adjustSubplot(src,event)
+function []=adjustSubplot(src,event,axLetter)
 
 %% PURPOSE: CHANGE THE SUBPLOT POSITIONING OF THE CURRENT AXES OBJECT.
 fig=ancestor(src,'figure','toplevel');
@@ -16,7 +16,9 @@ Plotting=getappdata(fig,'Plotting');
 
 plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
 
-axLetter=handles.Plot.currCompUITree.SelectedNodes.Text;
+if exist('axLetter','var')~=1
+    axLetter=handles.Plot.currCompUITree.SelectedNodes.Text;
+end
 
 axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
 
@@ -27,7 +29,11 @@ end
 
 axLoc=Plotting.Plots.(plotName).Axes.(axLetter).AxPos;
 
-loc=inputdlg('Specify where to locate the axes as (m,n,p)','Subplot',1,{axLoc});
+if nargin<3 % When changing the subplots
+    loc=inputdlg('Specify where to locate the axes as (m,n,p)','Subplot',1,{axLoc});
+else % When just refreshing the subplots
+    loc={axLoc};
+end
 
 if isempty(loc) || isempty(loc{1})
     return;

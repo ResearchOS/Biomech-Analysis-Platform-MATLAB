@@ -71,5 +71,5 @@ for i=1:length(compList)
     letter=compList{i}(spaceIdx(1)+1:spaceIdx(2)-1);
     axLetter=compList{i}(spaceIdx(2)+1:end);
     refreshPlotComp(fig,[],plotName,compName,letter,axLetter)
-
+%     adjustSubplot(fig,[],subplotIdx);
 end

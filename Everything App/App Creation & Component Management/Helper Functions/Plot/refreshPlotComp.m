@@ -28,10 +28,9 @@ if exist('letter','var')~=1
         return;
     end
     compName=compNode.Parent.Text;
-end
-
-% if exist('compName','var')~=1
-%     compName=compNode.Parent.Text;
+end % Used for refreshing the subplots
+%     axNodes=handles.Plot.currCompUITree.Children.Children;
+%     compNode=axNodes(ismember(axNodes,findobj(handles.Plot.currCompUITree,'Text',axLetter)));
 % end
 
 isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
@@ -107,4 +106,7 @@ switch compName
 end
 
 setappdata(fig,'Plotting',Plotting);
+if isequal(compName,'Axes')
+    adjustSubplot(fig,[],axLetter);
+end
 evalin('base','toc;');

@@ -25,6 +25,7 @@ end
 compName=currComp.Parent.Text;
 
 if isequal(compName,'Axes')
+    disp('Variables assigned to axes dictate the axes limits');
     return;
 end
 

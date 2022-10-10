@@ -23,15 +23,16 @@ plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
 compNames=fieldnames(Plotting.Plots.(plotName));
 
 letter=compNode.Text;
+
+if isequal(class(compNode.Parent),'matlab.ui.container.CheckBoxTree')
+    disp('Must have a letter selected!');
+    return;
+end
+
 compName=compNode.Parent.Text;
 
 if ~ismember(compName,compNames)
     disp('Need to select the component letter, not the component name!');
-    return;
-end
-
-if isequal(class(compNode.Parent),'matlab.ui.container.CheckBoxTree')
-    disp('Must have a letter selected!');
     return;
 end
 

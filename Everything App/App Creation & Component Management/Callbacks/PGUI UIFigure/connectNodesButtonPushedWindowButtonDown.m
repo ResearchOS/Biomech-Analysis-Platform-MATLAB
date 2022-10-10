@@ -231,6 +231,7 @@ if copyVars==0 % No split was chosen
     setappdata(fig,'doNothingOnButtonUp',0);
     set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
         'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
+    splitsUITreeSelectionChanged(fig);
     return;
 end
 
@@ -314,3 +315,5 @@ setappdata(fig,'Digraph',Digraph);
 setappdata(fig,'doNothingOnButtonUp',0);
 set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),...
     'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
+
+splitsUITreeSelectionChanged(fig);

@@ -399,13 +399,21 @@ elseif isequal(tabName,'Stats')
     subVars=Stats.Tables.(tableName).DataColumns(fcnIdx).Subvars;
 
     for i=1:length(dynamicSaveNames)
+        hasSubvar=false;
         if ~isempty(subVars{i})
-            varargout{dynamicIdxNums(i)}=eval(['S.(dynamicSaveNames{i})' subVars{i} ';']); % This requires copying variables, which is inherently slow. Faster way?
+            hasSubvar=true;
+            try
+                varargout{dynamicIdxNums(i)}=eval(['S.(dynamicSaveNames{i})' subVars{i} ';']); % This requires copying variables, which is inherently slow. Faster way?
+            catch
+                hasSubvar=false; % In case this is an anomaly trial, still load the data (most likely NaN).
+                disp(['No subvariable as specified: ' subName ' ' trialName ' ' num2str(repNum) ' ' dynamicSaveNames{i}])
+            end
             dims=size(varargout{dynamicIdxNums(i)});
             if any(dims==1) && length(dims)>2
                 varargout{dynamicIdxNums(i)}=squeeze(varargout{dynamicIdxNums(i)}); % Remove unnecessary dimensions, if needed.
             end
-        else
+        end
+        if ~hasSubvar
             varargout{dynamicIdxNums(i)}=S.(dynamicSaveNames{i});
         end
     end

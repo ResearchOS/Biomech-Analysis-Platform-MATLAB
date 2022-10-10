@@ -19,3 +19,5 @@ setappdata(fig,'Stats',Stats);
 tableNames=fieldnames(Stats.Tables);
 makeTableNodes(fig,1:length(tableNames),tableNames);
 
+tablesUITreeSelectionChanged(fig);
+

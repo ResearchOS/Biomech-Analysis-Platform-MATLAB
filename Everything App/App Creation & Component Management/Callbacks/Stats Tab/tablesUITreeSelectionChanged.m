@@ -7,6 +7,7 @@ handles=getappdata(fig,'handles');
 Stats=getappdata(fig,'Stats');
 
 if isempty(handles.Stats.tablesUITree.SelectedNodes)
+    delete(handles.Stats.assignedVarsUITree.Children);
     return;
 end
 

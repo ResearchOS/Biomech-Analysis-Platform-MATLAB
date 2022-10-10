@@ -39,6 +39,9 @@ for i=1:length(runOrderNums)
     inEdgesRows=ismember(Digraph.Edges.EndNodes(:,2),nodeRowsNums(i)); % All inedges for the current function
     outEdgesRows=ismember(Digraph.Edges.EndNodes(:,1),nodeRowsNums(i)); % All outedges for the current function
     splitCodes=Digraph.Edges.SplitCode(inEdgesRows | outEdgesRows);
+    if ~isstruct(runOrders{i})
+        continue;
+    end
     if ismember(splitCode,splitCodes)
         count=count+1;
         runOrderNums(count)=runOrders{i}.([splitName '_' splitCode]);

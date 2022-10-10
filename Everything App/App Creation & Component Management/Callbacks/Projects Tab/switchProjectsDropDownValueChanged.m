@@ -29,6 +29,8 @@ if ~ismember(projectName,projectNames)
     return;
 end
 
+disp(['Switching to project ' projectName]);
+
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
 macAddress=getComputerID();
@@ -205,6 +207,11 @@ if ~isfield(NonFcnSettingsStruct,'Process')
 end
 
 getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
+
+if ~isempty(handles.Process.splitsUITree.Children)
+    handles.Process.splitsUITree.SelectedNodes=handles.Process.splitsUITree.Children(1);
+    splitsUITreeSelectionChanged(fig);
+end
 
 %% Plot tab
 if ismember('Plotting',projectSettingsVarNames)

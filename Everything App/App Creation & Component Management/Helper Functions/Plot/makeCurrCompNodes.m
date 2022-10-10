@@ -43,6 +43,7 @@ for i=1:length(compNames)
             compObj=findall(parentObj,'Text',compNames{i});
             if isempty(compObj)
                 compNode=uitreenode(parentObj,'Text',compNames{i});
+                compNode.ContextMenu=handles.Plot.openPlotFcnContextMenu;
             end
         end
 

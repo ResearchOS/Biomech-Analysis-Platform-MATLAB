@@ -61,7 +61,8 @@ switch compName
         if exist('axLetter','var')~=1
             axLetter=compNode.Parent.Parent.Text;
         end
-        axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;             
+        axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;   
+        hold(axHandle,'on');
 
         if isMovie==0
             h=feval([compName '_P'],axHandle,subName,trialName,repNum);               

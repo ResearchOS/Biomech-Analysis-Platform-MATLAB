@@ -501,6 +501,7 @@ handles.Plot.currFrameEditField=uieditfield(plotTab,'numeric','Value',1,'Tag','C
 
 handles.Plot.openPlotFcnContextMenu=uicontextmenu(fig);
 handles.Plot.openPlotFcnContextMenuItem1=uimenu(handles.Plot.openPlotFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFilePlot});
+handles.Plot.openPlotFcnContextMenuItem2=uimenu(handles.Plot.openPlotFcnContextMenu,'Text','Refresh All Subcomponents','MenuSelectedFcn',{@refreshAllSubComps});
 
 handles.Plot.refreshComponentContextMenu=uicontextmenu(fig);
 handles.Plot.refreshComponentContextMenuItem1=uimenu(handles.Plot.refreshComponentContextMenu,'Text','Refresh Component','MenuSelectedFcn',{@refreshPlotComp});

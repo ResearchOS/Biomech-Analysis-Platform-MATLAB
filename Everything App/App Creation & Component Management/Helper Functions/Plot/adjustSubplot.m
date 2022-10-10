@@ -42,14 +42,32 @@ loc=loc(~isspace(loc));
 locSplit=strsplit(loc,',');
 
 f=@(locSplit) isstrprop(locSplit,'digit');
+tf=cellfun(f,locSplit,'UniformOutput',false);
 
-tf=cellfun(f,locSplit,'UniformOutput',true);
 try
-    assert(all(tf) && length(tf)==3); % Make sure that all entries are numeric
+    assert(length(tf)==3);
 catch
-    disp('All entries must be numbers, separated by two commas');
+    disp('All three entries must be separated by a comma');
     return;
 end
+
+% Check that all entries are numbers, especially checking for decimals here.
+for i=1:length(tf)
+
+    fIdx=tf{i}==0;
+    try
+        assert(all(ismember(locSplit{i}(fIdx),'.')));
+    catch
+        disp('All entries must be numbers');
+        return;
+    end
+        
+end
+
+% if ~isequal(mod(str2double(locSplit{3}),1),0)
+%     disp('3rd entry must be an integer!');
+%     return;
+% end
 
 subplot(str2double(locSplit{1}),str2double(locSplit{2}),str2double(locSplit{3}),axHandle);
 

@@ -67,6 +67,10 @@ end
 
 currPlot=Plotting.Plots.(plotName);
 makeCurrCompNodes(fig,currPlot);
+if isfield(Plotting.Plots.(plotName),'ExTrial')
+    exTrial=Plotting.Plots.(plotName).ExTrial;
+    handles.Plot.exTrialLabel.Text=[exTrial.Subject ' ' exTrial.Trial];
+end
 
 %% Load plot from file
 delete(handles.Plot.plotPanel.Children);

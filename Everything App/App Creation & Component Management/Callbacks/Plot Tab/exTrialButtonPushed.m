@@ -97,3 +97,5 @@ if Plotting.Plots.(plotName).Movie.IsMovie==1
         currFrameEditFieldValueChanged(fig);
     end
 end
+
+handles.Plot.exTrialLabel.Text=[subName ' ' trialName];

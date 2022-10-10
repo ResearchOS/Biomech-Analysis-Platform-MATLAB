@@ -50,6 +50,10 @@ for i=1:length(compNames)
         letNode=uitreenode(compNode,'Text',letters{j});
         letNode.ContextMenu=handles.Plot.refreshComponentContextMenu;
 
+        if isequal(letNode.Parent.Text,'Axes') % Creating an axes node
+            letNode.ContextMenu=handles.Plot.axesLetterContextMenu;
+        end
+
     end
 
 end
@@ -58,12 +62,20 @@ if nargin<=2
     return;
 end
 
-selNodeParent=findobj(handles.Plot.currCompUITree,'Text',compName);
+if ~isequal(compName,'Axes')
+    axNode=handles.Plot.currCompUITree.Children.Children(ismember(handles.Plot.currCompUITree.Children.Children,findobj(handles.Plot.currCompUITree.Children,'Text',axLetter)));
+    selNodeParent=findobj(axNode,'Text',compName);
+else
+    selNodeParent=findobj(handles.Plot.currCompUITree,'Text',compName);
+end
 if isempty(selNodeParent)
     return;
 end
 expand(selNodeParent(1));
-selNode=findobj(selNodeParent,'Text',letter);
+
+nodeIdx=ismember(selNodeParent.Children,findobj(selNodeParent,'Text',letter));
+selNode=selNodeParent.Children(nodeIdx);
+% selNode=findobj(selNodeParent,'Text',letter);
 if ~isempty(selNode)
     handles.Plot.currCompUITree.SelectedNodes=selNode;
 else

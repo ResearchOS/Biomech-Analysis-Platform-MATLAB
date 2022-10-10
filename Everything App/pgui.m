@@ -470,7 +470,7 @@ handles.Plot.deletePlotButton=uibutton(plotTab,'push','Text','P-','Tag','DeleteP
 handles.Plot.editCompButton=uibutton(plotTab,'push','Text','Edit Props','Tag','EditCompButton','Tooltip','Edit component','ButtonPushedFcn',@(editCompButton,event) editCompButtonPushed(editCompButton));
 
 % 29. Plot panel
-handles.Plot.plotPanel=uipanel(plotTab);
+handles.Plot.plotPanel=uipanel(plotTab,'AutoResizeChildren','off');
 
 % 30. Movie checkbox
 handles.Plot.isMovieCheckbox=uicheckbox(plotTab,'Text','Movie','Value',0,'Tag','IsMovieCheckbox','Tooltip','Plots a movie one frame at a time','ValueChangedFcn',@(isMovieCheckbox,event) isMovieCheckboxButtonPushed(isMovieCheckbox));
@@ -505,6 +505,11 @@ handles.Plot.openPlotFcnContextMenuItem2=uimenu(handles.Plot.openPlotFcnContextM
 
 handles.Plot.refreshComponentContextMenu=uicontextmenu(fig);
 handles.Plot.refreshComponentContextMenuItem1=uimenu(handles.Plot.refreshComponentContextMenu,'Text','Refresh Component','MenuSelectedFcn',{@refreshPlotComp});
+
+handles.Plot.axesLetterContextMenu=uicontextmenu(fig);
+handles.Plot.axesLetterContextMenuItem1=uimenu(handles.Plot.axesLetterContextMenu,'Text','Refresh Component','MenuSelectedFcn',{@refreshPlotComp});
+handles.Plot.axesLetterContextMenuItem2=uimenu(handles.Plot.axesLetterContextMenu,'Text','Subplot','MenuSelectedFcn',{@adjustSubplot});
+
 
 plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
     'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,'CreateFcnButton',handles.Plot.createPlotButton,...

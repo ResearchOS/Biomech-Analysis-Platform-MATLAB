@@ -47,6 +47,11 @@ if ~isfield(Plotting.Plots.(plotName),compName)
     return;
 end
 
+if ~isfield(Plotting.Plots.(plotName).(compName),currLetter) % In case the current component somehow was not part of the Plotting structure.
+    makeCurrCompNodes(fig,Plotting.Plots.(plotName),compName,currLetter);
+    return;
+end
+
 h=Plotting.Plots.(plotName).(compName).(currLetter).Handle; % Handle to the component's hggroup
 if isvalid(h)
     delete(h); % Delete the graphics object.

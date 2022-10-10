@@ -1,10 +1,12 @@
-function []=refreshAllSubComps(src,event)
+function []=refreshAllSubComps(src,event,selNode)
 
 %% PURPOSE: REFRESH ALL SUBCOMPONENTS FOR ONE FIGURE
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-selNode=handles.Plot.currCompUITree.SelectedNodes;
+if exist('selNode','var')~=1
+    selNode=handles.Plot.currCompUITree.SelectedNodes;
+end
 
 if isempty(selNode)
     return;

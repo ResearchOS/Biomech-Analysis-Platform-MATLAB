@@ -15,7 +15,7 @@ end
 Plotting=getappdata(fig,'Plotting');
 
 compNames=fieldnames(Plotting.Plots.(plotName));
-compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial'}));
+compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial','Movie'}));
 
 if exist('letter','var')~=1
     compNode=handles.Plot.currCompUITree.SelectedNodes;

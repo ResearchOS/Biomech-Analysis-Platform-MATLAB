@@ -99,3 +99,6 @@ if Plotting.Plots.(plotName).Movie.IsMovie==1
 end
 
 handles.Plot.exTrialLabel.Text=[subName ' ' trialName];
+
+axesNode=handles.Plot.currCompUITree.Children;
+refreshAllSubComps(fig,[],axesNode);

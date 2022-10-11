@@ -47,10 +47,10 @@ for i=1:length(compLetters)
     for j=1:length(allComps)
         compName=allComps{j};
 
-        compLetters=fieldnames(Plotting.Plots.(plotName).(compName));
+        compLettersNew=fieldnames(Plotting.Plots.(plotName).(compName));
 
-        for k=1:length(compLetters)
-            currLetter=compLetters{k};
+        for k=1:length(compLettersNew)
+            currLetter=compLettersNew{k};
             if isequal(Plotting.Plots.(plotName).(compName).(currLetter).Parent,['Axes ' letter])
                 compList=[compList; {[compName ' ' currLetter ' ' letter]}]; % Component name, component letter, axes letter
             end

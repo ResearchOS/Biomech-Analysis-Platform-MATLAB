@@ -20,6 +20,10 @@ switch type
         h=plot3(1,1,1);
     case 'image (Image Processing Toolbox needed)'
         h=[];
+    case 'quiver'
+        h=quiver(0,0,1,1);
+    case 'quiver3'
+        h=quiver3(0,0,0,1,1,1);
 end
 
 props=properties(h);

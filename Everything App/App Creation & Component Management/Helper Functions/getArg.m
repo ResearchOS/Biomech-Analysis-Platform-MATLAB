@@ -201,8 +201,8 @@ elseif isequal(tabName,'Plot')
     letter=getappdata(fig,'letter');
 
     if ~isfield(Plotting.Plots.(plotName).(compName).(letter).Variables,'NamesInCode')
-        error('Must assign variables to component first!');
-%         return;
+        disp('Must assign variables to component first!');
+        return;
     end
 
     if nargin==0

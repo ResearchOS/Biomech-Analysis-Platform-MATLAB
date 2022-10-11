@@ -30,6 +30,7 @@ codePath=getappdata(fig,'codePath');
 folderName=[codePath  'Plot' slash 'Stashed GUI Plots'];
 if ~isempty(handles.Plot.plotPanel.Children)    
     prevSelectedPlotName=getappdata(fig,'prevSelectedPlotName');
+    drawnow;
     Q=figure('Visible','off');
     set(handles.Plot.plotPanel.Children,'Parent',Q);
 %     plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;    
@@ -37,7 +38,12 @@ if ~isempty(handles.Plot.plotPanel.Children)
         mkdir(folderName);
     end
     if ~isempty(prevSelectedPlotName)
-        saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
+        try
+            saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
+        catch
+            pause(0.5);
+            saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
+        end
     end
 end
 

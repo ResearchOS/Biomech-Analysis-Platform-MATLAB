@@ -55,7 +55,7 @@ while ~compNameOK
 end
 
 %% Ask the user what kind of graphics object this is
-types={'line','xyzline','scatter3','scatter','plot','plot3','image (Image Processing Toolbox needed)'};
+types={'line','xyzline','scatter3','scatter','plot','plot3','image (Image Processing Toolbox needed)','quiver','quiver3'};
 type=listdlg('SelectionMode','single','PromptString','Select graphics object for this component','ListString',types);
 
 if isempty(type)
@@ -90,7 +90,7 @@ compPathStatic=[plotFolder slash compName '_P.m']; % Static plot file
 compPathMovie=[plotFolder slash compName '_Movie.m']; % Movie plot file (has different arguments
 
 % NEED TO CREATE THE TEMPLATE TO COPY FOR EACH COMPONENT (COULD ALSO JUST BE CELL ARRAY THAT I WRITE TO THE FILE)
-textStatic{1}=['function []=' compName '_P(subName,trialName,repNum)'];
+textStatic{1}=['function [h]=' compName '_P(ax,subName,trialName,repNum)'];
 textStatic{2}='';
 textStatic{3}='subNames=allTrialNames.Subjects;';
 
@@ -101,7 +101,7 @@ if exist(compPathStatic,'file')~=2
     fclose(fid);
 end
 
-textMovie{1}=['function []=' compName '_Movie(allVars,idx)'];
+textMovie{1}=['function [h]=' compName '_Movie(ax,allVars,idx)'];
 textMovie{2}='';
 textMovie{3}='var1=allVars.var1;';
 

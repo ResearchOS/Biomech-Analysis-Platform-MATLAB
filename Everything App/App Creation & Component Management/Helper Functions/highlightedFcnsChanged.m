@@ -31,6 +31,10 @@ splitCode=currSplit(spaceIdx+2:end-1);
 % [nodeRows,a,b]=intersect(Digraph.Nodes.NodeNumber,selNodeIDs);
 nodeRows=ismember(Digraph.Nodes.NodeNumber,selNodeIDs);
 nodeRowsNums=find(nodeRows==1);
+if isequal(nodeRowsNums,1)
+    handles.Process.fcnsRunOrderField.Value=0;
+    return;
+end
 nodeRowsNums=nodeRowsNums(~ismember(nodeRowsNums,1)); % Remove the logsheet, if it's been selected.
 runOrders=Digraph.Nodes.RunOrder(nodeRows);
 runOrderNums=NaN(size(runOrders));

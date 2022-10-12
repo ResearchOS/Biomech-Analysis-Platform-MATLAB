@@ -44,6 +44,7 @@ switch compName
         if isMovie==1
             axis(h,'equal');
         end
+        axLetter=letter;
     otherwise
         if ~isfield(Plotting.Plots.(plotName),'ExTrial')
             beep;
@@ -51,9 +52,7 @@ switch compName
             return;
         end
         plotExTrial=Plotting.Plots.(plotName).ExTrial;
-        subName=plotExTrial.Subject;
-        trialName=plotExTrial.Trial;
-        repNum=1;
+        subName=plotExTrial.Subject;                
         setappdata(fig,'plotName',plotName);
         setappdata(fig,'compName',compName);
         setappdata(fig,'letter',letter);
@@ -72,6 +71,12 @@ switch compName
                     load(getappdata(fig,'logsheetPathMAT'),'logVar');
                     allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
                     h=feval([compName '_P'],axHandle,allTrialNames);
+                case 'PC'
+                    specifyTrialsName=Plotting.Plots.(plotName).SpecifyTrials;
+                    inclStruct=feval(specifyTrialsName);
+                    load(getappdata(fig,'logsheetPathMAT'),'logVar');
+                    allTrialNames=getTrialNames(inclStruct,logVar,fig,1,[]);
+                    h=feval([compName '_PC'],axHandle,allTrialNames);
                 case 'C'
 
                 case 'S'
@@ -79,6 +84,8 @@ switch compName
                 case 'SC'
 
                 case 'T'
+                    trialName=plotExTrial.Trial;
+                    repNum=1;
                     h=feval([compName '_T'],axHandle,subName,trialName,repNum); 
             end
         else

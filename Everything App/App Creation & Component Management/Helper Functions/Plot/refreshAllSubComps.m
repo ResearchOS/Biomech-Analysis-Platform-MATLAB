@@ -28,7 +28,7 @@ compLetters=fieldnames(Plotting.Plots.(plotName).(currCompName));
 
 allComps=fieldnames(Plotting.Plots.(plotName));
 
-allComps=allComps(~ismember(allComps,{'Movie','Axes','SpecifyTrials','ExTrial'}));
+allComps=allComps(~ismember(allComps,{'Movie','Axes','SpecifyTrials','ExTrial','Metadata'}));
 
 %% Get the list of all components to update.
 compList={};

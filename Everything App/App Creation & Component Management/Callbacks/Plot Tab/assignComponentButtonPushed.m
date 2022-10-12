@@ -55,6 +55,7 @@ if isequal(compName,'Axes')
     Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
 %     idx=ismember(Plotting.Components.Names,compName);
     Plotting.Plots.(plotName).(compName).(newLetters).Properties=properties(h);
+    Plotting.Plots.(plotName).Axes.(newLetters).AxPos='(1,1,1)';
 %     Plotting.Plots.(plotName).(compName).(newLetters).Properties.OuterPosition=[0.5 0.07 0.5 0.87];
 %     Plotting.Plots.(plotName).(compName).(newLetters).Properties.InnerPosition=[0.52 0.12 0.47 0.8];
 else

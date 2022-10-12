@@ -26,12 +26,13 @@ level=Plotting.Plots.(plotName).Metadata.Level;
 load(getappdata(fig,'logsheetPathMAT'),'logVar');
 allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
 
-if isequal(level,'P')
+if isequal(level,'P')    
     plotStaticFig_P(fig,allTrialNames);
     return;
 end
 
 if isequal(level,'PC')
+    allTrialNames=getTrialNames(inclStruct,logVar,fig,1,[]);
     plotStaticFig_PC(fig,allTrialNames);
     return;
 end

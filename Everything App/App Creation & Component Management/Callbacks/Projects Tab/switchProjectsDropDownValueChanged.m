@@ -158,13 +158,15 @@ handles.Import.subjIDColHeaderField.Value=NonFcnSettingsStruct.Import.SubjectIDC
 handles.Import.targetTrialIDColHeaderField.Value=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
 handles.Import.logsheetPathField.Value=logsheetPath;
 
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
+% projectSettingsVars=whos('-file',projectSettingsMATPath);
+% projectSettingsVarNames={projectSettingsVars.name};
 
-if ismember('Digraph',projectSettingsVarNames)
-    load(projectSettingsMATPath,'Digraph');
+% if ismember('Digraph',projectSettingsVarNames)
+load(projectSettingsMATPath,'Digraph');
+if exist('Digraph','var')==1
     setappdata(fig,'Digraph',Digraph);
 end
+% end
 
 if exist(logsheetPath,'file')==2    
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
@@ -188,14 +190,16 @@ delete(handles.Process.fcnArgsUITree.Children);
 delete(handles.Process.varsListbox.Children); % Remove all variables from other projects.
 
 % Fill in metadata
-if ismember('VariableNamesList',projectSettingsVarNames)
-    load(projectSettingsMATPath,'VariableNamesList');
+% if ismember('VariableNamesList',projectSettingsVarNames)
+load(projectSettingsMATPath,'VariableNamesList');
+if exist('VariableNamesList','var')==1
     setappdata(fig,'VariableNamesList',VariableNamesList);
     [~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
-    makeVarNodes(fig,alphabetIdx,VariableNamesList);       
+    makeVarNodes(fig,alphabetIdx,VariableNamesList);
 end
+% end
 
-if ismember('Digraph',projectSettingsVarNames)    
+if exist('Digraph','var')==1   
     h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
     if ~isempty(Digraph.Edges)
         h.EdgeColor=Digraph.Edges.Color;
@@ -214,16 +218,16 @@ if ~isempty(handles.Process.splitsUITree.Children)
 end
 
 %% Plot tab
-if ismember('Plotting',projectSettingsVarNames)
-    load(projectSettingsMATPath,'Plotting');
-end
-if isempty(Plotting)
+% if ismember('Plotting',projectSettingsVarNames)
+load(projectSettingsMATPath,'Plotting');
+% end
+if exist('Plotting','var')~=1
     Plotting.Components.Names={'Axes'};
 %     defVals=getProps('axes');
 %     Plotting.Components.DefaultProperties{1}=defVals;
 end
 
-if ~ismember('Axes',Plotting.Components.Names)
+if exist('Plotting','var')==1 && ~ismember('Axes',Plotting.Components.Names)
     Plotting.Components.Names=[Plotting.Components.Names; {'Axes'}];
     [~,idx]=sort(upper(Plotting.Components.Names));
     Plotting.Components.Names=Plotting.Components.Names(idx);
@@ -231,19 +235,23 @@ if ~ismember('Axes',Plotting.Components.Names)
 %     Plotting.Components.DefaultProperties=[Plotting.Components.DefaultProperties; {defVals}];
 %     Plotting.Components.DefaultProperties=Plotting.Components.DefaultProperties(idx);
 end
-setappdata(fig,'Plotting',Plotting);
 
-makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names);
+if exist('Plotting','var')==1
+    setappdata(fig,'Plotting',Plotting);
 
-if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
-    plotNames=fieldnames(Plotting.Plots);
-    makePlotNodes(fig,1:length(plotNames),plotNames);
+    makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names);
+
+    if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
+        plotNames=fieldnames(Plotting.Plots);
+        makePlotNodes(fig,1:length(plotNames),plotNames);
+    end
+
 end
 
 %% Stats tab
-if ismember('Stats',projectSettingsVarNames)
-    load(projectSettingsMATPath,'Stats');
-else
+% if ismember('Stats',projectSettingsVarNames)
+load(projectSettingsMATPath,'Stats');
+if exist('Stats','var')~=1
     Stats='';
 end
 if isempty(Stats)

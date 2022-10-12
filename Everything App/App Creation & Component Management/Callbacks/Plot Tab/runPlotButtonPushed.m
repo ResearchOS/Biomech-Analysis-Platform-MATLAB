@@ -21,8 +21,20 @@ oldPath=cd([getappdata(fig,'codePath') 'SpecifyTrials']);
 inclStruct=feval(specTrials);
 cd(oldPath); % Restore the cd
 
+level=Plotting.Plots.(plotName).Metadata.Level;
+
 load(getappdata(fig,'logsheetPathMAT'),'logVar');
 allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
+
+if isequal(level,'P')
+    plotStaticFig_P(fig,allTrialNames);
+    return;
+end
+
+if isequal(level,'PC')
+    plotStaticFig_PC(fig,allTrialNames);
+    return;
+end
 
 subNames=fieldnames(allTrialNames);
 setappdata(fig,'plotName',plotName); % For getArg
@@ -36,7 +48,7 @@ for sub=1:length(subNames)
 
         for repNum=allTrialNames.(subName).(trialName)
             % CREATE ONE FIGURE FOR EACH TRIAL            
-            if ~isMovie
+            if ~isMovie && isequal(level,'T')
                 plotStaticFig(fig,subName,trialName,repNum);
             else
                 plotMovie(fig,subName,trialName,repNum);

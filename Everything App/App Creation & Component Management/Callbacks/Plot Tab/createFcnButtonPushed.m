@@ -68,18 +68,29 @@ Plotting.Plots=orderfields(Plotting.Plots,orderedStruct);
 plotNames=fieldnames(Plotting.Plots);
 
 %% ASK FOR WHAT LEVEL THIS PLOT IS
-levels={'Project','Subject','Trial'};
+levels={'Project','Project_Condition','Condition','Subject','Subject-Condition','Trial'};
 level=listdlg('ListString',levels);
 level=levels{level};
 
 switch level
     case 'Project'
-
+        level='P';
+    case 'Project_Condition'
+        level='PC';
+    case 'Condition' % Across all subjects
+        level='C';
     case 'Subject'
-
+        level='S';
+    case 'Subject-Condition'
+        level='SC';
     case 'Trial'
-
+        level='T';
 end
+
+%% Set the level
+handles.Plot.plotLevelDropDown.Value=level;
+
+handles.Plot.plotLevelDropDown.Value=level;
 
 makePlotNodes(fig,1:length(plotNames),plotNames);
 
@@ -90,6 +101,7 @@ Plotting.Plots.(plotName).Movie.endFrame=2;
 Plotting.Plots.(plotName).Movie.currFrame=1;
 Plotting.Plots.(plotName).Movie.startFrameVar='';
 Plotting.Plots.(plotName).Movie.endFrameVar='';
+Plotting.Plots.(plotName).Metadata.Level=level;
 
 setappdata(fig,'Plotting',Plotting);
 

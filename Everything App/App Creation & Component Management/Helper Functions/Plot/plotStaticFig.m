@@ -11,7 +11,7 @@ plotName=selNode.Text;
 
 compNames=fieldnames(Plotting.Plots.(plotName));
 
-compNames=compNames(~ismember(compNames,{'SpecifyTrials','Movie','ExTrial','Axes'}));
+compNames=compNames(~ismember(compNames,{'SpecifyTrials','Movie','ExTrial','Axes','Metadata'}));
 
 axLetters=fieldnames(Plotting.Plots.(plotName).Axes);
 
@@ -23,8 +23,6 @@ for i=1:length(axLetters)
     hold(axHandles.(axLetters{i}),'on');
     axTags{i}=['Axes ' axLetters{i}];
 end
-
-% axesNodes=handles.Plot.currCompUITree.Children.Children;
 
 %% Go through each component to see which axes it is a child of
 % NOTE: NEED TO MODIFY THE GRAPHICS OBJECT PROPERTIES HERE, INCLUDING AXES LIMITS.

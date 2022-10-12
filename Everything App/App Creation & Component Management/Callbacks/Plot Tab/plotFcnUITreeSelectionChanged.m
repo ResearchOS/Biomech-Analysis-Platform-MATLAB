@@ -78,6 +78,16 @@ if isfield(Plotting.Plots.(plotName),'ExTrial')
     handles.Plot.exTrialLabel.Text=[exTrial.Subject ' ' exTrial.Trial];
 end
 
+%% Set the level for the current plot.
+if isfield(Plotting.Plots.(plotName),'Metadata') && isfield(Plotting.Plots.(plotName).Metadata,'Level')
+    level=Plotting.Plots.(plotName).Metadata.Level;
+else
+    level='T';
+    Plotting.Plots.(plotName).Metadata.Level=level;
+    setappdata(fig,'Plotting',Plotting);
+end
+handles.Plot.plotLevelDropDown.Value=level;
+
 %% Load plot from file
 delete(handles.Plot.plotPanel.Children);
 try

@@ -15,7 +15,7 @@ end
 Plotting=getappdata(fig,'Plotting');
 
 compNames=fieldnames(Plotting.Plots.(plotName));
-compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial','Movie'}));
+compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial','Movie','Metadata'}));
 
 if exist('letter','var')~=1
     compNode=handles.Plot.currCompUITree.SelectedNodes;
@@ -64,7 +64,23 @@ switch compName
         hold(axHandle,'on');
 
         if isMovie==0
-            h=feval([compName '_P'],axHandle,subName,trialName,repNum);               
+            level=Plotting.Plots.(plotName).Metadata.Level;
+            switch level
+                case 'P'
+                    specifyTrialsName=Plotting.Plots.(plotName).SpecifyTrials;
+                    inclStruct=feval(specifyTrialsName);
+                    load(getappdata(fig,'logsheetPathMAT'),'logVar');
+                    allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
+                    h=feval([compName '_P'],axHandle,allTrialNames);
+                case 'C'
+
+                case 'S'
+
+                case 'SC'
+
+                case 'T'
+                    h=feval([compName '_T'],axHandle,subName,trialName,repNum); 
+            end
         else
             namesInCode=Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode;
             namesInCodeChar='{';

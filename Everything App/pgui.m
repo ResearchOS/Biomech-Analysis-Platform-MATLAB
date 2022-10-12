@@ -446,7 +446,7 @@ handles.Plot.specifyTrialsButton=uibutton(plotTab,'push','Text','Specify Trials'
 handles.Plot.runPlotButton=uibutton(plotTab,'push','Text','Run Plot','Tag','RunPlotButton','Tooltip','Run the plot on the specified trials','ButtonPushedFcn',@(runPlotButton,event) runPlotButtonPushed(runPlotButton));
 
 % 21. Plot level dropdown
-handles.Plot.plotLevelDropDown=uidropdown(plotTab,'Items',{'P','C','S','SC','T'},'Tooltip','Specify the level to run this at','Editable','off','Tag','PlotLevelDropDown','ValueChangedFcn',@(plotLevelDropDown,event) plotLevelDropDownValueChanged(plotLevelDropDown));
+handles.Plot.plotLevelDropDown=uidropdown(plotTab,'Items',{'P','P_C','C','S','SC','T'},'Tooltip','Specify the level to run this at','Editable','off','Tag','PlotLevelDropDown','ValueChangedFcn',@(plotLevelDropDown,event) plotLevelDropDownValueChanged(plotLevelDropDown));
 
 % 22. All components label
 handles.Plot.allComponentsLabel=uilabel(plotTab,'Text','All Components','Tag','AllComponentsLabel','FontWeight','bold');

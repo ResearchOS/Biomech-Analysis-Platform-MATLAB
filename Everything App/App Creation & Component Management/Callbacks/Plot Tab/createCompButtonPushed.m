@@ -55,8 +55,8 @@ while ~compNameOK
 end
 
 %% Ask the user what kind of graphics object this is
-types={'line','xyzline','scatter3','scatter','plot','plot3','image (Image Processing Toolbox needed)','quiver','quiver3'};
-type=listdlg('SelectionMode','single','PromptString','Select graphics object for this component','ListString',types);
+types={'line','xyzline','scatter3','scatter','plot','plot3','image (Image Processing Toolbox needed)','quiver','quiver3','patch','bar','errorbar'};
+type=listdlg('SelectionMode','single','PromptString','Select graphics object for this component','ListString',sort(types));
 
 if isempty(type)
     disp('Process aborted, no component added');
@@ -66,7 +66,7 @@ end
 defVals=getProps(types{type});
 
 %% Add the component name & default properties to the list of component names
-if isempty(Plotting)  || ~isfield(Plotting,'Components') % The first component being added
+if isempty(Plotting) || ~isfield(Plotting,'Components') % The first component being added
     Plotting.Components.Names{1}=compName;
     Plotting.Components.DefaultProperties{1}=defVals;
 else    

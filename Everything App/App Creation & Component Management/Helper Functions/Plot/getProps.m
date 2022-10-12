@@ -24,6 +24,12 @@ switch type
         h=quiver(0,0,1,1);
     case 'quiver3'
         h=quiver3(0,0,0,1,1,1);
+    case 'patch'
+        h=patch([0 0 1 1],[0 1 1 0],'k');
+    case 'bar'
+        h=bar(1,1);
+    case 'errorbar'
+        h=errorbar(1,1);
 end
 
 props=properties(h);

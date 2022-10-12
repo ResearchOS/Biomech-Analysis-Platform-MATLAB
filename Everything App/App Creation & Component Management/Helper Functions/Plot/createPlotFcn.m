@@ -40,9 +40,9 @@ switch level
         text{15}='                [data]=getArg({''data''},subName,trialName,repNum);';
         text{16}='';
         text{17}='            end';
-        text{17}='        end';
-        text{18}='    end';
-        text{19}='end';
+        text{18}='        end';
+        text{19}='    end';
+        text{20}='end';
     case 'C'
 
     case 'S'

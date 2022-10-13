@@ -49,7 +49,7 @@ for axNum=1:length(axLetters)
 
             axHandle=axHandles.(axLetter);
 
-            h=feval([compName '_P'],axHandle,subName,trialName,repNum);
+            h=feval([compName '_T'],axHandle,subName,trialName,repNum);
 
         end
 
@@ -61,7 +61,7 @@ end
 slash=filesep;
 currDate=char(datetime('now'));
 currDate=currDate(1:11);
-plotFolder=[getappdata(fig,'dataPath') 'Plots' slash currDate slash plotName];
+plotFolder=[getappdata(fig,'dataPath') 'Plots' slash currDate slash plotName slash subName];
 if ~isfolder(plotFolder)
     mkdir(plotFolder);
 end

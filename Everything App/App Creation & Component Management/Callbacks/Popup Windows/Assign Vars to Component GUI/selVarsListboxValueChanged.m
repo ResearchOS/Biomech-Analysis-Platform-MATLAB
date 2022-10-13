@@ -7,6 +7,10 @@ handles=getappdata(fig,'handles');
 
 comp=getappdata(fig,'structComp');
 
+if isempty(handles.selVarsListbox.SelectedNodes)
+    return;
+end
+
 varName=handles.selVarsListbox.SelectedNodes.Text;
 
 idx=ismember(comp.Names,varName);

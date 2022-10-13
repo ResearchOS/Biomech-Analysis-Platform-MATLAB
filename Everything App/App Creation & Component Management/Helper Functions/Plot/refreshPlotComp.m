@@ -46,13 +46,21 @@ switch compName
         end
         axLetter=letter;
     otherwise
-        if ~isfield(Plotting.Plots.(plotName),'ExTrial')
+        if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')
+            disp('Need to select a specify trials!');
+            beep;
+            return;
+        end
+        level=Plotting.Plots.(plotName).Metadata.Level;
+        if ~isfield(Plotting.Plots.(plotName),'ExTrial') && ~ismember(level,{'P','PC'})
             beep;
             disp('Need to specify a trial!');
             return;
         end
-        plotExTrial=Plotting.Plots.(plotName).ExTrial;
-        subName=plotExTrial.Subject;                
+        if ~ismember(level,{'P','PC'})
+            plotExTrial=Plotting.Plots.(plotName).ExTrial;
+            subName=plotExTrial.Subject;
+        end
         setappdata(fig,'plotName',plotName);
         setappdata(fig,'compName',compName);
         setappdata(fig,'letter',letter);
@@ -62,8 +70,7 @@ switch compName
         axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;   
         hold(axHandle,'on');
 
-        if isMovie==0
-            level=Plotting.Plots.(plotName).Metadata.Level;
+        if isMovie==0            
             switch level
                 case 'P'
                     specifyTrialsName=Plotting.Plots.(plotName).SpecifyTrials;

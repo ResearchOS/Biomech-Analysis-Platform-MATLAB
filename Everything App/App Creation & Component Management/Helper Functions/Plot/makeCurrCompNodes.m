@@ -45,6 +45,8 @@ for i=1:length(compNames)
                 compNode=uitreenode(parentObj,'Text',compNames{i});
                 compNode.ContextMenu=handles.Plot.openPlotFcnContextMenu;
             end
+        else % Get the axLetter to create
+            axLetter=letters{j};
         end
 
         letNode=uitreenode(compNode,'Text',letters{j});

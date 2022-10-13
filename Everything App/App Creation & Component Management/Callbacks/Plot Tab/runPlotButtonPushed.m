@@ -4,6 +4,8 @@ function []=runPlotButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+assignin('base','gui',fig);
+
 selNode=handles.Plot.plotFcnUITree.SelectedNodes;
 
 if isempty(selNode)
@@ -24,16 +26,26 @@ cd(oldPath); % Restore the cd
 level=Plotting.Plots.(plotName).Metadata.Level;
 
 load(getappdata(fig,'logsheetPathMAT'),'logVar');
-allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
+if contains(level,'C')
+    org=1; % Organize trial names by condition & subject
+else
+    org=0; % Organize trial names all together by subject
+end
+
+allTrialNames=getTrialNames(inclStruct,logVar,fig,org,[]);
 
 if isequal(level,'P')    
-    plotStaticFig_P(fig,allTrialNames);
+    plotStaticFig_P(fig,allTrialNames); % Create one figure per project
     return;
 end
 
 if isequal(level,'PC')
-    allTrialNames=getTrialNames(inclStruct,logVar,fig,1,[]);
-    plotStaticFig_PC(fig,allTrialNames);
+    plotStaticFig_PC(fig,allTrialNames); % Create one figure per project, data split by condition.
+    return;
+end
+
+if isequal(level,'C')
+    plotStaticFig_C(fig,allTrialNames); % Create one figure per condition
     return;
 end
 
@@ -42,6 +54,17 @@ setappdata(fig,'plotName',plotName); % For getArg
 for sub=1:length(subNames)
 
     subName=subNames{sub};
+
+    if isequal(level,'S') % Create one figure per subject
+        plotStaticFig_S(fig,allTrialNames.(subName));
+        return;
+    elseif isequal(level,'SC') % Create one figure per subject
+        plotStaticFig_SC(fig,allTrialNames.Condition,subName);
+        return;
+    end
+
+    %% NOTE: NEED A SELECTION FOR CREATING ONE FIGURE PER SUBJECT & CONDITION (E.G. 10 SUBS & 3 CONDITIONS = 30 FIGURES)
+    
     trialNames=fieldnames(allTrialNames.(subName));
     for trialNum=1:length(trialNames)
 
@@ -49,7 +72,7 @@ for sub=1:length(subNames)
 
         for repNum=allTrialNames.(subName).(trialName)
             % CREATE ONE FIGURE FOR EACH TRIAL            
-            if ~isMovie && isequal(level,'T')
+            if ~isMovie
                 plotStaticFig(fig,subName,trialName,repNum);
             else
                 plotMovie(fig,subName,trialName,repNum);

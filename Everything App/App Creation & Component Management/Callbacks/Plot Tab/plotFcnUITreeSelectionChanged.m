@@ -45,6 +45,7 @@ if ~isempty(handles.Plot.plotPanel.Children)
             saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
         end
     end
+    close(Q);
 end
 
 setappdata(fig,'prevSelectedPlotName',plotName);
@@ -76,6 +77,8 @@ makeCurrCompNodes(fig,currPlot);
 if isfield(Plotting.Plots.(plotName),'ExTrial')
     exTrial=Plotting.Plots.(plotName).ExTrial;
     handles.Plot.exTrialLabel.Text=[exTrial.Subject ' ' exTrial.Trial];
+else
+    handles.Plot.exTrialLabel.Text='';
 end
 
 %% Set the level for the current plot.
@@ -88,6 +91,10 @@ else
 end
 handles.Plot.plotLevelDropDown.Value=level;
 
+if ~ismember(level,{'T'})
+    handles.Plot.exTrialLabel.Text='';
+end
+
 %% Load plot from file
 delete(handles.Plot.plotPanel.Children);
 try
@@ -95,6 +102,7 @@ try
     Plotting.Plots.(plotName).Axes.A.Handle=Q.Children; % Needs to be updated for multiple axes. Probably by assigning tags with the axes letters to each axes
     set(Q.Children,'Parent',handles.Plot.plotPanel);    
     setappdata(fig,'Plotting',Plotting);
+    close(Q);
 catch
 end
 

@@ -67,7 +67,7 @@ if ~isfolder(plotFolder)
     mkdir(plotFolder);
 end
 projectName=getappdata(fig,'projectName');
-plotPath=[plotFolder slash trialName '_' subName '_' projectName];
+plotPath=[plotFolder slash plotName '_' projectName];
 
 saveas(Q,[plotPath '.fig']);
 saveas(Q,[plotPath '.svg']);

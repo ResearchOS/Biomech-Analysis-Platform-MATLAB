@@ -434,7 +434,7 @@ handles.Plot.componentDescLabel=uilabel(plotTab,'Text','Component Desc','Tag','C
 handles.Plot.componentDescTextArea=uitextarea(plotTab,'Value','Enter Component Description Here','Tag','ComponentDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(componentDescTextArea,event) componentDescTextAreaValueChanged(componentDescTextArea));
 
 % 17. Function version description label
-handles.Plot.fcnVerDescLabel=uilabel(plotTab,'Text','Fcn Ver Desc','Tag','FcnVerDescLabel','FontWeight','bold');
+handles.Plot.fcnVerDescLabel=uilabel(plotTab,'Text','Plot Desc','Tag','FcnVerDescLabel','FontWeight','bold');
 
 % 18. Function version description text area
 handles.Plot.fcnVerDescTextArea=uitextarea(plotTab,'Value','Enter Fcn Version Description Here','Tag','FcnVerDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(fcnVerDescTextArea,event) fcnVerDescTextAreaValueChanged(fcnVerDescTextArea));
@@ -600,6 +600,9 @@ handles.Stats.matrixButton=uibutton(statsTab,'push','Text','Matrix','Tag','Matri
 % 24. Repetitions checkbox UI tree
 handles.Stats.matrixRepsUITree=uitree(statsTab,'checkbox','SelectionChangedFcn',@(matrixRepsUITree,event) matrixRepsUITreeSelectionChanged(matrixRepsUITree),'CheckedNodesChangedFcn',@(matrixRepsUITree,event) matrixRepsUITreeCheckedNodesChanged(matrixRepsUITree),'Tag','MatrixRepsUITree');
 
+% 25. Data-driven add repetition variable button
+handles.Stats.addDataRepVarButton=uibutton(statsTab,'push','Text','DR+','Tag','AddDataRepsVarButton','Tooltip','Add repetition variable from data','ButtonPushedFcn',@(addDataRepVarsButton,event) addDataRepVarsButtonPushed(addDataRepVarsButton));
+
 handles.Stats.openStatsFcnContextMenu=uicontextmenu(fig);
 handles.Stats.openStatsFcnContextMenuItem1=uimenu(handles.Stats.openStatsFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFileStats});
 
@@ -609,7 +612,7 @@ statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButto
     'AsssignedVarsUITree',handles.Stats.assignedVarsUITree,'AssignFcnButton',handles.Stats.assignFcnButton,'UnassignFcnButton',handles.Stats.unassignFcnButton,...
     'CreateFcnButton',handles.Stats.createFcnButton,'RemoveFcnButton',handles.Stats.removeFcnButton,'FcnsUITree',handles.Stats.fcnsUITree,'RunButton',handles.Stats.runButton,...
     'AssignVarsButton',handles.Stats.assignVarsButton,'VarsDescLabel',handles.Stats.varsDescLabel,'VarsDescTextArea',handles.Stats.varsDescTextArea,'TableDescLabel',handles.Stats.tableDescLabel,...
-    'TableDescTextArea',handles.Stats.tableDescTextArea,'MatrixButton',handles.Stats.matrixButton,'MatrixRepsUITree',handles.Stats.matrixRepsUITree);
+    'TableDescTextArea',handles.Stats.tableDescTextArea,'MatrixButton',handles.Stats.matrixButton,'MatrixRepsUITree',handles.Stats.matrixRepsUITree,'AddDataRepsVarButton',handles.Stats.addDataRepVarButton);
 
 @statsResize;
 

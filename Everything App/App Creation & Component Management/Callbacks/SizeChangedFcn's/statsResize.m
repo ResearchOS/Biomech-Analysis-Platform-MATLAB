@@ -58,6 +58,7 @@ TableDescLabelRelPos=[0.3 0.2];
 TableDescTextAreaRelPos=[0.3 0.01];
 MatrixButtonRelPos=[0.55 0.25];
 MatrixRepsUITreeRelPos=[0.7 0.01];
+AddDataRepsVarButtonRelPos=[0.51 0.65];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -86,6 +87,7 @@ TableDescLabelSize=[0.2 compHeight];
 TableDescTextAreaSize=[0.2 0.19];
 MatrixButtonSize=[0.1 2*compHeight];
 MatrixRepsUITreeSize=[0.2 0.4];
+AddDataRepsVarButtonSize=[0.06 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 VarsUITreePos=round([VarsUITreeRelPos.*figSize VarsUITreeSize.*figSize]);
@@ -112,6 +114,8 @@ TableDescLabelPos=round([TableDescLabelRelPos.*figSize TableDescLabelSize(1)*fig
 TableDescTextAreaPos=round([TableDescTextAreaRelPos.*figSize TableDescTextAreaSize.*figSize]);
 MatrixButtonPos=round([MatrixButtonRelPos.*figSize MatrixButtonSize(1)*figSize(1) MatrixButtonSize(2)]);
 MatrixRepsUITreePos=round([MatrixRepsUITreeRelPos.*figSize MatrixRepsUITreeSize.*figSize]);
+AddDataRepsVarButtonPos=round([AddDataRepsVarButtonRelPos.*figSize AddDataRepsVarButtonSize(1)*figSize(1) AddDataRepsVarButtonSize(2)]);
+
 data.VarsUITree.Position=VarsUITreePos;
 data.CreateTableButton.Position=CreateTableButtonPos;
 data.RemoveTableButton.Position=RemoveTableButtonPos;
@@ -136,6 +140,8 @@ data.TableDescLabel.Position=TableDescLabelPos;
 data.TableDescTextArea.Position=TableDescTextAreaPos;
 data.MatrixButton.Position=MatrixButtonPos;
 data.MatrixRepsUITree.Position=MatrixRepsUITreePos;
+data.AddDataRepsVarButton.Position=AddDataRepsVarButtonPos;
+
 data.VarsUITree.FontSize=newFontSize;
 data.CreateTableButton.FontSize=newFontSize;
 data.RemoveTableButton.FontSize=newFontSize;
@@ -160,3 +166,4 @@ data.TableDescLabel.FontSize=newFontSize;
 data.TableDescTextArea.FontSize=newFontSize;
 data.MatrixButton.FontSize=newFontSize;
 data.MatrixRepsUITree.FontSize=newFontSize;
+data.AddDataRepsVarButton.FontSize=newFontSize;

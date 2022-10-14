@@ -17,6 +17,11 @@ if isequal(class(selNode.Parent),'matlab.ui.container.Tree')
     return;
 end
 
+if ~ismember(selNode.Parent.Text,{'Data','Repetition'})
+    disp('Select a variable, not its function!');
+    return;
+end
+
 varName=selNode.Text;
 
 tableName=handles.Stats.tablesUITree.SelectedNodes.Text;

@@ -95,6 +95,15 @@ if ~ismember(level,{'T'})
     handles.Plot.exTrialLabel.Text='';
 end
 
+%% Set the description for the current plot
+try
+    desc=Plotting.Plots.(plotName).Metadata.Description;
+    handles.Plot.fcnVerDescTextArea.Value=desc;
+catch
+    handles.Plot.fcnVerDescTextArea.Value='Enter Plot Description Here';
+end
+
+
 %% Load plot from file
 delete(handles.Plot.plotPanel.Children);
 try
@@ -105,5 +114,6 @@ try
     close(Q);
 catch
 end
+drawnow;
 
 % refreshPlotComp(src,[],plotName);

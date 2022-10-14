@@ -103,7 +103,7 @@ if isequal(tabName,'Process')
 
     %% All input vars
     % The idx/subset of the variables currently being accessed
-    [~,~,currVarsIdx]=intersect(inputNamesInCode,Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]),'stable');
+    [~,~,currVarsIdx]=intersect(inputNamesInCode,Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode]),'stable');    
     try
         assert(isequal(Digraph.Nodes.InputVariableNamesInCode{nodeRow}.([splitName '_' splitCode])(currVarsIdx)',inputNamesInCode));
     catch

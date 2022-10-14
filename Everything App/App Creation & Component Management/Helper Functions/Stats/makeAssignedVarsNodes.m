@@ -10,7 +10,12 @@ dataNode=uitreenode(handles.Stats.assignedVarsUITree,'Text','Data');
 
 if isfield(Stats.Tables.(tableName),'RepetitionColumns')
     for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
-        uitreenode(repNode,'Text',Stats.Tables.(tableName).RepetitionColumns(i).Name);        
+        a=uitreenode(repNode,'Text',Stats.Tables.(tableName).RepetitionColumns(i).Name);  
+        if isfield(Stats.Tables.(tableName).RepetitionColumns(i),'Mult') && ...
+                ~isempty(Stats.Tables.(tableName).RepetitionColumns(i).Mult) && ...
+                Stats.Tables.(tableName).RepetitionColumns(i).Mult.PerTrial==1
+            a.ContextMenu=handles.Stats.openMultiRepPopupWindowContextMenu;
+        end
     end
 end
 

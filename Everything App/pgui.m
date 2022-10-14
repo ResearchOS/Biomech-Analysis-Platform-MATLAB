@@ -606,6 +606,9 @@ handles.Stats.addDataRepVarButton=uibutton(statsTab,'push','Text','DR+','Tag','A
 handles.Stats.openStatsFcnContextMenu=uicontextmenu(fig);
 handles.Stats.openStatsFcnContextMenuItem1=uimenu(handles.Stats.openStatsFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFileStats});
 
+handles.Stats.openMultiRepPopupWindowContextMenu=uicontextmenu(fig);
+handles.Stats.openMultiRepPopupWindowContextMenuItem1=uimenu(handles.Stats.openMultiRepPopupWindowContextMenu,'Text','Assign Vars','MenuSelectedFcn',{@openMultiRepPopupWindow});
+
 statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButton',handles.Stats.createTableButton,'RemoveTableButton',handles.Stats.removeTableButton,...
     'TablesUITree',handles.Stats.tablesUITree,'SpecifyTrialsButton',handles.Stats.specifyTrialsButton,'AddRepsVarButton',handles.Stats.addRepsVarButton,...
     'AddVarsButton',handles.Stats.addVarsButton,'RemoveVarsButton',handles.Stats.removeVarsButton,'VarUpButton',handles.Stats.varUpButton,'VarDownButton',handles.Stats.varDownButton,...

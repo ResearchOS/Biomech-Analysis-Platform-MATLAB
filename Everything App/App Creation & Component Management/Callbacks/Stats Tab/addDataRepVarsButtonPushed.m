@@ -12,26 +12,74 @@ if isempty(tableNode)
     return;
 end
 
-selNode=handles.Stats.assignedVarsUITree.SelectedNodes;
-
-if isempty(selNode)
-    return;
-end
+% selNode=handles.Stats.assignedVarsUITree.SelectedNodes;
+% 
+% if isempty(selNode)
+%     return;
+% end
 
 tableName=tableNode.Text;
 
-parentNode=selNode.Parent;
+% parentNode=selNode.Parent;
 
-if isequal(class(parentNode),'matlab.ui.container.Tree')
-    disp('Select a variable, not a category!');
-    return;
+% if isequal(class(parentNode),'matlab.ui.container.Tree')
+%     disp('Select a variable, not a category!');
+%     return;
+% end
+% 
+% if ~ismember(parentNode.Text,{'Data','Repetition'})
+%     disp('Select a variable, not its function!');
+%     return;
+% end
+
+%% Enter the data-driven repetition variable name
+allVarNames={Stats.Tables.(tableName).RepetitionColumns.Name};
+okName=false;
+while ~okName
+    varName=inputdlg('Enter variable name');
+    
+    if isempty(varName) || (iscell(varName) && isempty(varName{1}))
+        disp('Process cancelled, no variable added');
+        return;
+    end
+
+    if iscell(varName)
+        varName=varName{1};
+    end
+
+    varName=strtrim(varName);
+    varName(isspace(varName))='_'; % Replace spaces with underscores
+
+    if ~isvarname(varName)
+        beep;
+        disp('Try again, invalid variable name! Spaces are ok here, but otherwise must evaluate to valid MATLAB variable name!');
+        continue;
+    end
+
+    if length(varName)>namelengthmax
+        beep;
+        disp(['Try again, variable name too long! Must be less than or equal to ' num2str(namelengthmax) ' characters, but is currently ' num2str(length(varName)) ' characters!']);
+        continue;
+    end
+
+    % Check if this component name already exists in the list.
+    idx=ismember(allVarNames,varName);
+    if any(idx)
+        disp('This variable already exists! No variable added, terminating the process.');
+        return;
+    end
+
+    okName=true;
 end
 
-if ~ismember(parentNode.Text,{'Data','Repetition'})
-    disp('Select a variable, not its function!');
-    return;
-end
+%% Make the variable appear in the list of repetition variables
+idx=length({Stats.Tables.(tableName).RepetitionColumns.Name})+1; % Including the newly added variable
+Stats.Tables.(tableName).RepetitionColumns(idx).Name=varName;
 
-varNames={Stats.Tables.(tableName).DataColumns.GUINames};
+Stats.Tables.(tableName).RepetitionColumns(idx).Mult.PerTrial=1;
+Stats.Tables.(tableName).RepetitionColumns(idx).Mult.Categories={};
+Stats.Tables.(tableName).RepetitionColumns(idx).Mult.DataVars={};
 
-Stats.Tables.(tableName).DataColumns
+setappdata(fig,'Stats',Stats);
+
+makeAssignedVarsNodes(fig,Stats,tableName);

@@ -4,11 +4,11 @@ function []=hardCodedValueChanged(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-Plotting=getappdata(fig,'Plotting');
-
-plotName=getappdata(fig,'plotName');
-compName=getappdata(fig,'compName');
-letter=getappdata(fig,'letter');
+% Plotting=getappdata(fig,'Plotting');
+% 
+% plotName=getappdata(fig,'plotName');
+% compName=getappdata(fig,'compName');
+% letter=getappdata(fig,'letter');
 structComp=getappdata(fig,'structComp');
 
 val=handles.hardCodedTextArea.Value{1};

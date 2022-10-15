@@ -38,4 +38,9 @@ comp.IsHardCoded=[comp.IsHardCoded; 0];
 
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 setappdata(fig,'structComp',comp);
-makeVarNodesPlotArgsPopup(fig,idx,VariableNamesList,comp);
+
+a=uitreenode(handles.selVarsListbox,'Text',[selVarName ' (' splitCode ')']);
+handles.selVarsListbox.SelectedNodes=a;
+handles.varNameInCodeEditField.Value=VariableNamesList.SaveNames{varNameIdx};
+handles.subVarsTextArea.Value={''};
+% makeVarNodesPlotArgsPopup(fig,idx,VariableNamesList,comp);

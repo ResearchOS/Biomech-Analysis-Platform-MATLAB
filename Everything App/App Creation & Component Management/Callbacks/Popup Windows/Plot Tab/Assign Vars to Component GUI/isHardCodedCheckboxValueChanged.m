@@ -15,11 +15,6 @@ handles.subvarsTextArea.Visible=~isHC;
 handles.varNameInCodeEditField.Visible=~isHC;
 handles.hardCodedTextArea.Visible=isHC;
 
-% Plotting=getappdata(fig,'Plotting');
-
-% plotName=getappdata(fig,'plotName');
-% compName=getappdata(fig,'compName');
-% letter=getappdata(fig,'letter');
 structComp=getappdata(fig,'structComp');
 
 structComp.IsHardCoded=isHC;

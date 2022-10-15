@@ -5,12 +5,25 @@ handles=getappdata(fig,'handles');
 VariableNamesList=getappdata(fig,'VariableNamesList');
 
 %% Get the names & split codes of the rep vars
+isMulti=NaN(length(Stats.Tables.(tableName).RepetitionColumns),1);
+for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
+    if isfield(Stats.Tables.(tableName).RepetitionColumns(i),'Mult') && ~isempty(Stats.Tables.(tableName).RepetitionColumns(i).Mult)
+        isMulti(i)=Stats.Tables.(tableName).RepetitionColumns(i).Mult.PerTrial;
+    else
+        isMulti(i)=0;
+    end
+end
+
 repVars={Stats.Tables.(tableName).RepetitionColumns.Name};
 % varNames=cell(size(repVars));
 % varCodes=cell(size(repVars));
 varNamesInFile=cell(size(repVars));
 for i=1:length(repVars)    
     spaceIdx=strfind(repVars{i},' ');
+    if isMulti(i)
+        assert(isempty(spaceIdx));
+        continue; % Because this is a multi-rep var.
+    end
     varName=repVars{i}(1:spaceIdx(end)-1);
     varCode=repVars{i}(spaceIdx(end)+2:end-1);
     varIdx=ismember(VariableNamesList.GUINames,varName);
@@ -30,7 +43,8 @@ for i=1:length(dataVars)
 %     varNames{i}=dataVars{i}(1:spaceIdx-1);
 %     varCodes{i}=dataVars{i}(spaceIdx+2:end-1);
     fcnNames{i}=[Stats.Tables.(tableName).DataColumns(i).Function '_Stats'];
-    dataVarNames{i}=[dataVars{i} '_' Stats.Tables.(tableName).DataColumns(i).Function];
+%     dataVarNames{i}=[dataVars{i} '_' Stats.Tables.(tableName).DataColumns(i).Function];
+    dataVarNames{i}=dataVars{i};
 end
 
 numDataCols=length(fcnNames);
@@ -44,9 +58,24 @@ inclStruct=feval(specifyTrialsName);
 load(getappdata(fig,'logsheetPathMAT'),'logVar');
 allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
 
+%% Set up the multi variable info
+cats={};
+for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
+    if isfield(Stats.Tables.(tableName).RepetitionColumns(i),'Mult') && ~isempty(Stats.Tables.(tableName).RepetitionColumns(i).Mult)
+        cats=Stats.Tables.(tableName).RepetitionColumns(i).Mult.Categories;
+        break;
+    end
+end
+if isempty(cats)
+    nMulti=1;
+else
+    nMulti=length(cats); % Number of repetitions (data points) per trial
+end
+
 %% Initialize the stats table
 subNames=fieldnames(allTrialNames);
 numRows=0;
+tableTrialNames={};
 for sub=1:length(subNames)
 
     subName=subNames{sub};
@@ -56,19 +85,25 @@ for sub=1:length(subNames)
         trialName=trialFldNames{trialNum};
 
         for repNum=allTrialNames.(subName).(trialName)
-            numRows=numRows+1;
+
+            for multNum=1:nMulti
+                numRows=numRows+1;
+                tableTrialNames=[tableTrialNames; trialName];
+            end
         end
 
     end
 
 end
 
-% The plus one is for the trial number between the repetition and data columns. The other plus one is for the trial name all the way to the left.
+% Plus one for the trial number column between the repetition and data columns. The other plus one is for the trial name all the way to the left.
 numCols=length(fcnNames)+length(varNamesInFile)+2;
+
+varNamesInFile=varNamesInFile(~isMulti); % Remove the empty indices for the multi-variables.
 
 statsTable=cell(numRows,numCols);
 
-%% Organize the repetition columns
+%% Organize the repetition columns for non-multi variables
 slash=filesep;
 projectName=getappdata(fig,'projectName');
 rowNum=0;
@@ -83,6 +118,9 @@ for sub=1:length(subNames)
         trialName=trialFldNames{trialNum};
 
         for repNum=allTrialNames.(subName).(trialName)
+
+            % NOTE: NO NEED TO CHECK IF A VARIABLE IS "MULTI" (IN WHICH CASE IT WILL NOT BE FOUND IN THE MAT FILE) BECAUSE THAT IS REMOVED FROM
+            % VARNAMESINFILE BEFORE THESE FOR LOOPS
 
             trialFileName=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
             warning('off','MATLAB:load:variableNotFound');
@@ -105,14 +143,21 @@ for sub=1:length(subNames)
                 var{i}=eval(varNamesInFile{i});
             end
 
-            % Insert the data into proper row & column
-            rowNum=rowNum+1;
-            for colNum=1:length(var) % To avoid overwriting the trial name column all the way to the left
-                statsTable{rowNum,colNum+1}=var{colNum};
-            end       
+            for multNum=1:nMulti
+                % Insert the data into proper row & column
+                rowNum=rowNum+1;
+                for colNum=1:length(var) 
+                    statsTable{rowNum,colNum+1}=var{colNum}; % +1 to avoid overwriting the trial name column all the way to the left
+                end
 
-            for i=1:length(varNamesInFile)
-                clearvars(varNamesInFile{i});
+                if nMulti>1 % For the repetition variable
+                    colNum=colNum+1; % Don't overwrite the non-multi repetition variables
+                    statsTable{rowNum,colNum+1}=cats{multNum}; % +1 to avoid overwriting the trial name column all the way to the left
+                end
+
+                for i=1:length(varNamesInFile)
+                    clearvars(varNamesInFile{i});
+                end
             end
 
         end
@@ -123,8 +168,15 @@ end
 
 %% Put data into the data columns
 rowNum=0;
-minColNum=length(varNamesInFile)+2; % +1 for the trial number, the other +1 for the trial name
+minColNum=length(varNamesInFile)+2+sum(isMulti); % +1 for the trial number, the other +1 for the trial name, +sum(isMulti) because I shortened the varNamesInFile to make the above nested for loops work.
 setappdata(fig,'tableName',tableName);
+multiVarNames={};
+for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
+    if isMulti(i)
+        multiVarNames=Stats.Tables.(tableName).RepetitionColumns(i).Mult.DataVars;
+        break;
+    end
+end
 for sub=1:length(subNames)
 
     subName=subNames{sub};
@@ -136,16 +188,34 @@ for sub=1:length(subNames)
 
         for repNum=allTrialNames.(subName).(trialName)
 
-            rowNum=rowNum+1;
-            for i=1:length(fcnNames)
+            for multNum=1:nMulti
+                rowNum=rowNum+1;
+                cat=cats{multNum};
 
-                fcnName=fcnNames{i};
-                setappdata(fig,'fcnName',fcnName);
-                setappdata(fig,'fcnIdx',i);
-                [data]=feval(fcnName,[],subName,trialName,repNum);
-                colNum=minColNum+i;
+                for i=1:length(fcnNames)
 
-                statsTable{rowNum,colNum}=data;
+                    fcnName=fcnNames{i};
+                    setappdata(fig,'fcnName',fcnName);
+                    setappdata(fig,'fcnIdx',i);
+                    [data]=feval(fcnName,[],subName,trialName,repNum);
+                    colNum=minColNum+i;
+
+                    % Check if this is a variable that has been assigned as a "multi" variable.
+                    % If so, it should be in a structure format where each field is one category.
+                    if ~ismember(dataVarNames{i},multiVarNames)
+                        % Assign the same value to multiple rows
+                        statsTable{rowNum,colNum}=data;
+                        continue;
+                    else
+                        if isfield(data,cat)
+                            statsTable{rowNum,colNum}=data.(cat);
+                        else
+                            statsTable{rowNum,colNum}=NaN; % This particular trial does not have this particular field.
+                            tableTrialNames{rowNum}=[tableTrialNames{rowNum} '_MultiMissing'];
+                        end
+                    end
+
+                end
 
             end
 
@@ -159,24 +229,27 @@ cd(oldPath);
 
 %% Prepend the trial name column
 % If the checkbox to retain this is selected
-subNames=fieldnames(allTrialNames);
-rowNum=0;
-for sub=1:length(subNames)
-
-    subName=subNames{sub};
-    trialFldNames=fieldnames(allTrialNames.(subName));
-    for trialNum=1:length(trialFldNames)
-
-        trialName=trialFldNames{trialNum};
-
-        for repNum=allTrialNames.(subName).(trialName)
-            rowNum=rowNum+1;
-            statsTable{rowNum,1}=trialName;
-        end
-
-    end
-
-end
+statsTable(:,1)=tableTrialNames;
+% subNames=fieldnames(allTrialNames);
+% rowNum=0;
+% for sub=1:length(subNames)
+% 
+%     subName=subNames{sub};
+%     trialFldNames=fieldnames(allTrialNames.(subName));
+%     for trialNum=1:length(trialFldNames)
+% 
+%         trialName=trialFldNames{trialNum};
+% 
+%         for repNum=allTrialNames.(subName).(trialName)
+%             for multNum=1:nMulti
+%                 rowNum=rowNum+1;
+%                 statsTable{rowNum,1}=trialName;
+%             end
+%         end
+% 
+%     end
+% 
+% end
 
 %% Rearrange the stats table so that the repetitions are in blocks, incrementing from left to right (e.g. all trials of one subject clumped together, then all trials of one condition)
 for colNum=numRepCols+1:-1:2
@@ -213,7 +286,7 @@ for i=1:length(uniqueEntries)
 
 end
 
-%% Ensure that all conditions have the same number of repetitions
+%% Ensure that all conditions have the same number of repetitions. Add NaN if it doesn't exist.
 for i=1:length(uniqueEntries)
 
     entryIdx=ismember(statsTable(:,trialNumCol-1),uniqueEntries{i}); % 1 where the current entry is
@@ -263,6 +336,10 @@ for i=1:length(uniqueEntries)
         statsTable=[statsTable(1:entriesStart(j)+numExistReps-1,:); cell(numRows,size(statsTable,2)); statsTable(entriesStart(j)+numExistReps:end,:)];
 
         entriesEnd(j)=entriesEnd(j)+numRows;
+        if j<length(entriesStart) % Need to increment the start & end of all the subsequent entries as well.
+            entriesStart(j+1:end)=entriesStart(j+1:end)+numRows;
+            entriesEnd(j+1:end)=entriesEnd(j+1:end)+numRows;
+        end
 
         statsTable(entriesStart(j)+numExistReps:entriesEnd(j),1)={'Missing'}; % Trial name
 

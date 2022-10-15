@@ -12,25 +12,7 @@ if isempty(tableNode)
     return;
 end
 
-% selNode=handles.Stats.assignedVarsUITree.SelectedNodes;
-% 
-% if isempty(selNode)
-%     return;
-% end
-
 tableName=tableNode.Text;
-
-% parentNode=selNode.Parent;
-
-% if isequal(class(parentNode),'matlab.ui.container.Tree')
-%     disp('Select a variable, not a category!');
-%     return;
-% end
-% 
-% if ~ismember(parentNode.Text,{'Data','Repetition'})
-%     disp('Select a variable, not its function!');
-%     return;
-% end
 
 %% Enter the data-driven repetition variable name
 allVarNames={Stats.Tables.(tableName).RepetitionColumns.Name};

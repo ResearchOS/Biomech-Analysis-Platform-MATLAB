@@ -31,15 +31,16 @@ end
 disp('Generating stats table');
 
 %% Create the current stats table
+assignin('base','gui',fig);
 [statsTable,numRepCols,numDataCols,repNames,dataNames]=generateStatsTable(fig,Stats,tableName);
 
 currDate=char(datetime('now','TimeZone','America/New_York'));
 % currDate=currDate(1:11);
-varName=[tableName '_' currDate];
-varName=strrep(varName,'-','');
-varName=strrep(varName,':','');
-varName=strrep(varName,' ','_');
-varName=genvarname(varName);
+tableSaveName=[tableName '_' currDate];
+tableSaveName=strrep(tableSaveName,'-','');
+tableSaveName=strrep(tableSaveName,':','');
+tableSaveName=strrep(tableSaveName,' ','_');
+tableSaveName=genvarname(tableSaveName);
 
 slash=filesep;
 
@@ -47,7 +48,7 @@ matFileName=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat
 
 varNames={'Trial Name', repNames{:}, 'Trial Number', dataNames{:}};
 statsTable=[varNames; statsTable];
-varOut.(varName)=statsTable;
+varOut.(tableSaveName)=statsTable;
 
 if exist(matFileName,'file')~=2
     save(matFileName,'-struct','varOut','-v6');
@@ -60,6 +61,6 @@ if ~isfolder(xlsFolder)
     mkdir(xlsFolder);
 end
 
-xlsFileName=[xlsFolder slash varName '.xlsx'];
+xlsFileName=[xlsFolder slash tableSaveName '.xlsx'];
 
 writecell(statsTable,xlsFileName,'Sheet','1','Range','A1');

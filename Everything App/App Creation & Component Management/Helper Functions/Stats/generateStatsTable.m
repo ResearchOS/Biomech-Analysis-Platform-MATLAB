@@ -14,6 +14,17 @@ for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
     end
 end
 
+% Ensure that the multi variable(s) are all the way at the right side of the repetition vars list.
+firstIsMultIdx=find(isMulti==1,1,'first');
+isMultiCheck=zeros(length(isMulti),1);
+if ~isempty(firstIsMultIdx)
+    isMultiCheck(firstIsMultIdx:end)=1;
+end
+if ~isequal(isMulti,isMultiCheck)
+    disp('The multi variables need to be at the bottom of the list (the far right of the table)');
+    return;
+end
+
 repVars={Stats.Tables.(tableName).RepetitionColumns.Name};
 % varNames=cell(size(repVars));
 % varCodes=cell(size(repVars));

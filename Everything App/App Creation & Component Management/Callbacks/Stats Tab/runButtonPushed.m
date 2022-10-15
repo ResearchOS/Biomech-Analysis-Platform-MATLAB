@@ -63,4 +63,16 @@ end
 
 xlsFileName=[xlsFolder slash tableSaveName '.xlsx'];
 
+%% Before writing to Excel (after saving to .mat), replace the NaN that were computed with {'NaN'} so that Excel shows NaN instead of empty cells.
+% Empty cells are reserved for missing data.
+missingIdx=contains(statsTable(:,1),'Missing');
+statsTableData=[zeros(1,numDataCols); cell2mat(statsTable(2:end,end-numDataCols+1:end))]; % Convert to matrix
+nanIdx=isnan(statsTableData); % Look for NaN
+
+replNaNIdx=false(size(statsTable));
+replNaNIdx(:,end-numDataCols+1:end)=nanIdx & ~missingIdx; % NaN's should be visible in Excel when the data is not missing, but is NaN.
+
+statsTable(replNaNIdx)={'NaN'};
 writecell(statsTable,xlsFileName,'Sheet','1','Range','A1');
+
+disp(['Stats table generated: ' xlsFileName]);

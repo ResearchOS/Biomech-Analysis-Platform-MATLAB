@@ -34,8 +34,17 @@ VariableNamesList=getappdata(pgui,'VariableNamesList');
 currNode.GUINames=[currNode.GUINames; {[selVarName ' (' splitCode ')']}]; % Append the GUI name
 varNameIdx=ismember(VariableNamesList.GUINames,selVarName);
 currNode.NamesInCode=[currNode.NamesInCode; VariableNamesList.SaveNames(varNameIdx)]; % Append the default name in code
+currNode.Subvars=[currNode.Subvars; {''}];
 % currNode.IsHardCoded=[currNode.IsHardCoded; 0];
+
+varIdx=ismember(currNode.GUINames,[selVarName ' (' splitCode ')']);
 
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 setappdata(fig,'currNode',currNode);
-makeVarNodesStatsArgsPopup(fig,idx,VariableNamesList,currNode);
+
+a=uitreenode(handles.selVarsListbox,'Text',[selVarName ' (' splitCode ')']);
+handles.selVarsListbox.SelectedNodes=a;
+
+handles.varNameInCodeEditField.Value=VariableNamesList.SaveNames{varNameIdx};
+handles.subvarsTextArea.Value=currNode.Subvars(varIdx);
+% makeVarNodesStatsArgsPopup(fig,idx,VariableNamesList,currNode);

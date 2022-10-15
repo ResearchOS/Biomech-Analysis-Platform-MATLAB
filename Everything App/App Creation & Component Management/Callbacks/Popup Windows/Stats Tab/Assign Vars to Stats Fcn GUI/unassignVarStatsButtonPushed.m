@@ -21,8 +21,26 @@ varName=selVarNode.Text;
 idx=ismember(currNode.GUINames,varName);
 currNode.GUINames=currNode.GUINames(~idx);
 currNode.NamesInCode=currNode.NamesInCode(~idx);
+currNode.Subvars=currNode.Subvars(~idx);
 % comp.IsHardCoded=comp.IsHardCoded(~idx);
 
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 setappdata(fig,'currNode',currNode);
-makeVarNodesStatsArgsPopup(fig,idx,VariableNamesList,currNode);
+
+
+selVarIdx=find(ismember(handles.selVarsListbox.Children,selVarNode));
+if selVarIdx==length(handles.selVarsListbox.Children)
+    selVarIdx=selVarIdx-1;
+end
+delete(selVarNode);
+if selVarIdx>0
+    handles.selVarsListbox.SelectedNodes=handles.selVarsListbox.Children(selVarIdx);
+    handles.varNameInCodeEditField.Value=currNode.NamesInCode{selVarIdx};
+    handles.subvarsTextArea.Value=currNode.Subvars(selVarIdx);
+else
+    handles.varNameInCodeEditField.Value='';
+    handles.subvarsTextArea.Value={''};
+end
+
+
+% makeVarNodesStatsArgsPopup(fig,idx,VariableNamesList,currNode);

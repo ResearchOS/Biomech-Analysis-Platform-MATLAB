@@ -31,7 +31,6 @@ comp.Subvars=comp.Subvars(~idx);
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 setappdata(fig,'structComp',comp);
 
-
 newNodeIdx=find(ismember(handles.selVarsListbox.Children,selVarNode));
 if newNodeIdx==length(handles.selVarsListbox.Children)
     newNodeIdx=newNodeIdx-1;
@@ -45,9 +44,6 @@ else
     handles.varNameInCodeEditField.Value='';
     handles.subvarsTextArea.Value='';
 end
-% uitreenode(handles.selVarsListbox,'Text',[selVarName ' (' splitCode ')']);
-% VariableNamesList.SaveNames{varNameIdx};
-% handles.subVarsTextArea.Value={''};
 
 
 % makeVarNodesPlotArgsPopup(fig,idx,VariableNamesList,comp);

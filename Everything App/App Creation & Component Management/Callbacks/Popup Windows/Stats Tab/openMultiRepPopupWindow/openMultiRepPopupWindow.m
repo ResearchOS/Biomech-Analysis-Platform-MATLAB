@@ -40,36 +40,33 @@ assignedVars=multStruct.DataVars;
 
 vars={Stats.Tables.(tableName).DataColumns.Name};
 
+vars=vars(~ismember(vars,assignedVars)); % Don't allow there to be the same variable in the all vars and assigned vars list boxes
+
+[~,varsSortIdx]=sort(upper(vars));
+vars=vars(varsSortIdx);
+
+[~,assignedVarsSortIdx]=sort(upper(assignedVars));
+assignedVars=assignedVars(assignedVarsSortIdx);
+
 %% Create the popup window
-Q=figure('Visible','on','Name','Assign Multi Vars','DeleteFcn',@(Q,event) multiRepPopupWindowDeleteFcn(Q));
+Q=uifigure('Visible','on','Name','Assign Multi Vars','DeleteFcn',@(Q,event) multiRepPopupWindowDeleteFcn(Q));
 
 % All data variables listbox
-Qhandles.allDataVarsListbox=uitree(Q,'Position',[10 10 200 450],'Visible','on');
+Qhandles.allDataVarsListbox=uitree(Q,'Position',[10 10 200 350],'Visible','on');
 % All assigned data variables listbox
-Qhandles.assignedDataVarsListbox=uitree(Q,'Position',[270 10 200 300],'Visible','on','SelectionChangedFcn',@(Q,event) assignedDataVarsListboxSelectionChanged(Q));
+Qhandles.assignedDataVarsListbox=uitree(Q,'Position',[270 10 200 350],'Visible','on','SelectionChangedFcn',@(Q,event) assignedDataVarsListboxSelectionChanged(Q));
 % Assign data variable button
 Qhandles.assignVarButton=uibutton(Q,'Position',[210 150 50 50],'Text','->','ButtonPushedFcn',@(Q,event) assignMultVarStatsButtonPushed(Q));
 % Unassign data variable button
 Qhandles.unassignVarButton=uibutton(Q,'Position',[210 100 50 50],'Text','<-','ButtonPushedFcn',@(Q,event) unassignMultVarStatsButtonPushed(Q));
 % Categories text area (independent of which data vars are assigned)
-Qhandles.categoriesTextArea=uitextarea(Q,'Position',[10 250 450 200],'ValueChangedFcn',@(Q,event) categoriesTextAreaValueChanged(Q));
+Qhandles.categoriesTextArea=uitextarea(Q,'Position',[10 375 500 100],'ValueChangedFcn',@(Q,event) categoriesTextAreaValueChanged(Q));
 
 setappdata(Q,'handles',Qhandles);
 setappdata(Q,'tableName',tableName);
+setappdata(Q,'allDataVars',vars);
+setappdata(Q,'assignedVars',assignedVars);
+setappdata(Q,'cats',cats);
+setappdata(Q,'repVarIdx',varIdx)
 
 makeMultVarStatsNodes(Q,cats,vars,assignedVars);
-
-
-% Qhandles.varsListbox=uitree(Q,'Position',[10 10 200 450],'Visible','on');
-% Qhandles.selVarsListbox=uitree(Q,'Position',[270 10 200 300],'SelectionChangedFcn',@(Q,event) selVarsStatsListboxValueChanged(Q),'Visible','on');
-% Qhandles.varNameInCodeEditField=uieditfield(Q,'Position',[270 310 200 50],'ValueChangedFcn',@(Q,event) varNameInCodeStatsEditFieldValueChanged(Q),'Visible','on');
-% % Qhandles.isHardCoded=uicheckbox(Q,'Position',[10 460 150 50],'Value',structComp.IsHardCoded,'Text','Is Hard Coded?','ValueChangedFcn',@(Q,event) isHardCodedCheckboxValueChanged(Q));
-% % Qhandles.hardCodedTextArea=uitextarea(Q,'Position',[10 250 450 200],'Visible',Qhandles.isHardCoded.Value,'ValueChangedFcn',@(Q,event) hardCodedValueChanged(Q),'Visible',structComp.IsHardCoded);
-% Qhandles.assignVarButton=uibutton(Q,'Position',[210 150 50 50],'Text','->','ButtonPushedFcn',@(Q,event) assignVarStatsButtonPushed(Q),'Visible','on');
-% Qhandles.unassignVarButton=uibutton(Q,'Position',[210 100 50 50],'Text','<-','ButtonPushedFcn',@(Q,event) unassignVarStatsButtonPushed(Q),'Visible','on');
-% Qhandles.subvarsTextArea=uitextarea(Q,'Position',[270 370 200 50],'ValueChangedFcn',@(Q,event) subvarsStatsTextAreaValueChanged(Q),'Visible','on');
-
-% setappdata(Q,'varNodeIdxNum',varNodeIdxNum);
-% setappdata(Q,'guiNames',Stats.Tables.(tableName).DataColumns(varNodeIdxNum).GUINames);
-% setappdata(Q,'namesInCode',Stats.Tables.(tableName).DataColumns(varNodeIdxNum).NamesInCode);
-% setappdata(Q,'currNode',Stats.Tables.(tableName).DataColumns(varNodeIdxNum));

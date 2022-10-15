@@ -1,3 +1,3 @@
 function []=assignedDataVarsListboxSelectionChanged(src,event)
 
-%% PURPOSE: 
+%% PURPOSE: UPDATE THE 

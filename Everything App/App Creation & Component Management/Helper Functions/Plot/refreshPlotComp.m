@@ -4,6 +4,8 @@ function []=refreshPlotComp(src,event,plotName,compName,letter,axLetter)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+assignin('base','gui',fig);
+
 if exist('plotName','var')~=1
     plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
     if isempty(handles.Plot.plotFcnUITree.SelectedNodes)
@@ -37,6 +39,10 @@ isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
 switch compName
     case 'Axes'
         h=findobj(handles.Plot.plotPanel,'Tag',['Axes ' letter]);
+        if isempty(h)
+            h=axes('Parent',handles.Plot.plotPanel,'Visible','on','Tag',['Axes ' letter]);
+        end
+        tempH=copyobj(h,fig);
         delete(h);
         h=axes('Parent',handles.Plot.plotPanel,'Visible','on','Tag',['Axes ' letter]);
         Plotting.Plots.(plotName).(compName).(letter).Handle=h;
@@ -45,6 +51,17 @@ switch compName
             axis(h,'equal');
         end
         axLetter=letter;
+        propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties;
+        for i=1:length(propsChangedList)
+            currProps=propsChangedList{i};
+            for j=1:length(currProps)
+                currProp=currProps{j};
+                if ~isempty(currProp)
+                    h.(currProp)=tempH.(currProp);
+                end
+            end
+        end
+        delete(tempH);
     otherwise
         if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')
             disp('Need to select a specify trials!');
@@ -109,7 +126,8 @@ switch compName
             if ~isempty(namesInCode)
                 eval([namesInCodeOut '=getArg(' namesInCodeChar ',subName,trialName,repNum);']);
                 for i=1:length(namesInCode)
-                    eval(['allData.var' num2str(i) '=' namesInCode{i} ';']);
+%                     eval(['allData.var' num2str(i) '=' namesInCode{i} ';']);
+                    allData.(['var' num2str(i)])=eval(namesInCode{i});
                 end
             else
                 allData.var1=getArg;
@@ -124,13 +142,37 @@ switch compName
         if isempty(currGroupHandle)
             currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]); % First time
             Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
-        end               
-        delete(currGroupHandle.Children); % Get rid of the old components  
-        for i=1:length(h)
-            if ~isempty(properties(h(i))) % There is a graphics object here
+            for i=1:length(h)
                 h(i).Parent=currGroupHandle;
             end
         end        
+        tempGroupHandle=copyobj(currGroupHandle,axHandle);
+        delete(currGroupHandle.Children); % Get rid of the old components  
+
+        if ~isfield(Plotting.Plots.(plotName).(compName).(letter),'ChangedProperties')
+            Plotting.Plots.(plotName).(compName).(letter).ChangedProperties=cell(size(currGroupHandle.Children));
+        end
+        propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties;
+        tempH=tempGroupHandle.Children;
+        if ~isempty(propsChangedList)
+            for i=1:length(tempH)
+                if isempty(properties(tempH(i))) % There is a graphics object here
+                    continue;
+                end
+                tempH(i).Parent=currGroupHandle;
+                currChangedProperties=propsChangedList{i};
+                if isempty(tempGroupHandle.Children)
+                    continue;
+                end
+                for j=1:length(currChangedProperties)
+                    currProp=currChangedProperties{j};
+                    tempH(i).(currProp)=currGroupHandle.Children(i).(currProp);
+                end
+
+            end
+        end
+%         delete(tempGroupHandle.Children);
+        delete(tempGroupHandle);
         Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
 
 end

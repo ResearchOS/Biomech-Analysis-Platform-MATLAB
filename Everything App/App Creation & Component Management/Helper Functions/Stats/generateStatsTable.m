@@ -340,7 +340,7 @@ for i=1:length(uniqueEntries)
             elseif all(cellfun(@ischar,statsTable(:,k)))
                 insertData{k}='NaN';
             else
-                error(['Mixed chars & numeric in table row ' num2str(k)]);
+                error(['Mixed chars & numeric in table column ' num2str(k)]);
             end
         end
 

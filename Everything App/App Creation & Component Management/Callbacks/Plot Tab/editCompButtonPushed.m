@@ -39,9 +39,18 @@ end
 h=Plotting.Plots.(plotName).(compName).(letter).Handle; % Handle to the hggroup for this component
 if ~isequal(compName,'Axes')
     currProps=properties(h.Children(1));
+    newH=h.Children;
 else
     currProps=properties(h);
+    newH=h;
 end
 
+%% Get the list of previously changed properties
+if ~isfield(Plotting.Plots.(plotName).(compName).(letter),'ChangedProperties')
+    Plotting.Plots.(plotName).(compName).(letter).ChangedProperties=cell(size(newH));
+    setappdata(fig,'Plotting',Plotting);
+end
+propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties;
+
 % Edit the current component
-editCompPopupWindow(fig,h,currProps,compName,plotName,letter);
+editCompPopupWindow(fig,h,currProps,compName,plotName,letter,propsChangedList);

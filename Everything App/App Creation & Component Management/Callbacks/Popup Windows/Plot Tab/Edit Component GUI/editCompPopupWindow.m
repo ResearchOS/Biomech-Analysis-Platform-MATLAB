@@ -1,10 +1,10 @@
-function []=editCompPopupWindow(src,h,propNames,compName,plotName,letter)
+function []=editCompPopupWindow(src,h,propNames,compName,plotName,letter,propsChangedList)
 
 %% PURPOSE: EDIT THE PROPERTIES OF THE CURRENTLY SELECTED COMPONENT
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-Q=uifigure('Visible','on','Name','Edit Comp Props');
+Q=uifigure('Visible','on','Name','Edit Comp Props','DeleteFcn',@(Q,event) editCompDeleteFcn(Q,fig));
 [~,idx]=sort(upper(propNames));
 propNames=propNames(idx);
 % Qhandles.propsList=uilistbox(Q,'Position',[10 10 200 450],'Items',propNames,'Value',propNames{1},'MultiSelect','off','ValueChangedFcn',@(Q,event) propsValueChanged(Q,fig));
@@ -26,3 +26,4 @@ setappdata(Q,'compName',compName);
 setappdata(Q,'plotName',plotName);
 setappdata(Q,'letter',letter);
 setappdata(Q,'objH',h);
+setappdata(Q,'propsChangedList',propsChangedList);

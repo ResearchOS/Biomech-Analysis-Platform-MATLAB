@@ -30,10 +30,7 @@ if exist('letter','var')~=1
         return;
     end
     compName=compNode.Parent.Text;
-end % Used for refreshing the subplots
-%     axNodes=handles.Plot.currCompUITree.Children.Children;
-%     compNode=axNodes(ismember(axNodes,findobj(handles.Plot.currCompUITree,'Text',axLetter)));
-% end
+end
 
 isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
 switch compName
@@ -87,6 +84,15 @@ switch compName
         axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;   
         hold(axHandle,'on');
 
+        % 1. Get the hggroup that contains the current component.
+        currGroupHandle=findobj(axHandle,'Type','hggroup','Tag',[compName ' ' letter]); % Uniquely identifies the current group
+        if isempty(currGroupHandle)
+            currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]);
+        end
+
+
+
+
         if isMovie==0            
             switch level
                 case 'P'
@@ -94,13 +100,13 @@ switch compName
                     inclStruct=feval(specifyTrialsName);
                     load(getappdata(fig,'logsheetPathMAT'),'logVar');
                     allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
-                    h=feval([compName '_P'],axHandle,allTrialNames);
+                    h=feval([compName '_P'],currGroupHandle,allTrialNames);
                 case 'PC'
                     specifyTrialsName=Plotting.Plots.(plotName).SpecifyTrials;
                     inclStruct=feval(specifyTrialsName);
                     load(getappdata(fig,'logsheetPathMAT'),'logVar');
                     allTrialNames=getTrialNames(inclStruct,logVar,fig,1,[]);
-                    h=feval([compName '_PC'],axHandle,allTrialNames);
+                    h=feval([compName '_PC'],currGroupHandle,allTrialNames);
                 case 'C'
 
                 case 'S'
@@ -110,7 +116,7 @@ switch compName
                 case 'T'
                     trialName=plotExTrial.Trial;
                     repNum=1;
-                    h=feval([compName '_T'],axHandle,subName,trialName,repNum); 
+                    h=feval([compName '_T'],currGroupHandle,subName,trialName,repNum); 
             end
         else
             namesInCode=Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode;

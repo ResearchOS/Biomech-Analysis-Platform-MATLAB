@@ -60,9 +60,9 @@ for i=1:length(compLetters)
 
 end
 
-if isequal(currCompName,'Axes') % Refreshing the entire figure
-    delete(handles.Plot.plotPanel.Children);
-end
+% if isequal(currCompName,'Axes') % Refreshing the entire figure
+%     delete(handles.Plot.plotPanel.Children);
+% end
 
 %% Update all components one at a time
 for i=1:length(compList)
@@ -70,6 +70,7 @@ for i=1:length(compList)
     compName=compList{i}(1:spaceIdx(1)-1);
     letter=compList{i}(spaceIdx(1)+1:spaceIdx(2)-1);
     axLetter=compList{i}(spaceIdx(2)+1:end);
-    refreshPlotComp(fig,[],plotName,compName,letter,axLetter)
+    prevCopy=copyobj(currAxes,fig);
+    refreshPlotComp(fig,[],plotName,compName,letter,axLetter,prevCopy)
 %     adjustSubplot(fig,[],subplotIdx);
 end

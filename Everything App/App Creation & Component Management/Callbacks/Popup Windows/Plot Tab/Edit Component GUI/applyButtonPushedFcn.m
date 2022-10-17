@@ -21,15 +21,11 @@ end
 
 for i=1:length(h)
     if ~isempty(properties(h(i)))
-%         if isequal(h(i).(currProp),val) && ~isequal(compName,'Axes')
-% %             h(i).(currProp)=val;
-%             continue;
-%         end
+        % Update the property
+        h(i).(currProp)=val;
+
         % Add this property to the list of manually edited properties. Every time the graphics objects are updated, they should use these property
         % values to keep the graphics objects the same.
-        h(i).(currProp)=val;
-%         drawnow;
-
         % Later on I should institute a check to see whether this has been changed back to the default, for efficiency when plotting.
         propsChangedList{i}=unique([propsChangedList{i}; {currProp}]); % Add this property to the list of properties that have been modified.
 

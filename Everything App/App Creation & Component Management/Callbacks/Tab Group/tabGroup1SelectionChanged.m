@@ -46,7 +46,10 @@ if ~ismember(currTab,okTabs)
     drawnow;
 end
 
-pan(fig,'off');
+zoom(handles.Process.mapFigure,'off');
+zoom(handles.Plot.plotPanel.Children,'off');
+pan(handles.Process.mapFigure,'off');
+pan(handles.Plot.plotPanel.Children,'off');
 dcm=datacursormode(fig);
 dcm.Enable='off';
 switch currTab

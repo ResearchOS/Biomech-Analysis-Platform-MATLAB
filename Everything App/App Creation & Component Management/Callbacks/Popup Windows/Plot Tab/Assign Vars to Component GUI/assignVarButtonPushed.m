@@ -35,6 +35,7 @@ comp.Names=[comp.Names; {[selVarName ' (' splitCode ')']}]; % Append the GUI nam
 varNameIdx=ismember(VariableNamesList.GUINames,selVarName);
 comp.NamesInCode=[comp.NamesInCode; VariableNamesList.SaveNames(varNameIdx)]; % Append the default name in code
 comp.IsHardCoded=[comp.IsHardCoded; 0];
+comp.Subvars=[comp.Subvars; {''}];
 
 [~,idx]=sort(upper(VariableNamesList.GUINames));
 setappdata(fig,'structComp',comp);
@@ -42,5 +43,5 @@ setappdata(fig,'structComp',comp);
 a=uitreenode(handles.selVarsListbox,'Text',[selVarName ' (' splitCode ')']);
 handles.selVarsListbox.SelectedNodes=a;
 handles.varNameInCodeEditField.Value=VariableNamesList.SaveNames{varNameIdx};
-handles.subVarsTextArea.Value={''};
+handles.subvarsTextArea.Value={''};
 % makeVarNodesPlotArgsPopup(fig,idx,VariableNamesList,comp);

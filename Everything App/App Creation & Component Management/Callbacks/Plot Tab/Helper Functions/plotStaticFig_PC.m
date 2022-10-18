@@ -40,13 +40,13 @@ for axNum=1:length(axLetters)
 
         for j=1:length(letters)
             setappdata(fig,'letter',letters{j});
-            if ~isfield(Plotting.Plots.(plotName).(compName).(letters{j}),'Parent')
+            if isequal(compName,'Axes')
                 tag='';
                 axLetter=axLetters{axNum};
             else
                 tag=Plotting.Plots.(plotName).(compName).(letters{j}).Parent;  
                 spaceIdx=strfind(tag,' ');
-            axLetter=tag(spaceIdx+1:end);
+                axLetter=tag(spaceIdx+1:end);
             end
             allProps=Plotting.Plots.(plotName).(compName).(letters{j}).Properties;
             changedProps=Plotting.Plots.(plotName).(compName).(letters{j}).ChangedProperties;

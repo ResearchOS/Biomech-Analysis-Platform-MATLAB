@@ -152,7 +152,9 @@ switch compName
         end  
 
         for i=1:length(h)
-            h(i).Parent=currGroupHandle;
+            if ~isequal(class(h(i)),'matlab.graphics.GraphicsPlaceholder')
+                h(i).Parent=currGroupHandle;
+            end
         end
 
         % This needs to be here so that every element of the group can have its own changed properties (allow for multi-type groups)

@@ -36,6 +36,7 @@ if ~isfield(structComp,'Names') % Initialize
     structComp.NamesInCode={};
     structComp.IsHardCoded=0;
     structComp.HardCodedValue='';
+    structComp.Subvars={''};
 end
 
 % Backwards compatibility

@@ -39,17 +39,49 @@ for axNum=1:length(axLetters)
 
         for j=1:length(letters)
             setappdata(fig,'letter',letters{j});
-            tag=Plotting.Plots.(plotName).(compName).(letters{j}).Parent;            
+            if isequal(compName,'Axes')
+                tag='';
+                axLetter=axLetters{axNum};
+            else
+                tag=Plotting.Plots.(plotName).(compName).(letters{j}).Parent;   
+                spaceIdx=strfind(tag,' ');
+                axLetter=tag(spaceIdx+1:end);
+            end
+            allProps=Plotting.Plots.(plotName).(compName).(letters{j}).Properties;
+            changedProps=Plotting.Plots.(plotName).(compName).(letters{j}).ChangedProperties;
+
+            % Set the axes properties
+            if isequal(compName,'Axes')
+                h=axHandles.(axLetter);
+                for k=1:length(changedProps)
+                    currProps=changedProps{k};
+                    for l=1:length(currProps)
+                        currProp=currProps{l};
+                        if ~ishandle(allProps.(currProp))
+                            h(k).(currProp)=allProps.(currProp);
+                        else
+                            h(k).(currProp)=copyobj(allProps.(currProp),h);
+                        end
+                    end
+                end
+                continue;
+            end
+
             if ~isequal(tag,axTag)
                 continue;
             end
 
-            spaceIdx=strfind(tag,' ');
-            axLetter=tag(spaceIdx+1:end);
-
             axHandle=axHandles.(axLetter);
 
             h=feval([compName '_T'],axHandle,subName,trialName,repNum);
+
+            for k=1:length(changedProps)
+                currProps=changedProps{k};
+                for l=1:length(currProps)
+                    currProp=currProps{l};
+                    h(k).(currProp)=allProps.(currProp);
+                end
+            end
 
         end
 

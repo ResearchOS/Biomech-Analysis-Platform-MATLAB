@@ -113,6 +113,9 @@ end
 projectName=getappdata(fig,'projectName');
 dataPath=getappdata(fig,'dataPath');
 
+% tabName=handles.Tabs.tabGroup1.SelectedTab.Title;
+setappdata(fig,'tabName','Process');
+
 b=tic;
 for i=1:length(fcnNames)
 

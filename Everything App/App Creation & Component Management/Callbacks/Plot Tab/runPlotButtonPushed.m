@@ -34,6 +34,8 @@ end
 
 allTrialNames=getTrialNames(inclStruct,logVar,fig,org,[]);
 
+setappdata(fig,'tabName','Plot');
+
 if isequal(level,'P')    
     plotStaticFig_P(fig,allTrialNames); % Create one figure per project
     return;

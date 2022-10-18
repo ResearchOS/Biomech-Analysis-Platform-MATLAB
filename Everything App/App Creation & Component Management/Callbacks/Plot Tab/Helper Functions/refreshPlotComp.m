@@ -32,6 +32,8 @@ if exist('letter','var')~=1
     compName=compNode.Parent.Text;
 end
 
+setappdata(fig,'tabName','Plot');
+
 isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
 switch compName
     case 'Axes'

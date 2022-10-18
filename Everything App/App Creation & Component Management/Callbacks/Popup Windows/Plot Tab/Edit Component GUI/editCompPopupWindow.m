@@ -7,7 +7,8 @@ handles=getappdata(fig,'handles');
 prevFigs=findall(0,'Name','Edit Comp Props');
 delete(prevFigs); % Close all prior windows
 
-Q=uifigure('Visible','on','Name','Edit Comp Props','DeleteFcn',@(Q,event) editCompDeleteFcn(Q,fig));
+figPos=fig.Position;
+Q=uifigure('Visible','on','Name','Edit Comp Props','DeleteFcn',@(Q,event) editCompDeleteFcn(Q,fig),'Position',[figPos(1:2) min([0.5*figPos(3) 600]) min([figPos(4) 500])]);
 [~,idx]=sort(upper(propNames));
 propNames=propNames(idx);
 % Qhandles.propsList=uilistbox(Q,'Position',[10 10 200 450],'Items',propNames,'Value',propNames{1},'MultiSelect','off','ValueChangedFcn',@(Q,event) propsValueChanged(Q,fig));

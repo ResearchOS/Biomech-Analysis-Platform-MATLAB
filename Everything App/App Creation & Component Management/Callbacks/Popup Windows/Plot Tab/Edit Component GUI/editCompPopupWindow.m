@@ -4,6 +4,9 @@ function []=editCompPopupWindow(src,h,propNames,compName,plotName,letter,propsCh
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+prevFigs=findall(0,'Name','Edit Comp Props');
+delete(prevFigs); % Close all prior windows
+
 Q=uifigure('Visible','on','Name','Edit Comp Props','DeleteFcn',@(Q,event) editCompDeleteFcn(Q,fig));
 [~,idx]=sort(upper(propNames));
 propNames=propNames(idx);

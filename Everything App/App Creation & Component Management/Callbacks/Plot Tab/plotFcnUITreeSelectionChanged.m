@@ -32,8 +32,7 @@ if ~isempty(handles.Plot.plotPanel.Children)
     prevSelectedPlotName=getappdata(fig,'prevSelectedPlotName');
     drawnow;
     Q=figure('Visible','off');
-    set(handles.Plot.plotPanel.Children,'Parent',Q);
-%     plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;    
+    set(handles.Plot.plotPanel.Children,'Parent',Q);  
     if ~isfolder(folderName)
         mkdir(folderName);
     end
@@ -108,7 +107,25 @@ end
 delete(handles.Plot.plotPanel.Children);
 try
     Q=openfig([folderName slash plotName '.fig']);
-    Plotting.Plots.(plotName).Axes.A.Handle=Q.Children; % Needs to be updated for multiple axes. Probably by assigning tags with the axes letters to each axes
+    % Assign all of the axes to the proper handles
+    for i=1:length(Q.Children)
+        currAxTag=Q.Children(i).Tag;
+        axLetter=strfind(currAxTag,' ');
+        axLetter=currAxTag(axLetter+1:end);
+        Plotting.Plots.(plotName).Axes.(axLetter).Handle=Q.Children(i); % Needs to be updated for multiple axes. Probably by assigning tags with the axes letters to each axes
+        axHandle=Q.Children(i);
+        for j=1:length(axHandle.Children)
+
+            currCompTag=axHandle.Children(j).Tag;
+            spaceIdx=strfind(currCompTag,' ');
+            compName=currCompTag(1:spaceIdx-1);
+            compLetter=currCompTag(spaceIdx+1:end);
+            Plotting.Plots.(plotName).(compName).(compLetter).Handle=axHandle.Children(j);
+%             Plotting.Plots.(plotName).(compName).(compLetter).Parent=['Axes ' axLetter];
+
+        end
+    end
+    
     set(Q.Children,'Parent',handles.Plot.plotPanel);    
     setappdata(fig,'Plotting',Plotting);
     close(Q);

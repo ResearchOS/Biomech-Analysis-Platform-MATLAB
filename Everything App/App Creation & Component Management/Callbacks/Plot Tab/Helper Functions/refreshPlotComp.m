@@ -85,7 +85,7 @@ switch compName
         if exist('axLetter','var')~=1
             axLetter=compNode.Parent.Parent.Text;
         end
-        axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;   
+        axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
         hold(axHandle,'on');
 
         % 1. Get the hggroup that contains the current component.
@@ -94,12 +94,12 @@ switch compName
             currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]);
         end
 
-%         tempGroupHandle=copyobj(currGroupHandle,axHandle); % Contains a copy of the objects, just to retain their properties
-%         tempH=tempGroupHandle.Children;
+        %         tempGroupHandle=copyobj(currGroupHandle,axHandle); % Contains a copy of the objects, just to retain their properties
+        %         tempH=tempGroupHandle.Children;
         Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
         delete([currGroupHandle.Children]);
 
-        if isMovie==0            
+        if isMovie==0
             switch level
                 case 'P'
                     specifyTrialsName=Plotting.Plots.(plotName).SpecifyTrials;
@@ -122,7 +122,7 @@ switch compName
                 case 'T'
                     trialName=plotExTrial.Trial;
                     repNum=1;
-                    h=feval([compName '_T'],axHandle,subName,trialName,repNum); 
+                    h=feval([compName '_T'],axHandle,subName,trialName,repNum);
             end
         else
             namesInCode=Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode;
@@ -138,18 +138,15 @@ switch compName
             if ~isempty(namesInCode)
                 eval([namesInCodeOut '=getArg(' namesInCodeChar ',subName,trialName,repNum);']);
                 for i=1:length(namesInCode)
-%                     eval(['allData.var' num2str(i) '=' namesInCode{i} ';']);
                     allData.(['var' num2str(i)])=eval(namesInCode{i});
                 end
             else
                 allData.var1=getArg;
-%                 namesInCodeOut='var1';
-%                 eval([namesInCodeOut '=getArg;']);
             end
-            
+
             idx=Plotting.Plots.(plotName).Movie.currFrame;
             h=feval([compName '_Movie'],axHandle,allData,idx);
-        end  
+        end
 
         for i=1:length(h)
             if ~isequal(class(h(i)),'matlab.graphics.GraphicsPlaceholder')
@@ -162,14 +159,13 @@ switch compName
             Plotting.Plots.(plotName).(compName).(letter).ChangedProperties=cell(size(currGroupHandle.Children));
         end
 
-        propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties; 
+        propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties;
         allProps=Plotting.Plots.(plotName).(compName).(letter).Properties;
         if ~isempty(propsChangedList)
             for i=1:length(currGroupHandle.Children)
                 if isempty(properties(currGroupHandle.Children(i))) % There is no graphics object here
                     continue;
                 end
-%                 tempH(i).Parent=currGroupHandle;
                 currChangedProperties=propsChangedList{i};
                 if isempty(currGroupHandle.Children)
                     continue;

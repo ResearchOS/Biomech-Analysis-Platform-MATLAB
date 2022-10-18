@@ -17,3 +17,5 @@ Plotting.Plots.(plotName).(compName).(letter).ChangedProperties=propsChangedList
 Plotting.Plots.(plotName).(compName).(letter).Properties=allProps;
 
 setappdata(pguiFig,'Plotting',Plotting);
+
+evalin('base','clear currentPropertyValue;');

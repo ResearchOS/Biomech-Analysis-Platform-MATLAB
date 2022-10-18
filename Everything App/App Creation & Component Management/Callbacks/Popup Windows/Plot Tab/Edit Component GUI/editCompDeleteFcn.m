@@ -11,7 +11,9 @@ Plotting=getappdata(pguiFig,'Plotting');
 compName=getappdata(fig,'compName');
 plotName=getappdata(fig,'plotName');
 letter=getappdata(fig,'letter');
+allProps=getappdata(fig,'allProps');
 
 Plotting.Plots.(plotName).(compName).(letter).ChangedProperties=propsChangedList;
+Plotting.Plots.(plotName).(compName).(letter).Properties=allProps;
 
 setappdata(pguiFig,'Plotting',Plotting);

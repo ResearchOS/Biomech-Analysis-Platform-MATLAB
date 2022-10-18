@@ -1,4 +1,4 @@
-function []=editCompPopupWindow(src,h,propNames,compName,plotName,letter,propsChangedList)
+function []=editCompPopupWindow(src,h,propNames,compName,plotName,letter,propsChangedList,allProps)
 
 %% PURPOSE: EDIT THE PROPERTIES OF THE CURRENTLY SELECTED COMPONENT
 fig=ancestor(src,'figure','toplevel');
@@ -27,3 +27,4 @@ setappdata(Q,'plotName',plotName);
 setappdata(Q,'letter',letter);
 setappdata(Q,'objH',h);
 setappdata(Q,'propsChangedList',propsChangedList);
+setappdata(Q,'allProps',allProps);

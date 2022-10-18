@@ -10,6 +10,7 @@ plotName=getappdata(fig,'plotName');
 h=getappdata(fig,'objH');
 currProp=getappdata(fig,'currProp');
 propsChangedList=getappdata(fig,'propsChangedList');
+allProps=getappdata(fig,'allProps');
 
 val=evalin('base','currentPropertyValue;');
 
@@ -23,6 +24,7 @@ for i=1:length(h)
     if ~isempty(properties(h(i)))
         % Update the property
         h(i).(currProp)=val;
+        allProps.(currProp)=h(i).(currProp);
 
         % Add this property to the list of manually edited properties. Every time the graphics objects are updated, they should use these property
         % values to keep the graphics objects the same.
@@ -33,5 +35,6 @@ for i=1:length(h)
 end
 
 setappdata(fig,'propsChangedList',propsChangedList);
+setappdata(fig,'allProps',allProps);
 evalin('base','closevar(''currentPropertyValue'');');
 

@@ -1,4 +1,4 @@
-function []=refreshPlotComp(src,event,plotName,compName,letter,axLetter)
+function []=refreshPlotComp(src,event,plotName,compName,letter,axLetter,prevObj,newObj)
 
 %% PURPOSE: REFRESH THE PLOTTED COMPONENT WITH NEW TRIAL/ATTRIBUTES
 fig=ancestor(src,'figure','toplevel');
@@ -94,9 +94,10 @@ switch compName
             currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]);
         end
 
-        tempGroupHandle=copyobj(currGroupHandle,axHandle); % Contains a copy of the objects, just to retain their properties
-        tempH=tempGroupHandle.Children;
-        delete(currGroupHandle.Children);
+%         tempGroupHandle=copyobj(currGroupHandle,axHandle); % Contains a copy of the objects, just to retain their properties
+%         tempH=tempGroupHandle.Children;
+        Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
+        delete([currGroupHandle.Children]);
 
         if isMovie==0            
             switch level
@@ -105,13 +106,13 @@ switch compName
                     inclStruct=feval(specifyTrialsName);
                     load(getappdata(fig,'logsheetPathMAT'),'logVar');
                     allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
-                    feval([compName '_P'],currGroupHandle,allTrialNames);
+                    h=feval([compName '_P'],axHandle,allTrialNames);
                 case 'PC'
                     specifyTrialsName=Plotting.Plots.(plotName).SpecifyTrials;
                     inclStruct=feval(specifyTrialsName);
                     load(getappdata(fig,'logsheetPathMAT'),'logVar');
                     allTrialNames=getTrialNames(inclStruct,logVar,fig,1,[]);
-                    feval([compName '_PC'],currGroupHandle,allTrialNames);
+                    h=feval([compName '_PC'],axHandle,allTrialNames);
                 case 'C'
 
                 case 'S'
@@ -121,7 +122,7 @@ switch compName
                 case 'T'
                     trialName=plotExTrial.Trial;
                     repNum=1;
-                    h=feval([compName '_T'],currGroupHandle,subName,trialName,repNum); 
+                    h=feval([compName '_T'],axHandle,subName,trialName,repNum); 
             end
         else
             namesInCode=Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode;
@@ -150,26 +151,20 @@ switch compName
             h=feval([compName '_Movie'],axHandle,allData,idx);
         end  
 
+        for i=1:length(h)
+            h(i).Parent=currGroupHandle;
+        end
 
-%         currGroupHandle=findobj(axHandle,'Type','hggroup','Tag',[compName ' ' letter]);
-%         if isempty(currGroupHandle)
-%             currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]); % First time
-%             Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
-%             for i=1:length(h)
-%                 h(i).Parent=currGroupHandle;
-%             end
-%         end        
-%         tempGroupHandle=copyobj(currGroupHandle,axHandle);
-%         delete(currGroupHandle.Children); % Get rid of the old components  
-
-        if ~isfield(Plotting.Plots.(plotName).(compName).(letter),'ChangedProperties')
+        % This needs to be here so that every element of the group can have its own changed properties (allow for multi-type groups)
+        if ~isfield(Plotting.Plots.(plotName).(compName).(letter),'ChangedProperties') || ~isequal(size(Plotting.Plots.(plotName).(compName).(letter).ChangedProperties),size(currGroupHandle.Children))
             Plotting.Plots.(plotName).(compName).(letter).ChangedProperties=cell(size(currGroupHandle.Children));
         end
 
-        propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties;        
+        propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties; 
+        allProps=Plotting.Plots.(plotName).(compName).(letter).Properties;
         if ~isempty(propsChangedList)
-            for i=1:length(tempH)
-                if isempty(properties(tempH(i))) % There is no graphics object here
+            for i=1:length(currGroupHandle.Children)
+                if isempty(properties(currGroupHandle.Children(i))) % There is no graphics object here
                     continue;
                 end
 %                 tempH(i).Parent=currGroupHandle;
@@ -179,13 +174,14 @@ switch compName
                 end
                 for j=1:length(currChangedProperties)
                     currProp=currChangedProperties{j};
-                    currGroupHandle.Children(i).(currProp)=tempH(i).(currProp);
+                    currGroupHandle.Children(i).(currProp)=allProps.(currProp);
                 end
 
             end
         end
-        delete(tempGroupHandle);
+
         Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
+        Plotting.Plots.(plotName).(compName).(letter).Properties=allProps;
 
 end
 

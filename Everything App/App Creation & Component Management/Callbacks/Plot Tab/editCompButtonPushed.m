@@ -52,5 +52,7 @@ if ~isfield(Plotting.Plots.(plotName).(compName).(letter),'ChangedProperties')
 end
 propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties;
 
+allProps=Plotting.Plots.(plotName).(compName).(letter).Properties;
+
 % Edit the current component
-editCompPopupWindow(fig,h,currProps,compName,plotName,letter,propsChangedList);
+editCompPopupWindow(fig,h,currProps,compName,plotName,letter,propsChangedList,allProps);

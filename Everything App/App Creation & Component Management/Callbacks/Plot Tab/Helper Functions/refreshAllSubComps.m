@@ -65,12 +65,16 @@ end
 % end
 
 %% Update all components one at a time
+% prevObjs=copyobj(handles.Plot.plotPanel.Children,handles.Plot.plotPanel);
+
 for i=1:length(compList)
     spaceIdx=strfind(compList{i},' ');
     compName=compList{i}(1:spaceIdx(1)-1);
     letter=compList{i}(spaceIdx(1)+1:spaceIdx(2)-1);
     axLetter=compList{i}(spaceIdx(2)+1:end);
-    prevCopy=copyobj(currAxes,fig);
-    refreshPlotComp(fig,[],plotName,compName,letter,axLetter,prevCopy)
+%     currHandle=Plotting.Plots.(plotName).(compName).(letter).Handle;
+%     prevHandle=copyobj(currHandle,fig);
+
+    refreshPlotComp(fig,[],plotName,compName,letter,axLetter);
 %     adjustSubplot(fig,[],subplotIdx);
 end

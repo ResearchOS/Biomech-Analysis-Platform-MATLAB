@@ -115,17 +115,37 @@ try
         Plotting.Plots.(plotName).Axes.(axLetter).Handle=Q.Children(i);
         axHandle=Q.Children(i);
         % Need to look at each modified property of the current axes to see if labels have been modified, and assign those to new handles too.
-        changedProps=Plotting.Plots.(plotName).(compName).(compLetter).ChangedProperties;
+%         changedProps=Plotting.Plots.(plotName).Axes.(axLetter).ChangedProperties;
+%         for propNumAx=1:length(changedProps)
+%             propNames=changedProps{propNumAx};
+%             for propNum=1:length(propNames)
+%                 propName=propNames{propNum};
+%                 if ishandle(axHandle.(propName))
+%                     % Assign the axes handle property to the modified property.
+%                     fldNames=fieldnames(axHandle.(propName));
+%                     for fldNum=1:length(fldNames)
+%                         fldName=fldNames{fldNum};
+%                         axHandle.(propName).(fldName)=Plotting.Plots.(plotName).Axes.(axLetter).Properties.(propName).(fldName);
+%                     end
+%                 end
+%             end
+%         end
 
+        idxToDelete=[];
         for j=1:length(axHandle.Children)
 
             currCompTag=axHandle.Children(j).Tag;
+            if isempty(currCompTag)    
+                idxToDelete=[idxToDelete; j];
+                continue;
+            end
             spaceIdx=strfind(currCompTag,' ');
             compName=currCompTag(1:spaceIdx-1);
             compLetter=currCompTag(spaceIdx+1:end);
             Plotting.Plots.(plotName).(compName).(compLetter).Handle=axHandle.Children(j);
 
         end
+        delete(axHandle.Children(idxToDelete)); % Soft reset for the plot, removing erroneous components. May have downstream side effects, not sure.
     end
     
     set(Q.Children,'Parent',handles.Plot.plotPanel);    

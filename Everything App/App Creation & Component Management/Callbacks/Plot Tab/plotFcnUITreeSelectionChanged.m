@@ -112,8 +112,11 @@ try
         currAxTag=Q.Children(i).Tag;
         axLetter=strfind(currAxTag,' ');
         axLetter=currAxTag(axLetter+1:end);
-        Plotting.Plots.(plotName).Axes.(axLetter).Handle=Q.Children(i); % Needs to be updated for multiple axes. Probably by assigning tags with the axes letters to each axes
+        Plotting.Plots.(plotName).Axes.(axLetter).Handle=Q.Children(i);
         axHandle=Q.Children(i);
+        % Need to look at each modified property of the current axes to see if labels have been modified, and assign those to new handles too.
+        changedProps=Plotting.Plots.(plotName).(compName).(compLetter).ChangedProperties;
+
         for j=1:length(axHandle.Children)
 
             currCompTag=axHandle.Children(j).Tag;
@@ -121,7 +124,6 @@ try
             compName=currCompTag(1:spaceIdx-1);
             compLetter=currCompTag(spaceIdx+1:end);
             Plotting.Plots.(plotName).(compName).(compLetter).Handle=axHandle.Children(j);
-%             Plotting.Plots.(plotName).(compName).(compLetter).Parent=['Axes ' axLetter];
 
         end
     end

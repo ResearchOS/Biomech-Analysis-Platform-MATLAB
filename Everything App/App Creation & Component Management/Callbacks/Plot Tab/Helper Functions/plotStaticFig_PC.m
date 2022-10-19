@@ -59,9 +59,9 @@ for axNum=1:length(axLetters)
                     for l=1:length(currProps)
                         currProp=currProps{l};
                         if ~ishandle(allProps.(currProp))
-                            h(k).(currProp)=allProps.(currProp);
+                            h(axNum).(currProp)=allProps.(currProp);
                         else
-                            h(k).(currProp)=copyobj(allProps.(currProp),h);
+                            h(axNum).(currProp)=copyobj(allProps.(currProp),h);
                         end
                     end
                 end
@@ -81,7 +81,7 @@ for axNum=1:length(axLetters)
                 currProps=changedProps{k};
                 for l=1:length(currProps)
                     currProp=currProps{l};
-                    h(k).(currProp)=allProps.(currProp);
+                    h(i).(currProp)=allProps.(currProp);
                 end
             end
 

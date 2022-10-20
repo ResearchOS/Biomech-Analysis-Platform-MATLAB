@@ -59,9 +59,9 @@ for axNum=1:length(axLetters)
                     for l=1:length(currProps)
                         currProp=currProps{l};
                         if ~ishandle(allProps.(currProp))
-                            h(axNum).(currProp)=allProps.(currProp);
+                            h.(currProp)=allProps.(currProp);
                         else
-                            h(axNum).(currProp)=copyobj(allProps.(currProp),h);
+                            h.(currProp)=copyobj(allProps.(currProp),h);
                         end
                     end
                 end
@@ -77,11 +77,13 @@ for axNum=1:length(axLetters)
 
             h=feval([compName '_PC'],axHandle,allTrialNames);
 
-            for k=1:length(changedProps)
-                currProps=changedProps{k};
-                for l=1:length(currProps)
-                    currProp=currProps{l};
-                    h(i).(currProp)=allProps.(currProp);
+            for compNum=1:length(h)
+                for k=1:length(changedProps)
+                    currProps=changedProps{k};
+                    for l=1:length(currProps)
+                        currProp=currProps{l};
+                        h(compNum).(currProp)=allProps.(currProp);
+                    end
                 end
             end
 

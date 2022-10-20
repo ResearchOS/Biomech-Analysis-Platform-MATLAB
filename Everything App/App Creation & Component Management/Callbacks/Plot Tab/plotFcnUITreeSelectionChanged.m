@@ -40,7 +40,9 @@ if ~isempty(handles.Plot.plotPanel.Children)
         try
             saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
         catch
-            pause(0.5);
+            % This is necessary with the pause because of some stupidity with warnings that I don't remember the cause of.
+            % Maybe some modifications made elsewhere will render this unnecessary, I should look into that someday.
+            pause(0.5); 
             saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
         end
     end
@@ -112,24 +114,20 @@ try
         currAxTag=Q.Children(i).Tag;
         axLetter=strfind(currAxTag,' ');
         axLetter=currAxTag(axLetter+1:end);
-        Plotting.Plots.(plotName).Axes.(axLetter).Handle=Q.Children(i);
         axHandle=Q.Children(i);
+        Plotting.Plots.(plotName).Axes.(axLetter).Handle=axHandle;        
         % Need to look at each modified property of the current axes to see if labels have been modified, and assign those to new handles too.
-%         changedProps=Plotting.Plots.(plotName).Axes.(axLetter).ChangedProperties;
-%         for propNumAx=1:length(changedProps)
-%             propNames=changedProps{propNumAx};
-%             for propNum=1:length(propNames)
-%                 propName=propNames{propNum};
-%                 if ishandle(axHandle.(propName))
-%                     % Assign the axes handle property to the modified property.
-%                     fldNames=fieldnames(axHandle.(propName));
-%                     for fldNum=1:length(fldNames)
-%                         fldName=fldNames{fldNum};
-%                         axHandle.(propName).(fldName)=Plotting.Plots.(plotName).Axes.(axLetter).Properties.(propName).(fldName);
-%                     end
-%                 end
-%             end
-%         end
+        changedProps=Plotting.Plots.(plotName).Axes.(axLetter).ChangedProperties;
+        for propNumAx=1:length(changedProps)
+            propNames=changedProps{propNumAx};
+            for propNum=1:length(propNames)
+                propName=propNames{propNum};
+                if ishandle(axHandle.(propName))
+                    % Assign the axes handle property to the modified property.
+                    Plotting.Plots.(plotName).Axes.(axLetter).Properties.(propName)=axHandle.(propName);
+                end
+            end
+        end
 
         idxToDelete=[];
         for j=1:length(axHandle.Children)

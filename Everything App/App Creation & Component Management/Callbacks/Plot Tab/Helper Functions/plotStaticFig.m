@@ -11,7 +11,7 @@ plotName=selNode.Text;
 
 compNames=fieldnames(Plotting.Plots.(plotName));
 
-compNames=compNames(~ismember(compNames,{'SpecifyTrials','Movie','ExTrial','Axes','Metadata'}));
+compNames=compNames(~ismember(compNames,{'SpecifyTrials','Movie','ExTrial','Metadata'}));
 
 axLetters=fieldnames(Plotting.Plots.(plotName).Axes);
 
@@ -58,9 +58,9 @@ for axNum=1:length(axLetters)
                     for l=1:length(currProps)
                         currProp=currProps{l};
                         if ~ishandle(allProps.(currProp))
-                            h(k).(currProp)=allProps.(currProp);
+                            h.(currProp)=allProps.(currProp);
                         else
-                            h(k).(currProp)=copyobj(allProps.(currProp),h);
+                            h.(currProp)=copyobj(allProps.(currProp),h);
                         end
                     end
                 end
@@ -75,11 +75,13 @@ for axNum=1:length(axLetters)
 
             h=feval([compName '_T'],axHandle,subName,trialName,repNum);
 
-            for k=1:length(changedProps)
-                currProps=changedProps{k};
-                for l=1:length(currProps)
-                    currProp=currProps{l};
-                    h(k).(currProp)=allProps.(currProp);
+            for compNum=1:length(h)
+                for k=1:length(changedProps)
+                    currProps=changedProps{k};
+                    for l=1:length(currProps)
+                        currProp=currProps{l};
+                        h(compNum).(currProp)=allProps.(currProp);
+                    end
                 end
             end
 

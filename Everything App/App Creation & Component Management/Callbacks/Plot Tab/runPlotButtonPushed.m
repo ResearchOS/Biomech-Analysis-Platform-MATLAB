@@ -35,6 +35,7 @@ end
 allTrialNames=getTrialNames(inclStruct,logVar,fig,org,[]);
 
 setappdata(fig,'tabName','Plot');
+setappdata(fig,'plotName',plotName); % For getArg
 
 if isequal(level,'P')    
     plotStaticFig_P(fig,allTrialNames); % Create one figure per project
@@ -52,7 +53,6 @@ if isequal(level,'C')
 end
 
 subNames=fieldnames(allTrialNames);
-setappdata(fig,'plotName',plotName); % For getArg
 for sub=1:length(subNames)
 
     subName=subNames{sub};

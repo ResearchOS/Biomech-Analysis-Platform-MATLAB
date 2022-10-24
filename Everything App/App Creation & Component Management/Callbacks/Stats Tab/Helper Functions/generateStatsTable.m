@@ -78,6 +78,7 @@ for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
     end
 end
 if isempty(cats)
+    cats={''};
     nMulti=1;
 else
     nMulti=length(cats); % Number of repetitions (data points) per trial

@@ -418,7 +418,11 @@ elseif isequal(tabName,'Stats')
             end
         end
         if ~hasSubvar
-            varargout{dynamicIdxNums(i)}=S.(dynamicSaveNames{i});
+            if isfield(S,dynamicSaveNames{i})
+                varargout{dynamicIdxNums(i)}=S.(dynamicSaveNames{i});
+            else
+                varargout{dynamicIdxNums(i)}='Missing from file';
+            end
         end
     end
 

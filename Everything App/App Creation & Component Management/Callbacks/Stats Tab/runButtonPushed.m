@@ -34,7 +34,7 @@ disp('Generating stats table');
 
 %% Create the current stats table
 assignin('base','gui',fig);
-[statsTable,numRepCols,numDataCols,repNames,dataNames]=generateStatsTable(fig,Stats,tableName);
+[statsTable,numRepCols,numDataCols,repNames,dataNames,numericColIdx]=generateStatsTable(fig,Stats,tableName);
 
 currDate=char(datetime('now','TimeZone','America/New_York'));
 % currDate=currDate(1:11);
@@ -67,14 +67,32 @@ xlsFileName=[xlsFolder slash tableSaveName '.xlsx'];
 
 %% Before writing to Excel (after saving to .mat), replace the NaN that were computed with {'NaN'} so that Excel shows NaN instead of empty cells.
 % Empty cells are reserved for missing data.
-missingIdx=contains(statsTable(:,1),'Missing');
-statsTableData=[zeros(1,numDataCols); cell2mat(statsTable(2:end,end-numDataCols+1:end))]; % Convert to matrix
-nanIdx=isnan(statsTableData); % Look for NaN
+statsTable2=statsTable;
+dataColIdx=size(statsTable,2)-numDataCols+1:size(statsTable,2); % Initialize the column indices for all data variables
 
-replNaNIdx=false(size(statsTable));
-replNaNIdx(:,end-numDataCols+1:end)=nanIdx & ~missingIdx; % NaN's should be visible in Excel when the data is not missing, but is NaN.
+missingRowIdx=contains(statsTable(:,1),'Missing') & ~contains(statsTable(:,1),'Multi');
+missingCellIdx=false(size(statsTable)); 
+missingCellIdx(:,1)=missingRowIdx;
+missingCellIdx(:,dataColIdx)=repmat(missingRowIdx,1,length(dataColIdx)); % The indices of all empty cells due to the trial being missing in that row
+statsTable2(missingCellIdx)={NaN};
 
-statsTable(replNaNIdx)={'NaN'};
-writecell(statsTable,xlsFileName,'Sheet','1','Range','A1');
+% Treat char/string data columns separately from numeric
+%% Treat character columns.
+charColIdx=dataColIdx(~ismember(dataColIdx,numericColIdx)); % Initialize column indices for character data
+% Remove the 'Missing from file' message in Excel table.
+charMissingFromFileCellIdx=false(size(statsTable));
+for i=1:length(charColIdx)
+    charMissingFromFileCellIdx(:,charColIdx(i))=ismember(statsTable(:,charColIdx(i)),{'Missing from file','NaN',''});
+end
+statsTable2(charMissingFromFileCellIdx)={NaN};
+
+%% Treat numeric data columns.
+% numericMissingCellIdx=false(size(statsTable));
+% missingTrialRowIdx=repmat(missingRowIdx(2:end),1,length(numericColIdx)); % Which rows are missing the entire trial
+% numericMissingCellIdx(2:end,numericColIdx)=isnan(cell2mat(statsTable(2:end,numericColIdx))) & ~missingTrialRowIdx; % Find where the data is NaN and the entire trial is not missing
+% numericMissingCellIdx(2:end,numericColIdx)=isnan(cell2mat(statsTable(2:end,numericColIdx))); % Find where the data is NaN and the entire trial is not missing
+% statsTable2(numericMissingCellIdx)={'NaN'};
+
+writecell(statsTable2,xlsFileName,'Sheet','1','Range','A1');
 
 disp(['Stats table generated: ' xlsFileName]);

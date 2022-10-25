@@ -1,4 +1,4 @@
-function [statsTable,numRepCols,numDataCols,repVars,dataVarNames]=generateStatsTable(fig,Stats,tableName)
+function [statsTable,numRepCols,numDataCols,repVars,dataVarNames,numericColIdx]=generateStatsTable(fig,Stats,tableName)
 
 %% PURPOSE: CREATE THE STATS TABLE IN AN EXCEL FILE AND MATLAB MATRIX.
 handles=getappdata(fig,'handles');
@@ -240,28 +240,7 @@ end
 cd(oldPath);
 
 %% Prepend the trial name column
-% If the checkbox to retain this is selected
 statsTable(:,1)=tableTrialNames;
-% subNames=fieldnames(allTrialNames);
-% rowNum=0;
-% for sub=1:length(subNames)
-% 
-%     subName=subNames{sub};
-%     trialFldNames=fieldnames(allTrialNames.(subName));
-%     for trialNum=1:length(trialFldNames)
-% 
-%         trialName=trialFldNames{trialNum};
-% 
-%         for repNum=allTrialNames.(subName).(trialName)
-%             for multNum=1:nMulti
-%                 rowNum=rowNum+1;
-%                 statsTable{rowNum,1}=trialName;
-%             end
-%         end
-% 
-%     end
-% 
-% end
 
 %% Rearrange the stats table so that the repetitions are in blocks, incrementing from left to right (e.g. all trials of one subject clumped together, then all trials of one condition)
 for colNum=numRepCols+1:-1:2
@@ -299,6 +278,7 @@ for i=1:length(uniqueEntries)
 end
 
 %% Ensure that all conditions have the same number of repetitions. Add NaN if it doesn't exist.
+numericColIdx=[];
 for i=1:length(uniqueEntries)
 
     entryIdx=ismember(statsTable(:,trialNumCol-1),uniqueEntries{i}); % 1 where the current entry is
@@ -324,22 +304,28 @@ for i=1:length(uniqueEntries)
         numRows=maxEntriesNum-numExistReps; % The number of rows to add to the table
 
         % Determine if repetition & data variables are chars or numeric
+        % Repetition variables. Missing entries
         insertData=cell(size(statsTable,2),1);
-        for k=2:trialNumCol-1
-            if all(cellfun(@isnumeric,statsTable(:,k)))
-                insertData{k}=NaN;
-            elseif all(cellfun(@ischar,statsTable(:,k)))
-                insertData{k}='NaN';
-            else
-                error(['Mixed chars & numeric in table row ' num2str(k)]);
-            end
-        end
+%         for k=2:trialNumCol-1
+%             if all(cellfun(@isnumeric,statsTable(:,k)))
+%                 insertData{k}=NaN;
+%             elseif all(cellfun(@ischar,statsTable(:,k)))
+%                 insertData{k}='NaN';
+%             else
+%                 error(['Mixed chars & numeric in table row ' num2str(k)]);
+%             end
+%         end
 
+        % Data variables
         for k=trialNumCol+1:size(statsTable,2)
             if all(cellfun(@isnumeric,statsTable(:,k)))
                 insertData{k}=NaN;
-            elseif all(cellfun(@ischar,statsTable(:,k)))
+                numericColIdx=[numericColIdx; k];
+            elseif all([cellfun(@ischar,statsTable(:,k)) | cellfun(@isstring,statsTable(:,k))])
                 insertData{k}='NaN';
+                if any(cellfun(@isstring,statsTable(:,k)))
+                    statsTable(:,k)=cellfun(@convertStringsToChars,statsTable(:,k),'UniformOutput',false);
+                end
             else
                 error(['Mixed chars & numeric in table column ' num2str(k)]);
             end
@@ -353,19 +339,24 @@ for i=1:length(uniqueEntries)
             entriesEnd(j+1:end)=entriesEnd(j+1:end)+numRows;
         end
 
-        statsTable(entriesStart(j)+numExistReps:entriesEnd(j),1)={'Missing'}; % Trial name
+        statsTable(entriesStart(j)+numExistReps:entriesEnd(j),1)={'Missing'}; % Trial is missing.
 
-        for k=2:trialNumCol-1
-            statsTable(entriesStart(j)+numExistReps:entriesEnd(j),k)=insertData(k); % Repetition variables
-        end
+        % Insert the repetition variables for missing trials.
+        statsTable(entriesStart(j)+numExistReps:entriesEnd(j),2:trialNumCol-1)=repmat(statsTable(entriesStart(j)+numExistReps-1,2:trialNumCol-1),maxEntriesNum-numExistReps,1);
+
+%         for k=2:trialNumCol-1
+%             statsTable(entriesStart(j)+numExistReps:entriesEnd(j),k)=insertData(k); % Repetition variables
+%         end
         for k=trialNumCol+1:size(statsTable,2)
             statsTable(entriesStart(j)+numExistReps:entriesEnd(j),k)=insertData(k); % Data variables
         end
 
         for k=1:numRows
-            statsTable{entriesStart(j)+numExistReps+k-1,trialNumCol}=numExistReps+k;
+            statsTable{entriesStart(j)+numExistReps+k-1,trialNumCol}=numExistReps+k; % Trial/repetition number
         end
 
     end
 
 end
+
+numericColIdx=sort(unique(numericColIdx));

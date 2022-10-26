@@ -2,8 +2,9 @@ function []=gr()
 
 %% PURPOSE: EMULATES THE FUNCTIONALITY FROM BIOMECHZOO "GRAB" FUNCTION, RETRIEVING ONE TRIAL'S DATA FROM A UIFILEPICKER
 
-if ~isempty(findall(0,'Name','pgui'))
-    fig=findall(0,'Name','pgui');
+fig=findall(0,'Name','pgui');
+
+if ~isempty(fig)    
     defaultPath=[getappdata(fig,'dataPath') 'MAT Data Files'];
     projectName=getappdata(fig,'projectName');
     try
@@ -14,7 +15,7 @@ if ~isempty(findall(0,'Name','pgui'))
         [~,file]=fileparts(fullPath);
         saveName=['aaData_' file];
     catch
-        [file,path]=uigetfile(defaultPath,'MultiSelect','off');
+        [file,path]=uigetfile(defaultPath,'Select MAT file','MultiSelect','off');
         if isequal(file,0) || isequal(path,0)
             return;
         end
@@ -23,7 +24,7 @@ if ~isempty(findall(0,'Name','pgui'))
     end
 else
     defaultPath=cd;
-    [file,path]=uigetfile(defaultPath,'MultiSelect','off');
+    [file,path]=uigetfile(defaultPath,'Select MAT file','MultiSelect','off');
     if isequal(file,0) || isequal(path,0)
         return;
     end

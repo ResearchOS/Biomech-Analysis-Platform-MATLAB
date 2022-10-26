@@ -41,7 +41,7 @@ for axNum=1:length(axLetters)
             setappdata(fig,'letter',letters{j});
             if isequal(compName,'Axes')
                 tag='';
-                axLetter=axLetters{axNum};
+                axLetter=letters{j};
             else
                 tag=Plotting.Plots.(plotName).(compName).(letters{j}).Parent;   
                 spaceIdx=strfind(tag,' ');

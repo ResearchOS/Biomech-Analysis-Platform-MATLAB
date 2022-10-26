@@ -52,7 +52,7 @@ if ~isempty(Plotting)
             letters=fieldnames(Plotting.Plots.(plotName).(compName));
             for letNum=1:length(letters)
                 letter=letters{letNum};
-                disp([plotName ' ' compName ' ' letter]);
+%                 disp([plotName ' ' compName ' ' letter]);
                 Plotting.Plots.(plotName).(compName).(letter).Handle=[];
             end
         end

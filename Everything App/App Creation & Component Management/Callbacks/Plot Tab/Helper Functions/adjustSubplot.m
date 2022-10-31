@@ -44,38 +44,23 @@ loc=loc{1};
 assert(isequal(loc([1 end]),'()'));
 
 loc=loc(2:end-1);
-loc=loc(~isspace(loc));
+loc=strtrim(loc);
 locSplit=strsplit(loc,',');
 
-f=@(locSplit) isstrprop(locSplit,'digit');
-tf=cellfun(f,locSplit,'UniformOutput',false);
-
 try
-    assert(length(tf)==3);
+    assert(length(locSplit)==3);
 catch
     disp('All three entries must be separated by a comma');
     return;
 end
 
-% Check that all entries are numbers, especially checking for decimals here.
-for i=1:length(tf)
-
-    fIdx=tf{i}==0;
-    try
-        assert(all(ismember(locSplit{i}(fIdx),'.')));
-    catch
-        disp('All entries must be numbers');
-        return;
-    end
-        
+figure(fig);
+axes(axHandle);
+try
+    eval(['subplot(' loc ',axHandle);' ]);
+catch
+    disp(['Ensure that the subplot is specified correctly! (' loc ')']);
 end
-
-% if ~isequal(mod(str2double(locSplit{3}),1),0)
-%     disp('3rd entry must be an integer!');
-%     return;
-% end
-
-subplot(str2double(locSplit{1}),str2double(locSplit{2}),str2double(locSplit{3}),axHandle);
 
 Plotting.Plots.(plotName).Axes.(axLetter).AxPos=['(' loc ')'];
 

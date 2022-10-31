@@ -19,7 +19,8 @@ Q=figure; % Create the figure
 axTags=cell(size(axLetters));
 for i=1:length(axLetters)
     axLoc=Plotting.Plots.(plotName).Axes.(axLetters{i}).AxPos;
-    axHandles.(axLetters{i})=subplot(str2double(axLoc(2)),str2double(axLoc(4)),str2double(axLoc(6)));
+    axHandles.(axLetters{i})=eval(['subplot' axLoc ';']);
+%     axHandles.(axLetters{i})=subplot(str2double(axLoc(2)),str2double(axLoc(4)),str2double(axLoc(6)));
     hold(axHandles.(axLetters{i}),'on');
     axTags{i}=['Axes ' axLetters{i}];
 end
@@ -102,6 +103,8 @@ end
 projectName=getappdata(fig,'projectName');
 plotPath=[plotFolder slash trialName '_' subName '_' projectName];
 
+Q.WindowState='maximized';
+drawnow;
 saveas(Q,[plotPath '.fig']);
 saveas(Q,[plotPath '.svg']);
 saveas(Q,[plotPath '.png']);

@@ -73,7 +73,8 @@ for sub=1:length(subNames)
         trialName=trialNames{trialNum};
 
         for repNum=allTrialNames.(subName).(trialName)
-            % CREATE ONE FIGURE FOR EACH TRIAL            
+            % CREATE ONE FIGURE FOR EACH TRIAL    
+            disp([plotName ' ' subName ' ' trialName ' ' num2str(repNum)]);
             if ~isMovie
                 plotStaticFig(fig,subName,trialName,repNum);
             else

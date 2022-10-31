@@ -57,7 +57,7 @@ for axNum=1:length(axLetters)
                     currProps=changedProps{k};
                     for l=1:length(currProps)
                         currProp=currProps{l};
-                        if ~ishandle(allProps.(currProp))
+                        if ~isequal('matlab.graphics.primitive.Text',class(allProps.(currProp)))
                             h.(currProp)=allProps.(currProp);
                         else
                             h.(currProp)=copyobj(allProps.(currProp),h);
@@ -95,7 +95,7 @@ end
 slash=filesep;
 currDate=char(datetime('now'));
 currDate=currDate(1:11);
-plotFolder=[getappdata(fig,'dataPath') 'Plots' slash currDate slash plotName slash subName];
+plotFolder=[getappdata(fig,'dataPath') 'Plots' slash plotName slash currDate slash subName];
 if ~isfolder(plotFolder)
     mkdir(plotFolder);
 end

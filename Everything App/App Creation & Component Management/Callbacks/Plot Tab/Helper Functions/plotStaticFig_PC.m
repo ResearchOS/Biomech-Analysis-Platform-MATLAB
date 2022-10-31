@@ -97,7 +97,7 @@ end
 slash=filesep;
 currDate=char(datetime('now'));
 currDate=currDate(1:11);
-plotFolder=[getappdata(fig,'dataPath') 'Plots' slash currDate slash plotName];
+plotFolder=[getappdata(fig,'dataPath') 'Plots' slash plotName slash currDate];
 if ~isfolder(plotFolder)
     mkdir(plotFolder);
 end

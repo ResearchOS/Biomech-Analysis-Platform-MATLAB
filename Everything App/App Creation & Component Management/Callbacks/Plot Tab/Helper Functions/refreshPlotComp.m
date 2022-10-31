@@ -54,16 +54,18 @@ switch compName
             Plotting.Plots.(plotName).(compName).(letter).ChangedProperties=cell(size(h));
         end
         propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties;
-
+        allProps=Plotting.Plots.(plotName).(compName).(axLetter).Properties;
         for i=1:length(propsChangedList)
             currProps=propsChangedList{i};
             for j=1:length(currProps)
                 currProp=currProps{j};
                 if ~isempty(currProp)
                     h.(currProp)=tempH.(currProp);
+                    allProps.(currProp)=h.(currProp);
                 end
             end
         end
+        Plotting.Plots.(plotName).(compName).(axLetter).Properties=allProps;
         delete(tempH);
     otherwise
         if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')

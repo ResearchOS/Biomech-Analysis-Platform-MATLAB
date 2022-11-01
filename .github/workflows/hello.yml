@@ -19,4 +19,4 @@ jobs:
           # Comment to post on an individual's first issue
           issue-message: Thanks for taking the time to improve BiomechOS! Please include details about the issue you're experiencing, or the feature you'd like to see. Don't forget to tag!
           # Comment to post on an individual's first pull request
-          # pr-message: # optional
+          # pr-message: # optional 

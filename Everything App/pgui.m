@@ -604,15 +604,19 @@ handles.Stats.tableDescTextArea=uitextarea(statsTab,'Value','Enter Table Descrip
 handles.Stats.addDataRepVarButton=uibutton(statsTab,'push','Text','DR+','Tag','AddDataRepsVarButton','Tooltip','Add repetition variable from data','ButtonPushedFcn',@(addDataRepVarsButton,event) addDataRepVarsButtonPushed(addDataRepVarsButton));
 
 % 26. Publication tables label
-handles.Stats.pubTablesLabel=uilabel(statsTab,'FontWeight','bold','Text','Pub. Tables');
+handles.Stats.pubTablesLabel=uilabel(statsTab,'FontWeight','bold','Text','Pub Tables','Tag','PubTablesLabel');
 
 % 27. Add new publication table button
+handles.Stats.addPubTableButton=uibutton(statsTab,'push','Text','PT+','Tag','AddPubTableButton','Tooltip','Create a new publication table','ButtonPushedFcn',@(addPubTableButton,event) addPubTableButtonPushed(addPubTableButton));
 
 % 28. Remove publication table button
+handles.Stats.removePubTableButton=uibutton(statsTab,'push','Text','PT-','Tag','RemovePubTableButton','Tooltip','Remove a publication table','ButtonPushedFcn',@(removePubTableButton,event) removePubTableButtonPushed(removePubTableButton));
 
 % 29. Publication tables UI tree
+handles.Stats.pubTablesUITree=uitree(statsTab,'SelectionChangedFcn',@(pubTablesUITree,event) pubTablesUITreeSelectionChanged(pubTablesUITree),'Tag','PubTablesUITree');
 
 % 30. Edit table button
+handles.Stats.editPubTableButton=uibutton(statsTab,'push','Text','Edit','Tag','EditPubTableButton','Tooltip','Edit a publication table','ButtonPushedFcn',@(editPubTableButton,event) editPubTableButtonPushed(editPubTableButton));
 
 % 31. Stats pub tables panel
 handles.Stats.pubTablesPanel=uipanel(statsTab);
@@ -629,7 +633,8 @@ statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButto
     'AsssignedVarsUITree',handles.Stats.assignedVarsUITree,'AssignFcnButton',handles.Stats.assignFcnButton,'UnassignFcnButton',handles.Stats.unassignFcnButton,...
     'CreateFcnButton',handles.Stats.createFcnButton,'RemoveFcnButton',handles.Stats.removeFcnButton,'FcnsUITree',handles.Stats.fcnsUITree,'RunButton',handles.Stats.runButton,...
     'AssignVarsButton',handles.Stats.assignVarsButton,'VarsDescLabel',handles.Stats.varsDescLabel,'VarsDescTextArea',handles.Stats.varsDescTextArea,'TableDescLabel',handles.Stats.tableDescLabel,...
-    'TableDescTextArea',handles.Stats.tableDescTextArea,'AddDataRepsVarButton',handles.Stats.addDataRepVarButton);
+    'TableDescTextArea',handles.Stats.tableDescTextArea,'AddDataRepsVarButton',handles.Stats.addDataRepVarButton,'PubTablesLabel',handles.Stats.pubTablesLabel,'AddPubTableButton',handles.Stats.addPubTableButton,...
+    'RemovePubTableButton',handles.Stats.removePubTableButton,'PubTablesUITree',handles.Stats.pubTablesUITree,'EditPubTableButton',handles.Stats.editPubTableButton,'PubTablesPanel',handles.Stats.pubTablesPanel);
 
 @statsResize;
 

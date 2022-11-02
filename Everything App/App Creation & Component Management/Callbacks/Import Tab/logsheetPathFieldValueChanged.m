@@ -70,16 +70,28 @@ logsheetPathMAT=[logsheetFolder slash name '.mat'];
 % Changing: dontRead does not exist, logsheetPathMAT may or may not exist
 if readLogsheet==1 % Don't do MAT file from logsheet
 
+    % If numHeaderRows>=0 and subject ID codename column header and target trial ID column headers are found in the first row of the logsheet,
+    % then ensure that every entry in the column is a valid MATLAB variable name before saving to .mat file format.
+    if isfield(NonFcnSettingsStruct.Import,'SubjectIDColHeader')
+        subjIDColHeader=NonFcnSettingsStruct.Import.SubjectIDColHeader;
+    else
+        return;
+    end
+    if isfield(NonFcnSettingsStruct.Import,'TargetTrialIDColHeader')
+        targetTrialIDColHeader=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
+    else
+        return;
+    end
+    if isfield(NonFcnSettingsStruct.Import,'NumHeaderRows')
+        numHeaderRows=NonFcnSettingsStruct.Import.NumHeaderRows;
+    else
+        return;
+    end
+
     % IN THE FUTURE, DO OTHER EXTENSIONS TOO (CSV, OTHERS?)
     if contains(ext,'xls')
         [~,~,logVar]=xlsread(logsheetPath,1);
-    end
-
-    % If numHeaderRows>=0 and subject ID codename column header and target trial ID column headers are found in the first row of the logsheet,
-    % then ensure that every entry in the column is a valid MATLAB variable name before saving to .mat file format.
-    subjIDColHeader=NonFcnSettingsStruct.Import.SubjectIDColHeader;
-    targetTrialIDColHeader=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
-    numHeaderRows=NonFcnSettingsStruct.Import.NumHeaderRows;
+    end    
 
     if all(ismember({subjIDColHeader,targetTrialIDColHeader},logVar(1,:))) && numHeaderRows>=0 % All logsheet-related fields have been properly filled out, except data type-specific ones (because they're used for read only)
         subjCodenames=logVar(numHeaderRows+1:end,ismember(logVar(1,:),subjIDColHeader));
@@ -89,7 +101,11 @@ if readLogsheet==1 % Don't do MAT file from logsheet
                 subjCodenames{i}=genvarname(subjCodenames{i});
             end
             if ~isvarname(targetTrialIDs{i}) && ~isempty(targetTrialIDs{i})
-                targetTrialIDs{i}=genvarname(targetTrialIDs{i});
+                if ~isnan(targetTrialIDs{i})
+                    targetTrialIDs{i}=genvarname(targetTrialIDs{i});
+                else
+                    targetTrialIDs{i}='';
+                end
             end
         end
         logVar(numHeaderRows+1:end,ismember(logVar(1,:),subjIDColHeader))=subjCodenames;

@@ -595,13 +595,27 @@ handles.Stats.tableDescLabel=uilabel(statsTab,'Text','Table Description','FontWe
 handles.Stats.tableDescTextArea=uitextarea(statsTab,'Value','Enter Table Description Here','Tag','TableDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(tableDescTextArea,event) tableDescTextAreaValueChanged(tableDescTextArea));
 
 % 23. Convert stats table to MATLAB matrix button
-handles.Stats.matrixButton=uibutton(statsTab,'push','Text','Matrix','Tag','MatrixButton','Tooltip','Convert the pre-made stats table to a MATLAB matrix','ButtonPushedFcn',@(matrixButton,event) matrixButtonPushed(matrixButton));
+% handles.Stats.matrixButton=uibutton(statsTab,'push','Text','Matrix','Tag','MatrixButton','Tooltip','Convert the pre-made stats table to a MATLAB matrix','ButtonPushedFcn',@(matrixButton,event) matrixButtonPushed(matrixButton));
 
 % 24. Repetitions checkbox UI tree
-handles.Stats.matrixRepsUITree=uitree(statsTab,'checkbox','SelectionChangedFcn',@(matrixRepsUITree,event) matrixRepsUITreeSelectionChanged(matrixRepsUITree),'CheckedNodesChangedFcn',@(matrixRepsUITree,event) matrixRepsUITreeCheckedNodesChanged(matrixRepsUITree),'Tag','MatrixRepsUITree');
+% handles.Stats.matrixRepsUITree=uitree(statsTab,'checkbox','SelectionChangedFcn',@(matrixRepsUITree,event) matrixRepsUITreeSelectionChanged(matrixRepsUITree),'CheckedNodesChangedFcn',@(matrixRepsUITree,event) matrixRepsUITreeCheckedNodesChanged(matrixRepsUITree),'Tag','MatrixRepsUITree');
 
 % 25. Data-driven add repetition variable button
 handles.Stats.addDataRepVarButton=uibutton(statsTab,'push','Text','DR+','Tag','AddDataRepsVarButton','Tooltip','Add repetition variable from data','ButtonPushedFcn',@(addDataRepVarsButton,event) addDataRepVarsButtonPushed(addDataRepVarsButton));
+
+% 26. Publication tables label
+handles.Stats.pubTablesLabel=uilabel(statsTab,'FontWeight','bold','Text','Pub. Tables');
+
+% 27. Add new publication table button
+
+% 28. Remove publication table button
+
+% 29. Publication tables UI tree
+
+% 30. Edit table button
+
+% 31. Stats pub tables panel
+handles.Stats.pubTablesPanel=uipanel(statsTab);
 
 handles.Stats.openStatsFcnContextMenu=uicontextmenu(fig);
 handles.Stats.openStatsFcnContextMenuItem1=uimenu(handles.Stats.openStatsFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFileStats});
@@ -615,7 +629,7 @@ statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButto
     'AsssignedVarsUITree',handles.Stats.assignedVarsUITree,'AssignFcnButton',handles.Stats.assignFcnButton,'UnassignFcnButton',handles.Stats.unassignFcnButton,...
     'CreateFcnButton',handles.Stats.createFcnButton,'RemoveFcnButton',handles.Stats.removeFcnButton,'FcnsUITree',handles.Stats.fcnsUITree,'RunButton',handles.Stats.runButton,...
     'AssignVarsButton',handles.Stats.assignVarsButton,'VarsDescLabel',handles.Stats.varsDescLabel,'VarsDescTextArea',handles.Stats.varsDescTextArea,'TableDescLabel',handles.Stats.tableDescLabel,...
-    'TableDescTextArea',handles.Stats.tableDescTextArea,'MatrixButton',handles.Stats.matrixButton,'MatrixRepsUITree',handles.Stats.matrixRepsUITree,'AddDataRepsVarButton',handles.Stats.addDataRepVarButton);
+    'TableDescTextArea',handles.Stats.tableDescTextArea,'AddDataRepsVarButton',handles.Stats.addDataRepVarButton);
 
 @statsResize;
 

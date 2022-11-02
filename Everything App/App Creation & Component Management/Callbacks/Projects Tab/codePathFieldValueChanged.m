@@ -56,12 +56,10 @@ if exist(projectSettingsMATPath,'file')==2
     NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');
 %     NonFcnSettingsStruct=load(projectSettingsMATPath,'NonFcnSettingsStruct');
 %     NonFcnSettingsStruct=NonFcnSettingsStruct.NonFcnSettingsStruct;
-end
-
-% 3. If the project settings structure MAT file does not exist, initialize the project-specific settings with default values for all GUI components.
-if exist(projectSettingsMATPath,'file')~=2
+else % Project settings do not exist yet (i.e. new project)
+    % 3. If the project settings structure MAT file does not exist, initialize the project-specific settings with default values for all GUI components.
     % Just missing the data type-specific trial ID column header, and of course the UI trees and description text areas
-    NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath='Data Path (contains ''Subject Data'' folder)';
+    NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath='Data Path (contains ''Raw Data Files'' folder)';
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPath='Logsheet Path (ends in .xlsx)';
     NonFcnSettingsStruct.Import.Paths.(macAddress).LogsheetPathMAT='';
     NonFcnSettingsStruct.Import.NumHeaderRows=-1;
@@ -69,44 +67,15 @@ if exist(projectSettingsMATPath,'file')~=2
     NonFcnSettingsStruct.Import.TargetTrialIDColHeader='Target Trial ID Column Header';
     NonFcnSettingsStruct.Plot.RootSavePath='Root Save Path';
     NonFcnSettingsStruct.ProjectName=projectName;
-
-    % Function-specific settings struct
-    % Cell arrays contain all names of that type, whether being used/displayed or not (helpful for listing all functions/args at the bottom of the UI tree)
-    
-    % Import
-%     FcnSettingsStruct.Import.DataTypes={''};
-%     FcnSettingsStruct.Import.FcnNames={''};
-%     FcnSettingsStruct.Import.Arguments={''};
-    FcnSettingsStruct.Import.FcnUITree.All={''};
-    FcnSettingsStruct.Import.ArgsUITree.All={''};
-
-    % Process
-    FcnSettingsStruct.Process.Groups={''};
-%     FcnSettingsStruct.Process.FcnNames={''};
-%     FcnSettingsStruct.Process.Arguments={''};
-    FcnSettingsStruct.Process.FcnUITree.All={''};
-    FcnSettingsStruct.Process.ArgsUITree.All={''};
-
-    % Plot
-    FcnSettingsStruct.Plot.PlotTypes={''};
-%     FcnSettingsStruct.Plot.FcnNames={''};
-%     FcnSettingsStruct.Plot.Arguments={''};
-    FcnSettingsStruct.Plot.FcnUITree.All={''};
-    FcnSettingsStruct.Plot.ArgsUITree.All={''};
 end
 
 NonFcnSettingsStruct.Projects.Paths.(macAddress).CodePath=codePath;
 
 % eval([projectName '=NonFcnSettingsStruct;']); % Rename the NonFcnSettingsStruct to the projectName
-if exist(projectSettingsMATPath,'file')==2    
-    varNames=who('-file',projectSettingsMATPath);
-    if ~ismember('FcnSettingsStruct',varNames)
-%         save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-append');
-    else
-%         save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % FcnSettingsStruct not changed here, so it's not loaded here.
-    end
+if exist(projectSettingsMATPath,'file')~=2    
+    save(projectSettingsMATPath,'NonFcnSettingsStruct','-mat','-v6');
 else
-%     save(projectSettingsMATPath,'NonFcnSettingsStruct','FcnSettingsStruct','-mat','-v6');
+    save(projectSettingsMATPath,'NonFcnSettingsStruct','-append'); % Have to save this because the switchProjectsDropDownValueChanged fcn references the file, not the app data.
 end
 
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);

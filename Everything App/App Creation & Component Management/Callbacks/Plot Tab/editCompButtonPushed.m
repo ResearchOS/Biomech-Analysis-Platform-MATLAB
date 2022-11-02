@@ -23,6 +23,12 @@ plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
 compNames=fieldnames(Plotting.Plots.(plotName));
 
 letter=compNode.Text;
+
+if isequal(class(compNode.Parent),'matlab.ui.container.CheckBoxTree')
+    disp('Must have a letter selected!');
+    return;
+end
+
 compName=compNode.Parent.Text;
 
 if ~ismember(compName,compNames)
@@ -30,17 +36,23 @@ if ~ismember(compName,compNames)
     return;
 end
 
-if isequal(class(compNode.Parent),'matlab.ui.container.CheckBoxTree')
-    disp('Must have a letter selected!');
-    return;
-end
-
 h=Plotting.Plots.(plotName).(compName).(letter).Handle; % Handle to the hggroup for this component
 if ~isequal(compName,'Axes')
     currProps=properties(h.Children(1));
+    newH=h.Children;
 else
     currProps=properties(h);
+    newH=h;
 end
 
+%% Get the list of previously changed properties
+if ~isfield(Plotting.Plots.(plotName).(compName).(letter),'ChangedProperties')
+    Plotting.Plots.(plotName).(compName).(letter).ChangedProperties=cell(size(newH));
+    setappdata(fig,'Plotting',Plotting);
+end
+propsChangedList=Plotting.Plots.(plotName).(compName).(letter).ChangedProperties;
+
+allProps=Plotting.Plots.(plotName).(compName).(letter).Properties;
+
 % Edit the current component
-editCompPopupWindow(fig,h,currProps,compName,plotName,letter);
+editCompPopupWindow(fig,h,currProps,compName,plotName,letter,propsChangedList,allProps);

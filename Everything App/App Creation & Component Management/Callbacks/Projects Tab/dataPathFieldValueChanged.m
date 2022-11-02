@@ -15,7 +15,7 @@ else
     runLog=false;
 end
 
-if isempty(dataPath) || isequal(dataPath,'Data Path (contains ''Subject Data'' folder)')
+if isempty(dataPath) || isequal(dataPath,'Data Path (contains ''Raw Data Files'' folder)')
     setappdata(fig,'dataPath','');
     return;
 end
@@ -37,6 +37,7 @@ end
 if ~isempty(getappdata(fig,'dataPath'))
     warning off MATLAB:rmpath:DirNotFound; % Remove the 'path not found' warning, because it's not really important here.
     rmpath(genpath(getappdata(fig,'dataPath')));
+    addpath(genpath(getappdata(fig,'codePath'))); % In case those two dir's are the same, don't remove code path just because the data path was the same but is now different
     warning on MATLAB:rmpath:DirNotFound; % Turn the warning back on.
 end
 
@@ -67,7 +68,9 @@ addpath(genpath(getappdata(fig,'dataPath')));
 % save(projectSettingsMATPath,'NonFcnSettingsStruct','-append');
 setappdata(fig,'NonFcnSettingsStruct',NonFcnSettingsStruct);
 
-resetProjectAccess_Visibility(fig,3);
+if handles.Import.logsheetPathField.Visible==0
+    resetProjectAccess_Visibility(fig,3); % Only set the visibility to this if the logsheet path field is not visible (likely because setting up new project).
+end
 
 if runLog
     desc='Update the data folder path for this project.';

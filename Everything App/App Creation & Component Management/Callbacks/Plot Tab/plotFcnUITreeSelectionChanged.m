@@ -30,15 +30,23 @@ codePath=getappdata(fig,'codePath');
 folderName=[codePath  'Plot' slash 'Stashed GUI Plots'];
 if ~isempty(handles.Plot.plotPanel.Children)    
     prevSelectedPlotName=getappdata(fig,'prevSelectedPlotName');
+    drawnow;
     Q=figure('Visible','off');
-    set(handles.Plot.plotPanel.Children,'Parent',Q);
-%     plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;    
+    set(handles.Plot.plotPanel.Children,'Parent',Q);  
     if ~isfolder(folderName)
         mkdir(folderName);
     end
     if ~isempty(prevSelectedPlotName)
-        saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
+        try
+            saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
+        catch
+            % This is necessary with the pause because of some stupidity with warnings that I don't remember the cause of.
+            % Maybe some modifications made elsewhere will render this unnecessary, I should look into that someday.
+            pause(0.5); 
+            saveas(Q,[folderName slash prevSelectedPlotName '.fig']);
+        end
     end
+    close(Q);
 end
 
 setappdata(fig,'prevSelectedPlotName',plotName);
@@ -67,15 +75,82 @@ end
 
 currPlot=Plotting.Plots.(plotName);
 makeCurrCompNodes(fig,currPlot);
+if isfield(Plotting.Plots.(plotName),'ExTrial')
+    exTrial=Plotting.Plots.(plotName).ExTrial;
+    handles.Plot.exTrialLabel.Text=[exTrial.Subject ' ' exTrial.Trial];
+else
+    handles.Plot.exTrialLabel.Text='';
+end
+
+%% Set the level for the current plot.
+if isfield(Plotting.Plots.(plotName),'Metadata') && isfield(Plotting.Plots.(plotName).Metadata,'Level')
+    level=Plotting.Plots.(plotName).Metadata.Level;
+else
+    level='T';
+    Plotting.Plots.(plotName).Metadata.Level=level;
+    setappdata(fig,'Plotting',Plotting);
+end
+handles.Plot.plotLevelDropDown.Value=level;
+
+if ~ismember(level,{'T'})
+    handles.Plot.exTrialLabel.Text='';
+end
+
+%% Set the description for the current plot
+try
+    desc=Plotting.Plots.(plotName).Metadata.Description;
+    handles.Plot.fcnVerDescTextArea.Value=desc;
+catch
+    handles.Plot.fcnVerDescTextArea.Value='Enter Plot Description Here';
+end
+
 
 %% Load plot from file
 delete(handles.Plot.plotPanel.Children);
 try
     Q=openfig([folderName slash plotName '.fig']);
-    Plotting.Plots.(plotName).Axes.A.Handle=Q.Children; % Needs to be updated for multiple axes. Probably by assigning tags with the axes letters to each axes
+    % Assign all of the axes to the proper handles
+    for i=1:length(Q.Children)
+        currAxTag=Q.Children(i).Tag;
+        axLetter=strfind(currAxTag,' ');
+        axLetter=currAxTag(axLetter+1:end);
+        axHandle=Q.Children(i);
+        Plotting.Plots.(plotName).Axes.(axLetter).Handle=axHandle;        
+        % Need to look at each modified property of the current axes to see if labels have been modified, and assign those to new handles too.
+        changedProps=Plotting.Plots.(plotName).Axes.(axLetter).ChangedProperties;
+        for propNumAx=1:length(changedProps)
+            propNames=changedProps{propNumAx};
+            for propNum=1:length(propNames)
+                propName=propNames{propNum};
+                if ishandle(axHandle.(propName))
+                    % Assign the axes handle property to the modified property.
+                    Plotting.Plots.(plotName).Axes.(axLetter).Properties.(propName)=axHandle.(propName);
+                end
+            end
+        end
+
+        idxToDelete=[];
+        for j=1:length(axHandle.Children)
+
+            currCompTag=axHandle.Children(j).Tag;
+            if isempty(currCompTag)    
+                idxToDelete=[idxToDelete; j];
+                continue;
+            end
+            spaceIdx=strfind(currCompTag,' ');
+            compName=currCompTag(1:spaceIdx-1);
+            compLetter=currCompTag(spaceIdx+1:end);
+            Plotting.Plots.(plotName).(compName).(compLetter).Handle=axHandle.Children(j);
+
+        end
+        delete(axHandle.Children(idxToDelete)); % Soft reset for the plot, removing erroneous components. May have downstream side effects, not sure.
+    end
+    
     set(Q.Children,'Parent',handles.Plot.plotPanel);    
     setappdata(fig,'Plotting',Plotting);
+    close(Q);
 catch
 end
+drawnow;
 
 % refreshPlotComp(src,[],plotName);

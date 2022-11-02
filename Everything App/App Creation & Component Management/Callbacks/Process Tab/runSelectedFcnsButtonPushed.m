@@ -46,26 +46,31 @@ end
 
 fcnNames=cell(length(fcnNodes),1);
 nodeNums=NaN(length(fcnNodes),1);
+nodeRowNums=NaN(length(fcnNodes),1);
 for i=1:length(fcnNodes)
     fcnNames{i}=fcnNodes(i).Text;
     nodeNums(i)=fcnNodes(i).NodeData;
+    nodeRowNums(i)=find(ismember(Digraph.Nodes.NodeNumber,nodeNums(i))==1);
 end
 
-nodeRows=ismember(Digraph.Nodes.NodeNumber,nodeNums);
-nodeRowNums=find(nodeRows==1);
-% coords=Digraph.Nodes.Coordinates(nodeRows,2);
-specifyTrialsNames=Digraph.Nodes.SpecifyTrials(nodeRows);
-isImportFcns=Digraph.Nodes.IsImport(nodeRows);
+
+% [~,~,nodeRowNums]=intersect(nodeNums,Digraph.Nodes.NodeNumber);
+% 
+% [~,a,nodeRowNums]=intersect(nodeNums,Digraph.Nodes.NodeNumber);
+
+
+specifyTrialsNames=Digraph.Nodes.SpecifyTrials(nodeRowNums);
+isImportFcns=Digraph.Nodes.IsImport(nodeRowNums);
 orderNums=zeros(length(nodeRowNums),1);
 for i=1:length(nodeRowNums)
     orderNums(i)=Digraph.Nodes.RunOrder{nodeRowNums(i)}.([splitName '_' splitCode]);
 end
 [~,idx]=sort(orderNums,'ascend'); % Sort the functions by their run order
 
-fcnNames=fcnNames(idx);
-nodeNums=nodeNums(idx);
-specifyTrialsNames=specifyTrialsNames(idx);
-isImportFcns=isImportFcns(idx);
+% fcnNames=fcnNames(idx);
+% nodeNums=nodeNums(idx);
+% specifyTrialsNames=specifyTrialsNames(idx);
+% isImportFcns=isImportFcns(idx);
 
 emptySpecTrialsIdx=cellfun(@isempty,specifyTrialsNames);
 if any(emptySpecTrialsIdx)
@@ -108,10 +113,13 @@ end
 projectName=getappdata(fig,'projectName');
 dataPath=getappdata(fig,'dataPath');
 
-a=tic;
+% tabName=handles.Tabs.tabGroup1.SelectedTab.Title;
+setappdata(fig,'tabName','Process');
+
+b=tic;
 for i=1:length(fcnNames)
 
-    b=tic;
+    a=tic;
 
     fcnName=fcnNames{i};
     nodeNum=nodeNums(i);

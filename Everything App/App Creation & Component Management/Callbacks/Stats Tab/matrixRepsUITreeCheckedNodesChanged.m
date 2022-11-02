@@ -1,0 +1,3 @@
+function []=matrixRepsUITreeCheckedNodesChanged(src,event)
+
+%% PURPOSE: ONLY THE CHECKED VARIABLES ARE INCLUDED IN THE MATLAB-FRIENDLY MATRIX

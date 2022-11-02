@@ -25,6 +25,7 @@ end
 compName=currComp.Parent.Text;
 
 if isequal(compName,'Axes')
+    disp('Variables assigned to axes dictate the axes limits');
     return;
 end
 
@@ -35,6 +36,7 @@ if ~isfield(structComp,'Names') % Initialize
     structComp.NamesInCode={};
     structComp.IsHardCoded=0;
     structComp.HardCodedValue='';
+    structComp.Subvars={''};
 end
 
 % Backwards compatibility

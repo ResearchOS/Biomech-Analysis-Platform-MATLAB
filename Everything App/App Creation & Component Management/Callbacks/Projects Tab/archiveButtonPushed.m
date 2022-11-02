@@ -85,8 +85,8 @@ if archiveData==0
     rmdir(currArchiveFolderName,'s');
 else
     %% Copy the data over.
-%     matDataFilesFolder=[dataPath 'MAT Data Files'];
-%     matDataFilesArchiveFolder=[currArchiveFolderName slash 'MAT Data Files'];
+    matDataFilesFolder=[dataPath 'MAT Data Files'];
+    matDataFilesArchiveFolder=[currArchiveFolderName slash 'MAT Data Files'];
 
     rawDataFilesFolder=[dataPath 'Raw Data Files'];
     rawDataFilesArchiveFolder=[currArchiveFolderName slash 'Raw Data Files'];
@@ -94,7 +94,8 @@ else
     disp('Copying raw data files'); drawnow;
     copyfile(rawDataFilesFolder,rawDataFilesArchiveFolder); % No compression on the raw data because they're likely small enough!
 
-%     zip(matDataFilesArchiveFolder,matDataFilesFolder);
+    disp('Copying MAT data files'); drawnow;
+    zip(matDataFilesArchiveFolder,matDataFilesFolder); % Copy & zip the processed data to the archive folder.
     disp('Compressing archive'); drawnow;
     zip(currArchiveFolderName,currArchiveFolderName);
     rmdir(currArchiveFolderName,'s');

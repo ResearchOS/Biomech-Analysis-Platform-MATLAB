@@ -45,18 +45,18 @@ else
 end
 
 Plotting.Plots.(plotName).(compName).(newLetters).Variables=struct(); % Initialize this component in this plot's metadata
-% compIdx=ismember(Plotting.Components.Names,compName);
-% Plotting.Plots.(plotName).(compName).(newLetters).Properties=Plotting.Components.DefaultProperties{compIdx};
+compIdx=ismember(Plotting.Components.Names,compName);
+Plotting.Plots.(plotName).(compName).(newLetters).Properties=Plotting.Components.DefaultProperties{compIdx};
 
 if isequal(compName,'Axes')
-%     h=axes(handles.Plot.Tab,'OuterPosition',[0.5 0.07 0.5 0.87],'InnerPosition',[0.52 0.12 0.47 0.8],'Visible','on');
-%     hg=hggroup(handles.Plot.plotPanel);
     h=axes(handles.Plot.plotPanel,'Visible','on','Tag',['Axes ' newLetters]);
     Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
-%     idx=ismember(Plotting.Components.Names,compName);
-    Plotting.Plots.(plotName).(compName).(newLetters).Properties=properties(h);
-%     Plotting.Plots.(plotName).(compName).(newLetters).Properties.OuterPosition=[0.5 0.07 0.5 0.87];
-%     Plotting.Plots.(plotName).(compName).(newLetters).Properties.InnerPosition=[0.52 0.12 0.47 0.8];
+    props=properties(h);
+    for i=1:length(props)
+        defProps.(props{i})=h.(props{i});
+    end
+    Plotting.Plots.(plotName).(compName).(newLetters).Properties=defProps;
+    Plotting.Plots.(plotName).Axes.(newLetters).AxPos='(1,1,1)';
 else
     currSelNode=handles.Plot.currCompUITree.SelectedNodes;
     if isempty(currSelNode)
@@ -74,7 +74,7 @@ else
     Plotting.Plots.(plotName).(compName).(newLetters).Handle=h;
     Plotting.Plots.(plotName).(compName).(newLetters).Parent=['Axes ' axLetter];
 %     idx=ismember(Plotting.Components.Names,compName);
-    Plotting.Plots.(plotName).(compName).(newLetters).Properties=struct();
+%     Plotting.Plots.(plotName).(compName).(newLetters).Properties=struct();
 end
 
 %% Make the component appear in the current components UI tree

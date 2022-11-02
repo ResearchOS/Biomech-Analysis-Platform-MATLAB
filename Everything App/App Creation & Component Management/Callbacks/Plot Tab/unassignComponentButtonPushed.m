@@ -47,6 +47,11 @@ if ~isfield(Plotting.Plots.(plotName),compName)
     return;
 end
 
+if ~isfield(Plotting.Plots.(plotName).(compName),currLetter) % In case the current component somehow was not part of the Plotting structure.
+    makeCurrCompNodes(fig,Plotting.Plots.(plotName),compName,currLetter);
+    return;
+end
+
 h=Plotting.Plots.(plotName).(compName).(currLetter).Handle; % Handle to the component's hggroup
 if isvalid(h)
     delete(h); % Delete the graphics object.
@@ -59,7 +64,7 @@ end
 
 if isequal(compName,'Axes')
     compNames=fieldnames(Plotting.Plots.(plotName));
-    compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial','Movie','IsMovie','Increment'}));
+    compNames=compNames(~ismember(compNames,{'SpecifyTrials','ExTrial','Movie','IsMovie','Increment','Metadata'}));
     for i=1:length(compNames)
         compNameIter=compNames{i};
         if isequal(compNameIter,'Axes')

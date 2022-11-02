@@ -46,7 +46,12 @@ if ~ismember(currTab,okTabs)
     drawnow;
 end
 
-pan(fig,'off');
+zoom(handles.Process.mapFigure,'off');
+for i=1:length(handles.Plot.plotPanel.Children)
+    zoom(handles.Plot.plotPanel.Children(i),'off');
+    pan(handles.Plot.plotPanel.Children(i),'off');
+end
+pan(handles.Process.mapFigure,'off');
 dcm=datacursormode(fig);
 dcm.Enable='off';
 switch currTab
@@ -57,6 +62,8 @@ switch currTab
     case 'Plot'
         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
     case 'Projects'
+        set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
+    case 'Stats'
         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
     otherwise
 

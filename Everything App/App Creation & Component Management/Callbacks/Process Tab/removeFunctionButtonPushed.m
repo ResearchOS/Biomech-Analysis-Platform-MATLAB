@@ -40,6 +40,7 @@ Digraph=rmnode(Digraph,nodeRowNum);
 setappdata(fig,'Digraph',Digraph);
 
 if isempty(selNodeIDs)
+    handles.Process.fcnsRunOrderField.Value=0;
     delete(handles.Process.fcnArgsUITree.Children);
     h=findobj(handles.Process.mapFigure,'Type','GraphPlot');
     delete(h);

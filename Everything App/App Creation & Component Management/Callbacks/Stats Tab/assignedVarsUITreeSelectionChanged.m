@@ -1,0 +1,3 @@
+function []=assignedVarsUITreeSelectionChanged(src,event)
+
+%% PURPOSE: CHANGE WHICH REPETITION OR DATA VARIABLE IS CURRENTLY SELECTED

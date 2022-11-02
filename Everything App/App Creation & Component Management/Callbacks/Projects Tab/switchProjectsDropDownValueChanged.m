@@ -29,6 +29,8 @@ if ~ismember(projectName,projectNames)
     return;
 end
 
+disp(['Switching to project ' projectName]);
+
 settingsStruct=load(settingsMATPath,projectName);
 settingsStruct=settingsStruct.(projectName);
 macAddress=getComputerID();
@@ -46,9 +48,11 @@ if contains(projectSettingsMATPath,'_RunLog')
     projectSettingsMATPath=[projectSettingsMATPath(1:end-11) '.mat'];
 end
 
+setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Change the project-specific settings file being referenced for saving.
+
 if exist(projectSettingsMATPath,'file')~=2 % If the project-specific settings MAT file does not exist
     handles.Projects.codePathField.Value='Path to Project Processing Code Folder';
-    handles.Projects.dataPathField.Value='Data Path (contains ''Subject Data'' folder)';
+    handles.Projects.dataPathField.Value='Data Path (contains ''Raw Data Files'' folder)';
     resetProjectAccess_Visibility(fig,1);
     setappdata(fig,'codePath','');
     codePathFieldValueChanged(fig); % Changing the code folder path changes all project-specific settings.
@@ -65,8 +69,6 @@ if getappdata(fig,'isRunLog')
     end
 %     setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Saves an alternate version
 end
-
-setappdata(fig,'projectSettingsMATPath',projectSettingsMATPath); % Store the project-specific MAT file path to the GUI.
 
 if exist(projectSettingsMATPath,'file')~=2
     return;
@@ -89,16 +91,21 @@ if isfield(NonFcnSettingsStruct.Projects.Paths,macAddress)
     if isfield(NonFcnSettingsStruct.Projects.Paths.(macAddress),'DataPath')
         dataPath=NonFcnSettingsStruct.Projects.Paths.(macAddress).DataPath;
     else
-        dataPath='Data Path (contains ''Subject Data'' folder)';
+        dataPath='Data Path (contains ''Raw Data Files'' folder)';
     end
 else
     codePath='Path to Project Processing Code Folder';
-    dataPath='Data Path (contains ''Subject Data'' folder)';
+    dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
 
 addpath(genpath(codePath));
 
+slash=filesep;
+
 if exist(codePath,'dir')==7
+    if ~isequal(codePath(end),slash)
+        codePath=[codePath slash]; % Ensure that there is always a slash at the end of the path.
+    end
     setappdata(fig,'codePath',codePath);
     handles.Projects.codePathField.Value=codePath;
 else
@@ -115,12 +122,15 @@ if exist(logPath,'file')==2
 end
 
 if exist(dataPath,'dir')==7
+    if ~isequal(dataPath(end),slash)
+        dataPath=[dataPath slash]; % Ensure that there is always a slash at the end of the path.
+    end
     setappdata(fig,'dataPath',dataPath);
     handles.Projects.dataPathField.Value=dataPath;
 else
     resetProjectAccess_Visibility(fig,2);
     setappdata(fig,'dataPath','');
-    handles.Projects.dataPathField.Value='Data Path (contains ''Subject Data'' folder';
+    handles.Projects.dataPathField.Value='Data Path (contains ''Raw Data Files'' folder)';
     return;
 end
 
@@ -148,13 +158,15 @@ handles.Import.subjIDColHeaderField.Value=NonFcnSettingsStruct.Import.SubjectIDC
 handles.Import.targetTrialIDColHeaderField.Value=NonFcnSettingsStruct.Import.TargetTrialIDColHeader;
 handles.Import.logsheetPathField.Value=logsheetPath;
 
-projectSettingsVars=whos('-file',projectSettingsMATPath);
-projectSettingsVarNames={projectSettingsVars.name};
+% projectSettingsVars=whos('-file',projectSettingsMATPath);
+% projectSettingsVarNames={projectSettingsVars.name};
 
-if ismember('Digraph',projectSettingsVarNames)
-    load(projectSettingsMATPath,'Digraph');
+% if ismember('Digraph',projectSettingsVarNames)
+load(projectSettingsMATPath,'Digraph');
+if exist('Digraph','var')==1
     setappdata(fig,'Digraph',Digraph);
 end
+% end
 
 if exist(logsheetPath,'file')==2    
     setappdata(fig,'logsheetPath',handles.Import.logsheetPathField.Value);
@@ -178,14 +190,16 @@ delete(handles.Process.fcnArgsUITree.Children);
 delete(handles.Process.varsListbox.Children); % Remove all variables from other projects.
 
 % Fill in metadata
-if ismember('VariableNamesList',projectSettingsVarNames)
-    load(projectSettingsMATPath,'VariableNamesList');
+% if ismember('VariableNamesList',projectSettingsVarNames)
+load(projectSettingsMATPath,'VariableNamesList');
+if exist('VariableNamesList','var')==1
     setappdata(fig,'VariableNamesList',VariableNamesList);
     [~,alphabetIdx]=sort(upper(VariableNamesList.GUINames));
-    makeVarNodes(fig,alphabetIdx,VariableNamesList);       
+    makeVarNodes(fig,alphabetIdx,VariableNamesList);
 end
+% end
 
-if ismember('Digraph',projectSettingsVarNames)    
+if exist('Digraph','var')==1   
     h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'NodeColor',[0 0.447 0.741],'Interpreter','none');
     if ~isempty(Digraph.Edges)
         h.EdgeColor=Digraph.Edges.Color;
@@ -198,17 +212,22 @@ end
 
 getSplitNames(NonFcnSettingsStruct.Process.Splits,[],handles.Process.splitsUITree);
 
-%% Plot tab
-if ismember('Plotting',projectSettingsVarNames)
-    load(projectSettingsMATPath,'Plotting');
+if ~isempty(handles.Process.splitsUITree.Children)
+    handles.Process.splitsUITree.SelectedNodes=handles.Process.splitsUITree.Children(1);
+    splitsUITreeSelectionChanged(fig);
 end
-if isempty(Plotting)
+
+%% Plot tab
+% if ismember('Plotting',projectSettingsVarNames)
+load(projectSettingsMATPath,'Plotting');
+% end
+if exist('Plotting','var')~=1
     Plotting.Components.Names={'Axes'};
 %     defVals=getProps('axes');
 %     Plotting.Components.DefaultProperties{1}=defVals;
 end
 
-if ~ismember('Axes',Plotting.Components.Names)
+if exist('Plotting','var')==1 && ~ismember('Axes',Plotting.Components.Names)
     Plotting.Components.Names=[Plotting.Components.Names; {'Axes'}];
     [~,idx]=sort(upper(Plotting.Components.Names));
     Plotting.Components.Names=Plotting.Components.Names(idx);
@@ -216,14 +235,47 @@ if ~ismember('Axes',Plotting.Components.Names)
 %     Plotting.Components.DefaultProperties=[Plotting.Components.DefaultProperties; {defVals}];
 %     Plotting.Components.DefaultProperties=Plotting.Components.DefaultProperties(idx);
 end
-setappdata(fig,'Plotting',Plotting);
 
-makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names);
+if exist('Plotting','var')==1
+    setappdata(fig,'Plotting',Plotting);
 
-if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
-    plotNames=fieldnames(Plotting.Plots);
-    makePlotNodes(fig,1:length(plotNames),plotNames);
+    makeCompNodes(fig,1:length(Plotting.Components.Names),Plotting.Components.Names);
+
+    if isfield(Plotting,'Plots') && ~isempty(fieldnames(Plotting.Plots))
+        plotNames=fieldnames(Plotting.Plots);
+        makePlotNodes(fig,1:length(plotNames),plotNames);
+    end
+
 end
+
+%% Stats tab
+% if ismember('Stats',projectSettingsVarNames)
+load(projectSettingsMATPath,'Stats');
+if exist('Stats','var')~=1
+    Stats='';
+end
+if isempty(Stats)
+    Stats.Tables=struct();
+    Stats.Functions={};
+end
+
+setappdata(fig,'Stats',Stats);
+
+makeVarNodesStats(fig,alphabetIdx,VariableNamesList); 
+
+% Set list of stats tables
+tableNames=fieldnames(Stats.Tables);
+makeTableNodes(fig,1:length(tableNames),tableNames);
+
+% Set list of summary functions
+makeStatsFcnNodes(fig,1:length(Stats.Functions),Stats.Functions);
+
+% For first stats table, initialize the assignedVarsUITree
+if ~isempty(handles.Stats.tablesUITree.Children)
+    handles.Stats.tablesUITree.SelectedNodes=handles.Stats.tablesUITree.Children(1);
+end
+tablesUITreeSelectionChanged(fig);
+
 
 %% Finalize setup
 % 5. Set the most recent project to the current project name.

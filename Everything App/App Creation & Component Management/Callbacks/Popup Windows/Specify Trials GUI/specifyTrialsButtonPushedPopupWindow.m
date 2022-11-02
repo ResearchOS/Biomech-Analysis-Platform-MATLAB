@@ -73,6 +73,12 @@ if isequal(tabName,'Plot')
 
 end
 
+if isequal(tabName,'Stats')
+
+
+
+end
+
 %% Initialize GUI
 % clc;
 Q=uifigure('Visible','on','Resize','On','AutoResizeChildren','off','SizeChangedFcn',@specifyTrialsResize);
@@ -126,6 +132,11 @@ if isequal(tabName,'Process')
     specifyTrialsName=Digraph.Nodes.SpecifyTrials{nodeRow};
 elseif isequal(tabName,'Plot')
     Plotting=getappdata(fig,'Plotting');
+    if isempty(handles.Plot.plotFcnUITree.SelectedNodes)
+        close(Q);
+        disp('Select a plot!');
+        return;
+    end
     plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
     if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')
         specifyTrialsName=specifyTrialsNames{1};
@@ -134,6 +145,19 @@ elseif isequal(tabName,'Plot')
     end
 elseif isequal(tabName,'Import')
     specifyTrialsName=Digraph.Nodes.SpecifyTrials{1};
+elseif isequal(tabName,'Stats')
+    Stats=getappdata(fig,'Stats');
+    if isempty(handles.Stats.tablesUITree.SelectedNodes)
+        close(Q);
+        disp('Select a table!');
+        return;
+    end
+    tableName=handles.Stats.tablesUITree.SelectedNodes.Text;
+    if ~isfield(Stats.Tables.(tableName),'SpecifyTrials')
+        specifyTrialsName=specifyTrialsNames{1};
+    else
+        specifyTrialsName=Stats.Tables.(tableName).SpecifyTrials;
+    end
 end
 
 varNamesIdx=false(length(specifyTrialsNames),1);

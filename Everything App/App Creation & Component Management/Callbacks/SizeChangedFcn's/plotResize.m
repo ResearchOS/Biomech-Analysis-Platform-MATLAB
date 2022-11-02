@@ -54,7 +54,7 @@ FcnVerDescLabelRelPos=[0.35 0.25];
 FcnVerDescTextAreaRelPos=[0.3 0.05];
 SpecifyTrialsButtonRelPos=[0.5 0.01];
 RunPlotButtonRelPos=[0.8 0.01];
-PlotLevelDropDownRelPos=[0.7 0.01];
+PlotLevelDropDownRelPos=[0.22 0.3];
 AllComponentsLabelRelPos=[0.01 0.95];
 AllFunctionsLabelRelPos=[0.01 0.45];
 CurrComponentsLabelRelPos=[0.3 0.95];
@@ -72,6 +72,7 @@ StartFrameEditFieldRelPos=[0.575 0.95];
 CurrFrameEditFieldRelPos=[0.615 0.95];
 EndFrameEditFieldRelPos=[0.655 0.95];
 EndFrameButtonRelPos=[0.7 0.95];
+ExTrialLabelRelPos=[0.25 0.01];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -114,6 +115,7 @@ StartFrameEditFieldSize=[0.04 compHeight];
 CurrFrameEditFieldSize=[0.04 compHeight];
 EndFrameEditFieldSize=[0.04 compHeight];
 EndFrameButtonSize=[0.07 compHeight];
+ExTrialLabelSize=[0.15 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 AllComponentsSearchFieldPos=round([AllComponentsSearchFieldRelPos.*figSize AllComponentsSearchFieldSize(1)*figSize(1) AllComponentsSearchFieldSize(2)]);
@@ -154,6 +156,7 @@ StartFrameEditFieldPos=round([StartFrameEditFieldRelPos.*figSize StartFrameEditF
 CurrFrameEditFieldPos=round([CurrFrameEditFieldRelPos.*figSize CurrFrameEditFieldSize(1)*figSize(1) CurrFrameEditFieldSize(2)]);
 EndFrameEditFieldPos=round([EndFrameEditFieldRelPos.*figSize EndFrameEditFieldSize(1)*figSize(1) EndFrameEditFieldSize(2)]);
 EndFrameButtonPos=round([EndFrameButtonRelPos.*figSize EndFrameButtonSize(1)*figSize(1) EndFrameButtonSize(2)]);
+ExTrialLabelPos=round([ExTrialLabelRelPos.*figSize ExTrialLabelSize(1)*figSize(1) ExTrialLabelSize(2)]);
 
 data.AllComponentsSearchField.Position=AllComponentsSearchFieldPos;
 data.AllComponentsUITree.Position=AllComponentsUITreePos;
@@ -193,6 +196,7 @@ data.StartFrameEditField.Position=StartFrameEditFieldPos;
 data.CurrFrameEditField.Position=CurrFrameEditFieldPos;
 data.EndFrameEditField.Position=EndFrameEditFieldPos;
 data.EndFrameButton.Position=EndFrameButtonPos;
+data.ExTrialLabel.Position=ExTrialLabelPos;
 
 data.AllComponentsSearchField.FontSize=newFontSize;
 data.AllComponentsUITree.FontSize=newFontSize;
@@ -232,3 +236,4 @@ data.StartFrameEditField.FontSize=newFontSize;
 data.CurrFrameEditField.FontSize=newFontSize;
 data.EndFrameEditField.FontSize=newFontSize;
 data.EndFrameButton.FontSize=newFontSize;
+data.ExTrialLabel.FontSize=newFontSize;

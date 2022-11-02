@@ -30,8 +30,8 @@ a=axes(Q);
 parent=hggroup;
 children=handles.Plot.plotPanel.Children;
 
-
-
 saveas(Q,[savePlotPath '.fig']);
 saveas(Q,[savePlotPath '.svg']);
 saveas(Q,[savePlotPath '.png']);
+
+close(Q);

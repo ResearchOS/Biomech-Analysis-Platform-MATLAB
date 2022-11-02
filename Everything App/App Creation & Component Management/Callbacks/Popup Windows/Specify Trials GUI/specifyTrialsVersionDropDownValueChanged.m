@@ -109,3 +109,14 @@ if isequal(tabName,'Plot')
     setappdata(pguiFig,'Plotting',Plotting);
 
 end
+
+if isequal(tabName,'Stats')
+    Stats=getappdata(pguiFig,'Stats');
+
+    tableName=pguiHandles.Stats.tablesUITree.SelectedNodes.Text;
+    
+    Stats.Tables.(tableName).SpecifyTrials=specifyTrialsName;
+
+    setappdata(pguiFig,'Stats',Stats);
+    
+end

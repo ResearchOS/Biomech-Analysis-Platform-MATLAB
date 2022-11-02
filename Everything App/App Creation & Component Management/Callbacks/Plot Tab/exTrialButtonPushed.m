@@ -5,6 +5,8 @@ function []=exTrialButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+assignin('base','gui',fig);
+
 slash=filesep;
 
 plotName=handles.Plot.plotFcnUITree.SelectedNodes.Text;
@@ -31,17 +33,17 @@ allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
 
 subNames=fieldnames(allTrialNames);
 
-sub=listdlg('ListString',subNames,'PromptString','Select a Subject','SelectionMode','single');
-if isempty(sub)
+[sub,val]=listdlg('ListString',subNames,'PromptString','Select a Subject','SelectionMode','single');
+if val==0
     return;
 end
 subName=subNames{sub};
 
 trialNames=fieldnames(allTrialNames.(subName));
 
-trial=listdlg('ListString',trialNames,'PromptString','Select a Trial','SelectionMode','single');
+[trial,val]=listdlg('ListString',trialNames,'PromptString','Select a Trial','SelectionMode','single');
 trialName=trialNames{trial};
-if isempty(trial)
+if val==0
     return;
 end
 
@@ -97,3 +99,8 @@ if Plotting.Plots.(plotName).Movie.IsMovie==1
         currFrameEditFieldValueChanged(fig);
     end
 end
+
+handles.Plot.exTrialLabel.Text=[subName ' ' trialName];
+
+axesNode=handles.Plot.currCompUITree.Children;
+refreshAllSubComps(fig,[],axesNode);

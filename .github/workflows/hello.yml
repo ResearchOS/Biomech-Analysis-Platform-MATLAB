@@ -2,8 +2,7 @@ name: First interaction
 
 on:
   issues:
-    types:
-      - opened
+    types: [opened]
 
 jobs:
   welcome:

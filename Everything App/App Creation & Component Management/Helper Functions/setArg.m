@@ -121,7 +121,7 @@ if exist(folder,'dir')~=7
 end
 
 try
-    save(matFilePath,saveNames{:},'-append');
+    save(matFilePath,saveNames{:},'-append','-v6');
 catch
     if exist(matFilePath,'file')~=2
         save(matFilePath,saveNames{:},'-v6');

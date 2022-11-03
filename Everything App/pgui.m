@@ -131,7 +131,7 @@ handles.Projects.openPISettingsPathButton=uibutton(projectsTab,'push','Text','Op
 
 % 12. Dropdown to select between VariableNamesList, Digraph, and
 % NonFcnSettingsStruct
-handles.Projects.showVarDropDown=uidropdown(projectsTab,'Items',{'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting'},'Value','VariableNamesList','Tooltip','Select a Variable to Display','Editable','off','Tag','ShowVarDropDown','ValueChangedFcn',@(showVarDropDown,event) showVarDropDownValueChanged(showVarDropDown));
+handles.Projects.showVarDropDown=uidropdown(projectsTab,'Items',{'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting','Stats'},'Value','VariableNamesList','Tooltip','Select a Variable to Display','Editable','off','Tag','ShowVarDropDown','ValueChangedFcn',@(showVarDropDown,event) showVarDropDownValueChanged(showVarDropDown));
 
 % 13. Show variable button
 handles.Projects.showVarButton=uibutton(projectsTab,'push','Text','Show Var','Tag','ShowVarButton','Tooltip','Show selected variable','ButtonPushedFcn',@(showVarButton,event) showVarButtonPushed(showVarButton));
@@ -603,6 +603,9 @@ handles.Stats.tableDescTextArea=uitextarea(statsTab,'Value','Enter Table Descrip
 % 25. Data-driven add repetition variable button
 handles.Stats.addDataRepVarButton=uibutton(statsTab,'push','Text','DR+','Tag','AddDataRepsVarButton','Tooltip','Add repetition variable from data','ButtonPushedFcn',@(addDataRepVarsButton,event) addDataRepVarsButtonPushed(addDataRepVarsButton));
 
+% 31. Stats pub tables panel
+handles.Stats.pubTablesPanel=uipanel(statsTab,'BackgroundColor',[0.8 0.8 0.8]);
+
 % 26. Publication tables label
 handles.Stats.pubTablesLabel=uilabel(statsTab,'FontWeight','bold','Text','Pub Tables','Tag','PubTablesLabel');
 
@@ -617,9 +620,6 @@ handles.Stats.pubTablesUITree=uitree(statsTab,'SelectionChangedFcn',@(pubTablesU
 
 % 30. Edit table button
 handles.Stats.editPubTableButton=uibutton(statsTab,'push','Text','Edit','Tag','EditPubTableButton','Tooltip','Edit a publication table','ButtonPushedFcn',@(editPubTableButton,event) editPubTableButtonPushed(editPubTableButton));
-
-% 31. Stats pub tables panel
-handles.Stats.pubTablesPanel=uipanel(statsTab);
 
 handles.Stats.openStatsFcnContextMenu=uicontextmenu(fig);
 handles.Stats.openStatsFcnContextMenuItem1=uimenu(handles.Stats.openStatsFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFileStats});

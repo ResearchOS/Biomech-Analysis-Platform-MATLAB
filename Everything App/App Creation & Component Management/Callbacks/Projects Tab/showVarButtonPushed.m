@@ -113,3 +113,10 @@ if isequal('Plotting',varName)
     assignin('base',varName,Plotting);
     evalin('base',['openvar(''' varName ''');']);
 end
+
+if isequal('Stats',varName)
+    Stats=getappdata(fig,'Stats');
+    save(projectSettingsMATPath,'Stats','-append');
+    assignin('base',varName,Stats);
+    evalin('base',['openvar(''' varName ''');']);
+end

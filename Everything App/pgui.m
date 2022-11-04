@@ -624,6 +624,12 @@ handles.Stats.editPubTableButton=uibutton(statsTab,'push','Text','Edit','Tag','E
 % 32. Create table button
 handles.Stats.runPubTableButton=uibutton(statsTab,'push','Text','Run','Tag','RunPubTableButton','Tooltip','Create the table for publication','ButtonPushedFcn',@(runPubTableButton,event) runPubTableButtonPushed(runPubTableButton));
 
+% 33. Significant figures label
+handles.Stats.sigFigsLabel=uilabel(statsTab,'Text','Sig Figs','Tag','SigFigsLabel');
+
+% 34. # significant figures edit field
+handles.Stats.numSigFigsEditField=uieditfield(statsTab,'numeric','Value',3,'Tag','NumSigFigsEditField','ValueChangedFcn',@(numSigFigsEditField,event) numSigFigsEditFieldValueChanged(numSigFigsEditField));
+
 handles.Stats.openStatsFcnContextMenu=uicontextmenu(fig);
 handles.Stats.openStatsFcnContextMenuItem1=uimenu(handles.Stats.openStatsFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFileStats});
 
@@ -638,7 +644,7 @@ statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButto
     'AssignVarsButton',handles.Stats.assignVarsButton,'VarsDescLabel',handles.Stats.varsDescLabel,'VarsDescTextArea',handles.Stats.varsDescTextArea,'TableDescLabel',handles.Stats.tableDescLabel,...
     'TableDescTextArea',handles.Stats.tableDescTextArea,'AddDataRepsVarButton',handles.Stats.addDataRepVarButton,'PubTablesLabel',handles.Stats.pubTablesLabel,'AddPubTableButton',handles.Stats.addPubTableButton,...
     'RemovePubTableButton',handles.Stats.removePubTableButton,'PubTablesUITree',handles.Stats.pubTablesUITree,'EditPubTableButton',handles.Stats.editPubTableButton,'PubTablesPanel',handles.Stats.pubTablesPanel,...
-    'RunPubTableButton',handles.Stats.runPubTableButton);
+    'RunPubTableButton',handles.Stats.runPubTableButton,'NumSigFigsEditField',handles.Stats.numSigFigsEditField,'NumSigFigsLabel',handles.Stats.sigFigsLabel);
 
 @statsResize;
 

@@ -57,6 +57,7 @@ Stats.PubTables.(tableName)=struct();
 % Initialize the pub table with some values
 pubTable.Size.numRows=1;
 pubTable.Size.numCols=1;
+pubTable.SigFigs=3;
 % pubTable.Cells(1,1).isLiteral=0; % 0 to be a variable, 1 to be a hard-coded value.
 pubTable.Cells(1,1).summMeasure='Mean ± Stdev';
 pubTable.Cells(1,1).value='0'; % This can be either a number or char (but always represented as a char to satisfy the textbox requirements). Whether that means hard-coded or not is defined by the 'isLiteral' property

@@ -18,6 +18,7 @@ matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat
 
 oldPath=cd(getappdata(fig,'codePath')); % To be sure of which specifyTrials are being used.
 pubTableOut=cell(pubTable.Size.numRows,pubTable.Size.numCols);
+numSigFigs=Stats.PubTables.(pubTableName).SigFigs;
 for row=1:pubTable.Size.numRows
 
     for col=1:pubTable.Size.numCols
@@ -32,6 +33,10 @@ for row=1:pubTable.Size.numRows
         varName=currCell.varName; % The variable in the Stats table to extract.
         summType=currCell.summMeasure;
 
+        if isequal(tableName,'Literal')
+            pubTableOut{row,col}=currCell.value;
+            continue;
+        end
         fileVarNames=whos('-file',[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat']);
         fileVarNames={fileVarNames.name}';
         fileVarNames=fileVarNames(contains(fileVarNames,tableName));
@@ -87,7 +92,9 @@ for row=1:pubTable.Size.numRows
             varSpread=iqr(selData);
         end
 
-        varChar=[num2str(varLoc) ' ± ' varSpread];
+        varLoc=str2double(num2str(varLoc,numSigFigs));
+        varSpread=str2double(num2str(varSpread,numSigFigs));
+        varChar=[num2str(varLoc) ' ± ' num2str(varSpread)];
 
         pubTableOut{row,col}=varChar;
 
@@ -98,6 +105,13 @@ cd(oldPath); % Back to the original folder.
 
 %% Save the compiled table.
 currDate=char(datetime('now','TimeZone','America/New_York'));
+currDate=currDate(~ismember(currDate,':'));
+currDate=currDate(~ismember(currDate,'-'));
+currDate=strrep(currDate,' ','_');
 varName=['PubTable_' pubTableName '_' currDate];
 
+eval([varName '= pubTableOut;']);
+
 save(matFilePath,varName,'-append');
+
+assignin('base',varName,pubTableOut);

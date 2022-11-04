@@ -7,11 +7,20 @@ if ismac==1
     return;
 end
 
+if exist('manual','var')
+    manual=1; % Manually select which file to open
+else
+    manual=0;
+end
+
 fig=findall(0,'Name','pgui');
 
 if ~isempty(fig)
     defaultPath=[getappdata(fig,'dataPath') 'Raw Data Files'];
     try
+        if manual==1
+            error; % To enter the try-catch block for manual selection.
+        end
         subName=evalin('caller','subName;');
         trialName=evalin('caller','trialName;');
         slash=filesep;

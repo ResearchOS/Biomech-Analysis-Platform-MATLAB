@@ -112,10 +112,19 @@ end
 
 if isequal(tabName,'Stats')
     Stats=getappdata(pguiFig,'Stats');
-
-    tableName=pguiHandles.Stats.tablesUITree.SelectedNodes.Text;
-    
-    Stats.Tables.(tableName).SpecifyTrials=specifyTrialsName;
+    pubTableFig=findall(0,'Type','Figure','Name','Edit Pub Table');
+    if isempty(pubTableFig)
+        tableName=pguiHandles.Stats.tablesUITree.SelectedNodes.Text;
+        Stats.Tables.(tableName).SpecifyTrials=specifyTrialsName;
+    else
+        r=getappdata(fig,'rowNum');
+        c=getappdata(fig,'colNum');
+        currTable=getappdata(pubTableFig,'pubTable');
+        pubTableName=pguiHandles.Stats.pubTablesUITree.SelectedNodes.Text;
+        Stats.PubTables.(pubTableName).Cells(r,c).SpecifyTrials=specifyTrialsName;
+        currTable.Cells(r,c).SpecifyTrials=specifyTrialsName;
+        setappdata(pubTableFig,'pubTable',currTable);
+    end
 
     setappdata(pguiFig,'Stats',Stats);
     

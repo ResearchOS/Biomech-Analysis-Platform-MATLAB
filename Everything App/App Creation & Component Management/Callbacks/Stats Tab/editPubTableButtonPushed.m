@@ -32,4 +32,5 @@ setappdata(Q,'pubTable',currPubTable);
 setappdata(Q,'tableName',tableName);
 
 % Create the objects for each individual cell.
-createCells(Q,currPubTable);
+% tableNames=fieldnames(Stats.Tables);
+createCells(Q,currPubTable,Stats.Tables,fig);

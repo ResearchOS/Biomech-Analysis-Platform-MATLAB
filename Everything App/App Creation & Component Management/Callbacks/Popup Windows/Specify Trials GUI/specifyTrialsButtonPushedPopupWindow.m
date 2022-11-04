@@ -1,4 +1,4 @@
-function []=specifyTrialsButtonPushedPopupWindow(src)
+function []=specifyTrialsButtonPushedPopupWindow(src,pubTableButton)
 
 %% PURPOSE: CREATE GUI TO FACILITATE SPECIFY TRIALS SELECTION.
 % Inputs:
@@ -22,7 +22,7 @@ if isempty(codePath) || exist(codePath,'dir')~=7
     return;
 end
 
-allHandles=findall(0);
+allHandles=findall(0,'Type','Figure');
 for i=1:length(allHandles)
 
     if isprop(allHandles(i),'Name') && isequal(allHandles(i).Name,'Specify Trials')
@@ -33,10 +33,10 @@ for i=1:length(allHandles)
 end
 
 % Check which function is selected in the fcnArgsUITree
-projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-varNames=whos('-file',projectSettingsMATPath);
-varNames={varNames.name};
-assert(all(ismember({'Digraph'},varNames)));
+% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
+% varNames=whos('-file',projectSettingsMATPath);
+% varNames={varNames.name};
+% assert(all(ismember({'Digraph'},varNames)));
 
 % load(projectSettingsMATPath,'Digraph');
 Digraph=getappdata(fig,'Digraph');
@@ -146,17 +146,39 @@ elseif isequal(tabName,'Plot')
 elseif isequal(tabName,'Import')
     specifyTrialsName=Digraph.Nodes.SpecifyTrials{1};
 elseif isequal(tabName,'Stats')
+    % HERE I NEED TO DISTINGUISH BETWEEN STATS TABLES AND PUBLICATION TABLES TO STORE & RETRIEVE THE PROPER SPECIFY TRIALS.
+    pubTableFig=findall(0,'Type','Figure','Name','Edit Pub Table');
     Stats=getappdata(fig,'Stats');
-    if isempty(handles.Stats.tablesUITree.SelectedNodes)
-        close(Q);
-        disp('Select a table!');
-        return;
-    end
-    tableName=handles.Stats.tablesUITree.SelectedNodes.Text;
-    if ~isfield(Stats.Tables.(tableName),'SpecifyTrials')
-        specifyTrialsName=specifyTrialsNames{1};
+    if isempty(pubTableFig)        
+        if isempty(handles.Stats.tablesUITree.SelectedNodes)
+            close(Q);
+            disp('Select a table!');
+            return;
+        end
+        tableName=handles.Stats.tablesUITree.SelectedNodes.Text;
+        if ~isfield(Stats.Tables.(tableName),'SpecifyTrials')
+            specifyTrialsName=specifyTrialsNames{1};
+        else
+            specifyTrialsName=Stats.Tables.(tableName).SpecifyTrials;
+        end
     else
-        specifyTrialsName=Stats.Tables.(tableName).SpecifyTrials;
+        coords=pubTableButton.Parent.Tag(2:end-1);
+        coordsSplit=strsplit(coords,',');
+        r=str2double(coordsSplit{1});
+        c=str2double(coordsSplit{2});
+        if isempty(handles.Stats.pubTablesUITree.SelectedNodes)
+            close(Q);
+            disp('Select a pub table!');
+            return;
+        end
+        pubTableName=handles.Stats.pubTablesUITree.SelectedNodes.Text;
+        if isempty(Stats.PubTables.(pubTableName).Cells(r,c).SpecifyTrials)
+            specifyTrialsName=specifyTrialsNames{1};
+        else
+            specifyTrialsName=Stats.PubTables.(pubTableName).Cells(r,c).SpecifyTrials;
+        end
+        setappdata(Q,'rowNum',r);
+        setappdata(Q,'colNum',c);
     end
 end
 

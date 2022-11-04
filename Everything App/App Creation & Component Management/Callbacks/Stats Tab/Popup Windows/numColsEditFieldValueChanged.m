@@ -24,7 +24,7 @@ end
 
 if numCols<currTable.Size.numCols
     % Display warning message that data will be lost.
-    currTable.Cells(numCols+1:prevNumCols,:)=[];
+    currTable.Cells(:,numCols+1:prevNumCols)=[];
 end
 
 pguiFig=findall(0,'Name','pgui');

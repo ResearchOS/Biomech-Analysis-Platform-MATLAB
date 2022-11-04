@@ -1,0 +1,103 @@
+function []=runPubTableButtonPushed(src,event)
+
+%% PURPOSE: CREATE THE PUBLICATION TABLE AS SPECIFIED. BY DEFAULT THIS USES THE MOST RECENTLY CREATED VERSION OF THE STATS TABLES, BASED ON THE DATES IN THEIR NAMES.
+fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
+
+Stats=getappdata(fig,'Stats');
+
+pubTableName=handles.Stats.pubTablesUITree.SelectedNodes.Text;
+
+pubTable=Stats.PubTables.(pubTableName);
+
+load(getappdata(fig,'logsheetPathMAT'),'logVar');
+
+projectName=getappdata(fig,'projectName');
+slash=filesep;
+matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat'];
+
+oldPath=cd(getappdata(fig,'codePath')); % To be sure of which specifyTrials are being used.
+pubTableOut=cell(pubTable.Size.numRows,pubTable.Size.numCols);
+for row=1:pubTable.Size.numRows
+
+    for col=1:pubTable.Size.numCols
+
+        currCell=pubTable.Cells(row,col);
+
+        specifyTrials=currCell.SpecifyTrials;
+
+        inclStruct=feval(specifyTrials);
+        allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]); % The list of trials' data to retrieve.
+        tableName=currCell.tableName; % The Stats table to look for data in.
+        varName=currCell.varName; % The variable in the Stats table to extract.
+        summType=currCell.summMeasure;
+
+        fileVarNames=whos('-file',[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat']);
+        fileVarNames={fileVarNames.name}';
+        fileVarNames=fileVarNames(contains(fileVarNames,tableName));
+
+        % Get the name of the most recent table.
+        dateTimes=cell(length(fileVarNames),1);
+%         times=cell(length(varNames),1);
+        for i=1:length(fileVarNames)
+            underscoreIdx=strfind(fileVarNames{i},'_');
+            dateTimes{i}=fileVarNames{i}(underscoreIdx(end-1)+1:end);
+%             times{i}=varNames{i}(underscoreIdx(end)+1:end);            
+        end
+
+        % Get the largest date.
+        dateTimes=datetime(dateTimes,'InputFormat','ddMMMyyyy_HHmmss');
+        lastDate=char(max(dateTimes));
+        lastDate=lastDate(~ismember(lastDate,'-'));
+        lastDate=lastDate(~ismember(lastDate,':'));
+        lastDate=[lastDate(1:9) '_' lastDate(11:end)];
+
+        dateIdx=contains(fileVarNames,lastDate);
+
+        assert(sum(dateIdx)==1);
+
+        fileVarName=fileVarNames{dateIdx};
+
+        var=load(matFilePath,fileVarName);
+        var=var.(fileVarName);
+
+        varColIdx=ismember(var(1,:),varName);
+
+        assert(sum(varColIdx)==1);
+
+        % Get the row numbers in the stats table.
+        rowsIdx=[];
+        subNames=fieldnames(allTrialNames);
+        for subNum=1:length(subNames)   
+            subName=subNames{subNum};
+            currTrials=fieldnames(allTrialNames.(subName));
+            for trialNum=1:length(allTrialNames.(subName))
+                trialName=currTrials{trialNum};
+                rowsIdx=[rowsIdx; find(ismember(var(:,1),trialName)==1)];
+            end
+        end
+
+        selData=cell2mat(var(rowsIdx,varColIdx));
+
+        if isequal(summType,'Mean ± Stdev')
+            varLoc=mean(selData,'omitnan');
+            varSpread=std(selData,0,'omitnan');
+        elseif isequal(summType,'Median ± IQR')
+            varLoc=median(selData,'omitnan');
+            varSpread=iqr(selData);
+        end
+
+        varChar=[num2str(varLoc) ' ± ' varSpread];
+
+        pubTableOut{row,col}=varChar;
+
+    end
+
+end
+cd(oldPath); % Back to the original folder.
+
+%% Save the compiled table.
+currDate=char(datetime('now','TimeZone','America/New_York'));
+varName=['PubTable_' pubTableName '_' currDate];
+
+save(matFilePath,varName,'-append');

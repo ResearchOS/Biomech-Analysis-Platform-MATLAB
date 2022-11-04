@@ -62,9 +62,10 @@ AddDataRepsVarButtonRelPos=[0.51 0.65];
 AddPubTableButtonRelPos=[0.58 0.4];
 RemovePubTableButtonRelPos=[0.51 0.4];
 PubTablesUITreeRelPos=[0.51 0.1];
-EditPubTableButtonRelPos=[0.7 0.4];
+EditPubTableButtonRelPos=[0.75 0.4];
 PubTablesPanelRelPos=[0.5 0];
 PubTablesLabelRelPos=[0.5 0.45];
+RunPubTableButtonRelPos=[0.75 0.3];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -100,6 +101,7 @@ PubTablesUITreeSize=[0.2 0.3];
 EditPubTableButtonSize=[0.06 compHeight];
 PubTablesPanelSize=[0.5 0.5];
 PubTablesLabelSize=[0.1 compHeight];
+RunPubTableButtonSize=[0.06 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 VarsUITreePos=round([VarsUITreeRelPos.*figSize VarsUITreeSize.*figSize]);
@@ -133,6 +135,7 @@ PubTablesUITreePos=round([PubTablesUITreeRelPos.*figSize PubTablesUITreeSize.*fi
 EditPubTableButtonPos=round([EditPubTableButtonRelPos.*figSize EditPubTableButtonSize(1)*figSize(1) EditPubTableButtonSize(2)]);
 PubTablesPanelPos=round([PubTablesPanelRelPos.*figSize PubTablesPanelSize.*figSize]);
 PubTablesLabelPos=round([PubTablesLabelRelPos.*figSize PubTablesLabelSize(1)*figSize(1) PubTablesLabelSize(2)]);
+RunPubTableButtonPos=round([RunPubTableButtonRelPos.*figSize RunPubTableButtonSize(1)*figSize(1) RunPubTableButtonSize(2)]);
 
 data.VarsUITree.Position=VarsUITreePos;
 data.CreateTableButton.Position=CreateTableButtonPos;
@@ -165,6 +168,7 @@ data.RemovePubTableButton.Position=RemovePubTableButtonPos;
 data.PubTablesUITree.Position=PubTablesUITreePos;
 data.EditPubTableButton.Position=EditPubTableButtonPos;
 data.PubTablesLabel.Position=PubTablesLabelPos;
+data.RunPubTableButton.Position=RunPubTableButtonPos;
 
 data.VarsUITree.FontSize=newFontSize;
 data.CreateTableButton.FontSize=newFontSize;
@@ -197,5 +201,6 @@ data.PubTablesUITree.FontSize=newFontSize;
 data.EditPubTableButton.FontSize=newFontSize;
 data.PubTablesPanel.FontSize=newFontSize;
 data.PubTablesLabel.FontSize=newFontSize;
+data.RunPubTableButton.FontSize=newFontSize;
 
 % uistack(data.PubTablesPanel,'bottom');

@@ -621,6 +621,9 @@ handles.Stats.pubTablesUITree=uitree(statsTab,'SelectionChangedFcn',@(pubTablesU
 % 30. Edit table button
 handles.Stats.editPubTableButton=uibutton(statsTab,'push','Text','Edit','Tag','EditPubTableButton','Tooltip','Edit a publication table','ButtonPushedFcn',@(editPubTableButton,event) editPubTableButtonPushed(editPubTableButton));
 
+% 32. Create table button
+handles.Stats.runPubTableButton=uibutton(statsTab,'push','Text','Run','Tag','RunPubTableButton','Tooltip','Create the table for publication','ButtonPushedFcn',@(runPubTableButton,event) runPubTableButtonPushed(runPubTableButton));
+
 handles.Stats.openStatsFcnContextMenu=uicontextmenu(fig);
 handles.Stats.openStatsFcnContextMenuItem1=uimenu(handles.Stats.openStatsFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFileStats});
 
@@ -634,7 +637,8 @@ statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButto
     'CreateFcnButton',handles.Stats.createFcnButton,'RemoveFcnButton',handles.Stats.removeFcnButton,'FcnsUITree',handles.Stats.fcnsUITree,'RunButton',handles.Stats.runButton,...
     'AssignVarsButton',handles.Stats.assignVarsButton,'VarsDescLabel',handles.Stats.varsDescLabel,'VarsDescTextArea',handles.Stats.varsDescTextArea,'TableDescLabel',handles.Stats.tableDescLabel,...
     'TableDescTextArea',handles.Stats.tableDescTextArea,'AddDataRepsVarButton',handles.Stats.addDataRepVarButton,'PubTablesLabel',handles.Stats.pubTablesLabel,'AddPubTableButton',handles.Stats.addPubTableButton,...
-    'RemovePubTableButton',handles.Stats.removePubTableButton,'PubTablesUITree',handles.Stats.pubTablesUITree,'EditPubTableButton',handles.Stats.editPubTableButton,'PubTablesPanel',handles.Stats.pubTablesPanel);
+    'RemovePubTableButton',handles.Stats.removePubTableButton,'PubTablesUITree',handles.Stats.pubTablesUITree,'EditPubTableButton',handles.Stats.editPubTableButton,'PubTablesPanel',handles.Stats.pubTablesPanel,...
+    'RunPubTableButton',handles.Stats.runPubTableButton);
 
 @statsResize;
 

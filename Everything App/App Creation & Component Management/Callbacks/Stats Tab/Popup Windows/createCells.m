@@ -24,6 +24,7 @@ end
 % cellSize=[200 200];
 
 tableNames=fieldnames(allTables);
+colors=[0.85 0.85 0.85; 0.9 0.9 0.9];
 for i=r:-1:1 % Doing it this way because in order to scroll, all items must be "above and to the right" of the uipanel
 
     for j=1:c
@@ -35,7 +36,7 @@ for i=r:-1:1 % Doing it this way because in order to scroll, all items must be "
         end
 
         % Create the cell panel
-        handles.cellPanel(i,j)=uipanel(handles.tablePanel,'BackgroundColor',[0.85 0.85 0.85],'Position',[(j-1)*cellSize(1) ((r-(i-1))-1)*cellSize(2) cellSize],'Tag',['(' num2str(i) ',' num2str(j) ')']);
+        handles.cellPanel(i,j)=uipanel(handles.tablePanel,'BackgroundColor',colors(mod(j,2)+1,:),'Position',[(j-1)*cellSize(1) ((r-(i-1))-1)*cellSize(2) cellSize],'Tag',['(' num2str(i) ',' num2str(j) ')']);
 
         %         handles.literalCheckbox(i,j)=uicheckbox(handles.cellPanel(i,j),'Value',currCell.isLiteral,'Tooltip','Check for hard-coded value','Text','Literal','Position',round([0.05 0.8 0.4 0.1].*[cellSize cellSize]));        
         % Create the graphics objects for this cell

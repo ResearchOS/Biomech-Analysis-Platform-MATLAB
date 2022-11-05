@@ -43,7 +43,7 @@ while ~okName
     % Check if this component name already exists in the list.
     idx=ismember(allTablesNames,tableName);
     if any(idx)
-        disp('This plot already exists! No plots added, terminating the process.');
+        disp('This table already exists! No table added, terminating the process.');
         return;
     end
 

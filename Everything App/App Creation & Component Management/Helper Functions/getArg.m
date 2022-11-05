@@ -286,6 +286,9 @@ elseif isequal(tabName,'Plot')
     end
 
     subVars=Plotting.Plots.(plotName).(compName).(letter).Variables.Subvars;
+    subVars=subVars(currVarsIdx);
+
+    % NEED TO REARRANGE THE SUBVARIABLES TO BE IN THE SAME ORDER AS THE DYNAMICSAVENAMES
 
     for i=1:length(dynamicSaveNames)
         if ~isempty(subVars{i})
@@ -401,6 +404,7 @@ elseif isequal(tabName,'Stats')
     end
 
     subVars=Stats.Tables.(tableName).DataColumns(fcnIdx).Subvars;
+    subVars=subVars(currVarsIdx);
 
     for i=1:length(dynamicSaveNames)
         hasSubvar=false;

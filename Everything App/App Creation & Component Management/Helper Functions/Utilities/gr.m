@@ -1,6 +1,12 @@
-function []=gr()
+function []=gr(manual)
 
 %% PURPOSE: EMULATES THE FUNCTIONALITY FROM BIOMECHZOO "GRAB" FUNCTION, RETRIEVING ONE TRIAL'S DATA FROM A UIFILEPICKER
+
+if exist('manual','var')
+    manual=1; % Manually select which file to open
+else
+    manual=0;
+end
 
 fig=findall(0,'Name','pgui');
 
@@ -8,6 +14,9 @@ if ~isempty(fig)
     defaultPath=[getappdata(fig,'dataPath') 'MAT Data Files'];
     projectName=getappdata(fig,'projectName');
     try
+        if manual==1
+            error; % Do this just to push things to the try-catch block.
+        end
         subName=evalin('caller','subName;');
         trialName=evalin('caller','trialName;');
         slash=filesep;

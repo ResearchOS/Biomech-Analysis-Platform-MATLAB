@@ -257,6 +257,7 @@ end
 if isempty(Stats)
     Stats.Tables=struct();
     Stats.Functions={};
+    Stats.PubTables=struct();
 end
 
 setappdata(fig,'Stats',Stats);
@@ -266,6 +267,9 @@ makeVarNodesStats(fig,alphabetIdx,VariableNamesList);
 % Set list of stats tables
 tableNames=fieldnames(Stats.Tables);
 makeTableNodes(fig,1:length(tableNames),tableNames);
+
+pubTableNames=fieldnames(Stats.PubTables);
+makePubTableNodes(fig,1:length(pubTableNames),pubTableNames);
 
 % Set list of summary functions
 makeStatsFcnNodes(fig,1:length(Stats.Functions),Stats.Functions);

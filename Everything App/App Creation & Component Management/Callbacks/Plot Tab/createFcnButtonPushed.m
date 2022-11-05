@@ -70,6 +70,9 @@ plotNames=fieldnames(Plotting.Plots);
 %% ASK FOR WHAT LEVEL THIS PLOT IS
 levels={'Project','Project_Condition','Condition','Subject','Subject-Condition','Trial'};
 level=listdlg('ListString',levels);
+if isempty(level)
+    return;
+end
 level=levels{level};
 
 switch level

@@ -59,6 +59,15 @@ TableDescTextAreaRelPos=[0.3 0.01];
 MatrixButtonRelPos=[0.55 0.25];
 MatrixRepsUITreeRelPos=[0.7 0.01];
 AddDataRepsVarButtonRelPos=[0.51 0.65];
+AddPubTableButtonRelPos=[0.58 0.4];
+RemovePubTableButtonRelPos=[0.51 0.4];
+PubTablesUITreeRelPos=[0.51 0.1];
+EditPubTableButtonRelPos=[0.75 0.4];
+PubTablesPanelRelPos=[0.5 0];
+PubTablesLabelRelPos=[0.5 0.45];
+RunPubTableButtonRelPos=[0.75 0.3];
+NumSigFigsLabelRelPos=[0.75 0.25];
+NumSigFigsEditFieldRelPos=[0.75 0.2];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
@@ -88,6 +97,15 @@ TableDescTextAreaSize=[0.2 0.19];
 MatrixButtonSize=[0.1 2*compHeight];
 MatrixRepsUITreeSize=[0.2 0.4];
 AddDataRepsVarButtonSize=[0.06 compHeight];
+AddPubTableButtonSize=[0.06 compHeight];
+RemovePubTableButtonSize=[0.06 compHeight];
+PubTablesUITreeSize=[0.2 0.3];
+EditPubTableButtonSize=[0.06 compHeight];
+PubTablesPanelSize=[0.5 0.5];
+PubTablesLabelSize=[0.1 compHeight];
+RunPubTableButtonSize=[0.06 compHeight];
+NumSigFigsLabelSize=[0.2 compHeight];
+NumSigFigsEditFieldSize=[0.1 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
 VarsUITreePos=round([VarsUITreeRelPos.*figSize VarsUITreeSize.*figSize]);
@@ -115,6 +133,15 @@ TableDescTextAreaPos=round([TableDescTextAreaRelPos.*figSize TableDescTextAreaSi
 MatrixButtonPos=round([MatrixButtonRelPos.*figSize MatrixButtonSize(1)*figSize(1) MatrixButtonSize(2)]);
 MatrixRepsUITreePos=round([MatrixRepsUITreeRelPos.*figSize MatrixRepsUITreeSize.*figSize]);
 AddDataRepsVarButtonPos=round([AddDataRepsVarButtonRelPos.*figSize AddDataRepsVarButtonSize(1)*figSize(1) AddDataRepsVarButtonSize(2)]);
+AddPubTableButtonPos=round([AddPubTableButtonRelPos.*figSize AddPubTableButtonSize(1)*figSize(1) AddPubTableButtonSize(2)]);
+RemovePubTableButtonPos=round([RemovePubTableButtonRelPos.*figSize RemovePubTableButtonSize(1)*figSize(1) RemovePubTableButtonSize(2)]);
+PubTablesUITreePos=round([PubTablesUITreeRelPos.*figSize PubTablesUITreeSize.*figSize]);
+EditPubTableButtonPos=round([EditPubTableButtonRelPos.*figSize EditPubTableButtonSize(1)*figSize(1) EditPubTableButtonSize(2)]);
+PubTablesPanelPos=round([PubTablesPanelRelPos.*figSize PubTablesPanelSize.*figSize]);
+PubTablesLabelPos=round([PubTablesLabelRelPos.*figSize PubTablesLabelSize(1)*figSize(1) PubTablesLabelSize(2)]);
+RunPubTableButtonPos=round([RunPubTableButtonRelPos.*figSize RunPubTableButtonSize(1)*figSize(1) RunPubTableButtonSize(2)]);
+NumSigFigsLabelPos=round([NumSigFigsLabelRelPos.*figSize NumSigFigsLabelSize(1)*figSize(1) NumSigFigsLabelSize(2)]);
+NumSigFigsEditFieldPos=round([NumSigFigsEditFieldRelPos.*figSize NumSigFigsEditFieldSize(1)*figSize(1) NumSigFigsEditFieldSize(2)]);
 
 data.VarsUITree.Position=VarsUITreePos;
 data.CreateTableButton.Position=CreateTableButtonPos;
@@ -138,9 +165,18 @@ data.VarsDescLabel.Position=VarsDescLabelPos;
 data.VarsDescTextArea.Position=VarsDescTextAreaPos;
 data.TableDescLabel.Position=TableDescLabelPos;
 data.TableDescTextArea.Position=TableDescTextAreaPos;
-data.MatrixButton.Position=MatrixButtonPos;
-data.MatrixRepsUITree.Position=MatrixRepsUITreePos;
+% data.MatrixButton.Position=MatrixButtonPos;
+% data.MatrixRepsUITree.Position=MatrixRepsUITreePos;
+data.PubTablesPanel.Position=PubTablesPanelPos;
 data.AddDataRepsVarButton.Position=AddDataRepsVarButtonPos;
+data.AddPubTableButton.Position=AddPubTableButtonPos;
+data.RemovePubTableButton.Position=RemovePubTableButtonPos;
+data.PubTablesUITree.Position=PubTablesUITreePos;
+data.EditPubTableButton.Position=EditPubTableButtonPos;
+data.PubTablesLabel.Position=PubTablesLabelPos;
+data.RunPubTableButton.Position=RunPubTableButtonPos;
+data.NumSigFigsLabel.Position=NumSigFigsLabelPos;
+data.NumSigFigsEditField.Position=NumSigFigsEditFieldPos;
 
 data.VarsUITree.FontSize=newFontSize;
 data.CreateTableButton.FontSize=newFontSize;
@@ -164,6 +200,17 @@ data.VarsDescLabel.FontSize=newFontSize;
 data.VarsDescTextArea.FontSize=newFontSize;
 data.TableDescLabel.FontSize=newFontSize;
 data.TableDescTextArea.FontSize=newFontSize;
-data.MatrixButton.FontSize=newFontSize;
-data.MatrixRepsUITree.FontSize=newFontSize;
+% data.MatrixButton.FontSize=newFontSize;
+% data.MatrixRepsUITree.FontSize=newFontSize;
 data.AddDataRepsVarButton.FontSize=newFontSize;
+data.AddPubTableButton.FontSize=newFontSize;
+data.RemovePubTableButton.FontSize=newFontSize;
+data.PubTablesUITree.FontSize=newFontSize;
+data.EditPubTableButton.FontSize=newFontSize;
+data.PubTablesPanel.FontSize=newFontSize;
+data.PubTablesLabel.FontSize=newFontSize;
+data.RunPubTableButton.FontSize=newFontSize;
+data.NumSigFigsLabel.FontSize=newFontSize;
+data.NumSigFigsEditField.FontSize=newFontSize;
+
+% uistack(data.PubTablesPanel,'bottom');

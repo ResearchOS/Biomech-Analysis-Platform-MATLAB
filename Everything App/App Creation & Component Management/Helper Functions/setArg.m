@@ -121,7 +121,7 @@ if exist(folder,'dir')~=7
 end
 
 try
-    save(matFilePath,saveNames{:},'-append');
+    save(matFilePath,saveNames{:},'-append','-v6');
 catch
     if exist(matFilePath,'file')~=2
         save(matFilePath,saveNames{:},'-v6');
@@ -155,9 +155,12 @@ for i=1:length(argNames)
         uitreenode(varNode,'Text',splitText);
     end
 
+    varNode=findobj(handles.Stats.varsUITree,'Text',guiVarNames{i});
+    uitreenode(varNode,'Text',splitText);
+
 end
 
 if any(anyNew)
 %     save(getappdata(fig,'projectSettingsMATPath'),'VariableNamesList','-append'); % At least one variable had a new split, so save the VariableNamesList.
-    setappdata(fig,'VariableNamesList',VariableNamesList);
+    setappdata(fig,'VariableNamesList',VariableNamesList);    
 end

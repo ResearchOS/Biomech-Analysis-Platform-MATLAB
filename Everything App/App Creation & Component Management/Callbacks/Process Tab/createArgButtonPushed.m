@@ -279,7 +279,11 @@ end
 % save(projectSettingsMATPath,'VariableNamesList','-append');
 setappdata(fig,'VariableNamesList',VariableNamesList);
 
+fcnsArgsSearchFieldValueChanged(fig);
 varsListboxSelectionChanged(fig);
+
+% Update the list of variable names in the Stats tab.
+makeVarNodesStats(fig,sortIdx,VariableNamesList);
 
 if runLog
     varNameInGUI=nameInGUI;

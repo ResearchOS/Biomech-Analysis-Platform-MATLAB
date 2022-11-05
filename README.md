@@ -5,4 +5,4 @@ This "Biomechanical Analysis Platform" or "biomechOS" attempts to provide a comm
 
 This project is currently written and tested entirely in base MATLAB R2021b, no toolboxes are required.
 
-To use this project, download the latest release [here](https://github.com/biomechOS/Biomech-Analysis-Platform/releases/latest). Place the entire folder in  your preferred location in your file system. Lastly, add the folder to the MATLAB path [see docs](https://www.mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html).
+To use this project, download the latest release [here](https://github.com/biomechOS/Biomech-Analysis-Platform/releases/latest). Place the entire folder in  your preferred location in your file system. Lastly, add the folder to the MATLAB path ([see docs](https://www.mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html)).

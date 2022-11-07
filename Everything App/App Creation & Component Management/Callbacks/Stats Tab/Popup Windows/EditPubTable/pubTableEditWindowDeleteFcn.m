@@ -18,6 +18,7 @@ for r=1:currTable.Size.numRows
         currTable.Cells(r,c).value=handles.valueEditField(r,c).Value;
         currTable.Cells(r,c).tableName=handles.tableDropDown(r,c).Value;
         currTable.Cells(r,c).varName=handles.varsDropDown(r,c).Value;
+        currTable.Cells(r,c).repVar=handles.repVarDropDown(r,c).Value;
     end
 end
 

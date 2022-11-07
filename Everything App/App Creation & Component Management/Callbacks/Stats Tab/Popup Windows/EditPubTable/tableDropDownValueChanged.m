@@ -21,6 +21,6 @@ end
 handles.varsDropDown(i,j).Visible=~vis;
 handles.varsDropDown(i,j).Items=varItems;
 
-% Select the previously selected item (?)
-
 handles.valueEditField(i,j).Visible=vis;
+
+varsDropDownValueChanged(src,allTables);

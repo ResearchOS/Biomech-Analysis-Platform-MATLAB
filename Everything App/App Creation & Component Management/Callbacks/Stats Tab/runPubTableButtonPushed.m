@@ -27,6 +27,11 @@ for row=1:pubTable.Size.numRows
 
         specifyTrials=currCell.SpecifyTrials;
 
+        if isempty(specifyTrials)
+            disp(['Row ' num2str(row) ' Column ' num2str(col) ' Missing SpecifyTrials!']);
+            return;
+        end
+
         inclStruct=feval(specifyTrials);
         allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]); % The list of trials' data to retrieve.
         tableName=currCell.tableName; % The Stats table to look for data in.

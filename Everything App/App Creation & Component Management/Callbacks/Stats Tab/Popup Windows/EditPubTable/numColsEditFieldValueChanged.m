@@ -50,3 +50,6 @@ currTable.Size.numCols=numCols;
 setappdata(fig,'pubTable',currTable);
 
 createCells(fig,currTable,allTables,pguiFig);
+
+% Do this so that the SpecifyTrials can be updated.
+pubTableEditWindowDeleteFcn(fig,pguiFig);

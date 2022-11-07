@@ -279,6 +279,7 @@ if ~isempty(handles.Stats.tablesUITree.Children)
     handles.Stats.tablesUITree.SelectedNodes=handles.Stats.tablesUITree.Children(1);
 end
 tablesUITreeSelectionChanged(fig);
+pubTablesUITreeSelectionChanged(fig);
 
 
 %% Finalize setup

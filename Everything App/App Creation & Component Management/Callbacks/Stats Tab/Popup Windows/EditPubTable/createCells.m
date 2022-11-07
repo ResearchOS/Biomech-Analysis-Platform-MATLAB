@@ -39,7 +39,7 @@ for i=r:-1:1 % Doing it this way because in order to scroll, all items must be "
         
         % Create the graphics objects for this cell
         handles.cellIndexLabel(i,j)=uilabel(handles.cellPanel(i,j),'Text',handles.cellPanel(i,j).Tag,'Position',round([0.43 0.9 0.25 0.1].*[cellSize cellSize]),'FontWeight','bold');
-        handles.specifyTrialsButton(i,j)=uibutton(handles.cellPanel(i,j),'push','Text','ST','Position',round([0.6 0.7 0.3 0.2].*[cellSize cellSize]));
+        handles.specifyTrialsButton(i,j)=uibutton(handles.cellPanel(i,j),'push','Text','ST','Position',round([0.6 0.7 0.3 0.2].*[cellSize cellSize]),'BackgroundColor',rgb('light brown'));
         set(handles.specifyTrialsButton(i,j),'ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushedPubTable(pgui,handles.specifyTrialsButton(i,j)));
         tableItems=[{'Literal'}; tableNames];
         handles.tableDropDown(i,j)=uidropdown(handles.cellPanel(i,j),'Items',tableItems,'Position',round([0.05 0.7 0.4 0.2].*[cellSize cellSize]),'ValueChangedFcn',@(tableDropDown,event) tableDropDownValueChanged(tableDropDown,allTables),'Value',currCell.tableName);
@@ -53,13 +53,15 @@ for i=r:-1:1 % Doing it this way because in order to scroll, all items must be "
         if isempty(currCell.varName)
             currCell.varName=varItems{1};
         end
-        handles.varsDropDown(i,j)=uidropdown(handles.cellPanel(i,j),'Items',varItems,'Position',round([0.05 0.4 0.9 0.2].*[cellSize cellSize]),'Visible',~vis,'Value',currCell.varName,'ValueChangedFcn',@(varsDropDown,event) varsDropDownValueChanged(varsDropDown,allTables));
+        handles.varsDropDown(i,j)=uidropdown(handles.cellPanel(i,j),'Items',varItems,'Position',round([0.05 0.4 0.9 0.2].*[cellSize cellSize]),'Visible',~vis,'Value',currCell.varName,'ValueChangedFcn',@(varsDropDown,event) varsDropDownValueChanged(varsDropDown,allTables),'BackgroundColor',rgb('light green'));
         handles.repVarDropDown(i,j)=uidropdown(handles.cellPanel(i,j),'Items',{''},'Position',round([0.5 0.05 0.48 0.2].*[cellSize cellSize]),'Value','','Visible',~vis);        
-        handles.valueEditField(i,j)=uieditfield(handles.cellPanel(i,j),'Value',currCell.value,'Position',round([0.05 0.4 0.9 0.2].*[cellSize cellSize]),'Visible',vis);
+        handles.valueEditField(i,j)=uieditfield(handles.cellPanel(i,j),'Value',currCell.value,'Position',round([0.05 0.4 0.9 0.2].*[cellSize cellSize]),'Visible',vis,'BackgroundColor',rgb('light blue'));
         handles.summMeasureDropDown(i,j)=uidropdown(handles.cellPanel(i,j),'Items',{'Mean ± Stdev','Median ± IQR'},'Value',currCell.summMeasure,'Position',round([0.05 0.05 0.4 0.2].*[cellSize cellSize]),'Value',currCell.summMeasure);
 
         setappdata(fig,'handles',handles);
-        varsDropDownValueChanged(handles.varsDropDown(i,j),allTables,currCell.repVar);       
+        if ~isequal(handles.tableDropDown(i,j).Value,'Literal')
+            varsDropDownValueChanged(handles.varsDropDown(i,j),allTables,currCell.repVar);       
+        end
 
     end
 

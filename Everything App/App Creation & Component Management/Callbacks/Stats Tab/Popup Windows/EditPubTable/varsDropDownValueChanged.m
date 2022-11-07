@@ -32,6 +32,10 @@ for i=1:length(repCols)
 
 end
 
+if isempty(repVar)
+    repVar='';
+end
+
 if ~ismember(repVar,repVarItems)
     repVar='';
 end

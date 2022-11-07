@@ -10,6 +10,8 @@ pubTableName=handles.Stats.pubTablesUITree.SelectedNodes.Text;
 
 pubTable=Stats.PubTables.(pubTableName);
 
+disp(['Creating table for publication: ' pubTableName]);
+
 load(getappdata(fig,'logsheetPathMAT'),'logVar');
 
 projectName=getappdata(fig,'projectName');
@@ -75,6 +77,22 @@ for row=1:pubTable.Size.numRows
 
         assert(sum(varColIdx)==1);
 
+        % Get the name of the multiple repetitions header variable   
+        
+        for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
+            if isempty(Stats.Tables.(tableName).RepetitionColumns(i).Mult)
+                continue;
+            end
+            if ~ismember(varName,Stats.Tables.(tableName).RepetitionColumns(i).Mult.DataVars)
+                continue;
+            end
+            repVarName=Stats.Tables.(tableName).RepetitionColumns(i).Name;
+            repVarColIdx=ismember(var(1,:),repVarName);
+            break;
+        end
+
+        repVarValue=Stats.PubTables.(pubTableName).Cells(row,col).repVar; % The repetition variable value for this cell.
+        
         % Get the row numbers in the stats table.
         rowsIdx=[];
         subNames=fieldnames(allTrialNames);
@@ -83,7 +101,10 @@ for row=1:pubTable.Size.numRows
             currTrials=fieldnames(allTrialNames.(subName));
             for trialNum=1:length(allTrialNames.(subName))
                 trialName=currTrials{trialNum};
-                rowsIdx=[rowsIdx; find(ismember(var(:,1),trialName)==1)];
+                newRowIdx=find((ismember(var(:,1),trialName) & ismember(var(:,repVarColIdx),repVarValue))==1);
+
+                assert(length(newRowIdx)==1);
+                rowsIdx=[rowsIdx; newRowIdx];
             end
         end
 
@@ -120,3 +141,5 @@ eval([varName '= pubTableOut;']);
 save(matFilePath,varName,'-append');
 
 assignin('base',varName,pubTableOut);
+
+disp(['Created table for publication: ' varName]);

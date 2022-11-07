@@ -65,6 +65,7 @@ pubTable.Cells(1,1).SpecifyTrials='';
 tableNames=fieldnames(Stats.Tables);
 pubTable.Cells(1,1).tableName=tableNames{1};
 pubTable.Cells(1,1).varName=Stats.Tables.(tableNames{1}).DataColumns(1).GUINames;
+pubTable.Cells(1,1).repVar='';
 
 Stats.PubTables.(tableName)=pubTable;
 

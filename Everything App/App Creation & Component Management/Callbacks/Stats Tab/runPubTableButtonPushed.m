@@ -26,6 +26,12 @@ for row=1:pubTable.Size.numRows
     for col=1:pubTable.Size.numCols
 
         currCell=pubTable.Cells(row,col);
+        tableName=currCell.tableName; % The Stats table to look for data in.
+
+        if isequal(tableName,'Literal')
+            pubTableOut{row,col}=currCell.value;
+            continue;
+        end
 
         specifyTrials=currCell.SpecifyTrials;
 
@@ -36,14 +42,9 @@ for row=1:pubTable.Size.numRows
 
         inclStruct=feval(specifyTrials);
         allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]); % The list of trials' data to retrieve.
-        tableName=currCell.tableName; % The Stats table to look for data in.
         varName=currCell.varName; % The variable in the Stats table to extract.
         summType=currCell.summMeasure;
 
-        if isequal(tableName,'Literal')
-            pubTableOut{row,col}=currCell.value;
-            continue;
-        end
         fileVarNames=whos('-file',[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat']);
         fileVarNames={fileVarNames.name}';
         fileVarNames=fileVarNames(contains(fileVarNames,tableName));

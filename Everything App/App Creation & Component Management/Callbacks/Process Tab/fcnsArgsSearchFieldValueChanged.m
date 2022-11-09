@@ -4,6 +4,10 @@ function []=fcnsArgsSearchFieldValueChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+if exist('event','var')~=1
+    return;
+end
+
 % projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
 % load(projectSettingsMATPath,'VariableNamesList');
 VariableNamesList=getappdata(fig,'VariableNamesList');

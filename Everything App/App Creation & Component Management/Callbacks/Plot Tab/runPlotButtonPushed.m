@@ -26,16 +26,39 @@ cd(oldPath); % Restore the cd
 level=Plotting.Plots.(plotName).Metadata.Level;
 
 load(getappdata(fig,'logsheetPathMAT'),'logVar');
-if contains(level,'C')
-    org=1; % Organize trial names by condition & subject
-else
-    org=0; % Organize trial names all together by subject
-end
 
-allTrialNames=getTrialNames(inclStruct,logVar,fig,org,[]);
+allTrialNamesNC=getTrialNames(inclStruct,logVar,fig,0,[]);
+allTrialNamesC=getTrialNames(inclStruct,logVar,fig,1,[]);
 
 setappdata(fig,'tabName','Plot');
 setappdata(fig,'plotName',plotName); % For getArg
+
+axLetters=fieldnames(Plotting.Plots.(plotName).Axes);
+for axNum=1:length(axLetters)
+    axLims=Plotting.Plots.(plotName).Axes.(axLetters{axNum}).AxLims;
+    for dim='XYZ'
+        varNames=axLims.(dim).SaveNames;
+        subvars=axLims.(dim).SubvarNames;
+        disp(['Axes ' axLetters{axNum} ' ' dim]);
+        dimLevel=axLims.(dim).Level;
+        if contains(dimLevel,'C')
+            allTrialNames=allTrialNamesC;
+        else
+            allTrialNames=allTrialNamesNC;
+        end
+        if ~isempty(varNames)
+            records.(axLetters{axNum}).(dim)=getPlotAxesLims(fig,allTrialNames,varNames,subvars);
+        else
+            records.(axLetters{axNum}).(dim)=NaN;
+        end
+    end
+end
+
+if contains(level,'C')
+    allTrialNames=allTrialNamesC;
+else
+    allTrialNames=allTrialNamesNC;
+end
 
 if isequal(level,'P')    
     plotStaticFig_P(fig,allTrialNames); % Create one figure per project
@@ -43,7 +66,7 @@ if isequal(level,'P')
 end
 
 if isequal(level,'PC')
-    plotStaticFig_PC(fig,allTrialNames); % Create one figure per project, data split by condition.
+    plotStaticFig_PC(fig,allTrialNames,records); % Create one figure per project, data split by condition.
     return;
 end
 
@@ -75,10 +98,25 @@ for sub=1:length(subNames)
         for repNum=allTrialNames.(subName).(trialName)
             % CREATE ONE FIGURE FOR EACH TRIAL    
             disp([plotName ' ' subName ' ' trialName ' ' num2str(repNum)]);
+
+            % Determine which condition this trial is part of.
+            for condNum=1:length(allTrialNamesC.Condition)
+                subNames=fieldnames(allTrialNamesC.Condition(condNum));
+                if ~ismember(subName,subNames)
+                    continue; % Go on to the next trial.
+                end
+                currTrials=fieldnames(allTrialNamesC.Condition(condNum).(subName));
+                if ismember(trialName,currTrials)
+                    currTrialInfo.Condition=condNum;
+                    break;
+                end
+            end
+            currTrialInfo.Subject=subName;
+            currTrialInfo.Trial=trialName;
             if ~isMovie
-                plotStaticFig(fig,subName,trialName,repNum);
+                plotStaticFig(fig,subName,trialName,repNum,records,currTrialInfo);
             else
-                plotMovie(fig,subName,trialName,repNum);
+                plotMovie(fig,subName,trialName,repNum,records,currTrialInfo);
             end
 
         end

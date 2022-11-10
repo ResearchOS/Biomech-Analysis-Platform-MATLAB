@@ -35,6 +35,8 @@ end
 setappdata(fig,'tabName','Plot');
 
 isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
+plotLevel=Plotting.Plots.(plotName).Metadata.Level;
+load(getappdata(fig,'logsheetPathMAT'),'logVar');
 switch compName
     case 'Axes'
         h=findobj(handles.Plot.plotPanel,'Tag',['Axes ' letter]);
@@ -71,9 +73,40 @@ switch compName
         % Set axes limits.
         if isfield(Plotting.Plots.(plotName).(compName).(axLetter),'AxLims')
             axLims=Plotting.Plots.(plotName).(compName).(axLetter).AxLims;
-            axHandle=Plotting.Plots.(plotName).(compName).(axLetter).Handle;
+            axHandle=Plotting.Plots.(plotName).(compName).(axLetter).Handle;            
             specifyTrials=Plotting.Plots.(plotName).SpecifyTrials;
-            setAxLims(fig,axHandle,axLims,plotName,specifyTrials);
+            inclStruct=feval(specifyTrials);
+            for dim='XYZ'
+                varNames=axLims.(dim).SaveNames;
+                subvars=axLims.(dim).SubvarNames;                
+                value=axLims.(dim).VariableValue;
+                if iscell(value)
+                    value=value{1};
+                end
+                isHardCoded=axLims.(dim).IsHardCoded;
+                if contains(axLims.(dim).Level,'C')
+                    org=1;
+                else
+                    org=0;
+                end
+                allTrialNames=getTrialNames(inclStruct,logVar,fig,org,[]);
+                if ~isempty(varNames)
+                    if ~isHardCoded
+                        records.(dim)=getPlotAxesLims(fig,allTrialNames,varNames,subvars);
+                    else
+                        records.(dim)=eval(value);
+                        records.(dim)=records.(dim)(2)-records.(dim)(1);
+                    end
+                else
+                    records.(dim)=NaN;
+                end
+            end
+            if isequal(plotLevel,'T')
+                plotExTrial=Plotting.Plots.(plotName).ExTrial;
+            else
+                plotExTrial=[];
+            end
+            setAxLims(fig,axHandle,axLims,plotName,records,plotExTrial);
         end
     otherwise
         if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')

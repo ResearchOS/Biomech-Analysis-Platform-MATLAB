@@ -1,4 +1,4 @@
-function []=plotStaticFig_PC(fig,allTrialNames)
+function []=plotStaticFig_PC(fig,allTrialNames,records)
 
 %% PURPOSE: CREATE PROJECT-LEVEL PLOT, WHERE THE DATA IS SPLIT BY CONDITION.
 
@@ -30,6 +30,11 @@ end
 for axNum=1:length(axLetters)
 
     axTag=axTags{axNum};
+
+    % Set axes limits
+    axLetter=axLetters{axNum};
+    axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;
+    setAxLims(fig,axHandles.(axLetter),axLims,plotName,records.(axLetter),[]);
 
     for i=1:length(compNames)
 

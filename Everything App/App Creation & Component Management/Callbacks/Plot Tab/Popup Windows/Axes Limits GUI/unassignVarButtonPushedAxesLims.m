@@ -4,4 +4,21 @@ function []=unassignVarButtonPushedAxesLims(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-axesLims=getappdata(fig,'axLims');
+axLims=getappdata(fig,'axLims');
+
+dim=handles.dimDropDown.Value;
+
+selNode=handles.selVarsUITree.SelectedNodes;
+
+if isempty(selNode)
+    return;
+end
+
+idx=ismember(handles.selVarsUITree.Children,selNode);
+
+axLims.(dim).VariableNames(idx)=[];
+axLims.(dim).SubvarNames(idx)=[];
+
+setappdata(fig,'axLims',axLims);
+
+makeAxLimsSelVarNodes(fig);

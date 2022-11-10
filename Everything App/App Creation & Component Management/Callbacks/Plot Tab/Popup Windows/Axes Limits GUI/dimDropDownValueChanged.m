@@ -15,6 +15,7 @@ handles.isHardCodedCheckbox.Value=currDim.IsHardCoded;
 handles.hardCodedTextArea.Value=currDim.VariableValue;
 
 % Modify subvars UI tree and the subvariable field.
+makeAxLimsSelVarNodes(fig);
 
 setappdata(fig,'axLims',axLims);
 hardCodedCheckboxValueChanged(fig);

@@ -22,6 +22,7 @@ handles.nameInCodeEditField.Visible=~isHardCoded;
 handles.subVarEditField.Visible=~isHardCoded;
 handles.hardCodedTextArea.Visible=isHardCoded;
 handles.levelDropDown.Visible=~isHardCoded;
+handles.searchEditField.Visible=~isHardCoded;
 
 % handles.levelDropDown.Value='P';
 

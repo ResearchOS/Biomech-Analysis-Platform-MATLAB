@@ -49,7 +49,7 @@ level=axLims.X.Level;
 value=axLims.X.VariableValue;
 
 %% Open figure to select the data for the axes limits.
-Q=uifigure('Name',['Set Axes ' axLetter ' Limits'],'DeleteFcn',@(Q,fig) axesLimDeleteFcn(Q,fig));
+Q=uifigure('Name',['Set Axes ' axLetter ' Limits'],'DeleteFcn',@(Q,event) axesLimDeleteFcn(Q,fig));
 Qhandles.dimDropDown=uidropdown(Q,'Position',[500 200 100 50],'Items',{'X','Y','Z'},'Value','X','Editable','off','ValueChangedFcn',@(Q,event) dimDropDownValueChanged(Q));
 Qhandles.varsUITree=uitree(Q,'Position',[10 10 200 400],'Visible',~isHardCoded,'SelectionChangedFcn',@(Q,event) varsUITreeSelectionChanged(Q));
 Qhandles.selVarsUITree=uitree(Q,'Position',[270 10 200 300],'SelectionChangedFcn',@(Q,event) selVarsUITreeValueChanged(Q),'Visible',~isHardCoded);
@@ -65,6 +65,8 @@ Qhandles.searchEditField=uieditfield(Q,'text','Value','Search','Visible',~isHard
 setappdata(Q,'axHandle',axHandle);
 setappdata(Q,'handles',Qhandles);
 setappdata(Q,'axLims',axLims);
+setappdata(Q,'plotName',plotName);
+setappdata(Q,'axLetter',axLetter);
 VariableNamesList=getappdata(fig,'VariableNamesList');
 setappdata(Q,'VariableNamesList',VariableNamesList);
 

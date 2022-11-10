@@ -65,6 +65,10 @@ for axNum=1:length(axLetters)
                         end
                     end
                 end
+                % Set axes limits
+                axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;
+                specifyTrials=Plotting.Plots.(plotName).SpecifyTrials;
+                setAxLims(fig,h,axLims,plotName,specifyTrials)
                 continue;
             end
 

@@ -67,6 +67,14 @@ switch compName
         end
         Plotting.Plots.(plotName).(compName).(axLetter).Properties=allProps;
         delete(tempH);
+
+        % Set axes limits.
+        if isfield(Plotting.Plots.(plotName).(compName).(axLetter),'AxLims')
+            axLims=Plotting.Plots.(plotName).(compName).(axLetter).AxLims;
+            axHandle=Plotting.Plots.(plotName).(compName).(axLetter).Handle;
+            specifyTrials=Plotting.Plots.(plotName).SpecifyTrials;
+            setAxLims(fig,axHandle,axLims,plotName,specifyTrials);
+        end
     otherwise
         if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')
             disp('Need to select a specify trials!');

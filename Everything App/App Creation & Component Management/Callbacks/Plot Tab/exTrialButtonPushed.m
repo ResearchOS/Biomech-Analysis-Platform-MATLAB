@@ -49,6 +49,22 @@ end
 
 PlotExTrial.Subject=subName;
 PlotExTrial.Trial=trialName;
+PlotExTrial.Condition=[];
+
+% Get the condition number
+allTrialNames=getTrialNames(inclStruct,logVar,fig,1,[]);
+% subNameOrig=subName;
+for condNum=1:length(allTrialNames.Condition)
+    subNames=fieldnames(allTrialNames.Condition(condNum));
+    if ~ismember(subName,subNames)
+        continue; % Go on to the next trial.
+    end
+    currTrials=fieldnames(allTrialNames.Condition(condNum).(subName));
+    if ismember(trialName,currTrials)
+        PlotExTrial.Condition=condNum;
+        break;
+    end
+end
 
 Plotting.Plots.(plotName).ExTrial=PlotExTrial;
 

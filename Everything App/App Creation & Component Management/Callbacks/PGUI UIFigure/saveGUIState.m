@@ -6,6 +6,8 @@ function []=saveGUIState(fig)
 fig=ancestor(fig,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+disp('Closing window');
+
 VariableNamesList=getappdata(fig,'VariableNamesList');
 Digraph=getappdata(fig,'Digraph');
 NonFcnSettingsStruct=getappdata(fig,'NonFcnSettingsStruct');

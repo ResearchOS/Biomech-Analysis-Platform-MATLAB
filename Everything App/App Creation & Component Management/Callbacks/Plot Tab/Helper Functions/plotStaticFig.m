@@ -1,4 +1,4 @@
-function []=plotStaticFig(fig,subName,trialName,repNum)
+function []=plotStaticFig(fig,subName,trialName,repNum,records,currTrialInfo)
 
 %% PURPOSE: PLOT A STATIC PLOT
 handles=getappdata(fig,'handles');
@@ -66,9 +66,8 @@ for axNum=1:length(axLetters)
                     end
                 end
                 % Set axes limits
-                axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;
-                specifyTrials=Plotting.Plots.(plotName).SpecifyTrials;
-                setAxLims(fig,h,axLims,plotName,specifyTrials)
+                axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;           
+                setAxLims(fig,h,axLims,plotName,records.(axLetter),currTrialInfo)
                 continue;
             end
 

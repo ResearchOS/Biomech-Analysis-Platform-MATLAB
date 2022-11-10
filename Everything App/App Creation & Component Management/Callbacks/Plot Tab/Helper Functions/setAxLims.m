@@ -1,11 +1,11 @@
-function []=setAxLims(fig,axHandle,axLims,plotName,specifyTrials)
+function []=setAxLims(fig,axHandle,axLims,plotName,records,currTrialInfo)
 
 %% PURPOSE: SET THE AXES LIMITS FOR THE CURRENT AXES
 
-inclStruct=feval(specifyTrials);
-load(getappdata(fig,'logsheetPathMAT'),'logVar');
+% inclStruct=feval(specifyTrials);
+% load(getappdata(fig,'logsheetPathMAT'),'logVar');
 
-VariableNamesList=getappdata(fig,'VariableNamesList');
+% VariableNamesList=getappdata(fig,'VariableNamesList');
 Plotting=getappdata(fig,'Plotting');
 
 slash=filesep;
@@ -26,63 +26,56 @@ for dim='XYZ' % Iterate over each dimension
         continue;
     end
 
-    varNames=axLims.(dim).VariableNames;
+    varNames=axLims.(dim).SaveNames;
     subvars=axLims.(dim).SubvarNames;
 
-    if contains(limLevel,'C')
-        org=1;        
-    else
-        org=0;
-    end
+%     if contains(limLevel,'C')
+%         org=1;        
+%     else
+%         org=0;
+%     end
     
-    allTrialNames=getTrialNames(inclStruct,logVar,fig,org,[]);
+%     allTrialNames=getTrialNames(inclStruct,logVar,fig,org,[]);
 
     % Get the save names for the variables so I can load them from file.
     % 1. Get rid of the '(splitCode)' suffixes
-    cutVarNames=cell(length(varNames),1);
-    splitCodes=cell(length(varNames),1);
-    for i=1:length(cutVarNames)
-        spaceIdx=strfind(varNames{i},' ');
-        cutVarNames{i}=varNames{i}(1:spaceIdx-1);
-        splitCodes{i}=varNames{i}(spaceIdx+2:end-1);
-    end
+    
 
-    % 2. Get the corresponding save names
-    [~,a,~]=intersect(VariableNamesList.GUINames,cutVarNames,'stable');
-    saveNames=VariableNamesList.SaveNames(a);
-
-    % 3. Append the split codes to them
-    for i=1:length(saveNames)
-        saveNames{i}=[saveNames{i} '_' splitCodes{i}];
-    end
-
-%     dimRecords=records.(dim).(limLevel);
-    if ~isempty(saveNames)
-        records=getPlotAxesLims(fig,allTrialNames,saveNames,subvars);
-    else
-        records=[NaN NaN];
-        limLevel='Z';
-    end
+    dimRecords=records.(dim);
+%     if ~isempty(saveNames)
+%         records=getPlotAxesLims(fig,allTrialNames,saveNames,subvars);
+%     else
+%         records=[NaN NaN];
+%         limLevel='Z';
+%     end
 
     % Get the subName and condNum for the current plot.
-    subName=Plotting.Plots.(plotName).ExTrial.Subject;
-    condNum=Plotting.Plots.(plotName).ExTrial.Condition;
-    trialName=Plotting.Plots.(plotName).ExTrial.Trial;
+    if isstruct(currTrialInfo)
+        subName=currTrialInfo.Subject;
+        condNum=currTrialInfo.Condition;
+        trialName=currTrialInfo.Trial;
+    else % Not a trial-level plot.
+        assert(isequal(limLevel,'P'));
+    end
+
+    if all(isnan(dimRecords))
+        continue;
+    end
 
     switch limLevel
         case 'P'
-            records=records.All;
+            dimRecords=dimRecords.All;
         case 'S' % Subject
-            records=records.(subName);
+            dimRecords=dimRecords.(subName);
         case 'C' % Condition
-            records=records.Condition(condNum).Ex;
+            dimRecords=dimRecords.Condition(condNum).Ex;
         case 'SC' % Subject-condition
-            records=records.SubjectCondition(condNum).(subName);
+            dimRecords=dimRecords.SubjectCondition(condNum).(subName);
         otherwise % Trial, or none provided.
-            records=[NaN NaN]; % Because this will just be whatever MATLAB defaults to.
-    end    
+            dimRecords=NaN; % Because this will just be whatever MATLAB defaults to.
+    end        
 
-    if all(isnan(records))
+    if all(isnan(dimRecords))
         continue;
     end
 
@@ -92,15 +85,15 @@ for dim='XYZ' % Iterate over each dimension
     end
 
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' getappdata(fig,'projectName') '.mat']; % Get the file name to load the data from
-    load(matFilePath,saveNames{:}); % Load the specified data.
+    load(matFilePath,varNames{:}); % Load the specified data.
 
     minTrial=inf;
     maxTrial=-inf;
-    for i=1:length(saveNames)
+    for i=1:length(varNames)
         if ~isempty(subvars{i})
-            data=eval([saveNames{i} subvars{i}]);
+            data=eval([varNames{i} subvars{i}]);
         else
-            data=eval(saveNames{i});
+            data=eval(varNames{i});
         end
 
         minData=min(data,[],'omitnan');
@@ -115,7 +108,7 @@ for dim='XYZ' % Iterate over each dimension
     end
 
     % In the future I can change how much outside of the bounds I want to show in the plot (scaling factor on records/2), and how much to translate it as well.
-    lims=[mean([minTrial maxTrial])-records/2 mean([minTrial maxTrial])+records/2];
+    lims=[mean([minTrial maxTrial])-dimRecords/2 mean([minTrial maxTrial])+dimRecords/2];
     axHandle.([dim 'Lim'])=lims; % Set the hard-coded axes limits
 
 end

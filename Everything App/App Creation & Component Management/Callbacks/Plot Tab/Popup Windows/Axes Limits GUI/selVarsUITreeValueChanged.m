@@ -4,4 +4,13 @@ function []=selVarsUITreeValueChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-axesLims=getappdata(fig,'axLims');
+axLims=getappdata(fig,'axLims');
+dim=handles.dimDropDown.Value;
+
+selNode=handles.selVarsUITree.SelectedNodes;
+
+idx=ismember(handles.selVarsUITree.Children,selNode);
+
+subVar=axLims.(dim).SubvarNames{idx};
+
+handles.subVarEditField.Value=subVar;

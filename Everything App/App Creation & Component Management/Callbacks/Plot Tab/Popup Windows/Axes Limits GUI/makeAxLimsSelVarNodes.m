@@ -12,11 +12,16 @@ varNames=axLims.(dim).VariableNames;
 subVars=axLims.(dim).SubvarNames;
 
 varTree=handles.selVarsUITree;
+delete(varTree.Children);
 
 for i=1:length(varNames)
     a=uitreenode(varTree,'Text',varNames{i});
     if i==1
-        handles.subVarsEditField.Text=subVars{i};
+        handles.subVarEditField.Value=subVars{i};
         varTree.SelectedNodes=a;
     end
+end
+
+if isempty(varNames)
+    handles.subVarEditField.Value='';
 end

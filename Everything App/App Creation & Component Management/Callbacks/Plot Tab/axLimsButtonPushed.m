@@ -59,7 +59,7 @@ Qhandles.isHardCodedCheckbox=uicheckbox(Q,'Position',[10 460 150 50],'Value',isH
 % Qhandles.nameInCodeEditField=uieditfield(Q,'text','Position',[270 310 200 50],'ValueChangedFcn',@(Q,event) nameInCodeEditFieldValueChanged(Q),'Visible',~isHardCoded);
 Qhandles.subVarEditField=uieditfield(Q,'text','Position',[270 370 200 50],'Visible',~isHardCoded,'ValueChangedFcn',@(Q,event) subVarEditFieldValueChanged(Q));
 Qhandles.hardCodedTextArea=uitextarea(Q,'Position',[10 250 450 200],'Visible',isHardCoded,'ValueChangedFcn',@(Q,event) hardCodedTextAreaValueChanged(Q),'Value',value);
-Qhandles.levelDropDown=uidropdown(Q,'Items',{'P','C','S','SC','T'},'Position',[270 420 200 50],'Value',level,'ValueChangedFcn',@(Q,event) levelDropDownValueChanged(Q));
+Qhandles.levelDropDown=uidropdown(Q,'Items',{'P','C','S','SC','T'},'Position',[270 420 200 50],'Value',level,'ValueChangedFcn',@(Q,event) levelDropDownValueChanged(Q),'Visible',~isHardCoded);
 Qhandles.searchEditField=uieditfield(Q,'text','Value','Search','Visible',~isHardCoded,'Position',[10 420 200 50],'ValueChangingFcn',@(Q,event) searchAxLimsVars(Q,event));
 
 setappdata(Q,'axHandle',axHandle);

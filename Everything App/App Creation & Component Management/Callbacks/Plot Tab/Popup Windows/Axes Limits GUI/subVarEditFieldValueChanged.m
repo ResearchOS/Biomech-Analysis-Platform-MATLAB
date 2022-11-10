@@ -4,11 +4,20 @@ function []=subVarEditFieldValueChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-axesLims=getappdata(fig,'axLims');
+axLims=getappdata(fig,'axLims');
 dim=handles.dimDropDown.Value;
+
+if isempty(handles.selVarsUITree.SelectedNodes)
+    handles.subVarEditField.Value='';
+    return;
+end
 
 subVarName=handles.subVarEditField.Value;
 
-axesLims.(dim).SubvarName=subVarName;
+selNode=handles.selVarsUITree.SelectedNodes;
 
-setappdata(fig,'axLims',axesLims);
+idx=ismember(handles.selVarsUITree.Children,selNode);
+
+axLims.(dim).SubvarNames{idx}=subVarName;
+
+setappdata(fig,'axLims',axLims);

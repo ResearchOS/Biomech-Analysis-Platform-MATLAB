@@ -7,9 +7,16 @@ handles=getappdata(fig,'handles');
 axLims=getappdata(fig,'axLims');
 plotName=getappdata(fig,'plotName');
 axLetter=getappdata(fig,'axLetter');
+isMovie=getappdata(fig,'isMovie');
 
 Plotting=getappdata(pguiFig,'Plotting');
 VariableNamesList=getappdata(pguiFig,'VariableNamesList');
+
+trialName=Plotting.Plots.(plotName).ExTrial.Trial;
+subName=Plotting.Plots.(plotName).ExTrial.Subject;
+projectName=getappdata(pguiFig,'projectName');
+
+slash=filesep;
 
 for dim=['X','Y','Z']
     if axLims.(dim).IsHardCoded==1
@@ -36,8 +43,15 @@ for dim=['X','Y','Z']
     end
 
     axLims.(dim).SaveNames=saveNames;
+    matFilePathTrial=[getappdata(pguiFig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' projectName '.mat'];
+    movieAxLimsVar.(dim)=[];
+    if isMovie==1 && ~isempty(saveNames)
+        load(matFilePathTrial,saveNames{1});
+        movieAxLimsVar.(dim)=eval(saveNames{1});
+    end
 end
 
 Plotting.Plots.(plotName).Axes.(axLetter).AxLims=axLims;
+Plotting.Plots.(plotName).Axes.(axLetter).MovieAxLimsVar=movieAxLimsVar;
 
 setappdata(pguiFig,'Plotting',Plotting);

@@ -1,4 +1,4 @@
-function []=gr(manual)
+function [S]=gr(manual)
 
 %% PURPOSE: EMULATES THE FUNCTIONALITY FROM BIOMECHZOO "GRAB" FUNCTION, RETRIEVING ONE TRIAL'S DATA FROM A UIFILEPICKER
 
@@ -52,7 +52,7 @@ S=orderfields(S,newS);
 
 st=dbstack;
 assignin('caller',saveName,S);
-evalin('caller',saveName);
+% evalin('caller',saveName);
 if length(st)>1 % Not called from the base workspace.
     assignin('base',saveName,S);
 end

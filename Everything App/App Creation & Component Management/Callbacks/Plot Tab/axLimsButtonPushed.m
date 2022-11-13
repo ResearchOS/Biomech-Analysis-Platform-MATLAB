@@ -22,26 +22,27 @@ axLetter=handles.Plot.currCompUITree.SelectedNodes.Text;
 
 axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
 
+isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
+
 if isfield(Plotting.Plots.(plotName).Axes.(axLetter),'AxLims')
     axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;
+end
+
+if isMovie==1
+    isHC=1;
 else
-    axLims.X.VariableNames={};
-    axLims.X.SubvarNames={};
-    axLims.X.VariableValue='[0 1]';
-    axLims.X.IsHardCoded=0;
-    axLims.X.Level='T';
+    isHC=0;
+end
 
-    axLims.Y.VariableNames={};
-    axLims.Y.SubvarNames={};
-    axLims.Y.VariableValue='[0 1]';
-    axLims.Y.IsHardCoded=0;
-    axLims.Y.Level='T';
+fieldnames={'VariableNames','SubvarNames','VariableValue','Level','IsHardCoded','RelativeView'};
+values={{},{},[0 1],'T',isHC,1};
 
-    axLims.Z.VariableNames={};
-    axLims.Z.SubvarNames={};
-    axLims.Z.VariableValue='[0 1]';
-    axLims.Z.IsHardCoded=0;
-    axLims.Z.Level='T';
+for dim='XYZ'
+    for i=1:length(fieldnames)
+        if ~exist('axLims','var') || ~isfield(axLims,dim) || ~isfield(axLims.(dim),fieldnames{i})
+            axLims.(dim).(fieldnames{i})=values{i};
+        end
+    end
 end
 
 isHardCoded=axLims.X.IsHardCoded;
@@ -61,6 +62,7 @@ Qhandles.subVarEditField=uieditfield(Q,'text','Position',[270 370 200 50],'Visib
 Qhandles.hardCodedTextArea=uitextarea(Q,'Position',[10 250 450 200],'Visible',isHardCoded,'ValueChangedFcn',@(Q,event) hardCodedTextAreaValueChanged(Q),'Value',value);
 Qhandles.levelDropDown=uidropdown(Q,'Items',{'P','C','S','SC','T'},'Position',[270 420 200 50],'Value',level,'ValueChangedFcn',@(Q,event) levelDropDownValueChanged(Q),'Visible',~isHardCoded);
 Qhandles.searchEditField=uieditfield(Q,'text','Value','Search','Visible',~isHardCoded,'Position',[10 420 200 50],'ValueChangingFcn',@(Q,event) searchAxLimsVars(Q,event));
+Qhandles.relativeViewCheckbox=uicheckbox(Q,'Text','Relative View','Position',[210 460 150 50],'Visible',(isMovie && isHardCoded),'Value',axLims.X.RelativeView,'ValueChangedFcn',@(Q,event) relativeViewCheckboxValueChanged(Q));
 
 setappdata(Q,'axHandle',axHandle);
 setappdata(Q,'handles',Qhandles);
@@ -69,6 +71,7 @@ setappdata(Q,'plotName',plotName);
 setappdata(Q,'axLetter',axLetter);
 VariableNamesList=getappdata(fig,'VariableNamesList');
 setappdata(Q,'VariableNamesList',VariableNamesList);
+setappdata(Q,'isMovie',isMovie);
 
 [~,sortIdx]=sort(upper(VariableNamesList.GUINames));
 makeAxLimsVarNodes(Q,sortIdx,VariableNamesList);

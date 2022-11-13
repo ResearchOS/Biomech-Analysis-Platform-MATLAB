@@ -40,6 +40,7 @@ load(getappdata(fig,'logsheetPathMAT'),'logVar');
 switch compName
     case 'Axes'
         h=findobj(handles.Plot.plotPanel,'Tag',['Axes ' letter]);
+        view=h.View;
         if isempty(h)
             h=axes('Parent',handles.Plot.plotPanel,'Visible','on','Tag',['Axes ' letter]);
         end
@@ -112,10 +113,10 @@ switch compName
                 setAxLims(fig,axHandle,axLims,plotName,records,plotExTrial);
             end
         elseif isMovie==1
-            axHandle.Clipping='off';
             if isfield(Plotting.Plots.(plotName).(compName).(axLetter),'AxLims')
                 axLims=Plotting.Plots.(plotName).(compName).(axLetter).AxLims;
                 axHandle=Plotting.Plots.(plotName).(compName).(axLetter).Handle;
+                axHandle.Clipping='off';
                 specifyTrials=Plotting.Plots.(plotName).SpecifyTrials;
                 inclStruct=feval(specifyTrials);
                 allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
@@ -146,6 +147,7 @@ switch compName
                     end
                     axHandle.([dim 'Lim'])=axLims.(dim);
                 end
+                axHandle.View=view;
             end
         end
     otherwise

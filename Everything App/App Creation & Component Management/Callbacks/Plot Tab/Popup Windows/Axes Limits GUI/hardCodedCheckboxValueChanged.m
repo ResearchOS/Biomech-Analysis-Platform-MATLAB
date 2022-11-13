@@ -5,10 +5,19 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 axesLims=getappdata(fig,'axLims');
+isMovie=getappdata(fig,'isMovie');
 
 dim=handles.dimDropDown.Value;
 
 isHardCoded=handles.isHardCodedCheckbox.Value;
+
+relativeView=axesLims.(dim).RelativeView;
+
+if isMovie==1 && relativeView==0 % Because there's no reason at all to look at variables list.
+    isHardCoded=1;
+    handles.isHardCodedCheckbox.Value=isHardCoded;
+    return;
+end
 
 axesLims.(dim).IsHardCoded=isHardCoded;
 % axesLims.(dim).Level='P';
@@ -23,6 +32,7 @@ handles.subVarEditField.Visible=~isHardCoded;
 handles.hardCodedTextArea.Visible=isHardCoded;
 handles.levelDropDown.Visible=~isHardCoded;
 handles.searchEditField.Visible=~isHardCoded;
+handles.relativeViewCheckbox.Visible=isHardCoded;
 
 % handles.levelDropDown.Value='P';
 

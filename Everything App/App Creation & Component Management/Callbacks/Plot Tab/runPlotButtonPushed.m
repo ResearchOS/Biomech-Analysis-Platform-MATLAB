@@ -41,15 +41,26 @@ for axNum=1:length(axLetters)
         subvars=axLims.(dim).SubvarNames;
         disp(['Axes ' axLetters{axNum} ' ' dim]);
         dimLevel=axLims.(dim).Level;
+        isHardCoded=axLims.(dim).IsHardCoded;
+        value=axLims.(dim).VariableValue;
         if contains(dimLevel,'C')
             allTrialNames=allTrialNamesC;
         else
             allTrialNames=allTrialNamesNC;
         end
-        if ~isempty(varNames)
-            records.(axLetters{axNum}).(dim)=getPlotAxesLims(fig,allTrialNames,varNames,subvars);
+        if ~isHardCoded
+            if ~isempty(varNames)
+                records.(axLetters{axNum}).(dim)=getPlotAxesLims(fig,allTrialNames,varNames,subvars);
+            else
+                records.(axLetters{axNum}).(dim)=NaN;
+            end
         else
-            records.(axLetters{axNum}).(dim)=NaN;
+            if iscell(value)
+                value=value{1};
+            end
+            value=eval(value);
+
+            records.(axLetters{axNum}).(dim)=value(2)-value(1);
         end
     end
 end

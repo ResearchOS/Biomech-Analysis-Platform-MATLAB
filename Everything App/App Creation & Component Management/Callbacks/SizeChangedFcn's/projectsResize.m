@@ -32,6 +32,8 @@ if newFontSize>20
     newFontSize=20; % Cap the font size (and therefore the text box/button sizes too)
 end
 
+resizeObj(obj,relPos,size,newFontSize,compHeight);
+
 %% Positions specified as relative to tab width & height
 % All positions here are specified as relative positions
 ProjectNameLabelRelPos=[0.01 0.95];

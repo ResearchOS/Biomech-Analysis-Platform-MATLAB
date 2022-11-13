@@ -118,5 +118,15 @@ end
 
 handles.Plot.exTrialLabel.Text=[subName ' ' trialName];
 
+% If this is a movie, set the center data variable by just calling the axLims GUI
+axesNodes=handles.Plot.currCompUITree.Children.Children;
+for i=1:length(axesNodes)
+    selNode=axesNodes(i);
+    handles.Plot.currCompUITree.SelectedNodes=selNode;
+    axLimsButtonPushed(fig);
+    Q=findall(0,'Name',['Set Axes ' selNode.Text ' Limits']);
+    close(Q);
+end
+
 axesNode=handles.Plot.currCompUITree.Children;
 refreshAllSubComps(fig,[],axesNode);

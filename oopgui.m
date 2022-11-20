@@ -1,0 +1,5 @@
+function []=oopgui()
+
+%% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
+
+obj = GUI;

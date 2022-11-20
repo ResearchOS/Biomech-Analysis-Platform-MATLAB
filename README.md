@@ -9,3 +9,5 @@ To use this project:
 1. Download the latest release [here](https://github.com/biomechOS/Biomech-Analysis-Platform/releases/latest), or clone this repository to your computer.
 2. Place the entire folder in your preferred location in your file system. 
 3. Ensure that the folder is added to the MATLAB path ([see docs](https://www.mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html)).
+
+# OOP VERSION

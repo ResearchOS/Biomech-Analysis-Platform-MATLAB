@@ -10,7 +10,9 @@ classdef GUI < handle
         function obj = GUI()
             obj.handle = uifigure('Name','pgui',...
                 'Visible','on','Resize','on','AutoResizeChildren','off',...
-                'SizeChangedFcn',@appResize);            
+                'SizeChangedFcn',@appResize);
+            fig=obj.handle;
+            set(fig,'DeleteFcn',@(fig, event) saveGUIState(fig));
 
             obj.handles=initializeComponents(obj);
         end

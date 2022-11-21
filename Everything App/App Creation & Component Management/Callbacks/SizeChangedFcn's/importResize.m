@@ -34,15 +34,35 @@ end
 
 %% Positions specified as relative to tab width & height
 % All positions here are specified as relative positions
-LogsheetPathButtonRelPos=[0.01 0.9];
-LogsheetPathFieldRelPos=[0.08 0.9];
-LogsheetLabelRelPos=[0.01 0.95];
-NumHeaderRowsLabelRelPos=[0.01 0.85];
-NumHeaderRowsFieldRelPos=[0.26 0.85];
-SubjectIDColHeaderLabelRelPos=[0.01 0.8];
-SubjectIDColHeaderFieldRelPos=[0.26 0.8];
-TrialIDColHeaderDataTypeLabelRelPos=[0.01 0.75];
-TrialIDColHeaderDataTypeFieldRelPos=[0.26 0.75];
+compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
+
+objResize(data.LogsheetPathButton, [0.01 0.9], [0.07 compHeight]);
+
+objResize(data.LogsheetPathField, [0.08 0.9], [0.2 compHeight]);
+
+objResize(data.LogsheetLabel, [0.01 0.95], [0.2 compHeight]);
+
+objResize(data.NumHeaderRowsLabel, [0.01 0.85], [0.2 compHeight]);
+
+objResize(data.NumHeaderRowsField, [0.26 0.85], [0.08 compHeight]);
+
+objResize(data.SubjectIDColHeaderLabel, [0.01 0.8], [0.25 compHeight]);
+
+objResize(data.SubjectIDColHeaderField, [0.25 0.8], [0.2 compHeight]);
+
+objResize(data.TrialIDColHeaderDataTypeLabel, [0.01 0.75], [0.25 compHeight]);
+
+objResize(data.TrialIDColHeaderDataTypeField, [0.26 0.75], [0.2 compHeight]);
+
+% LogsheetPathButtonRelPos=[0.01 0.9];
+% LogsheetPathFieldRelPos=[0.08 0.9];
+% LogsheetLabelRelPos=[0.01 0.95];
+% NumHeaderRowsLabelRelPos=[0.01 0.85];
+% NumHeaderRowsFieldRelPos=[0.26 0.85];
+% SubjectIDColHeaderLabelRelPos=[0.01 0.8];
+% SubjectIDColHeaderFieldRelPos=[0.26 0.8];
+% TrialIDColHeaderDataTypeLabelRelPos=[0.01 0.75];
+% TrialIDColHeaderDataTypeFieldRelPos=[0.26 0.75];
 TargetTrialIDColHeaderLabelRelPos=[0.01 0.7];
 TargetTrialIDColHeaderFieldRelPos=[0.26 0.7];
 OpenLogsheetButtonRelPos=[0.28 0.9];
@@ -67,16 +87,15 @@ SpecifyTrialsButtonRelPos=[0.01 0.16];
 
 %% Component width specified relative to tab width, height is in absolute units (constant).
 % All component dimensions here are specified as absolute sizes (pixels)
-compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
-LogsheetPathButtonSize=[0.07 compHeight];
-LogsheetPathFieldSize=[0.2 compHeight];
-LogsheetLabelSize=[0.2 compHeight];
-NumHeaderRowsLabelSize=[0.2 compHeight];
-NumHeaderRowsFieldSize=[0.08 compHeight];
-SubjectIDColHeaderLabelSize=[0.25 compHeight];
-SubjectIDColHeaderFieldSize=[0.2 compHeight];
-TrialIDColHeaderDataTypeLabelSize=[0.25 compHeight];
-TrialIDColHeaderDataTypeFieldSize=[0.2 compHeight];
+% LogsheetPathButtonSize=[0.07 compHeight];
+% LogsheetPathFieldSize=[0.2 compHeight];
+% LogsheetLabelSize=[0.2 compHeight];
+% NumHeaderRowsLabelSize=[0.2 compHeight];
+% NumHeaderRowsFieldSize=[0.08 compHeight];
+% SubjectIDColHeaderLabelSize=[0.25 compHeight];
+% SubjectIDColHeaderFieldSize=[0.2 compHeight];
+% TrialIDColHeaderDataTypeLabelSize=[0.25 compHeight];
+% TrialIDColHeaderDataTypeFieldSize=[0.2 compHeight];
 TargetTrialIDColHeaderLabelSize=[0.25 compHeight];
 TargetTrialIDColHeaderFieldSize=[0.2 compHeight];
 OpenLogsheetButtonSize=[0.05 compHeight];
@@ -100,15 +119,15 @@ EditSpecifyTrialsButtonSize=[0.08 compHeight];
 SpecifyTrialsButtonSize=[0.2 compHeight];
 
 %% Multiply the relative positions by the figure size to get the actual position.}
-LogsheetPathButtonPos=round([LogsheetPathButtonRelPos.*figSize LogsheetPathButtonSize(1)*figSize(1) LogsheetPathButtonSize(2)]);
-LogsheetPathFieldPos=round([LogsheetPathFieldRelPos.*figSize LogsheetPathFieldSize(1)*figSize(1) LogsheetPathFieldSize(2)]);
-LogsheetLabelPos=round([LogsheetLabelRelPos.*figSize LogsheetLabelSize(1)*figSize(1) LogsheetLabelSize(2)]);
-NumHeaderRowsLabelPos=round([NumHeaderRowsLabelRelPos.*figSize NumHeaderRowsLabelSize(1)*figSize(1) NumHeaderRowsLabelSize(2)]);
-NumHeaderRowsFieldPos=round([NumHeaderRowsFieldRelPos.*figSize NumHeaderRowsFieldSize(1)*figSize(1) NumHeaderRowsFieldSize(2)]);
-SubjectIDColHeaderLabelPos=round([SubjectIDColHeaderLabelRelPos.*figSize SubjectIDColHeaderLabelSize(1)*figSize(1) SubjectIDColHeaderLabelSize(2)]);
-SubjectIDColHeaderFieldPos=round([SubjectIDColHeaderFieldRelPos.*figSize SubjectIDColHeaderFieldSize(1)*figSize(1) SubjectIDColHeaderFieldSize(2)]);
-TrialIDColHeaderDataTypeLabelPos=round([TrialIDColHeaderDataTypeLabelRelPos.*figSize TrialIDColHeaderDataTypeLabelSize(1)*figSize(1) TrialIDColHeaderDataTypeLabelSize(2)]);
-TrialIDColHeaderDataTypeFieldPos=round([TrialIDColHeaderDataTypeFieldRelPos.*figSize TrialIDColHeaderDataTypeFieldSize(1)*figSize(1) TrialIDColHeaderDataTypeFieldSize(2)]);
+% LogsheetPathButtonPos=round([LogsheetPathButtonRelPos.*figSize LogsheetPathButtonSize(1)*figSize(1) LogsheetPathButtonSize(2)]);
+% LogsheetPathFieldPos=round([LogsheetPathFieldRelPos.*figSize LogsheetPathFieldSize(1)*figSize(1) LogsheetPathFieldSize(2)]);
+% LogsheetLabelPos=round([LogsheetLabelRelPos.*figSize LogsheetLabelSize(1)*figSize(1) LogsheetLabelSize(2)]);
+% NumHeaderRowsLabelPos=round([NumHeaderRowsLabelRelPos.*figSize NumHeaderRowsLabelSize(1)*figSize(1) NumHeaderRowsLabelSize(2)]);
+% NumHeaderRowsFieldPos=round([NumHeaderRowsFieldRelPos.*figSize NumHeaderRowsFieldSize(1)*figSize(1) NumHeaderRowsFieldSize(2)]);
+% SubjectIDColHeaderLabelPos=round([SubjectIDColHeaderLabelRelPos.*figSize SubjectIDColHeaderLabelSize(1)*figSize(1) SubjectIDColHeaderLabelSize(2)]);
+% SubjectIDColHeaderFieldPos=round([SubjectIDColHeaderFieldRelPos.*figSize SubjectIDColHeaderFieldSize(1)*figSize(1) SubjectIDColHeaderFieldSize(2)]);
+% TrialIDColHeaderDataTypeLabelPos=round([TrialIDColHeaderDataTypeLabelRelPos.*figSize TrialIDColHeaderDataTypeLabelSize(1)*figSize(1) TrialIDColHeaderDataTypeLabelSize(2)]);
+% TrialIDColHeaderDataTypeFieldPos=round([TrialIDColHeaderDataTypeFieldRelPos.*figSize TrialIDColHeaderDataTypeFieldSize(1)*figSize(1) TrialIDColHeaderDataTypeFieldSize(2)]);
 TargetTrialIDColHeaderLabelPos=round([TargetTrialIDColHeaderLabelRelPos.*figSize TargetTrialIDColHeaderLabelSize(1)*figSize(1) TargetTrialIDColHeaderLabelSize(2)]);
 TargetTrialIDColHeaderFieldPos=round([TargetTrialIDColHeaderFieldRelPos.*figSize TargetTrialIDColHeaderFieldSize(1)*figSize(1) TargetTrialIDColHeaderFieldSize(2)]);
 OpenLogsheetButtonPos=round([OpenLogsheetButtonRelPos.*figSize OpenLogsheetButtonSize(1)*figSize(1) OpenLogsheetButtonSize(2)]);
@@ -131,15 +150,15 @@ UncheckAllLogVarsUITreeButtonPos=round([UncheckAllLogVarsUITreeButtonRelPos.*fig
 EditSpecifyTrialsButtonPos=round([EditSpecifyTrialsButtonRelPos.*figSize EditSpecifyTrialsButtonSize(1)*figSize(1) EditSpecifyTrialsButtonSize(2)]);
 SpecifyTrialsButtonPos=round([SpecifyTrialsButtonRelPos.*figSize SpecifyTrialsButtonSize(1)*figSize(1) SpecifyTrialsButtonSize(2)]);
 
-data.LogsheetPathButton.Position=LogsheetPathButtonPos;
-data.LogsheetPathField.Position=LogsheetPathFieldPos;
-data.LogsheetLabel.Position=LogsheetLabelPos;
-data.NumHeaderRowsLabel.Position=NumHeaderRowsLabelPos;
-data.NumHeaderRowsField.Position=NumHeaderRowsFieldPos;
-data.SubjectIDColHeaderLabel.Position=SubjectIDColHeaderLabelPos;
-data.SubjectIDColHeaderField.Position=SubjectIDColHeaderFieldPos;
-data.TrialIDColHeaderDataTypeLabel.Position=TrialIDColHeaderDataTypeLabelPos;
-data.TrialIDColHeaderDataTypeField.Position=TrialIDColHeaderDataTypeFieldPos;
+% data.LogsheetPathButton.Position=LogsheetPathButtonPos;
+% data.LogsheetPathField.Position=LogsheetPathFieldPos;
+% data.LogsheetLabel.Position=LogsheetLabelPos;
+% data.NumHeaderRowsLabel.Position=NumHeaderRowsLabelPos;
+% data.NumHeaderRowsField.Position=NumHeaderRowsFieldPos;
+% data.SubjectIDColHeaderLabel.Position=SubjectIDColHeaderLabelPos;
+% data.SubjectIDColHeaderField.Position=SubjectIDColHeaderFieldPos;
+% data.TrialIDColHeaderDataTypeLabel.Position=TrialIDColHeaderDataTypeLabelPos;
+% data.TrialIDColHeaderDataTypeField.Position=TrialIDColHeaderDataTypeFieldPos;
 data.TargetTrialIDColHeaderLabel.Position=TargetTrialIDColHeaderLabelPos;
 data.TargetTrialIDColHeaderField.Position=TargetTrialIDColHeaderFieldPos;
 data.OpenLogsheetButton.Position=OpenLogsheetButtonPos;
@@ -162,16 +181,16 @@ data.UncheckAllLogVarsUITreeButton.Position=UncheckAllLogVarsUITreeButtonPos;
 % data.EditSpecifyTrialsButton.Position=EditSpecifyTrialsButtonPos;
 data.SpecifyTrialsButton.Position=SpecifyTrialsButtonPos;
 
-data.LogsheetPathButton.FontSize=newFontSize;
-data.LogsheetPathField.FontSize=newFontSize;
-
-data.LogsheetLabel.FontSize=newFontSize;
-data.NumHeaderRowsLabel.FontSize=newFontSize;
-data.NumHeaderRowsField.FontSize=newFontSize;
-data.SubjectIDColHeaderLabel.FontSize=newFontSize;
-data.SubjectIDColHeaderField.FontSize=newFontSize;
-data.TrialIDColHeaderDataTypeLabel.FontSize=newFontSize;
-data.TrialIDColHeaderDataTypeField.FontSize=newFontSize;
+% data.LogsheetPathButton.FontSize=newFontSize;
+% data.LogsheetPathField.FontSize=newFontSize;
+% 
+% data.LogsheetLabel.FontSize=newFontSize;
+% data.NumHeaderRowsLabel.FontSize=newFontSize;
+% data.NumHeaderRowsField.FontSize=newFontSize;
+% data.SubjectIDColHeaderLabel.FontSize=newFontSize;
+% data.SubjectIDColHeaderField.FontSize=newFontSize;
+% data.TrialIDColHeaderDataTypeLabel.FontSize=newFontSize;
+% data.TrialIDColHeaderDataTypeField.FontSize=newFontSize;
 data.TargetTrialIDColHeaderLabel.FontSize=newFontSize;
 data.TargetTrialIDColHeaderField.FontSize=newFontSize;
 data.OpenLogsheetButton.FontSize=newFontSize;

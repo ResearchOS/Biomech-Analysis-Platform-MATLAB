@@ -16,27 +16,6 @@ else
     texts={};
 end
 
-% Get all of the files in the folder
-files=dir(classFolder);
-fileNames={files.name};
-isDir=[files.isdir];
-fileNames=fileNames(~isDir); % Remove folders from the list.
-
-fileNames=fileNames(~ismember(fileNames,texts)); % Ensure that I am not doubling up on any nodes
-newNodes={};
-for i=1:length(fileNames)
-    fileName=fileNames{i};
-
-    if ~isequal(fileName(1:length(class)),class)
-        continue; % Ensure that this is a class .mat file.
-    end
-
-    load(fileName,'classVar');
-
-    newNodes=[newNodes, {classVar}]; % Append the new text.
-
-end
-
 %% Sort the nodes. For now, just alphabetically, but in the future allow options.
 newTexts={newNodes.Text};
 allTexts=[texts newTexts];

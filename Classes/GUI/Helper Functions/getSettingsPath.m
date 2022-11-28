@@ -17,7 +17,7 @@ catch e
         error(e); % Some other error occurred.
     else
         setSettingsPath;
-        [settingsPath] = getSettingsPath;
+        settingsPath = getSettingsPath;
         return;
     end
 end

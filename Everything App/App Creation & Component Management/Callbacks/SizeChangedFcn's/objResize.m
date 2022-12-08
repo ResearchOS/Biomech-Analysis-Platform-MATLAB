@@ -4,9 +4,10 @@ function []=objResize(obj,relPos,size)
 newFontSize=evalin('caller','newFontSize;');
 figSize=evalin('caller','figSize;');
 
-if size(2)>2
+% Size can be specified as relative or absolute
+if size(2)>2 % Absolute
     pos=round([relPos.*figSize size(1)*figSize(1) size(2)]);
-else
+else % Relative
     pos=round([relPos.*figSize size.*figSize]);
 end
 

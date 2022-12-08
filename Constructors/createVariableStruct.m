@@ -16,7 +16,7 @@ function [struct]=createVariableStruct(fig,name)
 
 struct.Name=name;
 
-id=getID(fig,'Variable');
+id=createID(fig,'Variable');
 struct.ID=id;
 
 currDate=datetime('now');
@@ -50,6 +50,12 @@ struct.InputToPubTables={};
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true; % If true, this variable will be highlighted as needing to be updated.
+
+user='MT'; % Stand-in for username
+struct.CreatedBy=user;
+
+user2=user; % Stand-in for username
+struct.LastModifiedBy=user2;
 
 filename=['Variable_' name '_' id '.mat'];
 

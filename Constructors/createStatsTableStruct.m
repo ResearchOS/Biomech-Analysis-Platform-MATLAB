@@ -4,7 +4,7 @@ function [struct]=createStatsTableStruct(fig,name)
 
 struct.Name=name;
 
-id=getID(fig,'StatsTable');
+id=createID(fig,'StatsTable');
 struct.ID=id;
 
 currDate=datetime('now');
@@ -29,6 +29,12 @@ struct.Archived=false; % If true, this will not show up in the uitree unless it 
 struct.OutOfDate=true;
 
 filename=['StatsTable_' name '_' id '.mat'];
+
+user='MT'; % Stand-in for username
+struct.CreatedBy=user;
+
+user2=user; % Stand-in for username
+struct.LastModifiedBy=user2;
 
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.

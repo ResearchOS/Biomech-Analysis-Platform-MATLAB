@@ -16,7 +16,7 @@ function [struct]=createPlotStruct(fig,name)
 
 struct.Name=name;
 
-id=getID(fig,'Plot');
+id=createID(fig,'Plot');
 struct.ID=id;
 
 currDate=datetime('now');
@@ -26,6 +26,15 @@ struct.DateModified=currDate;
 struct.Description='';
 
 struct.Projects={};
+
+struct.Level='';
+struct.IsMovie=0;
+struct.MovieMetadata.StartFrame=1;
+struct.MovieMetadata.EndFrame=2;
+struct.MovieMetadata.StartFrameVariable=''; % Empty indicates hard-coded
+struct.MovieMetadata.EndFrameVariable=''; % Empty indicates hard-coded
+struct.MovieMetadata.CurrFrame=1;
+struct.MovieMetadata.Increment=1;
 
 struct.SpecifyTrials='';
 struct.ExampleCondition='';
@@ -40,6 +49,12 @@ struct.Components.ModifiedProperties={}; % The names of the properties that have
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true;
+
+user='MT'; % Stand-in for username
+struct.CreatedBy=user;
+
+user2=user; % Stand-in for username
+struct.LastModifiedBy=user2;
 
 filename=['Plot_' name '_' id '.mat'];
 

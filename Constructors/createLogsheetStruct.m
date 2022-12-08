@@ -17,7 +17,7 @@ function [struct]=createLogsheetStruct(fig,name)
 
 struct.Name=name;
 
-id=getID(fig,'Logsheet');
+id=createID(fig,'Logsheet');
 struct.ID=id;
 
 currDate=datetime('now');
@@ -35,6 +35,12 @@ struct.DataPath=''; % Which dataset is this describing?
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true;
+
+user='MT'; % Stand-in for username
+struct.CreatedBy=user;
+
+user2=user; % Stand-in for username
+struct.LastModifiedBy=user2;
 
 filename=['Logsheet_' name '_' id '.mat'];
 

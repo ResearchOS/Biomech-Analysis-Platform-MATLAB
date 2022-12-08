@@ -4,7 +4,7 @@ function [struct]=createProcessStruct(fig,name)
 
 struct.Name=name;
 
-id=getID(fig,'Process');
+id=createID(fig,'Process');
 struct.ID=id;
 
 currDate=datetime('now');
@@ -27,6 +27,12 @@ struct.Archived=false; % If true, this will not show up in the uitree unless it 
 % 1. Any of the input variables' DateModified is after any of the output variables' DateModified
 % 2. The function's .m file (and any subfunctions?) DateModified is after any of the input or output variables' DateModified
 struct.OutOfDate=true;
+
+user='MT'; % Stand-in for username
+struct.CreatedBy=user;
+
+user2=user; % Stand-in for username
+struct.LastModifiedBy=user2;
 
 filename=['Process_' name '_' id '.mat'];
 

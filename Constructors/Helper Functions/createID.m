@@ -1,4 +1,4 @@
-function [id]=getID(src,class)
+function [id]=createID(src,class)
 
 %% PURPOSE: CREATE AN ID NUMBER FOR THE CURRENTLY SPECIFIED CLASS
 fig=ancestor(src,'figure','toplevel');

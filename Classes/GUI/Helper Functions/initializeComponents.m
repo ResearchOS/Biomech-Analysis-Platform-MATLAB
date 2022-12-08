@@ -1,8 +1,8 @@
-function [handles]=initializeComponents(gui)
+function [handles]=initializeComponents(fig)
 
 %% PURPOSE: CREATE ALL OF THE COMPONENTS THAT ARE ON THE PGUI FIGURE
-fig=gui.handle; % The handle to the PGUI figure
-handles=gui.handles; % The handle to all components in the PGUI figure
+% fig=fig.handle; % The handle to the PGUI figure
+handles=getappdata(fig,'handles'); % The handle to all components in the PGUI figure
 
 defaultPos=get(0,'defaultfigureposition'); % Get the default figure position
 set(fig,'Position',[defaultPos(1:2) defaultPos(3)*2 defaultPos(4)]); % Set the figure to be at that position (redundant, I know, but should be clear)
@@ -31,6 +31,13 @@ handles.Settings.Tab=settingsTab;
 %% Initialize the projects tab.
 % 1. The project name label
 handles.Projects.projectNameLabel=uilabel(projectsTab,'Text','Project Name','Tag','ProjectNameLabel','FontWeight','bold');
+
+
+
+
+
+
+
 
 % 2. Drop down to switch between active projects.
 handles.Projects.switchProjectsDropDown=uidropdown(projectsTab,'Items',{'New Project'},'Tooltip','Select Project','Editable','off','Tag','SwitchProjectsDropDown','ValueChangedFcn',@(switchProjectsDropDown,event) switchProjectsDropDownValueChanged(switchProjectsDropDown));

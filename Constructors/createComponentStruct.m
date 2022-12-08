@@ -4,7 +4,7 @@ function []=createComponentStruct(fig,name)
 
 struct.Name=name;
 
-id=getID(fig,'Component');
+id=createID(fig,'Component');
 struct.ID=id;
 
 currDate=datetime('now');
@@ -15,8 +15,6 @@ struct.Description='';
 
 struct.Projects={};
 
-struct.SpecifyTrials='';
-
 struct.DefaultInputVariables={};
 struct.InputVariables={};
 
@@ -26,6 +24,12 @@ struct.ModifiedPropertyValues={}; % The new default values of those properties
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true;
+
+user='MT'; % Stand-in for username
+struct.CreatedBy=user;
+
+user2=user; % Stand-in for username
+struct.LastModifiedBy=user2;
 
 filename=['Process_' name '_' id '.mat'];
 

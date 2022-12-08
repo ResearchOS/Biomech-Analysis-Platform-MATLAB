@@ -1,4 +1,4 @@
-function [settingsPath]=getSettingsPath()
+function [settingsPath]=getSettingsPath(fig)
 
 %% PURPOSE: RETURN THE PATH OF THE DIRECTORY WHERE THE PGUI SETTINGS FILES ARE STORED.
 
@@ -15,9 +15,8 @@ try
 catch e
     if ~isequal(e.identifier,'MATLAB:load:couldNotReadFile') % If the file does not exist.
         error(e); % Some other error occurred.
-    else
-        setSettingsPath;
-        settingsPath = getSettingsPath;
-        return;
     end
+
+    setSettingsPath(fig);
+    settingsPath = getSettingsPath;
 end

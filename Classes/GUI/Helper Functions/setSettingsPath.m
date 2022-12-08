@@ -1,4 +1,4 @@
-function []=setSettingsPath()
+function []=setSettingsPath(fig)
 
 %% PURPOSE: PROMPT THE USER FOR THE SETTINGS PATH
 
@@ -19,3 +19,22 @@ if ~isfolder(rootSettingsFolder)
 end
 
 save(rootSettingsFile,'settingsPath','-v6');
+
+%% Initialize the projectNames .mat file
+projectsMetadata=struct([]);
+projectNamesPath=[settingsPath slash 'projectsMetadata.mat'];
+if ~isfile(projectNamesPath)
+    save(projectNamesPath,'projectsMetadata','-v6');
+end
+
+%% Create the class variables folders if they do not already exist.
+classNames=getappdata(fig,'classNames');
+for i=1:length(classNames)
+    className=classNames{i};
+
+    classFolder=[settingsPath slash className];
+
+    if ~isfolder(classFolder)
+        mkdir(classFolder);
+    end
+end

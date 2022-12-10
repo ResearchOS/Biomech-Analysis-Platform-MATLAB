@@ -1,4 +1,4 @@
-function []=setSettingsPath(fig)
+function []=setCommonPath(fig)
 
 %% PURPOSE: PROMPT THE USER FOR THE SETTINGS PATH
 
@@ -7,22 +7,22 @@ slash=filesep;
 root=userpath;
 
 rootSettingsFolder=[root slash 'PGUI Settings'];
-rootSettingsFile=[rootSettingsFolder slash 'Settings.mat'];
+commonPathFile=[rootSettingsFolder slash 'Settings.mat'];
 
-settingsPath=0;
-while settingsPath==0
-    settingsPath=uigetdir(cd,'Select Path to Save Settings');
+commonPath=0;
+while commonPath==0
+    commonPath=uigetdir(cd,'Select Path to Save Settings');
 end
 
 if ~isfolder(rootSettingsFolder)
     mkdir(rootSettingsFolder);
 end
 
-save(rootSettingsFile,'settingsPath','-v6');
+save(commonPathFile,'commonPath','-v6');
 
 %% Initialize the projectNames .mat file
 projectsMetadata=struct([]);
-projectNamesPath=[settingsPath slash 'projectsMetadata.mat'];
+projectNamesPath=[commonPath slash 'projectsMetadata.mat'];
 if ~isfile(projectNamesPath)
     save(projectNamesPath,'projectsMetadata','-v6');
 end
@@ -32,7 +32,7 @@ classNames=getappdata(fig,'classNames');
 for i=1:length(classNames)
     className=classNames{i};
 
-    classFolder=[settingsPath slash className];
+    classFolder=[commonPath slash className];
 
     if ~isfolder(classFolder)
         mkdir(classFolder);

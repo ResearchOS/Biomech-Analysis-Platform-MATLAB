@@ -34,36 +34,47 @@ end
 
 compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
 
+% 1. The project name label
 objResize(data.ProjectNameLabel, [0.01 0.95], [0.15 compHeight]);
 
-objResize(data.DataPathButton, [0.01 0.85], [0.15 compHeight]);
-
-objResize(data.CodePathButton, [0.01 0.9], [0.15 compHeight]);
-
+% 2. Add new project button
 objResize(data.AddProjectButton, [0.01 0.9], [0.05 compHeight]);
 
-objResize(data.DataPathField, [0.17 0.85], [0.2 compHeight]);
-
-objResize(data.CodePathField, [0.17 0.9], [0.2 compHeight]);
-
-objResize(data.SwitchProjectsDropDown, [0.17 0.95], [0.2 compHeight]);
-
+% 3. Remove project button
 objResize(data.RemoveProjectButton, [0.43 0.95], [0.06 compHeight]);
 
+% 4. Sort projects dropdown
+objResize(data.SortProjectsDropDown, [0.15 0.95], [0.1 compHeight]);
+
+% 5. All projects UI tree
+objResize(data.AllProjectsUITree, [0.01 0.5], [0.3 0.4]);
+
+% 6. Load project snapshot button (settings & code only, not data)
+objResize(data.LoadSnapshotButton, [0.8 0.2], [0.1 compHeight]);
+
+% 7. Save project snapshot button (settings & code only, not data)
+objResize(data.SaveSnapshotButton, [0.8 0.15], [0.1 compHeight]);
+
+% 8. Project data path button
+objResize(data.DataPathButton, [0.01 0.85], [0.15 compHeight]);
+
+% 9. Project data path edit field
+objResize(data.DataPathField, [0.17 0.85], [0.2 compHeight]);
+
+% 10. Open data path button
 objResize(data.OpenDataPathButton, [0.37 0.85], [0.05 compHeight]);
 
-objResize(data.OpenCodePathButton, [0.37 0.9], [0.05 compHeight]);
+% 11. Project folder path button
+objResize(data.ProjectPathButton, [0.01 0.9], [0.15 compHeight]);
 
-objResize(data.OpenPISettingsPathButton, [0.8 0.95], [0.15 compHeight]);
+% 12. Project folder path edit field
+objResize(data.ProjectPathField, [0.17 0.9], [0.2 compHeight]);
 
-objResize(data.ShowVarDropDown, [0.01 0.75], [0.2 compHeight]);
+% 13. Open project path button
+objResize(data.OpenProjectPathButton, [0.37 0.9], [0.05 compHeight]);
 
-objResize(data.ShowVarButton, [0.22 0.75], [0.1 compHeight]);
+% 14. Create project archive button (settings, code, & data)
+objResize(data.CreateProjectArchiveButton, [0.9 0.05], [0.1 compHeight]);
 
-objResize(data.SaveVarButton, [0.33 0.75], [0.1 compHeight]);
-
-objResize(data.ArchiveButton, [0.9 0.05], [0.1 compHeight]);
-
-objResize(data.ArchiveDataCheckbox, [0.9 0.15], [0.1 compHeight]);
-
-objResize(data.LoadArchiveButton, [0.2 0.05], [0.1 compHeight]);
+% 15. Load project archive button (settings, code, & data)
+objResize(data.LoadProjectArchiveButton, [0.2 0.05], [0.1 compHeight]);

@@ -58,7 +58,7 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
             end
             delete(currNode);
         end
-        continue;        
+        continue;
     end
     newNode=uitreenode(uiTree,'Text',allSearchResults{i});
 

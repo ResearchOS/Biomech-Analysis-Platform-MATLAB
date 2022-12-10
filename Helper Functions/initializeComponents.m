@@ -19,6 +19,7 @@ plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off','
 statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off','SizeChangedFcn',@statsResize); % Create the stats tab
 settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
 handles.Tabs.tabGroup1=tabGroup1;
+
 % Store handles to individual tabs.
 handles.Projects.Tab=projectsTab;
 handles.Import.Tab=importTab;
@@ -27,77 +28,96 @@ handles.Plot.Tab=plotTab;
 handles.Stats.Tab=statsTab;
 handles.Settings.Tab=settingsTab;
 
+sortOptions={'DateModified (New->Old)','DateCreated (New->Old)','Alphabetical (A->Z)'};
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the projects tab.
 % 1. The project name label
-handles.Projects.projectNameLabel=uilabel(projectsTab,'Text','Project Name','Tag','ProjectNameLabel','FontWeight','bold');
+handles.Projects.projectsLabel=uilabel(projectsTab,'Text','Projects','Tag','ProjectsLabel','FontWeight','bold');
 
-
-
-
-
-
-
-
-% 2. Drop down to switch between active projects.
-handles.Projects.switchProjectsDropDown=uidropdown(projectsTab,'Items',{'New Project'},'Tooltip','Select Project','Editable','off','Tag','SwitchProjectsDropDown','ValueChangedFcn',@(switchProjectsDropDown,event) switchProjectsDropDownValueChanged(switchProjectsDropDown));
-
-% 3. Add new project button
+% 2. Add new project button
 handles.Projects.addProjectButton=uibutton(projectsTab,'push','Text','P+','Tag','AddProjectButton','Tooltip','Create new project','ButtonPushedFcn',@(addProjectButton,event) addProjectButtonPushed(addProjectButton));
 
-% 4. The button to open the data path file picker
+% 3. Remove project button
+handles.Projects.removeProjectButton=uibutton(projectsTab,'push','Text','P-','Tag','RemoveProjectButton','Tooltip','Remove current project from the list','ButtonPushedFcn',@(removeProjectButton,event) removeProjectButtonPushed(removeProjectButton));
+
+% 4. Sort projects dropdown
+handles.Projects.sortProjectsDropDown=uidropdown(projectsTab,'Editable','off','Items',sortOptions,'Tooltip','Sort Projects','Tag','SortProjectsDropDown','Value',sortOptions{1},'ValueChangedFcn',@(sortProjectsDropDown,event) sortProjectsDropDownValueChanged(sortProjectsDropDown));
+
+% 5. All projects UI tree
+handles.Projects.allProjectsUITree=uitree(projectsTab,'checkbox','SelectionChangedFcn',@(allProjectsUITree,event) allProjectsUITreeSelectionChanged(allProjectsUITree),'CheckedNodesChangedFcn',@(allProjectsUITree,event) allProjectsUITreeCheckedNodesChanged(allProjectsUITree));
+
+% 6. Load project snapshot button (settings & code only, not data)
+handles.Projects.loadSnapshotButton=uibutton(projectsTab,'push','Text','Load Snapshot','Tag','LoadSnapshotButton','Tooltip','Load Previously Saved Snapshot of the Current Project','ButtonPushedFcn',@(loadSnapshotButton,event) loadSnapshotButtonPushed(loadSnapshotButton));
+
+% 7. Save project snapshot button (settings & code only, not data)
+handles.Projects.saveSnapshotButton=uibutton(projectsTab,'push','Text','Save Snapshot','Tag','SaveSnapshotButton','Tooltip','Save Snapshot of the Current Project','ButtonPushedFcn',@(saveSnapshotButton,event) saveSnapshotButtonPushed(saveSnapshotButton));
+
+% 8. Project data path button
 handles.Projects.dataPathButton=uibutton(projectsTab,'push','Tooltip','Select Data Path','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
 
-% 5. The button to open the code path file picker
-handles.Projects.codePathButton=uibutton(projectsTab,'push','Tooltip','Select Code Path','Text','Code Path','Tag','CodePathButton','ButtonPushedFcn',@(codePathButton,event) codePathButtonPushed(codePathButton));
-
-% 6. The text edit field for the data path
+% 9. Project data path edit field
 handles.Projects.dataPathField=uieditfield(projectsTab,'text','Value','Data Path (contains ''Raw Data Files'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
 
-% 7. The text edit field for the code path
-handles.Projects.codePathField=uieditfield(projectsTab,'text','Value','Path to Project Processing Code Folder','Tag','CodePathField','ValueChangedFcn',@(codePathField,event) codePathFieldValueChanged(codePathField)); % Code path name edit field (to the folder containing all code for this project).
-
-% 8. Archive project button
-handles.Projects.removeProjectButton=uibutton(projectsTab,'push','Text','P-','Tag','ArchiveProjectButton','Tooltip','Archive current project','ButtonPushedFcn',@(removeProjectButton,event) removeProjectButtonPushed(removeProjectButton));
-
-% 9. Open data path button
+% 10. Open data path button
 handles.Projects.openDataPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenDataPathButton','Tooltip','Open data folder','ButtonPushedFcn',@(openDataPathButton,event) openDataPathButtonPushed(openDataPathButton));
 
-% 10. Open code path button
-handles.Projects.openCodePathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenCodePathButton','Tooltip','Open code folder','ButtonPushedFcn',@(openCodePathButton,event) openCodePathButtonPushed(openCodePathButton));
+% 11. Project folder path button (contains everything related to the current project)
+handles.Projects.projectPathButton=uibutton(projectsTab,'push','Tooltip','Select Project Folder Path','Text','Project Path','Tag','ProjectPathButton','ButtonPushedFcn',@(projectPathButton,event) projectPathButtonPushed(projectPathButton));
 
-% 11. Show project-independent settings file
-handles.Projects.openPISettingsPathButton=uibutton(projectsTab,'push','Text','Open P-I Settings','Tag','OpenPISettingsPathButton','Tooltip','Open project-independent settings folder','ButtonPushedFcn',@(openPISettingsPathButton,event) openPISettingsPathButtonPushed(openPISettingsPathButton));
+% 12. Project folder path edit field
+handles.Projects.projectPathField=uieditfield(projectsTab,'text','Value','Path to Project Folder','Tag','ProjectPathField','ValueChangedFcn',@(projectPathField,event) projectPathFieldValueChanged(projectPathField)); % Code path name edit field (to the folder containing all code for this project).
 
-% 12. Dropdown to select between VariableNamesList, Digraph, and
-% NonFcnSettingsStruct
-handles.Projects.showVarDropDown=uidropdown(projectsTab,'Items',{'VariableNamesList','Digraph','NonFcnSettingsStruct','Plotting','Stats'},'Value','VariableNamesList','Tooltip','Select a Variable to Display','Editable','off','Tag','ShowVarDropDown','ValueChangedFcn',@(showVarDropDown,event) showVarDropDownValueChanged(showVarDropDown));
+% 13. Open project path button
+handles.Projects.openProjectPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenProjectPathButton','Tooltip','Open project folder','ButtonPushedFcn',@(openProjectPathButton,event) openProjectPathButtonPushed(openProjectPathButton));
 
-% 13. Show variable button
-handles.Projects.showVarButton=uibutton(projectsTab,'push','Text','Show Var','Tag','ShowVarButton','Tooltip','Show selected variable','ButtonPushedFcn',@(showVarButton,event) showVarButtonPushed(showVarButton));
+% 14. Create project archive button (settings, code, & data)
+handles.Projects.createProjectArchiveButton=uibutton(projectsTab,'Text','Save Archive','Tag','ArchiveButton','ButtonPushedFcn',@(archiveButton,event) archiveButtonPushed(archiveButton));
 
-% 14. Update GUI button
-handles.Projects.saveVarButton=uibutton(projectsTab,'Text','Save','Tag','SaveVarButton','ButtonPushedFcn',@(saveVarButton,event) saveVarButtonPushed(saveVarButton));
+% 15. Load project archive button (settings, code, & data)
+handles.Projects.loadProjectArchiveButton=uibutton(projectsTab,'Text','Load Archive','Tag','LoadArchiveButton','ButtonPushedFcn',@(loadArchiveButton,event) loadArchiveButtonPushed(loadArchiveButton));
 
-% 15. Archive button
-handles.Projects.archiveButton=uibutton(projectsTab,'Text','Archive','Tag','ArchiveButton','ButtonPushedFcn',@(archiveButton,event) archiveButtonPushed(archiveButton));
-
-% 16. Archive data checkbox
-handles.Projects.archiveDataCheckbox=uicheckbox(projectsTab,'Text','Archive Data','Value',0,'Tag','ArchiveDataCheckbox','Tooltip','If checked, will archive the project data along with the code. If unchecked, archives code only.','ValueChangedFcn',@(archiveDataCheckbox,event) archiveDataCheckboxValueChanged(archiveDataCheckbox),'Visible','on');
-
-% 17. Load previous archive button
-handles.Projects.loadArchiveButton=uibutton(projectsTab,'Text','Load Archive','Tag','LoadArchiveButton','ButtonPushedFcn',@(loadArchiveButton,event) loadArchiveButtonPushed(loadArchiveButton));
-
-projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectNameLabel,'DataPathButton',handles.Projects.dataPathButton,'CodePathButton',handles.Projects.codePathButton,...
-    'AddProjectButton',handles.Projects.addProjectButton,'SwitchProjectsDropDown',handles.Projects.switchProjectsDropDown,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenCodePathButton',handles.Projects.openCodePathButton,...
-    'RemoveProjectButton',handles.Projects.removeProjectButton,'DataPathField',handles.Projects.dataPathField,'CodePathField',handles.Projects.codePathField,'OpenPISettingsPathButton',handles.Projects.openPISettingsPathButton,...
-    'ShowVarDropDown',handles.Projects.showVarDropDown,'ShowVarButton',handles.Projects.showVarButton,'SaveVarButton',handles.Projects.saveVarButton,'ArchiveButton',handles.Projects.archiveButton,'ArchiveDataCheckbox',handles.Projects.archiveDataCheckbox,...
-    'LoadArchiveButton',handles.Projects.loadArchiveButton);
+projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectsLabel,'DataPathButton',handles.Projects.dataPathButton,'ProjectPathButton',handles.Projects.projectPathButton,...
+    'AddProjectButton',handles.Projects.addProjectButton,'AllProjectsUITree',handles.Projects.allProjectsUITree,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenProjectPathButton',handles.Projects.openProjectPathButton,...
+    'RemoveProjectButton',handles.Projects.removeProjectButton,'DataPathField',handles.Projects.dataPathField,'ProjectPathField',handles.Projects.projectPathField,...
+    'CreateProjectArchiveButton',handles.Projects.createProjectArchiveButton,'LoadProjectArchiveButton',handles.Projects.loadProjectArchiveButton,'SortProjectsDropDown',handles.Projects.sortProjectsDropDown,...
+    'LoadSnapshotButton',handles.Projects.loadSnapshotButton,'SaveSnapshotButton',handles.Projects.saveSnapshotButton);
 
 @projectsResize;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.
+% 1. Logsheets label
+
+% 2. Create new logsheet button
+
+% 3. Remove logsheet button
+
+% 4. Sort logsheets dropdown
+handles.Import.sortLogsheetsDropDown=uidropdown(importTab,'Editable','off','Items',sortOptions','Value',sortOptions{1},'ValueChangedFcn',@(sortLogsheetsDropDown,event) sortLogsheetsDropDownValueChanged(sortLogsheetsDropDown));
+
+% 5. All logsheets UI tree
+
+% 6. Number of header rows label
+
+% 7. Number of header rows numeric edit field
+
+% 8. Subject codename label
+
+% 9. Subject codename edit field
+
+% 10. Target trial ID label
+
+% 11. Target trial ID edit field
+
+% 12. Data type-specific trial ID label (optional if only one data type)
+
+% 13. Data type-specific trial ID edit field (optional if only one data type)
+
+% 14. Specify trials button
+
+
+
 % 1. The button to open the logsheet path file picker
 handles.Import.logsheetPathButton=uibutton(importTab,'push','Tooltip','Select Logsheet Path','Text','Path','Tag','LogsheetPathButton','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
 
@@ -571,3 +591,22 @@ statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButto
     'RunPubTableButton',handles.Stats.runPubTableButton,'NumSigFigsEditField',handles.Stats.numSigFigsEditField,'NumSigFigsLabel',handles.Stats.sigFigsLabel);
 
 @statsResize;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Initialize the settings tab
+% 1. Common path label
+% handles.Settings.commonPathLabel=uilabel(settingsTab,'Text','Common Path','FontWeight','Bold');
+
+% 1. Select common path button
+handles.Settings.commonPathButton=uibutton(settingsTab,'push','Text','Common Path','Tag','CommonPathButton','ButtonPushedFcn',@(commonPathButton,event) commonPathButtonPushed(commonPathButton));
+
+% 3. Common path edit field
+handles.Settings.commonPathEditField=uieditfield(settingsTab,'Value','','Tag','CommonPathEditField','ValueChangedFcn',@(commonPathEditField,event) commonPathEditFieldValueChanged(commonPathEditField));
+
+% 4. Open common path button
+handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Tag','OpenCommonPathButton','ValueChangedFcn',@(openCommonPathButton,event) openCommonPathButtoPushed(openCommonPathButton));
+
+settingsTab.UserData=struct('CommonPathButton',handles.Settings.commonPathButton,'CommonPathEditField',handles.Settings.commonPathEditField,'OpenCommonPathButton',handles.Settings.openCommonPathButton);
+
+@settingsResize;
+

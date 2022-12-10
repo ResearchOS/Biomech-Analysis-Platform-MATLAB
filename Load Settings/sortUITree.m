@@ -1,27 +1,28 @@
-function []=sortUITree(uiTree)
+function []=sortUITree(uiTree,sortMethod)
 
 %% PURPOSE: Sort the nodes based on how it was specified.
 
-sortMethod=''; % Get the value from the dropdown
+% sortMethod=''; % Get the value from the dropdown
 switch sortMethod    
     case 'DateModified (Old->New)'
-        dates={uiTree.Children.DateModified};
-        [~,idx]=sort(dates,'descending');
+        data={uiTree.Children.DateModified};
+        dir='descend';        
     case 'DateModified (New->Old)'
-        dates={uiTree.Children.DateModified};
-        [~,idx]=sort(dates,'ascending');
+        data={uiTree.Children.DateModified};
+        dir='ascend';
     case 'DateCreated (Old->New)'
-        dates={uiTree.Children.DateCreated};
-        [~,idx]=sort(dates,'descending');
+        data={uiTree.Children.DateCreated};
+        dir='descend';  
     case 'DateCreated (New->Old)'
-        dates={uiTree.Children.DateCreated};
-        [~,idx]=sort(dates,'ascending');
+        data={uiTree.Children.DateCreated};
+        dir='ascend';
     case 'Alphabetical (A->Z)'
-        names={uiTree.Children.Text};
-        [~,idx]=sort(names,'ascending');
+        data={uiTree.Children.Text};
+        dir='ascend';
     case 'Alphabetical (Z->A)'
-        names={uiTree.Children.Text};
-        [~,idx]=sort(names,'decending');
+        data={uiTree.Children.Text};
+        dir='descend';  
 end
 
+[~,idx]=sort(data,dir);
 uiTree.Children=uiTree.Children(idx);

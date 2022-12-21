@@ -35,32 +35,39 @@ setappdata(fig,'plotName',plotName); % For getArg
 
 axLetters=fieldnames(Plotting.Plots.(plotName).Axes);
 for axNum=1:length(axLetters)
-    axLims=Plotting.Plots.(plotName).Axes.(axLetters{axNum}).AxLims;
-    for dim='XYZ'
-        varNames=axLims.(dim).SaveNames;
-        subvars=axLims.(dim).SubvarNames;
-        disp(['Axes ' axLetters{axNum} ' ' dim]);
-        dimLevel=axLims.(dim).Level;
-        isHardCoded=axLims.(dim).IsHardCoded;
-        value=axLims.(dim).VariableValue;
-        if contains(dimLevel,'C')
-            allTrialNames=allTrialNamesC;
-        else
-            allTrialNames=allTrialNamesNC;
-        end
-        if ~isHardCoded
-            if ~isempty(varNames)
-                records.(axLetters{axNum}).(dim)=getPlotAxesLims(fig,allTrialNames,varNames,subvars);
+    if isfield(Plotting.Plots.(plotName).Axes.(axLetters{axNum}),'AxLims')
+        axLims=Plotting.Plots.(plotName).Axes.(axLetters{axNum}).AxLims;
+        for dim='XYZ'
+            varNames=axLims.(dim).SaveNames;
+            subvars=axLims.(dim).SubvarNames;
+            disp(['Axes ' axLetters{axNum} ' ' dim]);
+            dimLevel=axLims.(dim).Level;
+            isHardCoded=axLims.(dim).IsHardCoded;
+            value=axLims.(dim).VariableValue;
+            if contains(dimLevel,'C')
+                allTrialNames=allTrialNamesC;
             else
-                records.(axLetters{axNum}).(dim)=NaN;
+                allTrialNames=allTrialNamesNC;
             end
-        else
-            if iscell(value)
-                value=value{1};
-            end
-            value=eval(value);
+            if ~isHardCoded
+                if ~isempty(varNames)
+                    records.(axLetters{axNum}).(dim)=getPlotAxesLims(fig,allTrialNames,varNames,subvars);
+                else
+                    records.(axLetters{axNum}).(dim)=NaN;
+                end
+            else
+                if iscell(value)
+                    value=value{1};
+                end
+                value=eval(value);
 
-            records.(axLetters{axNum}).(dim)=value(2)-value(1);
+                records.(axLetters{axNum}).(dim)=value(2)-value(1);
+            end
+        end
+    else
+        axHandle=Plotting.Plots.(plotName).Axes.(axLetters{axNum}).Handle;
+        for dim='XYZ'
+            records.(axLetters{axNum}).X=diff(axHandle.([dim 'Lim']));
         end
     end
 end

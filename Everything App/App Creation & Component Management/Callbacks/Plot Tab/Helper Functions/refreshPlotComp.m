@@ -102,7 +102,12 @@ switch compName
                             records.(dim)=records.(dim)(2)-records.(dim)(1);
                         end
                     else
-                        records.(dim)=NaN;
+                        if ~isHardCoded
+                            records.(dim)=eval(value);
+                            records.(dim)=records.(dim)(2)-records.(dim)(1);
+                        else
+                            records.(dim)=NaN;
+                        end
                     end
                 end
                 if isequal(plotLevel,'T')

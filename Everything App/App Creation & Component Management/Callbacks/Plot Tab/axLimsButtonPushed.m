@@ -18,6 +18,11 @@ if isempty(handles.Plot.currCompUITree.SelectedNodes)
     return;
 end
 
+if ~isfield(Plotting.Plots.(plotName),'ExTrial')
+    disp('Set example trial first!');
+    return;
+end
+
 axLetter=handles.Plot.currCompUITree.SelectedNodes.Text;
 
 axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
@@ -35,7 +40,7 @@ else
 end
 
 fieldnames={'VariableNames','SubvarNames','VariableValue','Level','IsHardCoded','RelativeView'};
-values={{},{},[0 1],'T',isHC,1};
+values={{},{},'[0 1]','T',isHC,1};
 
 for dim='XYZ'
     for i=1:length(fieldnames)

@@ -58,7 +58,7 @@ for dim='XYZ' % Iterate over each dimension
         assert(isequal(limLevel,'P'));
     end
 
-    if all(isnan(dimRecords))
+    if ~isstruct(dimRecords) && all(isnan(dimRecords))
         continue;
     end
 
@@ -72,12 +72,16 @@ for dim='XYZ' % Iterate over each dimension
         case 'SC' % Subject-condition
             dimRecords=dimRecords.SubjectCondition(condNum).(subName);
         otherwise % Trial, or none provided.
-            dimRecords=NaN; % Because this will just be whatever MATLAB defaults to.
+%             if ~isHardCoded % 
+%                 dimRecords=NaN;
+%             elseif isHardCoded
+%                 dimRecords=NaN; % Because this will just be whatever MATLAB defaults to.
+%             end
     end        
 
-    if all(isnan(dimRecords))
-        continue;
-    end
+%     if all(isnan(dimRecords)) && ~isHardCoded
+%         continue;
+%     end
 
     % Adjust the axes limits
     if ~isequal(Plotting.Plots.(plotName).Metadata.Level,'T')
@@ -85,30 +89,54 @@ for dim='XYZ' % Iterate over each dimension
     end
 
     matFilePath=[getappdata(fig,'dataPath') 'MAT Data Files' slash subName slash trialName '_' subName '_' getappdata(fig,'projectName') '.mat']; % Get the file name to load the data from
-    load(matFilePath,varNames{:}); % Load the specified data.
+    if ~isempty(varNames)
+        load(matFilePath,varNames{:}); % Load the specified data.
 
-    minTrial=inf;
-    maxTrial=-inf;
-    for i=1:length(varNames)
-        if ~isempty(subvars{i})
-            data=eval([varNames{i} subvars{i}]);
+        minTrial=inf;
+        maxTrial=-inf;
+        for i=1:length(varNames)
+            if ~isempty(subvars{i})
+                data=eval([varNames{i} subvars{i}]);
+            else
+                data=eval(varNames{i});
+            end
+
+            minData=min(data,[],'omitnan');
+            maxData=max(data,[],'omitnan');
+
+            if minTrial>minData
+                minTrial=minData;
+            end
+            if maxTrial<maxData
+                maxTrial=maxData;
+            end
+        end
+
+        if isstruct(dimRecords) || (~isstruct(dimRecords) && isnan(dimRecords))
+            dimRecords=maxTrial-minTrial; % For non-hardcoded values. If hardcoded, has already been handled.
+        end
+        meanValue=mean([minTrial maxTrial]);
+        if ~isHardCoded
+            setLims=true;
         else
-            data=eval(varNames{i});
+            setLims=false;
         end
-
-        minData=min(data,[],'omitnan');
-        maxData=max(data,[],'omitnan');
-
-        if minTrial>minData
-            minTrial=minData;
+    else
+        if isHardCoded
+            setLims=true;
+        else
+            setLims=false;
         end
-        if maxTrial<maxData
-            maxTrial=maxData;
+        if isscalar(dimRecords)
+            meanValue=dimRecords/2;
         end
     end
 
     % In the future I can change how much outside of the bounds I want to show in the plot (scaling factor on records/2), and how much to translate it as well.
-    lims=[mean([minTrial maxTrial])-dimRecords/2 mean([minTrial maxTrial])+dimRecords/2];
-    axHandle.([dim 'Lim'])=lims; % Set the hard-coded axes limits
+    lims=[meanValue-dimRecords/2 meanValue+dimRecords/2];
+
+    if setLims
+        axHandle.([dim 'Lim'])=lims; % Set the hard-coded axes limits
+    end
 
 end

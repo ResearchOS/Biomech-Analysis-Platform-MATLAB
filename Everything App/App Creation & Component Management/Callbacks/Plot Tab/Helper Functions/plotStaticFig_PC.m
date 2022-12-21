@@ -33,8 +33,10 @@ for axNum=1:length(axLetters)
 
     % Set axes limits
     axLetter=axLetters{axNum};
-    axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;
-    setAxLims(fig,axHandles.(axLetter),axLims,plotName,records.(axLetter),[]);
+    if isfield(Plotting.Plots.(plotName).Axes.(axLetter),'AxLims')
+        axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;
+        setAxLims(fig,axHandles.(axLetter),axLims,plotName,records.(axLetter),[]);
+    end
 
     for i=1:length(compNames)
 

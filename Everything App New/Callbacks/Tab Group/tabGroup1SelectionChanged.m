@@ -58,20 +58,20 @@ end
 pan(handles.Process.mapFigure,'off');
 dcm=datacursormode(fig);
 dcm.Enable='off';
-switch currTab
-    case 'Import'
-        set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-    case 'Process'           
-        set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
-    case 'Plot'
-        set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-    case 'Projects'
-        set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-    case 'Stats'
-        set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-    otherwise
-
-end
+% switch currTab
+%     case 'Import'
+%         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
+%     case 'Process'           
+%         set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
+%     case 'Plot'
+%         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
+%     case 'Projects'
+%         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
+%     case 'Stats'
+%         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
+%     otherwise
+% 
+% end
 
 % if exist(settingsMATPath,'file')~=2
 %     save(settingsMATPath,'currTab','-mat','-v6');

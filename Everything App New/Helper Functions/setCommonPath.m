@@ -1,6 +1,7 @@
 function []=setCommonPath(fig)
 
 %% PURPOSE: PROMPT THE USER FOR THE SETTINGS PATH
+handles=getappdata(fig,'handles');
 
 slash=filesep;
 
@@ -41,3 +42,6 @@ for i=1:length(classNames)
 
     addpath(genpath(classFolder));
 end
+
+%% Put the common path into the edit field
+handles.Settings.commonPathEditField.Value=commonPath;

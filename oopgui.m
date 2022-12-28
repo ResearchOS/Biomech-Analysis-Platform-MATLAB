@@ -43,6 +43,8 @@ assignin('base','gui',fig); % Put the GUI object into the base workspace.
 commonPath=getCommonPath(fig);
 addpath(genpath(commonPath)); % Ensure that the class folders are on the search path.
 
+handles.Settings.commonPathEditField.Value=commonPath;
+
 rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
 
 %% If there are no existing project settings files, then create a 'Default' project

@@ -17,7 +17,7 @@ importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','
 processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off','SizeChangedFcn',@processResize); % Create the process tab
 plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off','SizeChangedFcn',@plotResize); % Create the plot tab
 statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off','SizeChangedFcn',@statsResize); % Create the stats tab
-settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
+settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off','SizeChangedFcn',@settingsResize); % Create the settings tab
 handles.Tabs.tabGroup1=tabGroup1;
 
 % Store handles to individual tabs.
@@ -610,7 +610,6 @@ handles.Settings.commonPathEditField=uieditfield(settingsTab,'Value','','Tag','C
 % 4. Open common path button
 handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Tag','OpenCommonPathButton','ButtonPushedFcn',@(openCommonPathButton,event) openCommonPathButtoPushed(openCommonPathButton));
 
-settingsTab.UserData=struct('CommonPathButton',handles.Settings.commonPathButton,'CommonPathEditField',handles.Settings.commonPathEditField,'OpenCommonPathButton',handles.Settings.openCommonPathButton);
-
-@settingsResize;
+setappdata(fig,'handles',handles);
+settingsResize(fig);
 

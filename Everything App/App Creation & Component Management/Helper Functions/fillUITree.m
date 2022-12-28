@@ -1,8 +1,6 @@
-function []=fillUITree(fig, class, uiTree, searchTerm)
+function []=fillUITree(fig, class, uiTree, searchTerm, sortDropDown)
 
 %% PURPOSE: FILL IN THE UI TREE.
-% NOTE: THIS FUNCTION CURRENTLY ONLY IS SET TO ADD NEW NODES. IT IS
-% CURRENTLY INCAPABLE OF REMOVING THEM.
 
 classVar=getappdata(fig,class); % Get the variable that stores all instances of a specific class.
 
@@ -31,15 +29,13 @@ if exist('searchTerm','var')~=1
 end
 
 %% Get the list of all files
-allTexts={classVar.Texts}; % Has the existing node texts and the ones to be added already in it.
+allTexts={classVar.Text}; % Has the existing node texts and the ones to be added already in it.
 allSearchResults=allTexts(contains(allTexts,searchTerm)); % Include only the nodes that match the search term
-newTexts=allSearchResults(~ismember(allSearchResults,currNodesTexts)); % Exclude the entries that are already in the ui tree
+newTexts=allSearchResults(~ismember(allSearchResults,currNodesTexts)); % Exclude the entries that are already in the uitree
 
 if isempty(newTexts)
     return; % Nothing new being added here.
 end
-
-[~,a,~]=intersect(newTexts,allSearchResults); % Get the indices of the new texts.
 
 selNode=uiTree.SelectedNodes; % Get the currently selected node.
 
@@ -50,7 +46,8 @@ delete(uiTree.Children(notInSearchResultsIdx));
 %% Create nodes in the UI tree for the new instances, and add their properties. If it would be filtered out, it will not appear here.
 for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.    
 
-    if ismember(allSearchResults{i},currNodesTexts) % If deleting an existing node. Otherwise, don't touch existing nodes.
+    % If deleting an existing node. Otherwise, doesn't touch existing nodes.
+    if ismember(allSearchResults{i},currNodesTexts)
         if classVar(i).Visible==0
             currNode=findobj(uiTree.Children,'Text',allSearchResults{i});
             if isequal(currNode,selNode)
@@ -62,18 +59,16 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
     end
     newNode=uitreenode(uiTree,'Text',allSearchResults{i});
 
-    newNodeStruct=classVar(a(i)); % The struct for the current instance of the class
-    nodeProps=fieldnames(newNodeStruct);
-    nodeProps=nodeProps(~ismember(nodeProps,{'Children','Text'}));
-
-    for j=1:length(nodeProps)
-        newNode.(nodeProps{j})=newNodeStruct.(nodeProps{j}); % Store all of the class's properties to the node.
+    if classVar(i).Checked
+        uiTree.CheckedNodes=[uiTree.CheckedNodes; newNode];
     end
+
     if i==1 && isempty(selNode)
         uiTree.SelectedNodes=newNode; % Set the currently selected node if there was none selected before.
-        feval(uiTree.SelectionChangedFcn,uiTree); % Run the selection changed function because a new node was selected
+%         feval(uiTree.SelectionChangedFcn,uiTree); % Run the selection changed function because a new node was selected
     end
 end
 
 %% Sort the nodes based on how it was specified.
-sortUITree(uiTree);
+sortMethod=sortDropDown.Value;
+sortUITree(uiTree, sortMethod);

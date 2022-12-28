@@ -28,7 +28,10 @@ handles.Plot.Tab=plotTab;
 handles.Stats.Tab=statsTab;
 handles.Settings.Tab=settingsTab;
 
+setappdata(fig,'handles',handles);
+
 sortOptions={'DateModified (New->Old)','DateCreated (New->Old)','Alphabetical (A->Z)'};
+sortOptions=sort(sortOptions); % Alphabetical order
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the projects tab.
@@ -72,18 +75,19 @@ handles.Projects.projectPathField=uieditfield(projectsTab,'text','Value','Path t
 handles.Projects.openProjectPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenProjectPathButton','Tooltip','Open project folder','ButtonPushedFcn',@(openProjectPathButton,event) openProjectPathButtonPushed(openProjectPathButton));
 
 % 14. Create project archive button (settings, code, & data)
-handles.Projects.createProjectArchiveButton=uibutton(projectsTab,'Text','Save Archive','Tag','ArchiveButton','ButtonPushedFcn',@(archiveButton,event) archiveButtonPushed(archiveButton));
+% handles.Projects.createProjectArchiveButton=uibutton(projectsTab,'Text','Save Archive','Tag','ArchiveButton','ButtonPushedFcn',@(archiveButton,event) archiveButtonPushed(archiveButton));
 
 % 15. Load project archive button (settings, code, & data)
-handles.Projects.loadProjectArchiveButton=uibutton(projectsTab,'Text','Load Archive','Tag','LoadArchiveButton','ButtonPushedFcn',@(loadArchiveButton,event) loadArchiveButtonPushed(loadArchiveButton));
+% handles.Projects.loadProjectArchiveButton=uibutton(projectsTab,'Text','Load Archive','Tag','LoadArchiveButton','ButtonPushedFcn',@(loadArchiveButton,event) loadArchiveButtonPushed(loadArchiveButton));
 
-projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectsLabel,'DataPathButton',handles.Projects.dataPathButton,'ProjectPathButton',handles.Projects.projectPathButton,...
-    'AddProjectButton',handles.Projects.addProjectButton,'AllProjectsUITree',handles.Projects.allProjectsUITree,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenProjectPathButton',handles.Projects.openProjectPathButton,...
-    'RemoveProjectButton',handles.Projects.removeProjectButton,'DataPathField',handles.Projects.dataPathField,'ProjectPathField',handles.Projects.projectPathField,...
-    'CreateProjectArchiveButton',handles.Projects.createProjectArchiveButton,'LoadProjectArchiveButton',handles.Projects.loadProjectArchiveButton,'SortProjectsDropDown',handles.Projects.sortProjectsDropDown,...
-    'LoadSnapshotButton',handles.Projects.loadSnapshotButton,'SaveSnapshotButton',handles.Projects.saveSnapshotButton);
+% projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectsLabel,'DataPathButton',handles.Projects.dataPathButton,'ProjectPathButton',handles.Projects.projectPathButton,...
+%     'AddProjectButton',handles.Projects.addProjectButton,'AllProjectsUITree',handles.Projects.allProjectsUITree,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenProjectPathButton',handles.Projects.openProjectPathButton,...
+%     'RemoveProjectButton',handles.Projects.removeProjectButton,'DataPathField',handles.Projects.dataPathField,'ProjectPathField',handles.Projects.projectPathField,...
+%     'CreateProjectArchiveButton',handles.Projects.createProjectArchiveButton,'LoadProjectArchiveButton',handles.Projects.loadProjectArchiveButton,'SortProjectsDropDown',handles.Projects.sortProjectsDropDown,...
+%     'LoadSnapshotButton',handles.Projects.loadSnapshotButton,'SaveSnapshotButton',handles.Projects.saveSnapshotButton);
 
-@projectsResize;
+setappdata(fig,'handles',handles);
+projectsResize(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.
@@ -604,7 +608,7 @@ handles.Settings.commonPathButton=uibutton(settingsTab,'push','Text','Common Pat
 handles.Settings.commonPathEditField=uieditfield(settingsTab,'Value','','Tag','CommonPathEditField','ValueChangedFcn',@(commonPathEditField,event) commonPathEditFieldValueChanged(commonPathEditField));
 
 % 4. Open common path button
-handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Tag','OpenCommonPathButton','ValueChangedFcn',@(openCommonPathButton,event) openCommonPathButtoPushed(openCommonPathButton));
+handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Tag','OpenCommonPathButton','ButtonPushedFcn',@(openCommonPathButton,event) openCommonPathButtoPushed(openCommonPathButton));
 
 settingsTab.UserData=struct('CommonPathButton',handles.Settings.commonPathButton,'CommonPathEditField',handles.Settings.commonPathEditField,'OpenCommonPathButton',handles.Settings.openCommonPathButton);
 

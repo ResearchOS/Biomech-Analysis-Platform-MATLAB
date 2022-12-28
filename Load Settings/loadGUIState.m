@@ -3,6 +3,8 @@ function []=loadGUIState(fig)
 %% PURPOSE: LOAD THE GUI STATE
 handles=getappdata(fig,'handles');
 
+slash=filesep;
+
 rootSettingsFolder=[userpath slash 'PGUI Settings'];
 rootSettingsFile=[rootSettingsFolder slash 'Settings.mat'];
 

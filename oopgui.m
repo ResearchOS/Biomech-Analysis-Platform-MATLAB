@@ -15,6 +15,10 @@ if ismember('gui',names)
     return;
 end
 
+%% Add all of the appropriate paths to MATLAB search path
+currFolder=fileparts(mfilename('fullpath'));
+addpath(genpath(currFolder));
+
 %% Create the figure
 fig=uifigure('Name','pgui',...
     'Visible','on',...
@@ -31,9 +35,17 @@ setappdata(fig,'classNames',classNames);
 
 assignin('base','gui',fig); % Put the GUI object into the base workspace.
 
+%% Get the "common path"
 % The common path, which contains all the instances of the settings
 % variables. This path should be in its own GitHub repository.
 commonPath=getCommonPath(fig);
+addpath(genpath(commonPath)); % Ensure that the class folders are on the search path.
+
+%% If there are no existing project settings files, then create a 'Default' project
+projects=getClassFilenames(fig,'Project');
+if isempty(projects)
+    createProjectStruct(fig,'Default');
+end
 
 %% Load all existing settings for objects/classes (i.e. not GUI object settings)
 % Stored in the user-specified common path
@@ -41,23 +53,40 @@ for i=1:length(classNames)
     class=classNames{i};
     classFolder=[commonPath slash class];
 
-    classVar=loadClassVar(classFolder);
+    classVar=loadClassVar(fig,classFolder);
     setappdata(fig,class,classVar); % Store the class data to the figure. Empty structs indicate that there were no files in that folder.
 end
 
 %% Fill the UI trees with their correct values
-uiTrees=[handles.Process.allVarsUITree, handles.Plot.allPlotsUITree, ...
-    handles.Stats.allPubTablesUITree, handles.Stats.allStatsTablesUITree, ...
-    handles.Plot.allComponentsUITree, handles.Stats.allVarsUITree, ...
-    handles.Project.allProjectsUITree, handles.Import.allLogsheetsUITree];
-classNamesUITrees={'Variable','Plot','PubTable','StatsTable','Component','Variable','Project','Logsheet'}; % One folder for each object type
+sortDropDowns=[handles.Projects.sortProjectsDropDown];
+% uiTrees=[handles.Process.allVarsUITree, handles.Plot.allPlotsUITree, ...
+%     handles.Stats.allPubTablesUITree, handles.Stats.allStatsTablesUITree, ...
+%     handles.Plot.allComponentsUITree, handles.Stats.allVarsUITree, ...
+%     handles.Project.allProjectsUITree, handles.Import.allLogsheetsUITree];
+uiTrees=[handles.Projects.allProjectsUITree];
+% classNamesUITrees={'Variable','Plot','PubTable','StatsTable','Component','Variable','Project','Logsheet'}; % One folder for each object type
+classNamesUITrees={'Project'};
 
 for i=1:length(classNamesUITrees)
     class=classNamesUITrees{i};
     uiTree=uiTrees(i);
+    sortDropDown=sortDropDowns(i);
     
-    fillUITree(fig, class, uiTree);    
+    fillUITree(fig, class, uiTree, '', sortDropDown);    
 end
+
+%% If there is no settings file yet, then generate a settings file.
+warning('off','MATLAB:load:variableNotFound');
+try
+    load(rootSettingsFile,'guiSettings'); % The settings for all of the GUI objects not set by the data itself
+catch e
+    if ~isequal(e.identifier,'No Such File (Replace this!)')
+        error(e);
+    end
+    saveGUIState(fig); % Initialize the GUI settings saved to .mat file
+    return;
+end
+warning('on','MATLAB:load:variableNotFound');
 
 %% Load the GUI object settings (i.e. selected nodes in UI trees, checkbox selections, projects to filter, etc.)
 % Stored in a subfolder of the userpath

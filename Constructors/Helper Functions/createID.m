@@ -18,7 +18,7 @@ isNewID=false;
 while ~isNewID
     newID=randi(16777215,1); % Max 6 digit hexadecimal value ('FFFFFF')
 
-    if ~contains(fileNames,newID)
+    if isempty(fileNames) || ~contains(fileNames,num2str(newID))
         isNewID=true;
     end
 end

@@ -20,12 +20,13 @@ end
 
 save(commonPathFile,'commonPath','-v6');
 
-%% Initialize the projectNames .mat file
-projectsMetadata=struct([]);
-projectNamesPath=[commonPath slash 'projectsMetadata.mat'];
-if ~isfile(projectNamesPath)
-    save(projectNamesPath,'projectsMetadata','-v6');
-end
+% %% Initialize the projectNames .mat file - what was this supposed to do
+% again?
+% projectsMetadata=struct([]);
+% projectNamesPath=[commonPath slash 'projectsMetadata.mat'];
+% if ~isfile(projectNamesPath)
+%     save(projectNamesPath,'projectsMetadata','-v6');
+% end
 
 %% Create the class variables folders if they do not already exist.
 classNames=getappdata(fig,'classNames');
@@ -37,4 +38,6 @@ for i=1:length(classNames)
     if ~isfolder(classFolder)
         mkdir(classFolder);
     end
+
+    addpath(genpath(classFolder));
 end

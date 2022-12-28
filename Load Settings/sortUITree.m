@@ -24,5 +24,10 @@ switch sortMethod
         dir='descend';  
 end
 
-[~,idx]=sort(data,dir);
+[~,idx]=sort(data);
+
+if isequal(dir,'descend')
+    idx=idx(end:-1:1);
+end
+
 uiTree.Children=uiTree.Children(idx);

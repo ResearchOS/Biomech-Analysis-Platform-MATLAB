@@ -19,6 +19,8 @@ end
 currFolder=fileparts(mfilename('fullpath'));
 addpath(genpath(currFolder));
 
+rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
+
 %% Create the figure
 fig=uifigure('Name','pgui',...
     'Visible','on',...
@@ -40,6 +42,8 @@ assignin('base','gui',fig); % Put the GUI object into the base workspace.
 % variables. This path should be in its own GitHub repository.
 commonPath=getCommonPath(fig);
 addpath(genpath(commonPath)); % Ensure that the class folders are on the search path.
+
+rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
 
 %% If there are no existing project settings files, then create a 'Default' project
 projects=getClassFilenames(fig,'Project');

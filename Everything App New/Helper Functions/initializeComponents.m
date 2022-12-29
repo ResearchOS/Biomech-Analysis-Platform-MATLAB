@@ -74,17 +74,17 @@ handles.Projects.projectPathField=uieditfield(projectsTab,'text','Value','Path t
 % 13. Open project path button
 handles.Projects.openProjectPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenProjectPathButton','Tooltip','Open project folder','ButtonPushedFcn',@(openProjectPathButton,event) openProjectPathButtonPushed(openProjectPathButton));
 
+% 14. Projects search field
+handles.Projects.searchField=uieditfield(projectsTab,'text','Value','Search','Tag','SearchField','ValueChangingFcn',@(searchField,event) projectsSearchFieldValueChanging(searchField));
+
+% 15. Current project button
+handles.Projects.currentProjectButton=uibutton(projectsTab,'push','Tooltip','Select current project','Text','Select','ButtonPushedFcn',@(currentProjectButton,event) currentProjectButtonPushed(currentProjectButton));
+
 % 14. Create project archive button (settings, code, & data)
 % handles.Projects.createProjectArchiveButton=uibutton(projectsTab,'Text','Save Archive','Tag','ArchiveButton','ButtonPushedFcn',@(archiveButton,event) archiveButtonPushed(archiveButton));
 
 % 15. Load project archive button (settings, code, & data)
 % handles.Projects.loadProjectArchiveButton=uibutton(projectsTab,'Text','Load Archive','Tag','LoadArchiveButton','ButtonPushedFcn',@(loadArchiveButton,event) loadArchiveButtonPushed(loadArchiveButton));
-
-% projectsTab.UserData=struct('ProjectNameLabel',handles.Projects.projectsLabel,'DataPathButton',handles.Projects.dataPathButton,'ProjectPathButton',handles.Projects.projectPathButton,...
-%     'AddProjectButton',handles.Projects.addProjectButton,'AllProjectsUITree',handles.Projects.allProjectsUITree,'OpenDataPathButton',handles.Projects.openDataPathButton','OpenProjectPathButton',handles.Projects.openProjectPathButton,...
-%     'RemoveProjectButton',handles.Projects.removeProjectButton,'DataPathField',handles.Projects.dataPathField,'ProjectPathField',handles.Projects.projectPathField,...
-%     'CreateProjectArchiveButton',handles.Projects.createProjectArchiveButton,'LoadProjectArchiveButton',handles.Projects.loadProjectArchiveButton,'SortProjectsDropDown',handles.Projects.sortProjectsDropDown,...
-%     'LoadSnapshotButton',handles.Projects.loadSnapshotButton,'SaveSnapshotButton',handles.Projects.saveSnapshotButton);
 
 setappdata(fig,'handles',handles);
 projectsResize(fig);

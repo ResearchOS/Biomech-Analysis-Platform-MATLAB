@@ -2,8 +2,6 @@ function [struct]=createProjectStruct(fig,name)
 
 %% PURPOSE: CREATE A NEW PROJECT STRUCT
 
-slash=filesep;
-
 struct.Type='Project';
 
 struct.Name=name;
@@ -39,7 +37,7 @@ struct.Components={};
 
 struct.DataPath='';
 
-struct.CodePath='';
+struct.ProjectPath='';
 
 struct.Visible=true; % If true, this will not show up in the uitree unless it is un-archived.
 
@@ -47,21 +45,17 @@ struct.OutOfDate=true; % If true, this will show up as having dependencies that 
 
 struct.Checked=true; % If true, the uitreenode checkbox will be checked. If false, it will be unchecked.
 
-filename=['Project_' name '_' id '.mat'];
-
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-commonPath=getCommonPath(fig);
+saveClass(fig,'Project',struct);
 
-classFolder=[commonPath slash 'Project'];
+classVar=getappdata(fig,'Project');
 
-filepath=[classFolder slash filename];
+if isempty(classVar)
+    classVar=struct;
+else
+    classVar(end+1)=struct;
+end
 
-% save(filepath,'struct','-v6');
-
-json=jsonencode(struct,'PrettyPrint',true);
-
-fid=fopen([filepath '.json'],'w');
-fprintf(fid,'%s',json);
-fclose(fid);
+setappdata(fig,'Project',classVar);

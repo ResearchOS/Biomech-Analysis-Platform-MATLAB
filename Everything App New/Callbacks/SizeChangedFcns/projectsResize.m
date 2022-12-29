@@ -44,16 +44,16 @@ compHeight=round(1.67*newFontSize); % Set the component heights that involve sin
 objResize(tab.projectsLabel, [0.01 0.9], [0.15 compHeight]);
 
 % 2. Add new project button
-objResize(tab.addProjectButton, [0.06 0.9], [0.05 compHeight]);
+objResize(tab.addProjectButton, [0.18 0.9], [0.05 compHeight]);
 
 % 3. Remove project button
-objResize(tab.removeProjectButton, [0.12 0.9], [0.05 compHeight]);
+objResize(tab.removeProjectButton, [0.24 0.9], [0.05 compHeight]);
 
 % 4. Sort projects dropdown
-objResize(tab.sortProjectsDropDown, [0.18 0.9], [0.1 compHeight]);
+objResize(tab.sortProjectsDropDown, [0.2 0.85], [0.1 compHeight]);
 
 % 5. All projects UI tree
-objResize(tab.allProjectsUITree, [0.01 0.4], [0.3 0.5]);
+objResize(tab.allProjectsUITree, [0.01 0.35], [0.3 0.5]);
 
 % 6. Load project snapshot button (settings & code only, not data)
 objResize(tab.loadSnapshotButton, [0.8 0.2], [0.1 compHeight]);
@@ -78,6 +78,12 @@ objResize(tab.projectPathField, [0.6 0.85], [0.2 compHeight]);
 
 % 13. Open project path button
 objResize(tab.openProjectPathButton, [0.8 0.85], [0.05 compHeight]);
+
+% 14. Projects search field
+objResize(tab.searchField, [0.01 0.85], [0.15 compHeight]);
+
+% 15. Select current project button
+objResize(tab.currentProjectButton, [0.01 0.3], [0.05 compHeight]);
 
 % 14. Create project archive button (settings, code, & data)
 % objResize(tab.createProjectArchiveButton, [0.9 0.05], [0.1 compHeight]);

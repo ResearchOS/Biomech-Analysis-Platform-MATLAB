@@ -1,7 +1,7 @@
 function []=oopgui()
 
 %% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
-
+tic;
 slash=filesep;
 
 classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process'}; % One folder for each object type
@@ -81,19 +81,25 @@ for i=1:length(classNamesUITrees)
     fillUITree(fig, class, uiTree, '', sortDropDown);    
 end
 
+currentProjectButtonPushed(fig);
+
 %% If there is no settings file yet, then generate a settings file.
-warning('off','MATLAB:load:variableNotFound');
-try
-    load(rootSettingsFile,'guiSettings'); % The settings for all of the GUI objects not set by the data itself
-catch e
-    if ~isequal(e.identifier,'No Such File (Replace this!)')
-        error(e);
-    end
-    saveGUIState(fig); % Initialize the GUI settings saved to .mat file
-    return;
-end
-warning('on','MATLAB:load:variableNotFound');
+% warning('off','MATLAB:load:variableNotFound');
+% try
+%     load(rootSettingsFile,'guiSettings'); % The settings for all of the GUI objects not set by the data itself
+% catch e
+%     if ~isequal(e.identifier,'No Such File (Replace this!)')
+%         error(e);
+%     end
+%     saveGUIState(fig); % Initialize the GUI settings saved to .mat file
+%     return;
+% end
+% warning('on','MATLAB:load:variableNotFound');
 
 %% Load the GUI object settings (i.e. selected nodes in UI trees, checkbox selections, projects to filter, etc.)
 % Stored in a subfolder of the userpath
-loadGUIState(fig);
+% loadGUIState(fig);
+
+drawnow;
+elapsedTime=toc;
+disp(['Elapsed time is ' num2str(round(elapsedTime,2)) ' seconds.']);

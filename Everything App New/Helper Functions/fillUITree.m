@@ -29,26 +29,33 @@ if exist('searchTerm','var')~=1
 end
 
 %% Get the list of all files
+isVis=[classVar.Visible];
 allTexts={classVar.Text}; % Has the existing node texts and the ones to be added already in it.
+allTexts=allTexts(isVis);
 allSearchResults=allTexts(contains(allTexts,searchTerm)); % Include only the nodes that match the search term
-newTexts=allSearchResults(~ismember(allSearchResults,currNodesTexts)); % Exclude the entries that are already in the uitree
-
-if isempty(newTexts)
-    return; % Nothing new being added here.
-end
 
 selNode=uiTree.SelectedNodes; % Get the currently selected node.
+selNodeIdx=ismember(uiTree.Children,selNode); % The index of the currently selected node
+selNodeIdxNum=find(selNodeIdx==1);
+if isempty(selNodeIdxNum)
+    selNodeIdxNum=1;
+end
 
 %% Delete all of the nodes that don't match the search results right off the bat. If no search term, nothing will be deleted.
 notInSearchResultsIdx=~ismember(currNodesTexts,allSearchResults);
 delete(uiTree.Children(notInSearchResultsIdx));
 
 %% Create nodes in the UI tree for the new instances, and add their properties. If it would be filtered out, it will not appear here.
+checkedIdx=false(length(allSearchResults),1);
+childIdx=0;
+allTextsNoVis={classVar.Text}; % Includes class variable instances that are not visible.
 for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.    
+
+    idx=ismember(allTextsNoVis,allSearchResults{i});
 
     % If deleting an existing node. Otherwise, doesn't touch existing nodes.
     if ismember(allSearchResults{i},currNodesTexts)
-        if classVar(i).Visible==0
+        if classVar(idx).Visible==0
             currNode=findobj(uiTree.Children,'Text',allSearchResults{i});
             if isequal(currNode,selNode)
                 selNode=[]; % Make selNode empty so that a new node will be selected and the selectionChangedFcn will trigger.
@@ -57,18 +64,27 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
         end
         continue;
     end
+
     newNode=uitreenode(uiTree,'Text',allSearchResults{i});
-
-    if classVar(i).Checked
-        uiTree.CheckedNodes=[uiTree.CheckedNodes; newNode];
+    childIdx=childIdx+1;
+    
+    if classVar(idx).Checked        
+        checkedIdx(childIdx)=true;
     end
 
-    if i==1 && isempty(selNode)
-        uiTree.SelectedNodes=newNode; % Set the currently selected node if there was none selected before.
-%         feval(uiTree.SelectionChangedFcn,uiTree); % Run the selection changed function because a new node was selected
-    end
 end
+
+%% Check the appropriate nodes.
+uiTree.CheckedNodes=uiTree.Children(checkedIdx);
 
 %% Sort the nodes based on how it was specified.
 sortMethod=sortDropDown.Value;
 sortUITree(uiTree, sortMethod);
+
+% selNode is empty if the selected node was just removed. It's not empty if
+% a new node was just added.
+if isempty(selNode) && ~isempty(selNodeIdxNum)
+    uiTree.SelectedNodes=uiTree.Children(selNodeIdxNum);
+elseif isempty(selNode) % Startup
+    uiTree.SelectedNodes=uiTree.Children(1);
+end

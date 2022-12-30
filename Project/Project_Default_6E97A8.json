@@ -1,0 +1,28 @@
+{
+  "Type": "Project",
+  "Name": "Default",
+  "ID": "6E97A8",
+  "DateCreated": "29-Dec-2022 20:13:59",
+  "DateModified": "29-Dec-2022 20:13:59",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Variables": [],
+  "Logsheet": [],
+  "Plots": [],
+  "StatsTable": [],
+  "PubTable": [],
+  "Process": [],
+  "Components": [],
+  "DataPath": {
+    "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": "/Users/mitchelltillman/Desktop"
+  },
+  "ProjectPath": {
+    "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": "/Users/mitchelltillman"
+  },
+  "Visible": true,
+  "OutOfDate": true,
+  "Checked": true,
+  "Text": "Default_6E97A8",
+  "Parent": ""
+}

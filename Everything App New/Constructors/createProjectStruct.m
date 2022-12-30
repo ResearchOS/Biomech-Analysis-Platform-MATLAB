@@ -19,6 +19,8 @@ struct.CreatedBy=user;
 user2=user; % Stand-in for username
 struct.LastModifiedBy=user2;
 
+computerID=getComputerID();
+
 struct.Description='';
 
 struct.Variables={};
@@ -35,9 +37,9 @@ struct.Process={};
 
 struct.Components={};
 
-struct.DataPath='';
+struct.DataPath.(computerID)='';
 
-struct.ProjectPath='';
+struct.ProjectPath.(computerID)='';
 
 struct.Visible=true; % If true, this will not show up in the uitree unless it is un-archived.
 

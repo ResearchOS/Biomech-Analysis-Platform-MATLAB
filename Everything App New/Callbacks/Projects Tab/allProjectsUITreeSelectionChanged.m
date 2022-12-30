@@ -22,12 +22,14 @@ assert(any(idx));
 %     return;
 % end
 
-dataPath=classVar(idx).DataPath;
+computerID=getComputerID();
+
+dataPath=classVar(idx).DataPath.(computerID);
 if isempty(dataPath)
     dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
 
-projectPath=classVar(idx).ProjectPath;
+projectPath=classVar(idx).ProjectPath.(computerID);
 if isempty(projectPath)
     projectPath='Path to Project Folder';
 end
@@ -35,5 +37,3 @@ end
 handles.Projects.dataPathField.Value=dataPath;
 
 handles.Projects.projectPathField.Value=projectPath;
-
-%% Eventually need to save to file the currently selected project.

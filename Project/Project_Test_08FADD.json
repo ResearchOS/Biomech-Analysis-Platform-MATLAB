@@ -1,9 +1,9 @@
 {
   "Type": "Project",
   "Name": "Test",
-  "ID": "156573",
-  "DateCreated": "29-Dec-2022 12:39:57",
-  "DateModified": "29-Dec-2022 12:39:57",
+  "ID": "08FADD",
+  "DateCreated": "29-Dec-2022 20:49:14",
+  "DateModified": "29-Dec-2022 20:49:14",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
@@ -14,11 +14,15 @@
   "PubTable": [],
   "Process": [],
   "Components": [],
-  "DataPath": "",
-  "ProjectPath": "",
+  "DataPath": {
+    "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": ""
+  },
+  "ProjectPath": {
+    "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": ""
+  },
   "Visible": true,
   "OutOfDate": true,
   "Checked": false,
-  "Text": "Test_156573",
+  "Text": "Test_08FADD",
   "Parent": ""
 }

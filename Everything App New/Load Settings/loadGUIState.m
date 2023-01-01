@@ -18,6 +18,8 @@ handles=getappdata(fig,'handles');
 %     return;
 % end
 
+%% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab
 currentProjectButtonPushed(fig);
@@ -47,6 +49,8 @@ allProjectsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Import tab
+% Bring up the current logsheet's metadata.
+allLogsheetsUITreeSelectionChanged(fig);
 % All logsheets UI Tree
 % handles.Import.sortLogsheetsDropDown.Value=guiSettings.Import.SortMethod;
 % sortUITree(handles.Import.allLogsheetsUITree,handles.Import.sortLogsheetsDropDown.Value);

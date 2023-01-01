@@ -7,3 +7,5 @@ searchTerm=searchbox.Value;
 if isequal(searchTerm,'Search')
     searchTerm='';
 end
+
+disp(searchTerm);

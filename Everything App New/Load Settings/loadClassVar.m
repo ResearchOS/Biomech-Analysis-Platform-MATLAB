@@ -22,14 +22,8 @@ for i=length(fileNames):-1:1 % Loop is backwards to pre-allocate memory for the 
     % IN DEEPLABCUT THAT IT USED NON-HUMAN READABLE HDF5 FILES INSTEAD OF
     % MODIFIABLE CSV'S.
     fullPath=[classFolder slash fileName]; % Get the name of the json file that the settings are saved to.
-    % Read the json file as unformatted char
-    fid=fopen(fullPath);
-    raw=fread(fid,inf);
-    fclose(fid);
-    str=char(raw');    
-
-    % Convert json to struct
-    settingsStruct=jsondecode(str);
+       
+    settingsStruct=loadJSON(fullPath);
 
     classVar(i)=settingsStruct;
 end

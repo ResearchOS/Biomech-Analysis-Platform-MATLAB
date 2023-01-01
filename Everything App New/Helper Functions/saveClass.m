@@ -1,6 +1,6 @@
 function []=saveClass(src,class,classStruct)
 
-%% PURPOSE: SAVE A CLASS INSTANCE TO FILE.
+%% PURPOSE: SAVE A CLASS INSTANCE TO JSON FILE.
 
 slash=filesep;
 
@@ -19,5 +19,3 @@ json=jsonencode(classStruct,'PrettyPrint',true);
 fid=fopen([filepath '.json'],'w');
 fprintf(fid,'%s',json);
 fclose(fid);
-
-% save(filepath,'struct','-v6');

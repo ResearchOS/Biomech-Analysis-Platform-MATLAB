@@ -2,7 +2,10 @@ function []=sortUITree(uiTree,sortMethod)
 
 %% PURPOSE: Sort the nodes based on how it was specified.
 
-% sortMethod=''; % Get the value from the dropdown
+if isempty(uiTree.Children)
+    return;
+end
+
 switch sortMethod    
     case 'DateModified (Old->New)'
         data={uiTree.Children.DateModified};

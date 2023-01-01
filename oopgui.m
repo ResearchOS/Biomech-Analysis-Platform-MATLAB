@@ -4,7 +4,7 @@ function []=oopgui()
 tic;
 slash=filesep;
 
-classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process'}; % One folder for each object type
+classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet'}; % One folder for each object type
 
 %% Ensure that there's max one figure open
 a=evalin('base','whos;');
@@ -64,14 +64,14 @@ for i=1:length(classNames)
 end
 
 %% Fill the UI trees with their correct values
-sortDropDowns=[handles.Projects.sortProjectsDropDown];
+sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown];
 % uiTrees=[handles.Process.allVarsUITree, handles.Plot.allPlotsUITree, ...
 %     handles.Stats.allPubTablesUITree, handles.Stats.allStatsTablesUITree, ...
 %     handles.Plot.allComponentsUITree, handles.Stats.allVarsUITree, ...
 %     handles.Project.allProjectsUITree, handles.Import.allLogsheetsUITree];
-uiTrees=[handles.Projects.allProjectsUITree];
+uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree];
 % classNamesUITrees={'Variable','Plot','PubTable','StatsTable','Component','Variable','Project','Logsheet'}; % One folder for each object type
-classNamesUITrees={'Project'};
+classNamesUITrees={'Project','Logsheet'};
 
 for i=1:length(classNamesUITrees)
     class=classNamesUITrees{i};

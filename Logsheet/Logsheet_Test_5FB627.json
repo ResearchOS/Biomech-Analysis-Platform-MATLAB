@@ -1,0 +1,25 @@
+{
+  "Name": "Test",
+  "ID": "5FB627",
+  "DateCreated": "01-Jan-2023 13:38:15",
+  "DateModified": "01-Jan-2023 13:38:15",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "LogsheetPath": {
+    "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": "/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Spr21-TWW-Biomechanics/Spr21TWW_AllSubjects.xlsx"
+  },
+  "NumHeaderRows": -1,
+  "SubjectCodenameHeader": "",
+  "TargetTrialIDHeader": "",
+  "Projects": [
+    "Default_6E97A8"
+  ],
+  "SpecifyTrials": "",
+  "Archived": false,
+  "Visible": true,
+  "OutOfDate": true,
+  "Checked": false,
+  "Text": "Test_5FB627",
+  "Parent": ""
+}

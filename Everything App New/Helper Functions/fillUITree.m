@@ -75,7 +75,9 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
 end
 
 %% Check the appropriate nodes.
-uiTree.CheckedNodes=uiTree.Children(checkedIdx);
+if any(checkedIdx)
+    uiTree.CheckedNodes=uiTree.Children(checkedIdx);
+end
 
 %% Sort the nodes based on how it was specified.
 sortMethod=sortDropDown.Value;
@@ -83,8 +85,10 @@ sortUITree(uiTree, sortMethod);
 
 % selNode is empty if the selected node was just removed. It's not empty if
 % a new node was just added.
-if isempty(selNode) && ~isempty(selNodeIdxNum)
-    uiTree.SelectedNodes=uiTree.Children(selNodeIdxNum);
-elseif isempty(selNode) % Startup
-    uiTree.SelectedNodes=uiTree.Children(1);
+if ~isempty(uiTree.Children)
+    if isempty(selNode) && ~isempty(selNodeIdxNum)
+        uiTree.SelectedNodes=uiTree.Children(selNodeIdxNum);
+    elseif isempty(selNode) % Startup
+        uiTree.SelectedNodes=uiTree.Children(1);
+    end
 end

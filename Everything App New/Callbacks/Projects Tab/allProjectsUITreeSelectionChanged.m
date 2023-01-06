@@ -11,25 +11,18 @@ if isempty(projectNode)
     return;
 end
 
-classVar=getappdata(fig,'Project');
+fullPath=getClassFilePath(projectNode);
 
-idx=ismember({classVar.Text},projectNode.Text);
-
-assert(any(idx));
-
-% if ~classVar(idx).Checked
-%     assert(~ismember(projectNode,handles.Projects.allProjectsUITree.CheckedNodes));
-%     return;
-% end
+struct=loadJSON(fullPath);
 
 computerID=getComputerID();
 
-dataPath=classVar(idx).DataPath.(computerID);
+dataPath=struct.DataPath.(computerID);
 if isempty(dataPath)
     dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
 
-projectPath=classVar(idx).ProjectPath.(computerID);
+projectPath=struct.ProjectPath.(computerID);
 if isempty(projectPath)
     projectPath='Path to Project Folder';
 end

@@ -62,6 +62,10 @@ struct.Checked=true; % Only one logsheet can be checked at any one time. Checked
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
+struct.Headers={}; % The headers for the current logsheet.
+struct.Level={}; % Trial or subject
+struct.Type={}; % Char or double
+
 saveClass(fig,'Logsheet',struct);
 
 classVar=getappdata(fig,'Logsheet');

@@ -4,3 +4,15 @@ function []=numHeaderRowsFieldValueChanged(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+
+selNode=handles.Import.allLogsheetsUITree.SelectedNodes;
+
+fullPath=getClassFilePath(selNode);
+
+struct=loadJSON(fullPath);
+
+value=handles.Import.numHeaderRowsField.Value;
+
+struct.NumHeaderRows=value;
+
+saveClass(fig,'Logsheet',struct);

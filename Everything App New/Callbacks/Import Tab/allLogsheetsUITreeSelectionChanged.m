@@ -11,31 +11,30 @@ if isempty(selNode)
     return;
 end
 
-logsheet=selNode.Text;
+fullPath=getClassFilePath(selNode);
 
-classVar=getappdata(fig,'Logsheet');
-idx=ismember({classVar.Text},logsheet);
+struct=loadJSON(fullPath);
 
 computerID=getComputerID();
 
 % Set the logsheet path field.
-if exist(classVar(idx).LogsheetPath.(computerID),'file')==2
-    handles.Import.logsheetPathField.Value=classVar(idx).LogsheetPath.(computerID);
+if exist(struct.LogsheetPath.(computerID),'file')==2
+    handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID);
 else
     handles.Import.logsheetPathField.Value='Enter Logsheet Path';
 end
 
 % Set the number of header rows.
-handles.Import.numHeaderRowsField.Value=classVar(idx).NumHeaderRows;
+handles.Import.numHeaderRowsField.Value=struct.NumHeaderRows;
 
 %% Set the items in the headers drop downs, reading from the logsheet
 % headers=getLogsheetHeaders(fig,computerID);
-headers={''};
+headers=struct.Headers;
 
 % Set the subject codename header
 handles.Import.subjectCodenameDropDown.Items=headers;
-if ismember(classVar(idx).SubjectCodenameHeader,headers)
-    value=classVar(idx).SubjectCodenameHeader;
+if ismember(struct.SubjectCodenameHeader,headers)
+    value=struct.SubjectCodenameHeader;
 else
     value='';
 end
@@ -43,8 +42,8 @@ handles.Import.subjectCodenameDropDown.Value=value;
 
 % Set the target trial column header
 handles.Import.targetTrialIDColumnHeader.Items=headers;
-if ismember(classVar(idx).TargetTrialIDHeader,headers)
-    value=classVar(idx).TargetTrialIDHeader;
+if ismember(struct.TargetTrialIDHeader,headers)
+    value=struct.TargetTrialIDHeader;
 else
     value='';
 end

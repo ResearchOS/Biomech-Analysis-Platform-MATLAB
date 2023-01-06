@@ -4,3 +4,15 @@ function []=targetTrialIDDropDownValueChanged(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+
+selNode=handles.Import.allLogsheetsUITree.SelectedNodes;
+
+fullPath=getClassFilePath(selNode);
+
+struct=loadJSON(fullPath);
+
+value=handles.Import.targetTrialIDHeader.Value;
+
+struct.TargetTrialIDHeader=value;
+
+saveClass(fig,'Logsheet',struct);

@@ -5,9 +5,10 @@ function []=logsheetPathButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-path=uigetfile({'*.csv','*.xls*'},'Select the logsheet file');
+[file, shortPath]=uigetfile({'*.csv;*.xls;*.xlsx','All Excel Files (csv, xls, xlsx)'},'Select the logsheet file');
 
-if path==0
+path=[shortPath file];
+if file==0
     return;
 end
 

@@ -23,9 +23,18 @@ currDate=datetime('now');
 struct.DateCreated=currDate;
 struct.DateModified=currDate;
 
+user='MT'; % Stand-in for username
+struct.CreatedBy=user;
+
+user2=user; % Stand-in for username
+struct.LastModifiedBy=user2;
+
 struct.Description='';
 
-struct.Projects={};
+handles=getappdata(fig,'handles');
+currentProject=handles.Projects.projectsLabel.Text;
+
+struct.Project={currentProject};
 
 struct.Level='';
 struct.IsMovie=0;
@@ -41,24 +50,33 @@ struct.ExampleCondition='';
 struct.ExampleSubject='';
 struct.ExampleTrial='';
 
-struct.Components.Text={}; % Includes name & ID
-struct.Components.Parent={}; % Includes name & ID
-struct.Components.Children={}; % Includes name & ID
-struct.Components.ModifiedProperties={}; % The names of the properties that have been modified
+struct.Component.Text={}; % Includes name & ID
+struct.Component.Parent={}; % Includes name & ID
+struct.Component.Children={}; % Includes name & ID
+struct.Component.ModifiedProperties={}; % The names of the properties that have been modified
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true;
 
-user='MT'; % Stand-in for username
-struct.CreatedBy=user;
+struct.Checked=true;
 
-user2=user; % Stand-in for username
-struct.LastModifiedBy=user2;
-
-filename=['Plot_' name '_' id '.mat'];
+struct.Visible=true;
 
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-save(filename,'struct','-v6');
+saveClass(fig,'Plot',struct);
+
+classVar=getappdata(fig,'Plot');
+
+if isempty(classVar)
+    classVar=struct;
+else
+    classVar(end+1)=struct;
+end
+
+setappdata(fig,'Plot',classVar);
+
+%% Assign the newly created plot struct to the current project struct.
+assignToProject(fig,struct,'Plot');

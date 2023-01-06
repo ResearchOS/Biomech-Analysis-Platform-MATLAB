@@ -1,0 +1,27 @@
+{
+  "Name": "Test",
+  "ID": "208236",
+  "DateCreated": "01-Jan-2023 22:35:23",
+  "DateModified": "01-Jan-2023 22:35:23",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_6E97A8"
+  ],
+  "SpecifyTrials": "",
+  "InputToFunctions": [],
+  "OutputFromFunctions": [],
+  "VariableType": "",
+  "VariableSize": [],
+  "InputToPlots": [],
+  "InputToComponents": [],
+  "InputToStatsTables": [],
+  "InputToPubTables": [],
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": false,
+  "Visible": true,
+  "Text": "Test_208236",
+  "Parent": ""
+}

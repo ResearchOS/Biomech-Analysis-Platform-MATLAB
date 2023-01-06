@@ -64,14 +64,14 @@ for i=1:length(classNames)
 end
 
 %% Fill the UI trees with their correct values
-sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown];
-% uiTrees=[handles.Process.allVarsUITree, handles.Plot.allPlotsUITree, ...
-%     handles.Stats.allPubTablesUITree, handles.Stats.allStatsTablesUITree, ...
-%     handles.Plot.allComponentsUITree, handles.Stats.allVarsUITree, ...
-%     handles.Project.allProjectsUITree, handles.Import.allLogsheetsUITree];
-uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree];
+sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 
+    handles.Process.sortVariablesDropDown; handles.Process.sortProcessDropDown;
+    handles.Plot.sortPlotsDropDown; handles.Plot.sortComponentsDropDown];
+uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree;
+    handles.Process.allVariablesUITree; handles.Process.allProcessUITree;
+    handles.Plot.allPlotsUITree; handles.Plot.allComponentsUITree];
 % classNamesUITrees={'Variable','Plot','PubTable','StatsTable','Component','Variable','Project','Logsheet'}; % One folder for each object type
-classNamesUITrees={'Project','Logsheet'};
+classNamesUITrees={'Project','Logsheet','Variable','Process','Plot','Component'};
 
 for i=1:length(classNamesUITrees)
     class=classNamesUITrees{i};

@@ -7,13 +7,13 @@
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
-  "Variables": [],
+  "Variable": [],
   "Logsheet": [],
-  "Plots": [],
+  "Plot": [],
   "StatsTable": [],
   "PubTable": [],
   "Process": [],
-  "Components": [],
+  "Component": [],
   "DataPath": {
     "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": ""
   },

@@ -11,9 +11,18 @@ currDate=datetime('now');
 struct.DateCreated=currDate;
 struct.DateModified=currDate;
 
+user='MT'; % Stand-in for username
+struct.CreatedBy=user;
+
+user2=user; % Stand-in for username
+struct.LastModifiedBy=user2;
+
 struct.Description='';
 
-struct.Projects={};
+handles=getappdata(fig,'handles');
+currentProject=handles.Projects.projectsLabel.Text;
+
+struct.Project={currentProject};
 
 struct.DefaultInputVariables={};
 struct.InputVariables={};
@@ -25,15 +34,24 @@ struct.Archived=false; % If true, this will not show up in the uitree unless it 
 
 struct.OutOfDate=true;
 
-user='MT'; % Stand-in for username
-struct.CreatedBy=user;
+struct.Checked=true;
 
-user2=user; % Stand-in for username
-struct.LastModifiedBy=user2;
-
-filename=['Process_' name '_' id '.mat'];
+struct.Visible=true;
 
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-save(filename,'struct','-v6');
+saveClass(fig,'Component',struct);
+
+classVar=getappdata(fig,'Component');
+
+if isempty(classVar)
+    classVar=struct;
+else
+    classVar(end+1)=struct;
+end
+
+setappdata(fig,'Component',classVar);
+
+%% Assign the newly created plot component struct to the current project struct.
+assignToProject(fig,struct,'Component');

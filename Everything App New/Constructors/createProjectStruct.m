@@ -23,11 +23,11 @@ computerID=getComputerID();
 
 struct.Description='';
 
-struct.Variables={};
+struct.Variable={};
 
 struct.Logsheet={};
 
-struct.Plots={};
+struct.Plot={};
 
 struct.StatsTable={};
 
@@ -35,7 +35,7 @@ struct.PubTable={};
 
 struct.Process={};
 
-struct.Components={};
+struct.Component={};
 
 struct.DataPath.(computerID)='';
 

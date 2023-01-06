@@ -47,7 +47,7 @@ struct.TargetTrialIDHeader='';
 handles=getappdata(fig,'handles');
 currentProject=handles.Projects.projectsLabel.Text;
 
-struct.Projects={currentProject};
+struct.Project={currentProject};
 
 struct.SpecifyTrials=''; % Which set of data to pull the variables out from?
 

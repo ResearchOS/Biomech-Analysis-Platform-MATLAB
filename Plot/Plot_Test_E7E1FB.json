@@ -1,0 +1,38 @@
+{
+  "Name": "Test",
+  "ID": "E7E1FB",
+  "DateCreated": "05-Jan-2023 18:08:16",
+  "DateModified": "05-Jan-2023 18:08:16",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_6E97A8"
+  ],
+  "Level": "",
+  "IsMovie": 0,
+  "MovieMetadata": {
+    "StartFrame": 1,
+    "EndFrame": 2,
+    "StartFrameVariable": "",
+    "EndFrameVariable": "",
+    "CurrFrame": 1,
+    "Increment": 1
+  },
+  "SpecifyTrials": "",
+  "ExampleCondition": "",
+  "ExampleSubject": "",
+  "ExampleTrial": "",
+  "Component": {
+    "Text": [],
+    "Parent": [],
+    "Children": [],
+    "ModifiedProperties": []
+  },
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": true,
+  "Visible": true,
+  "Text": "Test_E7E1FB",
+  "Parent": ""
+}

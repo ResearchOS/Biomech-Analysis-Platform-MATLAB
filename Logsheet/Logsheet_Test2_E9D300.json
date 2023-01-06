@@ -1,0 +1,25 @@
+{
+  "Name": "Test2",
+  "ID": "E9D300",
+  "DateCreated": "06-Jan-2023 00:54:07",
+  "DateModified": "06-Jan-2023 00:54:07",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "LogsheetPath": {
+    "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": ""
+  },
+  "NumHeaderRows": -1,
+  "SubjectCodenameHeader": "",
+  "TargetTrialIDHeader": "",
+  "Project": [
+    "Default_6E97A8"
+  ],
+  "SpecifyTrials": "",
+  "Archived": false,
+  "Visible": true,
+  "OutOfDate": true,
+  "Checked": true,
+  "Text": "Test2_E9D300",
+  "Parent": ""
+}

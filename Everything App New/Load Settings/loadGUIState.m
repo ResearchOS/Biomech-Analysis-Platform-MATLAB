@@ -60,6 +60,8 @@ allLogsheetsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Process tab
+allVariablesUITreeSelectionChanged(fig);
+allProcessUITreeSelectionChanged(fig);
 % All variables UI tree
 % handles.Process.sortVariablesDropDown.Value=guiSettings.Process.SortMethod;
 % sortUITree(handles.Process.allVarsUITree,handles.Process.sortVariablesDropDown.Value);
@@ -67,6 +69,8 @@ allLogsheetsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot tab
+allPlotsUITreeSelectionChanged(fig);
+allComponentsUITreeSelectionChanged(fig);
 % All components UI tree
 % handles.Plot.sortComponentsDropDown.Value=guiSettings.Plot.SortMethod.Components;
 % sortUITree(handles.Plot.allComponentsUITree,handles.Plot.sortComponentsDropDown.Value);

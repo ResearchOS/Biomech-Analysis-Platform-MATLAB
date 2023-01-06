@@ -72,14 +72,26 @@ objResize(tab.logsheetPathButton, [0.45 0.9], [0.15 compHeight]);
 % 9. Open logsheet path button
 objResize(tab.openLogsheetPathButton, [0.8 0.9], [0.05 compHeight]);
 
-% objResize(tab.NumHeaderRowsLabel, [0.01 0.85], [0.2 compHeight]);
-% 
-% objResize(tab.NumHeaderRowsField, [0.26 0.85], [0.08 compHeight]);
-% 
-% objResize(tab.SubjectIDColHeaderLabel, [0.01 0.8], [0.25 compHeight]);
-% 
-% objResize(tab.SubjectIDColHeaderField, [0.25 0.8], [0.2 compHeight]);
-% 
-% objResize(tab.TrialIDColHeaderDataTypeLabel, [0.01 0.75], [0.25 compHeight]);
-% 
-% objResize(tab.TrialIDColHeaderDataTypeField, [0.26 0.75], [0.2 compHeight]);
+% 10. Number of header rows label
+objResize(tab.numHeaderRowsLabel, [0.01 0.35], [0.2 compHeight]);
+
+% 11. Number of header rows numeric edit field
+objResize(tab.numHeaderRowsField, [0.22 0.35], [0.08 compHeight]);
+
+% 12. Subject codename label
+objResize(tab.subjectCodenameLabel, [0.01 0.3], [0.25 compHeight]);
+
+% 13. Subject codename edit field
+objResize(tab.subjectCodenameDropDown, [0.26 0.3], [0.2 compHeight]);
+
+% 14. Target trial ID label
+objResize(tab.targetTrialIDLabel, [0.01 0.25], [0.25 compHeight]);
+
+% 15. Target trial ID edit field
+objResize(tab.targetTrialIDDropDown, [0.26 0.25], [0.2 compHeight]);
+
+% 18. Specify trials label
+objResize(tab.specifyTrialsLabel, [0.01 0.06], [0.1 compHeight]);
+
+% 19. Specify trials button
+objResize(tab.specifyTrialsButton, [0.01 0.01], [0.1 compHeight]);

@@ -1,0 +1,21 @@
+{
+  "Name": "Test2",
+  "ID": "474BA9",
+  "DateCreated": "03-Jan-2023 15:13:38",
+  "DateModified": "03-Jan-2023 15:13:38",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_6E97A8"
+  ],
+  "SpecifyTrials": "",
+  "InputVariables": [],
+  "OutputVariables": [],
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": false,
+  "Visible": false,
+  "Text": "Test2_474BA9",
+  "Parent": ""
+}

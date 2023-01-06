@@ -50,14 +50,14 @@ handles=getappdata(fig,'handles');
 
 currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
 
-zoom(handles.Process.mapFigure,'off');
-for i=1:length(handles.Plot.plotPanel.Children)
-    zoom(handles.Plot.plotPanel.Children(i),'off');
-    pan(handles.Plot.plotPanel.Children(i),'off');
-end
-pan(handles.Process.mapFigure,'off');
-dcm=datacursormode(fig);
-dcm.Enable='off';
+% zoom(handles.Process.mapFigure,'off');
+% for i=1:length(handles.Plot.plotPanel.Children)
+%     zoom(handles.Plot.plotPanel.Children(i),'off');
+%     pan(handles.Plot.plotPanel.Children(i),'off');
+% end
+% pan(handles.Process.mapFigure,'off');
+% dcm=datacursormode(fig);
+% dcm.Enable='off';
 % switch currTab
 %     case 'Import'
 %         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));

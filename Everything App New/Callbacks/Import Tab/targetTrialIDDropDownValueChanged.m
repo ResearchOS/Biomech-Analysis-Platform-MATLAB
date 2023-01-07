@@ -11,7 +11,7 @@ fullPath=getClassFilePath(selNode);
 
 struct=loadJSON(fullPath);
 
-value=handles.Import.targetTrialIDHeader.Value;
+value=handles.Import.targetTrialIDDropDown.Value;
 
 struct.TargetTrialIDHeader=value;
 

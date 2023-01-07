@@ -11,7 +11,7 @@ switch parent
     case handles.Projects.allProjectsUITree
         class='Project';
     case handles.Import.allLogsheetsUITree
-        class='Logsheet';
+        class='Logsheet';    
     case handles.Process.allProcessUITree
         class='Process';
     case handles.Plot.allPlotsUITree

@@ -95,3 +95,21 @@ objResize(tab.specifyTrialsLabel, [0.01 0.06], [0.1 compHeight]);
 
 % 19. Specify trials button
 objResize(tab.specifyTrialsButton, [0.01 0.01], [0.1 compHeight]);
+
+% 20. Header variables UI Tree
+objResize(tab.headersUITree, [0.5 0.4], [0.4 0.4]);
+
+% 21. Levels drop down
+objResize(tab.levelDropDown, [0.5 0.35], [0.1 compHeight]);
+
+% 22. Type drop down
+objResize(tab.typeDropDown, [0.65 0.35], [0.1 compHeight]);
+
+% 23. Check all button
+objResize(tab.checkAllButton, [0.5 0.8], [0.1 compHeight]);
+
+% 24. Uncheck all button
+objResize(tab.uncheckAllButton, [0.65 0.8], [0.1 compHeight]);
+
+% 25. Run logsheet button
+objResize(tab.runLogsheetButton, [0.8 0.2], [0.1 compHeight]);

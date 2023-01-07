@@ -41,10 +41,13 @@ end
 handles.Import.subjectCodenameDropDown.Value=value;
 
 % Set the target trial column header
-handles.Import.targetTrialIDColumnHeader.Items=headers;
+handles.Import.targetTrialIDDropDown.Items=headers;
 if ismember(struct.TargetTrialIDHeader,headers)
     value=struct.TargetTrialIDHeader;
 else
     value='';
 end
-handles.Import.targetTrialIDColumnHeader=value;
+handles.Import.targetTrialIDDropDown.Value=value;
+
+% Fill logsheet headers UI tree
+fillHeadersUITree(fig,headers);

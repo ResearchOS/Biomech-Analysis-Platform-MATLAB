@@ -146,6 +146,24 @@ handles.Import.specifyTrialsLabel=uilabel(importTab,'Text','Specify Trials','Fon
 % 19. Specify trials button
 handles.Import.specifyTrialsButton=uibutton(importTab,'Text','Specify Trials','ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushed(specifyTrialsButton));
 
+% 20. Header variables UI tree
+handles.Import.headersUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(headersUITree,event) headersUITreeSelectionChanged(headersUITree));
+
+% 21. Levels drop down
+handles.Import.levelDropDown=uidropdown(importTab,'Items',{'','Subject','Trial'},'Value','','ValueChangedFcn',@(levelDropDown,event) levelDropDownValueChanged(levelDropDown));
+
+% 22. Type drop down
+handles.Import.typeDropDown=uidropdown(importTab,'Items',{'','Double','Char'},'Value','','ValueChangedFcn',@(typeDropDown,event) typeDropDownValueChanged(typeDropDown));
+
+% 23. Check all button
+handles.Import.checkAllButton=uibutton(importTab,'Text','Check All','ButtonPushedFcn',@(checkAllButton,event) checkAllButtonPushed(checkAllButton));
+
+% 24. Uncheck all button
+handles.Import.uncheckAllButton=uibutton(importTab,'Text','Uncheck All','ButtonPushedFcn',@(uncheckAllButton,event) uncheckAllButtonPushed(uncheckAllButton));
+
+% 25. Run logsheet button
+handles.Import.runLogsheetButton=uibutton(importTab,'Text','Run','ButtonPushedFcn',@(runLogsheetButton,event) runLogsheetButtonPushed(runLogsheetButton));
+
 setappdata(fig,'handles',handles);
 importResize(fig);
 

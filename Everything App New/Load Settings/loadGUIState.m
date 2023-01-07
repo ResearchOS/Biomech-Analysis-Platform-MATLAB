@@ -51,6 +51,7 @@ allProjectsUITreeSelectionChanged(fig);
 %% Import tab
 % Bring up the current logsheet's metadata.
 allLogsheetsUITreeSelectionChanged(fig);
+% fillHeadersUITree(fig);
 % All logsheets UI Tree
 % handles.Import.sortLogsheetsDropDown.Value=guiSettings.Import.SortMethod;
 % sortUITree(handles.Import.allLogsheetsUITree,handles.Import.sortLogsheetsDropDown.Value);

@@ -1,28 +1,34 @@
-function [fullPath]=getClassFilePath(selNode)
+function [fullPath]=getClassFilePath(selNode,class)
 
 %% PURPOSE: GET THE CLASS FULL FILE PATH FROM THE SELECTED NODE
 
 fig=ancestor(selNode,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-parent=selNode.Parent;
+if ~ischar(selNode)
+    parent=selNode.Parent;
 
-switch parent
-    case handles.Projects.allProjectsUITree
-        class='Project';
-    case handles.Import.allLogsheetsUITree
-        class='Logsheet';    
-    case handles.Process.allProcessUITree
-        class='Process';
-    case handles.Plot.allPlotsUITree
-        class='Plot';
-    case handles.Plot.allComponentsUITree
-        class='Component';
-    case handles.Stats.allStatsUITree
-        class='Stats';
+    switch parent
+        case handles.Projects.allProjectsUITree
+            class='Project';
+        case handles.Import.allLogsheetsUITree
+            class='Logsheet';
+        case handles.Process.allProcessUITree
+            class='Process';
+        case handles.Plot.allPlotsUITree
+            class='Plot';
+        case handles.Plot.allComponentsUITree
+            class='Component';
+        case handles.Stats.allStatsUITree
+            class='Stats';
+        case handles.Process.allGroupsUITree
+            class='ProcessGroup';
+    end
+
+    file=selNode.Text;
+elseif nargin==2
+    file=selNode; % Node text specified directly
 end
-
-file=selNode.Text;
 
 slash=filesep;
 

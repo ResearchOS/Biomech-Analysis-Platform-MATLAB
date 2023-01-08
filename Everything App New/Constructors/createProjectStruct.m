@@ -37,6 +37,8 @@ struct.Process={};
 
 struct.Component={};
 
+struct.ProcessGroup={};
+
 struct.DataPath.(computerID)='';
 
 struct.ProjectPath.(computerID)='';

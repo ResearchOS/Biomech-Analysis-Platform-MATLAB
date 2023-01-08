@@ -247,42 +247,121 @@ importResize(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the process tab.
+% 1. Variables/function/groups subtab
+handles.Process.subTabAll=uitabgroup(processTab,'AutoResizeChildren','off');
+
+% 2. Variables tab
+handles.Process.variablesTab=uitab(handles.Process.subTabAll,'Title','Variables','AutoResizeChildren','off');
+
+% 3. Functions tab
+handles.Process.functionsTab=uitab(handles.Process.subTabAll,'Title','Functions','AutoResizeChildren','off');
+
+% 4. Groups tab
+handles.Process.groupsTab=uitab(handles.Process.subTabAll,'Title','Groups','AutoResizeChildren','off');
+
 % 1. Variables label
-handles.Process.variablesLabel=uilabel(processTab,'Text','Variables','FontWeight','bold');
+% handles.Process.variablesLabel=uilabel(handles.Process.variablesTab,'Text','Variables','FontWeight','bold');
 
 % 2. Add variable button
-handles.Process.addVariableButton=uibutton(processTab,'text','V+','ButtonPushedFcn',@(addVariableButton,event) addVariableButtonPushed(addVariableButton));
+handles.Process.addVariableButton=uibutton(handles.Process.variablesTab,'text','V+','ButtonPushedFcn',@(addVariableButton,event) addVariableButtonPushed(addVariableButton));
 
 % 3. Remove variable button
-handles.Process.removeVariableButton=uibutton(processTab,'text','V-','ButtonPushedFcn',@(removeVariableButton,event) removeVariableButtonPushed(removeVariableButton));
+handles.Process.removeVariableButton=uibutton(handles.Process.variablesTab,'text','V-','ButtonPushedFcn',@(removeVariableButton,event) removeVariableButtonPushed(removeVariableButton));
 
 % 4. Sort variables drop down
-handles.Process.sortVariablesDropDown=uidropdown(processTab,'Editable','off','Items',sortOptions,'ValueChangedFcn',@(sortVariablesDropDown,event) sortVariablesDropDownValueChanged(sortVariablesDropDown));
+handles.Process.sortVariablesDropDown=uidropdown(handles.Process.variablesTab,'Editable','off','Items',sortOptions,'ValueChangedFcn',@(sortVariablesDropDown,event) sortVariablesDropDownValueChanged(sortVariablesDropDown));
 
 % 5. All variables UI tree
-handles.Process.allVariablesUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(allVariablesUITree,event) allVariablesUITreeSelectionChanged(allVariablesUITree));
+handles.Process.allVariablesUITree=uitree(handles.Process.variablesTab,'checkbox','SelectionChangedFcn',@(allVariablesUITree,event) allVariablesUITreeSelectionChanged(allVariablesUITree));
 
 % 6. Variables search field
-handles.Process.variablesSearchField=uieditfield(processTab,'Value','Search','ValueChangingFcn',@(variablesSearchField,event) variablesSearchFieldValueChanging(variablesSearchField));
+handles.Process.variablesSearchField=uieditfield(handles.Process.variablesTab,'Value','Search','ValueChangingFcn',@(variablesSearchField,event) variablesSearchFieldValueChanging(variablesSearchField));
 
 % 7. Functions label
-handles.Process.processLabel=uilabel(processTab,'Text','Functions','FontWeight','bold');
+% handles.Process.processLabel=uilabel(handles.Process.functionsTab,'Text','Functions','FontWeight','bold');
 
 % 8. Add function button
-handles.Process.addProcessButton=uibutton(processTab,'text','F+','ButtonPushedFcn',@(addProcessButton,event) addProcessButtonPushed(addProcessButton));
+handles.Process.addProcessButton=uibutton(handles.Process.functionsTab,'text','F+','ButtonPushedFcn',@(addProcessButton,event) addProcessButtonPushed(addProcessButton));
 
 % 9. Remove function button
-handles.Process.removeProcessButton=uibutton(processTab,'text','F-','ButtonPushedFcn',@(removeProcessButton,event) removeProcessButtonPsuhed(removeProcessButton));
+handles.Process.removeProcessButton=uibutton(handles.Process.functionsTab,'text','F-','ButtonPushedFcn',@(removeProcessButton,event) removeProcessButtonPsuhed(removeProcessButton));
 
 % 10. Sort functions drop down
-handles.Process.sortProcessDropDown=uidropdown(processTab,'Editable','off','Items',sortOptions,'ValueChangedFcn',@(sortFunctionsDropDown,event) sortProcessDropDownValueChanged(sortFunctionsDropDown));
+handles.Process.sortProcessDropDown=uidropdown(handles.Process.functionsTab,'Editable','off','Items',sortOptions,'ValueChangedFcn',@(sortFunctionsDropDown,event) sortProcessDropDownValueChanged(sortFunctionsDropDown));
 
 % 11. All functions UI tree
-handles.Process.allProcessUITree=uitree(processTab,'checkbox','SelectionChangedFcn',@(allFunctionsUITree,event) allProcessUITreeSelectionChanged(allFunctionsUITree));
+handles.Process.allProcessUITree=uitree(handles.Process.functionsTab,'checkbox','SelectionChangedFcn',@(allFunctionsUITree,event) allProcessUITreeSelectionChanged(allFunctionsUITree));
 
 % 12. Functions search field
-handles.Process.processSearchField=uieditfield(processTab,'Value','Search','ValueChangingFcn',@(functionsSearchField,event) processSearchFieldValueChanging(functionsSearchField));
+handles.Process.processSearchField=uieditfield(handles.Process.functionsTab,'Value','Search','ValueChangingFcn',@(functionsSearchField,event) processSearchFieldValueChanging(functionsSearchField));
 
+% 13. Assign variable button
+handles.Process.assignVariableButton=uibutton(handles.Process.variablesTab,'Text','->','Visible','off','ButtonPushedFcn',@(assignVariableButton,event) assignVariableButtonPushed(assignVariableButton));
+
+% 14. Unassign variable button
+handles.Process.unassignVariableButton=uibutton(handles.Process.variablesTab,'Text','<-','Visible','off','ButtonPushedFcn',@(unassignVariableButton,event) unassignVariableButtonPushed(unassignVariableButton));
+
+% 15. Assign function button
+handles.Process.assignFunctionButton=uibutton(handles.Process.functionsTab,'Text','->','Visible','on','ButtonPushedFcn',@(assignFunctionButton,event) assignFunctionButtonPushed(assignFunctionButton));
+
+% 16. Unassign function button
+handles.Process.unassignFunctionButton=uibutton(handles.Process.functionsTab,'Text','<-','Visible','on','ButtonPushedFcn',@(unassignFunctionButton,event) unassignFunctionButtonPushed(unassignFunctionButton));
+
+% 13. Add group button
+handles.Process.addGroupButton=uibutton(handles.Process.groupsTab,'Text','G+','ButtonPushedFcn',@(addGroupButton,event) addGroupButtonPushed(addGroupButton));
+
+% 14. Remove group button
+handles.Process.removeGroupButton=uibutton(handles.Process.groupsTab,'Text','G-','ButtonPushedFcn',@(removeGroupButton,event) removeGroupButtonPushed(removeGroupButton));
+
+% 15. Sort group drop down
+handles.Process.sortGroupsDropDown=uidropdown(handles.Process.groupsTab,'Editable','off','Items',sortOptions,'ValueChangedFcn',@(sortGroupsDropDown,event) sortGroupsDropDownValueChanged(sortGroupsDropDown));
+
+% 16. All groups UI tree
+handles.Process.allGroupsUITree=uitree(handles.Process.groupsTab,'checkbox','SelectionChangedFcn',@(allGroupsUITree,event) allGroupsUITreeSelectionChanged(allGroupsUITree));
+
+% 17. Groups search field
+handles.Process.groupsSearchField=uieditfield(handles.Process.groupsTab,'Value','Search','ValueChangingFcn',@(groupsSearchField,event) groupsSearchFieldValueChanging(groupsSearchField));
+
+% 18. Assign group button
+handles.Process.assignGroupButton=uibutton(handles.Process.groupsTab,'Text','->','Visible','on','ButtonPushedFcn',@(assignGroupButton,event) assignGroupButtonPushed(assignGroupButton));
+
+% 19. Unassign group button
+handles.Process.unassignGroupButton=uibutton(handles.Process.groupsTab,'Text','<-','Visible','on','ButtonPushedFcn',@(unassignGroupButton,event) unassignGroupButtonPushed(unassignGroupButton));
+
+% 18. Queue UI tree
+handles.Process.queueUITree=uitree(processTab,'checkbox');
+
+% 19. Queue label
+handles.Process.queueLabel=uilabel(processTab,'FontWeight','bold','Text','Queue');
+
+% 22. Current group/function tab group
+handles.Process.subtabCurrent=uitabgroup(processTab,'AutoResizeChildren','off','SelectionChangedFcn',@(subTabCurrent,event) subTabCurrentSelectionChanged(subTabCurrent));
+
+% 23. Current group tab
+handles.Process.currentGroupTab=uitab(handles.Process.subtabCurrent,'Title','Group','AutoResizeChildren','off');
+
+% 24. Current function tab
+handles.Process.currentFunctionTab=uitab(handles.Process.subtabCurrent,'Title','Function','AutoResizeChildren','off');
+
+% 25. Run button
+handles.Process.runButton=uibutton(processTab,'push','Text','Run','ButtonPushedFcn',@(runButton,event) runButtonPushed(runButton));
+
+% 26. Current group UI tree
+handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','SelectionChangedFcn',@(groupUITree,event) groupUITreeSelectionChanged(groupUITree));
+
+% 27. Current function UI tree
+handles.Process.functionUITree=uitree(handles.Process.currentFunctionTab,'checkbox','SelectionChangedFcn',@(functionUITree,event) functionUITreeSelectionChanged(functionUITree));
+
+% 20. Add to queue button
+handles.Process.addToQueueButton=uibutton(handles.Process.currentGroupTab,'push','Text','->','ButtonPushedFcn',@(addToQueueButton,event) addToQueueButtonPushed(addToQueueButton));
+
+% 21. Remove from queue button
+handles.Process.removeFromQueueButton=uibutton(handles.Process.currentGroupTab,'push','Text','<-','ButtonPushedFcn',@(removeFromQueueButton,event) removeFromQueueButtonPushed(removeFromQueueButton));
+
+% 30. Save as new group button
+handles.Process.saveAsNewGroupButton=uibutton(handles.Process.currentGroupTab,'push','Text',{'Save As','New Group'},'ButtonPushedFcn',@(saveAsNewGroupButton,event) saveAsNewGroupButtonPushed(saveAsNewGroupButton));
+
+handles.Process.subtabCurrent.SelectedTab=handles.Process.currentGroupTab;
 setappdata(fig,'handles',handles);
 processResize(fig);
 

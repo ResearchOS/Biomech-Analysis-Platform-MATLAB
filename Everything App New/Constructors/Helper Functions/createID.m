@@ -3,11 +3,13 @@ function [id]=createID(src,class)
 %% PURPOSE: CREATE AN ID NUMBER FOR THE CURRENTLY SPECIFIED CLASS
 fig=ancestor(src,'figure','toplevel');
 
-rootFolder=getappdata(fig,'everythingPath'); % Path to the "Biomech-Analysis-Platform" folder
+% rootFolder=getappdata(fig,'everythingPath'); % Path to the "Biomech-Analysis-Platform" folder
 
 slash=filesep;
 
-classFolder=[rootFolder slash 'Classes' slash class];
+commonPath=getCommonPath(fig);
+classFolder=[commonPath slash class];
+% classFolder=[rootFolder slash 'Classes' slash class];
 
 files=dir(classFolder);
 fileNames={files.name};

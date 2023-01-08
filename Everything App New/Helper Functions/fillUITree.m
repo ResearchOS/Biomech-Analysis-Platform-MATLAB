@@ -2,7 +2,11 @@ function []=fillUITree(fig, class, uiTree, searchTerm, sortDropDown)
 
 %% PURPOSE: FILL IN THE UI TREE.
 
-classVar=getappdata(fig,class); % Get the variable that stores all instances of a specific class.
+slash=filesep;
+commonPath=getCommonPath(fig);
+classFolder=[commonPath slash class];
+classVar=loadClassVar(fig,classFolder);
+% classVar=getappdata(fig,class); % Get the variable that stores all instances of a specific class.
 
 %% Get all of the existing nodes' text. The node text is equal to its file name.
 nodes=uiTree.Children;

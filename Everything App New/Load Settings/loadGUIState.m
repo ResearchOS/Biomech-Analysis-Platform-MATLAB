@@ -63,6 +63,7 @@ allLogsheetsUITreeSelectionChanged(fig);
 %% Process tab
 allVariablesUITreeSelectionChanged(fig);
 allProcessUITreeSelectionChanged(fig);
+allGroupsUITreeSelectionChanged(fig);
 % All variables UI tree
 % handles.Process.sortVariablesDropDown.Value=guiSettings.Process.SortMethod;
 % sortUITree(handles.Process.allVarsUITree,handles.Process.sortVariablesDropDown.Value);

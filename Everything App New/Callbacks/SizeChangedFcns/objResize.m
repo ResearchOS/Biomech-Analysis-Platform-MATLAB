@@ -13,4 +13,8 @@ end
 
 obj.Position=pos;
 
-obj.FontSize=newFontSize;
+try
+    obj.FontSize=newFontSize;
+catch
+
+end

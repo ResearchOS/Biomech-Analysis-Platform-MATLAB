@@ -4,7 +4,7 @@ function []=oopgui()
 tic;
 slash=filesep;
 
-classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet'}; % One folder for each object type
+classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup'}; % One folder for each object type
 
 %% Ensure that there's max one figure open
 a=evalin('base','whos;');
@@ -53,25 +53,36 @@ if isempty(projects)
     createProjectStruct(fig,'Default');
 end
 
+%% If there are no existing process group settings files, then create a 'Default' group
+processGroups=getClassFilenames(fig,'ProcessGroup');
+if isempty(processGroups)
+    createProcessGroupStruct(fig,'Default');
+end
+
 %% Load all existing settings for objects/classes (i.e. not GUI object settings)
 % Stored in the user-specified common path
-for i=1:length(classNames)
-    class=classNames{i};
-    classFolder=[commonPath slash class];
-
-    classVar=loadClassVar(fig,classFolder);
-    setappdata(fig,class,classVar); % Store the class data to the figure. Empty structs indicate that there were no files in that folder.
-end
+% for i=1:length(classNames)
+%     class=classNames{i};
+%     classFolder=[commonPath slash class];
+% 
+%     classVar=loadClassVar(fig,classFolder);
+%     setappdata(fig,class,classVar); % Store the class data to the figure. Empty structs indicate that there were no files in that folder.
+% end
 
 %% Fill the UI trees with their correct values
 sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 
     handles.Process.sortVariablesDropDown; handles.Process.sortProcessDropDown;
-    handles.Plot.sortPlotsDropDown; handles.Plot.sortComponentsDropDown];
+    handles.Plot.sortPlotsDropDown; handles.Plot.sortComponentsDropDown;
+    handles.Process.sortGroupsDropDown];
 uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree;
     handles.Process.allVariablesUITree; handles.Process.allProcessUITree;
-    handles.Plot.allPlotsUITree; handles.Plot.allComponentsUITree];
+    handles.Plot.allPlotsUITree; handles.Plot.allComponentsUITree;
+    handles.Process.allGroupsUITree];
 % classNamesUITrees={'Variable','Plot','PubTable','StatsTable','Component','Variable','Project','Logsheet'}; % One folder for each object type
-classNamesUITrees={'Project','Logsheet','Variable','Process','Plot','Component'};
+classNamesUITrees={'Project','Logsheet',...
+    'Variable','Process',...
+    'Plot','Component',...
+    'ProcessGroup'};
 
 for i=1:length(classNamesUITrees)
     class=classNamesUITrees{i};

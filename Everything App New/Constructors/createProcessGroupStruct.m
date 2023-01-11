@@ -1,8 +1,10 @@
-function []=createProcessGroupStruct(fig,name)
+function [struct]=createProcessGroupStruct(fig,name)
 
 %% PURPOSE: CREATE A NEW PROCESSING GROUP
 
 struct.Name=name;
+
+struct.Type='ProcessGroup';
 
 id=createID(fig,'ProcessGroup');
 struct.ID=id;
@@ -26,7 +28,8 @@ struct.Project={currentProject};
 
 struct.SpecifyTrials='';
 
-struct.ExecutionList={}; % List of functions/groups to execute.
+struct.ExecutionListNames={}; % List of functions/groups to execute.
+struct.ExecutionListTypes={};
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
@@ -41,15 +44,15 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 
 saveClass(fig,'ProcessGroup',struct);
 
-classVar=getappdata(fig,'ProcessGroup');
-
-if isempty(classVar)
-    classVar=struct;
-else
-    classVar(end+1)=struct;
-end
-
-setappdata(fig,'ProcessGroup',classVar);
+% classVar=getappdata(fig,'ProcessGroup');
+% 
+% if isempty(classVar)
+%     classVar=struct;
+% else
+%     classVar(end+1)=struct;
+% end
+% 
+% setappdata(fig,'ProcessGroup',classVar);
 
 %% Assign the newly created variable struct to the current project struct.
 assignToProject(fig,struct,'ProcessGroup');

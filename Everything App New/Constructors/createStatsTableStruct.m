@@ -4,6 +4,8 @@ function [struct]=createStatsTableStruct(fig,name)
 
 struct.Name=name;
 
+struct.Type='StatsTable';
+
 id=createID(fig,'StatsTable');
 struct.ID=id;
 

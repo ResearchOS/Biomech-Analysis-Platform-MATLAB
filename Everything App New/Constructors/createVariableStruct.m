@@ -16,6 +16,8 @@ function [struct]=createVariableStruct(fig,name)
 
 struct.Name=name;
 
+struct.Type='Variable';
+
 id=createID(fig,'Variable');
 struct.ID=id;
 

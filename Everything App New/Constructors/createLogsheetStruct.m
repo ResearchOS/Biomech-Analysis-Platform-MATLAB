@@ -17,6 +17,8 @@ function [struct]=createLogsheetStruct(fig,name)
 
 struct.Name=name;
 
+struct.Type='Logsheet';
+
 id=createID(fig,'Logsheet');
 struct.ID=id;
 

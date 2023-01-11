@@ -1,0 +1,26 @@
+{
+  "Name": "Default",
+  "Type": "ProcessGroup",
+  "ID": "082633",
+  "DateCreated": "10-Jan-2023 18:58:56",
+  "DateModified": "10-Jan-2023 18:58:56",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Projects"
+  ],
+  "SpecifyTrials": "",
+  "ExecutionListNames": [
+    "Test_ADC196_46E"
+  ],
+  "ExecutionListTypes": [
+    "Process"
+  ],
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": true,
+  "Visible": true,
+  "Text": "Default_082633",
+  "Parent": ""
+}

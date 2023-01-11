@@ -19,6 +19,7 @@ end
 currFolder=fileparts(mfilename('fullpath'));
 addpath(genpath(currFolder));
 
+%% FOR TESTING ONLY, REMOVE SOON!
 rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
 
 %% Create the figure
@@ -41,33 +42,58 @@ assignin('base','gui',fig); % Put the GUI object into the base workspace.
 % The common path, which contains all the instances of the settings
 % variables. This path should be in its own GitHub repository.
 commonPath=getCommonPath(fig);
-addpath(genpath(commonPath)); % Ensure that the class folders are on the search path.
+initializeClassFolders(classNames,commonPath);
 
 handles.Settings.commonPathEditField.Value=commonPath;
 
-rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
+%% FOR TESTING ONLY, REMOVE SOON!
+% rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
 
 %% If there are no existing project settings files, then create a 'Default' project
+rootSettingsFile=getRootSettingsFile();
+% 1. Does root settings file exist? YES BECAUSE OF THE COMMON PATH
+% 2. Does Current_Project_Name exist in the root settings file?
+% 3. Is there a PI projectStruct file?
+settingsVarNames=whos('-file',rootSettingsFile);
+settingsVarNames={settingsVarNames.name};
+
+ % 3.
 projects=getClassFilenames(fig,'Project');
 if isempty(projects)
-    createProjectStruct(fig,'Default');
+    projectStruct=createProjectStruct(fig,'Default');  
+    Current_Project_Name=projectStruct.Text;
+    save(rootSettingsFile,'Current_Project_Name','-append');
+    settingsVarNames=[settingsVarNames {'Current_Project_Name'}];
+end
+
+% 2.
+if ~ismember('Current_Project_Name',settingsVarNames)
+    projects=getClassFilenames(fig,'Project');
+    Current_Project_Name=projects{1};
+    Current_Project_Name=Current_Project_Name(9:end-5); % Remove 'Project' prefix and '.json' suffix
+    save(rootSettingsFile,'Current_Project_Name','-append');
 end
 
 %% If there are no existing process group settings files, then create a 'Default' group
+% 1. Does Current_ProcessGroup_Name exist in the root settings file?
+% 2. Is there a PI processGroup file?
+
+% 1. 
 processGroups=getClassFilenames(fig,'ProcessGroup');
-if isempty(processGroups)
-    createProcessGroupStruct(fig,'Default');
+if isempty(processGroups)    
+    processGroupStruct=createProcessGroupStruct(fig,'Default');
+    Current_ProcessGroup_Name=processGroupStruct.Text;
+    save(rootSettingsFile,'Current_ProcessGroup_Name','-append');    
+    settingsVarNames=[settingsVarNames {'Current_ProcessGroup_Name'}];
 end
 
-%% Load all existing settings for objects/classes (i.e. not GUI object settings)
-% Stored in the user-specified common path
-% for i=1:length(classNames)
-%     class=classNames{i};
-%     classFolder=[commonPath slash class];
-% 
-%     classVar=loadClassVar(fig,classFolder);
-%     setappdata(fig,class,classVar); % Store the class data to the figure. Empty structs indicate that there were no files in that folder.
-% end
+% 2. 
+if ~ismember('Current_ProcessGroup_Name',settingsVarNames)
+    processGroups=getClassFilenames(fig,'ProcessGroup');
+    Current_ProcessGroup_Name=processGroups{1};
+    Current_ProcessGroup_Name=Current_ProcessGroup_Name(14:end-5); % Remove 'ProcessGroup' prefix and '.json' suffix
+    save(rootSettingsFile,'Current_ProcessGroup_Name','-append');
+end
 
 %% Fill the UI trees with their correct values
 sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 
@@ -78,7 +104,6 @@ uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree;
     handles.Process.allVariablesUITree; handles.Process.allProcessUITree;
     handles.Plot.allPlotsUITree; handles.Plot.allComponentsUITree;
     handles.Process.allGroupsUITree];
-% classNamesUITrees={'Variable','Plot','PubTable','StatsTable','Component','Variable','Project','Logsheet'}; % One folder for each object type
 classNamesUITrees={'Project','Logsheet',...
     'Variable','Process',...
     'Plot','Component',...

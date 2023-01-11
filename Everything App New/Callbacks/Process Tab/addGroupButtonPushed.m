@@ -16,4 +16,6 @@ createProcessGroupStruct(fig,groupName);
 searchTerm=getSearchTerm(handles.Process.groupsSearchField);
 
 fillUITree(fig,'ProcessGroup',handles.Process.allGroupsUITree, ...
-    searchTerm,handles.Process.sortGroupDropDown);
+    searchTerm,handles.Process.sortGroupsDropDown);
+
+figure(fig);

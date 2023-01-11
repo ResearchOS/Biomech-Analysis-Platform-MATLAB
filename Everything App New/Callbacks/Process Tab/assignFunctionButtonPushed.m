@@ -5,27 +5,38 @@ function []=assignFunctionButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-selNode=handles.Process.allFunctionsUITree.SelectedNodes;
+selNode=handles.Process.allProcessUITree.SelectedNodes;
 
 if isempty(selNode)
     return;
 end
 
-currGroup=
+% fcn=selNode.Text;
 
-fullPath=getClassFilePath(selNode.Text,'ProcessGroup');
-struct=loadJSON(fullPath);
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_ProcessGroup_Name');
+
+% Get the currently selected group struct.
+fullPath=getClassFilePath(Current_ProcessGroup_Name,'ProcessGroup',fig);
+groupStruct=loadJSON(fullPath);
 
 % List is a Nx2, with the first column being "Process" or "ProcessGroup", 2nd
 % column is the name
-list=struct.ExecutionList; % Execute these functions/groups in this order.
+names=groupStruct.ExecutionListNames; % Execute these functions/groups in this order.
+types=groupStruct.ExecutionListTypes;
 
-processName=selNode.Text;
+processName=selNode.Text; % Without project-specific ID.
 
-list=[list; {'Process', processName}];
+psid=createPSID(fig, processName, 'Process');
 
-struct.ExecutionList=list;
+processName=[processName '_' psid];
 
-saveClass(fig,'ProcessGroup',struct);
+names=[names; {processName}];
+types=[types; {'Process'}];
+
+groupStruct.ExecutionListNames=names;
+groupStruct.ExecutionListTypes=types;
+
+saveClass(fig,'ProcessGroup',groupStruct);
 
 fillProcessGroupUITree(fig);

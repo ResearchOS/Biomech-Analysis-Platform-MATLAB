@@ -111,7 +111,7 @@ objResize(tab.allGroupsUITree, [0.01 0.01], [0.29 0.8]);
 objResize(tab.groupsSearchField, [0.01 0.85], [0.15 compHeight]);
 
 % Assign group button
-objResize(tab.assignGroupButton, [0.3 0.5], [0.3 compHeight]);
+objResize(tab.assignGroupButton, [0.3 0.5], [0.03 compHeight]);
 
 % Unassign group button
 objResize(tab.unassignGroupButton, [0.3 0.4], [0.03 compHeight]);
@@ -129,7 +129,7 @@ objResize(tab.subtabCurrent, [0.35 0.01], [0.4 0.95]);
 objResize(tab.runButton, [0.9 0.95], [0.05 compHeight]);
 
 % 26. Group UI tree
-objResize(tab.groupUITree, [0.01 0.01], [0.35 0.85]);
+objResize(tab.groupUITree, [0.01 0.01], [0.35 0.8]);
 
 % 27. Function UI tree
 objResize(tab.functionUITree, [0.01 0.01], [0.39 0.8]);
@@ -142,3 +142,9 @@ objResize(tab.removeFromQueueButton, [0.365 0.65], [0.03 compHeight]);
 
 % 30. Save as new group button
 objResize(tab.saveAsNewGroupButton, [0.33 0.1], [0.07 2*compHeight]);
+
+% 31. Select group button
+objResize(tab.selectGroupButton, [0.3 0.3], [0.03 compHeight]);
+
+% 32. Current group name label
+objResize(tab.currentGroupLabel, [0.01 0.83], [0.1 compHeight]);

@@ -4,6 +4,8 @@ function []=createPubTableStruct(fig,name)
 
 struct.Name=name;
 
+struct.Type='PubTable';
+
 id=createID(fig,'Process');
 struct.ID=id;
 

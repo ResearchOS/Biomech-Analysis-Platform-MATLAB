@@ -5,43 +5,19 @@ handles=getappdata(fig,'handles');
 
 slash=filesep;
 
-root=userpath;
+rootSettingsFile=getRootSettingsFile();
 
-rootSettingsFolder=[root slash 'PGUI Settings'];
-commonPathFile=[rootSettingsFolder slash 'Settings.mat'];
+commonPath=uigetdir(cd,'Select Path to Save Settings');
 
-commonPath=0;
-while commonPath==0
-    commonPath=uigetdir(cd,'Select Path to Save Settings');
+if commonPath==0
+    commonPath=userpath; % If no common path is selected, it will just default to the MATLAB default userpath.
 end
 
-if ~isfolder(rootSettingsFolder)
-    mkdir(rootSettingsFolder);
-end
-
-save(commonPathFile,'commonPath','-v6');
-
-% %% Initialize the projectNames .mat file - what was this supposed to do
-% again?
-% projectsMetadata=struct([]);
-% projectNamesPath=[commonPath slash 'projectsMetadata.mat'];
-% if ~isfile(projectNamesPath)
-%     save(projectNamesPath,'projectsMetadata','-v6');
-% end
+save(rootSettingsFile,'commonPath','-v6');
 
 %% Create the class variables folders if they do not already exist.
 classNames=getappdata(fig,'classNames');
-for i=1:length(classNames)
-    className=classNames{i};
-
-    classFolder=[commonPath slash className];
-
-    if ~isfolder(classFolder)
-        mkdir(classFolder);
-    end
-
-    addpath(genpath(classFolder));
-end
+initializeClassFolders(classNames,commonPath);
 
 %% Put the common path into the edit field
 handles.Settings.commonPathEditField.Value=commonPath;

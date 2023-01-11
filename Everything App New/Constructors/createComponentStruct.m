@@ -4,6 +4,8 @@ function []=createComponentStruct(fig,name)
 
 struct.Name=name;
 
+struct.Type='Component';
+
 id=createID(fig,'Component');
 struct.ID=id;
 

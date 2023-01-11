@@ -17,3 +17,5 @@ searchTerm=getSearchTerm(handles.Process.processSearchField);
 
 fillUITree(fig,'Process',handles.Process.allProcessUITree,...
     searchTerm,handles.Process.sortProcessDropDown);
+
+figure(fig);

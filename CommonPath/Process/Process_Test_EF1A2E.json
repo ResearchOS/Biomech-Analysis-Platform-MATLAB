@@ -1,13 +1,14 @@
 {
   "Name": "Test",
-  "ID": "18F869",
-  "DateCreated": "03-Jan-2023 15:13:26",
-  "DateModified": "03-Jan-2023 15:13:26",
+  "Type": "Proces",
+  "ID": "EF1A2E",
+  "DateCreated": "10-Jan-2023 17:29:03",
+  "DateModified": "10-Jan-2023 17:29:03",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
   "Project": [
-    "Default_6E97A8"
+    "Default_6BF88C"
   ],
   "SpecifyTrials": "",
   "InputVariables": [],
@@ -15,7 +16,7 @@
   "Archived": false,
   "OutOfDate": true,
   "Checked": false,
-  "Visible": true,
-  "Text": "Test_18F869",
+  "Visible": false,
+  "Text": "Test_EF1A2E",
   "Parent": ""
 }

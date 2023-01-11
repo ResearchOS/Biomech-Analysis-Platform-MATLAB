@@ -1,12 +1,12 @@
-function [fullPath]=getClassFilePath(selNode,class)
+function [fullPath]=getClassFilePath(selNode,class,src)
 
 %% PURPOSE: GET THE CLASS FULL FILE PATH FROM THE SELECTED NODE
 
-fig=ancestor(selNode,'figure','toplevel');
-handles=getappdata(fig,'handles');
-
 if ~ischar(selNode)
     parent=selNode.Parent;
+
+    fig=ancestor(selNode,'figure','toplevel');
+    handles=getappdata(fig,'handles');
 
     switch parent
         case handles.Projects.allProjectsUITree
@@ -19,14 +19,16 @@ if ~ischar(selNode)
             class='Plot';
         case handles.Plot.allComponentsUITree
             class='Component';
-        case handles.Stats.allStatsUITree
-            class='Stats';
         case handles.Process.allGroupsUITree
             class='ProcessGroup';
+        case handles.Stats.allStatsUITree
+            class='Stats';        
     end
 
     file=selNode.Text;
-elseif nargin==2
+elseif nargin==3
+    fig=ancestor(src,'figure','toplevel');
+    handles=getappdata(fig,'handles');
     file=selNode; % Node text specified directly
 end
 

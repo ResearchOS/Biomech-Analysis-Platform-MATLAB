@@ -5,7 +5,10 @@ function []=assignToProject(fig,struct,class)
 slash=filesep;
 
 handles=getappdata(fig,'handles');
-currentProject=handles.Projects.projectsLabel.Text;
+
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
+currentProject=Current_Project_Name;
 
 commonPath=getCommonPath(fig);
 projectClassFolder=[commonPath slash 'Project'];
@@ -19,5 +22,5 @@ end
 
 saveClass(fig,'Project',projectStruct);
 
-classVar=loadClassVar(fig,projectClassFolder);
-setappdata(fig,'Project',classVar);
+% classVar=loadClassVar(fig,projectClassFolder);
+% setappdata(fig,'Project',classVar);

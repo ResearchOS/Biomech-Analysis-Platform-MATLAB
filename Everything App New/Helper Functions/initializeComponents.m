@@ -361,6 +361,12 @@ handles.Process.removeFromQueueButton=uibutton(handles.Process.currentGroupTab,'
 % 30. Save as new group button
 handles.Process.saveAsNewGroupButton=uibutton(handles.Process.currentGroupTab,'push','Text',{'Save As','New Group'},'ButtonPushedFcn',@(saveAsNewGroupButton,event) saveAsNewGroupButtonPushed(saveAsNewGroupButton));
 
+% 31. Select group button
+handles.Process.selectGroupButton=uibutton(handles.Process.groupsTab,'push','Text','Sel','ButtonPushedFcn',@(selectGroupButton,event) selectGroupButtonPushed(selectGroupButton));
+
+% 32. Current group label
+handles.Process.currentGroupLabel=uilabel(handles.Process.currentGroupTab,'Text','Current Group','FontWeight','bold');
+
 handles.Process.subtabCurrent.SelectedTab=handles.Process.currentGroupTab;
 setappdata(fig,'handles',handles);
 processResize(fig);
@@ -811,7 +817,7 @@ handles.Settings.commonPathButton=uibutton(settingsTab,'push','Text','Common Pat
 handles.Settings.commonPathEditField=uieditfield(settingsTab,'Value','','Tag','CommonPathEditField','ValueChangedFcn',@(commonPathEditField,event) commonPathEditFieldValueChanged(commonPathEditField));
 
 % 4. Open common path button
-handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Tag','OpenCommonPathButton','ButtonPushedFcn',@(openCommonPathButton,event) openCommonPathButtoPushed(openCommonPathButton));
+handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Tag','OpenCommonPathButton','ButtonPushedFcn',@(openCommonPathButton,event) openCommonPathButtonPushed(openCommonPathButton));
 
 setappdata(fig,'handles',handles);
 settingsResize(fig);

@@ -4,6 +4,8 @@ function [struct]=createProcessStruct(fig,name)
 
 struct.Name=name;
 
+struct.Type='Proces';
+
 id=createID(fig,'Process');
 struct.ID=id;
 

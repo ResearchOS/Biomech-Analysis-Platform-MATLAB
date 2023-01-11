@@ -12,3 +12,9 @@ if isempty(selNode)
 end
 
 handles.Projects.projectsLabel.Text=selNode.Text;
+
+rootSettingsFile=getRootSettingsFile();
+
+Current_Project_Name=selNode.Text;
+
+save(rootSettingsFile,'Current_Project_Name','-append');

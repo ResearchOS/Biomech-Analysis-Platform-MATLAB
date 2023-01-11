@@ -17,3 +17,5 @@ searchTerm=getSearchTerm(handles.Process.variablesSearchField);
 
 fillUITree(fig,'Variable',handles.Process.allVariablesUITree, ...
     searchTerm,handles.Process.sortVariablesDropDown);
+
+figure(fig);

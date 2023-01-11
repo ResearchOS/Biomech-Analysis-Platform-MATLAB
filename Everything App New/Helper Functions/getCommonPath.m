@@ -2,12 +2,7 @@ function [commonPath]=getCommonPath(fig)
 
 %% PURPOSE: RETURN THE PATH TO THE DIRECTORY WHERE THE PGUI SETTINGS FILES ARE STORED.
 
-slash=filesep;
-
-root=userpath;
-
-rootSettingsFolder=[root slash 'PGUI Settings'];
-rootSettingsFile=[rootSettingsFolder slash 'Settings.mat'];
+rootSettingsFile=getRootSettingsFile();
 
 %% Root settings simply contains the path to where all of the Settings variables are stored.
 try

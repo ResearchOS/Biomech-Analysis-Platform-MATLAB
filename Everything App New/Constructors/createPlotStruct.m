@@ -16,6 +16,8 @@ function [struct]=createPlotStruct(fig,name)
 
 struct.Name=name;
 
+struct.Type='Plot';
+
 id=createID(fig,'Plot');
 struct.ID=id;
 

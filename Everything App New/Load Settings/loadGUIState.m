@@ -20,32 +20,16 @@ handles=getappdata(fig,'handles');
 
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
 
+rootSettingsFile=getRootSettingsFile();
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab
-currentProjectButtonPushed(fig);
+load(rootSettingsFile,'Current_Project_Name');
+selectNode(handles.Projects.allProjectsUITree, Current_Project_Name);
 
 % Bring up the current project's project & data paths.
 allProjectsUITreeSelectionChanged(fig);
-
-
-% currProject=handles.Projects.projectsLabel.Text;
-% project=getappdata(fig,'Project');
-% projectIdx=ismember({project.Text},currProject);
-% 
-% computerID=getComputerID();
-% 
-% handles.Projects.projectPathField.Value=project(projectIdx).ProjectPath.(computerID);
-% handles.Projects.dataPathField.Value=project(projectIdx).DataPath.(computerID);
-% 
-% 
-% handles.Projects.sortProjectsDropDown.Value=guiSettings.Projects.SortMethod;
-% sortUITree(handles.Projects.allProjectsUITree,handles.Projects.sortProjectsDropDown.Value);
-% currProjNode=findobj(handles.Projects.allProjectsUITree,'Text',guiSettings.Projects.CurrentProject);
-% handles.Projects.allProjectsUITree.SelectedNodes=currProjNode;
-% 
-% checkedNodes=findobj(handles.Projects.allProjectsUITree,'Text',guiSettings.Projects.CheckedProjects);
-% handles.Projects.allProjectsUITree.CheckedNodes=checkedNodes;
-% allProjectsUITreeCheckedNodesChanged(fig);
+currentProjectButtonPushed(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Import tab
@@ -61,6 +45,9 @@ allLogsheetsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Process tab
+load(rootSettingsFile,'Current_ProcessGroup_Name');
+selectNode(handles.Process.allGroupsUITree, Current_ProcessGroup_Name);
+selectGroupButtonPushed(fig); % Fills the current group UI tree
 allVariablesUITreeSelectionChanged(fig);
 allProcessUITreeSelectionChanged(fig);
 allGroupsUITreeSelectionChanged(fig);

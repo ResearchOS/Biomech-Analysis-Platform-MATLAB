@@ -1,26 +1,22 @@
 {
   "Name": "Default",
   "Type": "ProcessGroup",
-  "ID": "082633",
-  "DateCreated": "10-Jan-2023 18:58:56",
-  "DateModified": "10-Jan-2023 18:58:56",
+  "ID": "572385",
+  "DateCreated": "11-Jan-2023 16:41:19",
+  "DateModified": "11-Jan-2023 16:41:19",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
   "Project": [
-    "Projects"
+    "Default_F341C0"
   ],
   "SpecifyTrials": "",
-  "ExecutionListNames": [
-    "Test_ADC196_46E"
-  ],
-  "ExecutionListTypes": [
-    "Process"
-  ],
+  "ExecutionListNames": [],
+  "ExecutionListTypes": [],
   "Archived": false,
   "OutOfDate": true,
   "Checked": true,
   "Visible": true,
-  "Text": "Default_082633",
+  "Text": "Default_572385",
   "Parent": ""
 }

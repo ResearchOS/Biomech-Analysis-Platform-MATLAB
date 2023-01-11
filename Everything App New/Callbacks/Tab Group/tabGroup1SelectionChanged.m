@@ -6,81 +6,15 @@ function []=tabGroup1SelectionChanged(src,currTab)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
-% 
-% settingsMATPath=getappdata(fig,'settingsMATPath'); % Get the project-independent MAT file path
-% 
-% if exist(settingsMATPath,'file')==2
-%     settingsVarNames=whos('-file',settingsMATPath);
-%     settingsVarNames={settingsVarNames.name};
-% end
-% 
-% if exist('tabName','var')~=1
-%     currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
-%     runLog=true;
-% else
-%     handles.Tabs.tabGroup1.SelectedTab=findobj(handles.Tabs.tabGroup1,'Title',currTab);
-%     drawnow;
-%     runLog=false;
-% end
-% 
-% if exist(settingsMATPath,'file')~=2
-%     prevTab='Projects';
-% elseif exist(settingsMATPath,'file')==2 && ~ismember('currTab',settingsVarNames)
-%     prevTab='Projects';
-% else
-%     prevTab=load(settingsMATPath,'currTab');
-%     prevTab=prevTab.currTab;
-% end
-% 
-% if getappdata(fig,'allowAllTabs')==2 % All tabs
-%     okTabs={'Projects','Import','Process','Plot','Stats','Settings','Exemplar'};
-% elseif getappdata(fig,'allowAllTabs')==1 % Projects & Import tabs only
-%     okTabs={'Projects','Import'};
-% elseif getappdata(fig,'allowAllTabs')==0 % Projects tab only
-%     okTabs={'Projects'};
-% else
-%     okTabs={};
-% end
-% 
-% if ~ismember(currTab,okTabs)
-%     handles.Tabs.tabGroup1.SelectedTab=handles.(prevTab).Tab;
-%     currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
-%     drawnow;
-% end
 
-currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
+existProjectPath=getappdata(fig,'projectPath');
 
-% zoom(handles.Process.mapFigure,'off');
-% for i=1:length(handles.Plot.plotPanel.Children)
-%     zoom(handles.Plot.plotPanel.Children(i),'off');
-%     pan(handles.Plot.plotPanel.Children(i),'off');
-% end
-% pan(handles.Process.mapFigure,'off');
-% dcm=datacursormode(fig);
-% dcm.Enable='off';
-% switch currTab
-%     case 'Import'
-%         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-%     case 'Process'           
-%         set(fig,'WindowButtonDownFcn',@(fig,event) windowButtonDownFcn(fig),'WindowButtonUpFcn',@(fig,event) windowButtonUpFcn(fig));
-%     case 'Plot'
-%         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-%     case 'Projects'
-%         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-%     case 'Stats'
-%         set(fig,'WindowButtonDownFcn',@(fig,event) nullButtonUpFcn(fig),'WindowButtonUpFcn',@(fig,event) nullButtonUpFcn(fig));
-%     otherwise
-% 
-% end
+if existProjectPath==1
+    return;
+end
 
-% if exist(settingsMATPath,'file')~=2
-%     save(settingsMATPath,'currTab','-mat','-v6');
-% else
-%     save(settingsMATPath,'currTab','-mat','-append'); % Save the most recent (i.e. current) project name, and the project's settings struct with the path name to the code folder
-% end
-% 
-% if runLog
-%     tabName=currTab;
-%     desc='Changed tabs';
-%     updateLog(fig,desc,tabName);
-% end
+path=getProjectPath(fig);
+
+if isempty(path)
+    handles.Tabs.tabGroup1.SelectedTab=handles.Projects.Tab;
+end

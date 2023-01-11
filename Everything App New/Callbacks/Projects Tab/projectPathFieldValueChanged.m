@@ -46,3 +46,5 @@ for i=1:length(classNames)
 end
 
 warning('on','MATLAB:MKDIR:DirectoryExists');
+
+setappdata(fig,'existProjectPath',true);

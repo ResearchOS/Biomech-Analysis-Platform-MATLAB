@@ -11,11 +11,22 @@ if isempty(groupNode)
     return;
 end
 
-Current_ProcessGroup_Name=groupNode.Text;
-
 rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_ProcessGroup_Name');
 
-save(rootSettingsFile,'Current_ProcessGroup_Name','-append');
+projectPath=getProjectPath(fig);
+if isempty(projectPath)
+    return;
+end
+
+slash=filesep;
+%% Create project-specific processing group file if one does not exist already.
+names=getClassFilenames(fig,'ProcessGroup',[projectPath slash 'Project_Settings']);
+if ~contains(Current_ProcessGroup_Name,names)
+    psStruct=createPSProcessGroupStruct(fig);
+    Current_ProcessGroup_Name=psStruct.Text;
+    save(rootSettingsFile,'Current_ProcessGroup_Name','-append');
+end
 
 handles.Process.currentGroupLabel.Text=Current_ProcessGroup_Name;
 

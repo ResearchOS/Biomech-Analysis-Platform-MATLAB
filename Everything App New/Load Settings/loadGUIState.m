@@ -21,6 +21,10 @@ handles=getappdata(fig,'handles');
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
 
 rootSettingsFile=getRootSettingsFile();
+existProjectPath=getappdata(fig,'existProjectPath');
+if existProjectPath
+    projectSettingsFile=getProjectSettingsFile(fig);
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab
@@ -45,9 +49,12 @@ allLogsheetsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Process tab
-load(rootSettingsFile,'Current_ProcessGroup_Name');
-selectNode(handles.Process.allGroupsUITree, Current_ProcessGroup_Name);
-selectGroupButtonPushed(fig); % Fills the current group UI tree
+if existProjectPath
+    projectSettings=loadJSON(projectSettingsFile);
+    Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;    
+%     selectNode(handles.Process.groupUITree, Current_ProcessGroup_Name);
+%     selectGroupButtonPushed(fig); % Fills the current group UI tree
+end
 allVariablesUITreeSelectionChanged(fig);
 allProcessUITreeSelectionChanged(fig);
 allGroupsUITreeSelectionChanged(fig);

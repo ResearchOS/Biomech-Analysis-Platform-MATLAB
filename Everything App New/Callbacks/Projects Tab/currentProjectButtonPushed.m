@@ -18,3 +18,12 @@ rootSettingsFile=getRootSettingsFile();
 Current_Project_Name=selNode.Text;
 
 save(rootSettingsFile,'Current_Project_Name','-append');
+
+%% Indicates whether tabs besides the projects tab can be used.
+projectPath=getProjectPath(fig);
+
+if isempty(projectPath)
+    setappdata(fig,'existProjectPath',false);
+else
+    setappdata(fig,'existProjectPath',true);
+end

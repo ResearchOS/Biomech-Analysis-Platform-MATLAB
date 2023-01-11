@@ -1,0 +1,42 @@
+{
+  "Type": "Project",
+  "Name": "Default",
+  "ID": "F341C0",
+  "DateCreated": "11-Jan-2023 15:07:17",
+  "DateModified": "11-Jan-2023 15:07:17",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Variable": [],
+  "Logsheet": [],
+  "Plot": [],
+  "StatsTable": [],
+  "PubTable": [],
+  "Process": [],
+  "Component": [],
+  "ProcessGroup": [
+    "Default_08D176",
+    "Default_70518D",
+    "Default_61ADD1",
+    "Default_C3F8E8",
+    "Default_CB9238",
+    "Default_2FD6E2",
+    "Default_A574C5",
+    "Default_C13325",
+    "Default_AE00FE",
+    "Default_29A0ED",
+    "Default_7F94C9",
+    "Default_572385"
+  ],
+  "DataPath": {
+    "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": ""
+  },
+  "ProjectPath": {
+    "ether740x3A8f0x3A3c0x3Abc0x3A3d0x3Aed": "/Users/mitchelltillman/Desktop/Stevens_Classes_Research/All Research/Research Projects/Spr22RoleofEachGaitPhase"
+  },
+  "Visible": true,
+  "OutOfDate": true,
+  "Checked": true,
+  "Text": "Default_F341C0",
+  "Parent": ""
+}

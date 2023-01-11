@@ -13,21 +13,24 @@ if isempty(projectNode)
     return;
 end
 
-classVar=getappdata(fig,'Project');
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
 
-idx=ismember({classVar.Text},projectNode.Text);
+if isequal(Current_Project_Name,projectNode.Text)
+    disp('Cannot remove the current project! Select another project to remove this one.');
+    return;
+end
 
-assert(any(idx));
+fullPath=getClassFilePath(projectNode, 'Project');
+struct=loadJSON(fullPath);
 
-idxNum=find(idx==1);
+struct.Checked=false;
 
-classVar(idx).Checked=false;
+struct.Visible=false;
 
-classVar(idx).Visible=false;
+saveClass(fig,'Project',struct);
 
-setappdata(fig,'Project',classVar);
-
-saveClass(fig,'Project',classVar(idx));
+idxNum=find(ismember(projectNode,uiTree.Children)==1);
 
 delete(projectNode);
 

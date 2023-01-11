@@ -1,22 +1,22 @@
-function [struct]=createProcessGroupStruct(fig,name)
+function [struct]=createPSProcessGroupStruct(fig, piStruct)
 
-%% PURPOSE: CREATE A NEW PROCESSING GROUP
+%% PURPOSE: CREATE A PROJECT-SPECIFIC STRUCT BASED ON A PROJECT-INDEPENDENT STRUCT.
 
-struct.Name=name;
+struct.Name=piStruct.Name;
 
 struct.Type='ProcessGroup';
 
-id=createID(fig,'ProcessGroup');
-struct.ID=id;
+psid=createPSID(fig, piStruct.Text, 'ProcessGroup');
+struct.ID=psid;
 
 currDate=datetime('now');
 struct.DateCreated=currDate;
 struct.DateModified=currDate;
 
-user='MT'; % Stand-in for username
+user='MT';
 struct.CreatedBy=user;
 
-user2=user; % Stand-in for username
+user2=user;
 struct.LastModifiedBy=user2;
 
 struct.Description='';
@@ -39,10 +39,8 @@ struct.Checked=true; % Only one logsheet can be checked at any one time. Checked
 
 struct.Visible=true;
 
-struct.Text=[name '_' id];
+struct.Text=[piStruct.Text '_' psid];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass(fig,'ProcessGroup',struct);
+savePSClass(fig,'ProcessGroup',struct);
 
-%% Assign the newly created variable struct to the current project struct.
-assignToProject(fig,struct,'ProcessGroup');

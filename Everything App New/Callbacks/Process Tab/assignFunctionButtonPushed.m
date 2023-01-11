@@ -11,7 +11,10 @@ if isempty(selNode)
     return;
 end
 
-% fcn=selNode.Text;
+%% NEED TO CREATE PROJECT-SPECIFIC PROCESS FUNCTION
+% & ASSIGN IT TO PROJECT-SPECIFIC PROCESS GROUP.
+
+fcn=selNode.Text;
 
 rootSettingsFile=getRootSettingsFile();
 load(rootSettingsFile,'Current_ProcessGroup_Name');
@@ -39,4 +42,4 @@ groupStruct.ExecutionListTypes=types;
 
 saveClass(fig,'ProcessGroup',groupStruct);
 
-fillProcessGroupUITree(fig);
+uitreenode(handles.Process.groupUITree,'Text',processName);

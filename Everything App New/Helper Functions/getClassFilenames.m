@@ -1,15 +1,18 @@
-function [filenames]=getClassFilenames(fig,class)
+function [filenames]=getClassFilenames(fig,class,root)
 
 %% PURPOSE: RETURN ALL OF THE INSTANCES OF A CLASS IN THE CLASS FOLDER.
 % Inputs:
 % commonPath: the path containing all class folders (char)
 % class: the class folder to look in (char)
-
-commonPath=getCommonPath(fig);
+% root: the root project-specific folder, for project-specific instances (char)
 
 slash=filesep;
 
-classFolder=[commonPath slash class];
+if nargin==2
+    root=getCommonPath(fig);   
+end
+
+classFolder=[root slash class];
 
 listing=dir(classFolder);
 folders=[listing.isdir];

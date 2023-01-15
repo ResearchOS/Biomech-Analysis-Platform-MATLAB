@@ -24,6 +24,7 @@ rootSettingsFile=getRootSettingsFile();
 existProjectPath=getappdata(fig,'existProjectPath');
 if existProjectPath
     projectSettingsFile=getProjectSettingsFile(fig);
+    projectSettings=loadJSON(projectSettingsFile);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,19 +50,21 @@ allLogsheetsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Process tab
-if existProjectPath
-    projectSettings=loadJSON(projectSettingsFile);
-    Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;    
-%     selectNode(handles.Process.groupUITree, Current_ProcessGroup_Name);
-%     selectGroupButtonPushed(fig); % Fills the current group UI tree
+if existProjectPath    
+    handles.Process.currentGroupLabel.Text=projectSettings.Current_ProcessGroup_Name;
+    fillProcessGroupUITree(fig);
+    % Fill in queue.
+    % TODO: initialize the "ProcessQueue" field when the
+    % "Current_ProcessGroup_Name" field is initialized so I don't have to check if the field exists.
+    if isfield(projectSettings,'ProcessQueue')
+        for i=1:length(projectSettings.ProcessQueue)
+            uitreenode(handles.Process.queueUITree,'Text',projectSettings.ProcessQueue{i});
+        end
+    end
 end
 allVariablesUITreeSelectionChanged(fig);
 allProcessUITreeSelectionChanged(fig);
 allGroupsUITreeSelectionChanged(fig);
-% All variables UI tree
-% handles.Process.sortVariablesDropDown.Value=guiSettings.Process.SortMethod;
-% sortUITree(handles.Process.allVarsUITree,handles.Process.sortVariablesDropDown.Value);
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot tab

@@ -1,12 +1,12 @@
-function [struct]=createPSProcessGroupStruct(fig, piStruct)
+function [struct]=createProcessStruct_PS(fig,piStruct)
 
-%% PURPOSE: CREATE A PROJECT-SPECIFIC STRUCT BASED ON A PROJECT-INDEPENDENT STRUCT.
+%% PURPOSE: CREATE A PROJECT-SPECIFIC PROCESS FUNCTION STRUCT
 
 struct.Name=piStruct.Name;
 
-struct.Type='ProcessGroup';
+struct.Type='Process';
 
-psid=createPSID(fig, piStruct.Text, 'ProcessGroup');
+psid=createPSID(fig, piStruct.Text, 'Process');
 struct.ID=psid;
 
 currDate=datetime('now');
@@ -28,8 +28,12 @@ struct.Project={Current_Project_Name};
 
 struct.SpecifyTrials='';
 
-struct.ExecutionListNames={}; % List of functions/groups to execute.
-struct.ExecutionListTypes={};
+% Project-specific versions of variables being input & output from this
+% process function.
+struct.InputVariables={};
+struct.OutputVariables={};
+
+struct.UsedInGroups={};
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
@@ -42,5 +46,4 @@ struct.Visible=true;
 struct.Text=[piStruct.Text '_' psid];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-savePSClass(fig,'ProcessGroup',struct);
-
+saveClass_PS(fig,'Process',struct);

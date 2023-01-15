@@ -12,12 +12,9 @@ if isempty(path)
 end
 
 projectNode=handles.Projects.allProjectsUITree.SelectedNodes;
-% project=projectNode.Text;
 
 fullPath=getClassFilePath(projectNode,'Project');
 struct=loadJSON(fullPath);
-% classVar=getappdata(fig,'Project');
-% idx=ismember({classVar.Text},project);
 
 if exist(path,'dir')~=7
     disp('Specified path is not a directory or does not exist!');
@@ -27,8 +24,6 @@ end
 computerID=getComputerID();
 
 struct.ProjectPath.(computerID)=path;
-
-% setappdata(fig,'Project',classVar);
 
 saveClass(fig,'Project',struct);
 

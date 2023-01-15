@@ -11,16 +11,18 @@ if isempty(selNode)
     return;
 end
 
-%% NEED TO CREATE PROJECT-SPECIFIC PROCESS FUNCTION
-% & ASSIGN IT TO PROJECT-SPECIFIC PROCESS GROUP.
+% Create a new project-specific process version
+if isequal(selNode.Parent,handles.Process.allProcessUITree)
+    isNew=true;
+else
+    isNew=false;
+end
 
-fcn=selNode.Text;
-
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_ProcessGroup_Name');
+projectSettingsFile=getProjectSettingsFile(fig);
+Current_ProcessGroup_Name=loadJSON(projectSettingsFile,'Current_ProcessGroup_Name');
 
 % Get the currently selected group struct.
-fullPath=getClassFilePath(Current_ProcessGroup_Name,'ProcessGroup',fig);
+fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup',fig);
 groupStruct=loadJSON(fullPath);
 
 % List is a Nx2, with the first column being "Process" or "ProcessGroup", 2nd
@@ -30,16 +32,29 @@ types=groupStruct.ExecutionListTypes;
 
 processName=selNode.Text; % Without project-specific ID.
 
-psid=createPSID(fig, processName, 'Process');
+switch isNew
+    case true
+        processPath=getClassFilePath(processName, 'Process', fig);
+        piStruct=loadJSON(processPath);
+        processStruct=createProcessStruct_PS(fig,piStruct);
+    case false
+        processPath=getClassFilePath_PS(selNode.Text, 'Process', fig);
+        processStruct=loadJSON(processPath);
+end
 
-processName=[processName '_' psid];
-
-names=[names; {processName}];
+names=[names; {processStruct.Text}];
 types=[types; {'Process'}];
 
 groupStruct.ExecutionListNames=names;
 groupStruct.ExecutionListTypes=types;
 
-saveClass(fig,'ProcessGroup',groupStruct);
+processStruct.UsedInGroups=unique([processStruct.UsedInGroups; groupStruct.Text]);
 
-uitreenode(handles.Process.groupUITree,'Text',processName);
+saveClass_PS(fig,'ProcessGroup',groupStruct);
+saveClass_PS(fig,'Process',processStruct);
+
+uitreenode(handles.Process.groupUITree,'Text',processStruct.Text);
+
+if isNew
+    uitreenode(selNode,'Text',processStruct.Text);
+end

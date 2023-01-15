@@ -11,7 +11,7 @@ a=evalin('base','whos;');
 names={a.name};
 if ismember('gui',names)
     beep;
-    disp('GUI already open, two simultaneous PGUI windows is currently not supported');
+    disp('GUI already open, two simultaneous PGUI windows is not supported');
     return;
 end
 
@@ -23,11 +23,8 @@ addpath(genpath(currFolder));
 rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
 
 %% Create the figure
-fig=uifigure('Name','pgui',...
-    'Visible','on',...
-    'Resize','on',...
-    'AutoResizeChildren','off',...
-    'SizeChangedFcn',@appResize);
+fig=uifigure('Name','pgui','Visible','on',...
+    'Resize','on','AutoResizeChildren','off','SizeChangedFcn',@appResize);
 set(fig,'DeleteFcn',@(fig, event) saveGUIState(fig));
 
 % Put all of the components in their place
@@ -38,19 +35,18 @@ setappdata(fig,'classNames',classNames);
 
 assignin('base','gui',fig); % Put the GUI object into the base workspace.
 
-%% Get the "common path"
-% The common path, which contains all the instances of the settings
-% variables. This path should be in its own GitHub repository.
+%% Get the "common path". This is the folder containing project-independent instances of settings class variables.
+% This path should be in its own GitHub repository.
 commonPath=getCommonPath(fig);
 initializeClassFolders(classNames,commonPath);
 
-handles.Settings.commonPathEditField.Value=commonPath;
+handles.Settings.commonPathEditField.Value=commonPath; % Put the common path in the GUI.
 
 %% If there are no existing project settings files, then create a 'Default' project
-rootSettingsFile=getRootSettingsFile();
-% 1. Does root settings file exist? YES BECAUSE OF THE COMMON PATH
+% 1. Does root settings file exist? YES BECAUSE THE COMMON PATH HAS BEEN SET
 % 2. Does Current_Project_Name exist in the root settings file?
 % 3. Is there a PI projectStruct file?
+rootSettingsFile=getRootSettingsFile();
 settingsVarNames=whos('-file',rootSettingsFile);
 settingsVarNames={settingsVarNames.name};
 
@@ -84,33 +80,26 @@ setappdata(fig,'existProjectPath',existProjectPath);
 % 1. Does Current_ProcessGroup_Name exist in the root settings file?
 % 2. Is there a PI processGroup file?
 
-% 1. 
+% 2. 
 processGroups=getClassFilenames(fig,'ProcessGroup');
-if isempty(processGroups)        
-    if existProjectPath
-        processGroupStruct=createProcessGroupStruct(fig,'Default'); % This also means that there is not a project-specific process group file
-        projectSettingsFile=getProjectSettingsFile(fig); % File stores the current process group name
-        PSprocessGroupStruct=createPSProcessGroupStruct(fig,processGroupStruct);
+if isempty(processGroups) && existProjectPath
+    processGroupStruct=createProcessGroupStruct(fig,'Default'); % This also means that there is not a project-specific process group file
+    projectSettingsFile=getProjectSettingsFile(fig); % File stores the current process group name
+    PSprocessGroupStruct=createProcessGroupStruct_PS(fig,processGroupStruct);
 
-        Current_ProcessGroup_Name=PSprocessGroupStruct.Text;
-        projectSettings=loadJSON(projectSettingsFile);
-        projectSettings.Current_ProcessGroup_Name=Current_ProcessGroup_Name;
-        writeJSON(projectSettingsFile,projectSettings);        
-    end
+    Current_ProcessGroup_Name=PSprocessGroupStruct.Text;
+    projectSettings=loadJSON(projectSettingsFile);
+    projectSettings.Current_ProcessGroup_Name=Current_ProcessGroup_Name;
+    writeJSON(projectSettingsFile,projectSettings);
 end
 
-% 2. 
-if existProjectPath % NEED TO EDIT THIS TO BE PROJECT-SPECIFIC
+% 1. 
+if existProjectPath
     projectSettingsFile=getProjectSettingsFile(fig); % File stores the current process group name
     projectSettingsVarNames=loadJSON(projectSettingsFile);
     projectSettingsVarNames=fieldnames(projectSettingsVarNames);
-%     projectSettingsVarNames={projectSettingsVarNames.name};
     if ~ismember('Current_ProcessGroup_Name',projectSettingsVarNames)
         error('HOW DID THIS HAPPEN? MORE TESTING NEEDED');
-%         processGroups=getClassFilenames(fig,'ProcessGroup');
-%         Current_ProcessGroup_Name=processGroups{1};
-%         Current_ProcessGroup_Name=Current_ProcessGroup_Name(14:end-5); % Remove 'ProcessGroup' prefix and '.json' suffix
-%         save(rootSettingsFile,'Current_ProcessGroup_Name','-append');
     end
 end
 
@@ -140,6 +129,16 @@ end
 % Stored in a subfolder of the userpath
 loadGUIState(fig);
 
+% Runs only the first time that this app is ever used, or just after
+% deleting the root settings file.
+if ~ismember('Current_Tab_Title',settingsVarNames)
+    Current_Tab_Title='Projects';
+    save(rootSettingsFile,'Current_Tab_Title');
+end
+
+load(rootSettingsFile,'Current_Tab_Title');
+
 drawnow;
+handles.Tabs.tabGroup1.SelectedTab=handles.(Current_Tab_Title).Tab;
 elapsedTime=toc;
 disp(['Elapsed time is ' num2str(round(elapsedTime,2)) ' seconds.']);

@@ -4,3 +4,47 @@ function []=unassignFunctionButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+
+uiTree=handles.Process.groupUITree;
+
+selNode=uiTree.SelectedNodes;
+
+if isempty(selNode)
+    return;
+end
+
+name=selNode.Text;
+
+idxNum=find(ismember(uiTree.Children,selNode)==1);
+
+delete(uiTree.Children(idxNum));
+
+if idxNum>length(uiTree.Children)
+    idxNum=idxNum-1;
+end
+
+if idxNum==0
+    uiTree.SelectedNodes=[];
+else
+    uiTree.SelectedNodes=uiTree.Children(idxNum);
+end
+
+projectSettingsFile=getProjectSettingsFile(fig);
+Current_ProcessGroup_Name=loadJSON(projectSettingsFile,'Current_ProcessGroup_Name');
+
+% Get the currently selected group struct.
+fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup',fig);
+groupStruct=loadJSON(fullPath);
+
+names=groupStruct.ExecutionListNames; % Execute these functions/groups in this order.
+types=groupStruct.ExecutionListTypes;
+
+idx=ismember(names,name);
+
+names(idx)=[];
+types(idx)=[];
+
+groupStruct.ExecutionListNames=names;
+groupStruct.ExecutionListTypes=types;
+
+saveClass_PS(fig,'ProcessGroup',groupStruct);

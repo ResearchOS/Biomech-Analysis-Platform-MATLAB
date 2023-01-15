@@ -1,4 +1,4 @@
-function [data]=loadJSON(fullPath)
+function [data]=loadJSON(fullPath,varName)
 
 %% PURPOSE: LOAD A JSON FILE AND RETURN IT DECODED.
 
@@ -15,3 +15,29 @@ str=char(raw');
 
 % Convert json to struct
 data=jsondecode(str);
+% try
+%     data=jsondecode(str);
+% catch e
+% 
+% end
+
+if nargin==2
+    if iscell(varName) && length(varName)==1
+        varName=varName{1};
+    end
+    
+    if ~iscell(varName)
+        if isfield(data,varName)
+            data=data.(varName);
+        else
+            data=[];
+        end
+        return;
+    end    
+
+    for i=1:length(varName)
+        data2.(varName{i})=data.(varName{i});
+    end
+
+    data=data2;
+end

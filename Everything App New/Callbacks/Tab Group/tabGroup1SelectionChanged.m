@@ -18,3 +18,8 @@ path=getProjectPath(fig);
 if isempty(path)
     handles.Tabs.tabGroup1.SelectedTab=handles.Projects.Tab;
 end
+
+%% Store the current tab.
+rootSettingsFile=getRootSettingsFile();
+Current_Tab_Title=handles.Tabs.tabGroup1.SelectedTab.Title;
+save(rootSettingsFile,'Current_Tab_Title','-append');

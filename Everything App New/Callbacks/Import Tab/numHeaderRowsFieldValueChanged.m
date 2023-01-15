@@ -7,6 +7,11 @@ handles=getappdata(fig,'handles');
 
 selNode=handles.Import.allLogsheetsUITree.SelectedNodes;
 
+if isempty(selNode)
+    handles.Import.numHeaderRowsField.Value=-1;
+    return;
+end
+
 fullPath=getClassFilePath(selNode);
 
 struct=loadJSON(fullPath);

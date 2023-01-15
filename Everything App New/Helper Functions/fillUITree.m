@@ -96,3 +96,10 @@ if ~isempty(uiTree.Children)
         uiTree.SelectedNodes=uiTree.Children(1);
     end
 end
+
+%% ADD THE PROJECT-SPECIFIC VERSIONS TO THE UI TREE
+if isequal(class,'Project')
+    return;
+end
+
+fillUITree_PS(fig, class, uiTree);

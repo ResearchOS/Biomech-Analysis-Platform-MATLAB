@@ -21,6 +21,8 @@ if ~ischar(selNode)
             class='Component';
         case handles.Process.allGroupsUITree
             class='ProcessGroup';
+        case handles.Process.allVariablesUITree
+            class='Variable';
         case handles.Stats.allStatsUITree
             class='Stats';        
     end

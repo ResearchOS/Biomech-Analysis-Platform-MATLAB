@@ -1,0 +1,22 @@
+{
+  "Name": "Test",
+  "Type": "Proces",
+  "ID": "237CE5",
+  "DateCreated": "13-Jan-2023 00:00:54",
+  "DateModified": "13-Jan-2023 00:00:54",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_F341C0"
+  ],
+  "SpecifyTrials": "",
+  "InputVariablesNamesInCode": [],
+  "OutputVariablesNamesInCode": [],
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": true,
+  "Visible": true,
+  "Text": "Test_237CE5",
+  "Parent": ""
+}

@@ -4,7 +4,7 @@ function [struct]=createProcessStruct(fig,name)
 
 struct.Name=name;
 
-struct.Type='Proces';
+struct.Type='Process';
 
 id=createID(fig,'Process');
 struct.ID=id;
@@ -28,8 +28,8 @@ struct.Project={currentProject};
 
 struct.SpecifyTrials='';
 
-struct.InputVariables={};
-struct.OutputVariables={};
+struct.InputVariablesNamesInCode={};
+struct.OutputVariablesNamesInCode={};
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 

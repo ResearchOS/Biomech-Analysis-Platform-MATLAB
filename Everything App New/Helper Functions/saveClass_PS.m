@@ -1,4 +1,4 @@
-function []=savePSClass(src,class,classStruct)
+function []=saveClass_PS(src,class,classStruct)
 
 %% PURPOSE: SAVE THE PROJECT-SPECIFIC CLASS
 
@@ -13,6 +13,8 @@ projectPath=getProjectPath(fig);
 classFolder=[projectPath slash 'Project_Settings' slash class];
 
 filepath=[classFolder slash filename];
+
+classStruct.DateModified=datetime('now');
 
 json=jsonencode(classStruct,'PrettyPrint',true);
 

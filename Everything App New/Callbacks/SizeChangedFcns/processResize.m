@@ -147,4 +147,10 @@ objResize(tab.saveAsNewGroupButton, [0.33 0.1], [0.07 2*compHeight]);
 objResize(tab.selectGroupButton, [0.3 0.3], [0.03 compHeight]);
 
 % 32. Current group name label
-objResize(tab.currentGroupLabel, [0.01 0.83], [0.1 compHeight]);
+objResize(tab.currentGroupLabel, [0.01 0.83], [0.3 compHeight]);
+
+% 33. Add args button
+objResize(tab.addArgsButton, [0.3 0.83], [0.03 compHeight]);
+
+% 34. Remove args button
+objResize(tab.removeArgsButton, [0.35 0.83], [0.03 compHeight]);

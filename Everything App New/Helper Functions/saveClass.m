@@ -14,8 +14,8 @@ classFolder=[commonPath slash class];
 
 filepath=[classFolder slash filename];
 
+classStruct.DateModified=datetime('now');
+
 json=jsonencode(classStruct,'PrettyPrint',true);
 
-fid=fopen([filepath '.json'],'w');
-fprintf(fid,'%s',json);
-fclose(fid);
+writeJSON(filepath,json);

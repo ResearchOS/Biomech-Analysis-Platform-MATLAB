@@ -1,0 +1,22 @@
+{
+  "Name": "Test2",
+  "Type": "Proces",
+  "ID": "E4123C",
+  "DateCreated": "12-Jan-2023 23:44:56",
+  "DateModified": "12-Jan-2023 23:44:56",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_F341C0"
+  ],
+  "SpecifyTrials": "",
+  "InputVariablesNamesInCode": [],
+  "OutputVariablesNamesInCode": [],
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": true,
+  "Visible": true,
+  "Text": "Test2_E4123C",
+  "Parent": ""
+}

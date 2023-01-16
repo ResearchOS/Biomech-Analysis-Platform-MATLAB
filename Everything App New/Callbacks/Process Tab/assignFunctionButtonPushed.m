@@ -56,5 +56,5 @@ saveClass_PS(fig,'Process',processStruct);
 uitreenode(handles.Process.groupUITree,'Text',processStruct.Text);
 
 if isNew
-    uitreenode(selNode,'Text',processStruct.Text);
+    uitreenode(selNode,'Text',processStruct.Text,'ContextMenu',handles.Process.psContextMenu);
 end

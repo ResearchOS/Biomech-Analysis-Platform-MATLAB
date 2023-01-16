@@ -1,4 +1,4 @@
-function [struct]=createProcessStruct(fig,name)
+function [struct]=createProcessStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW PROCESS FUNCTION STRUCTURE
 
@@ -6,7 +6,9 @@ struct.Name=name;
 
 struct.Type='Process';
 
-id=createID(fig,'Process');
+if nargin<3
+    id=createID(fig,'Process');
+end
 struct.ID=id;
 
 currDate=datetime('now');

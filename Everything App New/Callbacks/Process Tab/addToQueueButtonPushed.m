@@ -17,10 +17,14 @@ end
 projectSettingsFile=getProjectSettingsFile(fig);
 projectSettings=loadJSON(projectSettingsFile);
 
-if ~isfield(projectSettings,'ProcessQueue')
+if isfield(projectSettings,'ProcessQueue')
     queue={};
 else
     queue=projectSettings.ProcessQueue;
+end
+
+if ~iscell(queue)
+    queue={};
 end
 
 texts={checkedNodes.Text}';

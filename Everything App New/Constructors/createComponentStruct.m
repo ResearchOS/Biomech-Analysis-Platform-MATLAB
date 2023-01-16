@@ -1,4 +1,4 @@
-function []=createComponentStruct(fig,name)
+function []=createComponentStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW COMPONENT STRUCT
 
@@ -6,7 +6,9 @@ struct.Name=name;
 
 struct.Type='Component';
 
-id=createID(fig,'Component');
+if nargin<3
+    id=createID(fig,'Component');
+end
 struct.ID=id;
 
 currDate=datetime('now');

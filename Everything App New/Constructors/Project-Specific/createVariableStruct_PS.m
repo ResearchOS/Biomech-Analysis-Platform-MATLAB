@@ -1,4 +1,4 @@
-function [struct]=createVariableStruct_PS(fig,piStruct)
+function [struct]=createVariableStruct_PS(fig,piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC VARIABLE STRUCT
 
@@ -6,7 +6,9 @@ struct.Name=piStruct.Name;
 
 struct.Type='Variable';
 
-psid=createPSID(fig, piStruct.Text, 'Variable');
+if nargin<3
+    psid=createPSID(fig, piStruct.Text, 'Variable');
+end
 struct.ID=psid;
 
 currDate=datetime('now');

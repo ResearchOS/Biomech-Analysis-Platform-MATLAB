@@ -6,7 +6,7 @@ slash=filesep;
 commonPath=getCommonPath(fig);
 classFolder=[commonPath slash class];
 classVar=loadClassVar(fig,classFolder);
-% classVar=getappdata(fig,class); % Get the variable that stores all instances of a specific class.
+handles=getappdata(fig,'handles');
 
 %% Get all of the existing nodes' text. The node text is equal to its file name.
 nodes=uiTree.Children;
@@ -15,13 +15,6 @@ if ~isempty(nodes)
 else
     currNodesTexts={};   
 end
-
-%% Create folders for each node based on selections. Or just be a filter?
-% Per-project folders (for all types)
-% Plots: plot level, plot type (user-defined?)
-% Variables: variable size/class (scalar, matrix, char, hard-coded)
-% Components: component type, plot level
-% Stats: 
 
 if isempty(classVar)
     delete(uiTree.Children); % Just triple checking that there are no nodes in the box when there are no files present.
@@ -70,6 +63,9 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
     end
 
     newNode=uitreenode(uiTree,'Text',allSearchResults{i});
+
+    newNode.ContextMenu=handles.Process.commonContextMenu;
+
     childIdx=childIdx+1;
     
     if classVar(idx).Checked        

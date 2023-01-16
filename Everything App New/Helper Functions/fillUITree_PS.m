@@ -2,6 +2,8 @@ function []=fillUITree_PS(fig, class, uiTree)
 
 %% PUEPOSE: FILL IN THE CLASS UI TREE WITH PROJECT-SPECIFIC NODES, WITH PARENT NODES THAT ARE PROJECT-INDEPENDENT
 
+handles=getappdata(fig,'handles');
+
 slash=filesep;
 
 texts={uiTree.Children.Text}; % The existing nodes' texts
@@ -26,7 +28,9 @@ for i=1:length(texts)
     node=uiTree.Children(i);
 
     for j=1:length(currNames)      
-        uitreenode(node,'Text',currNames{j});
+        newNode=uitreenode(node,'Text',currNames{j});
+
+        newNode.ContextMenu=handles.Process.psContextMenu;
     end
 
 end

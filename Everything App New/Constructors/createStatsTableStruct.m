@@ -1,4 +1,4 @@
-function [struct]=createStatsTableStruct(fig,name)
+function [struct]=createStatsTableStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW STATS TABLE STRUCT
 
@@ -6,7 +6,10 @@ struct.Name=name;
 
 struct.Type='StatsTable';
 
-id=createID(fig,'StatsTable');
+if nargin<3
+    id=createID(fig,'StatsTable');
+end
+
 struct.ID=id;
 
 currDate=datetime('now');

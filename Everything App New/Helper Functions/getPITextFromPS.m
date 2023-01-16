@@ -21,3 +21,7 @@ for i=1:length(psTexts)
     piTexts{i}=currText(1:underscoreIdx(end)-1);
 
 end
+
+if length(piTexts)==1
+    piTexts=piTexts{1};
+end

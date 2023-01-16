@@ -4,6 +4,7 @@ function [data]=loadJSON(fullPath,varName)
 
 if exist(fullPath,'file')~=2
     data=struct;
+    error('File not found!');
     return;
 end
 

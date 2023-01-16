@@ -1,4 +1,4 @@
-function [struct]=createProcessStruct_PS(fig,piStruct)
+function [struct]=createProcessStruct_PS(fig,piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC PROCESS FUNCTION STRUCT
 
@@ -6,7 +6,9 @@ struct.Name=piStruct.Name;
 
 struct.Type='Process';
 
-psid=createPSID(fig, piStruct.Text, 'Process');
+if nargin<3
+    psid=createPSID(fig, piStruct.Text, 'Process');
+end
 struct.ID=psid;
 
 currDate=datetime('now');

@@ -688,3 +688,10 @@ handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Ta
 setappdata(fig,'handles',handles);
 settingsResize(fig);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Initialize the context menus for UI trees
+handles.Process.commonContextMenu=uicontextmenu(fig);
+handles.Process.commonContextMenuItem1=uimenu(handles.Process.commonContextMenu,'Text','Open','MenuSelectedFcn',{@openJSONFile});
+
+handles.Process.psContextMenu=uicontextmenu(fig);
+handles.Process.psContextMenuItem1=uimenu(handles.Process.psContextMenu,'Text','Open','MenuSelectedFcn',{@openJSONFile});

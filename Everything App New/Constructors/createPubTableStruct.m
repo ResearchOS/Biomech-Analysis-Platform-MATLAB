@@ -1,4 +1,4 @@
-function []=createPubTableStruct(fig,name)
+function []=createPubTableStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW PUBLICATION TABLE STRUCT
 
@@ -6,7 +6,9 @@ struct.Name=name;
 
 struct.Type='PubTable';
 
-id=createID(fig,'Process');
+if nargin<3
+    id=createID(fig,'Process');
+end
 struct.ID=id;
 
 currDate=datetime('now');

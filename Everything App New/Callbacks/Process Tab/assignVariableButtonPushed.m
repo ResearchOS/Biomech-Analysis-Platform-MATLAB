@@ -97,5 +97,5 @@ argText=[argTextSplit{1} ' (' varStruct.Text ')'];
 argNode.Text=argText;
 
 if isNew
-    uitreenode(selNode,'Text',varStruct.Text);
+    uitreenode(selNode,'Text',varStruct.Text,'ContextMenu',handles.Process.psContextMenu);
 end

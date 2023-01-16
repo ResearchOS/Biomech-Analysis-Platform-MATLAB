@@ -24,7 +24,7 @@ outputVarsPS=struct.OutputVariables;
 
 % Load project-independent file.
 piText=getPITextFromPS(selNode.Text);
-fullPathPI=getClassFilePath(piText{1}, 'Process', fig);
+fullPathPI=getClassFilePath(piText, 'Process', fig);
 piStruct=loadJSON(fullPathPI);
 
 inputVarsPI=piStruct.InputVariablesNamesInCode;
@@ -43,7 +43,7 @@ for i=1:length(inputVarsPI)
         currArgs='';
     end
     currArgsPI=inputVarsPI{i};
-    argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsPI{1})]); % The ID number of the getArg/setArg is the first element.    
+    argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsPI{1})]); % The ID number of the getArg/setArg is the first element.       
     
     for j=2:length(currArgsPI)
         if ~iscell(currArgs) || length(currArgs)<j || isempty(currArgs{j})
@@ -52,6 +52,8 @@ for i=1:length(inputVarsPI)
             uitreenode(argNode,'Text',[currArgsPI{j} ' (' currArgs{j} ')']);
         end
     end
+
+    expand(argNode);
 end
 
 % Create output variable nodes
@@ -77,4 +79,5 @@ for i=1:length(outputVarsPI)
         end
     end
 
+    expand(argNode);
 end

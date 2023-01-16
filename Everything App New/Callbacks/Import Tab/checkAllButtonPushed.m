@@ -22,4 +22,6 @@ emptyIdxType=cellfun(@isempty,type);
 
 emptyIdx=emptyIdxLevel | emptyIdxType;
 
-handles.Import.headersUITree.CheckedNodes=handles.Import.headersUITree.Children(~emptyIdx);
+if any(~emptyIdx)
+    handles.Import.headersUITree.CheckedNodes=handles.Import.headersUITree.Children(~emptyIdx);
+end

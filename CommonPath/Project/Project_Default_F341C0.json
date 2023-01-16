@@ -3,14 +3,17 @@
   "Name": "Default",
   "ID": "F341C0",
   "DateCreated": "11-Jan-2023 15:07:17",
-  "DateModified": "15-Jan-2023 11:28:36",
+  "DateModified": "15-Jan-2023 20:20:42",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
   "Variable": [
-    "Test_4118A3"
+    "Test_4118A3",
+    "TestDelete_D091BB"
   ],
-  "Logsheet": [],
+  "Logsheet": [
+    "Test_E9D300"
+  ],
   "Plot": [],
   "StatsTable": [],
   "PubTable": [],

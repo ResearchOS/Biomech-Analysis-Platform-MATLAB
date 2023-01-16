@@ -1,4 +1,4 @@
-function [struct]=createProcessGroupStruct(fig,name)
+function [struct]=createProcessGroupStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW PROCESSING GROUP
 
@@ -6,7 +6,9 @@ struct.Name=name;
 
 struct.Type='ProcessGroup';
 
-id=createID(fig,'ProcessGroup');
+if nargin<3
+    id=createID(fig,'ProcessGroup');
+end
 struct.ID=id;
 
 currDate=datetime('now');

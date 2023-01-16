@@ -1,4 +1,4 @@
-function [struct]=createProjectStruct(fig,name)
+function [struct]=createProjectStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW PROJECT STRUCT
 
@@ -6,7 +6,9 @@ struct.Type='Project';
 
 struct.Name=name;
 
-id=createID(fig,'Project');
+if nargin<3
+    id=createID(fig,'Project');
+end
 struct.ID=id; % Immutable
 
 currDate=datetime('now');

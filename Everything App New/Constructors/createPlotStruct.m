@@ -1,4 +1,4 @@
-function [struct]=createPlotStruct(fig,name)
+function [struct]=createPlotStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW PLOT STRUCTURE
 % Properties:
@@ -18,7 +18,9 @@ struct.Name=name;
 
 struct.Type='Plot';
 
-id=createID(fig,'Plot');
+if nargin<3
+    id=createID(fig,'Plot');
+end
 struct.ID=id;
 
 currDate=datetime('now');

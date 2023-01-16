@@ -1,4 +1,4 @@
-function [struct]=createLogsheetStruct(fig,name)
+function [struct]=createLogsheetStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW LOGSHEET STRUCTURE
 % Properties:
@@ -19,7 +19,9 @@ struct.Name=name;
 
 struct.Type='Logsheet';
 
-id=createID(fig,'Logsheet');
+if nargin<3
+    id=createID(fig,'Logsheet');
+end
 struct.ID=id;
 
 currDate=datetime('now');

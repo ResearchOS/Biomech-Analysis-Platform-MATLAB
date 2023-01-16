@@ -1,4 +1,4 @@
-function [struct]=createVariableStruct(fig,name)
+function [struct]=createVariableStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW VARIABLE STRUCTURE
 % Properties:
@@ -18,7 +18,9 @@ struct.Name=name;
 
 struct.Type='Variable';
 
-id=createID(fig,'Variable');
+if nargin<3
+    id=createID(fig,'Variable');
+end
 struct.ID=id;
 
 currDate=datetime('now');

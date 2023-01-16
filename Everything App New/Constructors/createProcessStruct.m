@@ -4,6 +4,8 @@ function [struct]=createProcessStruct(fig,name,id)
 
 struct.Name=name;
 
+struct.MFileName=struct.Name;
+
 struct.Type='Process';
 
 if nargin<3
@@ -32,6 +34,8 @@ struct.SpecifyTrials='';
 
 struct.InputVariablesNamesInCode={};
 struct.OutputVariablesNamesInCode={};
+
+struct.Level='T'; % Can be any/all of the following: 'T' for trial (default), 'S' for subject, 'P' for project.
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 

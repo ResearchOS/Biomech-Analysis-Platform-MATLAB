@@ -42,9 +42,6 @@ struct.Project={currentProject};
 
 struct.SpecifyTrials='';
 
-struct.InputToFunctions={};
-struct.OutputFromFunctions={};
-
 % For argument validation
 struct.VariableType=''; % What type is this variable
 struct.VariableSize=[]; % What is the size of this variable
@@ -54,6 +51,10 @@ struct.InputToPlots={};
 struct.InputToComponents={};
 struct.InputToStatsTables={};
 struct.InputToPubTables={};
+
+struct.IsHardCoded=false; % By default, this variable is dynamic (from file), not hard-coded.
+
+struct.Level='T'; % Must choose ONE: 'T' for trial is the default. 'S' for subject, and 'P' for project.
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
@@ -67,16 +68,6 @@ struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
 saveClass(fig,'Variable',struct);
-
-classVar=getappdata(fig,'Variable');
-
-if isempty(classVar)
-    classVar=struct;
-else
-    classVar(end+1)=struct;
-end
-
-setappdata(fig,'Variable',classVar);
 
 %% Assign the newly created variable struct to the current project struct.
 assignToProject(fig,struct,'Variable');

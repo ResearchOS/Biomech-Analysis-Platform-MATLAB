@@ -11,7 +11,13 @@
     "Default_F341C0"
   ],
   "SpecifyTrials": "",
-  "InputVariablesNamesInCode": [],
+  "InputVariablesNamesInCode": [
+    [
+      1,
+      "var1",
+      "var2"
+    ]
+  ],
   "OutputVariablesNamesInCode": [
     [
       1,
@@ -24,5 +30,7 @@
   "Checked": true,
   "Visible": true,
   "Text": "Test_394BBE",
-  "Parent": ""
+  "Parent": "",
+  "MFileName": "",
+  "Level": "T"
 }

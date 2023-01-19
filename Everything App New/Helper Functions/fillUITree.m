@@ -80,8 +80,10 @@ if any(checkedIdx)
 end
 
 %% Sort the nodes based on how it was specified.
-sortMethod=sortDropDown.Value;
-sortUITree(uiTree, sortMethod);
+if exist('sortDropDown','var')==1
+    sortMethod=sortDropDown.Value;
+    sortUITree(uiTree, sortMethod);
+end
 
 % selNode is empty if the selected node was just removed. It's not empty if
 % a new node was just added.

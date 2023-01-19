@@ -91,10 +91,7 @@ objResize(tab.targetTrialIDLabel, [0.01 0.25], [0.25 compHeight]);
 objResize(tab.targetTrialIDDropDown, [0.26 0.25], [0.2 compHeight]);
 
 % 18. Specify trials label
-objResize(tab.specifyTrialsLabel, [0.01 0.06], [0.1 compHeight]);
-
-% 19. Specify trials button
-objResize(tab.specifyTrialsButton, [0.01 0.01], [0.1 compHeight]);
+objResize(tab.specifyTrialsLabel, [0.01 0.25], [0.1 compHeight]);
 
 % 20. Header variables UI Tree
 objResize(tab.headersUITree, [0.5 0.4], [0.4 0.4]);
@@ -113,3 +110,15 @@ objResize(tab.uncheckAllButton, [0.65 0.8], [0.1 compHeight]);
 
 % 25. Run logsheet button
 objResize(tab.runLogsheetButton, [0.8 0.2], [0.1 compHeight]);
+
+% 25. Add specify trials button
+objResize(tab.addSpecifyTrialsButton, [0.01 0.2], [0.03 compHeight]);
+
+% 26. Remove specify trials button
+objResize(tab.removeSpecifyTrialsButton, [0.04 0.2], [0.03 compHeight]);
+
+% 27. Specify trials UI tree
+objResize(tab.allSpecifyTrialsUITree, [0.01 0.01], [0.19 0.19]);
+
+% 28. Edit specify trials node button
+objResize(tab.editSpecifyTrialsButton, [0.1 0.2], [0.1 compHeight]);

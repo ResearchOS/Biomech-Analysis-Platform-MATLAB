@@ -54,15 +54,5 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 
 saveClass(fig,'Process',struct);
 
-classVar=getappdata(fig,'Process');
-
-if isempty(classVar)
-    classVar=struct;
-else
-    classVar(end+1)=struct;
-end
-
-setappdata(fig,'Process',classVar);
-
 %% Assign the newly created process struct to the current project struct.
 assignToProject(fig,struct,'Process');

@@ -27,6 +27,8 @@ if existProjectPath
     projectSettings=loadJSON(projectSettingsFile);
 end
 
+fillUITree_SpecifyTrials(fig); % Fill in the specify trials
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab
 load(rootSettingsFile,'Current_Project_Name');

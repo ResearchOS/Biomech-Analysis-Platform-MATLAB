@@ -41,6 +41,8 @@ struct.Component={};
 
 struct.ProcessGroup={};
 
+struct.SpecifyTrials={};
+
 struct.DataPath.(computerID)='';
 
 struct.ProjectPath.(computerID)='';

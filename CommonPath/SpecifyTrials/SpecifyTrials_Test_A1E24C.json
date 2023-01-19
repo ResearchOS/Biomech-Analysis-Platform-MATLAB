@@ -1,0 +1,24 @@
+{
+  "Name": "Test",
+  "Type": "SpecifyTrials",
+  "ID": "A1E24C",
+  "DateCreated": "18-Jan-2023 22:26:46",
+  "DateModified": "18-Jan-2023 22:26:46",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_F341C0"
+  ],
+  "Logsheet_Headers": [],
+  "Logsheet_Logic": [],
+  "Logsheet_Value": [],
+  "Data_Variables": [],
+  "Data_Logic": [],
+  "Data_Value": [],
+  "Archived": false,
+  "Checked": true,
+  "Visible": true,
+  "Text": "Test_A1E24C",
+  "Parent": ""
+}

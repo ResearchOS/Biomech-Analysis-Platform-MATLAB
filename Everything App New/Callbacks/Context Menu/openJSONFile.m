@@ -34,6 +34,10 @@ switch uiTree
         classType='ProcessGroup';
     case handles.Process.allVariablesUITree
         classType='Variable';
+    case handles.Import.allSpecifyTrialsUITree
+        classType='SpecifyTrials';
+    case handles.Process.allSpecifyTrialsUITree
+        classType='SpecifyTrials';
     case handles.Stats.allStatsUITree
         classType='Stats';
 end

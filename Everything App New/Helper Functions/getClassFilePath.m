@@ -23,6 +23,10 @@ if ~ischar(selNode)
             class='ProcessGroup';
         case handles.Process.allVariablesUITree
             class='Variable';
+        case handles.Import.allSpecifyTrialsUITree
+            class='SpecifyTrials';
+        case handles.Process.allSpecifyTrialsUITree
+            class='SpecifyTrials';
         case handles.Stats.allStatsUITree
             class='Stats';        
     end

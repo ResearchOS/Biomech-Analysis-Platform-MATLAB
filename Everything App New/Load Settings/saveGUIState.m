@@ -3,12 +3,12 @@ function []=saveGUIState(fig)
 %% PURPOSE: SAVE THE SETTINGS VARIABLES TO THE MAT FILE WHEN CLOSING THE GUI TO SAVE ALL PROGRESS.
 % GETS RID OF THE NEED TO SAVE ALL SETTINGS AT EVERY STEP.
 
-handles=getappdata(fig,'handles');
+% handles=getappdata(fig,'handles');
 
-slash=filesep;
-
-rootSettingsFolder=[userpath slash 'PGUI Settings'];
-rootSettingsFile=[rootSettingsFolder slash 'Settings.mat'];
+% slash=filesep;
+% 
+% rootSettingsFolder=[userpath slash 'PGUI Settings'];
+% rootSettingsFile=[rootSettingsFolder slash 'Settings.mat'];
 
 evalin('base','clear gui;');
 

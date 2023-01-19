@@ -23,6 +23,8 @@ computerID=getComputerID();
 bool=true;
 try
 
+    errorData=[]; % For error reporting.
+
     % 1. Logsheet path.
     assert(isfield(logsheetStruct.LogsheetPath,computerID),'Logsheet path not  found on this computer.');
     path=logsheetStruct.LogsheetPath.(computerID);
@@ -41,6 +43,9 @@ try
     assert(length(logsheetStruct.Headers)==length(logsheetStruct.Level),'Headers & level mismatch');
     assert(length(logsheetStruct.Type)==length(logsheetStruct.Level),'Type & level mismatch');
 
+    % 4. Check that the headers are all valid variable names.
+    assert(all(cellfun(@isvarname, headers)));
+
     % 1. Num Header Rows
     assert(isa(logsheetStruct.NumHeaderRows,'double'),'NumHeaderRows must be a positive integer double!');
     assert(mod(logsheetStruct.NumHeaderRows,1)==0,'NumHeaderRows must be a positive integer');
@@ -51,10 +56,22 @@ try
     assert(~isempty(logsheetStruct.SubjectCodenameHeader));
     assert(any(ismember(logsheetStruct.SubjectCodenameHeader,logsheetStruct.Headers)));
 
+    % 7. Check that all subject codenames are valid variable names.
+    codenameHeaderIdx=ismember(logsheetStruct.Headers,logsheet.SubjectCodenameHeader);
+    codenames=logVar(logsheet.NumHeaderRows+1:end,codenameHeaderIdx);
+    errorIdx=find(~cellfun(@isvarname, codenames))==1;
+    errorData=codenames(errorIdx);
+    assert(~any(errorIdx),['Subject codenames not valid variable names in lines: ' errorData]);
+
     % 3. Target Trial ID
     assert(isa(logsheetStruct.TargetTrialIDHeader,'char'));
     assert(~isempty(logsheetStruct.TargetTrialIDHeader));
     assert(any(ismember(logsheetStruct.TargetTrialIDHeader,logsheetStruct.Headers)));
+
+    % 9. Check that all target trial names are valid variable names.
+    targetTrialIDIdx=ismember(logsheetStruct.Headers,logsheetStruct.TargetTrialIDHeader);
+    targetTrialNames=logVar(logsheet.NumHeaderRows+1:end,targetTrialIDIdx);
+    assert(all(cellfun(@isvarname, targetTrialNames)));
 
 catch
     logVar=[];

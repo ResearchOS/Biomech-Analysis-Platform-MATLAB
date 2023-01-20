@@ -1,0 +1,39 @@
+{
+  "Name": "Straight",
+  "Type": "SpecifyTrials",
+  "ID": "474BA9",
+  "DateCreated": "19-Jan-2023 20:54:31",
+  "DateModified": "19-Jan-2023 21:05:07",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_F341C0"
+  ],
+  "Logsheet_Headers": [
+    "Perfect_Trial",
+    "Researcher_Comments",
+    "Researcher_Comments",
+    "Late_Cue_Frame"
+  ],
+  "Logsheet_Logic": [
+    "equals",
+    "contains",
+    "does not contain",
+    "contains"
+  ],
+  "Logsheet_Value": [
+    "1",
+    "Straight",
+    "Practice",
+    "Test1,Test2"
+  ],
+  "Data_Variables": [],
+  "Data_Logic": [],
+  "Data_Value": [],
+  "Archived": false,
+  "Checked": false,
+  "Visible": true,
+  "Text": "Straight_474BA9",
+  "Parent": ""
+}

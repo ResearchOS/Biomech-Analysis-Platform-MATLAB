@@ -1,0 +1,36 @@
+{
+  "Name": "PrePlanned",
+  "Type": "SpecifyTrials",
+  "ID": "8C006D",
+  "DateCreated": "19-Jan-2023 21:30:19",
+  "DateModified": "19-Jan-2023 21:31:21",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_F341C0"
+  ],
+  "Logsheet_Headers": [
+    "Perfect_Trial",
+    "Researcher_Comments",
+    "Trial_Type_Task"
+  ],
+  "Logsheet_Logic": [
+    "equals",
+    "does not contain",
+    "contains"
+  ],
+  "Logsheet_Value": [
+    "1",
+    "Practice",
+    "TWW"
+  ],
+  "Data_Variables": [],
+  "Data_Logic": [],
+  "Data_Value": [],
+  "Archived": false,
+  "Checked": false,
+  "Visible": true,
+  "Text": "PrePlanned_8C006D",
+  "Parent": ""
+}

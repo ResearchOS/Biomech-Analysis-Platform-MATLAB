@@ -93,12 +93,12 @@ for sub=1:length(subNames)
 
         for repNum=trialNames.(subName).(trialName)
 
-            if ~isImport
-                feval(fcnName,projectStruct,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
-            else
-                filePath=[dataPath subName slash trialName '_' subName '_' projectName '.c3d'];
-                feval(fcnName,filePath,projectStruct,subName,trialName,repNum);
-            end
+%             if ~isImport
+            feval(fcnName,projectStruct,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
+%             else
+%                 filePath=[dataPath subName slash trialName '_' subName '_' projectName '.c3d'];
+%                 feval(fcnName,filePath,projectStruct,subName,trialName,repNum);
+%             end
 
         end
     end
@@ -107,6 +107,6 @@ for sub=1:length(subNames)
 
 end
 
-cd(oldPath);
+% cd(oldPath);
 
 evalin('base','clear runInfo'); % Clean up after myself

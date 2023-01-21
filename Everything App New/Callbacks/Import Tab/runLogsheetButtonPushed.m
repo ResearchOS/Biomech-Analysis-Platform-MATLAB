@@ -2,6 +2,8 @@ function []=runLogsheetButtonPushed(src,event)
 
 %% PURPOSE: RUN THE LOGSHEET
 
+tic;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -10,15 +12,15 @@ slash=filesep;
 selNode=handles.Import.allLogsheetsUITree.SelectedNodes;
 
 fullPath=getClassFilePath(selNode);
-struct=loadJSON(fullPath);
+logsheetStruct=loadJSON(fullPath);
 
-numHeaderRows=struct.NumHeaderRows;
-subjIDColHeader=struct.SubjectCodenameHeader;
-targetTrialIDColHeader=struct.TargetTrialIDHeader;
+numHeaderRows=logsheetStruct.NumHeaderRows;
+subjIDColHeader=logsheetStruct.SubjectCodenameHeader;
+targetTrialIDColHeader=logsheetStruct.TargetTrialIDHeader;
 
 computerID=getComputerID();
 
-path=struct.LogsheetPath.(computerID);
+path=logsheetStruct.LogsheetPath.(computerID);
 
 [folder,file,ext]=fileparts(path);
 
@@ -33,39 +35,41 @@ end
 
 load(pathMAT,'logVar');
 
-headers=struct.Headers;
-levels=struct.Level;
-type=struct.Type;
+headers=logsheetStruct.Headers;
+levels=logsheetStruct.Level;
+types=logsheetStruct.Type;
+varNames=logsheetStruct.Variables;
 
 trialIdx=ismember(levels,'Trial') & checkedIdx; % The trial level variables idx that were checked.
 subjectIdx=ismember(levels,'Subject') & checkedIdx; % The subject level variables idx that were checked.
 
-useHeaderDataTypes=cell(sum(checkedIdx),1);
-useHeaderTrialSubject=cell(sum(checkedIdx),1);
-
-useHeaderNames=headers(checkedIdx);
-
 subjIDCol=ismember(headers,subjIDColHeader);
 targetTrialIDCol=ismember(headers,targetTrialIDColHeader);
 
-specTrialsName=struct.SpecifyTrials;
+specTrialsName=logsheetStruct.SpecifyTrials;
 if isempty(specTrialsName)
     beep;
     disp('Need to select specify trials for the logsheet import!');
     return;
 end
 
+projectNode=handles.Projects.allProjectsUITree.SelectedNodes;
+if isempty(projectNode)
+    disp('Select a project first!');
+    return;
+end
+
 fullPath=getClassFilePath(projectNode);
 projectStruct=loadJSON(fullPath);
-projectPath=projectStruct.ProjectPath;
+% projectPath=projectStruct.ProjectPath.(computerID);
 
-oldPath=cd([projectPath slash 'SpecifyTrials']);
-inclStruct=feval(specTrialsName);
-allTrialNames=getTrialNames(inclStruct,logVar,fig,0,projectStruct);
+% oldPath=cd([projectPath slash 'SpecifyTrials']);
+inclStruct=getInclStruct(fig,specTrialsName);
+allTrialNames=getTrialNames(inclStruct,logVar,fig,0,logsheetStruct);
 rowsIdx=false(size(logVar,1),1);
 subNames=fieldnames(allTrialNames);
 %% Apply specify trials
-for i=1:length(subNames)    
+for i=1:length(subNames)
     subName=subNames{i};
     trialNames=allTrialNames.(subName);
     trialNames=fieldnames(trialNames);
@@ -73,7 +77,7 @@ for i=1:length(subNames)
     rowsIdx(rowsIdxCurrent)=true;
 
 end
-cd(oldPath);
+% cd(oldPath);
 
 % Get the row numbers from the specify trials selected
 rowNums=find(rowsIdx==1);
@@ -110,7 +114,12 @@ for i=1:length(rowNums) % Iterate over each row to decide at the repetition leve
 
 end
 
-dataPath=projectStruct.DataPath;
+dataPath=projectStruct.DataPath.(computerID);
+
+if exist(dataPath,'dir')~=7
+    disp('Invalid data path!');
+    return;
+end
 
 %% Trial level data
 trialIdxNums=find(trialIdx==1);
@@ -120,10 +129,16 @@ if any(trialIdx) % There is at least one trial level variable
 
         rowDataTrial=logVar(rowNum,trialIdxNums);
         subName=logVar{rowNum,subjIDCol};
-        trialName=logVar{rowNum,targetTrialIDCol};        
+        trialName=logVar{rowNum,targetTrialIDCol};
+
+        disp(['Trial Row ' num2str(rowNum)]);
 
         % Handle trial level data
         for varNum=1:length(rowDataTrial)
+
+            headerIdxNum=trialIdxNums(varNum); % The column index.
+            type=lower(types{headerIdxNum});
+            varName=varNames{headerIdxNum}; % The name of the variable struct.
 
             var=rowDataTrial{varNum};
 
@@ -131,7 +146,7 @@ if any(trialIdx) % There is at least one trial level variable
                 var=var{1};
             end
 
-            switch useHeaderDataTypesTrial{varNum}
+            switch type
                 case 'char'
                     if isa(var,'double')
                         if isnan(var)
@@ -146,35 +161,36 @@ if any(trialIdx) % There is at least one trial level variable
                     end
             end
 
-            assert(isa(var,useHeaderDataTypesTrial{varNum}));
+            assert(isa(var,type));
 
-%             rowDataTrialStruct.([useHeaderVarNamesTrial{varNum} '_' splitCode])=var;
+            % Save trial-level data.
+            % 1. Create a project-independent and project-specific variable struct for this variable if it does not
+            % already exist.
+            if isempty(varName)
+                varStruct=createVariableStruct(fig, headers{headerIdxNum});
+                varStruct_PS=createVariableStruct_PS(fig,varStruct);
+                varName=varStruct_PS.Text;
+                logsheetStruct.Variables{headerIdxNum}=varName;
+                saveClass(fig, 'Logsheet', logsheetStruct);
+                varNames{headerIdxNum}=varName; % For the next iteration
+            end
 
-        end        
+            % 2. Save data and metadata to file.
+            desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
+            saveMAT(dataPath, desc, varName, var, subName, trialName);
 
-        folderName=[dataPath 'MAT Data Files' slash subName slash];
-
-        % Save trial level data
-        if exist(folderName,'dir')~=7
-            mkdir(folderName);
-        end
-
-        fileName=[folderName trialName '_' subName '_' projectName '.mat'];
-
-        if exist(fileName,'file')~=2
-            save(fileName,'-struct','rowDataTrialStruct','-v6','-mat');
-        else
-            save(fileName,'-struct','rowDataTrialStruct','-append');
         end
 
     end
 end
 
+toc;
+
 %% Subject level data
 % Need to incorporate specifyTrials here too
 
 subNamesAll=logVar(numHeaderRows+1:end,subjIDCol);
-subNames=unique(subNamesAll); % The complete list of subject names
+subNames=unique(subNamesAll,'stable'); % The complete list of subject names
 
 rowNums=cell(length(subNames),1);
 for i=1:length(subNames)
@@ -188,15 +204,19 @@ end
 subjectIdxNums=find(subjectIdx==1);
 if any(subjectIdx)
     for subNum=1:length(subNames)
-        currSubRows=logical(rowNums{subNum});
+        currSubRows=logical(rowNums{subNum}) & rowsIdx;
 
         subName=subNames{subNum};
 
-        folderName=[dataPath 'MAT Data Files' slash subName slash];
+        disp(['Subject ' subName]);
 
         for varNum=1:length(subjectIdxNums)
 
             varAll=logVar(currSubRows,subjectIdxNums(varNum));
+
+            headerIdxNum=subjectIdxNums(varNum); % The column index.
+            type=lower(types{headerIdxNum});
+            varName=varNames{headerIdxNum}; % The name of the variable struct.
 
             count=0;
             for i=1:length(varAll)
@@ -210,7 +230,7 @@ if any(subjectIdx)
                     var=varAll{i};
                 else
                     if ~isequal(var,varAll{i})
-                        disp(['Non-unique entries in logsheet for subject ' subName ' variable ' headerNames{useHeadersIdxNumsSubject(varNum)}]);
+                        disp(['Non-unique entries in logsheet for subject ' subName ' variable ' headers{headerIdxNum}]);
                         return;
                     end
                 end
@@ -219,9 +239,9 @@ if any(subjectIdx)
 
             if isa(var,'cell')
                 var=var{1};
-            end
+            end            
 
-            switch useHeaderDataTypesSubject{varNum}
+            switch type
                 case 'char'
                     if isa(var,'double')
                         if isnan(var)
@@ -236,24 +256,29 @@ if any(subjectIdx)
                     end
             end
 
-            assert(isa(var,useHeaderDataTypesSubject{varNum}));            
+            assert(isa(var,type));
 
-            rowDataSubjectStruct.([useHeaderVarNamesSubject{varNum} '_' splitCode])=var;
+            % Save trial-level data.
+            % 1. Create a project-independent and project-specific variable struct for this variable if it does not
+            % already exist.
+            if isempty(varName)
+                varStruct=createVariableStruct(fig, headers{headerIdxNum});
+                varStruct_PS=createVariableStruct_PS(fig,varStruct);
+                varStruct_PS.Level='S';
+                saveClass_PS(fig, 'Variable', varStruct_PS);
+                varName=varStruct_PS.Text;
+                logsheetStruct.Variables{headerIdxNum}=varName;                
+                saveClass(fig, 'Logsheet', logsheetStruct);
+                varNames{headerIdxNum}=varName; % For the next iteration
+            end
 
-        end
+            % 2. Save data and metadata to file.
+            desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
+            saveMAT(dataPath, desc, varName, var, subName);
 
-        % Save subject level data
-        if exist(folderName,'dir')~=7
-            mkdir(folderName);
-        end
-
-        fileName=[folderName subName '_' projectName '.mat'];               
-
-        if exist(fileName,'file')~=2
-            save(fileName,'-struct','rowDataSubjectStruct','-v6','-mat');
-        else
-            save(fileName,'-struct','rowDataSubjectStruct','-append');
         end
 
     end
 end
+
+toc;

@@ -69,6 +69,7 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 struct.Headers={}; % The headers for the current logsheet.
 struct.Level={}; % Trial or subject
 struct.Type={}; % Char or double
+struct.Variables={}; % The variable struct text (file name)
 
 saveClass(fig,'Logsheet',struct);
 

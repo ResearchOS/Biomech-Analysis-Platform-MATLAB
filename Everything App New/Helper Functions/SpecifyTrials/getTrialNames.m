@@ -98,7 +98,13 @@ for inclExcl=1:2
                             end
 
                             if ~iscell(currVals)
-                                currVals={currVals};
+                                if contains(currVals,',')
+                                    currVals=strsplit(currVals,',');
+                                elseif contains(currVals,';')
+                                    currVals=strsplit(currVals,';')';
+                                else
+                                    currVals={currVals};
+                                end
                             end
 
                             [~,currColNum]=find(strcmp(logVar(1,:),currName));
@@ -133,9 +139,9 @@ for inclExcl=1:2
                                     invFlag=1; % Indicates that the logic has been inverted.
                                     origLogic=currLogic; % Preserve the original value to switch back to it.
                                     switch currLogic
-                                        case 'is'
+                                        case {'is','equals'}
                                             currLogic='is not';
-                                        case 'is not'
+                                        case {'is not','does not equal'}
                                             currLogic='is';
                                         case 'contains'
                                             currLogic='does not contain';

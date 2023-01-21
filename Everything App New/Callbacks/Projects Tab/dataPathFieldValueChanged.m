@@ -13,8 +13,8 @@ end
 
 project=handles.Projects.allProjectsUITree.SelectedNodes.Text;
 
-classVar=getappdata(fig,'Project');
-idx=ismember({classVar.Text},project);
+fullPath=getClassFilePath(project, 'Project', fig);
+projectStruct=loadJSON(fullPath);
 
 if exist(path,'dir')~=7
     disp('Specified path is not a directory or does not exist!');
@@ -23,8 +23,6 @@ end
 
 computerID=getComputerID();
 
-classVar(idx).DataPath.(computerID)=path;
+projectStruct.DataPath.(computerID)=path;
 
-setappdata(fig,'Project',classVar);
-
-saveClass(fig,'Project',classVar(idx));
+saveClass(fig,'Project',projectStruct);

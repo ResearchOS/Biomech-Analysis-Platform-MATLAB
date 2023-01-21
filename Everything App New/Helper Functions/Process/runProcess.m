@@ -14,6 +14,8 @@ if guiInBase
     fig=evalin('base','gui;');
 end
 
+handles=getappdata(fig,'handles');
+
 piText=getPITextFromPS(psText);
 
 filePath=getClassFilePath_PS(psText, 'Process', fig);
@@ -29,12 +31,21 @@ fcnName=processStructPI.MFileName;
 %% NOTE: NEED THE VARIABLES' LEVELS, AND THE FUNCTION'S LEVELS.
 level=processStructPI.Level;
 
+logNode=handles.Import.allLogsheetsUITree.SelectedNodes;
+logStructPath=getClassFilePath(logNode);
+logsheetStruct=loadJSON(logStructPath);
+computerID=getComputerID();
+logsheetPath=logsheetStruct.LogsheetPath.(computerID);
+[logsheetFolder,name]=fileparts(logsheetPath);
+logsheetPathMAT=[logsheetFolder slash name '.mat'];
+load(logsheetPathMAT,'logVar');
+
 % CD into the current project so that the proper functions are used.
 % projectPath=getProjectPath(fig);
 % oldPath=cd([projectPath slash 'Process']);
-% inclStruct=getInclStruct(fig,specifyTrials);
-% trialNames=getTrialNames(inclStruct,logVar,fig,0);
-% subNames=fieldnames(trialNames);
+inclStruct=getInclStruct(fig,specifyTrials);
+trialNames=getTrialNames(inclStruct,logVar,fig,0,logsheetStruct);
+subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
 % Store the info for the process struct

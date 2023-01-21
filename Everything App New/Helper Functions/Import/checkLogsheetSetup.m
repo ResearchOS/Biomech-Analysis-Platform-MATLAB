@@ -57,11 +57,12 @@ try
     assert(any(ismember(logsheetStruct.SubjectCodenameHeader,logsheetStruct.Headers)));
 
     % 7. Check that all subject codenames are valid variable names.
-    codenameHeaderIdx=ismember(logsheetStruct.Headers,logsheet.SubjectCodenameHeader);
-    codenames=logVar(logsheet.NumHeaderRows+1:end,codenameHeaderIdx);
-    errorIdx=find(~cellfun(@isvarname, codenames))==1;
-    errorData=codenames(errorIdx);
-    assert(~any(errorIdx),['Subject codenames not valid variable names in lines: ' errorData]);
+    codenameHeaderIdx=ismember(logsheetStruct.Headers,logsheetStruct.SubjectCodenameHeader);
+    codenames=logVar(logsheetStruct.NumHeaderRows+1:end,codenameHeaderIdx);
+    errorIdx=find(~cellfun(@isvarname, codenames)==1);
+%     errorData=codenames(errorIdx);
+%     assert(isempty(errorIdx),['Subject codenames not valid variable names in lines: ' errorIdx]);
+    assert(isempty(errorIdx),'Subject codenames not valid variable names');
 
     % 3. Target Trial ID
     assert(isa(logsheetStruct.TargetTrialIDHeader,'char'));
@@ -70,10 +71,11 @@ try
 
     % 9. Check that all target trial names are valid variable names.
     targetTrialIDIdx=ismember(logsheetStruct.Headers,logsheetStruct.TargetTrialIDHeader);
-    targetTrialNames=logVar(logsheet.NumHeaderRows+1:end,targetTrialIDIdx);
+    targetTrialNames=logVar(logsheetStruct.NumHeaderRows+1:end,targetTrialIDIdx);
     assert(all(cellfun(@isvarname, targetTrialNames)));
 
 catch
+    beep;
     logVar=[];
     bool=false;
 end

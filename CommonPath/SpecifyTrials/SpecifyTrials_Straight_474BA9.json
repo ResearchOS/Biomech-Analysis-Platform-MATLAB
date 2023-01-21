@@ -3,7 +3,7 @@
   "Type": "SpecifyTrials",
   "ID": "474BA9",
   "DateCreated": "19-Jan-2023 20:54:31",
-  "DateModified": "19-Jan-2023 21:05:07",
+  "DateModified": "20-Jan-2023 20:13:13",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
@@ -13,20 +13,17 @@
   "Logsheet_Headers": [
     "Perfect_Trial",
     "Researcher_Comments",
-    "Researcher_Comments",
-    "Late_Cue_Frame"
+    "Trial_Type_Task"
   ],
   "Logsheet_Logic": [
     "equals",
-    "contains",
     "does not contain",
     "contains"
   ],
   "Logsheet_Value": [
     "1",
-    "Straight",
     "Practice",
-    "Test1,Test2"
+    "TWW;Late"
   ],
   "Data_Variables": [],
   "Data_Logic": [],

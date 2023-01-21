@@ -3,7 +3,7 @@
   "Type": "SpecifyTrials",
   "ID": "8C006D",
   "DateCreated": "19-Jan-2023 21:30:19",
-  "DateModified": "19-Jan-2023 21:31:21",
+  "DateModified": "20-Jan-2023 20:12:31",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
@@ -13,17 +13,20 @@
   "Logsheet_Headers": [
     "Perfect_Trial",
     "Researcher_Comments",
+    "Trial_Type_Task",
     "Trial_Type_Task"
   ],
   "Logsheet_Logic": [
     "equals",
     "does not contain",
+    "contains",
     "contains"
   ],
   "Logsheet_Value": [
     "1",
     "Practice",
-    "TWW"
+    "TWW",
+    "Pre"
   ],
   "Data_Variables": [],
   "Data_Logic": [],

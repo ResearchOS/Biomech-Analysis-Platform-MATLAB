@@ -25,7 +25,7 @@
   ],
   "ID": "E9D300",
   "DateCreated": "15-Jan-2023 20:20:42",
-  "DateModified": "21-Jan-2023 13:07:37",
+  "DateModified": "21-Jan-2023 14:39:48",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
@@ -39,10 +39,10 @@
     "Default_F341C0"
   ],
   "SpecifyTrials": [
-    "PrePlanned_8C006D",
-    "Straight_474BA9",
     "Cal_D091BB",
-    "LateCued_E7E1FB"
+    "LateCued_E7E1FB",
+    "PrePlanned_8C006D",
+    "Straight_474BA9"
   ],
   "Archived": false,
   "Visible": true,

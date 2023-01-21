@@ -33,6 +33,17 @@ targetTrialIDColHeaderName=logsheetStruct.TargetTrialIDHeader;
 % numHeaderRowsField=findobj(fig,'Type','uinumericeditfield','Tag','NumHeaderRowsField');
 numHeaderRows=logsheetStruct.NumHeaderRows;
 
+% No specifyTrials criteria were provided, so grab all trials.
+if length(fieldnames(inclStruct))==0
+    inclStruct.Include.Condition(1).Logsheet(1).Name=subjIDHeaderName;
+    inclStruct.Include.Condition(1).Logsheet(1).Logic='contains';
+    inclStruct.Include.Condition(1).Logsheet(1).Value='';
+
+    inclStruct.Include.Condition(1).Logsheet(2).Name=targetTrialIDColHeaderName;
+    inclStruct.Include.Condition(1).Logsheet(2).Logic='contains';
+    inclStruct.Include.Condition(1).Logsheet(2).Value='';
+end
+
 %% LOGSHEET-SPECIFIC CRITERIA
 % Iterate over Inclusion vs. Exclusion criteria in Logsheet
 inclExcl=fieldnames(inclStruct); % Include and/or Exclude
@@ -43,7 +54,7 @@ if ~isempty(logVar) % The logVar is empty if no logsheet criteria specified.
     [~,subjIDColNum]=find(strcmp(logVar(1,:),subjIDHeaderName));
 end
 
-saveLog=0; % Default not to resave the logsheet variable.
+% saveLog=0; % Default not to resave the logsheet variable.
 
 for inclExcl=1:2
 
@@ -134,7 +145,7 @@ for inclExcl=1:2
                                 currVal=currVals{m}; % Should always be specified as a char, even when using < or > signs
                                 invFlag=0; % Initialize this flag to indicate that the logic should not be inverted.
 
-                                if isequal(currVal(1),'~')
+                                if ~isempty(currVal) && isequal(currVal(1),'~')
                                     currVal=currVal(2:end);
                                     invFlag=1; % Indicates that the logic has been inverted.
                                     origLogic=currLogic; % Preserve the original value to switch back to it.
@@ -161,13 +172,19 @@ for inclExcl=1:2
                                             passAll(m)=1;
                                         end
                                     case 'contains'
-                                        if ~isempty(strfind(currLogElem,currVal))
+                                        if contains(currLogElem,currVal)
                                             passAll(m)=1;
                                         end
+%                                         if ~isempty(strfind(currLogElem,currVal))
+%                                             passAll(m)=1;
+%                                         end
                                     case 'does not contain'
-                                        if isempty(strfind(currLogElem,currVal))
+                                        if ~contains(currLogElem,currVal)
                                             passAll(m)=1;
                                         end
+%                                         if isempty(strfind(currLogElem,currVal))
+%                                             passAll(m)=1;
+%                                         end
                                     case 'is empty'
                                         if isnan(currLogElem)
                                             passAll(m)=1;
@@ -214,23 +231,8 @@ for inclExcl=1:2
             if all(passedCurrSubCond)
 
                 subName=logVar{rowNum,subjIDColNum};
-%                 if ~isvarname(subName)
-%                     subName=['S' subName];
-%                     if ~isvarname(subName)
-%                         error(['Invalid Subject Name: ' subName(2:end)]);
-%                     end
-%                     logVar{rowNum,subjIDColNum}=subName;
-%                     saveLog=1;
-%                 end
+
                 trialName=logVar{rowNum,targetTrialIDColNum};
-%                 if ~isvarname(trialName)
-%                     trialName=['T' trialName];
-%                     if ~isvarname(trialName)
-%                         error(['Invalid Trial Name: ' trialName(2:end)]);
-%                     end
-%                     logVar{rowNum,targetTrialIDColNum}=trialName;
-%                     saveLog=1;
-%                 end
 
                 if org==0
                     if ~exist('trialNames','var') || ~isfield(trialNames,subName)

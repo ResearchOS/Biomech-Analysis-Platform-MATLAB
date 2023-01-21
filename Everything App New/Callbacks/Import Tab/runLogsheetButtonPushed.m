@@ -61,9 +61,7 @@ end
 
 fullPath=getClassFilePath(projectNode);
 projectStruct=loadJSON(fullPath);
-% projectPath=projectStruct.ProjectPath.(computerID);
 
-% oldPath=cd([projectPath slash 'SpecifyTrials']);
 inclStruct=getInclStruct(fig,specTrialsName);
 allTrialNames=getTrialNames(inclStruct,logVar,fig,0,logsheetStruct);
 rowsIdx=false(size(logVar,1),1);
@@ -77,7 +75,6 @@ for i=1:length(subNames)
     rowsIdx(rowsIdxCurrent)=true;
 
 end
-% cd(oldPath);
 
 % Get the row numbers from the specify trials selected
 rowNums=find(rowsIdx==1);
@@ -183,8 +180,6 @@ if any(trialIdx) % There is at least one trial level variable
 
     end
 end
-
-toc;
 
 %% Subject level data
 % Need to incorporate specifyTrials here too

@@ -25,24 +25,28 @@ end
 piText=getPITextFromPS(psText);
 matFolder=[matFolder slash piText];
 
-% warning('off','MATLAB:MKDIR:DirectoryExists');
-% mkdir(matFolder);
-% warning('on','MATLAB:MKDIR:DirectoryExists');
-
 currDate=datetime('now');
 
 filePath=[matFolder slash psText '.mat'];
 
-varNames={};
+varNames={'Data'};
 
-if exist(filePath,'file')~=2   
-    DateCreated=currDate;        
-    varNames={'DateCreated'};
-end
+% if exist(filePath,'file')~=2   
+%     DateCreated=currDate;        
+%     varNames={'DateCreated'};
+% end
 
 DateModified=currDate;
 Description=desc;
 
 varNames=[varNames, {'DateModified'}, {'Description'}];
 
-save(filePath,varNames{:},'-v6');
+% How to avoid overwriting "DateCreated" but not have to load the file to
+% obtain that info? To be realistic, "DateCreated" is not *that* important.
+% "DateModified" is much more important.
+try
+    save(filePath,varNames{:},'-v6');
+catch
+    mkdir(matFolder);
+    save(filePath,varNames{:},'-v6');
+end

@@ -15,6 +15,10 @@ oldPath=cd(stFolder);
 
 inclStruct=struct();
 
+if isempty(specifyTrials)
+    return;
+end
+
 for i=1:length(specifyTrials)
 
     currST=specifyTrials{i};

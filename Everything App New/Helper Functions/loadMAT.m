@@ -1,6 +1,6 @@
-function []=saveMAT(dataPath, desc, psText, Data, subName, trialName)
+function [Data]=loadMAT(dataPath, psText, subName, trialName)
 
-%% PURPOSE: SAVE DATA TO MAT FILE.
+%% PURPOSE: LOAD DATA FROM A MAT FILE.
 
 slash=filesep;
 
@@ -21,20 +21,6 @@ end
 piText=getPITextFromPS(psText);
 matFolder=[matFolder slash piText];
 
-currDate=datetime('now');
-
 filePath=[matFolder slash psText '.mat'];
 
-varNames={'Data'};
-
-DateModified=currDate;
-Description=desc;
-
-varNames=[varNames, {'DateModified'}, {'Description'}];
-
-try
-    save(filePath,varNames{:},'-v6');
-catch
-    mkdir(matFolder);
-    save(filePath,varNames{:},'-v6');
-end
+load(filePath,'Data');

@@ -118,6 +118,10 @@ if exist(dataPath,'dir')~=7
     return;
 end
 
+% In case a new variable is created, this helps fill the UI tree
+searchTerm=getSearchTerm(handles.Process.variablesSearchField);
+sortDropDown=handles.Process.sortVariablesDropDown;
+
 %% Trial level data
 trialIdxNums=find(trialIdx==1);
 if any(trialIdx) % There is at least one trial level variable
@@ -134,7 +138,7 @@ if any(trialIdx) % There is at least one trial level variable
         for varNum=1:length(rowDataTrial)
 
             headerIdxNum=trialIdxNums(varNum); % The column index.
-            type=lower(types{headerIdxNum});
+            type=lower(types{headerIdxNum});                      
             varName=varNames{headerIdxNum}; % The name of the variable struct.
 
             var=rowDataTrial{varNum};
@@ -166,11 +170,31 @@ if any(trialIdx) % There is at least one trial level variable
             if isempty(varName)
                 varStruct=createVariableStruct(fig, headers{headerIdxNum});
                 varStruct_PS=createVariableStruct_PS(fig,varStruct);
+%             varNamePI=getPITextFromPS(varName);
+%             varPath=getClassFilePath(varNamePI, 'Variable', fig);
+%             varPathPS=getClassFilePath_PS(varName, 'Variable', fig);
+%             if exist(varPath,'file')~=2 || exist(varPathPS,'file')~=2
+%                 if isempty(varName)
+%                     varStruct=createVariableStruct(fig, headers{headerIdxNum});
+%                     varStruct_PS=createVariableStruct_PS(fig,varStruct);                    
+%                 else
+%                     [name, id, psid]=deText(varName);
+%                     if exist(varPath,'file')~=2
+%                         varStruct=createVariableStruct(fig, name, id);
+%                     end
+%                     if exist(varPathPS,'file')~=2
+%                         varStruct=loadJSON(varPath);
+%                         varStruct_PS=createVariableStruct_PS(fig,varStruct,psid);                    
+%                     end
+%                 end                
+                fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
                 varName=varStruct_PS.Text;
                 logsheetStruct.Variables{headerIdxNum}=varName;
                 saveClass(fig, 'Logsheet', logsheetStruct);
                 varNames{headerIdxNum}=varName; % For the next iteration
             end
+
+%             setArg
 
             % 2. Save data and metadata to file.
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];

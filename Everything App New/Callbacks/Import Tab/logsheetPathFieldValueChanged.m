@@ -57,6 +57,7 @@ if isempty(struct.Headers)
     struct.Headers=headers;
     struct.Level=repmat({''},length(headers),1);
     struct.Type=repmat({''},length(headers),1);
+    struct.Variables=repmat({''},length(headers),1);
 end
 
 save(logsheetPathMAT,'logVar');

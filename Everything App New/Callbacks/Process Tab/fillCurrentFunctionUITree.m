@@ -16,8 +16,8 @@ uiTree=handles.Process.functionUITree;
 delete(uiTree.Children);
 
 % Load project-specific file.
-fullPath=getClassFilePath_PS(selNode.Text, 'Process', fig);
-struct=loadJSON(fullPath);
+fullPathPS=getClassFilePath_PS(selNode.Text, 'Process', fig);
+struct=loadJSON(fullPathPS);
 
 inputVarsPS=struct.InputVariables;
 outputVarsPS=struct.OutputVariables;

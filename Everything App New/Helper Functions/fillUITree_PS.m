@@ -6,6 +6,10 @@ handles=getappdata(fig,'handles');
 
 slash=filesep;
 
+if isempty(uiTree.Children)
+    return;
+end
+
 texts={uiTree.Children.Text}; % The existing nodes' texts
 
 projectPath=getProjectPath(fig); % The current project path
@@ -27,7 +31,16 @@ for i=1:length(texts)
 
     node=uiTree.Children(i);
 
-    for j=1:length(currNames)      
+    existChildren={};
+    if ~isempty(node.Children)
+        existChildren={node.Children.Text};           
+    end
+
+    for j=1:length(currNames)    
+        if ismember(currNames{j},existChildren)
+            continue; % Child already exists, don't create a new node.
+        end
+
         newNode=uitreenode(node,'Text',currNames{j});
 
         newNode.ContextMenu=handles.Process.psContextMenu;

@@ -1,9 +1,9 @@
 {
-  "Name": "Test",
+  "Name": "Researcher_Comments",
   "Type": "Variable",
-  "ID": "4118A3",
-  "DateCreated": "15-Jan-2023 11:28:36",
-  "DateModified": "15-Jan-2023 11:28:36",
+  "ID": "B4BF70",
+  "DateCreated": "22-Jan-2023 20:10:24",
+  "DateModified": "22-Jan-2023 20:10:24",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
@@ -23,6 +23,6 @@
   "OutOfDate": true,
   "Checked": true,
   "Visible": true,
-  "Text": "Test_4118A3",
+  "Text": "Researcher_Comments_B4BF70",
   "Parent": ""
 }

@@ -50,11 +50,11 @@ end
 
 % Check if that number has already been used.
 namePS=handles.Process.groupUITree.SelectedNodes.Text;
-% fullPath=getClassFilePath_PS(namePS, 'Process', fig);
-% struct=loadJSON(fullPath);
+fullPathPS=getClassFilePath_PS(namePS, 'Process', fig);
+psStruct=loadJSON(fullPathPS);
 
 namePI=getPITextFromPS(namePS);
-fullPathPI=getClassFilePath(namePI{1}, 'Process', fig);
+fullPathPI=getClassFilePath(namePI, 'Process', fig);
 piStruct=loadJSON(fullPathPI);
 
 if isequal(varType,'getArg')
@@ -86,16 +86,20 @@ elseif isequal(varType,'setArg')
     argsSplit=argsSplit(4:end);
 end
 
+argsEmpty=[{number}; cell(size(argsSplit))']; % To initialize the project-specific args.
 argsSplit=[{number}; argsSplit']; % Column vector for JSON format.
 
 % 3. Store the info in the PI process struct.
 if isequal(varType,'getArg')
     piStruct.InputVariablesNamesInCode=[piStruct.InputVariablesNamesInCode; {argsSplit}];
+    psStruct.InputVariables=[psStruct.InputVariables; {argsEmpty}];
 elseif isequal(varType,'setArg')
     piStruct.OutputVariablesNamesInCode=[piStruct.OutputVariablesNamesInCode; {argsSplit}];
+    psStruct.OutputVariables=[psStruct.OutputVariables; {argsEmpty}];
 end
 
 writeJSON(fullPathPI, piStruct);
+writeJSON(fullPathPS, psStruct);
 
 % 4. Add the args to the UI tree
 fillCurrentFunctionUITree(fig);

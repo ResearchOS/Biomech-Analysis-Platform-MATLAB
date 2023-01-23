@@ -6,6 +6,11 @@ function [piTexts]=getPITextFromPS(psTexts)
 % project-specific texts format: {name}_ID_PSID
 % project-independent texts format: {name}_ID
 
+if isempty(psTexts)
+    piTexts='';
+    return;
+end
+
 if ~iscell(psTexts)
     psTexts={psTexts};
 end

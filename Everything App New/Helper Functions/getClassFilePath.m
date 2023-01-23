@@ -2,6 +2,11 @@ function [fullPath]=getClassFilePath(selNode,class,src)
 
 %% PURPOSE: GET THE CLASS FULL FILE PATH FROM THE SELECTED NODE
 
+if isempty(selNode)
+    fullPath='';
+    return;
+end
+
 if ~ischar(selNode)
     parent=selNode.Parent;
 

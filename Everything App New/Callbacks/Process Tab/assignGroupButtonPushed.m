@@ -24,6 +24,11 @@ list=[list; {'ProcessGroup', groupName}];
 
 struct.ExecutionList=list;
 
-saveClass(fig,'ProcessGroup',struct);
+projectSettingsFile=getProjectSettingsFile(fig);
+Current_ProcessGroup_Name=loadJSON(projectSettingsFile,'Current_ProcessGroup_Name');
+currGroupPath=getClassFilePath(Current_ProcessGroup_Name, 'ProcessGroup', fig);
+currGroupStruct=loadJSON(currGroupPath);
+
+linkClasses(fig, struct, currGroupStruct);
 
 fillProcessGroupUITree(fig);

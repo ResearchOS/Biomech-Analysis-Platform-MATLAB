@@ -25,5 +25,6 @@ if isempty(types)
 end
 
 for i=1:length(names)
-    uitreenode(uiTree,'Text',names{i});
+    newNode=uitreenode(uiTree,'Text',names{i});
+    newNode.ContextMenu=handles.Process.psContextMenu;
 end

@@ -87,6 +87,8 @@ assert(isequal(processStruct.(fldName){argIdxNum}{1},number));
 
 processStruct.(fldName){argIdxNum}{idxNum+1}=varStruct.Text;
 
+linkClasses(fig, varStruct, processStruct); % Create a connection between the variable & the process function
+
 % Save changes
 saveClass_PS(fig, 'Process', processStruct);
 saveClass_PS(fig, 'Variable', varStruct);

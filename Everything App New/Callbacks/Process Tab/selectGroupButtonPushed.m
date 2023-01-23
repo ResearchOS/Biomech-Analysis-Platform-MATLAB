@@ -1,6 +1,6 @@
 function []=selectGroupButtonPushed(src,event)
 
-%% PURPOSE: SELECT THE CURRENTLY SELECTED GROUP
+%% PURPOSE: SELECT THE CURRENTLY SELECTED PI GROUP. IF NO CORRESPONDING PS GROUP, CREATE IT AND ASSIGN THAT.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -11,22 +11,28 @@ if isempty(groupNode)
     return;
 end
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_ProcessGroup_Name');
-
 projectPath=getProjectPath(fig);
 if isempty(projectPath)
     return;
 end
 
-slash=filesep;
-%% Create project-specific processing group file if one does not exist already.
-names=getClassFilenames(fig,'ProcessGroup',[projectPath slash 'Project_Settings']);
-if ~contains(Current_ProcessGroup_Name,names)
-    psStruct=createPSProcessGroupStruct(fig);
+projectSettingsFile=getProjectSettingsFile(fig);
+projectSettings=loadJSON(projectSettingsFile);
+
+% Create new PS process group struct if PI node is selected
+if isequal(groupNode.Parent,handles.Process.allGroupsUITree)
+    fullPath=getClassFilePath(groupNode);
+    piStruct=loadJSON(fullPath);
+    psStruct=createProcessGroupStruct_PS(fig, piStruct);
     Current_ProcessGroup_Name=psStruct.Text;
-    save(rootSettingsFile,'Current_ProcessGroup_Name','-append');
+    uitreenode(groupNode,'Text',psStruct.Text); % Create new PS node.
+else % Use pre-existing PS node.
+    Current_ProcessGroup_Name=groupNode.Text;
 end
+
+%% Create project-specific processing group file if one does not exist already.
+projectSettings.Current_ProcessGroup_Name=Current_ProcessGroup_Name;
+writeJSON(projectSettingsFile,projectSettings);
 
 handles.Process.currentGroupLabel.Text=Current_ProcessGroup_Name;
 

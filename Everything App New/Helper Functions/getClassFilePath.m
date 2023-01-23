@@ -7,6 +7,16 @@ if isempty(selNode)
     return;
 end
 
+% This allows this one function to do both project-independent and
+% project-specific actions (should be cleaned up in the future.
+if ischar(selNode)
+    [name, id, psid]=deText(selNode);
+    if ~isempty(psid)
+        [fullPath]=getClassFilePath_PS(selNode, class, src);
+        return;
+    end
+end
+
 if ~ischar(selNode)
     parent=selNode.Parent;
 
@@ -32,6 +42,8 @@ if ~ischar(selNode)
             class='SpecifyTrials';
         case handles.Process.allSpecifyTrialsUITree
             class='SpecifyTrials';
+        case handles.Process.groupUITree
+            class='Process';
         case handles.Stats.allStatsUITree
             class='Stats';        
     end

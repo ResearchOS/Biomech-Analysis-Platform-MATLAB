@@ -9,7 +9,7 @@ texts=cell(size(filenames));
 for i=1:length(filenames)
     name=filenames{i};
 
-    % Remove extension
+    % Remove extension if present
     extIdx=strfind(name,'.json');
 
     if ~isempty(extIdx)

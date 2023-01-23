@@ -7,9 +7,15 @@ handles=getappdata(fig,'handles');
 
 selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
 
-if isequal(class(selNode.Parent),'matlab.ui.container.TreeNode')
+[name,id,psid]=deText(selNode.Text);
+
+if ~isempty(psid)
     isPS=true;
-    uiTree=selNode.Parent.Parent; % The UI tree
+    if isequal(class(selNode.Parent),'matlab.ui.container.CheckBoxTree')
+        uiTree=selNode.Parent;
+    else
+        uiTree=selNode.Parent.Parent; % The UI tree
+    end
 else
     isPS=false;
     uiTree=selNode.Parent;
@@ -22,8 +28,8 @@ switch uiTree
         classType='Logsheet';
     case handles.Process.allProcessUITree
         classType='Process';
-%     case handles.Process.groupUITree
-%         classType='Process';
+    case handles.Process.groupUITree
+        classType='Process';
 %     case handles.Process.functionUITree
 %         classType='Variable';
     case handles.Plot.allPlotsUITree

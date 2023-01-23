@@ -48,12 +48,13 @@ types=[types; {'Process'}];
 groupStruct.ExecutionListNames=names;
 groupStruct.ExecutionListTypes=types;
 
-processStruct.UsedInGroups=unique([processStruct.UsedInGroups; groupStruct.Text]);
+linkClasses(fig, processStruct, groupStruct); % Also saves the structs
 
-saveClass_PS(fig,'ProcessGroup',groupStruct);
-saveClass_PS(fig,'Process',processStruct);
+% saveClass_PS(fig,'ProcessGroup',groupStruct);
+% saveClass_PS(fig,'Process',processStruct);
 
-uitreenode(handles.Process.groupUITree,'Text',processStruct.Text);
+newNode=uitreenode(handles.Process.groupUITree,'Text',processStruct.Text);
+newNode.ContextMenu=handles.Process.psContextMenu;
 
 if isNew
     uitreenode(selNode,'Text',processStruct.Text,'ContextMenu',handles.Process.psContextMenu);

@@ -1,0 +1,22 @@
+{
+  "Name": "Test",
+  "Type": "ProcessGroup",
+  "ID": "1E76A2",
+  "DateCreated": "22-Jan-2023 23:29:12",
+  "DateModified": "22-Jan-2023 23:29:12",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_F341C0"
+  ],
+  "SpecifyTrials": "",
+  "ExecutionListNames": [],
+  "ExecutionListTypes": [],
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": true,
+  "Visible": true,
+  "Text": "Test_1E76A2",
+  "Parent": ""
+}

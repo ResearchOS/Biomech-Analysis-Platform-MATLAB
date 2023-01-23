@@ -15,6 +15,9 @@ end
 
 name=selNode.Text;
 
+processPath=getClassFilePath(name, 'Process', fig);
+processStruct=loadJSON(processPath);
+
 idxNum=find(ismember(uiTree.Children,selNode)==1);
 
 delete(uiTree.Children(idxNum));
@@ -28,6 +31,8 @@ if idxNum==0
 else
     uiTree.SelectedNodes=uiTree.Children(idxNum);
 end
+
+groupUITreeSelectionChanged(fig);
 
 projectSettingsFile=getProjectSettingsFile(fig);
 Current_ProcessGroup_Name=loadJSON(projectSettingsFile,'Current_ProcessGroup_Name');
@@ -47,4 +52,6 @@ types(idx)=[];
 groupStruct.ExecutionListNames=names;
 groupStruct.ExecutionListTypes=types;
 
-saveClass_PS(fig,'ProcessGroup',groupStruct);
+unlinkClasses(fig, processStruct, groupStruct);
+
+% saveClass_PS(fig,'ProcessGroup',groupStruct);

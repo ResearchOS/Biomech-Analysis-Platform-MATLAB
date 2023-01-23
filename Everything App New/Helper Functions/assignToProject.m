@@ -16,11 +16,13 @@ projectStructPath=[projectClassFolder slash 'Project_' currentProject '.json'];
 
 projectStruct=loadJSON(projectStructPath);
 
-if ~ismember(struct.Text,projectStruct.(class))
-    projectStruct.(class)=[projectStruct.(class); {struct.Text}];
-end
+linkClasses(fig, struct, projectStruct);
 
-saveClass(fig,'Project',projectStruct);
+% if ~ismember(struct.Text,projectStruct.(class))
+%     projectStruct.(class)=[projectStruct.(class); {struct.Text}];
+% end
+% 
+% saveClass(fig,'Project',projectStruct);
 
 % classVar=loadClassVar(fig,projectClassFolder);
 % setappdata(fig,'Project',classVar);

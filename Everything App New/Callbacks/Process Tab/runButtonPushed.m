@@ -20,7 +20,7 @@ end
 
 
 try
-    testGUI=evalin('base','gui;');
+    testGUI=evalin('base','gui;'); % Var isn't used, just checking if GUI var is in base workspace.
 catch
     assignin('base','gui',fig); % Ensure that the fig variable is available for use.
 end

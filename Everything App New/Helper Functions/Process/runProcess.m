@@ -57,11 +57,11 @@ if ismember('P',level)
     disp(['Running ' fcnName]);
 
     if ismember('T',level)
-        feval(fcnName,projectStruct,trialNames);
+        feval(fcnName,trialNames);
     elseif ismember('S',level)
-        feval(fcnName,projectStruct,subNames);
+        feval(fcnName,subNames);
     else
-        feval(fcnName,projectStruct);
+        feval(fcnName);
     end
     disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
     return;
@@ -76,9 +76,9 @@ for sub=1:length(subNames)
         disp(['Running ' fcnName ' Subject ' subName]);
 
         if ismember('T',level)
-            feval(fcnName,projectStruct,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
+            feval(fcnName,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
         else
-            feval(fcnName,projectStruct,subName);
+            feval(fcnName,subName);
         end
         if sub==length(subNames)
             disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
@@ -93,12 +93,7 @@ for sub=1:length(subNames)
 
         for repNum=trialNames.(subName).(trialName)
 
-%             if ~isImport
-            feval(fcnName,projectStruct,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
-%             else
-%                 filePath=[dataPath subName slash trialName '_' subName '_' projectName '.c3d'];
-%                 feval(fcnName,filePath,projectStruct,subName,trialName,repNum);
-%             end
+            feval(fcnName,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
 
         end
     end

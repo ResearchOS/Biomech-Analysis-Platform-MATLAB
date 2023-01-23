@@ -5,8 +5,6 @@ function []=fillProcessGroupUITree(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-% selNodeAllGroups=handles.Process.allGroupsUITree.SelectedNodes;
-
 projectSettingsFile=getProjectSettingsFile(fig);
 Current_ProcessGroup_Name=loadJSON(projectSettingsFile, 'Current_ProcessGroup_Name');
 

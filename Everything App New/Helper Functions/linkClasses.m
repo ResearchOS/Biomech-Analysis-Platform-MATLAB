@@ -3,12 +3,6 @@ function [fromStruct, toStruct]=linkClasses(src, fromStruct, toStruct)
 %% PURPOSE: LINK TWO CLASS INSTANCES TOGETHER.
 % Linked FROM the fromStruct TO the toStruct (forward link)
 
-% arguments
-%     src
-%     fromStruct (1,1) mustBeAStruct(fromStruct,["struct"]);
-%     toStruct (1,1) mustBeAStruct;
-% end
-
 fig=ancestor(src,'figure','toplevel');
 
 fromText=fromStruct.Text;
@@ -18,19 +12,19 @@ toText=toStruct.Text;
 fullPathTo=getClassFilePath(toText, toStruct.Type, fig);
 
 %% Assign fromStruct to toStruct
-fwdField=['ForwardLinks_' fromStruct.Type];
-if ~isfield(toStruct,fwdField)
-    toStruct.(fwdField)={fromText};
+backField=['BackwardLinks_' fromStruct.Type];
+if ~isfield(toStruct,backField)
+    toStruct.(backField)={fromText};
 else
-    toStruct.(fwdField)=unique([toStruct.(fwdField); {fromText}],'stable');
+    toStruct.(backField)=unique([toStruct.(backField); {fromText}],'stable');
 end
 
 %% Assign toStruct to fromStruct
-backField=['BackwardLinks_' toStruct.Type];
-if ~isfield(fromStruct,backField)
-    fromStruct.(backField)={toText};
+fwdField=['ForwardLinks_' toStruct.Type];
+if ~isfield(fromStruct,fwdField)
+    fromStruct.(fwdField)={toText};
 else
-    fromStruct.(backField)=unique([fromStruct.(backField); {toText}],'stable');
+    fromStruct.(fwdField)=unique([fromStruct.(fwdField); {toText}],'stable');
 end
 
 writeJSON(fullPathFrom, fromStruct);

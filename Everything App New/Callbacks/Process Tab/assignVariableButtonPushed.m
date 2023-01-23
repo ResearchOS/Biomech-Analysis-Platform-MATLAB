@@ -43,6 +43,16 @@ end
 fullPath=getClassFilePath_PS(processNode.Text, 'Process', fig);
 processStruct=loadJSON(fullPath);
 
+% Check if argNode already has a variable assigned. If so, need to unlink
+% that variable from the process function
+if contains(argNode.Text,' ')
+    spaceIdx=strfind(argNode.Text,' ');
+    varText=argNode.Text(spaceIdx+2:end-1);
+    prevVarPath=getClassFilePath(varText, 'Variable', fig);
+    prevVarStruct=loadJSON(prevVarPath);
+    [prevVarStruct, processStruct]=unlinkClasses(fig, prevVarStruct, processStruct);
+end
+
 % Get the ID number for which getArg/setArg is currently being modified.
 parentNode=argNode.Parent;
 parentText=parentNode.Text;
@@ -51,7 +61,11 @@ number=str2double(spaceSplit{2});
 
 % Get the index of the current getArg/setArg in the UI tree, which
 % matches the index in the file.
-argIdxNum=find(ismember(handles.Process.functionUITree.Children, parentNode)==1);
+childrenNodes=[handles.Process.functionUITree.Children];
+childrenNodesTexts={childrenNodes.Text};
+argType=parentNode.Text(1:6);
+argSpecificIdx=contains(childrenNodesTexts,argType);
+argIdxNum=find(ismember(childrenNodes(argSpecificIdx), parentNode)==1);
 
 % Get the index of the arg being modified in that getArg/setArg
 % instance.
@@ -87,11 +101,12 @@ assert(isequal(processStruct.(fldName){argIdxNum}{1},number));
 
 processStruct.(fldName){argIdxNum}{idxNum+1}=varStruct.Text;
 
+% Saves changes.
 linkClasses(fig, varStruct, processStruct); % Create a connection between the variable & the process function
 
 % Save changes
-saveClass_PS(fig, 'Process', processStruct);
-saveClass_PS(fig, 'Variable', varStruct);
+% saveClass_PS(fig, 'Process', processStruct);
+% saveClass_PS(fig, 'Variable', varStruct);
 
 % Modify/add nodes
 argTextSplit=strsplit(argNode.Text,' ');

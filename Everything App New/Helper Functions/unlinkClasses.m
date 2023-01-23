@@ -2,12 +2,6 @@ function [fromStruct, toStruct]=unlinkClasses(src, fromStruct, toStruct)
 
 %% PURPOSE: REMOVE A LINK BETWEEN TWO CLASSES
 
-% arguments
-%     src
-%     fromStruct (1,1) mustBeAStruct;
-%     toStruct (1,1) mustBeAStruct;
-% end
-
 fig=ancestor(src,'figure','toplevel');
 
 fromText=fromStruct.Text;
@@ -17,17 +11,17 @@ toText=toStruct.Text;
 fullPathTo=getClassFilePath(toText, toStruct.Type, fig);
 
 %% Remove fromStruct from toStruct
-fwdField=['ForwardLinks_' fromStruct.Type];
-if isfield(toStruct,fwdField)
-    idx=ismember(fromText,toStruct.(fwdField));
-    toStruct.(fwdField)(idx)=[];
+backField=['BackwardLinks_' fromStruct.Type];
+if isfield(toStruct,backField)
+    idx=ismember(fromText,toStruct.(backField));
+    toStruct.(backField)(idx)=[];
 end
 
 %% Remove toStruct from fromStruct
-backField=['BackwardLinks_' toStruct.Type];
-if isfield(fromStruct,backField)
-    idx=ismember(toText,fromStruct.(backField));
-    fromStruct.(backField)(idx)=[];
+fwdField=['ForwardLinks_' toStruct.Type];
+if isfield(fromStruct,fwdField)
+    idx=ismember(toText,fromStruct.(fwdField));
+    fromStruct.(fwdField)(idx)=[];
 end
 
 writeJSON(fullPathFrom, fromStruct);

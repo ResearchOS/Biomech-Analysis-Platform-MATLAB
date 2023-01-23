@@ -29,7 +29,6 @@ psStructFcn=runInfo.Fcn.PSStruct;
 % Get the actual variable names as stored in file.
 inputVars=psStructFcn.InputVariables;
 
-allDone=false;
 for i=1:length(inputVars)
 
     currVars=inputVars{i};
@@ -40,9 +39,7 @@ for i=1:length(inputVars)
 
     varargout=cell(1,length(currVars)-1); % Initialize output variables.
 
-    for j=2:length(currVars)
-
-        allDone=true;
+    for j=2:length(currVars)        
 
         psStruct=runInfo.Var.Input(i).PSStruct{j-1};
         piStruct=runInfo.Var.Input(i).PIStruct{j-1};
@@ -70,8 +67,7 @@ for i=1:length(inputVars)
 
     end
 
-    if allDone
-        return;
-    end
+    % If this point is reached, it's because all data has been loaded.
+    return;
 
 end

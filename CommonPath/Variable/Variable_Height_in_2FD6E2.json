@@ -1,0 +1,28 @@
+{
+  "Name": "Height_in",
+  "Type": "Variable",
+  "ID": "2FD6E2",
+  "DateCreated": "22-Jan-2023 20:19:50",
+  "DateModified": "22-Jan-2023 20:19:50",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_F341C0"
+  ],
+  "SpecifyTrials": "",
+  "VariableType": "",
+  "VariableSize": [],
+  "InputToPlots": [],
+  "InputToComponents": [],
+  "InputToStatsTables": [],
+  "InputToPubTables": [],
+  "IsHardCoded": false,
+  "Level": "T",
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": true,
+  "Visible": true,
+  "Text": "Height_in_2FD6E2",
+  "Parent": ""
+}

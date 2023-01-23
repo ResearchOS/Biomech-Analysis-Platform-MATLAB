@@ -1,0 +1,28 @@
+{
+  "Name": "Visit_Number",
+  "Type": "Variable",
+  "ID": "A7B481",
+  "DateCreated": "22-Jan-2023 20:19:52",
+  "DateModified": "22-Jan-2023 20:19:52",
+  "CreatedBy": "MT",
+  "LastModifiedBy": "MT",
+  "Description": "",
+  "Project": [
+    "Default_F341C0"
+  ],
+  "SpecifyTrials": "",
+  "VariableType": "",
+  "VariableSize": [],
+  "InputToPlots": [],
+  "InputToComponents": [],
+  "InputToStatsTables": [],
+  "InputToPubTables": [],
+  "IsHardCoded": false,
+  "Level": "T",
+  "Archived": false,
+  "OutOfDate": true,
+  "Checked": true,
+  "Visible": true,
+  "Text": "Visit_Number_A7B481",
+  "Parent": ""
+}

@@ -3,7 +3,7 @@
   "Name": "Default",
   "ID": "F341C0",
   "DateCreated": "11-Jan-2023 15:07:17",
-  "DateModified": "22-Jan-2023 20:10:27",
+  "DateModified": "22-Jan-2023 20:19:52",
   "CreatedBy": "MT",
   "LastModifiedBy": "MT",
   "Description": "",
@@ -357,7 +357,14 @@
     "Motive_Initial_Frame_46E46D",
     "Motive_Final_Frame_18DDA1",
     "Motive_Marker_ID_Comments_B1E04A",
-    "Late_Cue_Frame_F341C0"
+    "Late_Cue_Frame_F341C0",
+    "Date_70518D",
+    "Subject_Codename_C3F8E8",
+    "Height_in_2FD6E2",
+    "Body_Weight_lb_7211F0",
+    "Age_B598EF",
+    "Gender_46A995",
+    "Visit_Number_A7B481"
   ],
   "Logsheet": [
     "Test_E9D300"

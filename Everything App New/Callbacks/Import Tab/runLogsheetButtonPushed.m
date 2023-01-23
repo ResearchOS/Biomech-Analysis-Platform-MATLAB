@@ -194,8 +194,6 @@ if any(trialIdx) % There is at least one trial level variable
                 varNames{headerIdxNum}=varName; % For the next iteration
             end
 
-%             setArg
-
             % 2. Save data and metadata to file.
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
             saveMAT(dataPath, desc, varName, var, subName, trialName);

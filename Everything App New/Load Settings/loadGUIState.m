@@ -70,6 +70,10 @@ allGroupsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot tab
+if existProjectPath
+    handles.Plot.currentPlotLabel.Text=projectSettings.Current_Plot_Name;
+%     fillPlotUITree(fig);
+end
 allPlotsUITreeSelectionChanged(fig);
 allComponentsUITreeSelectionChanged(fig);
 % All components UI tree

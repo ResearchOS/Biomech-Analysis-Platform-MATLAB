@@ -18,7 +18,10 @@ struct.DateModified=currDate;
 
 struct.Description='';
 
-struct.Projects={};
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
+
+struct.Project={Current_Project_Name};
 
 struct.SpecifyTrials='';
 

@@ -23,10 +23,10 @@ struct.LastModifiedBy=user2;
 
 struct.Description='';
 
-handles=getappdata(fig,'handles');
-currentProject=handles.Projects.projectsLabel.Text;
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
 
-struct.Project={currentProject};
+struct.Project={Current_Project_Name};
 
 % AND logic. All criteria must be met for this specify trials condition to return true.
 struct.Logsheet_Headers={};

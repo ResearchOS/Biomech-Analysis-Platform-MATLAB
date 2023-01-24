@@ -48,10 +48,10 @@ struct.TargetTrialIDHeader='';
 
 %% NOTE: Need to implement data type-specific headers.
 
-handles=getappdata(fig,'handles');
-currentProject=handles.Projects.projectsLabel.Text;
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
 
-struct.Project={currentProject};
+struct.Project={Current_Project_Name};
 
 struct.SpecifyTrials=''; % Which set of data to pull the variables out from?
 

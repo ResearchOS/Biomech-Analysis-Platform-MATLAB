@@ -35,18 +35,18 @@ struct.LastModifiedBy=user2;
 
 struct.Description='';
 
-handles=getappdata(fig,'handles');
-currentProject=handles.Projects.projectsLabel.Text;
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
 
-struct.Project={currentProject};
+struct.Project={Current_Project_Name};
 
 struct.Level='';
 struct.IsMovie=0;
-struct.MovieMetadata.StartFrame=1;
-struct.MovieMetadata.EndFrame=2;
+struct.MovieMetadata.StartFrame=[];
+struct.MovieMetadata.EndFrame=[];
 struct.MovieMetadata.StartFrameVariable=''; % Empty indicates hard-coded
 struct.MovieMetadata.EndFrameVariable=''; % Empty indicates hard-coded
-struct.MovieMetadata.CurrFrame=1;
+struct.MovieMetadata.CurrFrame=[];
 struct.MovieMetadata.Increment=1;
 
 struct.SpecifyTrials='';
@@ -71,16 +71,6 @@ struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
 saveClass(fig,'Plot',struct);
-
-classVar=getappdata(fig,'Plot');
-
-if isempty(classVar)
-    classVar=struct;
-else
-    classVar(end+1)=struct;
-end
-
-setappdata(fig,'Plot',classVar);
 
 %% Assign the newly created plot struct to the current project struct.
 assignToProject(fig,struct,'Plot');

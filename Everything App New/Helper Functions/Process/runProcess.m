@@ -7,7 +7,7 @@ slash=filesep;
 startFcn=tic;
 
 if nargin<2
-    guiInBase=false; % By default I don't want to make the user type false every time if using without GUI.
+    guiInBase=false; % By default I don't want to make the user type "false" every time if using without GUI.
 end
 
 if guiInBase

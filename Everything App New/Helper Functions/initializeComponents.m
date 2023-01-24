@@ -338,42 +338,110 @@ processResize(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the plot tab
-% 1. Plot label
-handles.Plot.plotLabel=uilabel(plotTab,'Text','Plots','FontWeight','bold');
+% 1. Tab group
+handles.Plot.subTabAll=uitabgroup(plotTab,'AutoResizeChildren','off');
+
+% 3. All components tab
+handles.Plot.componentsTab=uitab(handles.Plot.subTabAll,'Title','Components','AutoResizeChildren','off');
+
+% 2. All plots tab
+handles.Plot.plotsTab=uitab(handles.Plot.subTabAll,'Title','Plots','AutoResizeChildren','off');
+% handles.Plot.plotLabel=uilabel(plotTab,'Text','Plots','FontWeight','bold');
 
 % 2. Add plot button
-handles.Plot.addPlotButton=uibutton(plotTab,'Text','P+','ButtonPushedFcn',@(addPlotButton,event) addPlotButtonPushed(addPlotButton));
+handles.Plot.addPlotButton=uibutton(handles.Plot.plotsTab,'Text','P+','ButtonPushedFcn',@(addPlotButton,event) addPlotButtonPushed(addPlotButton));
 
 % 3. Remove plot button
-handles.Plot.removePlotButton=uibutton(plotTab,'Text','P-','ButtonPushedFcn',@(removePlotButton,event) removePlotButtonPushed(removePlotButton));
+handles.Plot.removePlotButton=uibutton(handles.Plot.plotsTab,'Text','P-','ButtonPushedFcn',@(removePlotButton,event) removePlotButtonPushed(removePlotButton));
 
 % 4. Sort plots drop down
-handles.Plot.sortPlotsDropDown=uidropdown(plotTab,'Items',sortOptions,'ValueChangedFcn',@(sortPlotDropDown,event) sortPlotDropDownValueChanged(sortPlotDropDown));
+handles.Plot.sortPlotsDropDown=uidropdown(handles.Plot.plotsTab,'Items',sortOptions,'ValueChangedFcn',@(sortPlotDropDown,event) sortPlotDropDownValueChanged(sortPlotDropDown));
 
 % 5. All plots UI tree
-handles.Plot.allPlotsUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(allPlotsUITree,event) allPlotsUITreeSelectionChanged(allPlotsUITree));
+handles.Plot.allPlotsUITree=uitree(handles.Plot.plotsTab,'checkbox','SelectionChangedFcn',@(allPlotsUITree,event) allPlotsUITreeSelectionChanged(allPlotsUITree));
 
 % 6. Plots search field
-handles.Plot.plotSearchField=uieditfield(plotTab,'Value','Search','ValueChangingFcn',@(plotSearchField,event) plotSearchFieldValueChanging(plotSearchField));
+handles.Plot.plotSearchField=uieditfield(handles.Plot.plotsTab,'Value','Search','ValueChangingFcn',@(plotSearchField,event) plotSearchFieldValueChanging(plotSearchField));
 
 % 7. Component label
-handles.Plot.componentLabel=uilabel(plotTab,'Text','Components','FontWeight','bold');
+% handles.Plot.componentLabel=uilabel(plotTab,'Text','Components','FontWeight','bold');
+
+% 8. Assign plot button
+handles.Plot.assignPlotButton=uibutton(handles.Plot.plotsTab,'Text','->','ButtonPushedFcn',@(assignPlotButton,event) assignPlotButtonPushed(assignPlotButton));
+
+% 9. Unassign plot button
+handles.Plot.unassignPlotButton=uibutton(handles.Plot.plotsTab,'Text','<-','ButtonPushedFcn',@(unassignPlotButton,event) unassignPlotButtonPushed(unassignPlotButton));
 
 % 8. Add component button
-handles.Plot.addComponentButton=uibutton(plotTab,'Text','C+','ButtonPushedFcn',@(addComponentButton,event) addComponentButtonPushed(addComponentButton));
+handles.Plot.addComponentButton=uibutton(handles.Plot.componentsTab,'Text','C+','ButtonPushedFcn',@(addComponentButton,event) addComponentButtonPushed(addComponentButton));
 
 % 9. Remove component button
-handles.Plot.removeComponentButton=uibutton(plotTab,'Text','C-','ButtonPushedFcn',@(removeComponentButton,event) removeComponentButtonPushed(removeComponentButton));
+handles.Plot.removeComponentButton=uibutton(handles.Plot.componentsTab,'Text','C-','ButtonPushedFcn',@(removeComponentButton,event) removeComponentButtonPushed(removeComponentButton));
 
 % 10. Sort components drop down
-handles.Plot.sortComponentsDropDown=uidropdown(plotTab,'Items',sortOptions,'ValueChangedFcn',@(sortComponentDropDown,event) sortComponentDropDownValueChanged(sortComponentDropDown));
+handles.Plot.sortComponentsDropDown=uidropdown(handles.Plot.componentsTab,'Items',sortOptions,'ValueChangedFcn',@(sortComponentDropDown,event) sortComponentDropDownValueChanged(sortComponentDropDown));
 
 % 11. All components UI tree
-handles.Plot.allComponentsUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(allComponentsUITree,event) allComponentsUITreeSelectionCHanged(allComponentsUITree));
+handles.Plot.allComponentsUITree=uitree(handles.Plot.componentsTab,'checkbox','SelectionChangedFcn',@(allComponentsUITree,event) allComponentsUITreeSelectionChanged(allComponentsUITree));
 
 % 12. Components search field
-handles.Plot.componentSearchField=uieditfield(plotTab,'Value','Search','ValueChangingFcn',@(componentSearchField,event) componentSearchFieldValueChanging(componentSearchField));
+handles.Plot.componentSearchField=uieditfield(handles.Plot.componentsTab,'Value','Search','ValueChangingFcn',@(componentSearchField,event) componentSearchFieldValueChanging(componentSearchField));
 
+% 13. Assign component button
+handles.Plot.assignComponentButton=uibutton(handles.Plot.componentsTab,'Text','->','ButtonPushedFcn',@(assignComponentButton,event) assignComponentButtonPushed(assignComponentButton));
+
+% 14. Unassign component button
+handles.Plot.unassignComponentButton=uibutton(handles.Plot.componentsTab,'Text','<-','ButtonPushedFcn',@(unassignComponentButton,event) unassignComponentButtonPushed(unassignComponentButton));
+
+% 13. Current plot/component tab group
+handles.Plot.subtabCurrent=uitabgroup(plotTab,'AutoResizeChildren','off','SelectionChangedFcn',@(subTabCurrent,event) plotSubTabCurrentSelectionChanged(subTabCurrent));
+
+% 14. Current plot tab
+handles.Plot.currentPlotTab=uitab(handles.Plot.subtabCurrent,'Title','Plot','AutoResizeChildren','off');
+
+% 15. Current component tab
+handles.Plot.currentComponentTab=uitab(handles.Plot.subtabCurrent,'Title','Component','AutoResizeChildren','off');
+
+% 16. Render button
+handles.Plot.renderButton=uibutton(plotTab,'Text','Render','ButtonPushedFcn',@(renderButton,event) renderButtonPushed(renderButton));
+
+% 20. Select plot button
+handles.Plot.selectPlotButton=uibutton(handles.Plot.plotsTab,'Text','Sel','ButtonPushedFcn',@(selectPlotButton,event) selectPlotButtonPushed(selectPlotButton));
+
+% 21. Current plot name label
+handles.Plot.currentPlotLabel=uilabel(handles.Plot.currentPlotTab,'Text','Current Plot','FontWeight','bold');
+
+% 17. Current plot UI tree
+handles.Plot.plotUITree=uitree(handles.Plot.currentPlotTab,'checkbox','SelectionChangedFcn',@(currentPlotUITree,event) plotUITreeSelectionChanged(currentPlotUITree));
+
+% 18. Save as new plot button
+handles.Plot.saveAsNewPlotButton=uibutton(handles.Plot.currentPlotTab,'Text',{'Save As','New Plot'},'ButtonPushedFcn',@(saveAsNewPlotButton,event) saveAsNewPlotButtonPushed(saveAsNewPlotButton));
+
+% 19. Current component UI tree
+handles.Plot.componentUITree=uitree(handles.Plot.currentComponentTab,'checkbox');
+
+% 22. Add specify trials button
+handles.Plot.addSpecifyTrialsButton=uibutton(plotTab,'Text','S+');
+addSpecifyTrialsButton=handles.Plot.addSpecifyTrialsButton;
+set(addSpecifyTrialsButton,'ButtonPushedFcn',@(addSpecifyTrialsButton,event) addSpecifyTrialsButtonPushed(addSpecifyTrialsButton))
+
+% 23. Remove specify trials button
+handles.Plot.removeSpecifyTrialsButton=uibutton(plotTab,'Text','S-');
+removeSpecifyTrialsButton=handles.Plot.removeSpecifyTrialsButton;
+set(removeSpecifyTrialsButton,'ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
+
+% 24. Specify trials UI tree
+handles.Plot.allSpecifyTrialsUITree=uitree(plotTab,'checkbox');
+specifyTrialsUITree=handles.Plot.allSpecifyTrialsUITree;
+set(specifyTrialsUITree,'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree));
+
+% 25. Edit specify trials node button
+handles.Plot.editSpecifyTrialsButton=uibutton(plotTab,'Text','Edit');
+editSpecifyTrialsButton=handles.Plot.editSpecifyTrialsButton;
+set(editSpecifyTrialsButton,'ButtonPushedFcn',@(editSpecifyTrialsButton,event) editSpecifyTrialsButtonPushed(editSpecifyTrialsButton));
+
+
+handles.Plot.subtabCurrent.SelectedTab=handles.Plot.currentPlotTab;
 setappdata(fig,'handles',handles);
 plotResize(fig);
 

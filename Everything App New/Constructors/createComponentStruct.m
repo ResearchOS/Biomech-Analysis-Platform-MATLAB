@@ -23,13 +23,12 @@ struct.LastModifiedBy=user2;
 
 struct.Description='';
 
-handles=getappdata(fig,'handles');
-currentProject=handles.Projects.projectsLabel.Text;
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
 
-struct.Project={currentProject};
+struct.Project={Current_Project_Name};
 
-struct.DefaultInputVariables={};
-struct.InputVariables={};
+struct.InputVariablesNamesInCode={};
 
 struct.ModifiedDefaultProperties={}; % List of property names to have the defaults modified for
 struct.ModifiedPropertyValues={}; % The new default values of those properties
@@ -46,16 +45,6 @@ struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
 saveClass(fig,'Component',struct);
-
-classVar=getappdata(fig,'Component');
-
-if isempty(classVar)
-    classVar=struct;
-else
-    classVar(end+1)=struct;
-end
-
-setappdata(fig,'Component',classVar);
 
 %% Assign the newly created plot component struct to the current project struct.
 assignToProject(fig,struct,'Component');

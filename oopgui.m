@@ -90,7 +90,7 @@ if isempty(processGroups) && existProjectPath
     Current_ProcessGroup_Name=PSprocessGroupStruct.Text;
     projectSettings=loadJSON(projectSettingsFile);
     projectSettings.Current_ProcessGroup_Name=Current_ProcessGroup_Name;
-    writeJSON(projectSettingsFile,projectSettings);
+    writeJSON(projectSettingsFile,projectSettings);    
 end
 
 % 1. 
@@ -99,6 +99,28 @@ if existProjectPath
     projectSettingsVarNames=loadJSON(projectSettingsFile);
     projectSettingsVarNames=fieldnames(projectSettingsVarNames);
     if ~ismember('Current_ProcessGroup_Name',projectSettingsVarNames)
+        error('HOW DID THIS HAPPEN? MORE TESTING NEEDED');
+    end
+end
+
+%% If there are no existing plot settings files, then create a 'Default' plot
+plots=getClassFilenames(fig,'Plot');
+if isempty(plots) && existProjectPath
+    plotStruct=createPlotStruct(fig,'Default');
+    projectSettingsFile=getProjectSettingsFile(fig);
+    plotStruct_PS=createPlotStruct_PS(fig,plotStruct);
+
+    Current_Plot_Name=plotStruct_PS.Text;
+    projectSettings=loadJSON(projectSettingsFile);
+    projectSettings.Current_Plot_Name=Current_Plot_Name;
+    writeJSON(projectSettingsFile,projectSettings);    
+end
+
+if existProjectPath
+    projectSettingsFile=getProjectSettingsFile(fig); % File stores the current process group name
+    projectSettingsVarNames=loadJSON(projectSettingsFile);
+    projectSettingsVarNames=fieldnames(projectSettingsVarNames);
+    if ~ismember('Current_Plot_Name',projectSettingsVarNames)
         error('HOW DID THIS HAPPEN? MORE TESTING NEEDED');
     end
 end

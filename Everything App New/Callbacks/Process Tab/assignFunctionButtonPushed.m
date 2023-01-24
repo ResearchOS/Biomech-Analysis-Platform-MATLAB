@@ -50,9 +50,6 @@ groupStruct.ExecutionListTypes=types;
 
 linkClasses(fig, processStruct, groupStruct); % Also saves the structs
 
-% saveClass_PS(fig,'ProcessGroup',groupStruct);
-% saveClass_PS(fig,'Process',processStruct);
-
 newNode=uitreenode(handles.Process.groupUITree,'Text',processStruct.Text);
 newNode.ContextMenu=handles.Process.psContextMenu;
 

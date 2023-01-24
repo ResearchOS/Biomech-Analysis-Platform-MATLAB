@@ -9,7 +9,7 @@ plotNode=handles.Plot.allPlotsUITree.SelectedNodes;
 
 if isempty(plotNode)
     return;
-end
+end 
 
 projectPath=getProjectPath(fig);
 if isempty(projectPath)

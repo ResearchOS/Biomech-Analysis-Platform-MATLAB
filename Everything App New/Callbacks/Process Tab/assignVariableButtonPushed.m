@@ -2,8 +2,28 @@ function []=assignVariableButtonPushed(src,event)
 
 %% PURPOSE: ASSIGN VARIABLE TO CURRENT PROCESSING FUNCTION
 
+% motherNode is the "grouping" class object, and daughterNode is the
+% "grouped" class object.
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+
+currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
+
+switch currTab
+    case 'Process'
+        motherUITree=handles.Process.groupUITree;
+        daughterUITree=handles.Process.functionUITree;    
+        daughterClass='Process';
+        motherClass='ProcessGroup';
+    case 'Plot'
+        motherUITree=handles.Plot.plotUITree;
+        daughterUITree=handles.Plot.componentUITree;
+        daughterClass='Component';
+        motherClass='Plot';
+    case 'Stats'
+
+end
 
 % All variables UI tree
 selNode=handles.Process.allVariablesUITree.SelectedNodes;
@@ -13,20 +33,20 @@ if isempty(selNode)
 end
 
 % Current group UI tree
-processNode=handles.Process.groupUITree.SelectedNodes;
+motherNode=motherUITree.SelectedNodes;
 
-if isempty(processNode)
+if isempty(motherNode)
     return;
 end
 
 % Current function UI tree
-argNode=handles.Process.functionUITree.SelectedNodes;
+daughterNode=daughterUITree.SelectedNodes;
 
-if isempty(argNode)
+if isempty(daughterNode)
     return;
 end
 
-if isequal(argNode.Parent,handles.Process.functionUITree)
+if isequal(daughterNode.Parent,daughterUITree)
     disp('Must select an individual argument, not the getArg/setArg parent node!');
     return;
 end
@@ -39,29 +59,29 @@ else
     isNew=false;
 end
 
-% Get the currently selected PS process struct
-fullPath=getClassFilePath_PS(processNode.Text, 'Process', fig);
-processStruct=loadJSON(fullPath);
+% Get the currently selected PS daughter struct
+fullPath=getClassFilePath_PS(motherNode.Text, daughterClass, fig);
+daughterStruct_PS=loadJSON(fullPath);
 
-% Check if argNode already has a variable assigned. If so, need to unlink
-% that variable from the process function
-if contains(argNode.Text,' ')
-    spaceIdx=strfind(argNode.Text,' ');
-    varText=argNode.Text(spaceIdx+2:end-1);
+% Check if daughterNode already has a variable assigned. If so, need to unlink
+% that variable from the mother class object
+if contains(daughterNode.Text,' ')
+    spaceIdx=strfind(daughterNode.Text,' ');
+    varText=daughterNode.Text(spaceIdx+2:end-1);
     prevVarPath=getClassFilePath(varText, 'Variable', fig);
     prevVarStruct=loadJSON(prevVarPath);
-    [prevVarStruct, processStruct]=unlinkClasses(fig, prevVarStruct, processStruct);
+    [prevVarStruct, daughterStruct_PS]=unlinkClasses(fig, prevVarStruct, daughterStruct_PS);
 end
 
 % Get the ID number for which getArg/setArg is currently being modified.
-parentNode=argNode.Parent;
+parentNode=daughterNode.Parent;
 parentText=parentNode.Text;
 spaceSplit=strsplit(parentText,' ');
 number=str2double(spaceSplit{2});
 
 % Get the index of the current getArg/setArg in the UI tree, which
 % matches the index in the file.
-childrenNodes=[handles.Process.functionUITree.Children];
+childrenNodes=[daughterUITree.Children];
 childrenNodesTexts={childrenNodes.Text};
 argType=parentNode.Text(1:6);
 argSpecificIdx=contains(childrenNodesTexts,argType);
@@ -69,7 +89,7 @@ argIdxNum=find(ismember(childrenNodes(argSpecificIdx), parentNode)==1);
 
 % Get the index of the arg being modified in that getArg/setArg
 % instance.
-idxNum=find(ismember(parentNode.Children,argNode)==1);
+idxNum=find(ismember(parentNode.Children,daughterNode)==1);
 
 switch isNew
     case true
@@ -83,35 +103,35 @@ switch isNew
 end
 
 % Apply the currently selected variable to that arg.
-if isequal(parentText(1:6),'getArg')
+if isequal(currTab,'Process')
+    if isequal(parentText(1:6),'getArg')
+        fldName='InputVariables';
+        varStruct.InputToProcess=unique([varStruct.InputToProcess; {daughterStruct_PS.Text}]);
+    elseif isequal(parentText(1:6),'setArg')
+        fldName='OutputVariables';
+        varStruct.OutputOfProcess=unique([varStruct.OutputOfProcess; {daughterStruct_PS.Text}]);
+    end
+else
     fldName='InputVariables';
-    varStruct.InputToProcess=unique([varStruct.InputToProcess; {processStruct.Text}]);
-elseif isequal(parentText(1:6),'setArg')
-    fldName='OutputVariables';
-    varStruct.OutputOfProcess=unique([varStruct.OutputOfProcess; {processStruct.Text}]);
 end
 
-if ~iscell(processStruct.(fldName)) || ...
-        (iscell(processStruct.(fldName)) && (length(processStruct.(fldName))<argIdxNum || isempty(processStruct.(fldName){argIdxNum})))
-    processStruct.(fldName){argIdxNum}{1}=number;
+if ~iscell(daughterStruct_PS.(fldName)) || ...
+        (iscell(daughterStruct_PS.(fldName)) && (length(daughterStruct_PS.(fldName))<argIdxNum || isempty(daughterStruct_PS.(fldName){argIdxNum})))
+    daughterStruct_PS.(fldName){argIdxNum}{1}=number;
 end
 
 % Check that I'm putting things in the right place
-assert(isequal(processStruct.(fldName){argIdxNum}{1},number));
+assert(isequal(daughterStruct_PS.(fldName){argIdxNum}{1},number));
 
-processStruct.(fldName){argIdxNum}{idxNum+1}=varStruct.Text;
+daughterStruct_PS.(fldName){argIdxNum}{idxNum+1}=varStruct.Text;
 
 % Saves changes.
-linkClasses(fig, varStruct, processStruct); % Create a connection between the variable & the process function
-
-% Save changes
-% saveClass_PS(fig, 'Process', processStruct);
-% saveClass_PS(fig, 'Variable', varStruct);
+linkClasses(fig, varStruct, daughterStruct_PS); % Create a connection between the variable & the process function
 
 % Modify/add nodes
-argTextSplit=strsplit(argNode.Text,' ');
+argTextSplit=strsplit(daughterNode.Text,' ');
 argText=[argTextSplit{1} ' (' varStruct.Text ')'];
-argNode.Text=argText;
+daughterNode.Text=argText;
 
 if isNew
     uitreenode(selNode,'Text',varStruct.Text,'ContextMenu',handles.Process.psContextMenu);

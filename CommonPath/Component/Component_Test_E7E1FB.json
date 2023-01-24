@@ -10,7 +10,13 @@
   "Project": [
     "Default_F341C0"
   ],
-  "InputVariablesNamesInCode": [],
+  "InputVariablesNamesInCode": [
+    [
+      1,
+      "var1",
+      "var2"
+    ]
+  ],
   "ModifiedDefaultProperties": [],
   "ModifiedPropertyValues": [],
   "Archived": false,

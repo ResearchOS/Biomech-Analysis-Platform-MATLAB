@@ -44,6 +44,8 @@ switch uiTree
         classType='SpecifyTrials';
     case handles.Process.allSpecifyTrialsUITree
         classType='SpecifyTrials';
+    case handles.Plot.plotUITree
+        classType='Component';    
     case handles.Stats.allStatsUITree
         classType='Stats';
 end

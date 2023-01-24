@@ -420,6 +420,12 @@ handles.Plot.saveAsNewPlotButton=uibutton(handles.Plot.currentPlotTab,'Text',{'S
 % 19. Current component UI tree
 handles.Plot.componentUITree=uitree(handles.Plot.currentComponentTab,'checkbox');
 
+% 20. Add args button
+handles.Plot.addArgsButton=uibutton(handles.Plot.currentComponentTab,'Text','+','ButtonPushedFcn',@(addArgsButton,event) addArgsButtonPushed_Plot(addArgsButton));
+
+% 21. Remove args button
+handles.Plot.removeArgsButton=uibutton(handles.Plot.currentComponentTab,'Text','-','ButtonPushedFcn',@(removeArgsButton,event) removeArgsButtonPushed_Plot(removeArgsButton));
+
 % 22. Add specify trials button
 handles.Plot.addSpecifyTrialsButton=uibutton(plotTab,'Text','S+');
 addSpecifyTrialsButton=handles.Plot.addSpecifyTrialsButton;

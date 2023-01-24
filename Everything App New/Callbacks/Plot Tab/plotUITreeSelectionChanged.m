@@ -14,7 +14,7 @@ if isempty(selNode)
     return;
 end
 
-fullPath=getClassFilePath_PS(selNode.Text, 'Plot', fig);
+fullPath=getClassFilePath_PS(selNode.Text, 'Component', fig);
 
 plotStruct=loadJSON(fullPath);
 

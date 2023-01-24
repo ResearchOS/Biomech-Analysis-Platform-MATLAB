@@ -128,3 +128,8 @@ objResize(tab.allSpecifyTrialsUITree, [0.8 0.01], [0.19 0.19]);
 % 25. Edit specify trials node button
 objResize(tab.editSpecifyTrialsButton, [0.9 0.2], [0.1 compHeight]);
 
+% 26. Add args button
+objResize(tab.addArgsButton, [0.3 0.83], [0.03 compHeight]);
+
+% 27. Remove args button
+objResize(tab.removeArgsButton, [0.35 0.83], [0.03 compHeight]);

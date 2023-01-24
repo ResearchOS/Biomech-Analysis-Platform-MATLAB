@@ -160,7 +160,8 @@ end
 
 load(rootSettingsFile,'Current_Tab_Title');
 
-drawnow;
 handles.Tabs.tabGroup1.SelectedTab=handles.(Current_Tab_Title).Tab;
+tabGroup1SelectionChanged(fig); % To allow the variables tab to change parent as needed.
+drawnow;
 elapsedTime=toc;
 disp(['Elapsed time is ' num2str(round(elapsedTime,2)) ' seconds.']);

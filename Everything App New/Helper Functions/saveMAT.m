@@ -1,4 +1,4 @@
-function []=saveMAT(dataPath, desc, psText, Data, subName, trialName)
+function []=saveMAT(dataPath, Metadata2, psText, Data, subName, trialName)
 
 %% PURPOSE: SAVE DATA TO MAT FILE.
 
@@ -21,20 +21,14 @@ end
 piText=getPITextFromPS(psText);
 matFolder=[matFolder slash piText];
 
-currDate=datetime('now');
-
 filePath=[matFolder slash psText '.mat'];
 
-varNames={'Data'};
-
-DateModified=currDate;
-Description=desc;
-
-varNames=[varNames, {'DateModified'}, {'Description'}];
+Metadata.Metadata=Metadata2;
+Metadata.Data=Data;
 
 try
-    save(filePath,varNames{:},'-v6');
+    save(filePath,'-struct','Metadata','-v6');
 catch
     mkdir(matFolder);
-    save(filePath,varNames{:},'-v6');
+    save(filePath,'-struct','Metadata','-v6');
 end

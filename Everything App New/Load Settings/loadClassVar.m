@@ -25,5 +25,27 @@ for i=length(fileNames):-1:1 % Loop is backwards to pre-allocate memory for the 
        
     settingsStruct=loadJSON(fullPath);
 
+    %% Testing only. Merge unlike structs
+    a=fieldnames(settingsStruct);
+
+    if exist('classVar','var')
+        b=fieldnames(classVar);
+        for j=1:length(b) % Add classVar fields to settingsStruct
+
+            if ~isfield(settingsStruct,(b{j}))
+                settingsStruct.(b{j})=[];
+            end
+
+        end
+
+        for j=1:length(a) % Add settingsStruct fields to classVar
+
+            if ~isfield(classVar,(a{j}))
+                classVar(i).(a{j})=[];
+            end
+
+        end
+    end
+
     classVar(i)=settingsStruct;
 end

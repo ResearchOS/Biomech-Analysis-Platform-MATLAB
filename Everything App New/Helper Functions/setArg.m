@@ -22,6 +22,9 @@ else
     level='T';
 end
 
+st=dbstack;
+st(2).name;
+
 psStructFcn=runInfo.Fcn.PSStruct;
 
 outputVars=psStructFcn.OutputVariables;
@@ -42,11 +45,11 @@ for i=1:length(outputVars)
 
         switch level
             case 'P'
-                saveMAT(dataPath,desc,psText,varargin{j-1});
+                saveMAT(dataPath,psStructFcn,psText,varargin{j});
             case 'S'
-                saveMAT(dataPath,desc,psText,varargin{j-1},subName);
+                saveMAT(dataPath,psStructFcn,psText,varargin{j},subName);
             case 'T'
-                saveMAT(dataPath,desc,psText,varargin{j-1},subName,trialName);
+                saveMAT(dataPath,psStructFcn,psText,varargin{j},subName,trialName);
         end
 
     end

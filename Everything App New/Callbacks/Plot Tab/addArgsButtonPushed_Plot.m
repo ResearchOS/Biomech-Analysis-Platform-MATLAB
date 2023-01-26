@@ -86,13 +86,20 @@ elseif isequal(varType,'setArg')
     argsSplit=argsSplit(4:end);
 end
 
-argsEmpty=[{number}; cell(size(argsSplit))']; % To initialize the project-specific args.
+subVarsEmpty=cell(size(argsSplit));
+for i=1:length(subVarsEmpty)
+    subVarsEmpty{i}='';
+end
+
+subVarsEmpty=[{number}; subVarsEmpty']; % Initialize the subvariables as empty.
+argsEmpty=subVarsEmpty; % To initialize the project-specific args as empty.
 argsSplit=[{number}; argsSplit']; % Column vector for JSON format.
 
 % 3. Store the info in the PI process struct.
 if isequal(varType,'getArg')
     piStruct.InputVariablesNamesInCode=[piStruct.InputVariablesNamesInCode; {argsSplit}];
     psStruct.InputVariables=[psStruct.InputVariables; {argsEmpty}];
+    psStruct.InputSubvariables=[psStruct.InputSubvariables; {subVarsEmpty}];
 elseif isequal(varType,'setArg')
     piStruct.OutputVariablesNamesInCode=[piStruct.OutputVariablesNamesInCode; {argsSplit}];
     psStruct.OutputVariables=[psStruct.OutputVariables; {argsEmpty}];

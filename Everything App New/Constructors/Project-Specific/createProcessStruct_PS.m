@@ -33,6 +33,7 @@ struct.SpecifyTrials='';
 % Project-specific versions of variables being input & output from this
 % process function.
 struct.InputVariables={};
+struct.InputSubvariables={};
 struct.OutputVariables={};
 
 struct.UsedInGroups={};

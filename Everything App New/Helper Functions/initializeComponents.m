@@ -446,6 +446,12 @@ handles.Plot.editSpecifyTrialsButton=uibutton(plotTab,'Text','Edit');
 editSpecifyTrialsButton=handles.Plot.editSpecifyTrialsButton;
 set(editSpecifyTrialsButton,'ButtonPushedFcn',@(editSpecifyTrialsButton,event) editSpecifyTrialsButtonPushed(editSpecifyTrialsButton));
 
+% 26. Add axes component to plot button
+handles.Plot.addAxesButton=uibutton(handles.Plot.currentPlotTab,'Text','Ax+','ButtonPushedFcn',@(addAxesButton,event) addAxesButtonPushed(addAxesButton));
+
+% 27. Remove axes component from plot button
+handles.Plot.removeAxesButton=uibutton(handles.Plot.currentPlotTab,'Text','Ax-','ButtonPushedFcn',@(removeAxesButton,event) removeAxesButtonPushed(removeAxesButton));
+
 
 handles.Plot.subtabCurrent.SelectedTab=handles.Plot.currentPlotTab;
 setappdata(fig,'handles',handles);

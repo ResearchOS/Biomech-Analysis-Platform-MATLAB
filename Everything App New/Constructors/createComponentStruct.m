@@ -1,4 +1,4 @@
-function []=createComponentStruct(fig,name,id)
+function [struct]=createComponentStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW COMPONENT STRUCT
 

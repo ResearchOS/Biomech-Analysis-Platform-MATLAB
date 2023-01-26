@@ -28,10 +28,12 @@ psStructFcn=runInfo.Fcn.PSStruct;
 
 % Get the actual variable names as stored in file.
 inputVars=psStructFcn.InputVariables;
+subVars=psStructFcn.InputSubvariables;
 
 for i=1:length(inputVars)
 
     currVars=inputVars{i};
+    currSubvars=subVars{i};
 
     if ~isequal(currVars{1},id)
         continue; % Ensure that only the desired getArg ID is used.
@@ -63,6 +65,10 @@ for i=1:length(inputVars)
                 varargout{j-1}=loadMAT(dataPath,psText,subName);
             case 'T'
                 varargout{j-1}=loadMAT(dataPath,psText,subName,trialName);
+        end
+
+        if ~isempty(currSubvars{j})
+            varargout{j-1}=eval(['varargout{j-1}' currSubvars]);
         end
 
     end

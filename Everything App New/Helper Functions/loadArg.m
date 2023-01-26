@@ -1,6 +1,7 @@
 function [varargout]=loadArg(dataPath,subName,trialName,repNum,varargin)
 
 %% PURPOSE: RETURN INPUT ARGUMENTS. NON-INDEPENDENT VERSION OF "GETARG", ONLY TO BE USED IN UNFINISHED AREAS OF GUI, OR FOR QUICK CALCULATION
+% varargin: Names of the variables in the file to load.
 
 % How best to specify this?
 % dataPath=[];

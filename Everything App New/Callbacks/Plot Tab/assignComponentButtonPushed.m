@@ -11,37 +11,65 @@ if isempty(selNode)
     return;
 end
 
-% Create a new project-specific process version
-if isequal(selNode.Parent,handles.Plot.allComponentsUITree)
-    isNew=true;
-else
-    isNew=false;
+selCompNode=handles.Plot.plotUITree.SelectedNodes;
+
+if isempty(selCompNode)
+    return;
 end
 
-projectSettingsFile=getProjectSettingsFile(fig);
-Current_Plot_Name=loadJSON(projectSettingsFile,'Current_Plot_Name');
+% Create new component or not?
+if isequal(selNode.Parent,handles.Plot.allComponentsUITree)
+    isNew=true; % Selected PI, to create a new PS version.
+else
+    isNew=false; % Selected project-specific component version
+end
 
-% Get the currently selected plot struct
-fullPath=getClassFilePath(Current_Plot_Name,'Plot', fig);
-plotStruct=loadJSON(fullPath);
+[name]=deText(selNode.Text);
 
-componentName=selNode.Text; % Without project-specific ID.
+if isequal(name,'Axes') % Adding a new axes to the plot.
+    isAx=true;
+    projectSettingsFile=getProjectSettingsFile(fig);
+    Current_Plot_Name=loadJSON(projectSettingsFile,'Current_Plot_Name');
+
+    % Get the currently selected plot struct
+    fullPath=getClassFilePath(Current_Plot_Name,'Plot', fig);
+    plotStruct=loadJSON(fullPath);
+    axNode=selCompNode;
+
+else % Adding a component that's not an axes, need to find the current parent axes.
+    isAx=false;
+    if isequal(selCompNode.Parent,handles.Plot.plotUITree)
+        currAxes=selCompNode.Text;
+        axNode=selCompNode;
+    else
+        axNode=selCompNode.Parent;
+        currAxes=axNode.Text;
+    end
+
+    fullPath=getClassFilePath(currAxes, 'Component', fig);
+    axStruct=loadJSON(fullPath);
+end
+
+componentName=selNode.Text;
+componentPath=getClassFilePath(componentName, 'Component', fig);
 
 switch isNew
-    case true
-        componentPath=getClassFilePath(componentName, 'Component', fig);
+    case true        
         piStruct=loadJSON(componentPath);
         componentStruct=createComponentStruct_PS(fig, piStruct);
-    case false
-        componentPath=getClassFilePath(componentName, 'Component', fig);
+    case false        
         componentStruct=loadJSON(componentPath);
 end
 
-plotStruct.Components=[plotStruct.Components; {componentStruct.Text}];
+if isAx
+    linkClasses(fig, componentStruct, plotStruct);
+    parent=handles.Plot.plotUITree;
+else
+    linkClasses(fig, componentStruct, axStruct);
+    parent=axNode;
+end
 
-linkClasses(fig, componentStruct, plotStruct); % Also saves the structs
-
-newNode=uitreenode(handles.Plot.plotUITree,'Text',componentStruct.Text);
+newNode=uitreenode(parent,'Text',componentStruct.Text);
 newNode.ContextMenu=handles.Process.psContextMenu;
 
 handles.Plot.plotUITree.SelectedNodes=newNode;

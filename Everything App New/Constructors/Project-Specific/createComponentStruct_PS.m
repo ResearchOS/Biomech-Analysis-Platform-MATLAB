@@ -31,6 +31,7 @@ struct.Project={Current_Project_Name};
 struct.SpecifyTrials='';
 
 struct.InputVariables={};
+struct.InputSubvariables={};
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 

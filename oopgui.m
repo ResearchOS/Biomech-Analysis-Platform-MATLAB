@@ -73,6 +73,10 @@ if isempty(projectPath)
     existProjectPath=false;    
 else
     existProjectPath=true;    
+    projectSettingsFile=getProjectSettingsFile(fig); % File stores the current process group name
+    if exist(projectSettingsFile,'file')~=2
+        initProjectSettingsFile(projectSettingsFile);
+    end
 end
 setappdata(fig,'existProjectPath',existProjectPath);
 
@@ -94,8 +98,7 @@ if isempty(processGroups) && existProjectPath
 end
 
 % 1. 
-if existProjectPath
-    projectSettingsFile=getProjectSettingsFile(fig); % File stores the current process group name
+if existProjectPath    
     projectSettingsVarNames=loadJSON(projectSettingsFile);
     projectSettingsVarNames=fieldnames(projectSettingsVarNames);
     if ~ismember('Current_ProcessGroup_Name',projectSettingsVarNames)

@@ -14,7 +14,24 @@ end
 selCompNode=handles.Plot.plotUITree.SelectedNodes;
 
 if isempty(selCompNode)
-    return;
+    projectSettings=getProjectSettingsFile(fig);
+    Current_Plot_Name=loadJSON(projectSettings,'Current_Plot_Name');
+    plotPath=getClassFilePath(Current_Plot_Name,'Plot', fig);
+    plotStruct=loadJSON(plotPath);
+    if isfield(plotStruct,'BackwardLinks_Component') && ~isempty(plotStruct.BackwardLinks_Component)
+        return; % Things exist, but nothing is selected
+    else % Nothing exists. Create an axes component.
+        text='Axes_000000';
+        fullPath=getClassFilePath(text,'Component', fig);
+        if exist(fullPath,'file')~=2 % PI axes don't exist
+            createComponentStruct(fig, 'Axes', '000000');
+            assert(isempty(handles.Plot.plotUITree.Children));
+            newAxes=uitreenode(handles.Plot.allComponentsUITree,'Text','Axes_000000');
+            handles.Plot.allComponentsUITree.SelectedNodes=newAxes;
+            assignComponentButtonPushed(fig);
+            selCompNode=handles.Plot.plotUITree.Children(1);
+        end
+    end
 end
 
 % Create new component or not?
@@ -37,14 +54,19 @@ if isequal(name,'Axes') % Adding a new axes to the plot.
     axNode=selCompNode;
 
 else % Adding a component that's not an axes, need to find the current parent axes.
+    % IF NO AXES SETTINGS OBJECT EXISTS, NEED TO INITIALIZE IT.
     isAx=false;
-    if isequal(selCompNode.Parent,handles.Plot.plotUITree)
-        currAxes=selCompNode.Text;
+    if isequal(selCompNode.Parent,handles.Plot.plotUITree) % Axes node is selected.
         axNode=selCompNode;
-    else
+        currAxes=selCompNode.Text;
+    else % Component node is selected.
         axNode=selCompNode.Parent;
         currAxes=axNode.Text;
     end
+
+    [name,id]=deText(currAxes);
+
+
 
     fullPath=getClassFilePath(currAxes, 'Component', fig);
     axStruct=loadJSON(fullPath);
@@ -54,10 +76,10 @@ componentName=selNode.Text;
 componentPath=getClassFilePath(componentName, 'Component', fig);
 
 switch isNew
-    case true        
+    case true
         piStruct=loadJSON(componentPath);
         componentStruct=createComponentStruct_PS(fig, piStruct);
-    case false        
+    case false
         componentStruct=loadJSON(componentPath);
 end
 

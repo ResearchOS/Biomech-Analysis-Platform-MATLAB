@@ -16,11 +16,6 @@ str=char(raw');
 
 % Convert json to struct
 data=jsondecode(str);
-% try
-%     data=jsondecode(str);
-% catch e
-% 
-% end
 
 if nargin==2
     if iscell(varName) && length(varName)==1

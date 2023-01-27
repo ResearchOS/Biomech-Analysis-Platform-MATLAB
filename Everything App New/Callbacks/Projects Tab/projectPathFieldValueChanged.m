@@ -40,6 +40,12 @@ for i=1:length(classNames)
     mkdir(classPath);
 end
 
+projectSettingsFile=getProjectSettingsFile(fig);
+initProjectSettingsFile(projectSettingsFile);
+
 warning('on','MATLAB:MKDIR:DirectoryExists');
 
 setappdata(fig,'existProjectPath',true);
+
+projectSettingsFile=getProjectSettingsFile(fig);
+initProjectSettingsFile(projectSettingsFile, fig);

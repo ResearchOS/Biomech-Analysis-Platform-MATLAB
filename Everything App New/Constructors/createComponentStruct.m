@@ -4,7 +4,7 @@ function [struct]=createComponentStruct(fig,name,id)
 
 struct.Name=name;
 
-struct.Type='Component';
+struct.Class='Component';
 
 if nargin<3
     id=createID(fig,'Component');

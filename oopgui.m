@@ -155,7 +155,7 @@ loadGUIState(fig);
 % deleting the root settings file.
 if ~ismember('Current_Tab_Title',settingsVarNames)
     Current_Tab_Title='Projects';
-    save(rootSettingsFile,'Current_Tab_Title');
+    save(rootSettingsFile,'Current_Tab_Title','-append');
 end
 
 load(rootSettingsFile,'Current_Tab_Title');

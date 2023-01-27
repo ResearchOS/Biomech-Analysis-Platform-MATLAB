@@ -16,7 +16,7 @@ function [struct]=createVariableStruct(fig,name,id)
 
 struct.Name=name;
 
-struct.Type='Variable';
+struct.Class='Variable';
 
 if nargin<3
     id=createID(fig,'Variable');

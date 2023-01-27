@@ -4,7 +4,7 @@ function [struct]=createStatsTableStruct(fig,name,id)
 
 struct.Name=name;
 
-struct.Type='StatsTable';
+struct.Class='StatsTable';
 
 if nargin<3
     id=createID(fig,'StatsTable');

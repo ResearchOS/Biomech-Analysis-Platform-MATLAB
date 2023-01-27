@@ -19,7 +19,7 @@ plotStructPI=loadJSON(fullPathPI);
 
 level=plotStructPS.Level; % How often the plot function is called.
 multi=plotStructPS.Multi; % How many trials/subjects/conditions to put on each plot. Same valid values as "level"
-isMovie=plotStructPI.IsMovie;
+isMovie=plotStructPI.IsMovie; % Whether this is a static plot or a movie.
 if isMovie==1
     level='T'; % Overriden because movies can only be trial level (currently)
 end
@@ -32,8 +32,11 @@ if levelIdx==length(opts) && isempty(multiIdx)
 end
 assert(~isempty(multiIdx) && ~isempty(levelIdx));
 if multiIdx<levelIdx
-    error('''Multi'' must be a higher or equal level than ''level''');
+    error('''Multi'' must be a higher or equal level than ''Level''');
 end
+
+%% Compute the desired axes limits
+% 1. Get the components whose variables should be used to compute the axes limits.
 
 %% Specify trials
 specifyTrials=plotStructPS.SpecifyTrials;
@@ -62,7 +65,7 @@ if isequal(multi,'P')
     currFig=Q;
 end
 if isequal(level,'P')
-    plotComponents(fig,currFig,plotStructPS);
+    plotComponents(fig,currFig,plotStructPS,allTrialNames);
     return;
 end
 for condNum=1:numConds
@@ -73,25 +76,31 @@ for condNum=1:numConds
     end
 
     if isequal(level,'C')
-
+        plotComponents(fig,currFig,plotStructPS,allTrialNames.Condition(condNum));
+        continue;
     end
 
     for subNum=1:length(subNames)
 
         subName=subNames{subNum};
-        trialNames=fieldnames(allTrialNames.(subName));
+        if ~isCond
+            trialNames=fieldnames(allTrialNames.(subName));
+        else
+            trialNames=fieldnames(allTrialNames.Condition(condNum).(subName));
+        end
 
         if isequal(multi,'S')
             Q.(subName)=figure('Name',subName);
-            currFig=Q.(subName);
+            currFig=Q.(subName);            
         elseif isequal(multi,'SC')
             Q(condNum).(subName)=figure('Name',['Condition ' num2str(condNum) ' ' subName]);
             currFig=Q(condNum).(subName);
         end
 
         if ismember(level,{'S','SC'})
-            plotComponents(fig,currFig,plotStructPS,subName);
-        end
+            plotComponents(fig,currFig,plotStructPS,subName,trialNames);
+            continue;
+        end        
 
         for trialNum=1:length(trialNames)
             trialName=trialNames{trialNum};
@@ -101,21 +110,21 @@ for condNum=1:numConds
                 Q.(subName).(trialName)=figure('Name',[subName '_' trialName]);
                 currFig=Q.(subName).(trialName);
             elseif isequal(multi,'SC')
-                figure(Q(condNum).(subName));
                 currFig=Q(condNum).(subName);
             elseif isequal(multi,'S')
-                figure(Q.(subName));
                 currFig=Q.(subName);
             elseif isequal(multi,'C')
-                figure(Q(condNum));
                 currFig=Q(condNum);
             elseif isequal(multi,'P')
-                figure(Q);
                 currFig=Q;
             end
 
             % 2. Plot the components
-            plotComponents(fig,currFig,plotStructPS,subName,trialName);
+            if ~isMovie
+                plotComponents(fig,currFig,plotStructPS,subName,trialName);
+            else
+
+            end
 
         end
 

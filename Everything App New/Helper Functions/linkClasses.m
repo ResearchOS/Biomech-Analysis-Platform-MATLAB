@@ -6,13 +6,13 @@ function [fromStruct, toStruct]=linkClasses(src, fromStruct, toStruct)
 fig=ancestor(src,'figure','toplevel');
 
 fromText=fromStruct.Text;
-fullPathFrom=getClassFilePath(fromText, fromStruct.Type, fig);
+fullPathFrom=getClassFilePath(fromText, fromStruct.Class, fig);
 
 toText=toStruct.Text;
-fullPathTo=getClassFilePath(toText, toStruct.Type, fig);
+fullPathTo=getClassFilePath(toText, toStruct.Class, fig);
 
 %% Assign fromStruct to toStruct
-backField=['BackwardLinks_' fromStruct.Type];
+backField=['BackwardLinks_' fromStruct.Class];
 if ~isfield(toStruct,backField)
     toStruct.(backField)={fromText};
 else
@@ -20,7 +20,7 @@ else
 end
 
 %% Assign toStruct to fromStruct
-fwdField=['ForwardLinks_' toStruct.Type];
+fwdField=['ForwardLinks_' toStruct.Class];
 if ~isfield(fromStruct,fwdField)
     fromStruct.(fwdField)={toText};
 else

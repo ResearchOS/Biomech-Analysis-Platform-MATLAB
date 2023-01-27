@@ -17,7 +17,7 @@ function [struct]=createLogsheetStruct(fig,name,id)
 
 struct.Name=name;
 
-struct.Type='Logsheet';
+struct.Class='Logsheet';
 
 if nargin<3
     id=createID(fig,'Logsheet');
@@ -72,16 +72,6 @@ struct.Type={}; % Char or double
 struct.Variables={}; % The variable struct text (file name)
 
 saveClass(fig,'Logsheet',struct);
-
-classVar=getappdata(fig,'Logsheet');
-
-if isempty(classVar)
-    classVar=struct;
-else
-    classVar(end+1)=struct;
-end
-
-setappdata(fig,'Logsheet',classVar);
 
 %% Assign the newly created logsheet struct to the current project struct.
 assignToProject(fig,struct,'Logsheet');

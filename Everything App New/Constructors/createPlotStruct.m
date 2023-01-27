@@ -16,7 +16,7 @@ function [struct]=createPlotStruct(fig,name,id)
 
 struct.Name=name;
 
-struct.Type='Plot';
+struct.Class='Plot';
 
 if nargin<3
     id=createID(fig,'Plot');

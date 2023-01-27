@@ -6,7 +6,7 @@ struct.Name=name;
 
 struct.MFileName=struct.Name;
 
-struct.Type='Process';
+struct.Class='Process';
 
 if nargin<3
     id=createID(fig,'Process');

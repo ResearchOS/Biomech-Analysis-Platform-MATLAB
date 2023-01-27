@@ -33,6 +33,10 @@ struct.SpecifyTrials='';
 struct.InputVariables={};
 struct.InputSubvariables={};
 
+if isequal(struct.Name, 'Axes')
+    struct.Position=[1 1 1]; % By default axes subplot is the whole figure. Can also be a 1x4 to manually specify position
+end
+
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true; % If true, this variable will be highlighted as needing to be updated.

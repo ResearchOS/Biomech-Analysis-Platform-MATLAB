@@ -4,7 +4,7 @@ function []=createSpecifyTrialsStruct(fig, name)
 
 struct.Name=name;
 
-struct.Type='SpecifyTrials';
+struct.Class='SpecifyTrials';
 
 if nargin<3
     id=createID(fig,'SpecifyTrials');

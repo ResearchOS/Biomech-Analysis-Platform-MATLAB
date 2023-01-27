@@ -4,7 +4,7 @@ function [struct]=createProcessGroupStruct(fig,name,id)
 
 struct.Name=name;
 
-struct.Type='ProcessGroup';
+struct.Class='ProcessGroup';
 
 if nargin<3
     id=createID(fig,'ProcessGroup');

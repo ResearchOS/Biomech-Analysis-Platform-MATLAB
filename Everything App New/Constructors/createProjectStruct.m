@@ -2,7 +2,7 @@ function [struct]=createProjectStruct(fig,name,id)
 
 %% PURPOSE: CREATE A NEW PROJECT STRUCT
 
-struct.Type='Project';
+struct.Class='Project';
 
 struct.Name=name;
 

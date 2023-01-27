@@ -4,7 +4,7 @@ function []=createPubTableStruct(fig,name,id)
 
 struct.Name=name;
 
-struct.Type='PubTable';
+struct.Class='PubTable';
 
 if nargin<3
     id=createID(fig,'Process');

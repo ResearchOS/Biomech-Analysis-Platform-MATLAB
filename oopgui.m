@@ -2,7 +2,6 @@ function []=oopgui()
 
 %% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
 tic;
-% slash=filesep;
 
 classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup','SpecifyTrials'}; % One folder for each object type
 

@@ -65,7 +65,11 @@ if idxNum>length(parent.Children)
 end
 
 if idxNum==0
-    newSelNode=[];
+    if isequal(parent,handles.Plot.plotUITree)
+        newSelNode=[];
+    else
+        newSelNode=parent;
+    end
 else
     newSelNode=parent.Children(idxNum);
 end
@@ -73,16 +77,3 @@ end
 uiTree.SelectedNodes=newSelNode;
 
 plotUITreeSelectionChanged(fig);
-
-% projectSettingsFile=getProjectSettingsFile(fig);
-% Current_Plot_Name=loadJSON(projectSettingsFile,'Current_Plot_Name');
-% 
-% % Get the currently selected plot struct
-% fullPath=getClassFilePath(Current_Plot_Name,'Plot',fig);
-% plotStruct=loadJSON(fullPath);
-% 
-% idx=ismember(plotStruct.Components,text);
-% 
-% plotStruct.Components(idx)=[];
-% 
-% unlinkClasses(fig, componentStruct, plotStruct);

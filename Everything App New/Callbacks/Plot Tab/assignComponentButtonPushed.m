@@ -13,7 +13,7 @@ end
 
 selCompNode=handles.Plot.plotUITree.SelectedNodes;
 
-if isempty(selCompNode)
+if isempty(selCompNode) % Typically this would be an immediate end of program, but in this case I might assume that I should create an axes component and add the component to that.
     projectSettings=getProjectSettingsFile(fig);
     Current_Plot_Name=loadJSON(projectSettings,'Current_Plot_Name');
     plotPath=getClassFilePath(Current_Plot_Name,'Plot', fig);
@@ -62,17 +62,13 @@ else % Adding a component that's not an axes, need to find the current parent ax
     else % Component node is selected.
         axNode=selCompNode.Parent;
         currAxes=axNode.Text;
-    end
-
-    [name,id]=deText(currAxes);
-
-
+    end    
 
     fullPath=getClassFilePath(currAxes, 'Component', fig);
     axStruct=loadJSON(fullPath);
 end
 
-componentName=selNode.Text;
+componentName=selNode.Text; % If isNew is true, this should be PI. If isNew is false, should be PS.
 componentPath=getClassFilePath(componentName, 'Component', fig);
 
 switch isNew

@@ -21,16 +21,5 @@ processStruct=loadJSON(fullPath);
 specifyTrials=processStruct.SpecifyTrials;
 
 specifyTrialsUITree=handles.Process.allSpecifyTrialsUITree;
-specifyTrialsTexts={specifyTrialsUITree.Children.Text};
 
-if isempty(specifyTrials)
-    checkedIdx=false;
-else
-    checkedIdx=ismember(specifyTrialsTexts,specifyTrials);
-end
-
-if any(checkedIdx)
-    specifyTrialsUITree.CheckedNodes=specifyTrialsUITree.Children(checkedIdx);
-else
-    specifyTrialsUITree.CheckedNodes=[];
-end
+checkSpecifyTrialsUITree(specifyTrials, specifyTrialsUITree);

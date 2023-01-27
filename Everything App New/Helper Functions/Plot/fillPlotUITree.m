@@ -12,7 +12,11 @@ Current_Plot_Name=loadJSON(projectSettingsFile,'Current_Plot_Name');
 fullPath=getClassFilePath(Current_Plot_Name,'Plot', fig);
 struct=loadJSON(fullPath);
 
-axes=struct.BackwardLinks_Component;
+if isfield(struct,'BackwardLinks_Component')
+    axes=struct.BackwardLinks_Component;
+else
+    axes={};
+end
 
 uiTree=handles.Plot.plotUITree;
 

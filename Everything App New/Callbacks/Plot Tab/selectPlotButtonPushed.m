@@ -37,3 +37,10 @@ writeJSON(projectSettingsFile,projectSettings);
 handles.Plot.currentPlotLabel.Text=Current_Plot_Name;
 
 fillPlotUITree(fig);
+
+plotPath=getClassFilePath(Current_Plot_Name,'Plot',fig);
+plotStructPS=loadJSON(plotPath);
+specifyTrials=plotStructPS.SpecifyTrials;
+specifyTrialsUITree=handles.Plot.allSpecifyTrialsUITree;
+
+checkSpecifyTrialsUITree(specifyTrials, specifyTrialsUITree);

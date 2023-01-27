@@ -15,27 +15,32 @@ switch tab
     case 'Process'
         class='Process';
         isPS=true;
+    case 'Plot'
+        class='Plot';
+        isPS=true;
 end
 
 %% Get the instance of the class that is currently selected.
 switch class
     case 'Logsheet'
         uiTree=handles.Import.allLogsheetsUITree;
+        text=uiTree.SelectedNodes.Text;
+
+        if isempty(text)
+            return;
+        end
     case 'Process'
         uiTree=handles.Process.groupUITree;
+        text=uiTree.SelectedNodes.Text;
+
+        if isempty(text)
+            return;
+        end
+    case 'Plot'
+        text=handles.Plot.currentPlotLabel.Text;
 end
 
-selNode=uiTree.SelectedNodes;
-
-if isempty(selNode)
-    return;
-end
-
-if isPS
-    fullPath=getClassFilePath_PS(selNode.Text, class, fig);
-else
-    fullPath=getClassFilePath(selNode.Text, class, fig);
-end
+fullPath=getClassFilePath(text, class, fig);
 
 classStruct=loadJSON(fullPath);
 

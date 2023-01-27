@@ -403,7 +403,7 @@ handles.Plot.currentPlotTab=uitab(handles.Plot.subtabCurrent,'Title','Plot','Aut
 handles.Plot.currentComponentTab=uitab(handles.Plot.subtabCurrent,'Title','Component','AutoResizeChildren','off');
 
 % 16. Render button
-handles.Plot.renderButton=uibutton(plotTab,'Text','Render','ButtonPushedFcn',@(renderButton,event) renderButtonPushed(renderButton));
+handles.Plot.plotButton=uibutton(plotTab,'Text','Plot','ButtonPushedFcn',@(plotButton,event) plotButtonPushed(plotButton));
 
 % 20. Select plot button
 handles.Plot.selectPlotButton=uibutton(handles.Plot.plotsTab,'Text','Sel','ButtonPushedFcn',@(selectPlotButton,event) selectPlotButtonPushed(selectPlotButton));
@@ -452,139 +452,9 @@ set(editSpecifyTrialsButton,'ButtonPushedFcn',@(editSpecifyTrialsButton,event) e
 % 27. Remove axes component from plot button
 % handles.Plot.removeAxesButton=uibutton(handles.Plot.currentPlotTab,'Text','Ax-','ButtonPushedFcn',@(removeAxesButton,event) removeAxesButtonPushed(removeAxesButton));
 
-
 handles.Plot.subtabCurrent.SelectedTab=handles.Plot.currentPlotTab;
 setappdata(fig,'handles',handles);
 plotResize(fig);
-
-% % 1. Search bar for all components browser
-% handles.Plot.allComponentsSearchField=uieditfield(plotTab,'text','Value','Search','Tag','AllComponentsSearchField','ValueChangingFcn',@(allComponentsSearchField,event) allComponentsSearchFieldValueChanged(allComponentsSearchField));
-% 
-% % 2. All components UI tree
-% handles.Plot.allComponentsUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(allComponentsUITree,event) allComponentsUITreeSelectionChanged(allComponentsUITree),'CheckedNodesChangedFcn',@(allComponentsUITree,event) allComponentsUITreeCheckedNodesChanged(allComponentsUITree),'Tag','AllComponentsUITree');
-% 
-% % 3. Plot function selector
-% handles.Plot.plotFcnSearchField=uieditfield(plotTab,'text','Value','Search','Tag','PlotFcnSearchField','ValueChangingFcn',@(plotFcnSearchField,event) plotFcnSearchFieldValueChanged(plotFcnSearchField));
-% 
-% % 4. Plot function UI tree
-% handles.Plot.plotFcnUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(plotFcnUITree,event) plotFcnUITreeSelectionChanged(plotFcnUITree),'CheckedNodesChangedFcn',@(plotFcnUITree,event) plotFcnUITreeCheckedNodesChanged(plotFcnUITree),'Tag','PlotFcnUITree');
-% 
-% % 5. Assign variables button
-% handles.Plot.assignVarsButton=uibutton(plotTab,'push','Text','Assign Vars','Tag','AssignVarsButton','Tooltip','Assign variables to the currently selected graphics object','ButtonPushedFcn',@(assignVarsButton,event) assignVarsButtonPushed(assignVarsButton));
-% 
-% % 6. Assign component button
-% handles.Plot.assignComponentButton=uibutton(plotTab,'push','Text','->','Tag','AssignComponentButton','Tooltip','Assign graphics object to the currently selected function version','ButtonPushedFcn',@(assignComponentButton,event) assignComponentButtonPushed(assignComponentButton));
-% 
-% % 7. Unassign component button
-% handles.Plot.unassignComponentButton=uibutton(plotTab,'push','Text','<-','Tag','UnassignComponentButton','Tooltip','Unassign graphics object from the currently selected function version','ButtonPushedFcn',@(unassignComponentButton,event) unassignComponentButtonPushed(unassignComponentButton));
-% 
-% % 8. Create new function button
-% handles.Plot.createPlotButton=uibutton(plotTab,'push','Text','P+','Tag','CreateFcnButton','Tooltip','Create a new plot (collection of graphics objects)','ButtonPushedFcn',@(createPlotButton,event) createFcnButtonPushed(createPlotButton));
-% 
-% % 9. Current component UI tree
-% handles.Plot.currCompUITree=uitree(plotTab,'checkbox','SelectionChangedFcn',@(currCompUITree,event) currCompUITreeSelectionChanged(currCompUITree),'CheckedNodesChangedFcn',@(currCompUITree,event) currCompUITreeCheckedNodesChanged(currCompUITree),'Tag','CurrComponentsUITree');
-% 
-% % 10. Current component description label
-% handles.Plot.componentDescLabel=uilabel(plotTab,'Text','Component Desc','Tag','ComponentDescLabel','FontWeight','bold');
-% 
-% % 11. Current component description text area
-% handles.Plot.componentDescTextArea=uitextarea(plotTab,'Value','Enter Component Description Here','Tag','ComponentDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(componentDescTextArea,event) componentDescTextAreaValueChanged(componentDescTextArea));
-% 
-% % 12. Function version description label
-% handles.Plot.fcnVerDescLabel=uilabel(plotTab,'Text','Plot Desc','Tag','FcnVerDescLabel','FontWeight','bold');
-% 
-% % 13. Function version description text area
-% handles.Plot.fcnVerDescTextArea=uitextarea(plotTab,'Value','Enter Fcn Version Description Here','Tag','FcnVerDescTextArea','Editable','on','Visible','on','ValueChangedFcn',@(fcnVerDescTextArea,event) fcnVerDescTextAreaValueChanged(fcnVerDescTextArea));
-% 
-% % 14. Specify trials button
-% handles.Plot.specifyTrialsButton=uibutton(plotTab,'push','Text','Specify Trials','Tag','SpecifyTrialsButton','Tooltip','Set the trials to plot','ButtonPushedFcn',@(specifyTrialsButton,event) specifyTrialsButtonPushedPopupWindow(specifyTrialsButton));
-% 
-% % 15. Run plot button
-% handles.Plot.runPlotButton=uibutton(plotTab,'push','Text','Run Plot','Tag','RunPlotButton','Tooltip','Run the plot on the specified trials','ButtonPushedFcn',@(runPlotButton,event) runPlotButtonPushed(runPlotButton));
-% 
-% % 16. Plot level dropdown
-% handles.Plot.plotLevelDropDown=uidropdown(plotTab,'Items',{'P','PC','C','S','SC','T'},'Tooltip','Specify the level to run this at','Editable','off','Tag','PlotLevelDropDown','ValueChangedFcn',@(plotLevelDropDown,event) plotLevelDropDownValueChanged(plotLevelDropDown));
-% 
-% % 17. All components label
-% handles.Plot.allComponentsLabel=uilabel(plotTab,'Text','All Components','Tag','AllComponentsLabel','FontWeight','bold');
-% 
-% % 18. All functions label
-% handles.Plot.allPlotsLabel=uilabel(plotTab,'Text','Plots','Tag','AllFunctionsLabel','FontWeight','bold');
-% 
-% % 19. Current components label
-% handles.Plot.currComponentsLabel=uilabel(plotTab,'Text','Current Components','Tag','CurrComponentsLabel','FontWeight','bold');
-% 
-% % 20. Create new component button
-% handles.Plot.createCompButton=uibutton(plotTab,'push','Text','C+','Tag','CreateCompButton','Tooltip','Create a new component','ButtonPushedFcn',@(createCompButton,event) createCompButtonPushed(createCompButton));
-% 
-% % 21. Delete component button
-% handles.Plot.deleteCompButton=uibutton(plotTab,'push','Text','C-','Tag','DeleteCompButton','Tooltip','Delete a component','ButtonPushedFcn',@(deleteCompButton,event) deleteCompButtonPushed(deleteCompButton));
-% 
-% % 22. Delete plot button
-% handles.Plot.deletePlotButton=uibutton(plotTab,'push','Text','P-','Tag','DeletePlotButton','Tooltip','Delete a plot','ButtonPushedFcn',@(deletePlotButton,event) deletePlotButtonPushed(deletePlotButton));
-% 
-% % 23. Edit component button
-% handles.Plot.editCompButton=uibutton(plotTab,'push','Text','Edit Props','Tag','EditCompButton','Tooltip','Edit component','ButtonPushedFcn',@(editCompButton,event) editCompButtonPushed(editCompButton));
-% 
-% % 24. Plot panel
-% handles.Plot.plotPanel=uipanel(plotTab,'AutoResizeChildren','off');
-% 
-% % 25. Movie checkbox
-% handles.Plot.isMovieCheckbox=uicheckbox(plotTab,'Text','Movie','Value',0,'Tag','IsMovieCheckbox','Tooltip','Plots a movie one frame at a time','ValueChangedFcn',@(isMovieCheckbox,event) isMovieCheckboxButtonPushed(isMovieCheckbox));
-% 
-% % 26. Movie increment edit field
-% handles.Plot.incEditField=uieditfield(plotTab,'numeric','Value',1,'Tag','IncEditField','ValueChangedFcn',@(incEditField,event) incEditFieldValueChanged(incEditField));
-% 
-% % 27. Increment frame number up by inc
-% handles.Plot.incFrameUpButton=uibutton(plotTab,'push','Text','->','Tag','IncFrameUpButton','Tooltip','Increment frame up','ButtonPushedFcn',@(incFrameUpButton,event) incFrameUpButtonPushed(incFrameUpButton));
-% 
-% % 28. Increment frame number down by inc
-% handles.Plot.incFrameDownButton=uibutton(plotTab,'push','Text','<-','Tag','IncFrameDownButton','Tooltip','Increment frame down','ButtonPushedFcn',@(incFrameDownButton,event) incFrameDownButtonPushed(incFrameDownButton));
-% 
-% % 29. Button to set the start frame as a variable
-% handles.Plot.startFrameButton=uibutton(plotTab,'push','Text','Start Frame','Tag','StartFrameButton','Tooltip','Set start frame based on a variable','ButtonPushedFcn',@(startFrameButton,event) startFrameButtonPushed(startFrameButton));
-% 
-% % 30. Button to set the end frame as a variable
-% handles.Plot.endFrameButton=uibutton(plotTab,'push','Text','End Frame','Tag','EndFrameButton','Tooltip','Set end frame based on a variable','ButtonPushedFcn',@(endFrameButton,event) endFrameButtonPushed(endFrameButton));
-% 
-% % 31. Edit field to set the start frame hard-coded
-% handles.Plot.startFrameEditField=uieditfield(plotTab,'numeric','Value',1,'Tag','StartFrameEditField','ValueChangedFcn',@(startFrameEditField,event) startFrameEditFieldValueChanged(startFrameEditField));
-% 
-% % 32. Edit field to set the end frame hard-coded
-% handles.Plot.endFrameEditField=uieditfield(plotTab,'numeric','Value',2,'Tag','EndFrameEditField','ValueChangedFcn',@(endFrameEditField,event) endFrameEditFieldValueChanged(endFrameEditField));
-% 
-% % 33. Edit field to set the current frame number
-% handles.Plot.currFrameEditField=uieditfield(plotTab,'numeric','Value',1,'Tag','CurrFrameEditField','ValueChangedFcn',@(currFrameEditField,event) currFrameEditFieldValueChanged(currFrameEditField));
-% 
-% % 34. Current example trial label
-% handles.Plot.exTrialLabel=uilabel(plotTab,'Text','','FontWeight','bold');
-% 
-% % 35. Context menu
-% handles.Plot.openPlotFcnContextMenu=uicontextmenu(fig);
-% handles.Plot.openPlotFcnContextMenuItem1=uimenu(handles.Plot.openPlotFcnContextMenu,'Text','Open Fcn','MenuSelectedFcn',{@openMFilePlot});
-% handles.Plot.openPlotFcnContextMenuItem2=uimenu(handles.Plot.openPlotFcnContextMenu,'Text','Refresh All Subcomponents','MenuSelectedFcn',{@refreshAllSubComps});
-% 
-% % 36. Context menu
-% handles.Plot.refreshComponentContextMenu=uicontextmenu(fig);
-% handles.Plot.refreshComponentContextMenuItem1=uimenu(handles.Plot.refreshComponentContextMenu,'Text','Refresh Component','MenuSelectedFcn',{@refreshPlotComp});
-% 
-% % 37. Context menu
-% handles.Plot.axesLetterContextMenu=uicontextmenu(fig);
-% handles.Plot.axesLetterContextMenuItem1=uimenu(handles.Plot.axesLetterContextMenu,'Text','Refresh Component','MenuSelectedFcn',{@refreshPlotComp});
-% handles.Plot.axesLetterContextMenuItem2=uimenu(handles.Plot.axesLetterContextMenu,'Text','Subplot','MenuSelectedFcn',{@adjustSubplot});
-% 
-% 
-% plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
-%     'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,'CreateFcnButton',handles.Plot.createPlotButton,...
-%     'CurrComponentsUITree',handles.Plot.currCompUITree,'ComponentDescLabel',handles.Plot.componentDescLabel,'ComponentDescTextArea',handles.Plot.componentDescTextArea,'FcnVerDescLabel',handles.Plot.fcnVerDescLabel,...
-%     'FcnVerDescTextArea',handles.Plot.fcnVerDescTextArea,'SpecifyTrialsButton',handles.Plot.specifyTrialsButton,'RunPlotButton',handles.Plot.runPlotButton,'PlotLevelDropDown',handles.Plot.plotLevelDropDown,...
-%     'AllComponentsLabel',handles.Plot.allComponentsLabel,'AllFunctionsLabel',handles.Plot.allPlotsLabel,'CurrComponentsLabel',handles.Plot.currComponentsLabel,'CreateCompButton',handles.Plot.createCompButton,...
-%     'DeleteCompButton',handles.Plot.deleteCompButton,'DeletePlotButton',handles.Plot.deletePlotButton,'EditCompButton',handles.Plot.editCompButton,'PlotPanel',handles.Plot.plotPanel,...
-%     'IsMovieCheckbox',handles.Plot.isMovieCheckbox,'IncEditField',handles.Plot.incEditField,'IncFrameUpButton',handles.Plot.incFrameUpButton,'IncFrameDownButton',handles.Plot.incFrameDownButton,...
-%     'StartFrameButton',handles.Plot.startFrameButton,'EndFrameButton',handles.Plot.endFrameButton,'StartFrameEditField',handles.Plot.startFrameEditField,'EndFrameEditField',handles.Plot.endFrameEditField,'CurrFrameEditField',handles.Plot.currFrameEditField,...
-%     'ExTrialLabel',handles.Plot.exTrialLabel);
-% 
-% @plotResize;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the stats tab

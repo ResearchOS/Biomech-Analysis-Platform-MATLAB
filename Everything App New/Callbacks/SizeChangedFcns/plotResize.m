@@ -99,7 +99,7 @@ objResize(tab.unassignComponentButton, [0.3 0.4], [0.03 compHeight]);
 objResize(tab.subtabCurrent, [0.35 0.01], [0.4 0.95]);
 
 % 16. Render button
-objResize(tab.renderButton, [0.9 0.95], [0.05 compHeight]);
+objResize(tab.plotButton, [0.9 0.95], [0.05 compHeight]);
 
 % 17. Plot UI tree
 objResize(tab.plotUITree, [0.01 0.01], [0.35 0.8]);

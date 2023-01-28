@@ -5,10 +5,10 @@ function []=fillProcessGroupUITree(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 Current_ProcessGroup_Name=loadJSON(projectSettingsFile, 'Current_ProcessGroup_Name');
 
-fullPath=getClassFilePath_PS(Current_ProcessGroup_Name, 'ProcessGroup', fig);
+fullPath=getClassFilePath_PS(Current_ProcessGroup_Name, 'ProcessGroup');
 struct=loadJSON(fullPath);
 
 types=struct.ExecutionListTypes; % Process functions or groups

@@ -50,11 +50,11 @@ end
 
 % Check if that number has already been used.
 namePS=handles.Plot.plotUITree.SelectedNodes.Text;
-fullPathPS=getClassFilePath_PS(namePS, 'Component', fig);
+fullPathPS=getClassFilePath_PS(namePS, 'Component');
 psStruct=loadJSON(fullPathPS);
 
 namePI=getPITextFromPS(namePS);
-fullPathPI=getClassFilePath(namePI, 'Component', fig);
+fullPathPI=getClassFilePath(namePI, 'Component');
 piStruct=loadJSON(fullPathPI);
 
 if isequal(varType,'getArg')

@@ -1,14 +1,12 @@
-function [fromStruct, toStruct]=unlinkClasses(src, fromStruct, toStruct)
+function [fromStruct, toStruct]=unlinkClasses(fromStruct, toStruct)
 
 %% PURPOSE: REMOVE A LINK BETWEEN TWO CLASSES
 
-fig=ancestor(src,'figure','toplevel');
-
 fromText=fromStruct.Text;
-fullPathFrom=getClassFilePath(fromText, fromStruct.Type, fig);
+fullPathFrom=getClassFilePath(fromText, fromStruct.Type);
 
 toText=toStruct.Text;
-fullPathTo=getClassFilePath(toText, toStruct.Type, fig);
+fullPathTo=getClassFilePath(toText, toStruct.Type);
 
 %% Remove fromStruct from toStruct
 backField=['BackwardLinks_' fromStruct.Type];

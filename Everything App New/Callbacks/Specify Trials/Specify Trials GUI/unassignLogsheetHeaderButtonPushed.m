@@ -5,8 +5,6 @@ function []=unassignLogsheetHeaderButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-pgui=getappdata(fig,'pgui');
-
 selNode=handles.selectedLogsheetHeadersUITree.SelectedNodes;
 
 if isempty(selNode)
@@ -17,7 +15,7 @@ title=fig.Name;
 titleSplit=strsplit(title,' ');
 specifyTrials=titleSplit{end};
 
-fullPath=getClassFilePath(specifyTrials,'SpecifyTrials', pgui);
+fullPath=getClassFilePath(specifyTrials,'SpecifyTrials');
 stStruct=loadJSON(fullPath);
 
 idxNum=find(ismember(handles.selectedLogsheetHeadersUITree.Children,selNode)==1);
@@ -41,4 +39,4 @@ if ~isempty(handles.selectedLogsheetHeadersUITree.Children)
     selectedLogsheetHeadersUITreeSelectionChanged(fig);
 end
 
-saveClass(pgui, 'SpecifyTrials', stStruct);
+saveClass('SpecifyTrials', stStruct);

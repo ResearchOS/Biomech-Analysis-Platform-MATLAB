@@ -1,4 +1,4 @@
-function [struct]=createProcessGroupStruct(fig,name,id)
+function [struct]=createProcessGroupStruct(name,id)
 
 %% PURPOSE: CREATE A NEW PROCESSING GROUP
 
@@ -7,7 +7,7 @@ struct.Name=name;
 struct.Class='ProcessGroup';
 
 if nargin<3
-    id=createID(fig,'ProcessGroup');
+    id=createID('ProcessGroup');
 end
 struct.ID=id;
 
@@ -44,7 +44,7 @@ struct.Visible=true;
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass(fig,'ProcessGroup',struct);
+saveClass('ProcessGroup',struct);
 
 %% Assign the newly created variable struct to the current project struct.
-assignToProject(fig,struct,'ProcessGroup');
+assignToProject(struct);

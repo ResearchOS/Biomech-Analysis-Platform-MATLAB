@@ -1,15 +1,13 @@
-function [fromStruct, toStruct]=linkClasses(src, fromStruct, toStruct)
+function [fromStruct, toStruct]=linkClasses(fromStruct, toStruct)
 
 %% PURPOSE: LINK TWO CLASS INSTANCES TOGETHER.
 % Linked FROM the fromStruct TO the toStruct (forward link)
 
-fig=ancestor(src,'figure','toplevel');
-
 fromText=fromStruct.Text;
-fullPathFrom=getClassFilePath(fromText, fromStruct.Class, fig);
+fullPathFrom=getClassFilePath(fromText, fromStruct.Class);
 
 toText=toStruct.Text;
-fullPathTo=getClassFilePath(toText, toStruct.Class, fig);
+fullPathTo=getClassFilePath(toText, toStruct.Class);
 
 %% Assign fromStruct to toStruct
 backField=['BackwardLinks_' fromStruct.Class];

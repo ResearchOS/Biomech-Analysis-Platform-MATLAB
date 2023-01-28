@@ -1,4 +1,4 @@
-function [struct]=createComponentStruct(fig,name,id)
+function [struct]=createComponentStruct(name,id)
 
 %% PURPOSE: CREATE A NEW COMPONENT STRUCT
 
@@ -7,7 +7,7 @@ struct.Name=name;
 struct.Class='Component';
 
 if nargin<3
-    id=createID(fig,'Component');
+    id=createID('Component');
 end
 struct.ID=id;
 
@@ -44,7 +44,7 @@ struct.Visible=true;
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass(fig,'Component',struct);
+saveClass('Component',struct);
 
 %% Assign the newly created plot component struct to the current project struct.
-assignToProject(fig,struct,'Component');
+assignToProject(struct);

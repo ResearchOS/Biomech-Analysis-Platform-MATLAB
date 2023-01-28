@@ -1,13 +1,10 @@
-function [fullPath]=getClassFilePath_PS(name_PS, class, src)
+function [fullPath]=getClassFilePath_PS(name_PS, class)
 
 %% PURPOSE: RETURN THE FULL FILE PATH FOR THE SPECIFIED PROJECT-SPECIFIC STRUCT.
 
-fig=ancestor(src,'figure','toplevel');
-handles=getappdata(fig,'handles');
-
 slash=filesep;
 
-projectPath=getProjectPath(fig);
+projectPath=getProjectPath();
 
 classFolder=[projectPath slash 'Project_Settings' slash class];
 

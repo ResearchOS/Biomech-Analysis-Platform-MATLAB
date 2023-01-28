@@ -15,7 +15,7 @@ end
 
 text=selNode.Text;
 
-componentPath=getClassFilePath(text, 'Component', fig);
+componentPath=getClassFilePath(text, 'Component');
 componentStruct=loadJSON(componentPath);
 
 %% If an axes is selected, bring up a dialog box to confirm that all the children of that axes will also be deleted.
@@ -32,7 +32,7 @@ if isAx
     if ~isequal(sel,'OK')
         return;
     end    
-    projectSettings=getProjectSettingsFile(fig);
+    projectSettings=getProjectSettingsFile();
     Current_Plot_Name=loadJSON(projectSettings,'Current_Plot_Name');
     parentText=Current_Plot_Name;
     class='Plot';
@@ -41,18 +41,18 @@ else
     class='Component';
 end
 
-parentPath=getClassFilePath(parentText,class,fig);
+parentPath=getClassFilePath(parentText,class);
 parentStruct=loadJSON(parentPath);
 
-[componentStruct, parentStruct]=unlinkClasses(fig, componentStruct, parentStruct);
+[componentStruct, parentStruct]=unlinkClasses(componentStruct, parentStruct);
 
 % Unlink all of the child components from the axes.
 if isAx
     children=componentStruct.BackwardLinks_Component;
     for i=1:length(children)
-        childPath=getClassFilePath(children{i},'Component', fig);
+        childPath=getClassFilePath(children{i},'Component');
         childStruct=loadJSON(childPath);
-        unlinkClasses(fig, childStruct, componentStruct);
+        unlinkClasses(childStruct, componentStruct);
     end
 end
 

@@ -25,7 +25,7 @@ argSpecificIdx=contains(childrenNodesTexts,argType);
 argIdxNum=find(ismember(childrenNodes(argSpecificIdx), selNode)==1);
 
 componentNode=handles.Plot.plotUITree.SelectedNodes;
-componentPath=getClassFilePath(componentNode.Text, 'Component', fig);
+componentPath=getClassFilePath(componentNode.Text, 'Component');
 componentStruct=loadJSON(componentPath);
 
 argSpaceIdx=strfind(selNode.Text,' ');
@@ -50,9 +50,9 @@ for i=2:length(componentStruct.(fldName){argIdxNum})
         continue;
     end
 
-    varPath=getClassFilePath(componentStruct.(fldName){argIdxNum}{i},'Variable', fig);
+    varPath=getClassFilePath(componentStruct.(fldName){argIdxNum}{i},'Variable');
     varStruct=loadJSON(varPath);
-    unlinkClasses(fig, varStruct, componentStruct);
+    unlinkClasses(varStruct, componentStruct);
 end
 
 % Remove the getArg/setArg from the processStruct, and do the same in the
@@ -60,7 +60,7 @@ end
 componentStruct.(fldName)(argIdxNum)=[];
 
 piText=getPITextFromPS(componentStruct.Text);
-piComponentPath=getClassFilePath(piText,'Component', fig);
+piComponentPath=getClassFilePath(piText,'Component');
 piStruct=loadJSON(piComponentPath);
 
 piStruct.(fldNamePI)(argIdxNum)=[];

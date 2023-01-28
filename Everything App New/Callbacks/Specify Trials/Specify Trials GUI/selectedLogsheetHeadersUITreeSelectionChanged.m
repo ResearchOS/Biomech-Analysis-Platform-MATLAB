@@ -5,8 +5,6 @@ function []=selectedLogsheetHeadersUITreeSelectionChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-pgui=getappdata(fig,'pgui');
-
 selNode=handles.selectedLogsheetHeadersUITree.SelectedNodes;
 
 if isempty(selNode)
@@ -18,7 +16,7 @@ titleSplit=strsplit(title,' ');
 specifyTrials=titleSplit{end};
 
 %% Load the specify trials struct
-fullPath=getClassFilePath(specifyTrials,'SpecifyTrials', pgui);
+fullPath=getClassFilePath(specifyTrials,'SpecifyTrials');
 stStruct=loadJSON(fullPath);
 
 % Index of the selected node. Nodes are in same order as in JSON.

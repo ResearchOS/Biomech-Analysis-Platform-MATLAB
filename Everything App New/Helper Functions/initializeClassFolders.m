@@ -1,7 +1,13 @@
-function []=initializeClassFolders(classNames,root)
+function [classNames]=initializeClassFolders(root)
 
 %% PURPOSE: CREATE THE PROJECT-INDEPENDENT CLASS FOLDERS
 slash=filesep;
+
+classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup','SpecifyTrials'}; % One folder for each object type
+
+if nargin==0
+    root=getCommonPath; % Make project-independent folders.
+end
 
 for i=1:length(classNames)
     className=classNames{i};

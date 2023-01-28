@@ -6,10 +6,10 @@ function []=fillPlotUITree(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 Current_Plot_Name=loadJSON(projectSettingsFile,'Current_Plot_Name');
 
-fullPath=getClassFilePath(Current_Plot_Name,'Plot', fig);
+fullPath=getClassFilePath(Current_Plot_Name,'Plot');
 struct=loadJSON(fullPath);
 
 if isfield(struct,'BackwardLinks_Component')
@@ -32,7 +32,7 @@ for i=1:length(axes)
     newNode=uitreenode(uiTree,'Text',currAx);
     newNode.ContextMenu=handles.Process.psContextMenu;
 
-    axPath=getClassFilePath(currAx, 'Component', fig);
+    axPath=getClassFilePath(currAx, 'Component');
     axStruct=loadJSON(axPath);
     if isfield(axStruct,'BackwardLinks_Component')
         components=axStruct.BackwardLinks_Component;

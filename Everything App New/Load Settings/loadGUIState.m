@@ -3,27 +3,12 @@ function []=loadGUIState(fig)
 %% PURPOSE: LOAD THE GUI STATE
 handles=getappdata(fig,'handles');
 
-% slash=filesep;
-
-% rootSettingsFolder=[userpath slash 'PGUI Settings'];
-% rootSettingsFile=[rootSettingsFolder slash 'Settings.mat'];
-% 
-% load(rootSettingsFile,'commonPath'); % The folder where all of the project-independent custom settings are stored
-% warning('off','MATLAB:load:variableNotFound');
-% load(rootSettingsFile,'guiSettings'); % The settings for all of the GUI objects not set by the data itself 
-% warning('on','MATLAB:load:variableNotFound');
-% 
-% if exist('guiSettings','var')~=1
-%     saveGUIState(fig); % Initialize the GUI settings saved to .mat file
-%     return;
-% end
-
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
 
 rootSettingsFile=getRootSettingsFile();
-existProjectPath=getappdata(fig,'existProjectPath');
-if existProjectPath
-    projectSettingsFile=getProjectSettingsFile(fig);
+projectPath=getProjectPath();
+if ~isempty(projectPath)
+    projectSettingsFile=getProjectSettingsFile();
     projectSettings=loadJSON(projectSettingsFile);
 end
 
@@ -95,3 +80,8 @@ allComponentsUITreeSelectionChanged(fig);
 % handles.Stats.sortPubTablesDropDown.Value=guiSettings.Stats.SortMethod.PubTables;
 % sortUITree(handles.Stats.allPubTablesUITree,handles.Stats.sortPubTablesDropDown.Value);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Settings tab
+%% Put the common path into the edit field
+commonPath=getCommonPath();
+handles.Settings.commonPathEditField.Value=commonPath;

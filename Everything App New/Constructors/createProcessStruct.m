@@ -1,4 +1,4 @@
-function [struct]=createProcessStruct(fig,name,id)
+function [struct]=createProcessStruct(name,id)
 
 %% PURPOSE: CREATE A NEW PROCESS FUNCTION STRUCTURE
 
@@ -9,7 +9,7 @@ struct.MFileName=struct.Name;
 struct.Class='Process';
 
 if nargin<3
-    id=createID(fig,'Process');
+    id=createID('Process');
 end
 struct.ID=id;
 
@@ -52,7 +52,7 @@ struct.Visible=true;
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass(fig,'Process',struct);
+saveClass('Process',struct);
 
 %% Assign the newly created process struct to the current project struct.
-assignToProject(fig,struct,'Process');
+assignToProject(struct);

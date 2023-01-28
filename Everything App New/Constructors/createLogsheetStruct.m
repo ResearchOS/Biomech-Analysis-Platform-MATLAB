@@ -1,4 +1,4 @@
-function [struct]=createLogsheetStruct(fig,name,id)
+function [struct]=createLogsheetStruct(name,id)
 
 %% PURPOSE: CREATE A NEW LOGSHEET STRUCTURE
 % Properties:
@@ -20,7 +20,7 @@ struct.Name=name;
 struct.Class='Logsheet';
 
 if nargin<3
-    id=createID(fig,'Logsheet');
+    id=createID('Logsheet');
 end
 struct.ID=id;
 
@@ -71,7 +71,7 @@ struct.Level={}; % Trial or subject
 struct.Type={}; % Char or double
 struct.Variables={}; % The variable struct text (file name)
 
-saveClass(fig,'Logsheet',struct);
+saveClass('Logsheet',struct);
 
 %% Assign the newly created logsheet struct to the current project struct.
-assignToProject(fig,struct,'Logsheet');
+assignToProject(struct);

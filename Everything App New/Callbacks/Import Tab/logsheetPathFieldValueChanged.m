@@ -62,7 +62,7 @@ end
 
 save(logsheetPathMAT,'logVar');
 
-saveClass(fig,'Logsheet',struct);
+saveClass('Logsheet',struct);
 
 headersAll=[{''}; headers];
 

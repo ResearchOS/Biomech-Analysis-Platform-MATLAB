@@ -1,13 +1,13 @@
-function [struct]=createProcessStruct_PS(fig,piStruct,psid)
+function [struct]=createProcessStruct_PS(piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC PROCESS FUNCTION STRUCT
 
 struct.Name=piStruct.Name;
 
-struct.Type='Process';
+struct.Class='Process';
 
 if nargin<3
-    psid=createPSID(fig, piStruct.Text, 'Process');
+    psid=createPSID(piStruct.Text, 'Process');
 end
 struct.ID=psid;
 
@@ -49,4 +49,4 @@ struct.Visible=true;
 struct.Text=[piStruct.Text '_' psid];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass_PS(fig,'Process',struct);
+saveClass_PS('Process',struct);

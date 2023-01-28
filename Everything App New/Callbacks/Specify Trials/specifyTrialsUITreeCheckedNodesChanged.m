@@ -40,7 +40,7 @@ switch class
         text=handles.Plot.currentPlotLabel.Text;
 end
 
-fullPath=getClassFilePath(text, class, fig);
+fullPath=getClassFilePath(text, class);
 
 classStruct=loadJSON(fullPath);
 
@@ -51,7 +51,7 @@ else
 end
 
 if isPS
-    saveClass_PS(fig, class, classStruct);
+    saveClass_PS(class, classStruct);
 else
-    saveClass(fig, class, classStruct);
+    saveClass(class, classStruct);
 end

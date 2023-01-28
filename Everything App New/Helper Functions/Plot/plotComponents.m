@@ -1,4 +1,4 @@
-function [handles]=plotComponents(fig,currFig,plotStructPS,subName,trialName)
+function [handles]=plotComponents(currFig,plotStructPS,subName,trialName)
 
 %% PURPOSE: GIVEN A FIGURE HANDLE AND THE PROJECT-SPECIFIC PLOTTING STRUCT, PLOT THE COMPONENTS USING USER-DEFINED M FILES.
 % Plots static plots, NOT movies.
@@ -17,7 +17,7 @@ axesList=plotStructPS.BackwardLinks_Component;
 
 for i=1:length(axesList)
     ax=axesList{i};        
-    fullPath=getClassFilePath(ax, 'Component', fig);
+    fullPath=getClassFilePath(ax, 'Component');
     axStruct=loadJSON(fullPath);
 
     % Reposition the axes so things can be seen when plotting.

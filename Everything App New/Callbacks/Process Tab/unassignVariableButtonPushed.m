@@ -56,12 +56,12 @@ argIdxNum=find(ismember(childrenNodes(argSpecificIdx), parentNode)==1);
 % instance.
 idxNum=find(ismember(parentNode.Children,daughterNode)==1);
 
-varPath=getClassFilePath(daughterNode.Text(spaceIdx+2:end-1),'Variable',fig);
+varPath=getClassFilePath(daughterNode.Text(spaceIdx+2:end-1),'Variable');
 varStruct=loadJSON(varPath);
 
 motherNode=motherUITree.SelectedNodes;
 
-daughterPath=getClassFilePath(motherNode.Text,daughterClass,fig);
+daughterPath=getClassFilePath(motherNode.Text,daughterClass);
 daughterStruct=loadJSON(daughterPath);
 
 % Remove the currently selected variable from that arg.
@@ -86,4 +86,4 @@ daughterStruct.(fldName){argIdxNum}{idxNum+1}='';
 
 daughterNode.Text=daughterNode.Text(1:spaceIdx-1);
 
-unlinkClasses(fig, varStruct, daughterStruct);
+unlinkClasses(varStruct, daughterStruct);

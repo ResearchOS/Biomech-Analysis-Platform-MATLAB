@@ -13,21 +13,20 @@ if isempty(logsheetNode)
     return;
 end
 
-classVar=getappdata(fig,'Logsheet');
+logPath=getClassFilePath(logsheetNode.Text,'Logsheet');
+logStruct=loadJSON(logPath);
 
-idx=ismember({classVar.Text},logsheetNode.Text);
+idx=ismember({uiTree.Children.Text},logsheetNode.Text);
 
 assert(any(idx));
 
 idxNum=find(idx==1);
 
-classVar(idx).Checked=false;
+logStruct.Checked=false;
 
-classVar(idx).Visible=false;
+logStruct.Visible=false;
 
-setappdata(fig,'Logsheet',classVar);
-
-saveClass(fig,'Logsheet',classVar(idx));
+saveClass('Logsheet',logStruct);
 
 delete(logsheetNode);
 

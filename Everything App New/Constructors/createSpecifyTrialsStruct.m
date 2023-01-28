@@ -1,4 +1,4 @@
-function []=createSpecifyTrialsStruct(fig, name)
+function []=createSpecifyTrialsStruct(name)
 
 %% PURPOSE: CREATE A PROJECT-INDEPENDENT SPECIFY TRIALS STRUCT
 
@@ -7,7 +7,7 @@ struct.Name=name;
 struct.Class='SpecifyTrials';
 
 if nargin<3
-    id=createID(fig,'SpecifyTrials');
+    id=createID('SpecifyTrials');
 end
 struct.ID=id;
 
@@ -45,7 +45,7 @@ struct.Visible=true;
 struct.Text=[name '_' id];
 struct.Parent='';
 
-saveClass(fig,'SpecifyTrials',struct)
+saveClass('SpecifyTrials',struct)
 
 %% Assign the newly create specifyTrials struct to the current project
-assignToProject(fig,struct,'SpecifyTrials');
+assignToProject(struct);

@@ -1,13 +1,13 @@
-function [struct]=createPlotStruct_PS(fig,piStruct,psid)
+function [struct]=createPlotStruct_PS(piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC PLOT STRUCT
 
 struct.Name=piStruct.Name;
 
-struct.Type='Plot';
+struct.Class='Plot';
 
 if nargin<3
-    psid=createPSID(fig, piStruct.Text, 'Plot');
+    psid=createPSID(piStruct.Text, 'Plot');
 end
 struct.ID=psid;
 
@@ -43,4 +43,4 @@ struct.Visible=true;
 struct.Text=[piStruct.Text '_' psid];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass_PS(fig,'Plot',struct);
+saveClass_PS('Plot',struct);

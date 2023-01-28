@@ -1,4 +1,4 @@
-function [filenames]=getClassFilenames(fig,class,root)
+function [filenames]=getClassFilenames(class,root)
 
 %% PURPOSE: RETURN ALL OF THE INSTANCES OF A CLASS IN THE CLASS FOLDER.
 % Inputs:
@@ -8,8 +8,8 @@ function [filenames]=getClassFilenames(fig,class,root)
 
 slash=filesep;
 
-if nargin==2
-    root=getCommonPath(fig);   
+if nargin==1
+    root=getCommonPath();   
 end
 
 classFolder=[root slash class];

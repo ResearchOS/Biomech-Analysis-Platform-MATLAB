@@ -8,14 +8,16 @@ handles=getappdata(fig,'handles');
 field=handles.Settings.commonPathEditField;
 commonPath=field.Value;
 
-if isempty(commonPath)
-    return;
-end
+setCommonPath(commonPath);
 
-if exist(commonPath,'dir')~=7
-    return;
-end
-
-rootSettingsFile=getRootSettingsFile();
-
-save(rootSettingsFile,'commonPath','-append');
+% if isempty(commonPath)
+%     return;
+% end
+% 
+% if exist(commonPath,'dir')~=7
+%     return;
+% end
+% 
+% rootSettingsFile=getRootSettingsFile();
+% 
+% save(rootSettingsFile,'commonPath','-append');

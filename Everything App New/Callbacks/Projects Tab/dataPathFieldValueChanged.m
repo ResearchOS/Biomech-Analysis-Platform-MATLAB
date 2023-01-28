@@ -11,9 +11,11 @@ if isempty(path)
     return;
 end
 
-project=handles.Projects.allProjectsUITree.SelectedNodes.Text;
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
+project=Current_Project_Name;
 
-fullPath=getClassFilePath(project, 'Project', fig);
+fullPath=getClassFilePath(project, 'Project');
 projectStruct=loadJSON(fullPath);
 
 if exist(path,'dir')~=7
@@ -25,4 +27,4 @@ computerID=getComputerID();
 
 projectStruct.DataPath.(computerID)=path;
 
-saveClass(fig,'Project',projectStruct);
+saveClass('Project',projectStruct);

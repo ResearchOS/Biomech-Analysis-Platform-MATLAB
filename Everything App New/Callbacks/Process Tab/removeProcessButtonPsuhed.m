@@ -13,21 +13,20 @@ if isempty(processNode)
     return;
 end
 
-classVar=getappdata(fig,'Process');
+processPath=getClassFilePath(processNode.Text,'Process');
+processStruct=loadJSON(processPath);
 
-idx=ismember({classVar.Text},processNode.Text);
+idx=ismember({uiTree.Children.Text},processNode.Text);
 
 assert(any(idx));
 
 idxNum=find(idx==1);
 
-classVar(idx).Checked=false;
+processStruct.Checked=false;
 
-classVar(idx).Visible=false;
+processStruct.Visible=false;
 
-setappdata(fig,'Process',classVar);
-
-saveClass(fig,'Process',classVar(idx));
+saveClass('Process',processStruct);
 
 delete(processNode);
 

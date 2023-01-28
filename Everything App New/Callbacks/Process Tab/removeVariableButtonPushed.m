@@ -13,21 +13,20 @@ if isempty(variableNode)
     return;
 end
 
-classVar=getappdata(fig,'Variable');
+varPath=getClassFilePath(variableNode.Text, 'Variable');
+struct=loadJSON(varPath);
 
-idx=ismember({classVar.Text},variableNode.Text);
+idx=ismember({uiTree.Children.Text},variableNode.Text);
 
 assert(any(idx));
 
 idxNum=find(idx==1);
 
-classVar(idx).Checked=false;
+struct.Checked=false;
 
-classVar(idx).Visible=false;
+struct.Visible=false;
 
-setappdata(fig,'Variable',classVar);
-
-saveClass(fig,'Variable',classVar(idx));
+saveClass('Variable',struct);
 
 delete(variableNode);
 

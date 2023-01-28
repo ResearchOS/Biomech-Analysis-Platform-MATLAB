@@ -28,4 +28,4 @@ levels{idx}=handles.Import.levelDropDown.Value;
 
 struct.Level=levels;
 
-saveClass(fig,'Logsheet',struct);
+saveClass('Logsheet',struct);

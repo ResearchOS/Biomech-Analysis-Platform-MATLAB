@@ -11,19 +11,19 @@ if isempty(plotNode)
     return;
 end 
 
-projectPath=getProjectPath(fig);
+projectPath=getProjectPath();
 if isempty(projectPath)
     return;
 end
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 projectSettings=loadJSON(projectSettingsFile);
 
 % Create new PS process group struct if PI node is selected
 if isequal(plotNode.Parent,handles.Plot.allPlotsUITree)
     fullPath=getClassFilePath(plotNode);
     piStruct=loadJSON(fullPath);
-    psStruct=createPlotStruct_PS(fig,piStruct);
+    psStruct=createPlotStruct_PS(piStruct);
     Current_Plot_Name=psStruct.Text;
     uitreenode(plotNode,'Text',psStruct.Text); % Create new PS node.
 else % Use pre-existing PS node.
@@ -38,7 +38,7 @@ handles.Plot.currentPlotLabel.Text=Current_Plot_Name;
 
 fillPlotUITree(fig);
 
-plotPath=getClassFilePath(Current_Plot_Name,'Plot',fig);
+plotPath=getClassFilePath(Current_Plot_Name,'Plot');
 plotStructPS=loadJSON(plotPath);
 specifyTrials=plotStructPS.SpecifyTrials;
 specifyTrialsUITree=handles.Plot.allSpecifyTrialsUITree;

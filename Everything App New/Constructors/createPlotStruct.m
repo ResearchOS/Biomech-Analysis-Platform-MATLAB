@@ -1,4 +1,4 @@
-function [struct]=createPlotStruct(fig,name,id)
+function [struct]=createPlotStruct(name,id)
 
 %% PURPOSE: CREATE A NEW PLOT STRUCTURE
 % Properties:
@@ -19,7 +19,7 @@ struct.Name=name;
 struct.Class='Plot';
 
 if nargin<3
-    id=createID(fig,'Plot');
+    id=createID('Plot');
 end
 struct.ID=id;
 
@@ -70,7 +70,7 @@ struct.Visible=true;
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass(fig,'Plot',struct);
+saveClass('Plot',struct);
 
 %% Assign the newly created plot struct to the current project struct.
-assignToProject(fig,struct,'Plot');
+assignToProject(struct);

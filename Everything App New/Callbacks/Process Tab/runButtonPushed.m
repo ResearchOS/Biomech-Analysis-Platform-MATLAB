@@ -5,7 +5,7 @@ function []=runButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 projectSettings=loadJSON(projectSettingsFile);
 
 queue=projectSettings.ProcessQueue;

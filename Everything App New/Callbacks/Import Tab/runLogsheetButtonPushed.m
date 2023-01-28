@@ -168,8 +168,8 @@ if any(trialIdx) % There is at least one trial level variable
             % 1. Create a project-independent and project-specific variable struct for this variable if it does not
             % already exist.
             if isempty(varName)
-                varStruct=createVariableStruct(fig, headers{headerIdxNum});
-                varStruct_PS=createVariableStruct_PS(fig,varStruct);
+                varStruct=createVariableStruct(headers{headerIdxNum});
+                varStruct_PS=createVariableStruct_PS(varStruct);
 %             varNamePI=getPITextFromPS(varName);
 %             varPath=getClassFilePath(varNamePI, 'Variable', fig);
 %             varPathPS=getClassFilePath_PS(varName, 'Variable', fig);
@@ -190,7 +190,7 @@ if any(trialIdx) % There is at least one trial level variable
                 fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
                 varName=varStruct_PS.Text;
                 logsheetStruct.Variables{headerIdxNum}=varName;
-                saveClass(fig, 'Logsheet', logsheetStruct);
+                saveClass('Logsheet', logsheetStruct);
                 varNames{headerIdxNum}=varName; % For the next iteration
             end
 
@@ -279,13 +279,13 @@ if any(subjectIdx)
             % 1. Create a project-independent and project-specific variable struct for this variable if it does not
             % already exist.
             if isempty(varName)
-                varStruct=createVariableStruct(fig, headers{headerIdxNum});
-                varStruct_PS=createVariableStruct_PS(fig,varStruct);
+                varStruct=createVariableStruct(headers{headerIdxNum});
+                varStruct_PS=createVariableStruct_PS(varStruct);
                 varStruct_PS.Level='S';
-                saveClass_PS(fig, 'Variable', varStruct_PS);
+                saveClass_PS('Variable', varStruct_PS);
                 varName=varStruct_PS.Text;
                 logsheetStruct.Variables{headerIdxNum}=varName;                
-                saveClass(fig, 'Logsheet', logsheetStruct);
+                saveClass('Logsheet', logsheetStruct);
                 varNames{headerIdxNum}=varName; % For the next iteration
             end
 

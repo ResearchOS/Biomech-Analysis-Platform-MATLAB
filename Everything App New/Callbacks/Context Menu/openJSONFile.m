@@ -51,7 +51,7 @@ switch uiTree
 end
 
 if isPS
-    fullPath=getClassFilePath_PS(selNode.Text, classType, fig);
+    fullPath=getClassFilePath_PS(selNode.Text, classType);
 else    
     fullPath=getClassFilePath(selNode);
 end
@@ -64,18 +64,18 @@ if exist(fullPath,'file')~=2
 
     if isPS        
         piText=getPITextFromPS(selNode.Text);
-        piPath=getClassFilePath(piText, classType, fig);
+        piPath=getClassFilePath(piText, classType);
         [name,id,psid]=deText(selNode.Text);
         if exist(piPath,'file')~=2
-            piStruct=feval(['create' classType 'Struct'],fig,name,id);
+            piStruct=feval(['create' classType 'Struct'],name,id);
         else
             piStruct=loadJSON(piPath);
         end
 
-        feval(['create' classType 'Struct_PS'],fig,piStruct,psid);
+        feval(['create' classType 'Struct_PS'],piStruct,psid);
     else    
         [name,id]=deText(selNode.Text);
-        piStruct=feval(['create' classType 'Struct'],fig,name,id);
+        piStruct=feval(['create' classType 'Struct'],name,id);
     end    
 
 end

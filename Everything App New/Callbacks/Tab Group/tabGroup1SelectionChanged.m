@@ -7,13 +7,7 @@ function []=tabGroup1SelectionChanged(src,currTab)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-existProjectPath=getappdata(fig,'projectPath');
-
-if existProjectPath==1
-    return;
-end
-
-path=getProjectPath(fig);
+path=getProjectPath();
 
 if isempty(path)
     handles.Tabs.tabGroup1.SelectedTab=handles.Projects.Tab;

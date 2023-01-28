@@ -1,13 +1,13 @@
-function [struct]=createVariableStruct_PS(fig,piStruct,psid)
+function [struct]=createVariableStruct_PS(piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC VARIABLE STRUCT
 
 struct.Name=piStruct.Name;
 
-struct.Type='Variable';
+struct.Class='Variable';
 
 if nargin<3
-    psid=createPSID(fig, piStruct.Text, 'Variable');
+    psid=createPSID(piStruct.Text, 'Variable');
 end
 struct.ID=psid;
 
@@ -44,4 +44,4 @@ struct.Visible=true;
 struct.Text=[piStruct.Text '_' psid];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass_PS(fig,'Variable',struct);
+saveClass_PS('Variable',struct);

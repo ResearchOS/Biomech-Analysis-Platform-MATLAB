@@ -20,4 +20,4 @@ value=handles.Import.numHeaderRowsField.Value;
 
 struct.NumHeaderRows=value;
 
-saveClass(fig,'Logsheet',struct);
+saveClass('Logsheet',struct);

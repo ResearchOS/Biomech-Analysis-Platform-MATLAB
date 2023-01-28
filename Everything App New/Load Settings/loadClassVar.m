@@ -1,11 +1,11 @@
-function [classVar]=loadClassVar(fig,classFolder)
+function [classVar]=loadClassVar(classFolder)
 
 %% PURPOSE: GO THROUGH ALL OF THE FILES IN THE CLASS'S FOLDER AND LOAD THEM INTO MEMORY IF THEY HAVE 'VISIBLE' SET TO 1
 slash=filesep;
 
 slashIdx=strfind(classFolder,slash);
 class=classFolder(slashIdx(end)+1:end);
-fileNames=getClassFilenames(fig,class);
+fileNames=getClassFilenames(class);
 
 % If there are no files, return an empty struct.
 if isempty(fileNames)    

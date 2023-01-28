@@ -3,9 +3,9 @@ function []=fillUITree(fig, class, uiTree, searchTerm, sortDropDown)
 %% PURPOSE: FILL IN THE UI TREE.
 
 slash=filesep;
-commonPath=getCommonPath(fig);
+commonPath=getCommonPath();
 classFolder=[commonPath slash class];
-classVar=loadClassVar(fig,classFolder);
+classVar=loadClassVar(classFolder);
 handles=getappdata(fig,'handles');
 
 %% Get all of the existing nodes' text. The node text is equal to its file name.

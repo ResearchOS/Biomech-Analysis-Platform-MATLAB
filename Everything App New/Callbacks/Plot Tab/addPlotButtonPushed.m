@@ -11,7 +11,7 @@ if isempty(plotName)
     return;
 end
 
-createPlotStruct(fig,plotName);
+createPlotStruct(plotName);
 
 searchTerm=getSearchTerm(handles.Plot.plotSearchField);
 

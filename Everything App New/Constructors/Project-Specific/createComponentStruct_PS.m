@@ -1,13 +1,13 @@
-function [struct]=createComponentStruct_PS(fig,piStruct,psid)
+function [struct]=createComponentStruct_PS(piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC COMPONENT STRUCT
 
 struct.Name=piStruct.Name;
 
-struct.Type='Component';
+struct.Class='Component';
 
 if nargin<3
-    psid=createPSID(fig, piStruct.Text, 'Component');
+    psid=createPSID(piStruct.Text, 'Component');
 end
 struct.ID=psid;
 
@@ -48,4 +48,4 @@ struct.Visible=true;
 struct.Text=[piStruct.Text '_' psid];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass_PS(fig,'Component',struct);
+saveClass_PS('Component',struct);

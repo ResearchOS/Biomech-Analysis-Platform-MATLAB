@@ -25,7 +25,7 @@ argSpecificIdx=contains(childrenNodesTexts,argType);
 argIdxNum=find(ismember(childrenNodes(argSpecificIdx), selNode)==1);
 
 processNode=handles.Process.groupUITree.SelectedNodes;
-processPath=getClassFilePath(processNode.Text, 'Process', fig);
+processPath=getClassFilePath(processNode.Text, 'Process');
 processStruct=loadJSON(processPath);
 
 argSpaceIdx=strfind(selNode.Text,' ');
@@ -50,9 +50,9 @@ for i=2:length(processStruct.(fldName){argIdxNum})
         continue;
     end
 
-    varPath=getClassFilePath(processStruct.(fldName){argIdxNum}{i},'Variable', fig);
+    varPath=getClassFilePath(processStruct.(fldName){argIdxNum}{i},'Variable');
     varStruct=loadJSON(varPath);
-    unlinkClasses(fig, varStruct, processStruct);
+    unlinkClasses(varStruct, processStruct);
 end
 
 % Remove the getArg/setArg from the processStruct, and do the same in the
@@ -60,7 +60,7 @@ end
 processStruct.(fldName)(argIdxNum)=[];
 
 piText=getPITextFromPS(processStruct.Text);
-piProcessPath=getClassFilePath(piText,'Process', fig);
+piProcessPath=getClassFilePath(piText,'Process');
 piStruct=loadJSON(piProcessPath);
 
 piStruct.(fldNamePI)(argIdxNum)=[];

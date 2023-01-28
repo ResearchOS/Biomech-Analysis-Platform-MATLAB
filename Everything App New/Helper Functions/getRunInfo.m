@@ -1,10 +1,10 @@
-function []=getRunInfo(piStruct,psStruct,fig)
+function []=getRunInfo(piStruct,psStruct)
 
 %% PURPOSE: COMPILE INFO THAT GETARG/SETARG NEED TO RUN THE SPECIFIED FUNCTION.
 
 rootSettingsFile=getRootSettingsFile();
 load(rootSettingsFile,'Current_Project_Name');
-fullPath=getClassFilePath(Current_Project_Name, 'Project', fig);
+fullPath=getClassFilePath(Current_Project_Name, 'Project');
 projectStruct=loadJSON(fullPath);
 
 computerID=getComputerID();
@@ -33,11 +33,11 @@ for inOut=1:2
         for j=2:length(vars{i})
             
             currVarPS=vars{i}{j};
-            filePathPS=getClassFilePath_PS(currVarPS, 'Variable', fig);
+            filePathPS=getClassFilePath_PS(currVarPS, 'Variable');
             varStructPS=loadJSON(filePathPS);   
 
             currVarPI=getPITextFromPS(currVarPS);
-            filePathPI=getClassFilePath(currVarPI, 'Variable', fig);
+            filePathPI=getClassFilePath(currVarPI, 'Variable');
             varStructPI=loadJSON(filePathPI);
 
             runInfo.Var.(fldName)(i).PSStruct{j-1}=varStructPS;

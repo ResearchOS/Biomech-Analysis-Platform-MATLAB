@@ -16,14 +16,14 @@ uiTree=handles.Plot.componentUITree;
 delete(uiTree.Children);
 
 % Load project-specific file.
-fullPathPS=getClassFilePath_PS(selNode.Text, 'Component', fig);
+fullPathPS=getClassFilePath_PS(selNode.Text, 'Component');
 struct=loadJSON(fullPathPS);
 
 inputVarsPS=struct.InputVariables;
 
 % Load project-independent file.
 piText=getPITextFromPS(selNode.Text);
-fullPathPI=getClassFilePath(piText, 'Component', fig);
+fullPathPI=getClassFilePath(piText, 'Component');
 piStruct=loadJSON(fullPathPI);
 
 inputVarsPI=piStruct.InputVariablesNamesInCode;

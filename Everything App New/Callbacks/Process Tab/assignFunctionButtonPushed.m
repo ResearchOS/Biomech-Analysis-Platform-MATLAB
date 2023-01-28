@@ -18,11 +18,11 @@ else
     isNew=false;
 end
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 Current_ProcessGroup_Name=loadJSON(projectSettingsFile,'Current_ProcessGroup_Name');
 
 % Get the currently selected group struct.
-fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup',fig);
+fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup');
 groupStruct=loadJSON(fullPath);
 
 % List is a Nx2, with the first column being "Process" or "ProcessGroup", 2nd
@@ -34,11 +34,11 @@ processName=selNode.Text; % Without project-specific ID.
 
 switch isNew
     case true
-        processPath=getClassFilePath(processName, 'Process', fig);
+        processPath=getClassFilePath(processName, 'Process');
         piStruct=loadJSON(processPath);
-        processStruct=createProcessStruct_PS(fig,piStruct);
+        processStruct=createProcessStruct_PS(piStruct);
     case false
-        processPath=getClassFilePath_PS(selNode.Text, 'Process', fig);
+        processPath=getClassFilePath_PS(selNode.Text, 'Process');
         processStruct=loadJSON(processPath);
 end
 
@@ -48,7 +48,7 @@ types=[types; {'Process'}];
 groupStruct.ExecutionListNames=names;
 groupStruct.ExecutionListTypes=types;
 
-linkClasses(fig, processStruct, groupStruct); % Also saves the structs
+linkClasses(processStruct, groupStruct); % Also saves the structs
 
 newNode=uitreenode(handles.Process.groupUITree,'Text',processStruct.Text);
 newNode.ContextMenu=handles.Process.psContextMenu;

@@ -1,13 +1,10 @@
-function [psid,psName]=createPSID(src, name, class)
+function [psid,psName]=createPSID(name, class)
 
 %% PURPOSE: CREATE PROJECT-SPECIFIC ID FOR THE SPECIFIED OBJECT.
 
-fig=ancestor(src,'figure','toplevel');
-handles=getappdata(fig,'handles');
-
 slash=filesep;
 
-commonPath=getCommonPath(fig);
+commonPath=getCommonPath();
 classFolder=[commonPath slash class];
 classFolderProject=[commonPath slash 'Project'];
 

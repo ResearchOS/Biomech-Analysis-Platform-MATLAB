@@ -28,7 +28,7 @@ struct.Checked=false;
 
 struct.Visible=false;
 
-saveClass(fig,'Project',struct);
+saveClass('Project',struct);
 
 idxNum=find(ismember(projectNode,uiTree.Children)==1);
 

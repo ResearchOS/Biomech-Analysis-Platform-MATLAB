@@ -15,4 +15,4 @@ value=handles.Import.targetTrialIDDropDown.Value;
 
 struct.TargetTrialIDHeader=value;
 
-saveClass(fig,'Logsheet',struct);
+saveClass('Logsheet',struct);

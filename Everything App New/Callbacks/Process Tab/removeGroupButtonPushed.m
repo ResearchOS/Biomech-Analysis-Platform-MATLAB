@@ -13,11 +13,10 @@ if isempty(groupNode)
     return;
 end
 
-% classVar=getappdata(fig,'Process');
 slash=filesep;
-commonPath=getCommonPath(fig);
+commonPath=getCommonPath();
 classFolder=[commonPath slash 'ProcessGroup'];
-struct=loadClassVar(fig,classFolder);
+struct=loadClassVar(classFolder);
 
 idx=ismember(struct.Text,groupNode.Text);
 
@@ -29,9 +28,7 @@ struct.Checked=false;
 
 struct.Visible=false;
 
-% setappdata(fig,'Process',classVar);
-
-saveClass(fig,'ProcessGroup',struct);
+saveClass('ProcessGroup',struct);
 
 delete(groupNode);
 

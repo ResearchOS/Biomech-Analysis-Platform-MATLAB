@@ -14,7 +14,7 @@ if isempty(checkedNodes)
     end
 end
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 projectSettings=loadJSON(projectSettingsFile);
 
 if ~isfield(projectSettings,'ProcessQueue')

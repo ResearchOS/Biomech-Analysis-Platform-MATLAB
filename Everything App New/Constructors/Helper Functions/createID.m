@@ -1,11 +1,10 @@
-function [id]=createID(src,class)
+function [id]=createID(class)
 
 %% PURPOSE: CREATE AN ID NUMBER FOR THE CURRENTLY SPECIFIED CLASS
-fig=ancestor(src,'figure','toplevel');
 
 slash=filesep;
 
-commonPath=getCommonPath(fig);
+commonPath=getCommonPath();
 classFolder=[commonPath slash class];
 
 files=dir(classFolder);

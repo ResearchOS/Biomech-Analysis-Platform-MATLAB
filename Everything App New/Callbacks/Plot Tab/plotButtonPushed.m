@@ -5,16 +5,16 @@ function []=plotButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 projectSettings=loadJSON(projectSettingsFile);
 plotName=projectSettings.Current_Plot_Name;
 
-fullPath=getClassFilePath(plotName, 'Plot', fig);
+fullPath=getClassFilePath(plotName, 'Plot');
 plotStructPS=loadJSON(fullPath);
 
 [plotNamePI,id]=deText(plotName);
 plotNamePI=[plotNamePI '_' id];
-fullPathPI=getClassFilePath(plotNamePI, 'Plot', fig);
+fullPathPI=getClassFilePath(plotNamePI, 'Plot');
 plotStructPI=loadJSON(fullPathPI);
 
 level=plotStructPS.Level; % How often the plot function is called.
@@ -40,10 +40,10 @@ end
 
 %% Specify trials
 specifyTrials=plotStructPS.SpecifyTrials;
-inclStruct=getInclStruct(fig,specifyTrials);
+inclStruct=getInclStruct(specifyTrials);
 
 logsheetText=handles.Import.allLogsheetsUITree.SelectedNodes.Text;
-logPath=getClassFilePath(logsheetText, 'Logsheet', fig);
+logPath=getClassFilePath(logsheetText, 'Logsheet');
 logsheetStruct=loadJSON(logPath);
 isCond=contains(multi,'C') | contains(level,'C');
 computerID=getComputerID();
@@ -51,7 +51,7 @@ logsheetPath=logsheetStruct.LogsheetPath.(computerID);
 [logFolder,logName]=fileparts(logsheetPath);
 logsheetPathMAT=[logFolder filesep logName '.mat'];
 load(logsheetPathMAT,'logVar');
-allTrialNames=getTrialNames(inclStruct, logVar, fig, isCond, logsheetStruct);
+allTrialNames=getTrialNames(inclStruct, logVar, isCond, logsheetStruct);
 
 if ~isCond
     subNames=fieldnames(allTrialNames);
@@ -65,7 +65,7 @@ if isequal(multi,'P')
     currFig=Q;
 end
 if isequal(level,'P')
-    plotComponents(fig,currFig,plotStructPS,allTrialNames);
+    plotComponents(currFig,plotStructPS,allTrialNames);
     return;
 end
 for condNum=1:numConds
@@ -76,7 +76,7 @@ for condNum=1:numConds
     end
 
     if isequal(level,'C')
-        plotComponents(fig,currFig,plotStructPS,allTrialNames.Condition(condNum));
+        plotComponents(currFig,plotStructPS,allTrialNames.Condition(condNum));
         continue;
     end
 
@@ -98,7 +98,7 @@ for condNum=1:numConds
         end
 
         if ismember(level,{'S','SC'})
-            plotComponents(fig,currFig,plotStructPS,subName,trialNames);
+            plotComponents(currFig,plotStructPS,subName,trialNames);
             continue;
         end        
 
@@ -121,7 +121,7 @@ for condNum=1:numConds
 
             % 2. Plot the components
             if ~isMovie
-                plotComponents(fig,currFig,plotStructPS,subName,trialName);
+                plotComponents(currFig,plotStructPS,subName,trialName);
             else
 
             end

@@ -14,7 +14,7 @@ if isempty(checkedNodes)
     end
 end
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 projectSettings=loadJSON(projectSettingsFile);
 
 if isfield(projectSettings,'ProcessQueue')
@@ -27,7 +27,7 @@ if ~iscell(queue)
     queue={};
 end
 
-texts={checkedNodes.Text}';
+texts={checkedNodes.Text}'; % The process functions to add (checked in the process group list)
 
 inQueueIdx=ismember(texts,queue);
 
@@ -37,6 +37,9 @@ if any(inQueueIdx)
     beep;
     return;
 end
+
+%% Check whether all pre-requisite variables are up to date.
+[texts]=checkDeps(texts);
 
 queue=[queue; texts];
 

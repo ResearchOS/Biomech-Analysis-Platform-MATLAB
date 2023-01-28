@@ -1,13 +1,10 @@
-function [inclStruct]=getInclStruct(src,specifyTrials)
+function [inclStruct]=getInclStruct(specifyTrials)
 
 %% PURPOSE: RETURN THE INCLUSION CRITERIA FROM THE SPECIFY TRIALS.
 
-fig=ancestor(src,'figure','toplevel');
-handles=getappdata(fig,'handles');
-
 slash=filesep;
 
-commonPath=getCommonPath(fig);
+commonPath=getCommonPath();
 
 stFolder=[commonPath slash 'SpecifyTrials'];
 
@@ -23,7 +20,7 @@ for i=1:length(specifyTrials)
 
     currST=specifyTrials{i};
 
-    fullPath=getClassFilePath(currST, 'SpecifyTrials', fig);
+    fullPath=getClassFilePath(currST, 'SpecifyTrials');
     stStruct=loadJSON(fullPath);
 
     inclStruct.Include.Condition(i).Name=currST;

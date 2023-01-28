@@ -11,19 +11,19 @@ if isempty(groupNode)
     return;
 end
 
-projectPath=getProjectPath(fig);
+projectPath=getProjectPath();
 if isempty(projectPath)
     return;
 end
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 projectSettings=loadJSON(projectSettingsFile);
 
 % Create new PS process group struct if PI node is selected
 if isequal(groupNode.Parent,handles.Process.allGroupsUITree)
     fullPath=getClassFilePath(groupNode);
     piStruct=loadJSON(fullPath);
-    psStruct=createProcessGroupStruct_PS(fig, piStruct);
+    psStruct=createProcessGroupStruct_PS(piStruct);
     Current_ProcessGroup_Name=psStruct.Text;
     uitreenode(groupNode,'Text',psStruct.Text); % Create new PS node.
 else % Use pre-existing PS node.

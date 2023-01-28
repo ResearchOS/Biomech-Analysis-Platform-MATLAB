@@ -1,14 +1,12 @@
-function []=saveClass_PS(src,class,classStruct)
+function []=saveClass_PS(class,classStruct)
 
 %% PURPOSE: SAVE THE PROJECT-SPECIFIC CLASS
 
 slash=filesep;
 
-fig=ancestor(src,'figure','toplevel');
-
 filename=[class '_' classStruct.Text];
 
-projectPath=getProjectPath(fig);
+projectPath=getProjectPath();
 
 classFolder=[projectPath slash 'Project_Settings' slash class];
 

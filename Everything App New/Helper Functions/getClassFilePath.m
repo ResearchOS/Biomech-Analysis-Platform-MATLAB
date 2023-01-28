@@ -1,4 +1,4 @@
-function [fullPath]=getClassFilePath(selNode,class,src)
+function [fullPath]=getClassFilePath(selNode,class)
 
 %% PURPOSE: GET THE CLASS FULL FILE PATH FROM THE SELECTED NODE
 
@@ -12,7 +12,7 @@ end
 if ischar(selNode)
     [name, id, psid]=deText(selNode);
     if ~isempty(psid)
-        [fullPath]=getClassFilePath_PS(selNode, class, src);
+        [fullPath]=getClassFilePath_PS(selNode, class);
         return;
     end
 end
@@ -49,14 +49,12 @@ if ~ischar(selNode)
     end
 
     file=selNode.Text;
-elseif nargin==3
-    fig=ancestor(src,'figure','toplevel');
-    handles=getappdata(fig,'handles');
+else
     file=selNode; % Node text specified directly
 end
 
 slash=filesep;
 
-commonPath=getCommonPath(fig);
+commonPath=getCommonPath();
 classFolder=[commonPath slash class];
 fullPath=[classFolder slash class '_' file '.json'];

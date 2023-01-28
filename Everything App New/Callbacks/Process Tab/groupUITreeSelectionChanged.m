@@ -14,7 +14,7 @@ if isempty(selNode)
     return;
 end
 
-fullPath=getClassFilePath_PS(selNode.Text, 'Process', fig);
+fullPath=getClassFilePath_PS(selNode.Text, 'Process');
 
 processStruct=loadJSON(fullPath);
 

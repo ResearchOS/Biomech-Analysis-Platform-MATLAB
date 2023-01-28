@@ -11,7 +11,7 @@ if isempty(logsheetName)
     return;
 end
 
-createLogsheetStruct(fig,logsheetName);
+createLogsheetStruct(logsheetName);
 
 searchTerm=getSearchTerm(handles.Import.searchField);
 

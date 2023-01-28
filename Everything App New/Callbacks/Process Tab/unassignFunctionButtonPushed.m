@@ -15,7 +15,7 @@ end
 
 name=selNode.Text;
 
-processPath=getClassFilePath(name, 'Process', fig);
+processPath=getClassFilePath(name, 'Process');
 processStruct=loadJSON(processPath);
 
 idxNum=find(ismember(uiTree.Children,selNode)==1);
@@ -34,11 +34,11 @@ end
 
 groupUITreeSelectionChanged(fig);
 
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 Current_ProcessGroup_Name=loadJSON(projectSettingsFile,'Current_ProcessGroup_Name');
 
 % Get the currently selected group struct.
-fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup',fig);
+fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup');
 groupStruct=loadJSON(fullPath);
 
 names=groupStruct.ExecutionListNames; % Execute these functions/groups in this order.
@@ -52,6 +52,6 @@ types(idx)=[];
 groupStruct.ExecutionListNames=names;
 groupStruct.ExecutionListTypes=types;
 
-unlinkClasses(fig, processStruct, groupStruct);
+unlinkClasses(processStruct, groupStruct);
 
 % saveClass_PS(fig,'ProcessGroup',groupStruct);

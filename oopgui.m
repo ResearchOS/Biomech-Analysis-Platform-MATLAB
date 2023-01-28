@@ -3,8 +3,6 @@ function []=oopgui()
 %% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
 tic;
 
-classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup','SpecifyTrials'}; % One folder for each object type
-
 %% Ensure that there's max one figure open
 a=evalin('base','whos;');
 names={a.name};
@@ -30,16 +28,13 @@ set(fig,'DeleteFcn',@(fig, event) saveGUIState(fig));
 handles=initializeComponents(fig);
 
 setappdata(fig,'handles',handles);
-setappdata(fig,'classNames',classNames);
 
 assignin('base','gui',fig); % Put the GUI object into the base workspace.
 
 %% Get the "common path". This is the folder containing project-independent instances of settings class variables.
 % This path should be in its own GitHub repository.
-commonPath=getCommonPath(fig);
-initializeClassFolders(classNames,commonPath);
-
-handles.Settings.commonPathEditField.Value=commonPath; % Put the common path in the GUI.
+commonPath=getCommonPath();
+initializeClassFolders(commonPath);
 
 %% If there are no existing project settings files, then create a 'Default' project
 % 1. Does root settings file exist? YES BECAUSE THE COMMON PATH HAS BEEN SET
@@ -50,7 +45,7 @@ settingsVarNames=whos('-file',rootSettingsFile);
 settingsVarNames={settingsVarNames.name};
 
  % 3.
-projects=getClassFilenames(fig,'Project');
+projects=getClassFilenames('Project');
 if isempty(projects)
     projectStruct=createProjectStruct(fig,'Default');  
     Current_Project_Name=projectStruct.Text;
@@ -60,15 +55,15 @@ end
 
 % 2.
 if ~ismember('Current_Project_Name',settingsVarNames)
-    projects=getClassFilenames(fig,'Project');
+    projects=getClassFilenames('Project');
     Current_Project_Name=projects{1};
     Current_Project_Name=Current_Project_Name(9:end-5); % Remove 'Project' prefix and '.json' suffix
     save(rootSettingsFile,'Current_Project_Name','-append');
 end
 
 %% Initialize the project settings file for the current project.
-projectSettingsFile=getProjectSettingsFile(fig); % File stores the current process group name
-initProjectSettingsFile(projectSettingsFile,fig);
+projectSettingsFile=getProjectSettingsFile(); % File stores the current process group name
+initProjectSettingsFile(projectSettingsFile);
 
 %% Fill the UI trees with their correct values
 sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 

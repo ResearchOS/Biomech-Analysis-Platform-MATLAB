@@ -11,9 +11,11 @@ if isempty(path)
     return;
 end
 
-projectNode=handles.Projects.allProjectsUITree.SelectedNodes;
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
+project=Current_Project_Name;
 
-fullPath=getClassFilePath(projectNode,'Project');
+fullPath=getClassFilePath(project,'Project');
 struct=loadJSON(fullPath);
 
 if exist(path,'dir')~=7
@@ -25,27 +27,12 @@ computerID=getComputerID();
 
 struct.ProjectPath.(computerID)=path;
 
-saveClass(fig,'Project',struct);
+saveClass('Project',struct);
 
 %% Create settings directory in specified project folder.
 slash=filesep;
-classNames=getappdata(fig,'classNames');
-
 settingsPath=[path slash 'Project_Settings'];
+initializeClassFolders(settingsPath);
 
-warning('off','MATLAB:MKDIR:DirectoryExists');
-mkdir(settingsPath);
-for i=1:length(classNames)
-    classPath=[settingsPath slash classNames{i}];
-    mkdir(classPath);
-end
-
-projectSettingsFile=getProjectSettingsFile(fig);
+projectSettingsFile=getProjectSettingsFile();
 initProjectSettingsFile(projectSettingsFile);
-
-warning('on','MATLAB:MKDIR:DirectoryExists');
-
-setappdata(fig,'existProjectPath',true);
-
-projectSettingsFile=getProjectSettingsFile(fig);
-initProjectSettingsFile(projectSettingsFile, fig);

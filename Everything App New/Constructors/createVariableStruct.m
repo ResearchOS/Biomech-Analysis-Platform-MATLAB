@@ -1,4 +1,4 @@
-function [struct]=createVariableStruct(fig,name,id)
+function [struct]=createVariableStruct(name,id)
 
 %% PURPOSE: CREATE A NEW VARIABLE STRUCTURE
 % Properties:
@@ -19,7 +19,7 @@ struct.Name=name;
 struct.Class='Variable';
 
 if nargin<3
-    id=createID(fig,'Variable');
+    id=createID('Variable');
 end
 struct.ID=id;
 
@@ -67,7 +67,7 @@ struct.Visible=true;
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-saveClass(fig,'Variable',struct);
+saveClass('Variable',struct);
 
 %% Assign the newly created variable struct to the current project struct.
-assignToProject(fig,struct,'Variable');
+assignToProject(struct);

@@ -8,6 +8,14 @@ catch
     error('Missing ''runInfo'' from base workspace');
 end
 
+if ~isfield(runInfo,SetArgIDsUsed)
+    runInfo.SetArgIDsUsed=[];
+end
+if ~ismember(id,runInfo.SetArgIDsUsed)
+    runInfo.SetArgIDsUsed=[runInfo.SetArgIDsUsed; id];
+    assignin('base','runInfo',runInfo);
+end
+
 dataPath=runInfo.DataPath;
 
 if nargin<4

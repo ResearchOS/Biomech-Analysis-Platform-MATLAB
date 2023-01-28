@@ -1,20 +1,22 @@
-function []=saveClass(src,class,classStruct)
+function []=saveClass(class, classStruct, date)
 
 %% PURPOSE: SAVE A CLASS INSTANCE TO JSON FILE.
 
 slash=filesep;
 
-fig=ancestor(src,'figure','toplevel');
-
 filename=[class '_' classStruct.Text];
 
-commonPath=getCommonPath(fig);
+commonPath=getCommonPath();
 
 classFolder=[commonPath slash class];
 
 filepath=[classFolder slash filename];
 
-classStruct.DateModified=datetime('now');
+if nargin<3
+    date=datetime('now');
+end
+
+classStruct.DateModified=date;
 
 json=jsonencode(classStruct,'PrettyPrint',true);
 

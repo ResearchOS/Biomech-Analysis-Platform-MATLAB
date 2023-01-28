@@ -2,11 +2,13 @@ function []=openProjectPathButtonPushed(src,event)
 
 %% PURPOSE: OPEN THE FILE LOCATION FOR THE PROJECT PATH.
 
-fig=ancestor(src,'figure','toplevel');
-handles=getappdata(fig,'handles');
+% fig=ancestor(src,'figure','toplevel');
+% handles=getappdata(fig,'handles');
 
-name=handles.Projects.projectsLabel.Text;
-fullPath=getClassFilePath(name, 'Project', fig);
+rootSettingsFile=getRootSettingsFile();
+load(rootSettingsFile,'Current_Project_Name');
+project=Current_Project_Name;
+fullPath=getClassFilePath(project, 'Project');
 struct=loadJSON(fullPath);
 computerID=getComputerID();
 path=struct.ProjectPath.(computerID);

@@ -18,8 +18,8 @@ handles=getappdata(fig,'handles');
 
 piText=getPITextFromPS(psText);
 
-filePath=getClassFilePath_PS(psText, 'Process', fig);
-filePathPI=getClassFilePath(piText, 'Process', fig);
+filePath=getClassFilePath_PS(psText, 'Process');
+filePathPI=getClassFilePath(piText, 'Process');
 
 processStructPS=loadJSON(filePath);
 processStructPI=loadJSON(filePathPI);
@@ -43,13 +43,15 @@ load(logsheetPathMAT,'logVar');
 % CD into the current project so that the proper functions are used.
 % projectPath=getProjectPath(fig);
 % oldPath=cd([projectPath slash 'Process']);
-inclStruct=getInclStruct(fig,specifyTrials);
-trialNames=getTrialNames(inclStruct,logVar,fig,0,logsheetStruct);
+inclStruct=getInclStruct(specifyTrials);
+trialNames=getTrialNames(inclStruct,logVar,0,logsheetStruct);
 subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
 % Store the info for the process struct
-getRunInfo(processStructPI,processStructPS,fig);
+getRunInfo(processStructPI,processStructPS);
+
+%% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
 
 %% Run the function!
 if ismember('P',level)
@@ -63,7 +65,8 @@ if ismember('P',level)
     else
         feval(fcnName);
     end
-    disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
+    modifyVarsDate(processStructPS.Text);
+    disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);    
     return;
 end
 
@@ -81,7 +84,8 @@ for sub=1:length(subNames)
             feval(fcnName,subName);
         end
         if sub==length(subNames)
-            disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
+            modifyVarsDate(processStructPS.Text);
+            disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);            
         end
         continue; % Don't iterate through trials, that's done within the processing function if necessary
     end
@@ -98,7 +102,8 @@ for sub=1:length(subNames)
         end
     end
 
-    disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
+    modifyVarsDate(processStructPS.Text);
+    disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);    
 
 end
 

@@ -1,4 +1,4 @@
-function []=createPubTableStruct(fig,name,id)
+function []=createPubTableStruct(name,id)
 
 %% PURPOSE: CREATE A NEW PUBLICATION TABLE STRUCT
 
@@ -7,7 +7,7 @@ struct.Name=name;
 struct.Class='PubTable';
 
 if nargin<3
-    id=createID(fig,'Process');
+    id=createID('Process');
 end
 struct.ID=id;
 
@@ -31,8 +31,6 @@ struct.Archived=false; % If true, this will not show up in the uitree unless it 
 
 struct.OutOfDate=true;
 
-filename=['Process_' name '_' id '.mat'];
-
 user='MT'; % Stand-in for username
 struct.CreatedBy=user;
 
@@ -42,4 +40,6 @@ struct.LastModifiedBy=user2;
 struct.Text=[name '_' id];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
-save(filename,'struct','-v6');
+saveClass('PubTable',struct);
+
+assignToProject(struct);

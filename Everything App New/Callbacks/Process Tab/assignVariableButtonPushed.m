@@ -60,7 +60,7 @@ else
 end
 
 % Get the currently selected PS daughter struct
-fullPath=getClassFilePath_PS(motherNode.Text, daughterClass, fig);
+fullPath=getClassFilePath_PS(motherNode.Text, daughterClass);
 daughterStruct_PS=loadJSON(fullPath);
 
 % Check if daughterNode already has a variable assigned. If so, need to unlink
@@ -68,9 +68,9 @@ daughterStruct_PS=loadJSON(fullPath);
 if contains(daughterNode.Text,' ')
     spaceIdx=strfind(daughterNode.Text,' ');
     varText=daughterNode.Text(spaceIdx+2:end-1);
-    prevVarPath=getClassFilePath(varText, 'Variable', fig);
+    prevVarPath=getClassFilePath(varText, 'Variable');
     prevVarStruct=loadJSON(prevVarPath);
-    [prevVarStruct, daughterStruct_PS]=unlinkClasses(fig, prevVarStruct, daughterStruct_PS);
+    [prevVarStruct, daughterStruct_PS]=unlinkClasses(prevVarStruct, daughterStruct_PS);
 end
 
 % Get the ID number for which getArg/setArg is currently being modified.
@@ -96,9 +96,9 @@ switch isNew
         % Create a new project-specific ID for the variable to add.
         varPath=getClassFilePath(selNode);
         varStructPI=loadJSON(varPath);
-        varStruct=createVariableStruct_PS(fig,varStructPI);
+        varStruct=createVariableStruct_PS(varStructPI);
     case false
-        varPath=getClassFilePath_PS(selNode.Text, 'Variable', fig);
+        varPath=getClassFilePath_PS(selNode.Text, 'Variable');
         varStruct=loadJSON(varPath);
 end
 
@@ -126,7 +126,7 @@ assert(isequal(daughterStruct_PS.(fldName){argIdxNum}{1},number));
 daughterStruct_PS.(fldName){argIdxNum}{idxNum+1}=varStruct.Text;
 
 % Saves changes.
-linkClasses(fig, varStruct, daughterStruct_PS); % Create a connection between the variable & the process function
+linkClasses(varStruct, daughterStruct_PS); % Create a connection between the variable & the process function
 
 % Modify/add nodes
 argTextSplit=strsplit(daughterNode.Text,' ');

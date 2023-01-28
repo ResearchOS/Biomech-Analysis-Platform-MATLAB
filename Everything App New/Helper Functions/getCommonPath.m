@@ -1,4 +1,4 @@
-function [commonPath]=getCommonPath(fig)
+function [commonPath]=getCommonPath()
 
 %% PURPOSE: RETURN THE PATH TO THE DIRECTORY WHERE THE PGUI SETTINGS FILES ARE STORED.
 
@@ -12,6 +12,6 @@ catch e
         error(e); % Some other error occurred.
     end
 
-    setCommonPath(fig);
-    commonPath = getCommonPath;
+    setCommonPath();
+    commonPath = getCommonPath;    
 end

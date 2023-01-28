@@ -28,4 +28,4 @@ types{idx}=handles.Import.typeDropDown.Value;
 
 struct.Type=types;
 
-saveClass(fig,'Logsheet',struct);
+saveClass('Logsheet',struct);

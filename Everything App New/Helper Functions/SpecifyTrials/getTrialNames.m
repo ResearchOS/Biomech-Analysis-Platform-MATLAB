@@ -1,4 +1,4 @@
-function [trialNames,logVar]=getTrialNames(inclStruct,logVar,src,org,logsheetStruct)
+function [trialNames,logVar]=getTrialNames(inclStruct,logVar,org,logsheetStruct)
 
 %% PURPOSE: RETURN THE TRIAL NAMES OF INTEREST SPECIFIED BY THE INCLUSION CRITERIA. UPDATED FOR GUI SPECIFYTRIALS
 % Inputs:
@@ -16,10 +16,6 @@ function [trialNames,logVar]=getTrialNames(inclStruct,logVar,src,org,logsheetStr
 if ~exist('org','var')
     org=0;
 end
-
-fig=ancestor(src,'figure','toplevel');
-
-
 
 % Subject ID Column Header Name
 subjIDHeaderName=logsheetStruct.SubjectCodenameHeader;

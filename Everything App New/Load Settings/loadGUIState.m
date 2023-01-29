@@ -37,7 +37,7 @@ allLogsheetsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Process tab
-if existProjectPath    
+if ~isempty(projectPath)
     handles.Process.currentGroupLabel.Text=projectSettings.Current_ProcessGroup_Name;
     fillProcessGroupUITree(fig);
     % Fill in queue.
@@ -55,7 +55,7 @@ allGroupsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot tab
-if existProjectPath
+if ~isempty(projectPath)
     handles.Plot.currentPlotLabel.Text=projectSettings.Current_Plot_Name;
 %     fillPlotUITree(fig);
 end

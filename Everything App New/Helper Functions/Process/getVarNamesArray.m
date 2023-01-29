@@ -1,13 +1,15 @@
-function [varNames]=getVarNamesArray(struct)
+function [varNames]=getVarNamesArray(struct,fldName)
 
 %% PURPOSE: RETURN THE LIST OF INPUT VARIABLES FROM THE STRUCT
 
+% fldName is either 'InputVariables' or 'OutputVariables'
+
 varNames={};
 
-inputVars=struct.InputVariables;
-for i=1:length(inputVars)
+vars=struct.(fldName);
+for i=1:length(vars)
 
-    currVars=inputVars{i};
+    currVars=vars{i};
 
     for j=2:length(currVars)
 

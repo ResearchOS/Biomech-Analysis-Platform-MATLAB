@@ -6,7 +6,7 @@ slash=filesep;
 
 filename=[class '_' classStruct.Text];
 
-projectPath=getProjectPath();
+projectPath=getProjectPath(1);
 
 classFolder=[projectPath slash 'Project_Settings' slash class];
 

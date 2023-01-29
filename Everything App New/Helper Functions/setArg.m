@@ -8,7 +8,7 @@ catch
     error('Missing ''runInfo'' from base workspace');
 end
 
-if ~isfield(runInfo,SetArgIDsUsed)
+if ~isfield(runInfo,'SetArgIDsUsed')
     runInfo.SetArgIDsUsed=[];
 end
 if ~ismember(id,runInfo.SetArgIDsUsed)

@@ -9,7 +9,7 @@ else
     projectSettings=loadJSON(projectSettingsFile);
 end
 
-projectPath=getProjectPath();
+projectPath=getProjectPath(1);
 
 if isempty(projectPath)
     return;

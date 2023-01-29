@@ -4,7 +4,7 @@ function [fullPath]=getClassFilePath_PS(name_PS, class)
 
 slash=filesep;
 
-projectPath=getProjectPath();
+projectPath=getProjectPath(1);
 
 classFolder=[projectPath slash 'Project_Settings' slash class];
 

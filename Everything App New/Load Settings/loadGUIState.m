@@ -6,7 +6,7 @@ handles=getappdata(fig,'handles');
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
 
 rootSettingsFile=getRootSettingsFile();
-projectPath=getProjectPath();
+projectPath=getProjectPath(1);
 if ~isempty(projectPath)
     projectSettingsFile=getProjectSettingsFile();
     projectSettings=loadJSON(projectSettingsFile);

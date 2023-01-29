@@ -15,6 +15,10 @@ ids=runInfo.setArgIDsUsed; % This ensures that if there's any setArg ID's that a
 processPath=getClassFilePath(processText,'Process');
 processStruct=loadJSON(processPath);
 
+processStruct.DateModofied=date;
+processStruct.OutOfDate=false;
+writeJSON(processPath,processStruct);
+
 outputVars=processStruct.OutputVariables;
 
 for i=1:length(outputVars)
@@ -34,3 +38,14 @@ for i=1:length(outputVars)
     end
 
 end
+
+%% Remove the completed process function from the queue
+projectSettingsFile=getProjectSettingsFile();
+projectSettings=loadJSON(projectSettingsFile);
+
+queue=projectSettings.Queue;
+idx=ismember(queue,processStruct.Text);
+queue(idx)=[];
+
+projectSettings.Queue=queue;
+writeJSON(projectSettingsFile,projectSettings);

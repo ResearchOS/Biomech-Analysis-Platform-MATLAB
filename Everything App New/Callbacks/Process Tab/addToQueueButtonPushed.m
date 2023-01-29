@@ -39,7 +39,7 @@ if any(inQueueIdx)
 end
 
 %% Check whether all pre-requisite variables are up to date.
-[texts]=checkDeps(texts);
+% [texts]=checkDeps(texts);
 
 queue=[queue; texts];
 

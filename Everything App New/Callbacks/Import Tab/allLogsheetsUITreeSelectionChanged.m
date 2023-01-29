@@ -17,6 +17,11 @@ struct=loadJSON(fullPath);
 
 computerID=getComputerID();
 
+if ~isfield(struct.LogsheetPath,computerID)
+    struct.LogsheetPath.(computerID)='';
+    writeJSON(fullPath,struct);
+end
+
 % Set the logsheet path field.
 if exist(struct.LogsheetPath.(computerID),'file')==2
     handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID);

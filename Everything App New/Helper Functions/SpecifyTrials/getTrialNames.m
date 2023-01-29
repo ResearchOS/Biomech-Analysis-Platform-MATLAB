@@ -114,6 +114,8 @@ for inclExcl=1:2
                                 end
                             end
 
+                            currVals=strtrim(currVals); % Remove leading & trailing white spaces
+
                             [~,currColNum]=find(strcmp(logVar(1,:),currName));
                             try
                                 assert(~isempty(currColNum));

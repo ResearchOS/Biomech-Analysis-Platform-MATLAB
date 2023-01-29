@@ -12,7 +12,7 @@ end
 
 texts={uiTree.Children.Text}; % The existing nodes' texts
 
-projectPath=getProjectPath(); % The current project path
+projectPath=getProjectPath(1); % The current project path
 
 % The project-specific class instances for this project.
 filenames=getClassFilenames(class,[projectPath slash 'Project_Settings']);

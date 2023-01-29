@@ -62,8 +62,8 @@ end
 fullPath=getClassFilePath(projectNode);
 projectStruct=loadJSON(fullPath);
 
-inclStruct=getInclStruct(fig,specTrialsName);
-allTrialNames=getTrialNames(inclStruct,logVar,fig,0,logsheetStruct);
+inclStruct=getInclStruct(specTrialsName);
+allTrialNames=getTrialNames(inclStruct,logVar,0,logsheetStruct);
 rowsIdx=false(size(logVar,1),1);
 subNames=fieldnames(allTrialNames);
 %% Apply specify trials

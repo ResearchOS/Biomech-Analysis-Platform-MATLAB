@@ -18,11 +18,13 @@ struct=loadJSON(fullPath);
 computerID=getComputerID();
 
 dataPath=struct.DataPath.(computerID);
+
 if isempty(dataPath)
     dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
 
 projectPath=struct.ProjectPath.(computerID);
+
 if isempty(projectPath)
     projectPath='Path to Project Folder';
 end

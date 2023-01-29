@@ -13,6 +13,7 @@ queue=projectSettings.ProcessQueue;
 %% For now, just run everything. Later on, I can do checks to see if there are any dependencies that are not up to date.
 [bool,logVar]=checkLogsheetSetup(fig);
 if ~bool
+    disp('Need to set up logsheet!');
     return;
 end
 

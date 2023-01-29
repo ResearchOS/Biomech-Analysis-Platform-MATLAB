@@ -4,14 +4,11 @@ function [filePath]=getProjectSettingsFile()
 
 slash=filesep;
 
-rootSettingsFile=getRootSettingsFile();
+projectPath=getProjectPath(1);
 
-load(rootSettingsFile,'Current_Project_Name');
-
-fullPath=getClassFilePath(Current_Project_Name, 'Project');
-struct=loadJSON(fullPath);
-
-computerID=getComputerID();
-projectPath=struct.ProjectPath.(computerID);
+if isempty(projectPath)
+    filePath='';
+    return;
+end
 
 filePath=[projectPath slash 'Project_Settings' slash 'ProjectSettings.json'];

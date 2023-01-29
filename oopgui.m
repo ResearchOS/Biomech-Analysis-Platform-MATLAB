@@ -18,6 +18,7 @@ addpath(genpath(currFolder));
 
 %% FOR TESTING ONLY, REMOVE SOON!
 rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
+rmpath(genpath('C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Biomech-Analysis-Platform\Everything App'));
 
 %% Create the figure
 fig=uifigure('Name','pgui','Visible','on',...
@@ -47,7 +48,7 @@ settingsVarNames={settingsVarNames.name};
  % 3.
 projects=getClassFilenames('Project');
 if isempty(projects)
-    projectStruct=createProjectStruct(fig,'Default');  
+    projectStruct=createProjectStruct('Default');  
     Current_Project_Name=projectStruct.Text;
     save(rootSettingsFile,'Current_Project_Name','-append');
     settingsVarNames=[settingsVarNames {'Current_Project_Name'}];
@@ -63,7 +64,12 @@ end
 
 %% Initialize the project settings file for the current project.
 projectSettingsFile=getProjectSettingsFile(); % File stores the current process group name
-initProjectSettingsFile(projectSettingsFile);
+if ~isempty(projectSettingsFile)
+    initProjectSettingsFile(projectSettingsFile);
+end
+
+%% Check if this is the first time using this computer, ensure the computer-specific fields exist.
+newComputerProjectPaths();
 
 %% Fill the UI trees with their correct values
 sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 

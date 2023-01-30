@@ -18,7 +18,7 @@ struct.Name=name;
 
 struct.Class='Variable';
 
-if nargin<3
+if nargin==1
     id=createID('Variable');
 end
 struct.ID=id;

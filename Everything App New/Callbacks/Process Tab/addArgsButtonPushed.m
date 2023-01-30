@@ -21,6 +21,13 @@ if isempty(text)
     return;
 end
 
+% Remove comments
+commentIdx=strfind(text,'%');
+
+if ~isempty(commentIdx)
+    text=text(1:commentIdx-1);
+end
+
 % 2. Parse the input to determine:
 % a. getArg or setArg
 % b. Number (ID)
@@ -41,7 +48,13 @@ idx=strfind(text,varType);
 allCommaIdx=strfind(text,',');
 commaIdx=allCommaIdx(allCommaIdx>=idx);
 
-number=str2double(text(idx+length(varType)+1:commaIdx-1));
+if isempty(allCommaIdx) % Project level, no commas
+    openParensIdx=strfind(text,'(');
+    closeParensIdx=strfind(text,')');
+    number=str2double(text(openParensIdx+1:closeParensIdx-1));
+else
+    number=str2double(text(idx+length(varType)+1:commaIdx-1));
+end
 
 if isnan(number)
     disp('Invalid number. Should be the first argument!');
@@ -72,7 +85,11 @@ end
 % c.
 if isequal(varType,'getArg')
     equalsIdx=strfind(text,'=');
-    argsText=text(2:equalsIdx-2);
+    if isequal([text(1) text(equalsIdx-1)],'[]')
+        argsText=text(2:equalsIdx-2);
+    else
+        argsText=text(1:equalsIdx-1);
+    end
     argsSplit=strsplit(argsText,',');
 elseif isequal(varType,'setArg')
     argsText=text(allCommaIdx(1)+1:end-2);

@@ -1,4 +1,4 @@
-function []=modifyVarsDate(processText)
+function [remQueueIdx]=modifyVarsDate(processText)
 
 %% PURPOSE: SET THE DATEMODIFIED PROPERTY OF THE OUTPUT VARIABLES OF A PROCESS FUNCTION TO NOW.
 
@@ -10,7 +10,7 @@ end
 
 date=datetime('now');
 
-ids=runInfo.setArgIDsUsed; % This ensures that if there's any setArg ID's that are unused for some reason, they're not updated.
+ids=runInfo.SetArgIDsUsed; % This ensures that if there's any setArg ID's that are unused for some reason, they're not updated.
 
 processPath=getClassFilePath(processText,'Process');
 processStruct=loadJSON(processPath);
@@ -32,8 +32,10 @@ for i=1:length(outputVars)
     for j=2:length(currVars)
 
         varText=currVars{j};
+        varPath=getClassFilePath(varText,'Variable');
+        varStruct=loadJSON(varPath);
 
-        saveClass('Variable', varText, date); % Updates the date modified.
+        saveClass('Variable', varStruct, date); % Updates the date modified.
 
     end
 
@@ -43,9 +45,9 @@ end
 projectSettingsFile=getProjectSettingsFile();
 projectSettings=loadJSON(projectSettingsFile);
 
-queue=projectSettings.Queue;
-idx=ismember(queue,processStruct.Text);
-queue(idx)=[];
+queue=projectSettings.ProcessQueue;
+remQueueIdx=ismember(queue,processStruct.Text);
+queue(remQueueIdx)=[];
 
-projectSettings.Queue=queue;
+projectSettings.ProcessQueue=queue;
 writeJSON(projectSettingsFile,projectSettings);

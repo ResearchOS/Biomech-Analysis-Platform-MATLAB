@@ -65,48 +65,47 @@ if ismember('P',level)
     else
         feval(fcnName);
     end
-    modifyVarsDate(processStructPS.Text);
-    disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);    
-    return;
-end
-
-for sub=1:length(subNames)
-    subName=subNames{sub};
-    currTrials=fieldnames(trialNames.(subName)); % The list of trial names in the current subject
-
-    if ismember('S',level)
-
-        disp(['Running ' fcnName ' Subject ' subName]);
-
-        if ismember('T',level)
-            feval(fcnName,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
-        else
-            feval(fcnName,subName);
-        end
-        if sub==length(subNames)
-            modifyVarsDate(processStructPS.Text);
-            disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);            
-        end
-        continue; % Don't iterate through trials, that's done within the processing function if necessary
-    end
-
-    for trialNum=1:length(currTrials)
-        trialName=currTrials{trialNum};
-
-        disp(['Running ' fcnName ' Subject ' subName ' Trial ' trialName]);
-
-        for repNum=trialNames.(subName).(trialName)
-
-            feval(fcnName,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
-
-        end
-    end
-
-    modifyVarsDate(processStructPS.Text);
-    disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);    
 
 end
 
-% cd(oldPath);
+if ~ismember('P',level)
+    for sub=1:length(subNames)
+        subName=subNames{sub};
+        currTrials=fieldnames(trialNames.(subName)); % The list of trial names in the current subject
+
+        if ismember('S',level)
+
+            disp(['Running ' fcnName ' Subject ' subName]);
+
+            if ismember('T',level)
+                feval(fcnName,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
+            else
+                feval(fcnName,subName);
+            end
+            continue; % Don't iterate through trials, that's done within the processing function if necessary
+        end
+
+        for trialNum=1:length(currTrials)
+            trialName=currTrials{trialNum};
+
+            disp(['Running ' fcnName ' Subject ' subName ' Trial ' trialName]);
+
+            for repNum=trialNames.(subName).(trialName)
+
+                feval(fcnName,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
+
+            end
+        end
+
+    end
+end
+
+remQueueIdx=modifyVarsDate(processStructPS.Text);
+disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
 
 evalin('base','clear runInfo'); % Clean up after myself
+
+if guiInBase
+    handles=getappdata(fig,'handles');
+    delete(handles.Process.queueUITree.Children(remQueueIdx));
+end

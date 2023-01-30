@@ -9,8 +9,8 @@ currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
 
 switch currTab
     case 'Process'
-        motherUITree=motherUITree;
-        daughterUITree=daughterUITree;    
+        motherUITree=handles.Process.groupUITree;
+        daughterUITree=handles.Process.functionUITree;    
         daughterClass='Process';
         motherClass='ProcessGroup';
     case 'Plot'

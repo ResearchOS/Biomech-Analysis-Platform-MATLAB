@@ -6,7 +6,7 @@ struct.Name=piStruct.Name;
 
 struct.Class='Variable';
 
-if nargin<3
+if nargin==1
     psid=createPSID(piStruct.Text, 'Variable');
 end
 struct.ID=psid;

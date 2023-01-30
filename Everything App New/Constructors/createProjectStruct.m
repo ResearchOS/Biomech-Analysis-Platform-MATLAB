@@ -6,7 +6,7 @@ struct.Class='Project';
 
 struct.Name=name;
 
-if nargin<3
+if nargin==1
     id=createID('Project');
 end
 struct.ID=id; % Immutable

@@ -6,7 +6,7 @@ struct.Name=piStruct.Name;
 
 struct.Class='ProcessGroup';
 
-if nargin<3
+if nargin==1
     psid=createPSID(piStruct.Text, 'ProcessGroup');
 end
 struct.ID=psid;

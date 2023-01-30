@@ -1,4 +1,4 @@
-function [struct]=createStatsTableStruct(fig,name,id)
+function [struct]=createStatsTableStruct(name,id)
 
 %% PURPOSE: CREATE A NEW STATS TABLE STRUCT
 
@@ -6,7 +6,7 @@ struct.Name=name;
 
 struct.Class='StatsTable';
 
-if nargin<3
+if nargin==1
     id=createID(fig,'StatsTable');
 end
 

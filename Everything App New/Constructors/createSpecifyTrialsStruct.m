@@ -1,4 +1,4 @@
-function []=createSpecifyTrialsStruct(name)
+function []=createSpecifyTrialsStruct(name,id)
 
 %% PURPOSE: CREATE A PROJECT-INDEPENDENT SPECIFY TRIALS STRUCT
 
@@ -6,7 +6,7 @@ struct.Name=name;
 
 struct.Class='SpecifyTrials';
 
-if nargin<3
+if nargin==1
     id=createID('SpecifyTrials');
 end
 struct.ID=id;

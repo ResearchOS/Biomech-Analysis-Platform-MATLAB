@@ -6,6 +6,6 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 name=promptName('Enter Specify Trials condition name');
-createSpecifyTrialsStruct(fig,name);
+createSpecifyTrialsStruct(name);
 
 fillUITree_SpecifyTrials(fig);

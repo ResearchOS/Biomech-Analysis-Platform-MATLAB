@@ -72,7 +72,11 @@ end
 % c.
 if isequal(varType,'getArg')
     equalsIdx=strfind(text,'=');
-    argsText=text(2:equalsIdx-2);
+    if isequal([text(1) text(equalsIdx-1)],'[]')
+        argsText=text(2:equalsIdx-2);
+    else
+        argsText=text(1:equalsIdx-1);
+    end
     argsSplit=strsplit(argsText,',');
 elseif isequal(varType,'setArg')
     argsText=text(allCommaIdx(1)+1:end-2);

@@ -18,7 +18,7 @@ struct.Name=name;
 
 struct.Class='Plot';
 
-if nargin<3
+if nargin==1
     id=createID('Plot');
 end
 struct.ID=id;

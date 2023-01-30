@@ -6,7 +6,7 @@ struct.Name=name;
 
 struct.Class='PubTable';
 
-if nargin<3
+if nargin==1
     id=createID('Process');
 end
 struct.ID=id;

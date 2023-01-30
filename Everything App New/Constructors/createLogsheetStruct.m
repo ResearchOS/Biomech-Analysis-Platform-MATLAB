@@ -19,7 +19,7 @@ struct.Name=name;
 
 struct.Class='Logsheet';
 
-if nargin<3
+if nargin==1
     id=createID('Logsheet');
 end
 struct.ID=id;

@@ -2,6 +2,13 @@ function [name, id, psid]=deText(text)
 
 %% PURPOSE: BREAK DOWN THE "TEXT" FIELD INTO ITS CONSTITUENT "NAME", "ID", AND "PSID" COMPONENTS.
 
+if isempty(text)
+    name='';
+    id='';
+    psid='';
+    return;
+end
+
 splitText=strsplit(text,'_');
 underscoreIdx=strfind(text,'_');
 

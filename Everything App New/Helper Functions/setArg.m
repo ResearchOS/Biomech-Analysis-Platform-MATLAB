@@ -2,6 +2,10 @@ function []=setArg(id,subName,trialName,varargin)
 
 %% PURPOSE: SAVE THE DATA
 
+if ~isnumeric(id)
+    error('ID must be a number!');
+end
+
 try
     runInfo=evalin('base','runInfo');
 catch
@@ -66,3 +70,6 @@ for i=1:length(outputVars)
     return;
 
 end
+
+% If this point is reached, the setArg was not used.
+error('Forgot to add this setArg ID!');

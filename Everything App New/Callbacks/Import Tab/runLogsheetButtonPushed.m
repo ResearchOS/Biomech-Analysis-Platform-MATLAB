@@ -122,6 +122,58 @@ end
 searchTerm=getSearchTerm(handles.Process.variablesSearchField);
 sortDropDown=handles.Process.sortVariablesDropDown;
 
+%% Create the variables settings JSON files
+date=datetime('now');
+selHeaders={handles.Import.headersUITree.CheckedNodes.Text};
+for i=1:length(selHeaders)
+    idx=ismember(headers,selHeaders{i});
+    varName=varNames{idx};
+    header=headers{idx};
+    type=types{idx};
+    level=levels{idx};
+
+    if isempty(varName)
+        varPath='';
+        varPathPI='';
+    else
+        varPath=getClassFilePath(varName,'Variable');
+        varNamePI=getPITextFromPS(varName);
+        varPathPI=getClassFilePath(varNamePI,'Variable');
+    end
+
+    if exist(varPath,'file')==2 % PS file already exists, nothing to be done here.
+        clear varStruct;
+        continue;
+    end
+
+    [~, id, psid]=deText(varName);
+
+    if exist(varPathPI,'file')~=2 % Because PI file does not exist.
+        varStruct=createVariableStruct(headers{idx},id);
+        if ~isequal(level,'T')
+            varStruct.Level=level;
+            saveClass('Variable',varStruct,date);
+        end
+    end
+    if exist(varPath,'file')~=2 % PS file does not exist
+        if exist('varStruct','var')~=1
+            varStruct=loadJSON(varPathPI);
+        end
+        varStruct_PS=createVariableStruct_PS(varStruct,psid);
+    end
+
+    varName=varStruct_PS.Text;
+    logsheetStruct.Variables{idx}=varName;
+    varNames{idx}=varName; % For the next iteration
+
+    clear varStruct;
+
+end
+
+saveClass('Logsheet', logsheetStruct);
+fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
+
+
 %% Trial level data
 trialIdxNums=find(trialIdx==1);
 if any(trialIdx) % There is at least one trial level variable
@@ -163,36 +215,6 @@ if any(trialIdx) % There is at least one trial level variable
             end
 
             assert(isa(var,type));
-
-            % Save trial-level data.
-            % 1. Create a project-independent and project-specific variable struct for this variable if it does not
-            % already exist.
-            if isempty(varName)
-                varStruct=createVariableStruct(headers{headerIdxNum});
-                varStruct_PS=createVariableStruct_PS(varStruct);
-%             varNamePI=getPITextFromPS(varName);
-%             varPath=getClassFilePath(varNamePI, 'Variable', fig);
-%             varPathPS=getClassFilePath_PS(varName, 'Variable', fig);
-%             if exist(varPath,'file')~=2 || exist(varPathPS,'file')~=2
-%                 if isempty(varName)
-%                     varStruct=createVariableStruct(fig, headers{headerIdxNum});
-%                     varStruct_PS=createVariableStruct_PS(fig,varStruct);                    
-%                 else
-%                     [name, id, psid]=deText(varName);
-%                     if exist(varPath,'file')~=2
-%                         varStruct=createVariableStruct(fig, name, id);
-%                     end
-%                     if exist(varPathPS,'file')~=2
-%                         varStruct=loadJSON(varPath);
-%                         varStruct_PS=createVariableStruct_PS(fig,varStruct,psid);                    
-%                     end
-%                 end                
-                fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
-                varName=varStruct_PS.Text;
-                logsheetStruct.Variables{headerIdxNum}=varName;
-                saveClass('Logsheet', logsheetStruct);
-                varNames{headerIdxNum}=varName; % For the next iteration
-            end
 
             % 2. Save data and metadata to file.
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
@@ -274,20 +296,6 @@ if any(subjectIdx)
             end
 
             assert(isa(var,type));
-
-            % Save trial-level data.
-            % 1. Create a project-independent and project-specific variable struct for this variable if it does not
-            % already exist.
-            if isempty(varName)
-                varStruct=createVariableStruct(headers{headerIdxNum});
-                varStruct_PS=createVariableStruct_PS(varStruct);
-                varStruct_PS.Level='S';
-                saveClass_PS('Variable', varStruct_PS);
-                varName=varStruct_PS.Text;
-                logsheetStruct.Variables{headerIdxNum}=varName;                
-                saveClass('Logsheet', logsheetStruct);
-                varNames{headerIdxNum}=varName; % For the next iteration
-            end
 
             % 2. Save data and metadata to file.
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];

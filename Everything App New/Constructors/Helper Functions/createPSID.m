@@ -1,4 +1,4 @@
-function [psid,psName]=createPSID(name, class)
+function [psid,psName]=createPSID(piText, class)
 
 %% PURPOSE: CREATE PROJECT-SPECIFIC ID FOR THE SPECIFIED OBJECT.
 
@@ -8,7 +8,7 @@ commonPath=getCommonPath();
 classFolder=[commonPath slash class];
 classFolderProject=[commonPath slash 'Project'];
 
-fullPath=[classFolder slash class '_' name '.json'];
+fullPath=[classFolder slash class '_' piText '.json'];
 piStruct=loadJSON(fullPath); % Project-independent struct.
 
 projects=piStruct.Project;
@@ -28,7 +28,7 @@ while ~isNewID
         fullPath=[classFolderProject slash 'Project_' projects{i} '.json'];
         projectStruct=loadJSON(fullPath);
         projectPath=projectStruct.ProjectPath.(computerID);
-        psName=[name '_' psid]; % Project-specific name.
+        psName=[piText '_' psid]; % Project-specific name.
         psPath=[projectPath slash 'Project_Settings' slash class slash class '_' psName '.json'];
         if exist(psPath,'file')==2            
             redoID=true; 

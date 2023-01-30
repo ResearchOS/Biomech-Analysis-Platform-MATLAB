@@ -15,7 +15,7 @@ ids=runInfo.SetArgIDsUsed; % This ensures that if there's any setArg ID's that a
 processPath=getClassFilePath(processText,'Process');
 processStruct=loadJSON(processPath);
 
-processStruct.DateModofied=date;
+processStruct.DateModified=date;
 processStruct.OutOfDate=false;
 writeJSON(processPath,processStruct);
 
@@ -35,7 +35,7 @@ for i=1:length(outputVars)
         varPath=getClassFilePath(varText,'Variable');
         varStruct=loadJSON(varPath);
 
-        saveClass('Variable', varStruct, date); % Updates the date modified.
+        saveClass_PS('Variable', varStruct, date); % Updates the date modified.
 
     end
 

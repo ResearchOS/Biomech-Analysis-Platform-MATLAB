@@ -28,6 +28,10 @@ specifyTrials=processStructPS.SpecifyTrials;
 
 fcnName=processStructPI.MFileName;
 
+if exist(fcnName,'file')~=2
+    error('Specified M file does not exist!');
+end
+
 %% NOTE: NEED THE VARIABLES' LEVELS, AND THE FUNCTION'S LEVELS.
 level=processStructPI.Level;
 

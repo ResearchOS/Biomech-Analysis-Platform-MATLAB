@@ -68,7 +68,7 @@ for i=1:length(inputVars)
         end
 
         if ~isempty(currSubvars{j})
-            varargout{j-1}=eval(['varargout{j-1}' currSubvars]);
+            varargout{j-1}=eval(['varargout{j-1}' currSubvars{j}]);
         end
 
     end

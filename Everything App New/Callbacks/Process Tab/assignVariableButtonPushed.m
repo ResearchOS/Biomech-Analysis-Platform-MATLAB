@@ -53,17 +53,28 @@ end
 
 % Determine whether to create a new project-specific variable version or
 % use an existing one.
-if isequal(selNode.Parent,handles.Process.allVariablesUITree)
+if (isequal(selNode.Parent,handles.Process.allVariablesUITree) && isempty(selNode.Children)) % Special case where there are no existing PS versions.
     isNew=true;
 else
     isNew=false;
 end
 
-% Get the currently selected PS daughter struct
-fullPath=getClassFilePath_PS(motherNode.Text, daughterClass);
+% PI node selected
+if isequal(selNode.Parent,handles.Process.allVariablesUITree) && ~isNew
+    if length(selNode.Children)==1 % Only one option
+        selNode=selNode.Children(1);
+    else
+        disp('Multiple options, please select a project-specific option!');
+        expand(selNode);
+        return;
+    end
+end
+
+% Get the currently selected PS daughter struct (class Process or Component)
+fullPath=getClassFilePath(motherNode.Text, daughterClass);
 daughterStruct_PS=loadJSON(fullPath);
 
-% Check if daughterNode already has a variable assigned. If so, need to unlink
+% Check if daughterNode already has a variable assigned that is being replaced. If so, need to unlink
 % that variable from the mother class object
 if contains(daughterNode.Text,' ')
     spaceIdx=strfind(daughterNode.Text,' ');

@@ -10,8 +10,10 @@ end
 
 fig=findall(0,'Name','pgui');
 
+dataPath=getDataPath();
+
 if ~isempty(fig)    
-    defaultPath=[getappdata(fig,'dataPath') 'MAT Data Files'];
+    defaultPath=[dataPath 'MAT Data Files'];
     projectName=getappdata(fig,'projectName');
     try
         if manual==1
@@ -24,17 +26,17 @@ if ~isempty(fig)
         [~,file]=fileparts(fullPath);
         saveName=['aaData_' file];
     catch
-        [file,path]=uigetfile(defaultPath,'Select MAT file','MultiSelect','off');
-        if isequal(file,0) || isequal(path,0)
+        folder=uigetdir(defaultPath,'Select Folder Containing MAT Files','MultiSelect','off');
+        if isequal(folder,0)
             return;
         end
-        fullPath=[path file];
-        saveName=['aaData_' file(1:end-4)];
+%         fullPath=[path file];
+%         saveName=['aaData_' file(1:end-4)];
     end
 else
     defaultPath=cd;
-    [file,path]=uigetfile(defaultPath,'Select MAT file','MultiSelect','off');
-    if isequal(file,0) || isequal(path,0)
+    folder=uigetdir(defaultPath,'Select Folder Containing MAT Files','MultiSelect','off');
+    if isequal(folder,0)
         return;
     end
     fullPath=[path file];

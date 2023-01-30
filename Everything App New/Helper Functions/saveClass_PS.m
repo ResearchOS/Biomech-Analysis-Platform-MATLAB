@@ -1,4 +1,4 @@
-function []=saveClass_PS(class,classStruct)
+function []=saveClass_PS(class,classStruct,date)
 
 %% PURPOSE: SAVE THE PROJECT-SPECIFIC CLASS
 
@@ -12,7 +12,10 @@ classFolder=[projectPath slash 'Project_Settings' slash class];
 
 filepath=[classFolder slash filename];
 
-classStruct.DateModified=datetime('now');
+if nargin<3
+    date=datetime('now');
+end
+classStruct.DateModified=date;
 
 json=jsonencode(classStruct,'PrettyPrint',true);
 

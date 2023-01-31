@@ -14,6 +14,7 @@ struct.ID=psid;
 currDate=datetime('now');
 struct.DateCreated=currDate;
 struct.DateModified=currDate;
+struct.DateLastRan=[]; % The last time that this function was run. Pending highlighting to show out-of-date functions, this is a quick and dirty way to tell if I already ran the function.
 
 user='MT';
 struct.CreatedBy=user;

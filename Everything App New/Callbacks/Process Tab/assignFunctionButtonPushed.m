@@ -12,10 +12,21 @@ if isempty(selNode)
 end
 
 % Create a new project-specific process version
-if isequal(selNode.Parent,handles.Process.allProcessUITree)
+if (isequal(selNode.Parent,handles.Process.allProcessUITree) && isempty(selNode.Children)) % Special case where there are no existing PS versions.
     isNew=true;
 else
     isNew=false;
+end
+
+% PI node selected
+if isequal(selNode.Parent,handles.Process.allProcessUITree)
+    if length(selNode.Children)==1
+        selNode=selNode.Children(1);
+    else
+        disp('Multiple options, please select a project-specific option!');
+        expand(selNode);
+        return;
+    end
 end
 
 projectSettingsFile=getProjectSettingsFile();

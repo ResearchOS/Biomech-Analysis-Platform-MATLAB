@@ -1,4 +1,4 @@
-function [allFcnNames,allInputVars,allOutputVars]=checkDeps(inputVars,allFcnNames,allInputVars,allOutputVars)
+function [allFcnNames,allInputVars,allOutputVars]=checkDeps(inputVarsIn,allFcnNames,allInputVars,allOutputVars)
 
 %% PURPOSE: CHECK THAT ALL DEPENDENCIES ARE UP TO DATE FOR THE SPECIFIED PROCESS FUNCTIONS
 % All fcnNames are Process objects.
@@ -17,35 +17,41 @@ function [allFcnNames,allInputVars,allOutputVars]=checkDeps(inputVars,allFcnName
 %     allOutputVars={};
 % end
 
-for i=1:length(inputVars) % Get the outputting function for the input variable
+for i=1:length(inputVarsIn) % Get the outputting function for the input variable
 
-    inputVar=inputVars{i};
+    inputVar=inputVarsIn{i};    
 
     % Load the variable
     varPath=getClassFilePath(inputVar,'Variable');
     varStruct=loadJSON(varPath);
 
     % Load the function
-    fcnNames=varStruct.BackwardLinks_Process; % Functions from which this variable was output.
+    fcnNames=varStruct.OutputOfProcess; % Functions from which this variable was output.
 
-    if length(fcnNames)==1 && ismember(fcnNames,{'HardCoded','Logsheet'}) % Indicates that we've reached the end of the line.
-        continue;
+    if isempty(fcnNames)
+        continue; % Bottom of the stack
     end
 
     for fcnNum=1:length(fcnNames)
-        fcnName=fcnNames{fcnNum};
+        fcnName=fcnNames{fcnNum};        
 
-        if ismember(fcnName,allFcnNames) % This function has been done before.
-            continue;
+        if ismember(fcnName,allFcnNames) 
+            continue; % This function has been done before.
         end
+
+        disp(['Fcn ' fcnName ' Input Var ' inputVar]);
     
         allFcnNames=[{fcnName}; allFcnNames]; % Cell array of all function names for all input variables.
     
         fcnPath=getClassFilePath(fcnName,'Process');
         fcnStruct=loadJSON(fcnPath);
+
+        % Single source of truth!
+        inputVars=getVarNamesArray(fcnStruct,'InputVariables');
+        outputVars=getVarNamesArray(fcnStruct,'OutputVariables');
     
-        inputVars=fcnStruct.BackwardLinks_Variable;
-        outputVars=fcnStruct.ForwardLinks_Variable;
+%         inputVars=fcnStruct.BackwardLinks_Variable;
+%         outputVars=fcnStruct.ForwardLinks_Variable;
     
         allInputVars=[{inputVars}; allInputVars];
         allOutputVars=[{outputVars}; allOutputVars];
@@ -53,7 +59,7 @@ for i=1:length(inputVars) % Get the outputting function for the input variable
         overwrittenIdx=ismember(inputVars,outputVars);
         % If an overwritten variable were included, the logic would be circular and never end.
         % BUT I don't just want to know when the variable was overwritten, I want to know where it is first created!
-        % MORE WORK NEEDED HERE
+        % Where it is first created is one of the list of "fcnNames", so that will still be covered in this for loop.
         inputVars(overwrittenIdx)=[];
     
         [allFcnNames,allInputVars,allOutputVars]=checkDeps(inputVars,allFcnNames,allInputVars,allOutputVars);

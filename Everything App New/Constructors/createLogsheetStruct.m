@@ -55,6 +55,8 @@ struct.Project={Current_Project_Name};
 
 struct.SpecifyTrials=''; % Which set of data to pull the variables out from?
 
+struct.Versions={};
+
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.Visible=true;

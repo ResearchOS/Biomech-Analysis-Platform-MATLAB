@@ -33,6 +33,8 @@ struct.InputVariablesNamesInCode={};
 struct.ModifiedDefaultProperties={}; % List of property names to have the defaults modified for
 struct.ModifiedPropertyValues={}; % The new default values of those properties
 
+struct.Versions={};
+
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true;

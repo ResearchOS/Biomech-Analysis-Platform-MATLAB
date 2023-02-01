@@ -11,10 +11,6 @@ for i=1:length(vars)
 
     currVars=vars{i};
 
-    for j=2:length(currVars)
-
-        varNames=[varNames; currVars(2:end)];
-
-    end
+    varNames=[varNames; currVars(2:end)];
 
 end

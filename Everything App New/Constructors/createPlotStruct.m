@@ -59,6 +59,8 @@ struct.Component.Parent={}; % Includes name & ID
 struct.Component.Children={}; % Includes name & ID
 struct.Component.ModifiedProperties={}; % The names of the properties that have been modified
 
+struct.Versions={};
+
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true;

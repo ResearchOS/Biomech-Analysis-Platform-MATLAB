@@ -45,3 +45,5 @@ struct.Text=[piStruct.Text '_' psid];
 struct.Parent=''; % The folder that this node is located within. If empty, then it is root level.
 
 saveClass_PS('Variable',struct);
+
+assignVersion(piStruct,struct);

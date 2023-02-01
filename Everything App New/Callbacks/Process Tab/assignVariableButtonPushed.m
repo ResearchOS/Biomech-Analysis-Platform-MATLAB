@@ -61,9 +61,9 @@ end
 
 % PI node selected
 if isequal(selNode.Parent,handles.Process.allVariablesUITree) && ~isNew
-    if length(selNode.Children)==1 % Only one option
+    if length(selNode.Children)==1
         selNode=selNode.Children(1);
-    else
+    elseif length(selNode.Children)>1
         disp('Multiple options, please select a project-specific option!');
         expand(selNode);
         return;
@@ -102,11 +102,11 @@ argIdxNum=find(ismember(childrenNodes(argSpecificIdx), parentNode)==1);
 % instance.
 idxNum=find(ismember(parentNode.Children,daughterNode)==1);
 
-[name,id]=deText(selNode.Text,'Variable');
+[name,id]=deText(selNode.Text);
 
 % Get the PI variable struct.
 piText=[name '_' id];
-varPathPI=getClassFilePath(piText);
+varPathPI=getClassFilePath(piText,'Variable');
 varStructPI=loadJSON(varPathPI);
 
 switch isNew

@@ -24,5 +24,5 @@ end
 
 for i=1:length(names)
     newNode=uitreenode(uiTree,'Text',names{i});
-    newNode.ContextMenu=handles.Process.psContextMenu;
+    assignContextMenu(newNode,handles);
 end

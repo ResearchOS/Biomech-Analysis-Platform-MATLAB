@@ -43,7 +43,7 @@ for i=1:length(texts)
 
         newNode=uitreenode(node,'Text',currNames{j});
 
-        newNode.ContextMenu=handles.Process.psContextMenu;
+        assignContextMenu(newNode,handles);
     end
 
 end

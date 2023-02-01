@@ -17,6 +17,7 @@ processStruct=loadJSON(processPath);
 
 processStruct.DateModified=date;
 processStruct.OutOfDate=false;
+processStruct.DateLastRan=date;
 writeJSON(processPath,processStruct);
 
 outputVars=processStruct.OutputVariables;

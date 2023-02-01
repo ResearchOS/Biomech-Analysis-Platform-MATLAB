@@ -30,7 +30,7 @@ end
 for i=1:length(axes)
     currAx=axes{i};
     newNode=uitreenode(uiTree,'Text',currAx);
-    newNode.ContextMenu=handles.Process.psContextMenu;
+    assignContextMenu(newNode,handles);
 
     axPath=getClassFilePath(currAx, 'Component');
     axStruct=loadJSON(axPath);
@@ -42,6 +42,6 @@ for i=1:length(axes)
 
     for j=1:length(components)
         newNode2=uitreenode(newNode,'Text',components{j});
-        newNode2.ContextMenu=handles.Process.psContextMenu;
+        assignContextMenu(newNode2,handles);
     end
 end

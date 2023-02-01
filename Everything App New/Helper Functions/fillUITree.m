@@ -64,7 +64,7 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
 
     newNode=uitreenode(uiTree,'Text',allSearchResults{i});
 
-    newNode.ContextMenu=handles.Process.commonContextMenu;
+    assignContextMenu(newNode,handles);
 
     childIdx=childIdx+1;
     

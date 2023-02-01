@@ -600,9 +600,19 @@ settingsResize(fig);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the context menus for UI trees
 handles.Process.commonContextMenu=uicontextmenu(fig);
-handles.Process.commonContextMenuItem1=uimenu(handles.Process.commonContextMenu,'Text','Open','MenuSelectedFcn',{@openJSONFile});
-handles.Process.commonContextMenuItem2=uimenu(handles.Process.commonContextMenu,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
+handles.Process.commonContextMenuItem1=uimenu(handles.Process.commonContextMenu,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
+handles.Process.commonContextMenuItem2=uimenu(handles.Process.commonContextMenu,'Text','Open M File','MenuSelectedFcn',{@openMFile});
+handles.Process.commonContextMenuItem3=uimenu(handles.Process.commonContextMenu,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
+
+handles.Process.commonContextMenuNoMFile=uicontextmenu(fig);
+handles.Process.commonContextMenuItem1=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
+handles.Process.commonContextMenuItem3=uimenu(handles.Process.commonContextMenuNoMFile,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
 
 handles.Process.psContextMenu=uicontextmenu(fig);
-handles.Process.psContextMenuItem1=uimenu(handles.Process.psContextMenu,'Text','Open','MenuSelectedFcn',{@openJSONFile});
-handles.Process.psContextMenuItem2=uimenu(handles.Process.psContextMenu,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});
+handles.Process.psContextMenuItem1=uimenu(handles.Process.psContextMenu,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
+handles.Process.psContextMenuItem2=uimenu(handles.Process.psContextMenu,'Text','Open M File','MenuSelectedFcn',{@openMFile});
+handles.Process.psContextMenuItem3=uimenu(handles.Process.psContextMenu,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});
+
+handles.Process.psContextMenuNoMFile=uicontextmenu(fig);
+handles.Process.psContextMenuItem1=uimenu(handles.Process.psContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
+handles.Process.psContextMenuItem3=uimenu(handles.Process.psContextMenuNoMFile,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});

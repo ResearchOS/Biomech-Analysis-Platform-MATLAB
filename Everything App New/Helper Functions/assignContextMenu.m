@@ -36,6 +36,12 @@ switch parent
         else
             node.ContextMenu=handles.Process.commonContextMenuNoMFile;
         end
+    case handles.Plot.componentUITree
+        if isPS
+            node.ContextMenu=handles.Process.psContextMenu;
+        else
+            error('What happened?');
+        end
     otherwise % No M files associated with this class
         if isPS
             node.ContextMenu=handles.Process.psContextMenuNoMFile;

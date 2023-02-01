@@ -11,7 +11,7 @@ text=selNode.Text;
 
 psToPITree=false; % If a PS tree node is selected, the new node should be created in the corresponding PI tree.
 uiTree=selNode.Parent.Parent;
-parentNode=selNode.Parent;
+% parentNode=selNode.Parent;
 if ~isequal(class(uiTree),'matlab.ui.container.CheckBoxTree')
     uiTree=selNode.Parent;
     psToPITree=true;
@@ -58,18 +58,20 @@ if psToPITree
     switch uiTree
         case handles.Process.groupUITree
             uiTree=handles.Process.allProcessUITree;
+        case handles.Plot.componentUITree
+            uiTree=handles.Plot.allComponentsUITree;
     end
 
     % Find the proper PS node in the new PI UI tree
     piText=[name '_' id];
     piNodesText={uiTree.Children.Text};
     piNodeIdx=ismember(piNodesText,piText);
-
-    newNode=uitreenode(uiTree.Children(piNodeIdx),'Text',newText);
-    assignContextMenu(newNode,handles);
+    parentNode=uiTree.Children(piNodeIdx);
 else
     % Create new uitreenode
-    newNode=uitreenode(selNode.Parent,'Text',newText);
-    assignContextMenu(newNode,handles);
+    parentNode=selNode.Parent;
 end
+
+newNode=uitreenode(parentNode,'Text',newText);
+assignContextMenu(newNode,handles);
 

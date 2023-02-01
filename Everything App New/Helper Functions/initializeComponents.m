@@ -603,6 +603,7 @@ handles.Process.commonContextMenu=uicontextmenu(fig);
 handles.Process.commonContextMenuItem1=uimenu(handles.Process.commonContextMenu,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
 handles.Process.commonContextMenuItem2=uimenu(handles.Process.commonContextMenu,'Text','Open M File','MenuSelectedFcn',{@openMFile});
 handles.Process.commonContextMenuItem3=uimenu(handles.Process.commonContextMenu,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
+handles.Process.commonContextMenuItem4=uimenu(handles.Process.commonContextMenu,'Text','Change Name','MenuSelectedFcn',{@changeName});
 
 handles.Process.commonContextMenuNoMFile=uicontextmenu(fig);
 handles.Process.commonContextMenuNoMFileItem1=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});

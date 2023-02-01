@@ -18,4 +18,6 @@ piStruct=loadJSON(piPath);
 
 psStruct=feval(['create' class 'Struct_PS'],piStruct);
 
+linkClasses(piStruct,psStruct);
+
 uitreenode(selNode,'Text',psStruct.Text,'ContextMenu',handles.Process.psContextMenu);

@@ -1,30 +1,30 @@
-function [fullPath]=getClassFilePath(selNode,class)
+function [fullPath]=getClassFilePath(text,class)
 
 %% PURPOSE: GET THE CLASS FULL FILE PATH FROM THE SELECTED NODE
 
-if isempty(selNode)
+if isempty(text)
     fullPath='';
     return;
 end
 
 % This allows this one function to do both project-independent and
 % project-specific actions (should be cleaned up in the future.
-if ischar(selNode)
-    [name, id, psid]=deText(selNode);
+if ischar(text)
+    [name, id, psid]=deText(text);
     if ~isempty(psid)
-        [fullPath]=getClassFilePath_PS(selNode, class);
+        [fullPath]=getClassFilePath_PS(text, class);
         return;
     end
 end
 
-if ~ischar(selNode)
-    parent=selNode.Parent;
+if ~ischar(text)
+    parent=text.Parent;
 
     class=getClassFromUITree(parent);
 
-    file=selNode.Text;
+    file=text.Text;
 else
-    file=selNode; % Node text specified directly
+    file=text; % Node text specified directly
 end
 
 slash=filesep;

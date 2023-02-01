@@ -9,18 +9,24 @@ selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
 
 text=selNode.Text;
 
+psToPITree=false; % If a PS tree node is selected, the new node should be created in the corresponding PI tree.
 uiTree=selNode.Parent.Parent;
+parentNode=selNode.Parent;
+if ~isequal(class(uiTree),'matlab.ui.container.CheckBoxTree')
+    uiTree=selNode.Parent;
+    psToPITree=true;
+end
 
-class=getClassFromUITree(uiTree);
+structClass=getClassFromUITree(uiTree);
 
 % Create new PSID for the copy
 [name,id]=deText(text);
-psid=createPSID([name '_' id], class);
+psid=createPSID([name '_' id], structClass);
 
 % Create the copy
 newText=[name '_' id '_' psid];
-psPath=getClassFilePath(text, class);
-newPathPS=getClassFilePath(newText, class);
+psPath=getClassFilePath(text, structClass);
+newPathPS=getClassFilePath(newText, structClass);
 copyfile(psPath,newPathPS);
 
 % Modify the copy
@@ -40,12 +46,30 @@ for i=1:length(fldNamesLinks)
     psStruct.(fldNamesLinks{i})={};
 end
 
-if isequal(class,'Variable')
+if isequal(structClass,'Variable')
     psStruct.InputToProcess={};
     psStruct.OutputOfProcess={};
 end
 
 writeJSON(newPathPS,psStruct);
 
-% Create new uitreenode
-uitreenode(selNode.Parent,'Text',newText,'ContextMenu',handles.Process.psContextMenu);
+% In case the new node should not be created in the current UI tree
+if psToPITree
+    switch uiTree
+        case handles.Process.groupUITree
+            uiTree=handles.Process.allProcessUITree;
+    end
+
+    % Find the proper PS node in the new PI UI tree
+    piText=[name '_' id];
+    piNodesText={uiTree.Children.Text};
+    piNodeIdx=ismember(piNodesText,piText);
+
+    newNode=uitreenode(uiTree.Children(piNodeIdx),'Text',newText);
+    assignContextMenu(newNode,handles);
+else
+    % Create new uitreenode
+    newNode=uitreenode(selNode.Parent,'Text',newText);
+    assignContextMenu(newNode,handles);
+end
+

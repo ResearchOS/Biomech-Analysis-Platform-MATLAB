@@ -608,16 +608,20 @@ handles.Process.commonContextMenuItem4=uimenu(handles.Process.commonContextMenu,
 handles.Process.commonContextMenuNoMFile=uicontextmenu(fig);
 handles.Process.commonContextMenuNoMFileItem1=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
 handles.Process.commonContextMenuNoMFileItem3=uimenu(handles.Process.commonContextMenuNoMFile,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
+handles.Process.commonContextMenuNoMFileItem4=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Change Name','MenuSelectedFcn',{@changeName});
 
 handles.Process.psContextMenu=uicontextmenu(fig);
 handles.Process.psContextMenuItem1=uimenu(handles.Process.psContextMenu,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
 handles.Process.psContextMenuItem2=uimenu(handles.Process.psContextMenu,'Text','Open M File','MenuSelectedFcn',{@openMFile});
 handles.Process.psContextMenuItem3=uimenu(handles.Process.psContextMenu,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});
+handles.Process.psContextMenuItem4=uimenu(handles.Process.psContextMenu,'Text','Change Name','MenuSelectedFcn',{@changeName});
 
 handles.Process.psContextMenuNoMFile=uicontextmenu(fig);
 handles.Process.psContextMenuNoMFileItem1=uimenu(handles.Process.psContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
 handles.Process.psContextMenuNoMFileItem3=uimenu(handles.Process.psContextMenuNoMFile,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});
+handles.Process.psContextMenuNoMFileItem4=uimenu(handles.Process.psContextMenuNoMFile,'Text','Change Name','MenuSelectedFcn',{@changeName});
 
 handles.Process.psContextMenuNoCopy=uicontextmenu(fig);
 handles.Process.psContextMenuNoCopyItem1=uimenu(handles.Process.psContextMenuNoCopy,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
 handles.Process.psContextMenuNoCopyItem2=uimenu(handles.Process.psContextMenuNoCopy,'Text','Open M File','MenuSelectedFcn',{@openMFile});
+handles.Process.psContextMenuNoCopyItem3=uimenu(handles.Process.psContextMenuNoCopy,'Text','Change Name','MenuSelectedFcn',{@changeName});

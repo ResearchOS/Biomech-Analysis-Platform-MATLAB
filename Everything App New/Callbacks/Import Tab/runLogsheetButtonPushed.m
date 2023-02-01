@@ -162,6 +162,8 @@ for i=1:length(selHeaders)
         varStruct_PS=createVariableStruct_PS(varStruct,psid);
     end
 
+    varStruct_PS.BackwardLinks_Process={'Logsheet'}; % Indicates that the end of the line has been reached.
+
     varName=varStruct_PS.Text;
     logsheetStruct.Variables{idx}=varName;
     varNames{idx}=varName; % For the next iteration

@@ -102,15 +102,27 @@ argIdxNum=find(ismember(childrenNodes(argSpecificIdx), parentNode)==1);
 % instance.
 idxNum=find(ismember(parentNode.Children,daughterNode)==1);
 
+[name,id]=deText(selNode.Text,'Variable');
+
+% Get the PI variable struct.
+piText=[name '_' id];
+varPathPI=getClassFilePath(piText);
+varStructPI=loadJSON(varPathPI);
+
 switch isNew
     case true
         % Create a new project-specific ID for the variable to add.
-        varPath=getClassFilePath(selNode);
-        varStructPI=loadJSON(varPath);
         varStruct=createVariableStruct_PS(varStructPI);
     case false
         varPath=getClassFilePath_PS(selNode.Text, 'Variable');
         varStruct=loadJSON(varPath);
+end
+
+% If the variable is hard-coded, indicate that this version did not come from any process function.
+% Helpful because in the future I don't have to load the PI struct.
+% Potentially tough to debug!!!!!!
+if varStructPI.IsHardCoded
+    varStruct.BackwardLinks_Process={'HardCoded'};
 end
 
 % Apply the currently selected variable to that arg.
@@ -137,10 +149,12 @@ assert(isequal(daughterStruct_PS.(fldName){argIdxNum}{1},number));
 daughterStruct_PS.(fldName){argIdxNum}{idxNum+1}=varStruct.Text;
 
 % Saves changes.
-if isequal(fldName,'InputVariables')
+if ~varStructPI.IsHardCoded && isequal(fldName,'InputVariables')
     linkClasses(varStruct, daughterStruct_PS); % Input variables are "ForwardLinks" to the Process function.
 elseif isequal(fldName,'OutputVariables')
     linkClasses(daughterStruct_PS,varStruct); % Output variables are "BackwardLinks" to the Process function.
+else
+    writeJSON(varPath, varStruct); % Just save the changes.
 end
 
 % Modify/add nodes

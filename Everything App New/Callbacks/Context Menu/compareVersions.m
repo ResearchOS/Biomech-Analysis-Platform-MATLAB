@@ -2,8 +2,8 @@ function []=compareVersions(src,event)
 
 %% PURPOSE: COMPARE MULTIPLE VERSIONS OF THE SAME COMMON OBJECT.
 
-disp('Not done yet!');
-return;
+% disp('Not done yet!');
+% return;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -48,39 +48,38 @@ if isequal(structClass,'Variable')
             return;
         end
 
-        fcnNames{i,1}=fcnName; % Cell array, currently size Nx1. Starts from bottom left, "i" is the column number from left to right, "1" is the row number bottom to top.
+        fcnNames{i}=[fcnNames{i}; fcnName]; % Cell array (Nx1) of cell arrays (Mx1). Final result will have N columns of M functions, counting from bottom left. M starts here as 1
 
     end
     structClass='Process'; % Because now I want to aggregate all of the variables from that function, and all of their predecessor functions too.
 elseif isequal(structClass,'Process') % Just want to look at all of the functions
-    fcnNames=psTexts;
+    fcnNames=cell(size(psTexts));
+    for i=1:length(size(psTexts))
+        fcnName=psTexts{i};
+        fcnNames{i}=[fcnNames{i}; fcnName]; % Cell array (Nx1) of cell arrays (Mx1). Final result will have N columns of M functions, counting from bottom left. M starts here as 1
+    end
 end
 
 % Get the function texts (& input/output variables) that the above functions' input variables rely on.
 if isequal(structClass,'Process')
-    allInputVars=cell(size(fcnNames));
-    allOutputVars=cell(size(fcnNames));
-    for i=1:size(fcnNames,1)
-
-        fcnName=fcnNames{i};
-
-        fcnPath=getClassFilePath(fcnName,structClass);
+    inputVars=cell(size(fcnNames));
+    outputVars=cell(size(fcnNames));
+    % Get the input & output variables for the first function manually. Then, use the recursive function to find the rest.
+    for i=1:length(fcnNames)
+        fcnName=fcnNames{i}{1};
+        fcnPath=getClassFilePath(fcnName,'Process');
         fcnStruct=loadJSON(fcnPath);
-        if isfield(fcnStruct,'BackwardLinks_Variable') % Input variables
-            inputVars=fcnStruct.BackwardLinks_Variable;
-        else
-            inputVars={};
-        end
-        if isfield(fcnStruct,'ForwardLinks_Variable') % Output variables.
-            outputVars=fcnStruct.ForwardLinks_Variable;
-        else
-            outputVars={};
-        end
-
-        allInputVars{i}=inputVars;
-        allOutputVars{i}=outputVars;
-
-        % Need to recursively investigate the dependencies for each variable in each function.
-
+        inputVars{i}{1}=fcnStruct.BackwardLinks_Variable;
+        outputVars{i}{1}=fcnStruct.ForwardLinks_Variable;
+    end
+    
+    % The first function has already been filled in. Build from there.
+    numVersions=length(fcnNames);
+    for i=1:numVersions
+        inputVarsVer=inputVars{i}{1}; % Just a cell array of variable names
+        [fcnNames{i},inputVars{i},outputVars{i}]=checkDeps(inputVarsVer,fcnNames{i},inputVars{i},outputVars{i});
+%         fcnNames{i}=[allFcnNames; fcnNames{i}];
+%         inputVars{i}=[allInputVars; inputVars{i}];
+%         outputVars{i}=[allOutputVars; outputVars{i}];
     end
 end

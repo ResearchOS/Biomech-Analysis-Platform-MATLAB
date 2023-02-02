@@ -4,17 +4,15 @@ function [data]=loadJSON(fullPath)
 
 %% For retrieving the previously loaded data from the GUI appdata
     
-if exist('fig','var')~=1
+rootSettingsFile=getRootSettingsFile;
+load(rootSettingsFile,'Store_Settings');
+
+if Store_Settings
     try
         fig=evalin('base','gui');
     catch
         fig=findall(0,'Name','pgui');
     end
-end
-
-rootSettingsFile=getRootSettingsFile;
-load(rootSettingsFile,'Store_Settings');
-if Store_Settings
     [~,fileName]=fileparts(fullPath);
     underscoreIdx=strfind(fileName,'_');
     if ~isempty(underscoreIdx)
@@ -43,26 +41,26 @@ str=char(raw');
 % Convert json to struct
 data=jsondecode(str);
 
-if nargin>=2 && ~isempty(varName)    
-    if iscell(varName) && length(varName)==1
-        varName=varName{1};
-    end
-    
-    if ~iscell(varName)
-        if isfield(data,varName)
-            data=data.(varName);
-        else
-            data=[];
-        end
-        return;
-    end    
-
-    for i=1:length(varName)
-        data2.(varName{i})=data.(varName{i});
-    end
-
-    data=data2;
-end
+% if nargin>=2 && ~isempty(varName)    
+%     if iscell(varName) && length(varName)==1
+%         varName=varName{1};
+%     end
+%     
+%     if ~iscell(varName)
+%         if isfield(data,varName)
+%             data=data.(varName);
+%         else
+%             data=[];
+%         end
+%         return;
+%     end    
+% 
+%     for i=1:length(varName)
+%         data2.(varName{i})=data.(varName{i});
+%     end
+% 
+%     data=data2;
+% end
 
 %% Now that the data has been loaded, 
 if exist('fig','var')==1 && Store_Settings 

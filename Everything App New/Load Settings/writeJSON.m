@@ -1,19 +1,18 @@
-function []=writeJSON(fullPath, json, fig)
+function []=writeJSON(fullPath, json)
 
 %% PURPOSE: WRITE A JSON TO FILE.
 
 %% For saving the data into the GUI appdata
-if exist('fig','var')~=1
+
+rootSettingsFile=getRootSettingsFile;
+load(rootSettingsFile,'Store_Settings');    
+
+if Store_Settings
     try
         fig=evalin('base','gui');
     catch
         fig=findall(0,'Name','pgui');
     end
-end
-
-rootSettingsFile=getRootSettingsFile;
-load(rootSettingsFile,'Store_Settings');
-if Store_Settings
     [~,fileName]=fileparts(fullPath);
     underscoreIdx=strfind(fileName,'_');
     if ~isempty(underscoreIdx)

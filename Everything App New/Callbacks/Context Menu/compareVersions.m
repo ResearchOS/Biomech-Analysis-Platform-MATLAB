@@ -52,7 +52,7 @@ if isequal(structClass,'Variable')
         count=count+1;
         fcnNamesCurr=psStruct.OutputOfProcess; % This field should always exist and be populated, because that's how this variable was created.
 
-        fcnNames{count}=[fcnNames{count}; fcnNamesCurr]; % Cell array (Nx1) of cell arrays (Mx1). Final result will have N columns of M functions, counting from bottom left. M starts here as 1
+        fcnNames{count}=[fcnNames{count}; {fcnNamesCurr}]; % Cell array (Nx1) of cell arrays (Mx1). Final result will have N columns of M functions, counting from bottom left. M starts here as 1
 
     end
     structClass='Process'; % Because now I want to aggregate all of the variables from that function, and all of their predecessor functions too.
@@ -60,7 +60,7 @@ elseif isequal(structClass,'Process') % Just want to look at all of the function
     fcnNames=cell(size(psTexts));
     for i=1:length(size(psTexts))
         fcnName=psTexts{i};
-        fcnNames{i}=[fcnNames{i}; fcnName]; % Cell array (Nx1) of cell arrays (Mx1). Final result will have N columns of M functions, counting from bottom left. M starts here as 1
+        fcnNames{i}=[fcnNames{i}; {fcnName}]; % Cell array (Nx1) of cell arrays (Mx1). Final result will have N columns of M functions, counting from bottom left. M starts here as 1
     end
 end
 
@@ -70,7 +70,12 @@ if isequal(structClass,'Process')
     outputVars=cell(size(fcnNames));
     % Get the input & output variables for the first function manually. Then, use the recursive function to find the rest.
     for i=1:length(fcnNames)
-        for j=1:length(fcnNames{i})
+        if iscell(fcnNames{i})
+            numFcns=length(fcnNames{i});
+        else
+            numFcns=1;
+        end
+        for j=1:numFcns
             fcnName=fcnNames{i}{j};
             fcnPath=getClassFilePath(fcnName,'Process');
             fcnStruct=loadJSON(fcnPath);
@@ -89,7 +94,12 @@ if isequal(structClass,'Process')
         fcnName=fcnNames{i}{end};
         fcnPath=getClassFilePath(fcnName,'Process');
         fcnStruct=loadJSON(fcnPath);
-        processGroups=fcnStruct.ForwardLinks_ProcessGroup;
+
+        if isfield(fcnStruct,'ForwardLinks_ProcessGroup')
+            processGroups=fcnStruct.ForwardLinks_ProcessGroup;
+        else
+            processGroups={};
+        end
 
         if isempty(processGroups)
             continue;

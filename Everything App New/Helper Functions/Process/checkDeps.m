@@ -135,8 +135,11 @@ while nextIdx<length(fcnNamesOrdered) % Keep going until everything is filled in
         for varNum=1:length(fcnInputVars)
             [name,id]=deText(fcnInputVars{varNum});
             piText=[name '_' id];
-            varStructPI=getappdata(fig,piText);
-            varStructPS=getappdata(fig,fcnInputVars{varNum});
+
+            piPath=getClassFilePath(piText,'Variable');
+            psPath=getClassFilePath(fcnInputVars{varNum},'Variable');
+            varStructPI=loadJSON(piPath);
+            varStructPS=loadJSON(psPath);
 
             if isempty(varStructPS.OutputOfProcess)
                 varStructPS.OutputOfProcess={''}; % When empty it's not a cell (because of JSON import) and that messes with ismember

@@ -18,6 +18,13 @@ piStruct=loadJSON(piPath);
 
 [psStruct,piStruct]=feval(['create' class 'Struct_PS'],piStruct);
 
+if isequal(psStruct.Class,'Process')
+    psStruct.InputSubvariables=piStruct.InputVariablesNamesInCode; % Sets the sizes & indices, need to delete the content though.
+    for i=1:length(psStruct.InputSubvariables)
+        psStruct.InputSubvariables{i}{2:end}='';
+    end
+end
+
 linkClasses(piStruct,psStruct);
 
 uitreenode(selNode,'Text',psStruct.Text,'ContextMenu',handles.Process.psContextMenu);

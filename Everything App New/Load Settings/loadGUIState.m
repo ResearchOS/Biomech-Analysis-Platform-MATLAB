@@ -85,3 +85,6 @@ allComponentsUITreeSelectionChanged(fig);
 %% Put the common path into the edit field
 commonPath=getCommonPath();
 handles.Settings.commonPathEditField.Value=commonPath;
+
+load(rootSettingsFile,'Store_Settings');
+handles.Settings.storeSettingsCheckbox.Value=Store_Settings;

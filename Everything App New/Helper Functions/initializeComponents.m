@@ -594,6 +594,9 @@ handles.Settings.commonPathEditField=uieditfield(settingsTab,'Value','','Tag','C
 % 4. Open common path button
 handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Tag','OpenCommonPathButton','ButtonPushedFcn',@(openCommonPathButton,event) openCommonPathButtonPushed(openCommonPathButton));
 
+% 5. Store settings in GUI app data checkbox
+handles.Settings.storeSettingsCheckbox=uicheckbox(settingsTab,'Value',false,'ValueChangedFcn',@(storeSettingsCheckbox,event) storeSettingsCheckboxValueChanged(storeSettingsCheckbox));
+
 setappdata(fig,'handles',handles);
 settingsResize(fig);
 

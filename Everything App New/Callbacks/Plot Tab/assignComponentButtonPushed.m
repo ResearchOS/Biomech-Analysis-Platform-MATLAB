@@ -14,8 +14,9 @@ end
 selCompNode=handles.Plot.plotUITree.SelectedNodes;
 
 if isempty(selCompNode) % Typically this would be an immediate end of program, but in this case I might assume that I should create an axes component and add the component to that.
-    projectSettings=getProjectSettingsFile();
-    Current_Plot_Name=loadJSON(projectSettings,'Current_Plot_Name');
+    projectSettingsFile=getProjectSettingsFile();
+    projectSettings=loadJSON(projectSettingsFile);
+    Current_Plot_Name=projectSettings.Current_Plot_Name;
     plotPath=getClassFilePath(Current_Plot_Name,'Plot');
     plotStruct=loadJSON(plotPath);
     if isfield(plotStruct,'BackwardLinks_Component') && ~isempty(plotStruct.BackwardLinks_Component)
@@ -46,7 +47,8 @@ end
 if isequal(name,'Axes') % Adding a new axes to the plot.
     isAx=true;
     projectSettingsFile=getProjectSettingsFile();
-    Current_Plot_Name=loadJSON(projectSettingsFile,'Current_Plot_Name');
+    projectSettings=loadJSON(projectSettingsFile);
+    Current_Plot_Name=projectSettings.Current_Plot_Name;
 
     % Get the currently selected plot struct
     fullPath=getClassFilePath(Current_Plot_Name,'Plot');

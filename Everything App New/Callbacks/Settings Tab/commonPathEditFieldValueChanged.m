@@ -9,15 +9,3 @@ field=handles.Settings.commonPathEditField;
 commonPath=field.Value;
 
 setCommonPath(commonPath);
-
-% if isempty(commonPath)
-%     return;
-% end
-% 
-% if exist(commonPath,'dir')~=7
-%     return;
-% end
-% 
-% rootSettingsFile=getRootSettingsFile();
-% 
-% save(rootSettingsFile,'commonPath','-append');

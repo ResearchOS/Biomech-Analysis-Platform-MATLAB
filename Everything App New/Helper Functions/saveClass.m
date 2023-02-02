@@ -18,6 +18,6 @@ end
 
 classStruct.DateModified=date;
 
-json=jsonencode(classStruct,'PrettyPrint',true);
+% json=jsonencode(classStruct,'PrettyPrint',true);
 
-writeJSON(filepath,json);
+writeJSON(filepath,classStruct);

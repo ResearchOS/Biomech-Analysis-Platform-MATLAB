@@ -13,6 +13,15 @@ if commonPath==0
     commonPath=userpath; % If no common path is selected, it will just default to the MATLAB default userpath.
 end
 
-save(rootSettingsFile,'commonPath','-v6');
+try
+    save(rootSettingsFile,'commonPath','-v6','-append');
+catch
+    [rootSettingsFolder]=fileparts(rootSettingsFile);
+    warning('off','MATLAB:MKDIR:DirectoryExists');
+    mkdir(rootSettingsFolder);
+    warning('on','MATLAB:MKDIR:DirectoryExists');
+    Store_Settings=false;
+    save(rootSettingsFile,'commonPath','Store_Settings','-v6'); % This is where the file is first created.
+end
 
 initializeClassFolders(commonPath);

@@ -48,3 +48,6 @@ objResize(tab.commonPathEditField, [0.12 0.9], [0.2 compHeight]);
 
 % 4. Open common path button
 objResize(tab.openCommonPathButton, [0.33 0.9], [0.05 compHeight]);
+
+% 5. Store settings checkbox
+objResize(tab.storeSettingsCheckbox, [0.8 0.9], [0.2 compHeight]);

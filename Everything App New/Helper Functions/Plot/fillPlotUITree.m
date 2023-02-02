@@ -7,7 +7,8 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 projectSettingsFile=getProjectSettingsFile();
-Current_Plot_Name=loadJSON(projectSettingsFile,'Current_Plot_Name');
+projectSettings=loadJSON(projectSettingsFile,'');
+Current_Plot_Name=projectSettings.Current_Plot_Name;
 
 fullPath=getClassFilePath(Current_Plot_Name,'Plot');
 struct=loadJSON(fullPath);

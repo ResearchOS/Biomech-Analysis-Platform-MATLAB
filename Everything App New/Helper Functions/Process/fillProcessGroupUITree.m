@@ -6,7 +6,8 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 projectSettingsFile=getProjectSettingsFile();
-Current_ProcessGroup_Name=loadJSON(projectSettingsFile, 'Current_ProcessGroup_Name');
+projectSettings=loadJSON(projectSettingsFile);
+Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
 
 fullPath=getClassFilePath_PS(Current_ProcessGroup_Name, 'ProcessGroup');
 struct=loadJSON(fullPath);

@@ -1,4 +1,4 @@
-function [allFcnNames,allInputVars,allOutputVars]=checkDeps(inputVarsIn,allFcnNames,allInputVars,allOutputVars)
+function [allFcnNames,allInputVars,allOutputVars]=checkDeps(inputVarsIn,allFcnNames,allInputVars,allOutputVars,fig)
 
 %% PURPOSE: CHECK THAT ALL DEPENDENCIES ARE UP TO DATE FOR THE SPECIFIED PROCESS FUNCTIONS
 % All fcnNames are Process objects.
@@ -83,13 +83,9 @@ while runWhile
         break;
     end
 
-    % THESE KEEP GOING OUT OF ORDER FROM ONE ANOTHER, WHY?
     allNames(~outputsUsedIdx,:)=[];
-%     allFcnNames(~outputsUsedIdx)=[];
-%     allInputVars(~outputsUsedIdx)=[];
-%     allOutputVars(~outputsUsedIdx)=[];   
 
-    outputsUsedIdx=false(size(allNames,1));
+    outputsUsedIdx=false(size(allNames,1),1);
     outputsUsedIdx(end)=true;
 
 end
@@ -102,11 +98,9 @@ allFcnNames=allNames(:,1);
 fcnNamesOrdered=cell(size(allFcnNames));
 inputVarsOrdered=cell(size(allFcnNames));
 outputVarsOrdered=cell(size(allFcnNames));
-for i=1:length(fcnNamesOrdered)
-    fcnNamesOrdered{i}='';
-    inputVarsOrdered{i}='';
-    outputVarsOrdered{i}='';
-end
+[fcnNamesOrdered{:}]=deal('');
+[inputVarsOrdered{:}]=deal('');
+[outputVarsOrdered{:}]=deal('');
 % fcnNamesOrdered{end}=allFcnNames{end}; % The function of interest.
 fcnNums=zeros(size(fcnNamesOrdered));
 
@@ -122,18 +116,39 @@ fcnNamesOrdered(1:sum(startFcnsIdx))=allFcnNames(startFcnsIdx);
 inputVarsOrdered(1:sum(startFcnsIdx))=allInputVars(startFcnsIdx);
 outputVarsOrdered(1:sum(startFcnsIdx))=allOutputVars(startFcnsIdx);
 
-while any(cellfun(@isempty,fcnNamesOrdered)) % Keep going until everything is filled in.
+nextIdx=length(fcnNamesOrdered)-sum(cellfun(@isempty,fcnNamesOrdered))+1;
+
+while nextIdx<length(fcnNamesOrdered) % Keep going until everything is filled in.
 
     nextIdx=length(fcnNamesOrdered)-sum(cellfun(@isempty,fcnNamesOrdered))+1;
+    disp(num2str(nextIdx));
 
-    for i=2:length(allFcnNames)-1
+    for i=1:length(allFcnNames)-1
 
         fcnName=allFcnNames{i};
         if ismember(fcnName,fcnNamesOrdered)
             continue; % This function has already been placed.
         end
 
-        fcnInputVars=allInputVars{i};        
+        fcnInputVars=allInputVars{i};      
+        delIdx=false(size(fcnInputVars));
+        for varNum=1:length(fcnInputVars)
+            [name,id]=deText(fcnInputVars{varNum});
+            piText=[name '_' id];
+            varStructPI=getappdata(fig,piText);
+            varStructPS=getappdata(fig,fcnInputVars{varNum});
+
+            if isempty(varStructPS.OutputOfProcess)
+                varStructPS.OutputOfProcess={''}; % When empty it's not a cell (because of JSON import) and that messes with ismember
+            end
+
+            if varStructPI.IsHardCoded || isempty(varStructPS.OutputOfProcess{1}) || ...
+                    (ismember(fcnName,varStructPS.InputToProcess) && ismember(fcnName,varStructPS.OutputOfProcess))
+                delIdx(varNum)=true; % Remove logsheet AND hard-coded input variables.
+            end
+        end
+
+        fcnInputVars(delIdx)=[];
 
         inputVarsUsed=varsUsedInFunctions(fcnInputVars,outputVarsOrdered,'all');
 
@@ -145,33 +160,15 @@ while any(cellfun(@isempty,fcnNamesOrdered)) % Keep going until everything is fi
         inputVarsOrdered(nextIdx)=allInputVars(i);
         outputVarsOrdered(nextIdx)=allOutputVars(i);
 
-
-
-
-
-
-%         inputVarsUsedIdxNums=cell(size(fcnInputVars));
-%         for j=1:length(fcnInputVars)
-% 
-%             inputVarsUsed=varsUsedInFunctions(fcnInputVars(j),allOutputVars); % Which functions is the current input variable used in?
-%             inputVarsUsedIdxNums{j}=find(inputVarsUsed==1);
-% 
-%         end
+        break;
 
     end
 
 end
 
-fcnOfIntIdxNum=find(ismember(fcnNamesOrdered,allFcnNames{end})==1);
-if isempty(fcnOfIntIdxNum)
-    fcnNamesOrdered(end)=allFcnNames(end);
-    inputVarsOrdered(end)=allInputVars(end);
-    outputVarsOrdered(end)=allOutputVars(end);
-else    
-    fcnNamesOrdered([end fcnOfIntIdxNum])=allFcnNames([fcnOfIntIdxNum end]);
-    inputVarsOrdered([end fcnOfIntIdxNum])=allInputVars([fcnOfIntIdxNum end]);
-    outputVarsOrdered([end fcnOfIntIdxNum])=allOutputVars([fcnOfIntIdxNum end]);
-end
+fcnNamesOrdered(end)=allFcnNames(end);
+inputVarsOrdered(end)=allInputVars(end);
+outputVarsOrdered(end)=allOutputVars(end);
 
 end
 

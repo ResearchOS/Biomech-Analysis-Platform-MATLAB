@@ -32,8 +32,9 @@ if isAx
     if ~isequal(sel,'OK')
         return;
     end    
-    projectSettings=getProjectSettingsFile();
-    Current_Plot_Name=loadJSON(projectSettings,'Current_Plot_Name');
+    projectSettingsFile=getProjectSettingsFile();
+    projectSettings=loadJSON(projectSettingsFile);
+    Current_Plot_Name=projectSettings.Current_Plot_Name;
     parentText=Current_Plot_Name;
     class='Plot';
 else

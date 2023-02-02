@@ -6,6 +6,15 @@ function [id]=getComputerID()
 
 % Current method taken from this page: https://www.mathworks.com/matlabcentral/answers/101892-what-is-a-host-id-how-do-i-find-my-host-id-in-order-to-activate-my-license
 
+rootSettingsFile=getRootSettingsFile;
+warning('off','MATLAB:load:variableNotFound');
+load(rootSettingsFile,'Computer_ID');
+warning('on','MATLAB:load:variableNotFound');
+if exist('Computer_ID','var')==1
+    id=Computer_ID;
+    return;
+end
+
 if ismac==1
     [~,id]=system('ifconfig en0 | grep ether');
 elseif ispc==1
@@ -19,16 +28,5 @@ end
 
 id=genvarname(id);
 
-
-% sid = '';
-% ni = java.net.NetworkInterface.getNetworkInterfaces;
-% while ni.hasMoreElements
-%     addr = ni.nextElement.getHardwareAddress;
-%     if ~isempty(addr)
-% %         sid = [sid, '.', sprintf('%.2X', typecast(addr, 'uint8'))]; % Modification from user comment by Jan Simon
-%         addrStr = dec2hex(int16(addr)+128); % Original line by Yair Altman
-%         sid = [sid, '.', reshape(addrStr,1,2*length(addr))]; % Original line by Yair Altman
-%     end
-% end
-% 
-% sid=genvarname(sid);
+Computer_ID=id;
+save(rootSettingsFile,'Computer_ID','-append','-v6');

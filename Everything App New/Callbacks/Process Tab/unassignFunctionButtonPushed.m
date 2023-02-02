@@ -35,7 +35,8 @@ end
 groupUITreeSelectionChanged(fig);
 
 projectSettingsFile=getProjectSettingsFile();
-Current_ProcessGroup_Name=loadJSON(projectSettingsFile,'Current_ProcessGroup_Name');
+projectSettings=loadJSON(projectSettingsFile);
+Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
 
 % Get the currently selected group struct.
 fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup');

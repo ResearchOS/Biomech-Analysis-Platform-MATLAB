@@ -121,7 +121,7 @@ nextIdx=length(fcnNamesOrdered)-sum(cellfun(@isempty,fcnNamesOrdered))+1;
 while nextIdx<length(fcnNamesOrdered) % Keep going until everything is filled in.
 
     nextIdx=length(fcnNamesOrdered)-sum(cellfun(@isempty,fcnNamesOrdered))+1;
-    disp(num2str(nextIdx));
+%     disp(num2str(nextIdx));
 
     for i=1:length(allFcnNames)-1
 

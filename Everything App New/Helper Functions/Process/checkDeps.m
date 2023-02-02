@@ -60,7 +60,12 @@ end
 outputsUsedIdx=false(size(allFcnNames));
 outputsUsedIdx(end)=true;
 runWhile=true;
+allNames=[allFcnNames allInputVars allOutputVars]; % So that only one index is needed.
 while runWhile    
+
+    allOutputVars=allNames(:,3);
+    allInputVars=allNames(:,2);
+    allFcnNames=allNames(:,1);
 
     for i=1:length(allFcnNames)-1 % The last one is the function of interest, never exclude that one.
 
@@ -79,14 +84,19 @@ while runWhile
     end
 
     % THESE KEEP GOING OUT OF ORDER FROM ONE ANOTHER, WHY?
-    allFcnNames(~outputsUsedIdx)=[];
-    allInputVars(~outputsUsedIdx)=[];
-    allOutputVars(~outputsUsedIdx)=[];   
+    allNames(~outputsUsedIdx,:)=[];
+%     allFcnNames(~outputsUsedIdx)=[];
+%     allInputVars(~outputsUsedIdx)=[];
+%     allOutputVars(~outputsUsedIdx)=[];   
 
-    outputsUsedIdx=false(size(allFcnNames));
+    outputsUsedIdx=false(size(allNames,1));
     outputsUsedIdx(end)=true;
 
 end
+
+allOutputVars=allNames(:,3);
+allInputVars=allNames(:,2);
+allFcnNames=allNames(:,1);
 
 %% Put the functions in order.
 fcnNamesOrdered=cell(size(allFcnNames));

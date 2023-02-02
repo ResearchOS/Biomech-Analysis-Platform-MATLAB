@@ -170,6 +170,11 @@ fcnNamesOrdered(end)=allFcnNames(end);
 inputVarsOrdered(end)=allInputVars(end);
 outputVarsOrdered(end)=allOutputVars(end);
 
+%% The final output variables
+allFcnNames=fcnNamesOrdered;
+allInputVars=inputVarsOrdered;
+allOutputVars=outputVarsOrdered;
+
 end
 
 %% PURPOSE: DETERMINE IF THE SPECIFIED VARIABLES ARE HARD-CODED/LOGSHEET INPUT VARIABLES ONLY.

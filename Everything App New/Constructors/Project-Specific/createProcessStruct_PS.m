@@ -1,4 +1,4 @@
-function [struct]=createProcessStruct_PS(piStruct,psid)
+function [struct,piStruct]=createProcessStruct_PS(piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC PROCESS FUNCTION STRUCT
 
@@ -52,4 +52,4 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 
 saveClass_PS('Process',struct);
 
-assignVersion(piStruct,struct);
+piStruct=assignVersion(piStruct,struct);

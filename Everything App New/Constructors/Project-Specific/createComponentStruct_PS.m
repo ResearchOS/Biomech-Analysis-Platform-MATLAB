@@ -1,4 +1,4 @@
-function [struct]=createComponentStruct_PS(piStruct,psid)
+function [struct,piStruct]=createComponentStruct_PS(piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC COMPONENT STRUCT
 
@@ -50,4 +50,4 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 
 saveClass_PS('Component',struct);
 
-assignVersion(piStruct,struct);
+piStruct=assignVersion(piStruct,struct);

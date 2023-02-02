@@ -1,4 +1,4 @@
-function [struct]=createPlotStruct_PS(piStruct,psid)
+function [struct,piStruct]=createPlotStruct_PS(piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC PLOT STRUCT
 
@@ -45,4 +45,4 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 
 saveClass_PS('Plot',struct);
 
-assignVersion(piStruct,struct);
+piStruct=assignVersion(piStruct,struct);

@@ -1,4 +1,4 @@
-function [struct]=createVariableStruct_PS(piStruct,psid)
+function [struct,piStruct]=createVariableStruct_PS(piStruct,psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC VARIABLE STRUCT
 
@@ -46,4 +46,4 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 
 saveClass_PS('Variable',struct);
 
-assignVersion(piStruct,struct);
+piStruct=assignVersion(piStruct,struct);

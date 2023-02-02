@@ -1,4 +1,4 @@
-function [struct]=createProcessGroupStruct_PS(piStruct, psid)
+function [struct,piStruct]=createProcessGroupStruct_PS(piStruct, psid)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC STRUCT BASED ON A PROJECT-INDEPENDENT STRUCT.
 
@@ -46,4 +46,4 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 
 saveClass_PS('ProcessGroup',struct);
 
-assignVersion(piStruct,struct);
+piStruct=assignVersion(piStruct,struct);

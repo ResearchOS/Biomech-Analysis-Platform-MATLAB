@@ -16,7 +16,7 @@ class=getClassFromUITree(parent);
 piPath=getClassFilePath(text, class);
 piStruct=loadJSON(piPath);
 
-psStruct=feval(['create' class 'Struct_PS'],piStruct);
+[psStruct,piStruct]=feval(['create' class 'Struct_PS'],piStruct);
 
 linkClasses(piStruct,psStruct);
 

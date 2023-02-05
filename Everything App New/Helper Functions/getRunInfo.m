@@ -14,8 +14,14 @@ runInfo.DataPath=projectStruct.DataPath.(computerID);
 runInfo.Fcn.PIStruct=piStruct;
 runInfo.Fcn.PSStruct=psStruct;
 
+if isequal(piStruct.Class,'Process')
+    numIters=2;
+else
+    numIters=1;
+end
+
 % Store the info for each variable.
-for inOut=1:2
+for inOut=1:numIters
 
     switch inOut
         case 1
@@ -26,6 +32,11 @@ for inOut=1:2
 
     vars=psStruct.([fldName 'Variables']);
     varNamesInCode=piStruct.([fldName 'VariablesNamesInCode']);
+
+    if isempty(varNamesInCode)
+        error('Missing Variables Names In Code!');
+    end
+    
     assert(length(vars)==length(varNamesInCode),['Mismatch in number of getArgs! ' psStruct.Text]);
     assert(~isempty(vars),['Missing ' lower(fldName) ' arguments to run the function! ' psStruct.Text])
     for i=1:length(vars)

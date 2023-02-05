@@ -31,7 +31,15 @@ if isempty(selCompNode) % Typically this would be an immediate end of program, b
             handles.Plot.allComponentsUITree.SelectedNodes=newAxes;
             assignComponentButtonPushed(fig);
             selCompNode=handles.Plot.plotUITree.Children(1);
+        else
+            piAx=loadJSON(fullPath);
+            newPSAx=createComponentStruct_PS(piAx);
+            newAxes=uitreenode(handles.Plot.plotUITree,'Text',newPSAx.Text);
+            handles.Plot.plotUITree.SelectedNodes=newAxes;
+            assignComponentButtonPushed(fig);
+            selCompNode=handles.Plot.plotUITree.Children(1);
         end
+
     end
 end
 

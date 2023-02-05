@@ -1,4 +1,4 @@
-function [handles]=plotComponents(currFig,plotStructPS,subName,trialName)
+function [handles]=plotComponents(currFig,plotStructPS,subName,trialName,repNum)
 
 %% PURPOSE: GIVEN A FIGURE HANDLE AND THE PROJECT-SPECIFIC PLOTTING STRUCT, PLOT THE COMPONENTS USING USER-DEFINED M FILES.
 % Plots static plots, NOT movies.
@@ -14,6 +14,8 @@ if exist('trialName','var')~=1
 end
 
 axesList=plotStructPS.BackwardLinks_Component;
+
+% legend('AutoUpdate','off');
 
 for i=1:length(axesList)
     ax=axesList{i};        
@@ -38,7 +40,17 @@ for i=1:length(axesList)
     axComps=axStruct.BackwardLinks_Component;
     for j=1:length(axComps)
         piComp=getPITextFromPS(axComps{j});
-        handles.(axComps{j})=feval(piComp,axHandle,subName,trialName);
+        piCompPath=getClassFilePath(piComp,'Component');
+        piCompStruct=loadJSON(piCompPath);
+        if exist(piCompStruct.MFileName,'file')~=2
+            error(['File does not exist! ' piCompStruct.MFileName]);
+        end
+        psCompPath=getClassFilePath(axComps{j},'Component');
+        psCompStruct=loadJSON(psCompPath);
+        getRunInfo(piCompStruct,psCompStruct);
+        axes(axHandle);
+        hold on;
+        handles.(axComps{j})=feval(piCompStruct.MFileName,subName,trialName,repNum);
     end
 
     % Set axes limits
@@ -46,5 +58,10 @@ for i=1:length(axesList)
 
 end
 
+% legend('AutoUpdate','on');
+
 % Modify all component properties
-feval([plotStructPS.Text],currFig, handles, subName, trialName);
+if exist(plotStructPS.MFileName,'file')~=2
+    error(['File does not exist! ' plotStructPS.Text]);
+end
+feval(plotStructPS.MFileName, currFig, handles, subName, trialName);

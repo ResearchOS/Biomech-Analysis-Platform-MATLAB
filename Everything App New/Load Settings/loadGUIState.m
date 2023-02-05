@@ -49,18 +49,18 @@ if ~isempty(projectPath)
         end
     end
 end
-allVariablesUITreeSelectionChanged(fig);
-allProcessUITreeSelectionChanged(fig);
-allGroupsUITreeSelectionChanged(fig);
+% allVariablesUITreeSelectionChanged(fig);
+% allProcessUITreeSelectionChanged(fig);
+% allGroupsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot tab
 if ~isempty(projectPath)
     handles.Plot.currentPlotLabel.Text=projectSettings.Current_Plot_Name;
-%     fillPlotUITree(fig);
+    fillPlotUITree(fig);
 end
-allPlotsUITreeSelectionChanged(fig);
-allComponentsUITreeSelectionChanged(fig);
+% allPlotsUITreeSelectionChanged(fig);
+% allComponentsUITreeSelectionChanged(fig);
 % All components UI tree
 % handles.Plot.sortComponentsDropDown.Value=guiSettings.Plot.SortMethod.Components;
 % sortUITree(handles.Plot.allComponentsUITree,handles.Plot.sortComponentsDropDown.Value);

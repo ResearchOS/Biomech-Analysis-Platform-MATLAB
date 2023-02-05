@@ -11,7 +11,7 @@ if isempty(componentName)
     return;
 end
 
-createComponentStruct(fig,componentName);
+createComponentStruct(componentName);
 
 searchTerm=getSearchTerm(handles.Plot.componentSearchField);
 

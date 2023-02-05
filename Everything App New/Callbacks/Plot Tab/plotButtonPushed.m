@@ -66,6 +66,7 @@ if isequal(multi,'P')
 end
 if isequal(level,'P')
     plotComponents(currFig,plotStructPS,allTrialNames);
+    saveCurrentFigure(currFig,plotStructPS);
     return;
 end
 for condNum=1:numConds
@@ -77,6 +78,7 @@ for condNum=1:numConds
 
     if isequal(level,'C')
         plotComponents(currFig,plotStructPS,allTrialNames.Condition(condNum));
+        saveCurrentFigure(currFig,plotStructPS);
         continue;
     end
 
@@ -107,7 +109,9 @@ for condNum=1:numConds
 
             % 1. Create figure
             if isequal(multi,'T')
-                Q.(subName).(trialName)=figure('Name',[subName '_' trialName]);
+                dataPath='C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr22-Role-of-Each-Gait-Phase';
+                taskType=loadArg(dataPath,subName,trialName,1,'Trial_Type_Task_2452AA_6C0');
+                Q.(subName).(trialName)=figure('Name',[subName '_' trialName '_' taskType]);
                 currFig=Q.(subName).(trialName);
             elseif isequal(multi,'SC')
                 currFig=Q(condNum).(subName);
@@ -121,13 +125,25 @@ for condNum=1:numConds
 
             % 2. Plot the components
             if ~isMovie
-                plotComponents(currFig,plotStructPS,subName,trialName);
+                plotComponents(currFig,plotStructPS,subName,trialName,1);
             else
 
             end
 
+            if isequal(multi,'T')
+                saveCurrentFigure(currFig,plotStructPS);
+            end
+
         end
 
+        if ismember(multi,{'S','SC'})
+            saveCurrentFigure(currFig,plotStructPS);
+        end
+
+    end
+
+    if isequal(multi,'C')
+        saveCurrentFigure(currFig,plotStructPS);
     end
 
 end

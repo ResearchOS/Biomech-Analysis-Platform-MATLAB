@@ -42,7 +42,7 @@ for i=1:length(inputVarsPI)
     end
     currArgsPI=inputVarsPI{i};
     argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsPI{1})]); % The ID number of the getArg/setArg is the first element.  
-    assignContextMenu(argNode,handles);
+%     assignContextMenu(argNode,handles);
     
     for j=2:length(currArgsPI)
         if ~iscell(currArgs) || length(currArgs)<j || isempty(currArgs{j})
@@ -50,7 +50,7 @@ for i=1:length(inputVarsPI)
         else
             newNode=uitreenode(argNode,'Text',[currArgsPI{j} ' (' currArgs{j} ')']);
         end
-        assignContextMenu(newNode,handles);
+%         assignContextMenu(newNode,handles);
     end
 
     expand(argNode);

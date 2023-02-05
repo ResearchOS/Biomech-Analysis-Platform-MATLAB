@@ -2,11 +2,7 @@ function []=assignContextMenu(node,handles)
 
 %% PURPOSE: ASSIGN THE PROPER CONTEXT MENU TO THE CURRENT NODE.
 
-if isequal(class(node.Parent),'matlab.ui.container.CheckBoxTree')
-    parent=node.Parent;
-else
-    parent=node.Parent.Parent;
-end
+parent=getUITreeFromNode(node);
 
 [~,~,psid]=deText(node.Text);
 
@@ -28,7 +24,6 @@ switch parent
             node.ContextMenu=handles.Process.psContextMenu;
         else
             error('What happened?');
-%             node.ContextMenu=handles.Process.commonContextMenu;
         end
     case handles.Plot.allPlotsUITree
         if isPS
@@ -41,6 +36,12 @@ switch parent
             node.ContextMenu=handles.Process.psContextMenu;
         else
             error('What happened?');
+        end
+    case handles.Plot.allComponentsUITree
+        if isPS
+            node.ContextMenu=handles.Process.psContextMenu;
+        else
+            node.ContextMenu=handles.Process.commonContextMenu;
         end
     otherwise % No M files associated with this class
         if isPS

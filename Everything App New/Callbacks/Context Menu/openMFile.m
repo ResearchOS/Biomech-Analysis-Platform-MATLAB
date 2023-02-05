@@ -12,13 +12,9 @@ text=selNode.Text;
 [name,id,psid]=deText(text);
 
 % Get the current UI tree
-if isequal(class(selNode.Parent),'matlab.ui.container.CheckBoxTree')
-    parent=selNode.Parent;
-else
-    parent=selNode.Parent.Parent;
-end
+parent=getUITreeFromNode(selNode);
 
-if ismember(parent,[handles.Process.groupUITree])
+if ismember(parent,[handles.Process.groupUITree,handles.Plot.plotUITree])
     text=[name '_' id];
 end
     

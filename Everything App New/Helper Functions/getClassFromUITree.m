@@ -24,8 +24,12 @@ switch uiTree
         class='SpecifyTrials';
     case handles.Process.allSpecifyTrialsUITree
         class='SpecifyTrials';
+    case handles.Plot.allSpecifyTrialsUITree
+        class='SpecifyTrials';
     case handles.Process.groupUITree
         class='Process';
+    case handles.Plot.plotUITree
+        class='Component';
     case handles.Stats.allStatsUITree
         class='Stats';
     otherwise

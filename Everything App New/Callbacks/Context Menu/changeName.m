@@ -3,7 +3,7 @@ function []=changeName(src,event)
 %% PURPOSE: CHANGE THE NAME (BUT NOT THE ID OR PSID) OF A PI OR PS STRUCT.
 % ALSO CHANGES THE NAME EVERYWHERE IT IS LINKED.
 
-disp('Not done yet!';)
+disp('Not done yet!');
 return;
 
 fig=ancestor(src,'figure','toplevel');

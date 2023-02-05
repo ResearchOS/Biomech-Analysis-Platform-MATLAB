@@ -6,6 +6,8 @@ struct.Name=name;
 
 struct.Class='Component';
 
+struct.MFileName=struct.Name;
+
 if nargin==1
     id=createID('Component');
 end

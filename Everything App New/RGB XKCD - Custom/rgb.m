@@ -80,6 +80,9 @@ assert(isnumeric(ColorNames)==0,'Input must be color name(s) as string(s).')
 % Load data created by rgb_install.m:
 load xkcd_rgb_data.mat
 
+colorlist=lower(colorlist);
+ColorNames=lower(ColorNames);
+
 % Number of input color names: 
 numcolors = length(ColorNames);
 
@@ -93,7 +96,8 @@ for k = 1:numcolors
 
     % If a color name is not found in the database, display error message
     % and look for near matches: 
-    if sum(strcmpi(colorlist,ColorName))==0
+    if ~ismember(ColorName,colorlist)
+%     if sum(strcmpi(colorlist,ColorName))==0
         disp(['Color ''',ColorName,''' not found. Consider one of these options:'])
         
         % Special thanks to Cedric Wannaz for writing this bit of code. He came up with a

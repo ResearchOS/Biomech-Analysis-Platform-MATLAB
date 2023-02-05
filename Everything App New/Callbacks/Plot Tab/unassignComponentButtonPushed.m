@@ -48,7 +48,7 @@ parentStruct=loadJSON(parentPath);
 [componentStruct, parentStruct]=unlinkClasses(componentStruct, parentStruct);
 
 % Unlink all of the child components from the axes.
-if isAx
+if isAx && isfield(componentStruct,'BackwardLinks_Component')
     children=componentStruct.BackwardLinks_Component;
     for i=1:length(children)
         childPath=getClassFilePath(children{i},'Component');

@@ -7,7 +7,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile,'');
+projectSettings=loadJSON(projectSettingsFile);
 Current_Plot_Name=projectSettings.Current_Plot_Name;
 
 fullPath=getClassFilePath(Current_Plot_Name,'Plot');
@@ -22,6 +22,7 @@ end
 uiTree=handles.Plot.plotUITree;
 
 delete(uiTree.Children);
+delete(handles.Plot.componentUITree.Children);
 
 if isempty(axes)
     return;

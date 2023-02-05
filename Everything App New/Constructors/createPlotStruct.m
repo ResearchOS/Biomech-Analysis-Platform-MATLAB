@@ -40,7 +40,7 @@ load(rootSettingsFile,'Current_Project_Name');
 
 struct.Project={Current_Project_Name};
 
-struct.Level='';
+struct.Level='T';
 struct.IsMovie=0;
 struct.MovieMetadata.StartFrame=[];
 struct.MovieMetadata.EndFrame=[];

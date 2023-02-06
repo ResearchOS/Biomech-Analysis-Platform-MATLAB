@@ -13,9 +13,14 @@ for i=1:length(classNames)
     className=classNames{i};
 
     classFolder=[root slash className];
+    archiveFolder=[classFolder slash 'Archive'];
 
     if ~isfolder(classFolder)
         mkdir(classFolder);
+    end
+    
+    if ~isfolder(archiveFolder)
+        mkdir(archiveFolder);
     end
     
 end

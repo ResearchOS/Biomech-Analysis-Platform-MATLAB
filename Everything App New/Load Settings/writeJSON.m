@@ -1,4 +1,4 @@
-function []=writeJSON(fullPath, json)
+function []=writeJSON(fullPath, json, date)
 
 %% PURPOSE: WRITE A JSON TO FILE.
 
@@ -6,6 +6,12 @@ function []=writeJSON(fullPath, json)
 
 rootSettingsFile=getRootSettingsFile;
 load(rootSettingsFile,'Store_Settings');    
+
+if exist('date','var')~=1
+    date=datime('now');
+end
+
+json.DateModified=date;
 
 if Store_Settings
     try

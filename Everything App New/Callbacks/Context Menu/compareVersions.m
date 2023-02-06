@@ -28,7 +28,7 @@ piStruct=loadJSON(piPath);
 
 assert(isequal(structClass,piStruct.Class)); % Just checking that the correct class was loaded.
 
-psTexts=piStruct.Versions;
+psTexts=getVersions(piStruct);
 
 if isempty(psTexts)
     disp('There are no versions to compare!');
@@ -79,6 +79,8 @@ if isequal(structClass,'Process')
             fcnName=fcnNames{i}{j};
             fcnPath=getClassFilePath(fcnName,'Process');
             fcnStruct=loadJSON(fcnPath);
+%             inputVars{i}{j}=fcnStruct.BackwardLinks_Variable;
+%             outputVars{i}{j}=fcnStruct.ForwardLinks_Variable;
             inputVars{i}{j}=getVarNamesArray(fcnStruct,'InputVariables');
             outputVars{i}{j}=getVarNamesArray(fcnStruct,'OutputVariables');
         end
@@ -125,6 +127,14 @@ if isequal(structClass,'Process')
         outputVars{i}=outputVars{i}(c);        
 
     end
+end
+
+%% Comparing component versions
+% e.g. Axes versions, or which data is used in which other component version.
+if isequal(structClass,'Component')
+
+    
+
 end
 
 %% Generate the visual comparison of different versions.

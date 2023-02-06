@@ -1,10 +1,12 @@
-function [projectPath]=getProjectPath(suppress)
+function [projectPath]=getProjectPath(suppress,Current_Project_Name)
 
 %% PURPOSE: RETRIEVE THE PROJECT-SPECIFIC FOLDER PATH
 
 rootSettingsFile=getRootSettingsFile();
 
-load(rootSettingsFile,'Current_Project_Name');
+if exist('Current_Project_Name','var')~=1
+    load(rootSettingsFile,'Current_Project_Name');
+end
 fullPath=getClassFilePath(Current_Project_Name,'Project');
 struct=loadJSON(fullPath);
 computerID=getComputerID();

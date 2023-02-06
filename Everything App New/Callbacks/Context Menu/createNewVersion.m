@@ -25,6 +25,6 @@ if isequal(psStruct.Class,'Process')
     end
 end
 
-linkClasses(piStruct,psStruct);
+saveClass(psStruct.Class,psStruct);
 
 uitreenode(selNode,'Text',psStruct.Text,'ContextMenu',handles.Process.psContextMenu);

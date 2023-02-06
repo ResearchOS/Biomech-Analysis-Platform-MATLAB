@@ -51,4 +51,4 @@ struct.Parent=''; % The folder that this node is located within. If empty, then 
 
 saveClass_PS('Plot',struct);
 
-piStruct=assignVersion(piStruct,struct);
+% piStruct=assignVersion(piStruct,struct);

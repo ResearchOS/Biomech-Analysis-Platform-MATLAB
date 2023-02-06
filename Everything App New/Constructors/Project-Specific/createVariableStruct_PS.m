@@ -28,8 +28,8 @@ load(rootSettingsFile,'Current_Project_Name');
 
 struct.Project={Current_Project_Name};
 
-struct.InputToProcess={};
-struct.OutputOfProcess={};
+struct.ForwardLinks_Process={};
+struct.BackwardLinks_Process={};
 
 struct.HardCodedValue=[]; % Only used if "IsHardCoded" is true in project-independent struct.
 

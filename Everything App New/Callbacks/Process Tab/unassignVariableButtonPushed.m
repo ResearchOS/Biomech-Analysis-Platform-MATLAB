@@ -68,12 +68,12 @@ daughterStruct=loadJSON(daughterPath);
 if isequal(currTab,'Process')
     if isequal(parentText(1:6),'getArg')
         fldName='InputVariables';
-        idx=ismember(varStruct.InputToProcess,daughterStruct.Text);
-        varStruct.InputToProcess(idx)=[];
+        idx=ismember(varStruct.ForwardLinks_Process,daughterStruct.Text);
+        varStruct.ForwardLinks_Process(idx)=[];
     elseif isequal(parentText(1:6),'setArg')
         fldName='OutputVariables';
-        idx=ismember(varStruct.OutputOfProcess,daughterStruct.Text);
-        varStruct.OutputOfProcess(idx)=[];
+        idx=ismember(varStruct.BackwardLinks_Process,daughterStruct.Text);
+        varStruct.BackwardLinks_Process(idx)=[];
     end
 else
     fldName='InputVariables';

@@ -47,8 +47,8 @@ for i=1:length(fldNamesLinks)
 end
 
 if isequal(structClass,'Variable')
-    psStruct.InputToProcess={};
-    psStruct.OutputOfProcess={};
+    psStruct.ForwardLinks_Process={};
+    psStruct.BackwardLinks_Processs={};
 end
 
 writeJSON(newPathPS,psStruct);

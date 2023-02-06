@@ -21,9 +21,13 @@ for i=1:length(psTexts)
 
     currText=psTexts{i};
 
-    underscoreIdx=strfind(currText,'_');
+    [name,id]=deText(currText);
 
-    piTexts{i}=currText(1:underscoreIdx(end)-1);
+    piTexts{i}=[name '_' id];
+
+%     underscoreIdx=strfind(currText,'_');
+% 
+%     piTexts{i}=currText(1:underscoreIdx(end)-1);
 
 end
 

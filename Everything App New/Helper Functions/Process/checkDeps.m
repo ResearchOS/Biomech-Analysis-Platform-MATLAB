@@ -14,7 +14,7 @@ for i=1:length(inputVarsIn) % Get the outputting function for the input variable
     varStruct=loadJSON(varPath);
 
     % Load the function
-    fcnNames=varStruct.OutputOfProcess; % Functions from which this variable was output.
+    fcnNames=varStruct.BackwardLinks_Process; % Functions from which this variable was output.
 
     if isempty(fcnNames)
         continue; % End of the current input variable's branch.
@@ -141,12 +141,12 @@ while nextIdx<length(fcnNamesOrdered) % Keep going until everything is filled in
             varStructPI=loadJSON(piPath);
             varStructPS=loadJSON(psPath);
 
-            if isempty(varStructPS.OutputOfProcess)
-                varStructPS.OutputOfProcess={''}; % When empty it's not a cell (because of JSON import) and that messes with ismember
+            if isempty(varStructPS.BackwardLinks_Process)
+                varStructPS.BackwardLinks_Process={''}; % When empty it's not a cell (because of JSON import) and that messes with ismember
             end
 
-            if varStructPI.IsHardCoded || isempty(varStructPS.OutputOfProcess{1}) || ...
-                    (ismember(fcnName,varStructPS.InputToProcess) && ismember(fcnName,varStructPS.OutputOfProcess))
+            if varStructPI.IsHardCoded || isempty(varStructPS.BackwardLinks_Process{1}) || ...
+                    (ismember(fcnName,varStructPS.ForwardLinks_Process) && ismember(fcnName,varStructPS.BackwardLinks_Process))
                 delIdx(varNum)=true; % Remove logsheet AND hard-coded input variables.
             end
         end
@@ -188,7 +188,7 @@ function [bool]=isStartFcn(varNames)
         varPath=getClassFilePath(varNames{i},'Variable');
         varStruct=loadJSON(varPath);
 
-        if ~isempty(varStruct.OutputOfProcess)
+        if ~isempty(varStruct.BackwardLinks_Process)
             bool=false;
             return;
         end

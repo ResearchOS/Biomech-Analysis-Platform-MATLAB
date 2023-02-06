@@ -129,10 +129,10 @@ end
 if isequal(currTab,'Process')
     if isequal(parentText(1:6),'getArg')
         fldName='InputVariables';
-        varStruct.InputToProcess=unique([varStruct.InputToProcess; {daughterStruct_PS.Text}]);
+        varStruct.ForwardLinks_Process=unique([varStruct.ForwardLinks_Process; {daughterStruct_PS.Text}]);
     elseif isequal(parentText(1:6),'setArg')
         fldName='OutputVariables';
-        varStruct.OutputOfProcess=unique([varStruct.OutputOfProcess; {daughterStruct_PS.Text}]);
+        varStruct.BackwardLinks_Process=unique([varStruct.BackwardLinks_Process; {daughterStruct_PS.Text}]);
     end
 else
     fldName='InputVariables';

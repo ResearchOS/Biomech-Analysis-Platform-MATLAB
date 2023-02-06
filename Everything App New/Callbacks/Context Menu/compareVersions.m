@@ -50,7 +50,7 @@ if isequal(structClass,'Variable')
             continue;
         end
         count=count+1;
-        fcnNamesCurr=psStruct.OutputOfProcess; % This field should always exist and be populated, because that's how this variable was created.
+        fcnNamesCurr=psStruct.BackwardLinks_Process; % This field should always exist and be populated, because that's how this variable was created.
 
         fcnNames{count}=[fcnNames{count}; {fcnNamesCurr}]; % Cell array (Nx1) of cell arrays (Mx1). Final result will have N columns of M functions, counting from bottom left. M starts here as 1
 

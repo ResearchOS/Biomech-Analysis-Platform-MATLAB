@@ -33,3 +33,51 @@ end
 
 % 2. If the text is PI, then delete the entire PI and all versions.
 linksNames=contains(fieldnames(piStruct),'Links_'); % The list of class types being linked to and from.
+
+if isPS
+    texts={text};
+else
+    texts=versions;
+end
+
+for i=1:length(texts)
+
+    text=texts{i};
+
+    psPath=getClassFilePath(text,class); % The current PS version.
+    psStruct=loadJSON(psPath);
+
+    linksNames=contains(fieldnames(psStruct),'Links_');
+
+    % Remove all of the different kinds of links.
+    for j=1:length(linksNames)
+
+        linkName=linksNames{j};
+        links=psStruct.(linkName);
+        underscoreIdx=strfind(linkName,'_');
+        linkedClass=linkName(underscoreIdx:end); % Class name is after the underscore.
+
+        % Remove each link for this link class
+        for k=1:length(links)
+
+            link=links{k};
+
+            linkedPath=getClassFilePath(link,linkedClass);
+            linkedStruct=loadJSON(linkedPath);
+
+            if isequal(linkName(1:13),'ForwardLinks_')
+                unlinkClasses(psStruct,linkedStruct);
+            elseif isequal(linkName(1:13),'BackwardLinks_')
+                unlinkClasses(linkedStruct,psStruct);
+            else
+                error('Link field name must start with "ForwardLinks_" or "BackwardLinks_"');
+            end
+
+        end
+
+
+    end
+
+
+
+end

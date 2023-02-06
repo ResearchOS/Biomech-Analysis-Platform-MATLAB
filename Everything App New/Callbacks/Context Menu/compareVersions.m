@@ -128,3 +128,4 @@ if isequal(structClass,'Process')
 end
 
 %% Generate the visual comparison of different versions.
+renderCompare(fig,fcnNames,inputVars,outputVars);

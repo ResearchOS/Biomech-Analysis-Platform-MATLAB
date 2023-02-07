@@ -8,7 +8,7 @@ rootSettingsFile=getRootSettingsFile;
 load(rootSettingsFile,'Store_Settings');    
 
 if exist('date','var')~=1
-    date=datime('now');
+    date=datetime('now');
 end
 
 json.DateModified=date;

@@ -69,7 +69,9 @@ if ~isempty(projectSettingsFile)
 end
 
 %% Check if this is the first time using this computer, ensure the computer-specific fields exist.
-newComputerProjectPaths();
+if ~ismember('Computer_ID',settingsVarNames)
+    newComputerProjectPaths();
+end
 
 %% Fill the UI trees with their correct values
 sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 

@@ -36,8 +36,6 @@ struct.Data_Variables={};
 struct.Data_Logic={};
 struct.Data_Value={};
 
-struct.Versions={};
-
 struct.Archived=false;
 
 struct.Checked=false;

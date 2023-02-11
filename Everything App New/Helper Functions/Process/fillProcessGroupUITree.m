@@ -25,5 +25,13 @@ end
 
 for i=1:length(names)
     newNode=uitreenode(uiTree,'Text',names{i});
+    newNode.NodeData.Class=types{i};
     assignContextMenu(newNode,handles);
+
+    if ~isequal(types{i},'ProcessGroup')
+        continue;
+    end
+
+    createProcessGroupNode(newNode,names{i},handles);    
+
 end

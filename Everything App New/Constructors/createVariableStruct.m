@@ -52,8 +52,6 @@ struct.InputToComponents={};
 struct.InputToStatsTables={};
 struct.InputToPubTables={};
 
-struct.Versions={};
-
 struct.IsHardCoded=false; % By default, this variable is dynamic (from file), not hard-coded.
 
 struct.Level='T'; % Must choose ONE: 'T' for trial is the default. 'S' for subject, and 'P' for project.

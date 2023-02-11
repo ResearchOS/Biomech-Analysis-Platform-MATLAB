@@ -30,11 +30,6 @@ struct.Project={Current_Project_Name};
 
 struct.SpecifyTrials='';
 
-struct.ExecutionListNames={}; % List of functions/groups to execute.
-struct.ExecutionListTypes={};
-
-struct.Versions={};
-
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true; % If true, this variable will be highlighted as needing to be updated.

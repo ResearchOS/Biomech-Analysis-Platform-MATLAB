@@ -27,8 +27,6 @@ struct.SpecifyTrials='';
 struct.NumRows=1;
 struct.NumCols=1;
 
-struct.Versions={};
-
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true;

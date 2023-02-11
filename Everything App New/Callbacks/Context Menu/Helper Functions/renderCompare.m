@@ -8,7 +8,7 @@ pguiHandles=getappdata(pgui,'handles');
 %% Create all of the components
 
 fig=uifigure('Name',['Compare Versions: ' origName],'AutoResizeChildren','off',...
-    'Visibe','on','SizeChangedFcn',@(renderCompareSizeChanged,event) renderCompareResize(renderCompareSizeChanged));
+    'Visible','on','SizeChangedFcn',@(renderCompareSizeChanged,event) renderCompareResize(renderCompareSizeChanged));
 
 handles=initializeComponents_RenderCompare(fig,fcnNames);
 setappdata(fig,'handles',handles);

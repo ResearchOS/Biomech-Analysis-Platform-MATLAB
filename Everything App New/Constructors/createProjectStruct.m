@@ -47,8 +47,6 @@ struct.DataPath.(computerID)='';
 
 struct.ProjectPath.(computerID)='';
 
-struct.Versions={};
-
 struct.Visible=true; % If true, this will not show up in the uitree unless it is un-archived.
 
 struct.OutOfDate=true; % If true, this will show up as having dependencies that need to be updated

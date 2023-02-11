@@ -54,5 +54,3 @@ groupStruct.ExecutionListNames=names;
 groupStruct.ExecutionListTypes=types;
 
 unlinkClasses(processStruct, groupStruct);
-
-% saveClass_PS(fig,'ProcessGroup',groupStruct);

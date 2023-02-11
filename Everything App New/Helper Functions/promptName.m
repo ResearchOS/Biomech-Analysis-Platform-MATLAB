@@ -1,13 +1,21 @@
-function [name]=promptName(prompt)
+function [name]=promptName(prompt,default)
 
 %% PURPOSE: PROMPT THE USER WITH INPUTDLG FOR A NEW NAME.
 % NAMES MUST BE VALID MATLAB VARIABLE NAMES.
 
 isValid=false;
 
+if exist('default','var')~=1
+    default='';
+end
+
+if ~iscell(default)
+    default={default};
+end
+
 while ~isValid
 
-    name=inputdlg(prompt);    
+    name=inputdlg(prompt,'',1,default);    
 
     name=strrep(name,' ','_');
 

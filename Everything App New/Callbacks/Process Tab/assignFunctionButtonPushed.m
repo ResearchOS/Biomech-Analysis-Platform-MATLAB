@@ -64,6 +64,7 @@ linkClasses(processStruct, groupStruct); % Also saves the structs
 
 newNode=uitreenode(handles.Process.groupUITree,'Text',processStruct.Text);
 newNode.ContextMenu=handles.Process.psContextMenu;
+newNode.NodeData.Class='Process';
 
 if isNew
     uitreenode(selNode,'Text',processStruct.Text,'ContextMenu',handles.Process.psContextMenu);

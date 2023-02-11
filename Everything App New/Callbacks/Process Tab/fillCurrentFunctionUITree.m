@@ -33,17 +33,13 @@ outputVarsPI=piStruct.OutputVariablesNamesInCode;
 % Create input variable nodes
 for i=1:length(inputVarsPI)
 
-%     if ~iscell(inputVarsPS) || isempty(inputVarsPS{i})
-%         continue;
-%     end
-
     try
         currArgs=inputVarsPS{i};
     catch
         currArgs='';
     end
     currArgsPI=inputVarsPI{i};
-    argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsPI{1})]); % The ID number of the getArg/setArg is the first element.       
+    argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsPI{1})]); % The ID number of the getArg/setArg is the first element.   
     
     for j=2:length(currArgsPI)
         if ~iscell(currArgs) || length(currArgs)<j || isempty(currArgs{j})
@@ -51,7 +47,8 @@ for i=1:length(inputVarsPI)
         else
             suffix=[' (' currArgs{j} ')'];
         end
-        uitreenode(argNode,'Text',[currArgsPI{j} suffix]);
+        newNode=uitreenode(argNode,'Text',[currArgsPI{j} suffix]);
+        assignContextMenu(newNode,handles);
     end
 
     expand(argNode);
@@ -70,14 +67,16 @@ for i=1:length(outputVarsPI)
         currArgs='';
     end
     currArgsPI=outputVarsPI{i};
-    argNode=uitreenode(uiTree,'Text',['setArg ' num2str(currArgsPI{1})]);  % The ID number of the getArg/setArg is the first element.    
+    argNode=uitreenode(uiTree,'Text',['setArg ' num2str(currArgsPI{1})]);  % The ID number of the getArg/setArg is the first element. 
     
     for j=2:length(currArgsPI)
         if ~iscell(currArgs) || length(currArgs)<j || isempty(currArgs{j})
-            uitreenode(argNode,'Text',currArgsPI{j});
+            suffix='';
         else
-            uitreenode(argNode,'Text',[currArgsPI{j} ' (' currArgs{j} ')']);
+            suffix=[' (' currArgs{j} ')'];
         end
+        newNode=uitreenode(argNode,'Text',[currArgsPI{j} suffix]);
+        assignContextMenu(newNode,handles);
     end
 
     expand(argNode);

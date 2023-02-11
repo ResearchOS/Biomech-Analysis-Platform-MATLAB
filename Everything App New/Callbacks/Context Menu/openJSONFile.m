@@ -10,16 +10,14 @@ selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
 [name,id,psid]=deText(selNode.Text);
 
 if ~isempty(psid)
-    isPS=true;
-    if isequal(class(selNode.Parent),'matlab.ui.container.CheckBoxTree')
-        uiTree=selNode.Parent;
-    else
-        uiTree=selNode.Parent.Parent; % The UI tree
-    end
+    isPS=true;   
+    text=[name '_' id '_' psid];    
 else
-    isPS=false;
-    uiTree=selNode.Parent;
+    isPS=false;    
+    text=[name '_' id];
 end
+
+uiTree=getUITreeFromNode(selNode);
 
 switch uiTree
     case handles.Projects.allProjectsUITree
@@ -30,8 +28,8 @@ switch uiTree
         classType='Process';
     case handles.Process.groupUITree
         classType='Process';
-%     case handles.Process.functionUITree
-%         classType='Variable';
+    case handles.Process.functionUITree
+        classType='Variable';
     case handles.Plot.allPlotsUITree
         classType='Plot';
     case handles.Plot.allComponentsUITree
@@ -50,11 +48,7 @@ switch uiTree
         classType='Stats';
 end
 
-if isPS
-    fullPath=getClassFilePath_PS(selNode.Text, classType);
-else    
-    fullPath=getClassFilePath(selNode);
-end
+fullPath=getClassFilePath(text, classType);
 
 if exist(fullPath,'file')~=2
     a=questdlg('File does not exist. Create it?','Missing file','Yes','No','Cancel','No');    

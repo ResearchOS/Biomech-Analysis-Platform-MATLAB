@@ -2,6 +2,16 @@ function [name, id, psid]=deText(text)
 
 %% PURPOSE: BREAK DOWN THE "TEXT" FIELD INTO ITS CONSTITUENT "NAME", "ID", AND "PSID" COMPONENTS.
 
+openParensIdx=strfind(text,'(');
+if ~isempty(openParensIdx)
+    text=text(openParensIdx+1:end);
+end
+
+if ~isempty(text) && isequal(text(end),')')
+    text=text(1:end-1);
+end
+
+% underscoreIdx is only empty if the current text is an argument
 if isempty(text)
     name='';
     id='';

@@ -28,6 +28,8 @@ switch uiTree
         class='SpecifyTrials';
     case handles.Process.groupUITree
         class='Process';
+    case handles.Process.functionUITree
+        class='Variable';
     case handles.Plot.plotUITree
         class='Component';
     case handles.Stats.allStatsUITree

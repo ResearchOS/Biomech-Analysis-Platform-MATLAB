@@ -1,9 +1,9 @@
-function []=openProjectPathButtonPushed(src,event)
+function []=openDataPathButtonPushed(src,event)
 
-%% PURPOSE: OPEN THE FILE LOCATION FOR THE PROJECT PATH.
+%% PURPOSE: OPEN THE SPECIFIED DATA PATH LOCATION
 
-% fig=ancestor(src,'figure','toplevel');
-% handles=getappdata(fig,'handles');
+fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 rootSettingsFile=getRootSettingsFile();
 load(rootSettingsFile,'Current_Project_Name');
@@ -11,7 +11,7 @@ project=Current_Project_Name;
 fullPath=getClassFilePath(project, 'Project');
 struct=loadJSON(fullPath);
 computerID=getComputerID();
-path=struct.ProjectPath.(computerID);
+path=struct.DataPath.(computerID);
 
 if isempty(path) || exist(path,'dir')~=7
     beep;

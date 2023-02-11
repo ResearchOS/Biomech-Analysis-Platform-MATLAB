@@ -609,6 +609,7 @@ handles.Process.commonContextMenuItem3=uimenu(handles.Process.commonContextMenu,
 handles.Process.commonContextMenuItem4=uimenu(handles.Process.commonContextMenu,'Text','Change Name','MenuSelectedFcn',{@changeName});
 handles.Process.commonContextMenuItem5=uimenu(handles.Process.commonContextMenu,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
 handles.Process.commonContextMenuItem6=uimenu(handles.Process.commonContextMenu,'Text','Delete','MenuSelectedFcn',{@deleteObject});
+handles.Process.commonContextMenuItem7=uimenu(handles.Process.commonContextMenu,'Text','Copy Text','MenuSelectedFcn',{@copyText});
 
 handles.Process.commonContextMenuNoMFile=uicontextmenu(fig);
 handles.Process.commonContextMenuNoMFileItem1=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
@@ -616,6 +617,7 @@ handles.Process.commonContextMenuNoMFileItem2=uimenu(handles.Process.commonConte
 handles.Process.commonContextMenuNoMFileItem3=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Change Name','MenuSelectedFcn',{@changeName});
 handles.Process.commonContextMenuNoMFileItem4=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
 handles.Process.commonContextMenuNoMFileItem5=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Delete','MenuSelectedFcn',{@deleteObject});
+handles.Process.commonContextMenuNoMFileItem6=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Copy Text','MenuSelectedFcn',{@copyText});
 
 handles.Process.psContextMenu=uicontextmenu(fig);
 handles.Process.psContextMenuItem1=uimenu(handles.Process.psContextMenu,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
@@ -624,6 +626,7 @@ handles.Process.psContextMenuItem3=uimenu(handles.Process.psContextMenu,'Text','
 handles.Process.psContextMenuItem4=uimenu(handles.Process.psContextMenu,'Text','Change Name','MenuSelectedFcn',{@changeName});
 handles.Process.psContextMenuItem5=uimenu(handles.Process.psContextMenu,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
 handles.Process.psContextMenuItem6=uimenu(handles.Process.psContextMenu,'Text','Delete','MenuSelectedFcn',{@deleteObject});
+handles.Process.psContextMenuItem7=uimenu(handles.Process.psContextMenu,'Text','Copy Text','MenuSelectedFcn',{@copyText});
 
 handles.Process.psContextMenuNoMFile=uicontextmenu(fig);
 handles.Process.psContextMenuNoMFileItem1=uimenu(handles.Process.psContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
@@ -631,9 +634,4 @@ handles.Process.psContextMenuNoMFileItem2=uimenu(handles.Process.psContextMenuNo
 handles.Process.psContextMenuNoMFileItem3=uimenu(handles.Process.psContextMenuNoMFile,'Text','Change Name','MenuSelectedFcn',{@changeName});
 handles.Process.psContextMenuNoMFileItem4=uimenu(handles.Process.psContextMenuNoMFile,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
 handles.Process.psContextMenuNoMFileItem5=uimenu(handles.Process.psContextMenuNoMFile,'Text','Delete','MenuSelectedFcn',{@deleteObject});
-
-% handles.Process.psContextMenuNoCopy=uicontextmenu(fig);
-% handles.Process.psContextMenuNoCopyItem1=uimenu(handles.Process.psContextMenuNoCopy,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
-% handles.Process.psContextMenuNoCopyItem2=uimenu(handles.Process.psContextMenuNoCopy,'Text','Open M File','MenuSelectedFcn',{@openMFile});
-% handles.Process.psContextMenuNoCopyItem3=uimenu(handles.Process.psContextMenuNoCopy,'Text','Change Name','MenuSelectedFcn',{@changeName});
-% handles.Process.psContextMenuNoCopyItem4=uimenu(handles.Process.psContextMenuNoCopy,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
+handles.Process.psContextMenuNoMFileItem6=uimenu(handles.Process.psContextMenuNoMFile,'Text','Copy Text','MenuSelectedFcn',{@copyText});

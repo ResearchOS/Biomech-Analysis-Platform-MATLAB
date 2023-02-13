@@ -134,8 +134,8 @@ objResize(tab.addArgsButton, [0.3 0.83], [0.03 compHeight]);
 % 27. Remove args button
 objResize(tab.removeArgsButton, [0.35 0.83], [0.03 compHeight]);
 
-% % 28. Add axes component to plot button
-% objResize(tab.addAxesButton, [0.3 0.83], [0.05 compHeight]);
-% 
-% % 29. Remove axes component from plot button
-% objResize(tab.removeAxesButton, [0.35 0.83], [0.05 compHeight]);
+% 27. Properties UI tree
+objResize(tab.propertiesUITree, [0.01 0.01], [0.35 0.8]);
+
+% 28. Edit property text area
+objResize(tab.editPropertyTextArea, [0.01 0.01], [0.1 compHeight]);

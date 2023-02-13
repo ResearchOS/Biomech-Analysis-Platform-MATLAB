@@ -446,11 +446,14 @@ handles.Plot.editSpecifyTrialsButton=uibutton(plotTab,'Text','Edit');
 editSpecifyTrialsButton=handles.Plot.editSpecifyTrialsButton;
 set(editSpecifyTrialsButton,'ButtonPushedFcn',@(editSpecifyTrialsButton,event) editSpecifyTrialsButtonPushed(editSpecifyTrialsButton));
 
-% 26. Add axes component to plot button
-% handles.Plot.addAxesButton=uibutton(handles.Plot.currentPlotTab,'Text','Ax+','ButtonPushedFcn',@(addAxesButton,event) addAxesButtonPushed(addAxesButton));
+% 26. Properties tab
+handles.Plot.propertiesTab=uitab(handles.Plot.subtabCurrent,'Title','Properties','AutoResizeChildren','off');
 
-% 27. Remove axes component from plot button
-% handles.Plot.removeAxesButton=uibutton(handles.Plot.currentPlotTab,'Text','Ax-','ButtonPushedFcn',@(removeAxesButton,event) removeAxesButtonPushed(removeAxesButton));
+% 27. Properties UI tree
+handles.Plot.propertiesUITree=uitree(handles.Plot.propertiesTab,'checkbox','SelectionChangedFcn',@(propertiesUITree,event) propertiesUITreeSelectionChanged(propertiesUITree));
+
+% 28. Edit property text area
+handles.Plot.editPropertyTextArea=uitextarea(handles.Plot.propertiesTab,'Value','','ValueChangedFcn',@(editPropertyTextArea,event) editPropertyTextAreaValueChanged(editPropertyTextArea));
 
 handles.Plot.subtabCurrent.SelectedTab=handles.Plot.currentPlotTab;
 setappdata(fig,'handles',handles);

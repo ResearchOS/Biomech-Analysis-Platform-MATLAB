@@ -42,6 +42,11 @@ struct.Archived=false; % If true, this will not show up in the uitree unless it 
 
 struct.OutOfDate=true; % If true, this variable will be highlighted as needing to be updated.
 
+% This will contain all of the modified properties for all components in the plot. 
+% So, the fieldnames will be PS component names.
+% Those fields' fieldnames will be those components' properties' names.
+struct.Properties={};
+
 % struct.Checked=true; % Only one logsheet can be checked at any one time. Checked indicates that this is the currently used logsheet.
 
 struct.Visible=true;

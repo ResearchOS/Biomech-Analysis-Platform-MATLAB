@@ -35,6 +35,9 @@ if multiIdx<levelIdx
     error('''Multi'' must be a higher or equal level than ''Level''');
 end
 
+%% Get the data path
+dataPath=getDataPath();
+
 %% Compute the desired axes limits
 % 1. Get the components whose variables should be used to compute the axes limits.
 
@@ -108,8 +111,9 @@ for condNum=1:numConds
             trialName=trialNames{trialNum};
 
             % 1. Create figure
-            if isequal(multi,'T')
-                dataPath='C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Spr22-Role-of-Each-Gait-Phase';
+            if isequal(multi,'T')                
+                % Need to allow the user to create a default figure name
+                % (and a default save name for that matter)
                 taskType=loadArg(dataPath,subName,trialName,1,'Trial_Type_Task_2452AA_6C0');
                 Q.(subName).(trialName)=figure('Name',[subName '_' trialName '_' taskType]);
                 currFig=Q.(subName).(trialName);

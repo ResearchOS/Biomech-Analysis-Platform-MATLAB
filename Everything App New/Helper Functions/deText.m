@@ -22,6 +22,13 @@ end
 splitText=strsplit(text,'_');
 underscoreIdx=strfind(text,'_');
 
+if isempty(underscoreIdx)
+    name=text;
+    id='';
+    psid='';
+    return;
+end
+
 % Project-specific
 if length(splitText{end-1})==6 && length(splitText{end})==3
     psid=splitText{end};

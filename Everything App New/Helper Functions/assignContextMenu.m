@@ -26,11 +26,11 @@ switch parent
             error('What happened?');
         end
     case handles.Process.functionUITree
-        if isPS
+%         if isPS
             node.ContextMenu=handles.Process.psContextMenu;
-        else
-            error('What happened?');
-        end
+%         else
+%             error('What happened?');
+%         end
     case handles.Plot.allPlotsUITree
         if isPS
             node.ContextMenu=handles.Process.psContextMenu;

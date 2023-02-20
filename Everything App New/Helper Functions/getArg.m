@@ -55,10 +55,14 @@ for i=1:length(inputVars)
         % 3. If dynamic, find the proper file by looking at its text,
         % level, and subName/trialName/repNum values.
         psText=psStruct.Text;
-%         varLevel=piStruct.Level;
+        varLevel=piStruct.Level;
+
+        if level<varLevel
+            error('Missing subject and/or trial name specification');
+        end
 
         % 4. Load the dynamic variable.
-        switch level
+        switch varLevel
             case 'P'
                 varargout{j-1}=loadMAT(dataPath,psText);
             case 'S'

@@ -1,4 +1,4 @@
-function []=setArg(id,subName,trialName,varargin)
+function []=setArg(id,subName,trialName,repNum,varargin)
 
 %% PURPOSE: SAVE THE DATA
 
@@ -52,16 +52,22 @@ for i=1:length(outputVars)
     for j=2:length(currVars)
 
         psStruct=runInfo.Var.Output(i).PSStruct{j-1};
+        piStruct=runInfo.Var.Output(i).PIStruct{j-1};
+        varLevel=piStruct.Level;
 
         psText=psStruct.Text;
 
+        if level<varLevel
+            error('Missing subject and/or trial name specification');
+        end
+
         switch level
             case 'P'
-                saveMAT(dataPath,psStructFcn,psText,varargin{j});
+                saveMAT(dataPath,psStructFcn,psText,varargin{j-1});
             case 'S'
-                saveMAT(dataPath,psStructFcn,psText,varargin{j},subName);
+                saveMAT(dataPath,psStructFcn,psText,varargin{j-1},subName);
             case 'T'
-                saveMAT(dataPath,psStructFcn,psText,varargin{j},subName,trialName);
+                saveMAT(dataPath,psStructFcn,psText,varargin{j-1},subName,trialName);
         end
 
     end

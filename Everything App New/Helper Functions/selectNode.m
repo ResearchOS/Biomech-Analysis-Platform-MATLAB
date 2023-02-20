@@ -2,7 +2,9 @@ function []=selectNode(uiTree,text)
 
 %% PURPOSE: SELECT THE NODE WITH THE CORRESPONDING TEXT.
 
-texts={uiTree.Children.Text};
+children=uiTree.Children;
+
+texts={children.Text};
 
 idx=ismember(texts,text);
 
@@ -11,4 +13,4 @@ if ~any(idx)
     return;
 end
 
-uiTree.SelectedNodes=uiTree.Children(idx);
+uiTree.SelectedNodes=children(idx);

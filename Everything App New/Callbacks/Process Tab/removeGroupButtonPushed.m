@@ -14,32 +14,34 @@ if isempty(groupNode)
 end
 
 slash=filesep;
-commonPath=getCommonPath();
-classFolder=[commonPath slash 'ProcessGroup'];
-struct=loadClassVar(classFolder);
 
-idx=ismember(struct.Text,groupNode.Text);
+processGroupPath=getClassFilePath(groupNode.Text,'ProcessGroup');
+processGroupStruct=loadJSON(processGroupPath);
 
-assert(any(idx));
+[folder,name]=fileparts(processGroupPath);
 
-idxNum=find(idx==1);
+archiveFolder=[folder slash 'Archive'];
+mkdir(archiveFolder);
+archivePath=[archiveFolder slash name '.json'];
 
-struct.Checked=false;
+processGroupStruct.Archived=true;
+processGroupStruct.Checked=false;
+processGroupStruct.Visible=false;
 
-struct.Visible=false;
+writeJSON(processGroupPath,processGroupStruct);
 
-saveClass('ProcessGroup',struct);
+movefile(processGroupPath,archivePath);
 
+%% Remove the node from the UI tree
+selectNeighborNode(groupNode);
 delete(groupNode);
 
-if idxNum>length(uiTree.Children)
-    idxNum=idxNum-1;
-end
-
-if idxNum==0
-    uiTree.SelectedNodes=[];
-else
-    uiTree.SelectedNodes=uiTree.Children(idxNum);
-end
-
 allGroupsUITreeSelectionChanged(fig);
+
+projectSettingsFile=getProjectSettingsFile();
+projectSettings=loadJSON(projectSettingsFile);
+Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
+
+if isequal(groupNode.Text,Current_ProcessGroup_Name)
+    selectGroupButtonPushed(fig);
+end

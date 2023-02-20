@@ -13,31 +13,27 @@ if isempty(processNode)
     return;
 end
 
+slash=filesep;
+
 processPath=getClassFilePath(processNode.Text,'Process');
 processStruct=loadJSON(processPath);
 
-idx=ismember({uiTree.Children.Text},processNode.Text);
+[folder,name]=fileparts(processPath);
 
-assert(any(idx));
+archiveFolder=[folder slash 'Archive'];
+mkdir(archiveFolder);
+archivePath=[archiveFolder slash name '.json'];
 
-idxNum=find(idx==1);
-
+processStruct.Archived=true;
 processStruct.Checked=false;
-
 processStruct.Visible=false;
 
-saveClass('Process',processStruct);
+writeJSON(processPath,processStruct);
 
+movefile(processPath,archivePath);
+
+%% Remove the node from the UI tree
+selectNeighborNode(processNode);
 delete(processNode);
-
-if idxNum>length(uiTree.Children)
-    idxNum=idxNum-1;
-end
-
-if idxNum==0
-    uiTree.SelectedNodes=[];
-else
-    uiTree.SelectedNodes=uiTree.Children(idxNum);
-end
 
 allProcessUITreeSelectionChanged(fig);

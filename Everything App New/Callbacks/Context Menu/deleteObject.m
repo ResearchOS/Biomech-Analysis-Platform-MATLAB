@@ -5,6 +5,9 @@ function []=deleteObject(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+disp('Not done yet!');
+return;
+
 selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
 
 text=selNode.Text;

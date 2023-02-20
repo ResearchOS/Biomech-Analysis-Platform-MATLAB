@@ -18,6 +18,6 @@ for i=1:length(texts)
         continue;
     end
 
-    createProcessGroupNode(newNode,texts{i});  
+    createProcessGroupNode(newNode,texts{i},handles);  
 
 end

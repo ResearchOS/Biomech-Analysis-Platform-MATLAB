@@ -15,6 +15,13 @@ end
 
 name=selNode.Text;
 
+nodeClass=selNode.NodeData.Class;
+
+if ~isequal(nodeClass,'Process')
+    disp('Must have a process selected to use this button!');
+    return;
+end
+
 processPath=getClassFilePath(name, 'Process');
 processStruct=loadJSON(processPath);
 

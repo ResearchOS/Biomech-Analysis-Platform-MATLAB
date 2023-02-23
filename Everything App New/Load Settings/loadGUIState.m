@@ -58,6 +58,10 @@ end
 if ~isempty(projectPath)
     handles.Plot.currentPlotLabel.Text=projectSettings.Current_Plot_Name;
     fillPlotUITree(fig);
+    plotPath=getClassFilePath(projectSettings.Current_Plot_Name,'Plot');
+    plotStruct=loadJSON(plotPath);
+    specifyTrialsPlot=plotStruct.SpecifyTrials;
+    checkSpecifyTrialsUITree(specifyTrialsPlot,handles.Plot.allSpecifyTrialsUITree);
 end
 % allPlotsUITreeSelectionChanged(fig);
 % allComponentsUITreeSelectionChanged(fig);

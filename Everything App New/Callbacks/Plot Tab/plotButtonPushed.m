@@ -135,7 +135,7 @@ for condNum=1:numConds
             % 2. Plot the components
             plotComponents(currFig,isMovie,plotStructPS,subName,trialName,1);
 
-            if isequal(multi,'T')
+            if isequal(multi,'T') && ~isMovie
                 saveCurrentFigure(currFig,plotStructPS);
             end
 

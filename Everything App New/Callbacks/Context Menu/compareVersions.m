@@ -58,7 +58,7 @@ if isequal(structClass,'Variable')
     structClass='Process'; % Because now I want to aggregate all of the variables from that function, and all of their predecessor functions too.
 elseif isequal(structClass,'Process') % Just want to look at all of the functions
     fcnNames=cell(size(psTexts));
-    for i=1:length(size(psTexts))
+    for i=1:length(psTexts)
         fcnName=psTexts{i};
         fcnNames{i}=[fcnNames{i}; {fcnName}]; % Cell array (Nx1) of cell arrays (Mx1). Final result will have N columns of M functions, counting from bottom left. M starts here as 1
     end

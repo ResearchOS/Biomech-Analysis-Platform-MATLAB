@@ -6,12 +6,12 @@ struct.Name=name;
 
 struct.Class='Component';
 
-struct.MFileName=struct.Name;
-
 if nargin==1
     id=createID('Component');
 end
 struct.ID=id;
+
+struct.MFileName=[struct.Name '_' struct.ID];
 
 currDate=datetime('now');
 struct.DateCreated=currDate;
@@ -31,6 +31,8 @@ load(rootSettingsFile,'Current_Project_Name');
 struct.Project={Current_Project_Name};
 
 struct.Level='T';
+
+struct.IsMovie=0; % Indicates if this component is updated each frame of a movie. Note that it is possible to plot a static image in a movie.
 
 struct.InputVariablesNamesInCode={};
 

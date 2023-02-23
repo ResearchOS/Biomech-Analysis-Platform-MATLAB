@@ -11,6 +11,11 @@ if nargin==1
 end
 struct.ID=psid;
 
+if isequal(struct.Name,'Axes')
+    struct.FixedFrame=1; % 1 to make axes always constant in movies, 0 not to.
+    struct.FixedPosition=''; % Only used if 'FixedFrame' is 0. If char, is a variable name. If double, should be a 1x2 or 1x3.
+end
+
 currDate=datetime('now');
 struct.DateCreated=currDate;
 struct.DateModified=currDate;

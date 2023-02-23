@@ -4,6 +4,11 @@ function [handles]=plotComponents(currFig,isMovie,plotStructPS,subName,trialName
 % Plots static plots AND movies.
 
 figure(currFig); % Focus the current figure.
+currFig.WindowState='maximized';
+pause(1);
+
+currFigPosition=get(currFig,'Position');
+rect=[10 10 currFigPosition(3)-10 currFigPosition(4)-10];
 
 if exist(plotStructPS.MFileName,'file')~=2
     error(['File does not exist! ' plotStructPS.Text]);
@@ -21,12 +26,13 @@ getPlotData(plotStructPS,subName,trialName); % Get all the data for the current 
 
 axesList=plotStructPS.BackwardLinks_Component;
 
+dataPath=getDataPath;
+
 if ~isMovie
     startFrame=1;
     endFrame=1;
     iter=1;
 else
-    clf(currFig);
     startFrame=plotStructPS.StartFrame;
     endFrame=plotStructPS.EndFrame;
     iter=plotStructPS.Interval;
@@ -81,9 +87,11 @@ for i=1:length(axesList)
     end
 end
 
+frameCount=0;
 for frameNum=startFrame:iter:endFrame
 
     count=0;
+    frameCount=frameCount+1;
     for i=1:length(axesList)
         ax=axesList{i};
 %         fullPath=getClassFilePath(ax, 'Component');
@@ -101,6 +109,8 @@ for frameNum=startFrame:iter:endFrame
 %         handles.(ax)=axHandle;
 
         axes(handles.(ax));
+        cla(handles.(ax));
+        handles.(ax).Clipping='off';
         title(handles.(ax),['Frame: ' num2str(frameNum)]);
 
         if ~isfield(axStruct{i},'BackwardLinks_Component')
@@ -128,15 +138,33 @@ for frameNum=startFrame:iter:endFrame
             end
         end
 
-        % Set axes limits
-
     end
 
     % Modify all plot components' properties
-%     if count>0
     feval(plotStructPS.MFileName, currFig, handles, subName, trialName);
-%     end
 
+    if ~isMovie
+        continue;
+    end
+
+    movieVector(frameCount)=getframe(currFig,rect);
+
+end
+
+% Save the movie
+if isMovie
+    slash=filesep;
+    currDate=char(datetime('now'));
+    currDate=currDate(1:11);
+    saveFolder=[dataPath slash 'Plots' slash plotStructPS.Text slash currDate];
+    mkdir(saveFolder);
+    saveName=[saveFolder slash currFig.Name];
+    myWriter=VideoWriter(saveName,'MPEG-4');
+    myWriter.FrameRate=20; % hard-coded for now
+    open(myWriter);
+    writeVideo(myWriter, movieVector);
+    close(myWriter);
+    close(currFig);
 end
 
 % Clean up after myself.

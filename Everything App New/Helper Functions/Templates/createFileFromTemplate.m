@@ -1,4 +1,4 @@
-function []=createFileFromTemplate(templatePath,newPath,fcnName)
+function []=createFileFromTemplate(templatePath,newPath,fcnName,args)
 
 %% PURPOSE: CREATE A NEW .M FILE FROM THE TEMPLATE, MODIFYING THE FIRST LINE TO HAVE THE APPROPRIATE INPUT & OUTPUT ARGS & FUNCTION NAME
 % Inputs:
@@ -9,11 +9,13 @@ function []=createFileFromTemplate(templatePath,newPath,fcnName)
 copyfile(templatePath,newPath); % Copy the file to the new location. Makes the new location if it does not already exist.
 A=regexp(fileread(newPath),'\n','split'); % Open the newly created file
 
-if isempty(strfind(A{1},'=')) % This is a Processing template function
-    firstLine=['function ' fcnName A{1}(strfind(A{1},'('):end)]; % Insert the new function name in the first line
-else
-    firstLine=[A{1}(1:strfind(A{1},'=')) fcnName A{1}(strfind(A{1},'('):end)];
+argsStr='';
+for i=1:length(args)
+    argsStr=[argsStr args{i} ', '];
 end
+argsStr=argsStr(1:end-2);
+
+firstLine=['function []=' fcnName '(' argsStr ')'];
 
 A{1}=firstLine; % Set the first line of the text
 fid=fopen(newPath,'w');

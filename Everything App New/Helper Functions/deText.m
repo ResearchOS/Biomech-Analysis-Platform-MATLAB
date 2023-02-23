@@ -38,4 +38,8 @@ elseif length(splitText{end})==6 % Project-independent
     psid='';
     id=splitText{end};
     name=text(1:underscoreIdx(end)-1);
+else
+    name=text;
+    id='';
+    psid='';
 end

@@ -1,4 +1,4 @@
-function []=getRunInfo(piStruct,psStruct)
+function [runInfo]=getRunInfo(piStruct,psStruct)
 
 %% PURPOSE: COMPILE INFO THAT GETARG/SETARG NEED TO RUN THE SPECIFIED FUNCTION.
 
@@ -60,4 +60,6 @@ end
 
 runInfo.Class=piStruct.Text;
 
-assignin('base','runInfo',runInfo);
+if ~isequal(piStruct.Class,'Component')
+    assignin('base','runInfo',runInfo);
+end

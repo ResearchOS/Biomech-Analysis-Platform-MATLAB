@@ -1,108 +1,93 @@
-function []=assignComponentButtonPushed(src,event)
+function []=assignComponentButtonPushed(src,text,parentText)
 
 %% PURPOSE: ASSIGN A COMPONENT TO A PLOT.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-selNode=handles.Plot.allComponentsUITree.SelectedNodes;
+%% Get the name of the current plot.
+projectSettingsFile=getProjectSettingsFile();
+projectSettings=loadJSON(projectSettingsFile);
+Current_Plot_Name=projectSettings.Current_Plot_Name;
 
-if isempty(selNode)
-    return;
-end
+if exist('text','var')~=1 % Selecting a node
+    selNode=handles.Plot.allComponentsUITree.SelectedNodes; % The object being assigned.
 
-selCompNode=handles.Plot.plotUITree.SelectedNodes;
+    if isempty(selNode)
+        return;
+    end
 
-if isempty(selCompNode) % Typically this would be an immediate end of program, but in this case I might assume that I should create an axes component and add the component to that.
-    projectSettingsFile=getProjectSettingsFile();
-    projectSettings=loadJSON(projectSettingsFile);
-    Current_Plot_Name=projectSettings.Current_Plot_Name;
-    plotPath=getClassFilePath(Current_Plot_Name,'Plot');
-    plotStruct=loadJSON(plotPath);
-    if isfield(plotStruct,'BackwardLinks_Component') && ~isempty(plotStruct.BackwardLinks_Component)
-        return; % Things exist, but nothing is selected
-    else % Nothing exists. Create an axes component.
-        text='Axes_000000';
-        fullPath=getClassFilePath(text,'Component');
-        if exist(fullPath,'file')~=2 % PI axes don't exist
-            createComponentStruct('Axes', '000000');
-            assert(isempty(handles.Plot.plotUITree.Children));
-            newAxes=uitreenode(handles.Plot.allComponentsUITree,'Text','Axes_000000');
-            handles.Plot.allComponentsUITree.SelectedNodes=newAxes;
-            assignComponentButtonPushed(fig);
-            selCompNode=handles.Plot.plotUITree.Children(1);
-        else
-            piAx=loadJSON(fullPath);
-            newPSAx=createComponentStruct_PS(piAx);
-            newAxes=uitreenode(handles.Plot.plotUITree,'Text',newPSAx.Text);
-            handles.Plot.plotUITree.SelectedNodes=newAxes;
-            assignComponentButtonPushed(fig);
-            selCompNode=handles.Plot.plotUITree.Children(1);
+    text=selNode.Text; % Object text being assigned
+
+    if isequal(text(1:11),'Axes_000000') % Assign axes to plot
+        parentText=Current_Plot_Name;
+        parentClass='Plot';
+        parentObj=handles.Plot.plotUITree;
+    else % Assign component to axes
+        selCompNode=handles.Plot.plotUITree.SelectedNodes; % The object being assigned to.
+
+        if isempty(selCompNode)
+            return;
         end
 
+        if ~isequal(selCompNode.Text(1:11),'Axes_000000')
+            selCompNode=selCompNode.Parent;
+        end
+
+        parentText=selCompNode.Text;
+        parentClass='Component';
+        parentObj=selCompNode;
     end
 end
 
-% Create new component or not?
-if isequal(selNode.Parent,handles.Plot.allComponentsUITree)
-    isNew=true; % Selected PI, to create a new PS version.
+% Create a new project-specific process version
+[name,id,psid]=deText(text);
+
+% Create a new project-specific process version
+piText=[name '_' id];
+slash=filesep;
+fileNames=getClassFilenames('Component',[getProjectPath slash 'Project_Settings']);
+psNames=fileNames(contains(fileNames,piText));
+psTexts=fileNames2Texts(psNames);
+if isempty(psid) && isempty(psTexts)
+    isNew=true;
 else
-    isNew=false; % Selected project-specific component version
+    isNew=false;
 end
 
-[name]=deText(selNode.Text);
-
-if isequal(name,'Axes') % Adding a new axes to the plot.
-    isAx=true;
-    projectSettingsFile=getProjectSettingsFile();
-    projectSettings=loadJSON(projectSettingsFile);
-    Current_Plot_Name=projectSettings.Current_Plot_Name;
-
-    % Get the currently selected plot struct
-    fullPath=getClassFilePath(Current_Plot_Name,'Plot');
-    plotStruct=loadJSON(fullPath);
-    axNode=selCompNode;
-
-else % Adding a component that's not an axes, need to find the current parent axes.
-    % IF NO AXES SETTINGS OBJECT EXISTS, NEED TO INITIALIZE IT.
-    isAx=false;
-    if isequal(selCompNode.Parent,handles.Plot.plotUITree) % Axes node is selected.
-        axNode=selCompNode;
-        currAxes=selCompNode.Text;
-    else % Component node is selected.
-        axNode=selCompNode.Parent;
-        currAxes=axNode.Text;
-    end    
-
-    fullPath=getClassFilePath(currAxes, 'Component');
-    axStruct=loadJSON(fullPath);
+% PI node selected
+if isempty(psid)
+    if length(psTexts)==1
+        compText=psTexts{1};
+    elseif length(psTexts)>1
+        disp('Multiple options, please select a project-specific option!');
+        return;
+    end
+else
+    compText=text;
 end
-
-componentName=selNode.Text; % If isNew is true, this should be PI. If isNew is false, should be PS.
-componentPath=getClassFilePath(componentName, 'Component');
 
 switch isNew
     case true
-        piStruct=loadJSON(componentPath);
+        piPath=getClassFilePath(piText,'Component');
+        piStruct=loadJSON(piPath);
         componentStruct=createComponentStruct_PS(piStruct);
     case false
+        componentPath=getClassFilePath(compText,'Component');
         componentStruct=loadJSON(componentPath);
 end
 
-if isAx
-    linkClasses(componentStruct, plotStruct);
-    parent=handles.Plot.plotUITree;
-else
-    linkClasses(componentStruct, axStruct);
-    parent=axNode;
-end
+parentPath=getClassFilePath(parentText,parentClass);
+parentStruct=loadJSON(parentPath);
 
-newNode=uitreenode(parent,'Text',componentStruct.Text);
-newNode.ContextMenu=handles.Process.psContextMenu;
+linkClasses(componentStruct,parentStruct);
 
+newNode=uitreenode(parentObj,'Text',componentStruct.Text);
+assignContextMenu(newNode,handles);
+expand(parentObj);
 handles.Plot.plotUITree.SelectedNodes=newNode;
-plotUITreeSelectionChanged(fig);
 
 if isNew
-    uitreenode(selNode,'Text',componentStruct.Text,'ContextMenu',handles.Process.psContextMenu);
+    newNode=uitreenode(selNode,'Text',componentStruct.Text);
+    assignContextMenu(newNode,handles);
 end

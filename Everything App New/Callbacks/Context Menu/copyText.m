@@ -13,7 +13,11 @@ nodeData=selNode.NodeData;
 checkedNodes=uiTree.CheckedNodes;
 
 if ~ismember(selNode,checkedNodes)
-    class=nodeData.Class;
+    if ~isempty(selNode.NodeData)
+        class=selNode.NodeData.Class;
+    else
+        class=getClassFromUITree(uiTree);
+    end
     text=selNode.Text;
     clipboard('copy',['Class: ' class ' Text: ' text]);
     return;
@@ -22,7 +26,11 @@ end
 str='';
 for i=1:length(checkedNodes)
     currNode=checkedNodes(i);
-    class=currNode.NodeData.Class;
+    if ~isempty(currNode.NodeData)
+        class=currNode.NodeData.Class;
+    else
+        class=getClassFromUITree(uiTree);
+    end
     text=currNode.Text;
     suffix=['Class: ' class ' Text: ' text];
     if i>1

@@ -1,7 +1,7 @@
 function []=fillPlotUITree(src)
 
 %% PURPOSE: FILL THE CURRENT PLOT UI TREE
-% Plots are linked to axes (Components), and axes are linked =
+% Plots are linked to axes (Components), and axes are linked to all other Components
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -33,6 +33,10 @@ for i=1:length(axes)
     currAx=axes{i};
     newNode=uitreenode(uiTree,'Text',currAx);
     assignContextMenu(newNode,handles);
+
+    if i==1
+        uiTree.SelectedNodes=newNode;
+    end
 
     axPath=getClassFilePath(currAx, 'Component');
     axStruct=loadJSON(axPath);

@@ -22,6 +22,7 @@ multi=plotStructPS.Multi; % How many trials/subjects/conditions to put on each p
 isMovie=plotStructPI.IsMovie; % Whether this is a static plot or a movie.
 if isMovie==1
     level='T'; % Overriden because movies can only be trial level (currently)
+    multi='T';
 end
 
 opts={'T','SC','S','C','P'}; % In order lowest to highest
@@ -68,7 +69,7 @@ if isequal(multi,'P')
     currFig=Q;
 end
 if isequal(level,'P')
-    plotComponents(currFig,plotStructPS,allTrialNames);
+    plotComponents(currFig,isMovie,plotStructPS,allTrialNames);
     saveCurrentFigure(currFig,plotStructPS);
     return;
 end
@@ -80,9 +81,13 @@ for condNum=1:numConds
     end
 
     if isequal(level,'C')
-        plotComponents(currFig,plotStructPS,allTrialNames.Condition(condNum));
+        plotComponents(currFig,isMovie,plotStructPS,allTrialNames.Condition(condNum));
         saveCurrentFigure(currFig,plotStructPS);
         continue;
+    end
+
+    if contains(level,'C')
+        subNames=fieldnames(allTrialNames.Condition(condNum));
     end
 
     for subNum=1:length(subNames)
@@ -103,7 +108,7 @@ for condNum=1:numConds
         end
 
         if ismember(level,{'S','SC'})
-            plotComponents(currFig,plotStructPS,subName,trialNames);
+            plotComponents(currFig,isMovie,plotStructPS,subName,trialNames);
             continue;
         end        
 
@@ -128,11 +133,7 @@ for condNum=1:numConds
             end
 
             % 2. Plot the components
-            if ~isMovie
-                plotComponents(currFig,plotStructPS,subName,trialName,1);
-            else
-
-            end
+            plotComponents(currFig,isMovie,plotStructPS,subName,trialName,1);
 
             if isequal(multi,'T')
                 saveCurrentFigure(currFig,plotStructPS);

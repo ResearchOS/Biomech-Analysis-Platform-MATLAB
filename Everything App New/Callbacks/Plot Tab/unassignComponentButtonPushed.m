@@ -36,13 +36,13 @@ if isAx
     projectSettings=loadJSON(projectSettingsFile);
     Current_Plot_Name=projectSettings.Current_Plot_Name;
     parentText=Current_Plot_Name;
-    class='Plot';
+    parentClass='Plot';
 else
     parentText=parent.Text;
-    class='Component';
+    parentClass='Component';
 end
 
-parentPath=getClassFilePath(parentText,class);
+parentPath=getClassFilePath(parentText,parentClass);
 parentStruct=loadJSON(parentPath);
 
 [componentStruct, parentStruct]=unlinkClasses(componentStruct, parentStruct);

@@ -1,21 +1,14 @@
-function [varargout]=getArg(id,subName,trialName,repNum)
+function [varargout]=getArgPlot(id)
 
-%% PURPOSE: RETURN INPUT ARGUMENTS TO A PROCESSING FUNCTION
+%% PURPOSE: RETURN THE DATA NEEDED FOR THE CURRENT PLOT COMPONENT.
 
-%% Plotting or processing?
+allPlotData=evalin('base','allPlotData');
+
 try
-    allPlotData=evalin('base','allPlotData');
-    varargout=getArgPlot(id);
-    return;
+    runInfo=evalin('base','runInfo');
 catch
-    try
-        runInfo=evalin('base','runInfo');
-    catch
-        error('Missing ''runInfo'' from base workspace');
-    end
+    error('Missing ''runInfo'' from base workspace');
 end
-
-dataPath=runInfo.DataPath;
 
 switch nargin
     case 4
@@ -67,15 +60,7 @@ for i=1:length(inputVars)
             error('Missing subject and/or trial name specification');
         end
 
-        % 4. Load the dynamic variable.
-        switch varLevel
-            case 'P'
-                varargout{j-1}=loadMAT(dataPath,psText);
-            case 'S'
-                varargout{j-1}=loadMAT(dataPath,psText,subName);
-            case 'T'
-                varargout{j-1}=loadMAT(dataPath,psText,subName,trialName);
-        end
+        varargout{j-1}=allPlotData.(psText);
 
         if ~isempty(currSubvars{j})
             varargout{j-1}=eval(['varargout{j-1}' currSubvars{j}]);

@@ -6,8 +6,6 @@ struct.Name=piStruct.Name;
 
 struct.Class='Plot';
 
-struct.MFileName=struct.Name;
-
 struct.Level='T';
 
 struct.Multi='T';
@@ -16,6 +14,8 @@ if nargin==1
     psid=createPSID(piStruct.Text, 'Plot');
 end
 struct.ID=psid;
+
+struct.MFileName=[piStruct.Text '_' struct.ID];
 
 currDate=datetime('now');
 struct.DateCreated=currDate;

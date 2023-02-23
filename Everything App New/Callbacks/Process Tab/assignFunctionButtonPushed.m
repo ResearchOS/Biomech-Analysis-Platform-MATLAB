@@ -8,7 +8,7 @@ function []=assignFunctionButtonPushed(src,text,parentText)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-if exist('text','var')~=1
+if exist('text','var')~=1 % Selecting a node
     selNode=handles.Process.allProcessUITree.SelectedNodes;
 
     if isempty(selNode)

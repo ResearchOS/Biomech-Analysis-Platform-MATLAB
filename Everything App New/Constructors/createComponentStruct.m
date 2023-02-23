@@ -30,6 +30,8 @@ load(rootSettingsFile,'Current_Project_Name');
 
 struct.Project={Current_Project_Name};
 
+struct.Level='T';
+
 struct.InputVariablesNamesInCode={};
 
 struct.ModifiedDefaultProperties={}; % List of property names to have the defaults modified for

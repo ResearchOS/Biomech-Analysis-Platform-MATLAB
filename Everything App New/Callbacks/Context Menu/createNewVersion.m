@@ -21,7 +21,7 @@ piStruct=loadJSON(piPath);
 if isequal(psStruct.Class,'Process')
     psStruct.InputSubvariables=piStruct.InputVariablesNamesInCode; % Sets the sizes & indices, need to delete the content though.
     for i=1:length(psStruct.InputSubvariables)
-        psStruct.InputSubvariables{i}{2:end}='';
+        psStruct.InputSubvariables{i}(2:end)=deal(repmat({''},length(psStruct.InputSubvariables{i})-1,1));
     end
 end
 

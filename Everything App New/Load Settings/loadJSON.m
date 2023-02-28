@@ -41,27 +41,6 @@ str=char(raw');
 % Convert json to struct
 data=jsondecode(str);
 
-% if nargin>=2 && ~isempty(varName)    
-%     if iscell(varName) && length(varName)==1
-%         varName=varName{1};
-%     end
-%     
-%     if ~iscell(varName)
-%         if isfield(data,varName)
-%             data=data.(varName);
-%         else
-%             data=[];
-%         end
-%         return;
-%     end    
-% 
-%     for i=1:length(varName)
-%         data2.(varName{i})=data.(varName{i});
-%     end
-% 
-%     data=data2;
-% end
-
 %% Now that the data has been loaded, 
 if exist('fig','var')==1 && Store_Settings 
     setappdata(fig,text,data);

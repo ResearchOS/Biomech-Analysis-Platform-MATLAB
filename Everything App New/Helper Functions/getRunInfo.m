@@ -34,7 +34,7 @@ for inOut=1:numIters
     varNamesInCode=piStruct.([fldName 'VariablesNamesInCode']);
 
     if isempty(varNamesInCode)
-        error('Missing Variables Names In Code!');
+        error(['Missing ' fldName ' Variables Names In Code!']);
     end
     
     assert(length(vars)==length(varNamesInCode),['Mismatch in number of getArgs! ' psStruct.Text]);

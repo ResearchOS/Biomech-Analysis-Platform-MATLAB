@@ -87,7 +87,7 @@ switch structClass
             case 'ST'
                 args={'subName','trialNames'};
             case 'T'
-                args={'subName','trialName'};
+                args={'subName','trialName','repNum'};
         end
     case 'Plot'
         classFolder=['Plot' slash 'Plot Properties'];
@@ -98,7 +98,7 @@ switch structClass
             case 'S'
                 args={'fig','handles','subName'};
             case 'T'
-                args={'fig','handles','subName','trialName'};
+                args={'fig','handles','subName','trialName','repNum'};
         end
     case 'Component'
         classFolder=['Plot' slash 'New Components'];
@@ -109,7 +109,7 @@ switch structClass
             case 'S'
                 args={'subName'};
             case 'T'
-                args={'subName','trialName'};
+                args={'subName','trialName, repNum'};
         end
 end
 

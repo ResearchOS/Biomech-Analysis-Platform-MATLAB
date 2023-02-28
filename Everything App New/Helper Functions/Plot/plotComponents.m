@@ -111,7 +111,9 @@ for frameNum=startFrame:iter:endFrame
         axes(handles.(ax));
         cla(handles.(ax));
         handles.(ax).Clipping='off';
-        title(handles.(ax),['Frame: ' num2str(frameNum)]);
+        if isMovie
+            title(handles.(ax),['Frame: ' num2str(frameNum)]);
+        end
 
         if ~isfield(axStruct{i},'BackwardLinks_Component')
             continue;

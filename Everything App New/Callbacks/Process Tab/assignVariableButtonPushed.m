@@ -149,7 +149,7 @@ assert(isequal(daughterStruct_PS.(fldName){argIdxNum}{1},number));
 daughterStruct_PS.(fldName){argIdxNum}{idxNum+1}=varStruct.Text;
 
 % Saves changes.
-if ~varStructPI.IsHardCoded && isequal(fldName,'InputVariables')
+if isequal(fldName,'InputVariables')
     linkClasses(varStruct, daughterStruct_PS); % Input variables are "ForwardLinks" to the Process function.
 elseif isequal(fldName,'OutputVariables')
     linkClasses(daughterStruct_PS,varStruct); % Output variables are "BackwardLinks" to the Process function.

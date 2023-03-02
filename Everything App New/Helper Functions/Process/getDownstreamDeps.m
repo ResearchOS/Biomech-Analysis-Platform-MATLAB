@@ -60,7 +60,11 @@ end
 
 %% Get the process functions that use this variable.
 st=dbstack;
-nextProcess=startVarStruct.ForwardLinks_Process;
+if sum(ismember({st.name},mfilename))==1
+    nextProcess={prevProcessOrig}; % Top-level, should only happen once. Only do the currently specified process function (avoids other branches)
+else
+    nextProcess=startVarStruct.ForwardLinks_Process;
+end
 for i=1:length(nextProcess)
     allListIn=[allListIn; {startVarText nextProcess{i}}];
 
@@ -100,7 +104,7 @@ if sum(ismember(stNames,mfilename))>1
     return;
 end
 
-%% Create a new list with new objects in it
+%% Consolidate objects
 initVarIdx=ismember(allListIn(:,1),allListIn{1,1}); % The first input variable is to be removed, it just kicks things off.
 allListIn(initVarIdx,:)=[];
 prevVars=unique([allListIn(:,1); allListOut(:,2)],'stable'); % Aggregate all of the variables
@@ -119,9 +123,20 @@ for i=1:length(newVars)
     prevVarText=[newVarText '_'  varPSID];
     newVarText=[newVarText '_' newVarPSID];
 
-    newVars{i}=newVarText;
+    prevVarPath=getClassFilePath(prevVarText,'Variable');
+    prevVarStruct=loadJSON(prevVarPath);
+
+    % Check for variables that have been overwritten, that were initially produced before the first function here.
+    % In this case, don't give it a new name.
+    if any(~ismember(prevVarStruct.BackwardLinks_Process,prevProcesses)) || ...
+            isfield(prevVarStruct,'BackwardLinks_Logsheet')
+        newVars{i}=prevVarText;
+    else
+        newVars{i}=newVarText;
+    end
 
 end
+
 
 %% Create new process names
 for i=1:length(newProcesses)
@@ -170,7 +185,7 @@ for i=1:length(prevProcessGroups)
     newProcessGroups{i}=newGroup;
 
 end
-
+disp('Creating new process groups!');
 for i=1:length(prevProcessGroups)
 
     prevGroupPath=getClassFilePath(prevProcessGroups{i},'ProcessGroup');
@@ -227,6 +242,7 @@ for i=1:length(prevProcessGroups)
 end
 
 %% Create new variables
+disp('Creating new variables!');
 for i=1:length(prevVars)
 
     prevVarPath=getClassFilePath(prevVars{i},'Variable');
@@ -243,7 +259,11 @@ for i=1:length(prevVars)
         [~,~,processesIdx]=intersect(fwdLinks,prevProcesses);
         newFwdLinks=fwdLinks;
         newFwdLinks(fwdLinksIdx)=newProcesses(processesIdx);
-        newVarStruct.ForwardLinks_Process=newFwdLinks;
+        if ~isequal(prevVars{i},newVars{i})
+            newVarStruct.ForwardLinks_Process=newFwdLinks;
+        else
+            newVarStruct.ForwardLinks_Process=[newVarStruct.ForwardLinks_Process; newFwdLinks];
+        end
     end
 
     if isfield(newVarStruct,'BackwardLinks_Process') && ~isempty(newVarStruct.BackwardLinks_Process)
@@ -252,16 +272,22 @@ for i=1:length(prevVars)
         [~,~,processesIdx]=intersect(backLinks,prevProcesses);
         newBackLinks=backLinks;
         newBackLinks(backLinksIdx)=newProcesses(processesIdx);
-        newVarStruct.BackwardLinks_Process=newBackLinks;
+        if ~isequal(prevVars{i},newVars{i})
+            newVarStruct.BackwardLinks_Process=newBackLinks;
+        else
+            newVarStruct.BackwardLinks_Process=[newVarStruct.BackwardLinks_Process; newBackLinks];
+        end
     end
 
     % Remove links to plot components
-    fields=fieldnames(newVarStruct);
-    linksFields=fields(contains(fields,'Links_'));
-    linksFields=linksFields(~ismember(linksFields,{'ForwardLinks_Process','BackwardLinks_Process'}));
+    if ~isequal(prevVars{i},newVars{i})
+        fields=fieldnames(newVarStruct);
+        linksFields=fields(contains(fields,'Links_'));
+        linksFields=linksFields(~ismember(linksFields,{'ForwardLinks_Process','BackwardLinks_Process'}));
 
-    for j=1:length(linksFields)
-        newVarStruct=rmfield(newVarStruct,linksFields{j});
+        for j=1:length(linksFields)
+            newVarStruct=rmfield(newVarStruct,linksFields{j});
+        end
     end
 
     writeJSON(newVarPath,newVarStruct);
@@ -269,6 +295,7 @@ for i=1:length(prevVars)
 end
 
 %% Create new processes
+disp('Creating new processes!');
 for i=1:length(prevProcesses)
 
     prevProcessPath=getClassFilePath(prevProcesses{i},'Process');

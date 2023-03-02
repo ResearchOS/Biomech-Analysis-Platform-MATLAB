@@ -112,4 +112,5 @@ evalin('base','clear runInfo'); % Clean up after myself
 if guiInBase
     handles=getappdata(fig,'handles');
     delete(handles.Process.queueUITree.Children(remQueueIdx));
+    drawnow;
 end

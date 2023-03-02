@@ -11,6 +11,7 @@ source.DateModified=date;
 
 [folder,name,ext]=fileparts(destPath);
 
+name=fileNames2Texts(name);
 [name,id,psid]=deText(name);
 
 if isempty(psid)

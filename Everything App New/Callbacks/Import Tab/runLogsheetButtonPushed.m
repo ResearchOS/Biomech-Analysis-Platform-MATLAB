@@ -122,7 +122,7 @@ end
 searchTerm=getSearchTerm(handles.Process.variablesSearchField);
 sortDropDown=handles.Process.sortVariablesDropDown;
 
-%% Create the variables settings JSON files
+%% Create the variables settings JSON files for subject & trial levels
 date=datetime('now');
 selHeaders={handles.Import.headersUITree.CheckedNodes.Text};
 for i=1:length(selHeaders)
@@ -141,10 +141,10 @@ for i=1:length(selHeaders)
         varPathPI=getClassFilePath(varNamePI,'Variable');
     end
 
-    if exist(varPath,'file')==2 % PS file already exists, nothing to be done here.
-        clear varStruct;
-        continue;
-    end
+%     if exist(varPath,'file')==2 % PS file already exists, nothing to be done here.
+%         clear varStruct;
+%         continue;
+%     end
 
     [~, id, psid]=deText(varName);
 
@@ -160,9 +160,13 @@ for i=1:length(selHeaders)
             varStruct=loadJSON(varPathPI);
         end
         varStruct_PS=createVariableStruct_PS(varStruct,psid);
+    else
+        varStructPath=getClassFilePath(varName,'Variable');
+        varStruct_PS=loadJSON(varStructPath);
     end
 
-    varStruct_PS.BackwardLinks_Process={'Logsheet'}; % Indicates that the end of the line has been reached.
+    [logsheetStruct,varStruct_PS]=linkClasses(logsheetStruct,varStruct_PS);
+%     varStruct_PS.BackwardLinks_Process={'Logsheet'}; % Indicates that the end of the line has been reached.
 
     varName=varStruct_PS.Text;
     logsheetStruct.Variables{idx}=varName;

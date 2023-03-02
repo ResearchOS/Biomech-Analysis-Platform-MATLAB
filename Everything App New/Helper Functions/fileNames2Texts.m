@@ -5,6 +5,12 @@ function [texts]=fileNames2Texts(filenames)
 % filename format: {class}_{name}_ID_PSID.json
 % text format: {name}_ID_PSID
 
+isChar=false;
+if ischar(filenames)
+    filenames={filenames};
+    isChar=true;
+end
+
 texts=cell(size(filenames));
 for i=1:length(filenames)
     name=filenames{i};
@@ -23,4 +29,8 @@ for i=1:length(filenames)
 
     texts{i}=name;
 
+end
+
+if isChar
+    texts=texts{1};
 end

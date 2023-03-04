@@ -36,6 +36,8 @@ struct.Project={Current_Project_Name};
 
 struct.SpecifyTrials='';
 
+struct.Tags={};
+
 struct.AlignEvent=''; % If plotting multiple trials on one plot, this variable (char)/hard-coded value (double) specifies (if not empty) the event (index) to X-axis align the data by
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.

@@ -1,23 +1,44 @@
-function [allListIn,allListOut]=getDownstreamDeps(prevProcessOrig,newProcessOrig,prevVarsOrig,allListIn,allListOut)
+function [allListIn,allListOut]=getDownstreamDeps(prevProcessOrig,newProcessOrig,prevVarsOrig,allListIn,allListOut,newVarsOrig,prevTag,newTag)
 
 %% PURPOSE: CREATE NEW VERSIONS OF ALL VARIABLES & PROCESS FUNCTIONS THAT DEPEND ON THE SPECIFIED PROCESS
+
+% 3 options for inputs:
+% 1. prevProcessOrig, newProcessOrig (prevVarsOrig is empty): Create a new process function.
+% 2. prevProcessOrig, prevVarsOrig (as input vars) (newProcessOrig is empty): Change the specified input variables, same process
+% 3. prevProcessOrig, (newProcessOrig is empty), prevVarsOrig (as output vars), newVarsOrig (as output vars): Remove the specified process function replace its output vars with the new vars
+
+if exist('prevTag','var')~=1 || isempty(prevTag) || ...
+        exist('newTag','var')~=1 || isempty(newTag)
+    error('Must specify the new and old tags!'); % This check only happens once
+end
 
 if exist('allListIn','var')~=1 || isempty(allListIn)
     allListIn={};
     allListOut={};
 end
 
+if exist('newVarsOrig','var')~=1
+    newVarsOrig={};
+end
+
 % Ensures that either new input vars are going to the same process, or a new process with the same input vars. Not both simultaneously!
-if ~isempty(newProcessOrig)
-    assert(isempty(prevVarsOrig)); % Top level only
+if ~isempty(newProcessOrig) && isempty(prevVarsOrig)
+%     assert(isempty(prevVarsOrig)); % Top level only
     newProcess=true;
-elseif ~isempty(prevVarsOrig)
-    assert(isempty(newProcessOrig)); % Top level or lower level
+    remProcess=false;
+elseif ~isempty(prevVarsOrig) && isempty(newVarsOrig)
+%     assert(isempty(newProcessOrig)); % Top level or lower level
     newProcess=false;
+    remProcess=false;
+elseif ~isempty(newVarsOrig)
+    newProcess=false;
+    remProcess=true;
 end
 
 startProcessPath=getClassFilePath(prevProcessOrig,'Process');
 startProcessStructOrig=loadJSON(startProcessPath);
+
+assert(any(ismember(startProcessStructOrig.Tags,prevTag)));
 
 if newProcess % Switching to a new PI process
     
@@ -53,6 +74,12 @@ if newProcess % Switching to a new PI process
     startVarStruct=loadJSON(startVarPath);
 
 else
+    if ~iscell(prevVarsOrig)
+        prevVarsOrig={prevVarsOrig};
+    end
+    if ~iscell(newVarsOrig)
+        newVarsOrig={newVarsOrig};
+    end
     startVarText=prevVarsOrig{1};
     startVarPath=getClassFilePath(startVarText,'Variable');
     startVarStruct=loadJSON(startVarPath);
@@ -81,6 +108,9 @@ for i=1:length(nextProcess)
 
     nextProcessPath=getClassFilePath(nextProcess{i},'Process');
     nextProcessStruct=loadJSON(nextProcessPath);
+    if ~any(ismember(nextProcessStruct.Tags,prevTag))
+        continue;
+    end
     if ~isfield(nextProcessStruct,'ForwardLinks_Variable')
         continue;
     end
@@ -94,7 +124,7 @@ for i=1:length(nextProcess)
             allListOut=allListOut(1:end-1,:);
             continue;
         end
-        [allListIn,allListOut]=getDownstreamDeps(nextProcessStruct.Text,[],nextVars(j),allListIn,allListOut);
+        [allListIn,allListOut]=getDownstreamDeps(nextProcessStruct.Text,[],nextVars(j),allListIn,allListOut,[],prevTag,newTag);
     end
 end
 
@@ -114,6 +144,7 @@ newVars=cell(size(prevVars));
 newProcesses=cell(size(prevProcesses));
 
 %% Create new variable names
+remVarIdx=[];
 for i=1:length(newVars)
 
     currVar=prevVars{i};
@@ -158,6 +189,20 @@ if newProcess
     newProcesses{newProcessIdx}=newProcessOrig;
 end
 
+% If removing a PI process, remove its name and swap out its output variables here
+if remProcess
+    remProcessIdx=ismember(prevProcesses,prevProcessOrig);
+    prevProcesses(remProcessIdx)=[];
+    newProcesses(remProcessIdx)=[];
+
+    [~,remVarIdx,~]=intersect(prevVars,nextProcessStruct.ForwardLinks_Variable);
+    assert(isequal(prevVars(remVarIdx),nextProcessStruct.ForwardLinks_Variable));
+
+    assert(isequal(size(newVarsOrig),size(nextProcessStruct.ForwardLinks_Variable)));
+    newVars(remVarIdx)=newVarsOrig;
+    
+end
+
 %% Get the list of process groups
 prevProcessGroups={};
 for i=1:size(prevProcesses,1)
@@ -196,6 +241,12 @@ for i=1:length(prevProcessGroups)
     % Update the process list
     newGroupStruct=loadJSON(newGroupPath);
     names=newGroupStruct.ExecutionListNames;
+    types=newGroupStruct.ExecutionListTypes;
+    startProcessIdx=ismember(names,prevProcessOrig);
+    if remProcess
+        names(startProcessIdx)=[];
+        types(startProcessIdx)=[];
+    end
     [~,~,namesIdx]=intersect(prevProcesses,names);
     [~,~,processesIdx]=intersect(names,prevProcesses);
     newNames=names;
@@ -237,6 +288,9 @@ for i=1:length(prevProcessGroups)
 
     % Save the group
     newGroupStruct.ExecutionListNames=newNames;
+    newGroupStruct.ExecutionListTypes=types;
+    newGroupStruct.Tags=newGroupStruct.Tags(~ismember(newGroupStruct.Tags,prevTag));
+    newGroupStruct.Tags=[newGroupStruct.Tags; {newTag}];
     writeJSON(newGroupPath,newGroupStruct);
 
 end
@@ -290,6 +344,8 @@ for i=1:length(prevVars)
         end
     end
 
+    newVarStruct.Tags=newVarStruct.Tags(~ismember(newVarStruct.Tags,prevTag));
+    newVarStruct.Tags=[newVarStruct.Tags; {newTag}];
     writeJSON(newVarPath,newVarStruct);
 
 end
@@ -379,6 +435,8 @@ for i=1:length(prevProcesses)
 %         newProcessStruct.InputVariables={};
 %     end
 
+    newProcessStruct.Tags=newProcessStruct.Tags(~ismember(newProcessStruct.Tags,prevTag));
+    newProcessStruct.Tags=[newProcessStruct.Tags; {newTag}];
     writeJSON(newProcessPath,newProcessStruct);
 
 end

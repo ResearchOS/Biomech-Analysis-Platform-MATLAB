@@ -1,4 +1,4 @@
-function [struct,piStruct]=createVariableStruct_PS(piStruct,psid)
+function [struct,piStruct]=createVariableStruct_PS(piStruct,psid,tag)
 
 %% PURPOSE: CREATE A PROJECT-SPECIFIC VARIABLE STRUCT
 
@@ -6,7 +6,7 @@ struct.Name=piStruct.Name;
 
 struct.Class='Variable';
 
-if nargin==1
+if nargin==1 || isempty(psid)
     psid=createPSID(piStruct.Text, 'Variable');
 end
 struct.ID=psid;
@@ -30,6 +30,8 @@ struct.Project={Current_Project_Name};
 
 struct.ForwardLinks_Process={};
 struct.BackwardLinks_Process={};
+
+struct.Tags={tag};
 
 struct.HardCodedValue=[]; % Only used if "IsHardCoded" is true in project-independent struct.
 

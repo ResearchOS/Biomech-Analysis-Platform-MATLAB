@@ -38,6 +38,8 @@ struct.SpecifyTrials='';
 struct.InputVariables={};
 struct.InputSubvariables={};
 
+struct.Tags={};
+
 if isequal(struct.Name, 'Axes')
     struct.Position=[1 1 1]; % By default axes subplot is the whole figure. Can also be a 1x4 to manually specify position
 end

@@ -109,10 +109,17 @@ piText=[name '_' id];
 varPathPI=getClassFilePath(piText,'Variable');
 varStructPI=loadJSON(varPathPI);
 
+projectSettingsFile=getProjectSettingsFile();
+projectSettings=loadJSON(projectSettingsFile);
+Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
+groupPath=getClassFilePath(Current_ProcessGroup_Name,'ProcessGroup');
+currGroup=loadJSON(groupPath);
+tag=currGroup.Tags{end};
+
 switch isNew
     case true
         % Create a new project-specific ID for the variable to add.
-        varStruct=createVariableStruct_PS(varStructPI);
+        varStruct=createVariableStruct_PS(varStructPI,[],tag);
     case false
         varPath=getClassFilePath_PS(selNode.Text, 'Variable');
         varStruct=loadJSON(varPath);

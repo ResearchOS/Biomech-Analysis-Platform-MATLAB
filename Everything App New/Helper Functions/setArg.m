@@ -61,7 +61,7 @@ for i=1:length(outputVars)
             error('Missing subject and/or trial name specification');
         end
 
-        switch level
+        switch varLevel
             case 'P'
                 saveMAT(dataPath,psStructFcn,psText,varargin{j-1});
             case 'S'

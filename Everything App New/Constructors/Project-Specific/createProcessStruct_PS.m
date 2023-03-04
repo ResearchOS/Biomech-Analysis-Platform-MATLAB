@@ -37,6 +37,8 @@ struct.InputVariables={};
 struct.InputSubvariables={};
 struct.OutputVariables={};
 
+struct.Tags={};
+
 struct.UsedInGroups={};
 
 struct.Archived=false; % If true, this will not show up in the uitree unless it is un-archived.

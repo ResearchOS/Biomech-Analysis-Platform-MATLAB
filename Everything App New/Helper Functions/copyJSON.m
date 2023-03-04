@@ -9,6 +9,11 @@ date=datetime('now');
 source.DateCreated=date;
 source.DateModified=date;
 
+% For Process only, remove the date last ran.
+if isfield(source,'DateLastRan')
+    source=rmfield(source,'DateLastRan');
+end
+
 [folder,name,ext]=fileparts(destPath);
 
 name=fileNames2Texts(name);

@@ -7,6 +7,10 @@ if isempty(text)
     return;
 end
 
+if isstring(text)
+    text=char(text);
+end
+
 % This allows this one function to do both project-independent and
 % project-specific actions (should be cleaned up in the future.
 if ischar(text)

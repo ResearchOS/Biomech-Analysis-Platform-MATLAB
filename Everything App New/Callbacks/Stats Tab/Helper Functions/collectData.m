@@ -1,10 +1,21 @@
-function [allTable]=collectData(metaVarNames,varNames,allTrialNames,multiVar)
+function [allTable]=collectData(metaVarNames,varNames,specifyTrials,multiVar)
 
 %% PURPOSE: PULL THE DATA TOGETHER INTO A TABLE TO ANALYZE.
 
 if exist('multiVar','var')~=1
     multiVar={''};
 end
+
+inclStruct=getInclStruct(specifyTrials);
+logText='YA_All_Spr21TWW_18F869';
+logPath=getClassFilePath(logText,'Logsheet');
+logStruct=loadJSON(logPath);
+computerID=getComputerID();
+structPath=logStruct.LogsheetPath.(computerID);
+[folder,file,ext]=fileparts(structPath);
+structPathMAT=[folder filesep file '.mat'];
+load(structPathMAT,'logVar');
+allTrialNames=getTrialNames(inclStruct,logVar,0,logStruct);
 
 %% Get the number of rows in the table.
 subNames=fieldnames(allTrialNames);

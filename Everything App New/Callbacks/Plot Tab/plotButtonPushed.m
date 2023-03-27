@@ -25,7 +25,7 @@ if isMovie==1
     multi='T';
 end
 
-opts={'T','SC','S','C','P'}; % In order lowest to highest
+opts={'T','SC','S','C','PC','P'}; % In order lowest to highest
 multiIdx=find(ismember(opts,multi)==1);
 levelIdx=find(ismember(opts,level)==1);
 if levelIdx==length(opts) && isempty(multiIdx)
@@ -64,11 +64,11 @@ else
     numConds=length(allTrialNames.Condition);
 end
 
-if isequal(multi,'P')
+if contains(multi,'P')
     Q=figure;
     currFig=Q;
 end
-if isequal(level,'P')
+if contains(level,'P')
     plotComponents(currFig,isMovie,plotStructPS,allTrialNames);
     saveCurrentFigure(currFig,plotStructPS);
     return;

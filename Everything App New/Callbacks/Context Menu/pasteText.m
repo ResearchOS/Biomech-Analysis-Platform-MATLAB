@@ -17,6 +17,10 @@ end
 parentText=selNode.Text; % The parent object to paste into
 parentClass=getClassFromUITree(selUITree);
 
+if isequal(parentClass,'Variable')
+    parentClass='Process';
+end
+
 % parentPath=getClassFilePath(parentText,parentClass);
 % parentStruct=loadJSON(parentPath);
 
@@ -31,11 +35,11 @@ for i=1:length(texts)
     spaceIdxClass=strfind(splitText{2},' ');
     class=splitText{2}(spaceIdxClass(1)+1:spaceIdxClass(2)-1);
     text=splitText{3}(2:end);
-%     childPath=getClassFilePath(text,class);
-%     childStruct=loadJSON(childPath);
 
     switch parentClass
         case 'Process'
+            openParenIdx=strfind(text,'(');
+            text=text(openParenIdx+1:end-1);
             assert(ismember(class,{'Variable'}));
             assignVariableButtonPushed(fig,text,parentText);
         case 'ProcessGroup'

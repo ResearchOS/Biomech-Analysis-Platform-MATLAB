@@ -93,7 +93,7 @@ switch structClass
         classFolder=['Plot' slash 'Plot Properties'];
         templateName='Template_Plot';
         switch level
-            case 'P'
+            case {'P','PC'}
                 args={'fig','handles'};
             case 'S'
                 args={'fig','handles','subName'};
@@ -104,8 +104,10 @@ switch structClass
         classFolder=['Plot' slash 'New Components'];
         templateName='Template_Component';
         switch level
-            case 'P'
+            case {'P'}
                 args={};
+            case 'PC'
+                args={'ax','allTrialNames','plotName'};
             case 'S'
                 args={'subName'};
             case 'T'

@@ -22,7 +22,9 @@ if exist('trialName','var')~=1
     trialName='';
 end
 
-getPlotData(plotStructPS,subName,trialName); % Get all the data for the current plot.
+if ischar(subName)
+    getPlotData(plotStructPS,subName,trialName); % Get all the data for the current plot.
+end
 
 axesList=plotStructPS.BackwardLinks_Component;
 

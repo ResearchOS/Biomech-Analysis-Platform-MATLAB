@@ -1,4 +1,4 @@
-function []=assignVariableButtonPushed(src,event)
+function []=assignVariableButtonPushed(src,varName,varNameInCode)
 
 %% PURPOSE: ASSIGN VARIABLE TO CURRENT PROCESSING FUNCTION
 
@@ -51,6 +51,10 @@ if isequal(daughterNode.Parent,daughterUITree)
     return;
 end
 
+if exist('varNameInCode','var')~=1
+    varNameInCode=daughterNode.Text;
+end
+
 % Determine whether to create a new project-specific variable version or
 % use an existing one.
 if (isequal(selNode.Parent,handles.Process.allVariablesUITree) && isempty(selNode.Children)) % Special case where there are no existing PS versions.
@@ -76,9 +80,9 @@ daughterStruct_PS=loadJSON(fullPath);
 
 % Check if daughterNode already has a variable assigned that is being replaced. If so, need to unlink
 % that variable from the mother class object
-if contains(daughterNode.Text,' ')
-    spaceIdx=strfind(daughterNode.Text,' ');
-    varText=daughterNode.Text(spaceIdx+2:end-1);
+if contains(varNameInCode,' ')
+    spaceIdx=strfind(varNameInCode,' ');
+    varText=varNameInCode(spaceIdx+2:end-1);
     prevVarPath=getClassFilePath(varText, 'Variable');
     prevVarStruct=loadJSON(prevVarPath);
     [prevVarStruct, daughterStruct_PS]=unlinkClasses(prevVarStruct, daughterStruct_PS);
@@ -102,7 +106,13 @@ argIdxNum=find(ismember(childrenNodes(argSpecificIdx), parentNode)==1);
 % instance.
 idxNum=find(ismember(parentNode.Children,daughterNode)==1);
 
-[name,id]=deText(selNode.Text);
+if exist('varName','var')~=1
+    varName=selNode.Text;
+else
+    selNode=selectNode(handles.Process.allVariablesUITree,varName);
+end
+
+[name,id]=deText(varName);
 
 % Get the PI variable struct.
 piText=[name '_' id];
@@ -121,7 +131,7 @@ switch isNew
         % Create a new project-specific ID for the variable to add.
         varStruct=createVariableStruct_PS(varStructPI,[],tag);
     case false
-        varPath=getClassFilePath_PS(selNode.Text, 'Variable');
+        varPath=getClassFilePath_PS(varName, 'Variable');
         varStruct=loadJSON(varPath);
 end
 

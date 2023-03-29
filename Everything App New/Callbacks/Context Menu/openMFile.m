@@ -121,4 +121,8 @@ filePath=[rootPath slash fileName '.m'];
 % Generate the new file from the template
 templateName=[templateName '_' level];
 templatePath=which(templateName);
+folder=fileparts(filePath);
+if exist(folder,'dir')~=7
+    mkdir(folder);
+end
 createFileFromTemplate(templatePath,filePath,fileName,args);

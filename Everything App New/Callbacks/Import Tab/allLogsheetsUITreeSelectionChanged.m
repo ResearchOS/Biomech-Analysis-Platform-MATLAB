@@ -37,7 +37,13 @@ handles.Import.numHeaderRowsField.Value=struct.NumHeaderRows;
 headers=struct.Headers;
 
 % Set the subject codename header
-handles.Import.subjectCodenameDropDown.Items=headers;
+if ~isempty(headers)
+    handles.Import.subjectCodenameDropDown.Items=headers;
+    handles.Import.targetTrialIDDropDown.Items=headers;
+else
+    handles.Import.subjectCodenameDropDown.Items={''};
+    handles.Import.targetTrialIDDropDown.Items={''};
+end
 if ismember(struct.SubjectCodenameHeader,headers)
     value=struct.SubjectCodenameHeader;
 else
@@ -46,7 +52,6 @@ end
 handles.Import.subjectCodenameDropDown.Value=value;
 
 % Set the target trial column header
-handles.Import.targetTrialIDDropDown.Items=headers;
 if ismember(struct.TargetTrialIDHeader,headers)
     value=struct.TargetTrialIDHeader;
 else

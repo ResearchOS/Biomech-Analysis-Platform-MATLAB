@@ -11,7 +11,7 @@ if isempty(projectName)
     return;
 end
 
-createProjectStruct(fig,projectName);
+createProjectStruct(projectName);
 
 searchTerm=getSearchTerm(handles.Projects.searchField);
 

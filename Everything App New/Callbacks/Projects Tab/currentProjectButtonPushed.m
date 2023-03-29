@@ -17,4 +17,12 @@ rootSettingsFile=getRootSettingsFile();
 
 Current_Project_Name=selNode.Text;
 
+% Update visible group, update visible process functions, etc.
+groupName=getCurrentProcessGroup();
+selectGroupButtonPushed(fig,groupName);
+
+searchTerm=getSearchTerm(handles.Process.groupsSearchField);
+sortDropDown=handles.Process.sortGroupsDropDown;
+fillUITree(fig,'ProcessGroup',handles.Process.allGroupsUITree,searchTerm,sortDropDown);
+
 save(rootSettingsFile,'Current_Project_Name','-append');

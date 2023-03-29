@@ -122,6 +122,13 @@ end
 searchTerm=getSearchTerm(handles.Process.variablesSearchField);
 sortDropDown=handles.Process.sortVariablesDropDown;
 
+projectSettingsFile=getProjectSettingsFile();
+projectSettings=loadJSON(projectSettingsFile);
+Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
+groupPath=getClassFilePath(Current_ProcessGroup_Name,'ProcessGroup');
+currGroup=loadJSON(groupPath);
+tag=currGroup.Tags{end};
+
 %% Create the variables settings JSON files for subject & trial levels
 date=datetime('now');
 selHeaders={handles.Import.headersUITree.CheckedNodes.Text};
@@ -159,7 +166,7 @@ for i=1:length(selHeaders)
         if exist('varStruct','var')~=1
             varStruct=loadJSON(varPathPI);
         end
-        varStruct_PS=createVariableStruct_PS(varStruct,psid);
+        varStruct_PS=createVariableStruct_PS(varStruct,psid,tag);
     else
         varStructPath=getClassFilePath(varName,'Variable');
         varStruct_PS=loadJSON(varStructPath);

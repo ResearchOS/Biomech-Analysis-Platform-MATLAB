@@ -10,5 +10,7 @@ for i=1:length(headers)
     uitreenode(handles.Import.headersUITree,'Text',headers{i});
 end
 
-handles.Import.headersUITree.SelectedNodes=handles.Import.headersUITree.Children(1);
-headersUITreeSelectionChanged(fig);
+if ~isempty(handles.Import.headersUITree.Children)
+    handles.Import.headersUITree.SelectedNodes=handles.Import.headersUITree.Children(1);
+    headersUITreeSelectionChanged(fig);
+end

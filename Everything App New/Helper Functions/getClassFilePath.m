@@ -25,8 +25,10 @@ if ~ischar(text)
     parent=text.Parent;
 
     class=getClassFromUITree(parent);
+    text=text.Text;
 
-    file=text.Text;
+    file=text;
+    [name,id,psid]=deText(text);
 else
     file=text; % Node text specified directly
 end
@@ -35,4 +37,8 @@ slash=filesep;
 
 commonPath=getCommonPath();
 classFolder=[commonPath slash class];
-fullPath=[classFolder slash class '_' file '.json'];
+if isempty(psid)
+    fullPath=[classFolder slash class '_' file '.json'];
+else
+    fullPath=[classFolder slash 'Implementations' slash class '_' file '.json'];
+end

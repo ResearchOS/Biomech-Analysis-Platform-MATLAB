@@ -50,7 +50,8 @@ end
 % Create a new project-specific process version
 piText=[name '_' id];
 slash=filesep;
-fileNames=getClassFilenames('Component',[getProjectPath slash 'Project_Settings']);
+fileNames=getClassFilenames('Component',[getCommonPath slash 'Component' slash 'Implementations']);
+% fileNames=getClassFilenames('Component',[getProjectPath slash 'Project_Settings']);
 psNames=fileNames(contains(fileNames,piText));
 psTexts=fileNames2Texts(psNames);
 if isempty(psid) && isempty(psTexts)

@@ -1,6 +1,6 @@
 function []=saveClass(class, classStruct, date)
 
-%% PURPOSE: SAVE A PI CLASS INSTANCE TO JSON FILE.
+%% PURPOSE: SAVE A CLASS INSTANCE TO JSON FILE.
 
 [~,~,psid]=deText(classStruct.Text);
 
@@ -10,16 +10,22 @@ slash=filesep;
 
 filename=[class '_' classStruct.Text];
 
-if isempty(psid)
-    rootPath=getCommonPath();
-else
-    projectPath=getProjectPath;
-    rootPath=[projectPath slash 'Project_Settings'];
+rootPath=getCommonPath();
+
+if ~isempty(psid)
+    rootPath=[rootPath slash class slash 'Implementations'];
 end
 
-classFolder=[rootPath slash class];
+% if isempty(psid)
+%     rootPath=getCommonPath();
+% else
+%     projectPath=getProjectPath;
+%     rootPath=[projectPath slash 'Project_Settings'];
+% end
 
-filepath=[classFolder slash filename];
+% classFolder=[rootPath slash class];
+
+filepath=[rootPath slash filename];
 
 if nargin<3
     date=datetime('now');

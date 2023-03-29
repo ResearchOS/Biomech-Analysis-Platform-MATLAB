@@ -6,11 +6,15 @@ slash=filesep;
 
 filename=[class '_' classStruct.Text];
 
-projectPath=getProjectPath(1);
+% projectPath=getProjectPath(1);
 
-classFolder=[projectPath slash 'Project_Settings' slash class];
+root=getCommonPath();
 
-filepath=[classFolder slash filename];
+filepath=[root slash class slash 'Implementations' slash filename];
+
+% classFolder=[projectPath slash 'Project_Settings' slash class];
+% 
+% filepath=[classFolder slash filename];
 
 if nargin<3
     date=datetime('now');

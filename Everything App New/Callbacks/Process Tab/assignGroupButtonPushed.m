@@ -39,7 +39,7 @@ else
     % Create a new project-specific process version
     piText=[name '_' id];
     slash=filesep;
-    fileNames=getClassFilenames('Process',[getProjectPath slash 'Project_Settings']);
+    fileNames=getClassFilenames('ProcessGroup',[getCommonPath slash 'ProcessGroup' slash 'Implementations']);
     psNames=fileNames(contains(fileNames,piText));
     if isempty(psid) && isempty(psNames)
         isNew=true;

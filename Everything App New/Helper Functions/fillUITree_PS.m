@@ -12,10 +12,10 @@ end
 
 texts={uiTree.Children.Text}; % The existing nodes' texts
 
-projectPath=getProjectPath(1); % The current project path
+% projectPath=getProjectPath(1); % The current project path
 
 % The project-specific class instances for this project.
-filenames=getClassFilenames(class,[projectPath slash 'Project_Settings']);
+filenames=getClassFilenames(class,[getCommonPath slash class slash 'Implementations']);
 psTexts=fileNames2Texts(filenames); % Convert those PS file name instances to texts
 
 piTexts=getPITextFromPS(psTexts); % Identify which PI class instances the PS instances derive from.

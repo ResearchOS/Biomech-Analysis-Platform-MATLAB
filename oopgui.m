@@ -34,8 +34,8 @@ assignin('base','gui',fig); % Put the GUI object into the base workspace.
 
 %% Get the "common path". This is the folder containing project-independent instances of settings class variables.
 % This path should be in its own GitHub repository.
-commonPath=getCommonPath();
-initializeClassFolders(commonPath);
+% commonPath=getCommonPath();
+initializeClassFolders();
 
 %% If there are no existing project settings files, then create a 'Default' project
 % 1. Does root settings file exist? YES BECAUSE THE COMMON PATH HAS BEEN SET

@@ -4,8 +4,9 @@ function [fullPath]=getClassFilePath_PS(name_PS, class)
 
 slash=filesep;
 
-projectPath=getProjectPath(1);
+% projectPath=getProjectPath(1);
 
-classFolder=[projectPath slash 'Project_Settings' slash class];
+classFolder=[getCommonPath slash class slash 'Implementations'];
+% classFolder=[projectPath slash 'Project_Settings' slash class];
 
 fullPath=[classFolder slash class '_' name_PS '.json'];

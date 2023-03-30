@@ -29,11 +29,15 @@ catch
 end
 
 startAll=tic;
+slash=filesep;
+oldDir=cd([getCommonPath slash 'Code']); % Ensure that the proper functions are being called.
 for i=1:length(queue)    
 
     text=queue{i};
     runProcess(text,true);           
 
 end
+
+cd(oldDir);
 
 disp(['Finished running all functions in queue in ' num2str(round(toc(startAll),2)) ' seconds']);

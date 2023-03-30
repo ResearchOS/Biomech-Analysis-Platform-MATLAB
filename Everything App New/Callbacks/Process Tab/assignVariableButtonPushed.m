@@ -124,7 +124,11 @@ projectSettings=loadJSON(projectSettingsFile);
 Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
 groupPath=getClassFilePath(Current_ProcessGroup_Name,'ProcessGroup');
 currGroup=loadJSON(groupPath);
-tag=currGroup.Tags{end};
+if ~isempty(currGroup.Tags)
+    tag=currGroup.Tags{end};
+else
+    tag='';
+end
 
 switch isNew
     case true

@@ -127,7 +127,10 @@ projectSettings=loadJSON(projectSettingsFile);
 Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
 groupPath=getClassFilePath(Current_ProcessGroup_Name,'ProcessGroup');
 currGroup=loadJSON(groupPath);
-tag=currGroup.Tags{end};
+tag='';
+if ~isempty(currGroup.Tags)
+    tag=currGroup.Tags{end};
+end
 
 %% Create the variables settings JSON files for subject & trial levels
 date=datetime('now');

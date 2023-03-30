@@ -28,6 +28,7 @@ if exist('text','var')~=1 % Selecting a node
     if isequal(selNode.Parent,handles.Process.allProcessUITree)
         if length(selNode.Children)==1
             selNode=selNode.Children(1);
+            processName=selNode.Text;
         elseif length(selNode.Children)>1
             disp('Multiple options, please select a project-specific option!');
             expand(selNode);

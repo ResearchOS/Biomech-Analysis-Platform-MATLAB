@@ -46,7 +46,7 @@ settingsVarNames=whos('-file',rootSettingsFile);
 settingsVarNames={settingsVarNames.name};
 
  % 3.
-projects=getClassFilenames('Project');
+projects=getClassFilenames('Project',false);
 if isempty(projects)
     projectStruct=createProjectStruct('Default');  
     Current_Project_Name=projectStruct.Text;

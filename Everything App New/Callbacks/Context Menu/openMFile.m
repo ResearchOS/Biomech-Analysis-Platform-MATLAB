@@ -50,11 +50,14 @@ elseif isfield(psStruct,'Level')
     level=psStruct.Level;
 end
 
+oldDir=cd([getCommonPath filesep 'Code']);
 try
     filePath=which(fileName);
     edit(filePath);
+    cd(oldDir);
     return;
 catch % The file does not exist.
+    cd(oldDir);
 end
 
 %% Create new file

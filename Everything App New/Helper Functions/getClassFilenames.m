@@ -1,4 +1,4 @@
-function [filenames]=getClassFilenames(class,root)
+function [filenames]=getClassFilenames(class,isInstance)
 
 %% PURPOSE: RETURN ALL OF THE INSTANCES OF A CLASS IN THE CLASS FOLDER.
 % Inputs:
@@ -9,10 +9,15 @@ function [filenames]=getClassFilenames(class,root)
 slash=filesep;
 
 if nargin==1
-    root=getCommonPath();   
+    isInstance=false;
 end
 
-classFolder=[root slash class];
+if ~isInstance    
+    root=getCommonPath();   
+    classFolder = [root slash class];
+else
+    classFolder=[getCommonPath slash class slash 'Implementations'];
+end
 
 listing=dir(classFolder);
 folders=[listing.isdir];

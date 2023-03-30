@@ -5,7 +5,7 @@ root=getCommonPath;
 
 slash=filesep;
 
-classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup','SpecifyTrials','Process_Functions'}; % One folder for each object type
+classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup','SpecifyTrials'}; % One folder for each object type
 
 % if nargin==0
 %     root=getCommonPath; % Make project-independent folders.

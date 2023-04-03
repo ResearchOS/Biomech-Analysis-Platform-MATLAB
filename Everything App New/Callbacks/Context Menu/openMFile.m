@@ -78,7 +78,7 @@ slash=filesep;
 
 switch structClass
     case 'Process'
-        classFolder='New Process Functions';
+        classFolder='Process_Functions';
         templateName='Template_Process';
         switch level
             case 'P'
@@ -93,7 +93,7 @@ switch structClass
                 args={'subName','trialName','repNum'};
         end
     case 'Plot'
-        classFolder=['Plot' slash 'Plot Properties'];
+        classFolder=['Plots'];
         templateName='Template_Plot';
         switch level
             case {'P','PC'}
@@ -104,7 +104,7 @@ switch structClass
                 args={'fig','handles','subName','trialName','repNum'};
         end
     case 'Component'
-        classFolder=['Plot' slash 'New Components'];
+        classFolder=['Components'];
         templateName='Template_Component';
         switch level
             case {'P'}
@@ -118,14 +118,23 @@ switch structClass
         end
 end
 
-rootPath=[getProjectPath slash classFolder];
+rootPath=[getCommonPath slash 'Code' slash classFolder];
 filePath=[rootPath slash fileName '.m'];
 
-% Generate the new file from the template
-templateName=[templateName '_' level];
-templatePath=which(templateName);
-folder=fileparts(filePath);
-if exist(folder,'dir')~=7
-    mkdir(folder);
+% Check one more time if the specified file already exists
+if exist(filePath,'file')==2
+    edit(filePath);
+else
+    % Generate the new file from the template
+    templateName=[templateName '_' level];
+    templatePath=which(templateName);
+    folder=fileparts(filePath);
+    if exist(folder,'dir')~=7
+        mkdir(folder);
+    end
+    createFileFromTemplate(templatePath,filePath,fileName,args);
 end
-createFileFromTemplate(templatePath,filePath,fileName,args);
+
+% Add the fileName to the struct.
+piStruct.MFileName=fileName;
+saveClass(structClass,piStruct);

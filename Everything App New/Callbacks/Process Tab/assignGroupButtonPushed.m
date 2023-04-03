@@ -81,7 +81,7 @@ switch isNew
     case true
         processGroupPath=getClassFilePath(processGroupName, 'ProcessGroup');
         piStruct=loadJSON(processGroupPath);
-        processGroupStruct=createProcessStruct_PS(piStruct);
+        processGroupStruct=createProcessGroupStruct_PS(piStruct);
     case false
         processGroupPath=getClassFilePath_PS(processGroupName, 'ProcessGroup');
         processGroupStruct=loadJSON(processGroupPath);

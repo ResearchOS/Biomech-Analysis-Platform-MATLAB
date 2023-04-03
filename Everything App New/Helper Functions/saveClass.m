@@ -14,6 +14,8 @@ rootPath=getCommonPath();
 
 if ~isempty(psid)
     rootPath=[rootPath slash class slash 'Implementations'];
+else
+    rootPath=[rootPath slash class];
 end
 
 % if isempty(psid)

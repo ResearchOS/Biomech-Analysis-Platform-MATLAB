@@ -10,6 +10,10 @@ end
 
 date=datetime('now');
 
+if ~isfield(runInfo,'SetArgIDsUsed')
+    return; % setArg was never ran, so no variables were modified.
+end
+
 ids=runInfo.SetArgIDsUsed; % This ensures that if there's any setArg ID's that are unused for some reason, they're not updated.
 
 processPath=getClassFilePath(processText,'Process');

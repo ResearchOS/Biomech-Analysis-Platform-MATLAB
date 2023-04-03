@@ -28,7 +28,8 @@ if exist('groupName','var')~=1
         piStruct=loadJSON(fullPath);
         psStruct=createProcessGroupStruct_PS(piStruct);
         Current_ProcessGroup_Name=psStruct.Text;
-        uitreenode(groupNode,'Text',psStruct.Text); % Create new PS node.
+        a=uitreenode(groupNode,'Text',psStruct.Text); % Create new PS node.
+        assignContextMenu(a,handles);
     else % Use pre-existing PS node.
         Current_ProcessGroup_Name=groupNode.Text;
     end

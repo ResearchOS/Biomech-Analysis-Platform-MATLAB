@@ -15,15 +15,16 @@ end
 
 fig=findall(0,'Name','pgui');
 
+slash=filesep;
+
 if ~isempty(fig)
-    defaultPath=[getappdata(fig,'dataPath') 'Raw Data Files'];
+    defaultPath=[getDataPath slash 'Raw Data Files'];
     try
         if manual==1
             error; % To enter the try-catch block for manual selection.
         end
         subName=evalin('caller','subName;');
-        trialName=evalin('caller','trialName;');
-        slash=filesep;
+        trialName=evalin('caller','trialName;');        
         fullPath=[defaultPath slash subName slash trialName '.c3d'];
     catch
         [file,path]=uigetfile('*.c3d','Select c3d File',defaultPath,'MultiSelect','off');

@@ -41,6 +41,8 @@ for i=1:length(texts)
             openParenIdx=strfind(text,'(');
             text=text(openParenIdx+1:end-1);
             assert(ismember(class,{'Variable'}));
+            varUITree=handles.Process.allVariablesUITree;
+            selectNode(varUITree,text);
             assignVariableButtonPushed(fig,text,parentText);
         case 'ProcessGroup'
             assert(ismember(class,{'Process','ProcessGroup'}));

@@ -58,6 +58,9 @@ end
 % Remove the getArg/setArg from the processStruct, and do the same in the
 % PI project struct.
 processStruct.(fldName)(argIdxNum)=[];
+if isequal(argType,'getArg')
+    processStruct.InputSubvariables(argIdxNum)=[];
+end
 
 piText=getPITextFromPS(processStruct.Text);
 piProcessPath=getClassFilePath(piText,'Process');

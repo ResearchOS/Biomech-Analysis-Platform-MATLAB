@@ -24,4 +24,4 @@ catch
     save(rootSettingsFile,'commonPath','Store_Settings','-v6'); % This is where the file is first created.
 end
 
-initializeClassFolders(commonPath);
+initializeClassFolders();

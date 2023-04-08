@@ -14,6 +14,15 @@ if isempty(checkedNodes)
     end
 end
 
+delIdx=[];
+for i=1:length(checkedNodes)
+    if ~isempty(checkedNodes(i).Children)
+        delIdx=[delIdx; i];
+    end
+end
+
+checkedNodes(delIdx)=[];
+
 projectSettingsFile=getProjectSettingsFile();
 projectSettings=loadJSON(projectSettingsFile);
 

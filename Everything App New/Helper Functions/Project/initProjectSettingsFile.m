@@ -2,6 +2,12 @@ function []=initProjectSettingsFile(projectSettingsFile)
 
 %% PURPOSE: CREATE THE PROJECT SETTINGS FILE IF IT DOES NOT EXIST
 
+[projectSettingsFolder,~]=fileparts(projectSettingsFile);
+
+if exist(projectSettingsFolder,'dir')~=7
+    mkdir(projectSettingsFolder);
+end
+
 if exist(projectSettingsFile,'file')~=2
     projectSettings.ProcessQueue={};
     writeJSON(projectSettingsFile,projectSettings);

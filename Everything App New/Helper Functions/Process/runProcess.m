@@ -49,13 +49,16 @@ load(logsheetPathMAT,'logVar');
 % oldPath=cd([projectPath slash 'Process']);
 inclStruct=getInclStruct(specifyTrials);
 trialNames=getTrialNames(inclStruct,logVar,0,logsheetStruct);
+
+% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+
+% trialNames=rmfield(trialNames,remSubNames);
 subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
 % Store the info for the process struct
 getRunInfo(processStructPI,processStructPS);
-
-%% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
 
 %% Run the function!
 if ismember('P',level)
@@ -104,10 +107,15 @@ if ~ismember('P',level)
     end
 end
 
+%% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
 remQueueIdx=modifyVarsDate(processStructPS.Text);
-disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
-
 evalin('base','clear runInfo'); % Clean up after myself
+if isempty(remQueueIdx)
+    disp('No data saved, check your process function!');
+    return;
+end
+
+disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
 
 if guiInBase
     handles=getappdata(fig,'handles');

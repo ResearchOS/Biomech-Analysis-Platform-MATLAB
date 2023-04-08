@@ -30,9 +30,13 @@ struct.ProjectPath.(computerID)=path;
 saveClass('Project',struct);
 
 %% Create settings directory in specified project folder.
-slash=filesep;
-settingsPath=[path slash 'Project_Settings'];
-initializeClassFolders(settingsPath);
+% slash=filesep;
+% settingsPath=[path slash 'Project_Settings'];
+initializeClassFolders();
 
 projectSettingsFile=getProjectSettingsFile();
 initProjectSettingsFile(projectSettingsFile);
+
+% Ensure the processing group is loaded for the project.
+groupName=getCurrentProcessGroup();
+selectGroupButtonPushed(fig,groupName);

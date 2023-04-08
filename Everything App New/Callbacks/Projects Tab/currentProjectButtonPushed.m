@@ -24,5 +24,7 @@ fillUITree(fig,'ProcessGroup',handles.Process.allGroupsUITree,searchTerm,sortDro
 save(rootSettingsFile,'Current_Project_Name','-append');
 
 % Update visible group, update visible process functions, etc.
-groupName=getCurrentProcessGroup();
-selectGroupButtonPushed(fig,groupName);
+if ~isempty(getProjectPath)
+    groupName=getCurrentProcessGroup();
+    selectGroupButtonPushed(fig,groupName);
+end

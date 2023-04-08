@@ -11,6 +11,7 @@ end
 date=datetime('now');
 
 if ~isfield(runInfo,'SetArgIDsUsed')
+    remQueueIdx=[];
     return; % setArg was never ran, so no variables were modified.
 end
 

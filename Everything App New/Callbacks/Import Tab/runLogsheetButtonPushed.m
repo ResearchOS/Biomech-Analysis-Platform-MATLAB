@@ -236,6 +236,12 @@ if any(trialIdx) % There is at least one trial level variable
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
             saveMAT(dataPath, desc, varName, var, subName, trialName);
 
+            % Update the last modified date, but only for the last row so this doesn't take too much
+            % time.
+            if rowNumIdx==rowNumsReps(end)
+                modifyVarsDate(varName);
+            end
+
         end
 
     end
@@ -274,6 +280,7 @@ if any(subjectIdx)
             varName=varNames{headerIdxNum}; % The name of the variable struct.
 
             count=0;
+            var='';
             for i=1:length(varAll)
 
                 if any(isnan(varAll{i})) || isempty(varAll{i})
@@ -316,6 +323,8 @@ if any(subjectIdx)
             % 2. Save data and metadata to file.
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
             saveMAT(dataPath, desc, varName, var, subName);
+
+            modifyVarsDate(varName);
 
         end
 

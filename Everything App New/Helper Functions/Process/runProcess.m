@@ -50,10 +50,16 @@ load(logsheetPathMAT,'logVar');
 inclStruct=getInclStruct(specifyTrials);
 trialNames=getTrialNames(inclStruct,logVar,0,logsheetStruct);
 
-% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+% Remove multiple subjects
+remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
-% trialNames=rmfield(trialNames,remSubNames);
+% Remove all but one subject
+% remSubNames=fieldnames(trialNames);
+% idx=ismember(remSubNames,'Busan');
+% remSubNames(idx)=[];
+
+trialNames=rmfield(trialNames,remSubNames);
 subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.

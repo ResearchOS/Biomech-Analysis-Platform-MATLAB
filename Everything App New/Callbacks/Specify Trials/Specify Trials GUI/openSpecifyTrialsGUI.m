@@ -39,6 +39,7 @@ allHeaders=logsheetStruct.Headers;
 allLevels=logsheetStruct.Level;
 allTypes=logsheetStruct.Type;
 okIdx=~cellfun(@isempty,allLevels) & ~cellfun(@isempty,allTypes);
+disp(allHeaders(~okIdx));
 allHeaders=allHeaders(okIdx);
 
 for i=1:length(allHeaders)

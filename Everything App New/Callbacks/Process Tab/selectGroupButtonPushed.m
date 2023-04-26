@@ -44,3 +44,7 @@ writeJSON(projectSettingsFile,projectSettings);
 handles.Process.currentGroupLabel.Text=Current_ProcessGroup_Name;
 
 fillProcessGroupUITree(fig);
+
+% Delete the nodes in the current function UI tree
+handles.Process.subtabCurrent.SelectedTab=handles.Process.currentGroupTab;
+delete(handles.Process.functionUITree.Children);

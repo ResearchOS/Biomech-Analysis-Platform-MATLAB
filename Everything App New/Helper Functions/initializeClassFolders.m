@@ -1,7 +1,9 @@
-function [classNames]=initializeClassFolders()
+function [classNames]=initializeClassFolders(root)
 
 %% PURPOSE: CREATE THE PROJECT-INDEPENDENT CLASS FOLDERS
-root=getCommonPath;
+if nargin==0
+    root=getCommonPath;
+end
 
 slash=filesep;
 

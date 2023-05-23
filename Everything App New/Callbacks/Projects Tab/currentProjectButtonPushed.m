@@ -26,5 +26,8 @@ save(rootSettingsFile,'Current_Project_Name','-append');
 % Update visible group, update visible process functions, etc.
 if ~isempty(getProjectPath)
     groupName=getCurrentProcessGroup();
+    if isempty(groupName)
+        return;
+    end
     selectGroupButtonPushed(fig,groupName);
 end

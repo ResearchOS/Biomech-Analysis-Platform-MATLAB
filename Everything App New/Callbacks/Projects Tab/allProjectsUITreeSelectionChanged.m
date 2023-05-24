@@ -17,13 +17,21 @@ struct=loadJSON(fullPath);
 
 computerID=getComputerID();
 
-dataPath=struct.DataPath.(computerID);
+if ~isfield(struct.DataPath,computerID)
+    dataPath='Data Path (contains ''Raw Data Files'' folder)';
+else
+    dataPath=struct.DataPath.(computerID);
+end
 
 if isempty(dataPath)
     dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
 
-projectPath=struct.ProjectPath.(computerID);
+if ~isfield(struct.ProjectPath,computerID)
+    projectPath='Path to Project Folder';
+else
+    projectPath=struct.ProjectPath.(computerID);
+end
 
 if isempty(projectPath)
     projectPath='Path to Project Folder';

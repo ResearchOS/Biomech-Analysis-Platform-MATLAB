@@ -8,16 +8,24 @@ if exist('Current_Project_Name','var')~=1
     load(rootSettingsFile,'Current_Project_Name');
 end
 fullPath=getClassFilePath(Current_Project_Name,'Project');
+
+if exist(fullPath,'file')~=2
+    projectPath='';
+    return;
+end
+
 struct=loadJSON(fullPath);
 computerID=getComputerID();
 
-projectPath='';
+% projectPath='';
 
 if ~isfield(struct.ProjectPath,computerID)
     if nargin==0 % To not redundantly show this message when starting the app.
         disp('Select a path for the current project!');
     end
-    return;
+    struct.ProjectPath.(computerID)='';
+    writeJSON(fullPath,struct);
+%     return;
 end
 
 projectPath=struct.ProjectPath.(computerID);

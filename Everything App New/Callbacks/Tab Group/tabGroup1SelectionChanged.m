@@ -10,7 +10,10 @@ handles=getappdata(fig,'handles');
 path=getProjectPath();
 
 if isempty(path)
-    handles.Tabs.tabGroup1.SelectedTab=handles.Projects.Tab;
+    disp('Check the project path!');
+    if ~isequal(handles.Tabs.tabGroup1.SelectedTab,handles.Settings.Tab)
+        handles.Tabs.tabGroup1.SelectedTab=handles.Projects.Tab;
+    end
 end
 
 %% Store the current tab.

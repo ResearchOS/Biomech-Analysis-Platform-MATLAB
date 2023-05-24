@@ -17,7 +17,7 @@ currFolder=fileparts(mfilename('fullpath'));
 addpath(genpath(currFolder));
 
 %% FOR TESTING ONLY, REMOVE SOON!
-rmpath(genpath('/Users/mitchelltillman/Desktop/Stevens_Classes_Research/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
+rmpath(genpath('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
 rmpath(genpath('C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Biomech-Analysis-Platform\Everything App'));
 
 %% Create the figure
@@ -70,8 +70,11 @@ end
 
 %% Check if this is the first time using this computer, ensure the computer-specific fields exist.
 if ~ismember('Computer_ID',settingsVarNames)
-    newComputerProjectPaths();
+    Computer_ID=getComputerID();    
+else
+    load(rootSettingsFile,'Computer_ID');
 end
+newComputerProjectPaths(Computer_ID);
 
 %% Fill the UI trees with their correct values
 sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 

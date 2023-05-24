@@ -1,4 +1,4 @@
-function []=pgui(isRunLog)
+function [fig]=pgui(isRunLog)
 
 tic;
 %% PURPOSE: THIS IS THE FUNCTION THAT IS CALLED IN THE COMMAND WINDOW TO OPEN THE GUI FOR IMPORTING/PROCESSING/PLOTTING DATA
@@ -719,6 +719,6 @@ switchProjectsDropDownValueChanged(fig); % Run the projectNameFieldValueChanged 
 
 % 11. Finish pgui creation. Assign component handles to GUI and send GUI variable to base workspace
 drawnow;
-assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected
+% assignin('base','gui',fig); % Store the GUI variable to the base workspace so that it can be manipulated/inspected
 a=toc;
 disp(['pgui startup time is ' num2str(a) ' seconds']);

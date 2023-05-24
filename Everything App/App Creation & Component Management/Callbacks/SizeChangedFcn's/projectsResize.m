@@ -1,24 +1,30 @@
-function []=projectsResize(src, event)
+function projectsResize(src, event)
 
 %% PURPOSE: RESIZE THE COMPONENTS IN THE PROJECTS TAB.
+fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
-data=src.UserData; % Get UserData to access components.
-if isempty(data)
-    return; % Called on uifigure creation
+figSize=fig.Position(3:4); % Width x height. Used by objResize function
+
+%% Check if called on uifigure creation. If so, skip resizing components because they don't exist yet.
+if isempty(handles)
+    return;
+else
+    tab=handles.Projects;
+    fldNames=fieldnames(tab);
+    if isequal(fldNames{1},'Tab') && length(fldNames)==1
+        return;
+    end
 end
 
-% Modify component location
-figSize=src.Position(3:4); % Width x height
-
-% Identify the ratio of font size to figure height (will likely be different for each computer). Used to scale the font size.
-fig=ancestor(src,'figure','toplevel');
+%% Identify the ratio of font size to figure height (will likely be different for each computer). Used to scale the font size.
 ancSize=fig.Position(3:4);
 defaultPos=get(0,'defaultfigureposition');
 if isequal(ancSize,[defaultPos(3)*2 defaultPos(4)]) % If currently in default figure size
     if ~isempty(getappdata(fig,'fontSizeRelToHeight')) % If the figure has been restored to default size after previously being resized.
         fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight'); % Get the original ratio.
     else % Figure initialized as default size
-        initFontSize=get(data.DataPathField,'FontSize'); % Get the initial font size
+        initFontSize=get(tab.dataPathField,'FontSize'); % Get the initial font size
         fontSizeRelToHeight=initFontSize/ancSize(2); % Font size relative to figure height.
         setappdata(fig,'fontSizeRelToHeight',fontSizeRelToHeight); % Store the font size relative to figure height.
     end 
@@ -26,111 +32,55 @@ else
     fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight');
 end
 
-% Set new font size
+%% Set new font size & component height
 newFontSize=round(fontSizeRelToHeight*ancSize(2)); % Multiply relative font size by the figures height
 if newFontSize>20
     newFontSize=20; % Cap the font size (and therefore the text box/button sizes too)
 end
 
-% resizeObj(obj,relPos,size,newFontSize,compHeight);
-
-%% Positions specified as relative to tab width & height
-% All positions here are specified as relative positions
-ProjectNameLabelRelPos=[0.01 0.95];
-DataPathButtonRelPos=[0.01 0.85];
-CodePathButtonRelPos=[0.01 0.9];
-AddProjectButtonRelPos=[0.37 0.95];
-DataPathFieldRelPos=[0.17 0.85];
-CodePathFieldRelPos=[0.17 0.9];
-SwitchProjectsDropDownRelPos=[0.17 0.95];
-RemoveProjectButtonRelPos=[0.43 0.95];
-OpenDataPathButtonRelPos=[0.37 0.85];
-OpenCodePathButtonRelPos=[0.37 0.9];
-UnarchiveProjectButtonRelPos=[0.43 0.9];
-OpenPISettingsPathButtonRelPos=[0.7 0.95];
-ShowVarDropDownRelPos=[0.01 0.75];
-ShowVarButtonRelPos=[0.22 0.75];
-SaveVarButtonRelPos=[0.33 0.75];
-ArchiveButtonRelPos=[0.9 0.05];
-ArchiveDataCheckboxRelPos=[0.9 0.15];
-LoadArchiveButtonRelPos=[0.2 0.05];
-
-%% Component width specified relative to tab width, height is in absolute units (constant).
-% All component dimensions here are specified as absolute sizes (pixels)
 compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
-ProjectNameLabelSize=[0.15 compHeight];
-DataPathButtonSize=[0.15 compHeight];
-CodePathButtonSize=[0.15 compHeight];
-AddProjectButtonSize=[0.05 compHeight];
-DataPathFieldSize=[0.2 compHeight];
-CodePathFieldSize=[0.2 compHeight];
-SwitchProjectsDropDownSize=[0.2 compHeight];
-RemoveProjectButtonSize=[0.06 compHeight];
-OpenDataPathButtonSize=[0.05 compHeight];
-OpenCodePathButtonSize=[0.05 compHeight];
-UnarchiveProjectButtonSize=[0.06 compHeight];
-OpenPISettingsPathButtonSize=[0.15 compHeight];
-ShowVarDropDownSize=[0.2 compHeight];
-ShowVarButtonSize=[0.1 compHeight];
-SaveVarButtonSize=[0.1 compHeight];
-ArchiveButtonSize=[0.1 compHeight];
-ArchiveDataCheckboxSize=[0.1 compHeight];
-LoadArchiveButtonSize=[0.1 compHeight];
 
-%% Multiply the relative positions by the figure size to get the actual position.}
-ProjectNameLabelPos=round([ProjectNameLabelRelPos.*figSize ProjectNameLabelSize(1)*figSize(1) ProjectNameLabelSize(2)]);
-DataPathButtonPos=round([DataPathButtonRelPos.*figSize DataPathButtonSize(1)*figSize(1) DataPathButtonSize(2)]);
-CodePathButtonPos=round([CodePathButtonRelPos.*figSize CodePathButtonSize(1)*figSize(1) CodePathButtonSize(2)]);
-AddProjectButtonPos=round([AddProjectButtonRelPos.*figSize AddProjectButtonSize(1)*figSize(1) AddProjectButtonSize(2)]);
-DataPathFieldPos=round([DataPathFieldRelPos.*figSize DataPathFieldSize(1)*figSize(1) DataPathFieldSize(2)]);
-CodePathFieldPos=round([CodePathFieldRelPos.*figSize CodePathFieldSize(1)*figSize(1) CodePathFieldSize(2)]);
-OpenDataPathButtonPos=round([OpenDataPathButtonRelPos.*figSize OpenDataPathButtonSize(1)*figSize(1) OpenDataPathButtonSize(2)]);
-OpenCodePathButtonPos=round([OpenCodePathButtonRelPos.*figSize OpenCodePathButtonSize(1)*figSize(1) OpenCodePathButtonSize(2)]);
-RemoveProjectButtonPos=round([RemoveProjectButtonRelPos.*figSize RemoveProjectButtonSize(1)*figSize(1) RemoveProjectButtonSize(2)]);
-UnarchiveProjectButtonPos=round([UnarchiveProjectButtonRelPos.*figSize UnarchiveProjectButtonSize(1)*figSize(1) UnarchiveProjectButtonSize(2)]);
-SwitchProjectsDropDownPos=round([SwitchProjectsDropDownRelPos.*figSize SwitchProjectsDropDownSize(1)*figSize(1) SwitchProjectsDropDownSize(2)]);
-OpenPISettingsPathButtonPos=round([OpenPISettingsPathButtonRelPos.*figSize OpenPISettingsPathButtonSize(1)*figSize(1) OpenPISettingsPathButtonSize(2)]);
-ShowVarDropDownPos=round([ShowVarDropDownRelPos.*figSize ShowVarDropDownSize(1)*figSize(1) ShowVarDropDownSize(2)]);
-ShowVarButtonPos=round([ShowVarButtonRelPos.*figSize ShowVarButtonSize(1)*figSize(1) ShowVarButtonSize(2)]);
-SaveVarButtonPos=round([SaveVarButtonRelPos.*figSize SaveVarButtonSize(1)*figSize(1) SaveVarButtonSize(2)]);
-ArchiveButtonPos=round([ArchiveButtonRelPos.*figSize ArchiveButtonSize(1)*figSize(1) ArchiveButtonSize(2)]);
-ArchiveDataCheckboxPos=round([ArchiveDataCheckboxRelPos.*figSize ArchiveDataCheckboxSize(1)*figSize(1) ArchiveDataCheckboxSize(2)]);
-LoadArchiveButtonPos=round([LoadArchiveButtonRelPos.*figSize LoadArchiveButtonSize(1)*figSize(1) LoadArchiveButtonSize(2)]);
+% 1. The project name label
+objResize(tab.projectsLabel, [0.01 0.9], [0.15 compHeight]);
 
-data.ProjectNameLabel.Position=ProjectNameLabelPos;
-data.DataPathButton.Position=DataPathButtonPos;
-data.CodePathButton.Position=CodePathButtonPos;
-data.AddProjectButton.Position=AddProjectButtonPos;
-data.DataPathField.Position=DataPathFieldPos;
-data.CodePathField.Position=CodePathFieldPos;
-data.OpenDataPathButton.Position=OpenDataPathButtonPos;
-data.OpenCodePathButton.Position=OpenCodePathButtonPos;
-data.RemoveProjectButton.Position=RemoveProjectButtonPos;
-data.UnarchiveProjectButton.Position=UnarchiveProjectButtonPos;
-data.SwitchProjectsDropDown.Position=SwitchProjectsDropDownPos;
-data.OpenPISettingsPathButton.Position=OpenPISettingsPathButtonPos;
-data.ShowVarDropDown.Position=ShowVarDropDownPos;
-data.ShowVarButton.Position=ShowVarButtonPos;
-data.SaveVarButton.Position=SaveVarButtonPos;
-data.ArchiveButton.Position=ArchiveButtonPos;
-data.ArchiveDataCheckbox.Position=ArchiveDataCheckboxPos;
-data.LoadArchiveButton.Position=LoadArchiveButtonPos;
+% 2. Add new project button
+objResize(tab.addProjectButton, [0.06 0.9], [0.05 compHeight]);
 
-data.ProjectNameLabel.FontSize=newFontSize;
-data.DataPathButton.FontSize=newFontSize;
-data.CodePathButton.FontSize=newFontSize;
-data.AddProjectButton.FontSize=newFontSize;
-data.DataPathField.FontSize=newFontSize;
-data.CodePathField.FontSize=newFontSize;
-data.SwitchProjectsDropDown.FontSize=newFontSize;
-data.OpenDataPathButton.FontSize=newFontSize;
-data.OpenCodePathButton.FontSize=newFontSize;
-data.RemoveProjectButton.FontSize=newFontSize;
-data.UnarchiveProjectButton.FontSize=newFontSize;
-data.OpenPISettingsPathButton.FontSize=newFontSize;
-data.ShowVarDropDown.FontSize=newFontSize;
-data.ShowVarButton.FontSize=newFontSize;
-data.SaveVarButton.FontSize=newFontSize;
-data.ArchiveButton.FontSize=newFontSize;
-data.ArchiveDataCheckbox.FontSize=newFontSize;
-data.LoadArchiveButton.FontSize=newFontSize;
+% 3. Remove project button
+objResize(tab.removeProjectButton, [0.12 0.9], [0.05 compHeight]);
+
+% 4. Sort projects dropdown
+objResize(tab.sortProjectsDropDown, [0.18 0.9], [0.1 compHeight]);
+
+% 5. All projects UI tree
+objResize(tab.allProjectsUITree, [0.01 0.4], [0.3 0.5]);
+
+% 6. Load project snapshot button (settings & code only, not data)
+objResize(tab.loadSnapshotButton, [0.8 0.2], [0.1 compHeight]);
+
+% 7. Save project snapshot button (settings & code only, not data)
+objResize(tab.saveSnapshotButton, [0.8 0.15], [0.1 compHeight]);
+
+% 8. Project data path button
+objResize(tab.dataPathButton, [0.45 0.8], [0.15 compHeight]);
+
+% 9. Project data path edit field
+objResize(tab.dataPathField, [0.6 0.8], [0.2 compHeight]);
+
+% 10. Open data path button
+objResize(tab.openDataPathButton, [0.8 0.8], [0.05 compHeight]);
+
+% 11. Project folder path button
+objResize(tab.projectPathButton, [0.45 0.85], [0.15 compHeight]);
+
+% 12. Project folder path edit field
+objResize(tab.projectPathField, [0.6 0.85], [0.2 compHeight]);
+
+% 13. Open project path button
+objResize(tab.openProjectPathButton, [0.8 0.85], [0.05 compHeight]);
+
+% 14. Create project archive button (settings, code, & data)
+% objResize(tab.createProjectArchiveButton, [0.9 0.05], [0.1 compHeight]);
+
+% 15. Load project archive button (settings, code, & data)
+% objResize(tab.loadProjectArchiveButton, [0.2 0.05], [0.1 compHeight]);

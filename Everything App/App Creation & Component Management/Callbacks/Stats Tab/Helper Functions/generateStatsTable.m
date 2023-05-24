@@ -295,7 +295,6 @@ for i=1:length(uniqueEntries)
             error('Logic error! How are there more entries than the max?');
         end
 
-        % Convert strings to chars
         % Data variables
         for k=trialNumCol+1:size(statsTable,2)
             if all(cellfun(@isnumeric,statsTable(:,k)))
@@ -336,9 +335,6 @@ for i=1:length(uniqueEntries)
         % Insert the repetition variables for missing trials.
         statsTable(entriesStart(j)+numExistReps:entriesEnd(j),2:trialNumCol-1)=repmat(statsTable(entriesStart(j)+numExistReps-1,2:trialNumCol-1),maxEntriesNum-numExistReps,1);
 
-%         for k=2:trialNumCol-1
-%             statsTable(entriesStart(j)+numExistReps:entriesEnd(j),k)=insertData(k); % Repetition variables
-%         end
         for k=trialNumCol+1:size(statsTable,2)
             statsTable(entriesStart(j)+numExistReps:entriesEnd(j),k)=insertData(k); % Data variables
         end

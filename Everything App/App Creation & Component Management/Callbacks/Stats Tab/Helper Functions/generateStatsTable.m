@@ -295,18 +295,6 @@ for i=1:length(uniqueEntries)
             error('Logic error! How are there more entries than the max?');
         end
 
-        if entriesEnd(j)-entriesStart(j)+1==maxEntriesNum
-            continue;
-        end
-
-        % Need to pad the table with entries to ensure that they are all the same length
-        numExistReps=entriesEnd(j)-entriesStart(j)+1;
-        numRows=maxEntriesNum-numExistReps; % The number of rows to add to the table
-
-        % Determine if repetition & data variables are chars or numeric
-        % Repetition variables. Missing entries
-        insertData=cell(size(statsTable,2),1);
-
         % Data variables
         for k=trialNumCol+1:size(statsTable,2)
             if all(cellfun(@isnumeric,statsTable(:,k)))
@@ -321,6 +309,18 @@ for i=1:length(uniqueEntries)
                 error(['Mixed chars & numeric in table column ' num2str(k)]);
             end
         end
+
+        if entriesEnd(j)-entriesStart(j)+1==maxEntriesNum
+            continue;
+        end
+
+        % Need to pad the table with entries to ensure that they are all the same length
+        numExistReps=entriesEnd(j)-entriesStart(j)+1;
+        numRows=maxEntriesNum-numExistReps; % The number of rows to add to the table
+
+        % Determine if repetition & data variables are chars or numeric
+        % Repetition variables. Missing entries
+        insertData=cell(size(statsTable,2),1);
 
         statsTable=[statsTable(1:entriesStart(j)+numExistReps-1,:); cell(numRows,size(statsTable,2)); statsTable(entriesStart(j)+numExistReps:end,:)];
 

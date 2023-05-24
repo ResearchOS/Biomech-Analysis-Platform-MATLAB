@@ -67,7 +67,6 @@ uiMapMenu=uimenu(fig,'Text','Map');
 uimenu(uiMapMenu,'Text','Axis Equal','MenuSelectedFcn',@mapFigureAxisEqual);
 % Plot menu
 uiPlotMenu=uimenu(fig,'Text','Plot');
-uimenu(uiPlotMenu,'Text','Axes Limits','Accelerator','L','MenuSelectedFcn',@axLimsButtonPushed);
 uimenu(uiPlotMenu,'Text','Fig Size','Accelerator','F','MenuSelectedFcn',@figSizeButtonPushed);
 uimenu(uiPlotMenu,'Text','Save Ex Fig','Accelerator','E','MenuSelectedFcn',@saveExFigButtonPushed);
 uimenu(uiPlotMenu,'Text','Set Ex Trial','Accelerator','T','MenuSelectedFcn',@exTrialButtonPushed);
@@ -512,7 +511,7 @@ handles.Plot.refreshComponentContextMenuItem1=uimenu(handles.Plot.refreshCompone
 handles.Plot.axesLetterContextMenu=uicontextmenu(fig);
 handles.Plot.axesLetterContextMenuItem1=uimenu(handles.Plot.axesLetterContextMenu,'Text','Refresh Component','MenuSelectedFcn',{@refreshPlotComp});
 handles.Plot.axesLetterContextMenuItem2=uimenu(handles.Plot.axesLetterContextMenu,'Text','Subplot','MenuSelectedFcn',{@adjustSubplot});
-
+handles.Plot.axesLetterContextMenuItem3=uimenu(handles.Plot.axesLetterContextMenu,'Text','Axes Limits','MenuSelectedFcn',{@axLimsButtonPushed});
 
 plotTab.UserData=struct('AllComponentsSearchField',handles.Plot.allComponentsSearchField,'AllComponentsUITree',handles.Plot.allComponentsUITree,'PlotFcnSearchField',handles.Plot.plotFcnSearchField,...
     'PlotFcnUITree',handles.Plot.plotFcnUITree,'AssignVarsButton',handles.Plot.assignVarsButton,'AssignComponentButton',handles.Plot.assignComponentButton,'UnassignComponentButton',handles.Plot.unassignComponentButton,'CreateFcnButton',handles.Plot.createPlotButton,...

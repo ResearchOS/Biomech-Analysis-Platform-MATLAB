@@ -10,6 +10,8 @@ pubTableName=handles.Stats.pubTablesUITree.SelectedNodes.Text;
 
 pubTable=Stats.PubTables.(pubTableName);
 
+disp(['Creating table for publication: ' pubTableName]);
+
 load(getappdata(fig,'logsheetPathMAT'),'logVar');
 
 projectName=getappdata(fig,'projectName');
@@ -24,19 +26,25 @@ for row=1:pubTable.Size.numRows
     for col=1:pubTable.Size.numCols
 
         currCell=pubTable.Cells(row,col);
-
-        specifyTrials=currCell.SpecifyTrials;
-
-        inclStruct=feval(specifyTrials);
-        allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]); % The list of trials' data to retrieve.
         tableName=currCell.tableName; % The Stats table to look for data in.
-        varName=currCell.varName; % The variable in the Stats table to extract.
-        summType=currCell.summMeasure;
 
         if isequal(tableName,'Literal')
             pubTableOut{row,col}=currCell.value;
             continue;
         end
+
+        specifyTrials=currCell.SpecifyTrials;
+
+        if isempty(specifyTrials)
+            disp(['Row ' num2str(row) ' Column ' num2str(col) ' Missing SpecifyTrials!']);
+            return;
+        end
+
+        inclStruct=feval(specifyTrials);
+        allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]); % The list of trials' data to retrieve.
+        varName=currCell.varName; % The variable in the Stats table to extract.
+        summType=currCell.summMeasure;
+
         fileVarNames=whos('-file',[getappdata(fig,'dataPath') 'MAT Data Files' slash projectName '.mat']);
         fileVarNames={fileVarNames.name}';
         fileVarNames=fileVarNames(contains(fileVarNames,tableName));
@@ -70,6 +78,22 @@ for row=1:pubTable.Size.numRows
 
         assert(sum(varColIdx)==1);
 
+        % Get the name of the multiple repetitions header variable   
+        
+        for i=1:length(Stats.Tables.(tableName).RepetitionColumns)
+            if isempty(Stats.Tables.(tableName).RepetitionColumns(i).Mult)
+                continue;
+            end
+            if ~ismember(varName,Stats.Tables.(tableName).RepetitionColumns(i).Mult.DataVars)
+                continue;
+            end
+            repVarName=Stats.Tables.(tableName).RepetitionColumns(i).Name;
+            repVarColIdx=ismember(var(1,:),repVarName);
+            break;
+        end
+
+        repVarValue=Stats.PubTables.(pubTableName).Cells(row,col).repVar; % The repetition variable value for this cell.
+        
         % Get the row numbers in the stats table.
         rowsIdx=[];
         subNames=fieldnames(allTrialNames);
@@ -78,7 +102,10 @@ for row=1:pubTable.Size.numRows
             currTrials=fieldnames(allTrialNames.(subName));
             for trialNum=1:length(allTrialNames.(subName))
                 trialName=currTrials{trialNum};
-                rowsIdx=[rowsIdx; find(ismember(var(:,1),trialName)==1)];
+                newRowIdx=find((ismember(var(:,1),trialName) & ismember(var(:,repVarColIdx),repVarValue))==1);
+
+                assert(length(newRowIdx)==1);
+                rowsIdx=[rowsIdx; newRowIdx];
             end
         end
 
@@ -115,3 +142,5 @@ eval([varName '= pubTableOut;']);
 save(matFilePath,varName,'-append');
 
 assignin('base',varName,pubTableOut);
+
+disp(['Created table for publication: ' varName]);

@@ -10,7 +10,9 @@ coordsSplit=strsplit(coords,',');
 i=str2double(coordsSplit{1});
 j=str2double(coordsSplit{2});
 
-if isequal(handles.tableDropDown(i,j).Value,'Literal')
+tableName=handles.tableDropDown(i,j).Value;
+
+if isequal(tableName,'Literal')
     vis=true;
     varItems={''};
 else
@@ -20,7 +22,10 @@ end
 
 handles.varsDropDown(i,j).Visible=~vis;
 handles.varsDropDown(i,j).Items=varItems;
-
-% Select the previously selected item (?)
+handles.repVarDropDown(i,j).Visible=~vis;
 
 handles.valueEditField(i,j).Visible=vis;
+
+if ~isequal(tableName,'Literal')
+    varsDropDownValueChanged(src,allTables);
+end

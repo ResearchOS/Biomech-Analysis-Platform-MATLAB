@@ -1,4 +1,4 @@
-function []=plotStaticFig_PC(fig,allTrialNames)
+function []=plotStaticFig_PC(fig,allTrialNames,records)
 
 %% PURPOSE: CREATE PROJECT-LEVEL PLOT, WHERE THE DATA IS SPLIT BY CONDITION.
 
@@ -31,6 +31,13 @@ for axNum=1:length(axLetters)
 
     axTag=axTags{axNum};
 
+    % Set axes limits
+    axLetter=axLetters{axNum};
+    if isfield(Plotting.Plots.(plotName).Axes.(axLetter),'AxLims')
+        axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;
+        setAxLims(fig,axHandles.(axLetter),axLims,plotName,records.(axLetter),[]);
+    end
+
     for i=1:length(compNames)
 
         compName=compNames{i};
@@ -58,7 +65,7 @@ for axNum=1:length(axLetters)
                     currProps=changedProps{k};
                     for l=1:length(currProps)
                         currProp=currProps{l};
-                        if ~ishandle(allProps.(currProp))
+                        if ~all(ishandle(allProps.(currProp)))
                             h.(currProp)=allProps.(currProp);
                         else
                             h.(currProp)=copyobj(allProps.(currProp),h);

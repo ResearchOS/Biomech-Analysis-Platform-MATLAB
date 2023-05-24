@@ -29,30 +29,8 @@ if ~isfield(Plotting.Plots.(plotName),'Axes')
     return;
 end
 
-axLetters=fieldnames(Plotting.Plots.(plotName).Axes);
-for axNum=1:length(axLetters)
+selNode=handles.Plot.currCompUITree.Children;
 
-    axLetter=axLetters{axNum};
-    axHandle=Plotting.Plots.(plotName).Axes.(axLetter).Handle;
-%     childGroupsNoTag=findobj(axHandle,'Tag',' ','Type','Group');
-%     delete(childGroupsNoTag);
-%     childNotGroups=findobj(axHandle,'Type','Group');
-%     delete(axHandle.Children(~ismember(axHandle.Children,childNotGroups)));
-    if isequal(class(axHandle.Children),'matlab.graphics.GraphicsPlaceholder')
-        continue; % Handle the empty case
-    end
-    childGroups={axHandle.Children.Tag};
-    childGroups=childGroups(~cellfun(@isempty,childGroups));
-    for compNum=1:length(childGroups)
+assert(isequal(selNode.Text,'Axes'));
 
-        currName=childGroups{compNum};
-        spaceIdx=strfind(currName,' ');
-        compName=currName(1:spaceIdx-1);
-        letter=currName(spaceIdx+1:end);
-
-        refreshPlotComp(fig,[],plotName,compName,letter,axLetter)
-
-    end
-
-end
-
+refreshAllSubComps(fig,[],selNode);

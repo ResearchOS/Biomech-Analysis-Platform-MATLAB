@@ -1,6 +1,6 @@
-function []=fcnsArgsSearchFieldValueChanged(src,event)
+function []=searchAxLimsVars(src,event)
 
-%% PURPOSE: FILTER THE VARIABLES LIST BOX BY THE SEARCH TERM.
+%% PURPOSE: SEARCH THROUGH THE VARIABLE NAMES LIST IN THE AXES LIMS GUI
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -8,12 +8,9 @@ if exist('event','var')~=1
     return;
 end
 
-% projectSettingsMATPath=getappdata(fig,'projectSettingsMATPath');
-% load(projectSettingsMATPath,'VariableNamesList');
-VariableNamesList=getappdata(fig,'VariableNamesList');
-
-% searchTerm=handles.Process.fcnsArgsSearchField.Value;
 searchTerm=event.Value;
+
+VariableNamesList=getappdata(fig,'VariableNamesList');
 
 count=0;
 matchIdx=NaN(length(VariableNamesList.GUINames),1);
@@ -30,4 +27,4 @@ end
 
 matchIdx(isnan(matchIdx))=[];
 
-makeVarNodes(fig,matchIdx,VariableNamesList);
+makeVarNodesAxLims(fig,matchIdx,VariableNamesList);

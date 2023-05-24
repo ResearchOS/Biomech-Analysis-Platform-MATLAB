@@ -49,6 +49,22 @@ end
 
 PlotExTrial.Subject=subName;
 PlotExTrial.Trial=trialName;
+PlotExTrial.Condition=[];
+
+% Get the condition number
+allTrialNames=getTrialNames(inclStruct,logVar,fig,1,[]);
+% subNameOrig=subName;
+for condNum=1:length(allTrialNames.Condition)
+    subNames=fieldnames(allTrialNames.Condition(condNum));
+    if ~ismember(subName,subNames)
+        continue; % Go on to the next trial.
+    end
+    currTrials=fieldnames(allTrialNames.Condition(condNum).(subName));
+    if ismember(trialName,currTrials)
+        PlotExTrial.Condition=condNum;
+        break;
+    end
+end
 
 Plotting.Plots.(plotName).ExTrial=PlotExTrial;
 
@@ -101,6 +117,16 @@ if Plotting.Plots.(plotName).Movie.IsMovie==1
 end
 
 handles.Plot.exTrialLabel.Text=[subName ' ' trialName];
+
+% If this is a movie, set the center data variable by just calling the axLims GUI
+axesNodes=handles.Plot.currCompUITree.Children.Children;
+for i=1:length(axesNodes)
+    selNode=axesNodes(i);
+    handles.Plot.currCompUITree.SelectedNodes=selNode;
+    axLimsButtonPushed(fig);
+    Q=findall(0,'Name',['Set Axes ' selNode.Text ' Limits']);
+    close(Q);
+end
 
 axesNode=handles.Plot.currCompUITree.Children;
 refreshAllSubComps(fig,[],axesNode);

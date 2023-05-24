@@ -1,4 +1,4 @@
-function []=plotStaticFig(fig,subName,trialName,repNum)
+function []=plotStaticFig(fig,subName,trialName,repNum,records,currTrialInfo)
 
 %% PURPOSE: PLOT A STATIC PLOT
 handles=getappdata(fig,'handles');
@@ -23,14 +23,16 @@ for i=1:length(axLetters)
 %     axHandles.(axLetters{i})=subplot(str2double(axLoc(2)),str2double(axLoc(4)),str2double(axLoc(6)));
     hold(axHandles.(axLetters{i}),'on');
     axTags{i}=['Axes ' axLetters{i}];
+    axHandles.(axLetters{i}).Tag=axTags{i};
 end
 
 %% Go through each component to see which axes it is a child of
 % NOTE: NEED TO MODIFY THE GRAPHICS OBJECT PROPERTIES HERE, INCLUDING AXES LIMITS.
 for axNum=1:length(axLetters)
 
-    axTag=axTags{axNum};
+    axTag=axTags{axNum};     
 
+    compNames=compNames(~ismember(compNames,'Axes'));
     for i=1:length(compNames)
 
         compName=compNames{i};
@@ -52,21 +54,9 @@ for axNum=1:length(axLetters)
             changedProps=Plotting.Plots.(plotName).(compName).(letters{j}).ChangedProperties;
 
             % Set the axes properties
-            if isequal(compName,'Axes')
-                h=axHandles.(axLetter);
-                for k=1:length(changedProps)
-                    currProps=changedProps{k};
-                    for l=1:length(currProps)
-                        currProp=currProps{l};
-                        if ~isequal('matlab.graphics.primitive.Text',class(allProps.(currProp)))
-                            h.(currProp)=allProps.(currProp);
-                        else
-                            h.(currProp)=copyobj(allProps.(currProp),h);
-                        end
-                    end
-                end
-                continue;
-            end
+%             if isequal(compName,'Axes')                
+%                 continue;
+%             end
 
             if ~isequal(tag,axTag)
                 continue;
@@ -89,6 +79,26 @@ for axNum=1:length(axLetters)
         end
 
     end
+
+    axLetter=axLetters{axNum};  
+
+    allProps=Plotting.Plots.(plotName).Axes.(axLetter).Properties;
+    changedProps=Plotting.Plots.(plotName).Axes.(axLetter).ChangedProperties;
+    h=axHandles.(axLetter);
+    for k=1:length(changedProps)
+        currProps=changedProps{k};
+        for l=1:length(currProps)
+            currProp=currProps{l};
+            if ~isequal('matlab.graphics.primitive.Text',class(allProps.(currProp)))
+                h.(currProp)=allProps.(currProp);
+            else
+                h.(currProp)=copyobj(allProps.(currProp),h);
+            end
+        end
+    end
+    % Set axes limits
+    axLims=Plotting.Plots.(plotName).Axes.(axLetter).AxLims;
+    setAxLims(fig,h,axLims,plotName,records.(axLetter),currTrialInfo)
 
 end
 

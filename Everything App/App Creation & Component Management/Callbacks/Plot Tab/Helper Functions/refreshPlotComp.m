@@ -35,9 +35,12 @@ end
 setappdata(fig,'tabName','Plot');
 
 isMovie=Plotting.Plots.(plotName).Movie.IsMovie;
+plotLevel=Plotting.Plots.(plotName).Metadata.Level;
+load(getappdata(fig,'logsheetPathMAT'),'logVar');
 switch compName
     case 'Axes'
         h=findobj(handles.Plot.plotPanel,'Tag',['Axes ' letter]);
+        view=h.View;
         if isempty(h)
             h=axes('Parent',handles.Plot.plotPanel,'Visible','on','Tag',['Axes ' letter]);
         end
@@ -67,6 +70,91 @@ switch compName
         end
         Plotting.Plots.(plotName).(compName).(axLetter).Properties=allProps;
         delete(tempH);
+
+        % Set axes limits.
+        if isMovie==0
+            if isfield(Plotting.Plots.(plotName).(compName).(axLetter),'AxLims')
+                axLims=Plotting.Plots.(plotName).(compName).(axLetter).AxLims;
+                axHandle=Plotting.Plots.(plotName).(compName).(axLetter).Handle;
+                specifyTrials=Plotting.Plots.(plotName).SpecifyTrials;
+                inclStruct=feval(specifyTrials);
+                allTrialNamesC=getTrialNames(inclStruct,logVar,fig,1,[]);
+                allTrialNamesNC=getTrialNames(inclStruct,logVar,fig,0,[]);
+                for dim='XYZ'
+                    varNames=axLims.(dim).SaveNames;
+                    subvars=axLims.(dim).SubvarNames;
+                    value=axLims.(dim).VariableValue;
+                    if iscell(value)
+                        value=value{1};
+                    end
+                    isHardCoded=axLims.(dim).IsHardCoded;
+                    if contains(axLims.(dim).Level,'C')
+                        allTrialNames=allTrialNamesC;
+                    else
+                        allTrialNames=allTrialNamesNC;
+                    end
+                    
+                    if ~isempty(varNames)
+                        if ~isHardCoded
+                            records.(dim)=getPlotAxesLims(fig,allTrialNames,varNames,subvars);
+                        else
+                            records.(dim)=eval(value);
+                            records.(dim)=records.(dim)(2)-records.(dim)(1);
+                        end
+                    else
+                        if ~isHardCoded
+                            records.(dim)=eval(value);
+                            records.(dim)=records.(dim)(2)-records.(dim)(1);
+                        else
+                            records.(dim)=NaN;
+                        end
+                    end
+                end
+                if isequal(plotLevel,'T')
+                    plotExTrial=Plotting.Plots.(plotName).ExTrial;
+                else
+                    plotExTrial=[];
+                end
+                setAxLims(fig,axHandle,axLims,plotName,records,plotExTrial);
+            end
+        elseif isMovie==1
+            if isfield(Plotting.Plots.(plotName).(compName).(axLetter),'AxLims')
+                axLims=Plotting.Plots.(plotName).(compName).(axLetter).AxLims;
+                axHandle=Plotting.Plots.(plotName).(compName).(axLetter).Handle;
+                axHandle.Clipping='off';
+                specifyTrials=Plotting.Plots.(plotName).SpecifyTrials;
+                inclStruct=feval(specifyTrials);
+                allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
+                currIdx=Plotting.Plots.(plotName).Movie.currFrame;
+                dimNum=0;
+                axis(axHandle,'equal');
+                for dim='XYZ'
+                    varNames=axLims.(dim).SaveNames;
+                    subvars=axLims.(dim).SubvarNames;
+                    value=axLims.(dim).VariableValue;
+                    if iscell(value)
+                        value=value{1};
+                    end
+                    isHardCoded=axLims.(dim).IsHardCoded;
+                    relativeView=axLims.(dim).RelativeView;
+                    % Get the data for the center of the figure that was stored to the pgui
+                    dimNum=dimNum+1;
+                    centerData(1,dimNum)=Plotting.Plots.(plotName).Axes.(axLetter).MovieAxLimsVar.(dim)(currIdx,dimNum);
+                    offset=abs(eval(Plotting.Plots.(plotName).Axes.(axLetter).AxLims.(dim).VariableValue{1})); % Always positive.
+                    relativeView=Plotting.Plots.(plotName).Axes.(axLetter).AxLims.(dim).RelativeView;
+                    if length(offset)==1
+                        offset=[-1*offset offset];
+                    end
+                    if relativeView==1
+                        axLims.(dim)=offset+centerData(1,dimNum); % Min & max axes limits.
+                    else
+                        axLims.(dim)=centerData(1,dimNum);
+                    end
+                    axHandle.([dim 'Lim'])=axLims.(dim);
+                end
+                axHandle.View=view;
+            end
+        end
     otherwise
         if ~isfield(Plotting.Plots.(plotName),'SpecifyTrials')
             disp('Need to select a specify trials!');
@@ -98,8 +186,6 @@ switch compName
             currGroupHandle=hggroup(axHandle,'Tag',[compName ' ' letter]);
         end
 
-        %         tempGroupHandle=copyobj(currGroupHandle,axHandle); % Contains a copy of the objects, just to retain their properties
-        %         tempH=tempGroupHandle.Children;
         Plotting.Plots.(plotName).(compName).(letter).Handle=currGroupHandle;
         delete([currGroupHandle.Children]);
 
@@ -129,6 +215,11 @@ switch compName
                     h=feval([compName '_T'],axHandle,subName,trialName,repNum);
             end
         else
+            specifyTrialsName=Plotting.Plots.(plotName).SpecifyTrials;
+            inclStruct=feval(specifyTrialsName);
+            allTrialNames=getTrialNames(inclStruct,logVar,fig,0,[]);
+            trialName=plotExTrial.Trial;
+            repNum=allTrialNames.(subName).(trialName);
             namesInCode=Plotting.Plots.(plotName).(compName).(letter).Variables.NamesInCode;
             namesInCodeChar='{';
             for i=1:length(namesInCode)
@@ -150,8 +241,10 @@ switch compName
 
             idx=Plotting.Plots.(plotName).Movie.currFrame;
             h=feval([compName '_Movie'],axHandle,allData,idx);
+
         end
 
+        % Assign components to group
         for i=1:length(h)
             if ~isequal(class(h(i)),'matlab.graphics.GraphicsPlaceholder')
                 h(i).Parent=currGroupHandle;
@@ -171,12 +264,12 @@ switch compName
                     continue;
                 end
                 currChangedProperties=propsChangedList{i};
-                if isempty(currGroupHandle.Children)
+                if isempty(currGroupHandle.Children) % There are no graphics objects in this group
                     continue;
                 end
                 for j=1:length(currChangedProperties)
                     currProp=currChangedProperties{j};
-                    currGroupHandle.Children(i).(currProp)=allProps.(currProp);
+                    currGroupHandle.Children(i).(currProp)=allProps.(currProp); % Set the property
                 end
 
             end

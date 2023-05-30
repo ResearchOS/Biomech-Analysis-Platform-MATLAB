@@ -1,3 +1,0 @@
-function []=excludeAddConditionButtonPushed(src, event)
-
-%% PURPOSE: ADD A CONDITION TO THE EXCLUSION CRITERIA FOR THIS SPECIFY TRIALS VERSION

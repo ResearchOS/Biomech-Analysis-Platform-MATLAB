@@ -1,2 +1,0 @@
-function []=allComponentsUITreeSelectionChanged(src,event)
-

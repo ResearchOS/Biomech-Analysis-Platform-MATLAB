@@ -47,7 +47,8 @@ end
 if ismember(struct.SubjectCodenameHeader,headers)
     value=struct.SubjectCodenameHeader;
 else
-    value='';
+    handles.Import.subjectCodenameDropDown.Items=[{''} handles.Import.subjectCodenameDropDown.Items];
+    value='';    
 end
 handles.Import.subjectCodenameDropDown.Value=value;
 
@@ -55,6 +56,7 @@ handles.Import.subjectCodenameDropDown.Value=value;
 if ismember(struct.TargetTrialIDHeader,headers)
     value=struct.TargetTrialIDHeader;
 else
+    handles.Import.targetTrialIDDropDown.Items=[{''} handles.Import.targetTrialIDDropDown.Items];
     value='';
 end
 handles.Import.targetTrialIDDropDown.Value=value;

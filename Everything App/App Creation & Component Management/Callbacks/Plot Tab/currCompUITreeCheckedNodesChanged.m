@@ -1,3 +1,0 @@
-function []=currCompUITreeCheckedNodesChanged(src,event)
-
-%% PURPOSE: MODIFY WHAT IS DISPLAYED IN THE FIGURE BASED ON WHAT IS CHECKED FOR THE CURRENT PLOT

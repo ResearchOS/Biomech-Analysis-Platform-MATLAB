@@ -7,6 +7,8 @@ tic;
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+disp('Importing metadata from logsheet!');
+
 slash=filesep;
 
 selNode=handles.Import.allLogsheetsUITree.SelectedNodes;
@@ -150,11 +152,6 @@ for i=1:length(selHeaders)
         varNamePI=getPITextFromPS(varName);
         varPathPI=getClassFilePath(varNamePI,'Variable');
     end
-
-%     if exist(varPath,'file')==2 % PS file already exists, nothing to be done here.
-%         clear varStruct;
-%         continue;
-%     end
 
     [~, id, psid]=deText(varName);
 

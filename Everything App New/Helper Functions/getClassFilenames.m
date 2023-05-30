@@ -2,9 +2,8 @@ function [filenames]=getClassFilenames(class,isInstance)
 
 %% PURPOSE: RETURN ALL OF THE INSTANCES OF A CLASS IN THE CLASS FOLDER.
 % Inputs:
-% commonPath: the path containing all class folders (char)
-% class: the class folder to look in (char)
-% root: the root project-specific folder, for project-specific instances (char)
+% class: The class to look for in the folder
+% isInstance: Whether to look in the "Implementations" folder (true) or not (false)
 
 slash=filesep;
 

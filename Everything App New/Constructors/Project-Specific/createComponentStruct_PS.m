@@ -6,7 +6,7 @@ struct.Name=piStruct.Name;
 
 struct.Class='Component';
 
-if nargin==1
+if nargin==1 || isempty(psid)
     psid=createPSID(piStruct.Text, 'Component');
 end
 struct.ID=psid;

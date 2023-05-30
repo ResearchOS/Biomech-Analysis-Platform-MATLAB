@@ -6,7 +6,7 @@ struct.Name=name;
 
 struct.Class='Component';
 
-if nargin==1
+if nargin==1 || isempty(id)
     id=createID('Component');
 end
 struct.ID=id;

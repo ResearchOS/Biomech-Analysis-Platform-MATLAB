@@ -8,7 +8,7 @@ struct.MFileName=struct.Name;
 
 struct.Class='Process';
 
-if nargin==1
+if nargin==1 || isempty(id)
     id=createID('Process');
 end
 struct.ID=id;

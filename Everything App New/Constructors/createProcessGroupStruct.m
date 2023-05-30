@@ -6,7 +6,7 @@ struct.Name=name;
 
 struct.Class='ProcessGroup';
 
-if nargin==1
+if nargin==1 || isempty(id)
     id=createID('ProcessGroup');
 end
 struct.ID=id;

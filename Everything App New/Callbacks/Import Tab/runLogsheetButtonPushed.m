@@ -164,6 +164,7 @@ for i=1:length(selHeaders)
             varStruct.Level=level;
             saveClass('Variable',varStruct,date);
         end
+        varPathPI = getClassFilePath(varStruct.Text, 'Variable');
     end
     if exist(varPath,'file')~=2 % PS file does not exist
         if exist('varStruct','var')~=1
@@ -188,7 +189,6 @@ end
 
 saveClass('Logsheet', logsheetStruct);
 fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
-
 
 %% Trial level data
 trialIdxNums=find(trialIdx==1);

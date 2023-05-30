@@ -10,7 +10,7 @@ struct.Level='T';
 
 struct.Multi='T';
 
-if nargin==1
+if nargin==1 || isempty(psid)
     psid=createPSID(piStruct.Text, 'Plot');
 end
 struct.ID=psid;

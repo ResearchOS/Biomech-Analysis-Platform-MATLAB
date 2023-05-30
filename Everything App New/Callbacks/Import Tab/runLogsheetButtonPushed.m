@@ -174,7 +174,6 @@ for i=1:length(selHeaders)
     end
 
     [logsheetStruct,varStruct_PS]=linkClasses(logsheetStruct,varStruct_PS);
-%     varStruct_PS.BackwardLinks_Process={'Logsheet'}; % Indicates that the end of the line has been reached.
 
     varName=varStruct_PS.Text;
     logsheetStruct.Variables{idx}=varName;
@@ -236,7 +235,7 @@ if any(trialIdx) % There is at least one trial level variable
             % Update the last modified date, but only for the last row so this doesn't take too much
             % time.
             if rowNumIdx==rowNumsReps(end)
-                modifyVarsDate(varName);
+                modifyVarsDate(varName, 'Variable');
             end
 
         end
@@ -321,7 +320,7 @@ if any(subjectIdx)
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
             saveMAT(dataPath, desc, varName, var, subName);
 
-            modifyVarsDate(varName);
+            modifyVarsDate(varName, 'Variable');
 
         end
 

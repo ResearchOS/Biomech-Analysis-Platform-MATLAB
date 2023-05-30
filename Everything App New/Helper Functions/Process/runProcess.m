@@ -114,7 +114,19 @@ if ~ismember('P',level)
 end
 
 %% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
-remQueueIdx=modifyVarsDate(processStructPS.Text);
+modifyVarsDate(processStructPS.Text);
+
+%% Remove the completed process function from the queue
+projectSettingsFile=getProjectSettingsFile();
+projectSettings=loadJSON(projectSettingsFile);
+
+queue=projectSettings.ProcessQueue;
+remQueueIdx=ismember(queue,processStruct.Text);
+queue(remQueueIdx)=[];
+
+projectSettings.ProcessQueue=queue;
+writeJSON(projectSettingsFile,projectSettings);
+
 evalin('base','clear runInfo'); % Clean up after myself
 if isempty(remQueueIdx)
     disp('No data saved, check your process function!');

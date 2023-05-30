@@ -3,6 +3,14 @@ function [fromStruct, toStruct]=linkClasses(fromStruct, toStruct)
 %% PURPOSE: LINK TWO CLASS INSTANCES TOGETHER.
 % Linked FROM the fromStruct TO the toStruct (forward link)
 
+fromClass=fromStruct.Class;
+toClass=toStruct.Class;
+
+if any(ismember(fromStruct.(['ForwardLinks_' toClass]),toStruct.Text)) && ...
+            any(ismember(toStruct.(['BackwardLinks_' fromClass]),fromStruct.Text))
+    return;
+end
+
 fromText=fromStruct.Text;
 fullPathFrom=getClassFilePath(fromText, fromStruct.Class);
 

@@ -16,10 +16,6 @@ end
 currFolder=fileparts(mfilename('fullpath'));
 addpath(genpath(currFolder));
 
-%% FOR TESTING ONLY, REMOVE SOON!
-rmpath(genpath('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Everything App'));
-rmpath(genpath('C:\Users\Mitchell\Desktop\Matlab Code\GitRepos\Biomech-Analysis-Platform\Everything App'));
-
 %% Create the figure
 fig=uifigure('Name','pgui','Visible','on',...
     'Resize','on','AutoResizeChildren','off','SizeChangedFcn',@appResize);

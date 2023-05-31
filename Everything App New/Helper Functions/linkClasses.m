@@ -6,9 +6,12 @@ function [fromStruct, toStruct]=linkClasses(fromStruct, toStruct)
 fromClass=fromStruct.Class;
 toClass=toStruct.Class;
 
-if any(ismember(fromStruct.(['ForwardLinks_' toClass]),toStruct.Text)) && ...
+prevExist=false;
+if isfield(fromStruct,['ForwardLinks_' toClass]) && isfield(toStruct,['BackwardLinks_' fromClass])
+    if any(ismember(fromStruct.(['ForwardLinks_' toClass]),toStruct.Text)) && ...
             any(ismember(toStruct.(['BackwardLinks_' fromClass]),fromStruct.Text))
-    return;
+        prevExist=true;
+    end
 end
 
 fromText=fromStruct.Text;
@@ -33,5 +36,7 @@ else
     fromStruct.(fwdField)=unique([fromStruct.(fwdField); {toText}],'stable');
 end
 
-writeJSON(fullPathFrom, fromStruct);
-writeJSON(fullPathTo, toStruct);
+if ~prevExist
+    writeJSON(fullPathFrom, fromStruct);
+    writeJSON(fullPathTo, toStruct);
+end

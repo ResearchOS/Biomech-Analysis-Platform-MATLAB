@@ -10,6 +10,9 @@ This app is currently written and tested entirely in base MATLAB R2021b, no tool
 2. Place the entire folder in your preferred location in your file system. 
 3. Ensure that the folder is added to the MATLAB path ([see docs](https://www.mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html)).
 
+# A bit of the app's philosophy before going further:
+This app utilizes the idea of abstract and instanced (aka "implemented") objects. Here, an "object" is the collection of metadata found in its JSON file. Both abstract and instanced versions of objects exist because all objects (variables/functions/function groups/other) can exist independently of their instantiations. This is because some metadata is always true regardless of the use case of an object (e.g. the general shape/type of a variable, the executable file associated with a function object, etc.). Abstract objects are noted with a 6 character hex code (e.g. "objectName_ABC123"). Instances ("implementations") of that object are noted with the same hex code, followed by a 3 character hex code (e.g. "objectName_ABC123_000"). In this way, multiple versions of the same abstract object can be tracked. This naming convention will be seen throughout the app, and in the names/contents of the JSON files.
+
 # Opening the app:
 1. When you first open the app, it will ask you to select a folder to place all future JSON settings files in. A suggested folder structure looks something like this:
 -parent folder

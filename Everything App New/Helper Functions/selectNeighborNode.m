@@ -20,7 +20,11 @@ children=parent.Children;
 
 if length(children)==1
     newNode=parent;
-    uiTree.SelectedNodes=newNode;
+    if isequal(class(newNode),'matlab.ui.container.CheckBoxTree')
+        uiTree.SelectedNodes=[];
+    else
+        uiTree.SelectedNodes=newNode;
+    end
     return;
 end
 

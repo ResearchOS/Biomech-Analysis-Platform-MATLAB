@@ -25,15 +25,9 @@ currentProjectButtonPushed(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Import tab
+selectNode(handles.Import.allLogsheetsUITree, projectSettings.Current_Logsheet);
 % Bring up the current logsheet's metadata.
-allLogsheetsUITreeSelectionChanged(fig);
-% fillHeadersUITree(fig);
-% All logsheets UI Tree
-% handles.Import.sortLogsheetsDropDown.Value=guiSettings.Import.SortMethod;
-% sortUITree(handles.Import.allLogsheetsUITree,handles.Import.sortLogsheetsDropDown.Value);
-% currLogsheetNode=findobj(handles.Import.allLogsheetsUITree,'Text',guiSettings.Import.CurrentLogsheet);
-% handles.Import.allLogsheetsUITree.SelectedNodes=currLogsheetNode;
-% allLogsheetsUITreeSelectionChanged(fig);
+allLogsheetsUITreeSelectionChanged(fig, true);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Process tab
@@ -49,9 +43,6 @@ if ~isempty(projectPath)
         end
     end
 end
-% allVariablesUITreeSelectionChanged(fig);
-% allProcessUITreeSelectionChanged(fig);
-% allGroupsUITreeSelectionChanged(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot tab

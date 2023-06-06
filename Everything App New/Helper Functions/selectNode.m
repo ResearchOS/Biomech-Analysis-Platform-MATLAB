@@ -2,6 +2,12 @@ function [selNode]=selectNode(uiTree,text)
 
 %% PURPOSE: SELECT THE NODE WITH THE CORRESPONDING TEXT.
 
+if isempty(text)
+    selNode=[];
+    uiTree.SelectedNodes=selNode;
+    return;
+end
+
 [name,id,psid]=deText(text);
 piText=[name '_' id];
 
@@ -12,7 +18,8 @@ texts={children.Text};
 idx=contains(texts,piText);
 
 if ~any(idx)
-    uiTree.SelectedNodes=[];
+    selNode=[];
+    uiTree.SelectedNodes=selNode;
     return;
 end
 

@@ -1,4 +1,4 @@
-function []=allLogsheetsUITreeSelectionChanged(src,event)
+function []=allLogsheetsUITreeSelectionChanged(src,needSave)
 
 %% PURPOSE: UPDATE THE METADATA FOR THE CURRENTLY SELECTED LOGSHEET.
 
@@ -63,3 +63,12 @@ handles.Import.targetTrialIDDropDown.Value=value;
 
 % Fill logsheet headers UI tree
 fillHeadersUITree(fig,headers);
+
+% Set the current logsheet name in the project settings file
+% If needSave var exists, then don't save.
+if nargin~=2
+    projectSettingsPath=getProjectSettingsFile();
+    projectSettingsStruct=loadJSON(projectSettingsPath);
+    projectSettingsStruct.Current_Logsheet=selNode.Text;
+    writeJSON(projectSettingsPath,projectSettingsStruct);
+end

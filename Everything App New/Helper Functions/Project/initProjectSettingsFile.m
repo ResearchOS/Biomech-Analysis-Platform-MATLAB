@@ -48,3 +48,9 @@ if ~isfield(projectSettings,'Current_Plot_Name') || isempty(plots)
     projectSettings.Current_Plot_Name=Current_Plot_Name;
     writeJSON(projectSettingsFile,projectSettings);    
 end
+
+% Initialize the "Current_Logsheet" field, but do NOT create a default logsheet object.
+if ~isfield(projectSettings,'Current_Logsheet')
+    projectSettings.Current_Logsheet = {};
+    writeJSON(projectSettingsFile,projectSettings);
+end

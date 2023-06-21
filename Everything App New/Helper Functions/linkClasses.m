@@ -3,16 +3,16 @@ function [fromStruct, toStruct]=linkClasses(fromStruct, toStruct)
 %% PURPOSE: LINK TWO CLASS INSTANCES TOGETHER.
 % Linked FROM the fromStruct TO the toStruct (forward link)
 
-fromClass=fromStruct.Class;
-toClass=toStruct.Class;
+% fromClass=fromStruct.Class;
+% toClass=toStruct.Class;
 
-prevExist=false;
-if isfield(fromStruct,['ForwardLinks_' toClass]) && isfield(toStruct,['BackwardLinks_' fromClass])
-    if any(ismember(fromStruct.(['ForwardLinks_' toClass]),toStruct.Text)) && ...
-            any(ismember(toStruct.(['BackwardLinks_' fromClass]),fromStruct.Text))
-        prevExist=true;
-    end
-end
+% prevExist=false;
+% if isfield(fromStruct,['ForwardLinks_' toClass]) && isfield(toStruct,['BackwardLinks_' fromClass])
+%     if any(ismember(fromStruct.(['ForwardLinks_' toClass]),toStruct.Text)) && ...
+%             any(ismember(toStruct.(['BackwardLinks_' fromClass]),fromStruct.Text))
+%         prevExist=true;
+%     end
+% end
 
 fromText=fromStruct.Text;
 fullPathFrom=getClassFilePath(fromText, fromStruct.Class);
@@ -36,7 +36,7 @@ else
     fromStruct.(fwdField)=unique([fromStruct.(fwdField); {toText}],'stable');
 end
 
-if ~prevExist
-    writeJSON(fullPathFrom, fromStruct);
-    writeJSON(fullPathTo, toStruct);
-end
+% if ~prevExist
+writeJSON(fullPathFrom, fromStruct);
+writeJSON(fullPathTo, toStruct);
+% end

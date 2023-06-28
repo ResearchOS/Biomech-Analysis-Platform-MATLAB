@@ -18,6 +18,14 @@ for i=1:length(names)
         continue;
     end   
 
+%     if contains(name,'__')
+%         prevPath = [listing(i).folder filesep name '.json']; 
+%         name = strrep(name,'__','_');        
+%         newPath = [listing(i).folder filesep name '.json']; 
+%         movefile(prevPath,newPath);
+%         continue;
+%     end
+
     if isequal(name(end-4:end),'.json')    
         name=name(1:end-5); % Remove the ".json"
     else
@@ -31,10 +39,10 @@ for i=1:length(names)
     end
     firstUnderscoreIdx = firstUnderscoreIdx(1);
     if ~ismember(name(1:firstUnderscoreIdx-1),objTypes)
-        continue;
+        continue; % Skip previously changed filenames.
     end
 
-    prevPath = [listing(i).folder filesep name];    
+    prevPath = [listing(i).folder filesep name '.json'];    
     
     class = name(1:firstUnderscoreIdx-1);
     if ismember(class,objTypes)
@@ -46,12 +54,12 @@ for i=1:length(names)
 
         if length(name)-underscoreIdx==3
             instanceID=name(end-2:end);
-            abstractID=name(end-8:end-3);
-            name=name(1:end-10);
+            abstractID=name(end-9:end-4);
+            name=name(firstUnderscoreIdx+1:end-11);
         else
             abstractID=name(end-5:end);
             instanceID='';
-            name=name(1:end-7);
+            name=name(firstUnderscoreIdx+1:end-7);
         end
         uuid = genUUID(class,abstractID,instanceID,name);
     end

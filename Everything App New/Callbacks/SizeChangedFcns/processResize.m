@@ -116,6 +116,23 @@ objResize(tab.assignGroupButton, [0.3 0.5], [0.03 compHeight]);
 % Unassign group button
 objResize(tab.unassignGroupButton, [0.3 0.4], [0.03 compHeight]);
 
+% Add analysis button
+objResize(tab.addAnalysisButton, [0.3 0.7], [0.03 compHeight]);
+
+% Remove analysis button
+objResize(tab.removeAnalysisButton, [0.3 0.6], [0.03 compHeight]);
+
+% Sort analyses drop down
+objResize(tab.sortAnalysesDropDown, [0.2 0.85], [0.1 compHeight]);
+
+% All analyses UI tree
+objResize(tab.allAnalysesUITree, [0.01 0.01], [0.29 0.8]);
+
+% Analyses search field
+objResize(tab.analysesSearchField, [0.01 0.85], [0.15 compHeight]);
+
+
+
 % 18. Queue UI tree
 objResize(tab.queueUITree, [0.75 0.35], [0.25 0.6]);
 
@@ -141,10 +158,10 @@ objResize(tab.addToQueueButton, [0.365 0.75], [0.03 compHeight]);
 objResize(tab.removeFromQueueButton, [0.365 0.65], [0.03 compHeight]);
 
 % 30. Save as new group button
-objResize(tab.saveAsNewGroupButton, [0.33 0.1], [0.07 2*compHeight]);
+objResize(tab.copyToNewAnalysisButton, [0.33 0.1], [0.07 2*compHeight]);
 
 % 31. Select group button
-objResize(tab.selectGroupButton, [0.3 0.3], [0.03 compHeight]);
+objResize(tab.selectAnalysisButton, [0.3 0.3], [0.03 compHeight]);
 
 % 32. Current group name label
 objResize(tab.currentGroupLabel, [0.01 0.83], [0.3 compHeight]);

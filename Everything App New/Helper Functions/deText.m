@@ -1,45 +1,40 @@
-function [name, id, psid]=deText(text)
+function [objectType, abstractID, instanceID]=deText(uuid)
 
-%% PURPOSE: BREAK DOWN THE "TEXT" FIELD INTO ITS CONSTITUENT "NAME", "ID", AND "PSID" COMPONENTS.
+%% PURPOSE: BREAK DOWN THE "TEXT" FIELD INTO ITS CONSTITUENT COMPONENTS.
+% Expected UUID format: AABBBBBB_CCC
 
-openParensIdx=strfind(text,'(');
-if ~isempty(openParensIdx)
-    text=text(openParensIdx+1:end);
-end
+objectType='';
+abstractID='';
+instanceID='';
 
-if ~isempty(text) && isequal(text(end),')')
-    text=text(1:end-1);
-end
-
-% underscoreIdx is only empty if the current text is an argument
-if isempty(text)
-    name='';
-    id='';
-    psid='';
+if ~(ischar(uuid) || isstring(uuid))
     return;
 end
 
-splitText=strsplit(text,'_');
-underscoreIdx=strfind(text,'_');
-
-if isempty(underscoreIdx)
-    name=text;
-    id='';
-    psid='';
+if isempty(uuid)    
     return;
 end
 
-% Project-specific
-if length(splitText{end-1})==6 && length(splitText{end})==3
-    psid=splitText{end};
-    id=splitText{end-1};
-    name=text(1:underscoreIdx(end-1)-1);
-elseif length(splitText{end})==6 % Project-independent
-    psid='';
-    id=splitText{end};
-    name=text(1:underscoreIdx(end)-1);
+if length(uuid)<3
+    return; % Not long enough (due to error) to parse the string
+end
+
+% Remove folder path prefix if it exists.
+[path, uuid, ext] = fileparts(uuid);
+
+% Remove file extension if it exists.
+if contains(uuid,'.')
+    dotIdx = strfind(uuid,'.');
+    uuid = uuid(1:dotIdx-1);
+end
+
+objectType = uuid(1:2);
+underscoreIdx = strfind(uuid,'_');
+
+if ~isempty(underscoreIdx)
+    abstractID = uuid(3:underscoreIdx-1);
+    instanceID = uuid(underscoreIdx+1:end);
 else
-    name=text;
-    id='';
-    psid='';
+    abstractID = uuid(3:end-1);
+    instanceID = '';
 end

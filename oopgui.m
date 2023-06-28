@@ -30,7 +30,6 @@ assignin('base','gui',fig); % Put the GUI object into the base workspace.
 
 %% Get the "common path". This is the folder containing project-independent instances of settings class variables.
 % This path should be in its own GitHub repository.
-% commonPath=getCommonPath();
 initializeClassFolders();
 
 %% If there are no existing project settings files, then create a 'Default' project
@@ -41,7 +40,7 @@ rootSettingsFile=getRootSettingsFile();
 settingsVarNames=whos('-file',rootSettingsFile);
 settingsVarNames={settingsVarNames.name};
 
- % 3.
+% 3.
 projects=getClassFilenames('Project',false);
 if isempty(projects)
     projectStruct=createProjectStruct('Default');  
@@ -53,13 +52,14 @@ end
 % 2.
 if ~ismember('Current_Project_Name',settingsVarNames)
     projects=getClassFilenames('Project');
+    [name,abstractID,instanceID]=deText(projects{1});
     Current_Project_Name=projects{1};
     Current_Project_Name=Current_Project_Name(9:end-5); % Remove 'Project' prefix and '.json' suffix
     save(rootSettingsFile,'Current_Project_Name','-append');
 end
 
 %% Initialize the project settings file for the current project.
-projectSettingsFile=getProjectSettingsFile(); % File stores the current process group name
+projectSettingsFile=getProjectSettingsFile(); % File stores the current analysis name
 if ~isempty(projectSettingsFile)
     initProjectSettingsFile(projectSettingsFile);
 end

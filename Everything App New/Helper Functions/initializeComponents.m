@@ -198,6 +198,9 @@ handles.Process.functionsTab=uitab(handles.Process.subTabAll,'Title','Functions'
 % 4. Groups tab
 handles.Process.groupsTab=uitab(handles.Process.subTabAll,'Title','Groups','AutoResizeChildren','off');
 
+% 5. Analyses tab
+handles.Process.analysesTab=uitab(handles.Process.subTabAll,'Title','Analyses','AutoResizeChildren','off');
+
 % 1. Variables label
 % handles.Process.variablesLabel=uilabel(handles.Process.variablesTab,'Text','Variables','FontWeight','bold');
 
@@ -267,6 +270,24 @@ handles.Process.assignGroupButton=uibutton(handles.Process.groupsTab,'Text','->'
 % 19. Unassign group button
 handles.Process.unassignGroupButton=uibutton(handles.Process.groupsTab,'Text','<-','Visible','on','ButtonPushedFcn',@(unassignGroupButton,event) unassignGroupButtonPushed(unassignGroupButton));
 
+% 20. Add analysis button
+handles.Process.addAnalysisButton=uibutton(handles.Process.analysesTab,'Text','A+','ButtonPushedFcn',@(addAnalysisButton,event) addAnalysisButtonPushed(addAnalysisButton));
+
+% 21. Remove analysis button
+handles.Process.removeAnalysisButton=uibutton(handles.Process.analysesTab,'Text','A-','ButtonPushedFcn',@(removeAnalysisButton,event) removeAnalysisButtonPushed(removeAnalysisButton));
+
+% 22. Sort analyses drop down
+handles.Process.sortAnalysesDropDown=uidropdown(handles.Process.analysesTab,'Editable','off','Items',sortOptions','ValueChangedFcn',@(sortAnalysesDropDown,event) sortAnalysesDropDown(sortAnalysesDropDown));
+
+% 23. All analyses UI tree
+handles.Process.allAnalysesUITree=uitree(handles.Process.analysesTab,'checkbox','SelectionChangedFcn',@(allAnalysesUITree,event) allAnalysesUITreeSelectionChanged(allAnalysesUITree));
+
+% 24. Analyses search field
+handles.Process.analysesSearchField=uieditfield(handles.Process.analysesTab,'Value','Search','ValueChangingFcn',@(analysesSearchField, event) analysesSearchFieldValueChanging(analysesSearchField));
+
+% 25. Select analysis button
+handles.Process.selectAnalysisButton=uibutton(handles.Process.analysesTab,'push','Text','Sel','ButtonPushedFcn',@(selectAnalysisButton,event) selectAnalysisButtonPushed(selectAnalysisButton));
+
 % 18. Queue UI tree
 handles.Process.queueUITree=uitree(processTab,'checkbox');
 
@@ -275,6 +296,9 @@ handles.Process.queueLabel=uilabel(processTab,'FontWeight','bold','Text','Queue'
 
 % 22. Current group/function tab group
 handles.Process.subtabCurrent=uitabgroup(processTab,'AutoResizeChildren','off','SelectionChangedFcn',@(subTabCurrent,event) subTabCurrentSelectionChanged(subTabCurrent));
+
+% 23. Current analysis tab
+handles.Process.currentAnalysisTab=uitab(handles.Process.subtabCurrent,'Title','Analysis','AutoResizeChildren','off');
 
 % 23. Current group tab
 handles.Process.currentGroupTab=uitab(handles.Process.subtabCurrent,'Title','Group','AutoResizeChildren','off');
@@ -292,16 +316,13 @@ handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','S
 handles.Process.functionUITree=uitree(handles.Process.currentFunctionTab,'checkbox','SelectionChangedFcn',@(functionUITree,event) functionUITreeSelectionChanged(functionUITree));
 
 % 20. Add to queue button
-handles.Process.addToQueueButton=uibutton(handles.Process.currentGroupTab,'push','Text','->','ButtonPushedFcn',@(addToQueueButton,event) addToQueueButtonPushed(addToQueueButton));
+handles.Process.addToQueueButton=uibutton(handles.Process.currentAnalysisTab,'push','Text','->','ButtonPushedFcn',@(addToQueueButton,event) addToQueueButtonPushed(addToQueueButton));
 
 % 21. Remove from queue button
-handles.Process.removeFromQueueButton=uibutton(handles.Process.currentGroupTab,'push','Text','<-','ButtonPushedFcn',@(removeFromQueueButton,event) removeFromQueueButtonPushed(removeFromQueueButton));
+handles.Process.removeFromQueueButton=uibutton(handles.Process.currentAnalysisTab,'push','Text','<-','ButtonPushedFcn',@(removeFromQueueButton,event) removeFromQueueButtonPushed(removeFromQueueButton));
 
-% 30. Save as new group button
-handles.Process.saveAsNewGroupButton=uibutton(handles.Process.currentGroupTab,'push','Text',{'Save As','New Group'},'ButtonPushedFcn',@(saveAsNewGroupButton,event) saveAsNewGroupButtonPushed(saveAsNewGroupButton));
-
-% 31. Select group button
-handles.Process.selectGroupButton=uibutton(handles.Process.groupsTab,'push','Text','Sel','ButtonPushedFcn',@(selectGroupButton,event) selectGroupButtonPushed(selectGroupButton));
+% 30. Save as new analysis button
+handles.Process.copyToNewAnalysisButton=uibutton(handles.Process.currentAnalysisTab,'push','Text',{'Copy To New','Analysis'},'ButtonPushedFcn',@(copyToNewAnalysisButton,event) copyToNewAnalysisButtonPushed(copyToNewAnalysisButton));
 
 % 32. Current group label
 handles.Process.currentGroupLabel=uilabel(handles.Process.currentGroupTab,'Text','Current Group','FontWeight','bold');

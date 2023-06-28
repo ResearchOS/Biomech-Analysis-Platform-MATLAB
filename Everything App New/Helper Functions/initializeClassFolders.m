@@ -7,11 +7,7 @@ end
 
 slash=filesep;
 
-classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup','SpecifyTrials'}; % One folder for each object type
-
-% if nargin==0
-%     root=getCommonPath; % Make project-independent folders.
-% end
+classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup','SpecifyTrials','Analysis'}; % One folder for each object type
 
 for i=1:length(classNames)
     className=classNames{i};
@@ -27,7 +23,7 @@ for i=1:length(classNames)
         mkdir(archiveFolder);
     end
 
-    subdir=[classFolder slash 'Implementations'];
+    subdir=[classFolder slash 'Instances'];
     subdirArchive=[subdir slash 'Archive'];
 
     if ~isfolder(subdir)

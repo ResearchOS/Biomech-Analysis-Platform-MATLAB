@@ -1,4 +1,4 @@
-function [id]=createID(class)
+function [id]=createID_Abstract(class)
 
 %% PURPOSE: CREATE AN ID NUMBER FOR THE CURRENTLY SPECIFIED CLASS
 

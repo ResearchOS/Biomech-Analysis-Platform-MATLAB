@@ -2,9 +2,7 @@ function []=saveClass(class, classStruct, date)
 
 %% PURPOSE: SAVE A CLASS INSTANCE TO JSON FILE.
 
-[~,~,psid]=deText(classStruct.Text);
-
-% assert(isempty(psid),'Cannot save an object version to the common folder!');
+[~,~,abstractID]=deText(classStruct.Text);
 
 slash=filesep;
 
@@ -12,20 +10,11 @@ filename=[class '_' classStruct.Text];
 
 rootPath=getCommonPath();
 
-if ~isempty(psid)
-    rootPath=[rootPath slash class slash 'Implementations'];
+if ~isempty(abstractID)
+    rootPath=[rootPath slash class slash 'Instances'];
 else
     rootPath=[rootPath slash class];
 end
-
-% if isempty(psid)
-%     rootPath=getCommonPath();
-% else
-%     projectPath=getProjectPath;
-%     rootPath=[projectPath slash 'Project_Settings'];
-% end
-
-% classFolder=[rootPath slash class];
 
 filepath=[rootPath slash filename];
 

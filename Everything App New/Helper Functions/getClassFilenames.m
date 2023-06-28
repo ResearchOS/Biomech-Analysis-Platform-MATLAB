@@ -15,7 +15,7 @@ if ~isInstance
     root=getCommonPath();   
     classFolder = [root slash class];
 else
-    classFolder=[getCommonPath slash class slash 'Implementations'];
+    classFolder=[getCommonPath slash class slash 'Instances'];
 end
 
 listing=dir(classFolder);

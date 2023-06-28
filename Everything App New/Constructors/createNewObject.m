@@ -67,6 +67,10 @@ else
     computerID=getComputerID();
     struct.DataPath.(computerID)=''; % Where the Raw Data Files are located.
     struct.ProjectPath.(computerID)=''; % Where the project's files are located.
+    struct.Process_Queue = {};
+    anStruct = createNewObject(true, 'Analysis', 'Default'); % Create a new default analysis for the new project.
+    struct.Current_Analysis = anStruct.UUID;
+    struct.Current_Logsheet = {};
 end
 
 end

@@ -1,8 +1,15 @@
-function [data]=loadJSON(fullPath)
+function [data]=loadJSON(str)
 
 %% PURPOSE: LOAD A JSON FILE AND RETURN IT DECODED.
 
 %% For retrieving the previously loaded data from the GUI appdata
+
+% Provided a UUID, not a file path.
+if ~contains(str,filesep)
+    fullPath = getJSONPath(str);
+else
+    fullPath = str;
+end
     
 rootSettingsFile=getRootSettingsFile;
 load(rootSettingsFile,'Store_Settings');

@@ -6,10 +6,30 @@ handles=getappdata(fig,'handles');
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
 
 rootSettingsFile=getRootSettingsFile();
-projectPath=getProjectPath(1);
-if ~isempty(projectPath)
-    projectSettingsFile=getProjectSettingsFile();
-    projectSettings=loadJSON(projectSettingsFile);
+load(rootSettingsFile,'Current_Project_Name');
+projectStruct = loadJSON(Current_Project_Name);
+
+
+%% Fill the UI trees with their correct values
+sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 
+    handles.Process.sortVariablesDropDown; handles.Process.sortProcessDropDown;
+    handles.Plot.sortPlotsDropDown; handles.Plot.sortComponentsDropDown;
+    handles.Process.sortGroupsDropDown; handles.Process.sortAnalysesDropDown];
+uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree;
+    handles.Process.allVariablesUITree; handles.Process.allProcessUITree;
+    handles.Plot.allPlotsUITree; handles.Plot.allComponentsUITree;
+    handles.Process.allGroupsUITree; handles.Process.allAnalysesUITree];
+classNamesUITrees={'Project','Logsheet',...
+    'Variable','Process',...
+    'Plot','Component',...
+    'ProcessGroup','Analysis'};
+
+for i=1:length(classNamesUITrees)
+    class=classNamesUITrees{i};
+    uiTree=uiTrees(i);
+    sortDropDown=sortDropDowns(i);
+    
+    fillUITree(fig, class, uiTree, '', sortDropDown);    
 end
 
 fillUITree_SpecifyTrials(fig); % Fill in the specify trials
@@ -25,22 +45,17 @@ currentProjectButtonPushed(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Import tab
-selectNode(handles.Import.allLogsheetsUITree, projectSettings.Current_Logsheet);
+selectNode(handles.Import.allLogsheetsUITree, projectStruct.Current_Logsheet);
 % Bring up the current logsheet's metadata.
 allLogsheetsUITreeSelectionChanged(fig, true);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Process tab
 if ~isempty(projectPath)
-    handles.Process.currentAnalysisLabel.Text=projectSettings.Current_Analysis;
-%     fillProcessGroupUITree(fig);
-    % Fill in queue.
-    % TODO: initialize the "ProcessQueue" field when the
-    % "Current_ProcessGroup_Name" field is initialized so I don't have to check if the field exists.
-    if isfield(projectSettings,'Process_Queue')
-        for i=1:length(projectSettings.Process_Queue)
-            uitreenode(handles.Process.queueUITree,'Text',projectSettings.Process_Queue{i});
-        end
+    handles.Process.currentAnalysisLabel.Text=projectStruct.Current_Analysis;
+
+    for i=1:length(projectStruct.Process_Queue)
+        uitreenode(handles.Process.queueUITree,'Text',projectStruct.Process_Queue{i});
     end
 end
 
@@ -83,3 +98,8 @@ handles.Settings.commonPathEditField.Value=commonPath;
 
 load(rootSettingsFile,'Store_Settings');
 handles.Settings.storeSettingsCheckbox.Value=Store_Settings;
+
+load(rootSettingsFile,'Current_Tab_Title');
+
+handles.Tabs.tabGroup1.SelectedTab=handles.(Current_Tab_Title).Tab;
+tabGroup1SelectionChanged(fig); % To allow the variables tab to change parent as needed.

@@ -8,6 +8,8 @@ handles=getappdata(fig,'handles');
 currTab=handles.Process.subtabCurrent.SelectedTab.Title;
 
 switch currTab
+    case 'Analysis'
+        varVis=false;
     case 'Group'        
         varVis=false;        
     case 'Function'

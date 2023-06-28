@@ -33,10 +33,12 @@ struct.LastModifiedBy=user2;
 
 struct.Description='';
 
-if ~isfield(struct,'Analysis')
-    struct.Analysis = {currAnalysis};
-else
-    struct.Analysis = [struct.Analysis; {currAnalysis}];
+if ~isequal(class,'Analysis')
+    if ~isfield(struct,'Analysis')
+        struct.Analysis = {currAnalysis};
+    else
+        struct.Analysis = [struct.Analysis; {currAnalysis}];
+    end
 end
 
 struct.OutOfDate=true;

@@ -5,7 +5,7 @@ function [objStruct] = createNewObject(instanceBool, class, name, abstractID, in
 % instanceBool: True: create an instance of an object, and abstract if not yet created. False: create an
 % abstract object
 
-assert(isequal(class(instanceBool),'logical') && isscalar(instanceBool)); % Check that it's a boolean
+assert(islogical(instanceBool) && isscalar(instanceBool)); % Check that it's a boolean
 
 if nargin==0
     objStruct=struct();

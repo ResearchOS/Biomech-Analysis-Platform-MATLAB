@@ -2,15 +2,15 @@ function []=saveClass(class, classStruct, date)
 
 %% PURPOSE: SAVE A CLASS INSTANCE TO JSON FILE.
 
-[~,~,abstractID]=deText(classStruct.Text);
+[~,abstractID,instanceID]=deText(classStruct.UUID);
 
 slash=filesep;
 
-filename=[class '_' classStruct.Text];
+filename=classStruct.UUID;
 
 rootPath=getCommonPath();
 
-if ~isempty(abstractID)
+if ~isempty(instanceID)
     rootPath=[rootPath slash class slash 'Instances'];
 else
     rootPath=[rootPath slash class];

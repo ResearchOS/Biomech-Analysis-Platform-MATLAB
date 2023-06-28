@@ -9,12 +9,18 @@ projectPath=getClassFilePath(Current_Project_Name,'Project');
 
 projectStruct=loadJSON(projectPath);
 
+doWrite = false;
+
 if ~isfield(projectStruct.DataPath,computerID)
     projectStruct.DataPath.(computerID)='';
+    doWrite = true;
 end
 
 if ~isfield(projectStruct.ProjectPath,computerID)
     projectStruct.ProjectPath.(computerID)='';
+    doWrite = true;
 end
 
-writeJSON(projectPath,projectStruct);
+if doWrite % Because a modification has been made.
+    writeJSON(projectPath,projectStruct);
+end

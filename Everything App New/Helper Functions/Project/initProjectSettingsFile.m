@@ -31,10 +31,11 @@ if isempty(projectPath)
     return;
 end
 
+writeJSON(projectSettingsFile,projectSettings);
+
 %% If there are no existing analysis files for this project, then create a 'Default' analysis and link it to this project.
 if isempty(projectSettings.Current_Analysis)
     anStruct=createNewObject(true, 'Analysis', 'Default');
     projectSettings.Current_Analysis = anStruct.UUID;
+    writeJSON(projectSettingsFile,projectSettings);
 end
-
-writeJSON(projectSettingsFile,projectSettings);

@@ -32,28 +32,28 @@ allLogsheetsUITreeSelectionChanged(fig, true);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Process tab
 if ~isempty(projectPath)
-    handles.Process.currentGroupLabel.Text=projectSettings.Current_ProcessGroup_Name;
-    fillProcessGroupUITree(fig);
+    handles.Process.currentAnalysisLabel.Text=projectSettings.Current_Analysis;
+%     fillProcessGroupUITree(fig);
     % Fill in queue.
     % TODO: initialize the "ProcessQueue" field when the
     % "Current_ProcessGroup_Name" field is initialized so I don't have to check if the field exists.
-    if isfield(projectSettings,'ProcessQueue')
-        for i=1:length(projectSettings.ProcessQueue)
-            uitreenode(handles.Process.queueUITree,'Text',projectSettings.ProcessQueue{i});
+    if isfield(projectSettings,'Process_Queue')
+        for i=1:length(projectSettings.Process_Queue)
+            uitreenode(handles.Process.queueUITree,'Text',projectSettings.Process_Queue{i});
         end
     end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot tab
-if ~isempty(projectPath)
-    handles.Plot.currentPlotLabel.Text=projectSettings.Current_Plot_Name;
-    fillPlotUITree(fig);
-    plotPath=getClassFilePath(projectSettings.Current_Plot_Name,'Plot');
-    plotStruct=loadJSON(plotPath);
-    specifyTrialsPlot=plotStruct.SpecifyTrials;
-    checkSpecifyTrialsUITree(specifyTrialsPlot,handles.Plot.allSpecifyTrialsUITree);
-end
+% if ~isempty(projectPath)
+%     handles.Plot.currentPlotLabel.Text=projectSettings.Current_Plot_Name;
+%     fillPlotUITree(fig);
+%     plotPath=getClassFilePath(projectSettings.Current_Plot_Name,'Plot');
+%     plotStruct=loadJSON(plotPath);
+%     specifyTrialsPlot=plotStruct.SpecifyTrials;
+%     checkSpecifyTrialsUITree(specifyTrialsPlot,handles.Plot.allSpecifyTrialsUITree);
+% end
 % allPlotsUITreeSelectionChanged(fig);
 % allComponentsUITreeSelectionChanged(fig);
 % All components UI tree

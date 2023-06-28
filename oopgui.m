@@ -76,15 +76,15 @@ newComputerProjectPaths(Computer_ID);
 sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 
     handles.Process.sortVariablesDropDown; handles.Process.sortProcessDropDown;
     handles.Plot.sortPlotsDropDown; handles.Plot.sortComponentsDropDown;
-    handles.Process.sortGroupsDropDown];
+    handles.Process.sortGroupsDropDown; handles.Process.sortAnalysesDropDown];
 uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree;
     handles.Process.allVariablesUITree; handles.Process.allProcessUITree;
     handles.Plot.allPlotsUITree; handles.Plot.allComponentsUITree;
-    handles.Process.allGroupsUITree];
+    handles.Process.allGroupsUITree; handles.Process.allAnalysesUITree];
 classNamesUITrees={'Project','Logsheet',...
     'Variable','Process',...
     'Plot','Component',...
-    'ProcessGroup'};
+    'ProcessGroup','Analysis'};
 
 for i=1:length(classNamesUITrees)
     class=classNamesUITrees{i};

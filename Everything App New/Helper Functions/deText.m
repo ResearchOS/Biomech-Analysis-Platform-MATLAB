@@ -35,6 +35,6 @@ if ~isempty(underscoreIdx)
     abstractID = uuid(3:underscoreIdx-1);
     instanceID = uuid(underscoreIdx+1:end);
 else
-    abstractID = uuid(3:end-1);
+    abstractID = uuid(3:end);
     instanceID = '';
 end

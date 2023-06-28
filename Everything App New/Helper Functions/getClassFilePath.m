@@ -38,7 +38,7 @@ slash=filesep;
 commonPath=getCommonPath();
 classFolder=[commonPath slash class];
 if isempty(psid)
-    fullPath=[classFolder slash class '_' file '.json'];
+    fullPath=[classFolder slash file '.json'];
 else
-    fullPath=[classFolder slash 'Implementations' slash class '_' file '.json'];
+    fullPath=[classFolder slash 'Instances' slash file '.json'];
 end

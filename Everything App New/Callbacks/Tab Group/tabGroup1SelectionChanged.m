@@ -7,14 +7,14 @@ function []=tabGroup1SelectionChanged(src,currTab)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-path=getProjectPath();
+% path=getProjectPath();
 
-if isempty(path)
-    disp('Check the project path!');
-    if ~isequal(handles.Tabs.tabGroup1.SelectedTab,handles.Settings.Tab)
-        handles.Tabs.tabGroup1.SelectedTab=handles.Projects.Tab;
-    end
-end
+% if isempty(path)
+%     disp('Check the project path!');
+%     if ~isequal(handles.Tabs.tabGroup1.SelectedTab,handles.Settings.Tab)
+%         handles.Tabs.tabGroup1.SelectedTab=handles.Projects.Tab;
+%     end
+% end
 
 %% Store the current tab.
 rootSettingsFile=getRootSettingsFile();

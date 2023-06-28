@@ -151,6 +151,9 @@ objResize(tab.groupUITree, [0.01 0.01], [0.35 0.8]);
 % 27. Function UI tree
 objResize(tab.functionUITree, [0.01 0.01], [0.39 0.8]);
 
+% 28. Analysis UI tree
+objResize(tab.analysisUITree, [0.01 0.01], [0.35 0.8]);
+
 % 20. Add to queue button
 objResize(tab.addToQueueButton, [0.365 0.75], [0.03 compHeight]);
 

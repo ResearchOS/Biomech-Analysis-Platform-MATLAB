@@ -12,11 +12,6 @@ if exist('instanceID','var')~=1
     instanceID = '';
 end
 
-% Get the current analysis
-projectSettingsPath = getProjectSettingsFile();
-projectSettings = loadJSON(projectSettingsPath);
-currAnalysis = projectSettings.Current_Analysis;
-
 currDate = datetime('now');
 struct.DateCreated = currDate;
 struct.DateModified = currDate;
@@ -32,14 +27,6 @@ user2=user; % Stand-in for username
 struct.LastModifiedBy=user2;
 
 struct.Description='';
-
-if ~isequal(class,'Analysis')
-    if ~isfield(struct,'Analysis')
-        struct.Analysis = {currAnalysis};
-    else
-        struct.Analysis = [struct.Analysis; {currAnalysis}];
-    end
-end
 
 struct.OutOfDate=true;
 

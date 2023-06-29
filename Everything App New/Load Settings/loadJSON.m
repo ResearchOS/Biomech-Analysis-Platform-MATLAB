@@ -4,6 +4,10 @@ function [data]=loadJSON(str)
 
 %% For retrieving the previously loaded data from the GUI appdata
 
+% SHOULD LOADJSON CHECK THAT ALL REQUIRED FIELDS EXIST?
+% Only when creating new Projects does anything really have to be
+% initialized (an analysis)
+
 % Provided a UUID, not a file path.
 if ~contains(str,filesep)
     fullPath = getJSONPath(str);
@@ -47,6 +51,23 @@ str=char(raw');
 
 % Convert json to struct
 data=jsondecode(str);
+
+% Check that this struct contains all required fields
+[name, abstractID, instanceID]=deText(data.UUID);
+instanceBool=true; % Initialize
+if isempty(instanceID)
+    instanceBool = false;    
+end
+compStruct = createNewObject(instanceBool, data.Class, '', abstractID, instanceID, false);
+compFieldnames = fieldnames(compStruct);
+dataFieldnames = fieldnames(data);
+missingFieldsIdx = ~ismember(compFieldnames,dataFieldnames);
+if any(missingFieldsIdx)
+    % 1. Identify which fields are missing from the actual data struct.    
+    missingFieldnames = compFieldnames(missingFieldsIdx);
+    % 2. Put those fields from the comparison struct into the actual data struct. 
+    
+end
 
 %% Now that the data has been loaded, 
 if exist('fig','var')==1 && Store_Settings 

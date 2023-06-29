@@ -1,4 +1,4 @@
-function [objStruct] = createNewObject(instanceBool, class, name, abstractID, instanceID)
+function [objStruct] = createNewObject(instanceBool, class, name, abstractID, instanceID, saveObj)
 
 %% PURPOSE: CREATE A NEW STRUCT OF ANY CLASS
 
@@ -12,7 +12,7 @@ if nargin==0
     return;
 end
 
-if exist('name','var')~=1
+if exist('name','var')~=1 || isempty(name)
     name = 'Default';
 end
 
@@ -29,6 +29,10 @@ if exist('instanceID','var')~=1
     instanceID = '';
 end
 
+if exist('saveObj','var')~=1
+    saveObj = true;
+end
+
 % Initialize the fields common to all structures (abstract & instances, all
 % object types).
 objStruct = initializeCommonStructFields(instanceBool, class, name, abstractID, instanceID);
@@ -37,17 +41,19 @@ objStruct = initializeCommonStructFields(instanceBool, class, name, abstractID, 
 % Once to create abstract object-specific fields and once to create
 % instance object-specific fields.
 if createAbstract && instanceBool
-    objStruct = feval(['create' class 'Struct'],false, objStruct);
+    objStruct = feval(['create' class 'Struct'],false, objStruct, saveObj);
 end
 
-objStruct = feval(['create' class 'Struct'],instanceBool, objStruct);
+objStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);
 
-saveClass(class,objStruct);
+if saveObj
+    saveClass(class,objStruct);
+end
 
 end
 
 %% VARIABLE
-function struct = createVariableStruct(instanceBool, struct)
+function struct = createVariableStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.HardCodedValue = [];
@@ -59,7 +65,7 @@ end
 end
 
 %% PROJECT
-function struct = createProjectStruct(instanceBool, struct)
+function struct = createProjectStruct(instanceBool, struct, saveObj)
 
 if instanceBool
 
@@ -68,15 +74,18 @@ else
     struct.DataPath.(computerID)=''; % Where the Raw Data Files are located.
     struct.ProjectPath.(computerID)=''; % Where the project's files are located.
     struct.Process_Queue = {};
-    anStruct = createNewObject(true, 'Analysis', 'Default'); % Create a new default analysis for the new project.
+    anStruct = createNewObject(true, 'Analysis', 'Default','','',saveObj); % Create a new default analysis for the new project.
     struct.Current_Analysis = anStruct.UUID;
-    struct.Current_Logsheet = {};
+    struct.Current_Logsheet = {};    
+    if saveObj
+        linkObjs(anStruct, struct); % Link the analysis struct to the project struct.
+    end
 end
 
 end
 
 %% SPECIFY TRIALS
-function struct = createSpecifyTrialsStruct(instanceBool, struct)
+function struct = createSpecifyTrialsStruct(instanceBool, struct, saveObj)
 
 if instanceBool
 
@@ -92,7 +101,7 @@ end
 end
 
 %% PROCESS
-function struct = createProcessStruct(instanceBool, struct)
+function struct = createProcessStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.SpecifyTrials={};
@@ -108,7 +117,7 @@ end
 end
 
 %% PROCESS GROUP
-function struct = createProcessGroupStruct(instanceBool, struct)
+function struct = createProcessGroupStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.ExecutionListNames={};
@@ -120,7 +129,7 @@ end
 end
 
 %% LOGSHEET
-function struct = createLogsheetStruct(instanceBool, struct)
+function struct = createLogsheetStruct(instanceBool, struct, saveObj)
 
 if instanceBool
 
@@ -140,11 +149,19 @@ end
 end
 
 %% ANALYSIS
-function struct = createAnalysisStruct(instanceBool, struct)
+function struct = createAnalysisStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.Tags = {};
     struct.RunList = {}; % The list of functions & groups to run, in order.
+
+    if saveObj
+        rootSettingsFile = getRootSettingsFile();
+        load(rootSettingsFile, 'Current_Project_Name');
+        projectStruct = loadJSON(getJSONPath(Current_Project_Name));
+        linkObjs(struct, projectStruct);
+    end
+
 else
     
 end

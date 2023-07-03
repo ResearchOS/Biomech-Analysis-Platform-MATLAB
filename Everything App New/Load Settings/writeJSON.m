@@ -34,9 +34,11 @@ if ~isequal(fullPath(end-4:end),'.json')
     fullPath=[fullPath '.json'];
 end
 
-if isstruct(json)
-    json=jsonencode(json,'PrettyPrint',true);
+% Format the linkage matrix to be written
+if isfield(json,'RunList') && length(fieldnames(data))==1
+    json = formatLinkageMatrix(json,'write');
 end
+json=jsonencode(json,'PrettyPrint',true);
 
 fid=fopen(fullPath,'w');
 fprintf(fid,'%s',json);

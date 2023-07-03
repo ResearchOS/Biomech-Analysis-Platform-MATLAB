@@ -16,17 +16,14 @@ end
 
 % May need to initialize a project if there is no current project, or the
 % current project's file does not exist.
-if exist('Current_Project_Name','var')~=1 ... % No current project name
-        || exist(getJSONPath(Current_Project_Name),'file')~=2 % File for current project name does not exist.
-    
-    if exist(getJSONPath(Current_Project_Name),'file')~=2
-        [name, abstractID, instanceID] = deText(Current_Project_Name);
-    else
-        abstractID='';
-        instanceID='';
-    end
-    projectStruct = createNewObject(true, 'Project', 'Default',abstractID,instanceID,true);
-%     Current_Project_Name = projectStruct.UUID;
+if exist('Current_Project_Name','var')~=1
+    Current_Project_Name = '';
+end
+
+if isempty(Current_Project_Name) || exist(getJSONPath(Current_Project_Name),'file')~=2 % File for current project name does not exist.
+    [name, abstractID, instanceID] = deText(Current_Project_Name);
+    projectStruct = createNewObject(true, 'Project', name,abstractID,instanceID,true);
+    Current_Project_Name = projectStruct.UUID;
 end
 
 if exist('Current_Tab_Title','var')~=1

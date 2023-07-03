@@ -15,15 +15,12 @@ end
 linksFolder = [commonPath slash 'Linkages'];
 linksFilePath = [linksFolder slash 'Linkages.json'];
 
-try
 links = loadJSON(linksFilePath);
-catch
-
-end
 
 projectName = getCurrent('Current_Project_Name');
 analysisName = getCurrent('Current_Analysis_Name');
 
+% THE ORDER THINGS ARE ADDED IN.
 newline = {projectName analysisName leftObj.UUID rightObj.UUID};
 
 links.Links = [links.Links; newline]; % Append this link to the file.

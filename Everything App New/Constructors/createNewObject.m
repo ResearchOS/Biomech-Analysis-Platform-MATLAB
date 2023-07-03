@@ -1,6 +1,8 @@
 function [objStruct] = createNewObject(instanceBool, class, name, abstractID, instanceID, saveObj)
 
 %% PURPOSE: CREATE A NEW STRUCT OF ANY CLASS
+% This function is only used when creating a *new* project. Not when
+% copying from an existing object.
 
 % instanceBool: True: create an instance of an object, and abstract if not yet created. False: create an
 % abstract object
@@ -120,8 +122,7 @@ end
 function struct = createProcessGroupStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-    struct.ExecutionListNames={};
-    struct.ExecutionListTypes={};
+    struct.RunList={};  
 else
 
 end
@@ -159,7 +160,7 @@ if instanceBool
         rootSettingsFile = getRootSettingsFile();
         load(rootSettingsFile, 'Current_Project_Name');
         projectStruct = loadJSON(getJSONPath(Current_Project_Name));
-        linkObjs(struct, projectStruct);
+        linkObjs(struct, projectStruct);        
     end
 
 else

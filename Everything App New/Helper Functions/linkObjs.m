@@ -5,25 +5,33 @@ function []=linkObjs(leftObj, rightObj)
 % COMMON PATH.
 
 if ischar(leftObj)
-    leftObj = loadJSON(getJSONPath(leftObj));
+    leftObj = loadJSON(leftObj);
 end
 
 if ischar(rightObj)
-    rightObj = loadJSON(getJSONPath(rightObj));
+    rightObj = loadJSON(rightObj);
 end
 
 linksFolder = [commonPath slash 'Linkages'];
-if isequal(leftObj.Class,'Analysis') && isequal(rightObj.Class,'Project')   
-    linksFilePath = [linksFolder slash 'Projects_Analyses.json'];
-    links = loadJSON(linksFilePath);
-else
-    Current_Project_Name = load(rootSettingsFile,'Current_Project_Name');
-    projectStruct = loadJSON(getJSONPath(Current_Project_Name));
-    Current_Analysis = projectStruct.Current_Analysis;
-    linksFilePath = [linksFolder slash Current_Analysis '.json'];
-    links = loadJSON(linksFilePath);
+linksFilePath = [linksFolder slash 'Linkages.json'];
+
+try
+links = loadJSON(linksFilePath);
+catch
+
 end
 
-links.Links = [links.Links; {leftObj.UUID rightObj.UUID}]; % Append this link to the file.
+projectName = getCurrent('Current_Project_Name');
+analysisName = getCurrent('Current_Analysis_Name');
+
+newline = {projectName analysisName leftObj.UUID rightObj.UUID};
+
+links.Links = [links.Links; newline]; % Append this link to the file.
+
+analysisIdx = sort(links.Links(:,2)); % Sort by analysis
+links.Links = links.Links(analysisIdx,:);
+
+projectIdx = sort(links.Links(:,1)); % Sort by project
+links.Links = links.Links(projectIdx,:);
 
 writeJSON(linksFilePath, links);

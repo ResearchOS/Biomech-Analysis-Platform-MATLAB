@@ -52,7 +52,7 @@ str=char(raw');
 % Convert json to struct
 data=jsondecode(str);
 
-if isfield(data,'RunList') && length(fieldnames(data))==1
+if isfield(data,'Links') && length(fieldnames(data))<=2
     data = formatLinkageMatrix(data, 'read');
 end
 

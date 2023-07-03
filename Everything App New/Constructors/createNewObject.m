@@ -59,10 +59,12 @@ function struct = createVariableStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.HardCodedValue = [];
-end
+else
     struct.IsHardCoded = false;
     struct.Level = 'T';
     struct.OutOfDate = true;
+
+end
 
 end
 
@@ -76,12 +78,8 @@ else
     struct.DataPath.(computerID)=''; % Where the Raw Data Files are located.
     struct.ProjectPath.(computerID)=''; % Where the project's files are located.
     struct.Process_Queue = {};
-    anStruct = createNewObject(true, 'Analysis', 'Default','','',saveObj); % Create a new default analysis for the new project.
-    struct.Current_Analysis = anStruct.UUID;
-    struct.Current_Logsheet = {};    
-    if saveObj
-        linkObjs(anStruct, struct); % Link the analysis struct to the project struct.
-    end
+    struct.Current_Logsheet = {};  
+    struct.Current_Analysis = {};
 end
 
 end
@@ -159,8 +157,8 @@ if instanceBool
     if saveObj
         rootSettingsFile = getRootSettingsFile();
         load(rootSettingsFile, 'Current_Project_Name');
-        projectStruct = loadJSON(getJSONPath(Current_Project_Name));
-        linkObjs(struct, projectStruct);        
+        projectStruct = loadJSON(Current_Project_Name);
+        linkObjs(struct, projectStruct);       
     end
 
 else

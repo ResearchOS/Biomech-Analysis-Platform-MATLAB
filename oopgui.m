@@ -26,9 +26,8 @@ assignin('base','gui',fig); % Put the GUI object into the base workspace.
 
 %% Initialize the class folders and the contents of the root settings file.
 initializeClassFolders(); % Initialize all of the folders for all classes in the common path
-initLinkedObjsFile_AN_PR(); % Must come before any projects are created (which occurs in initRootSettingsFile)
 initRootSettingsFile(); % Initialize the root settings file.
-initLinkedObjsFile_An_Objs(); % Must come after initRootSettingsFile, to manage the Project & Analysis that were created there.
+initLinkedObjsFile(); % Must come after initRootSettingsFile, to manage the Project & Analysis that were created there.
 
 
 %% Load the GUI object settings (i.e. selected nodes in UI trees, checkbox selections, projects to filter, etc.)

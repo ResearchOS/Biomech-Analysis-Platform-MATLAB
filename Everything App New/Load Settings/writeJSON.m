@@ -35,7 +35,7 @@ if ~isequal(fullPath(end-4:end),'.json')
 end
 
 % Format the linkage matrix to be written
-if isfield(json,'RunList') && length(fieldnames(data))==1
+if isfield(json,'Links') && length(fieldnames(json))<=2
     json = formatLinkageMatrix(json,'write');
 end
 json=jsonencode(json,'PrettyPrint',true);

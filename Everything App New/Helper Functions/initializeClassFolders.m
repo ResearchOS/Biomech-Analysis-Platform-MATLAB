@@ -7,7 +7,7 @@ end
 
 slash=filesep;
 
-classNames={'Variable','Plot','PubTable','StatsTable','Component','Project','Process','Logsheet','ProcessGroup','SpecifyTrials','Analysis'}; % One folder for each object type
+classNames = className2Abbrev('list');
 
 for i=1:length(classNames)
     className=classNames{i};

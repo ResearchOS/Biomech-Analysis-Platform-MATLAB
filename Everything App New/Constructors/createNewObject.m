@@ -78,8 +78,8 @@ else
     struct.DataPath.(computerID)=''; % Where the Raw Data Files are located.
     struct.ProjectPath.(computerID)=''; % Where the project's files are located.
     struct.Process_Queue = {};
-    struct.Current_Logsheet = {};  
-    struct.Current_Analysis = {};
+    struct.Current_Logsheet = '';  
+    struct.Current_Analysis = '';
 end
 
 end
@@ -154,12 +154,12 @@ if instanceBool
     struct.Tags = {};
     struct.RunList = {}; % The list of functions & groups to run, in order.
 
-    if saveObj
-        rootSettingsFile = getRootSettingsFile();
-        load(rootSettingsFile, 'Current_Project_Name');
-        projectStruct = loadJSON(Current_Project_Name);
-        linkObjs(struct, projectStruct);       
-    end
+%     if saveObj
+%         rootSettingsFile = getRootSettingsFile();
+%         load(rootSettingsFile, 'Current_Project_Name');
+%         projectStruct = loadJSON(Current_Project_Name);
+%         linkObjs(struct, projectStruct);       
+%     end
 
 else
     

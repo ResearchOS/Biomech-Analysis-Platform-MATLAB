@@ -1,42 +1,15 @@
-function [selNode]=selectNode(uiTree,text)
+function [selNode]=selectNode(uiTree,uuid)
 
-%% PURPOSE: SELECT THE NODE WITH THE CORRESPONDING TEXT.
+%% PURPOSE: SELECT THE NODE WITH THE CORRESPONDING UUID. Also runs the selection changed function!
 
-if isempty(text)
+if isempty(uuid)
     selNode=[];
     uiTree.SelectedNodes=selNode;
     return;
 end
 
-[name,id,psid]=deText(text);
-piText=[name '_' id];
-
-children=uiTree.Children;
-
-texts={children.Text};
-
-idx=contains(texts,piText);
-
-if ~any(idx)
-    selNode=[];
-    uiTree.SelectedNodes=selNode;
-    return;
-end
-
-if isempty(psid)
-    selNode=children(idx);
-    uiTree.SelectedNodes=selNode;
-    return;
-end
-
-currNode=children(idx);
-childIdx=ismember({currNode.Children.Text},text);
-
-if isempty(childIdx)
-    selNode=[];
-    uiTree.SelectedNodes=selNode;
-    return;
-end
-
-selNode=currNode.Children(childIdx);
+selNode = getNode(uiTree, uuid); % The heavy lifting to select the proper node.
 uiTree.SelectedNodes=selNode;
+
+fig=ancestor(uiTree,'figure','toplevel');
+% feval(uiTree.SelectionChangedFcn, fig);

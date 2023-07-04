@@ -26,7 +26,12 @@ if ismember(varName,projectSettingsVars)
         projectName = getCurrent('Current_Project_Name');
         projectSettings = loadJSON(projectName);
 
-        var = projectSettings.(varName);
+        if contains(varName,'Path')
+            computerID = getCurrent('Computer_ID');
+            var = projectSettings.(computerID).(varName);
+        else
+            var = projectSettings.(varName);
+        end
     catch
     end
     return;

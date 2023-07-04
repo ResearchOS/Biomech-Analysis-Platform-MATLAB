@@ -5,8 +5,7 @@ handles=getappdata(fig,'handles');
 
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_Project_Name');
+Current_Project_Name = getCurrent('Current_Project_Name');
 projectStruct = loadJSON(Current_Project_Name);
 
 
@@ -36,7 +35,6 @@ fillUITree_SpecifyTrials(fig); % Fill in the specify trials
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab
-load(rootSettingsFile,'Current_Project_Name');
 selectNode(handles.Projects.allProjectsUITree, Current_Project_Name);
 
 % Bring up the current project's project & data paths.
@@ -96,10 +94,9 @@ end
 commonPath=getCommonPath();
 handles.Settings.commonPathEditField.Value=commonPath;
 
-load(rootSettingsFile,'Store_Settings');
+Store_Settings = getCurrent('Store_Settings');
 handles.Settings.storeSettingsCheckbox.Value=Store_Settings;
 
-load(rootSettingsFile,'Current_Tab_Title');
-
+Current_Tab_Title = getCurrent('Current_Tab_Title');
 handles.Tabs.tabGroup1.SelectedTab=handles.(Current_Tab_Title).Tab;
 tabGroup1SelectionChanged(fig); % To allow the variables tab to change parent as needed.

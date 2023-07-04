@@ -1,6 +1,7 @@
 function []=initLinkedObjsFile()
 
 %% PURPOSE: INITIALIZE THE FILES CONTAINING ALL OF THE OBJECTS THAT ARE LINKED.
+% 4 columns: [Project Analysis ForwardLink BackwardLink];
 
 slash = filesep;
 commonPath = getCommonPath();
@@ -13,6 +14,6 @@ end
 linksFile = [linksFolder slash 'Linkages.json'];
 
 if exist(linksFile,'file')~=2
-    struct.Links = {};
+    struct.Links = repmat({''},1,4);
     writeJSON(linksFile, struct);
 end

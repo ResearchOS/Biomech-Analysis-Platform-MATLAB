@@ -1,7 +1,18 @@
 function abbrev = className2Abbrev(class, reverse)
 
+list = false;
+
 if nargin==1
     reverse=false;
+    if isequal(upper(class),'LIST')
+        list = true;
+    end
+end
+
+if list
+    abbrev = {'Project', 'Process', 'ProcessGroup', 'SpecifyTrials',...
+        'Logsheet','Analysis','Variable','Component','Plot'};
+    return;
 end
 
 if ~reverse
@@ -52,6 +63,4 @@ if reverse
         otherwise
             abbrev='';
     end
-
-
 end

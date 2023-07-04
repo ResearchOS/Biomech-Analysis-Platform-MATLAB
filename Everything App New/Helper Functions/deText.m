@@ -1,7 +1,26 @@
 function [objectType, abstractID, instanceID]=deText(uuid)
 
-%% PURPOSE: BREAK DOWN THE "TEXT" FIELD INTO ITS CONSTITUENT COMPONENTS.
+%% PURPOSE: BREAK DOWN THE "UUID" FIELD INTO ITS CONSTITUENT COMPONENTS.
 % Expected UUID format: AABBBBBB_CCC
+
+if isempty(uuid)
+    objectType='';
+    abstractID='';
+    instanceID='';
+    return;
+end
+
+if iscell(uuid)
+    for i=length(uuid):-1:1
+        [objectType{i}, abstractID{i}, instanceID{i}] = parseUUID(uuid{i});
+    end
+else
+    [objectType, abstractID, instanceID] = parseUUID(uuid);
+end
+
+end
+
+function [objectType, abstractID, instanceID] = parseUUID(uuid)
 
 objectType='';
 abstractID='';
@@ -11,11 +30,11 @@ if ~(ischar(uuid) || isstring(uuid))
     return;
 end
 
-if isempty(uuid)    
+if isempty(uuid)
     return;
 end
 
-if length(uuid)<3
+if ischar(uuid) && length(uuid)<3
     return; % Not long enough (due to error) to parse the string
 end
 
@@ -37,4 +56,6 @@ if ~isempty(underscoreIdx)
 else
     abstractID = uuid(3:end);
     instanceID = '';
+end
+
 end

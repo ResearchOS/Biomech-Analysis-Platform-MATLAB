@@ -4,46 +4,43 @@ function []=fillUITree_PS(fig, class, uiTree)
 
 handles=getappdata(fig,'handles');
 
-slash=filesep;
-
 if isempty(uiTree.Children)
     return;
 end
 
-texts={uiTree.Children.Text}; % The existing nodes' texts
+tmp=[uiTree.Children.NodeData];
+uuids = {tmp.UUID};
 
-% projectPath=getProjectPath(1); % The current project path
-
-% The project-specific class instances for this project.
+% The project-specific class instances
 filenames=getClassFilenames(class,true);
-psTexts=fileNames2Texts(filenames); % Convert those PS file name instances to texts
+[abbrevs, abstractIDs, instanceIDs] = deText(filenames);
 
-piTexts=getPITextFromPS(psTexts); % Identify which PI class instances the PS instances derive from.
-
-for i=1:length(texts)    
-    idx=contains(piTexts,texts{i}); % Get the PI text for the current node
+for i=1:length(filenames)
+        
+    instanceUUID = genUUID(class, abstractIDs{i}, instanceIDs{i});
+    abstractUUID = genUUID(class, abstractIDs{i});
+    idx=ismember(uuids, abstractUUID); % The abstract node idx
 
     if ~any(idx)
-        continue; % There are no project-specific texts for this node.
+        continue; % There are no abstract nodes for this object. This is an error!
     end
 
-    currNames=psTexts(idx);
+    abstractNode = uiTree.Children(idx); % The abstract node
 
-    node=uiTree.Children(i);
+    tmp = [abstractNode.Children.NodeData];
+    existInstanceUUID = {tmp.UUID}; % UUID's of already-existing nodes.
 
-    existChildren={};
-    if ~isempty(node.Children)
-        existChildren={node.Children.Text};           
+    existIdx = ismember(instanceUUID, existInstanceUUID);
+
+    if existIdx
+        continue;
     end
 
-    for j=1:length(currNames)    
-        if ismember(currNames{j},existChildren)
-            continue; % Child already exists, don't create a new node.
-        end
+    struct = loadJSON(instanceUUID);
 
-        newNode=uitreenode(node,'Text',currNames{j});
+    newNode=uitreenode(abstractNode,'Text',struct.Text);
+    newNode.NodeData.UUID = struct.UUID;
 
-        assignContextMenu(newNode,handles);
-    end
+    assignContextMenu(newNode,handles);
 
 end

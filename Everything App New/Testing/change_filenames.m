@@ -6,7 +6,8 @@ listing = dir(root);
 names = {listing.name};
 dirIdx = [listing.isdir];
 
-objTypes = {'Variable','SpecifyTrials','Process','ProcessGroup','Logsheet','Project','Analysis','Component','Plot'};
+objTypes = className2Abbrev('list');
+% objTypes = {'Variable','SpecifyTrials','Process','ProcessGroup','Logsheet','Project','Analysis','Component','Plot'};
 
 for i=1:length(names)
     name=names{i};
@@ -17,14 +18,6 @@ for i=1:length(names)
         change_names([listing(i).folder filesep name]);
         continue;
     end   
-
-%     if contains(name,'__')
-%         prevPath = [listing(i).folder filesep name '.json']; 
-%         name = strrep(name,'__','_');        
-%         newPath = [listing(i).folder filesep name '.json']; 
-%         movefile(prevPath,newPath);
-%         continue;
-%     end
 
     if isequal(name(end-4:end),'.json')    
         name=name(1:end-5); % Remove the ".json"

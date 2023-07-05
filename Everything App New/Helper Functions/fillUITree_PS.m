@@ -27,8 +27,12 @@ for i=1:length(filenames)
 
     abstractNode = uiTree.Children(idx); % The abstract node
 
-    tmp = [abstractNode.Children.NodeData];
-    existInstanceUUID = {tmp.UUID}; % UUID's of already-existing nodes.
+    if ~isempty(abstractNode.Children)
+        tmp = [abstractNode.Children.NodeData];
+        existInstanceUUID = {tmp.UUID}; % UUID's of already-existing nodes.
+    else
+        existInstanceUUID = {};
+    end
 
     existIdx = ismember(instanceUUID, existInstanceUUID);
 

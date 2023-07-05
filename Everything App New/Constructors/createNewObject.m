@@ -166,3 +166,25 @@ else
 end
 
 end
+
+%% PLOT
+function struct = createPlotStruct(instanceBool, struct, saveObj)
+
+if instanceBool
+
+else
+
+end
+
+end
+
+%% COMPONENT
+function struct = createComponentStruct(instanceBool, struct, saveObj)
+
+if instanceBool
+
+else
+
+end
+
+end

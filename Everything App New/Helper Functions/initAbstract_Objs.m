@@ -21,7 +21,7 @@ for i=1:length(classNames)
     inst_instanceIDs = inst_instanceIDs(idx);
 
     % Get the index of which abstract objects do not exist (but should)
-    missingIdx = ismember(abstractID, abstractFiles);
+    missingIdx = ismember(inst_abstractIDs, abstractFiles);
     missingAbstracts = abstractFiles(missingIdx);
 
     % Create the missing abstract ID's, ensuring that there is a

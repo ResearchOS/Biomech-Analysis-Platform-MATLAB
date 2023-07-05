@@ -16,7 +16,7 @@ currDate = datetime('now');
 struct.DateCreated = currDate;
 struct.DateModified = currDate;
 
-struct.Name = name;
+struct.Text = name;
 
 struct.Class = class;
 

@@ -3,56 +3,56 @@ function []=assignContextMenu(node,handles)
 %% PURPOSE: ASSIGN THE PROPER CONTEXT MENU TO THE CURRENT NODE.
 
 parent=getUITreeFromNode(node);
+uuid = node.NodeData.UUID;
+[~,~,instanceID] = deText(uuid);
 
-[~,~,psid]=deText(node.Text);
-
-if isempty(psid)
-    isPS=false;
+if isempty(instanceID)
+    isInstance=false;
 else
-    isPS=true;
+    isInstance=true;
 end
+
+set(node,'ContextMenu',handles.Process.ContextMenuTop);
 
 switch parent
     case handles.Process.allProcessUITree
-        if isPS
-            node.ContextMenu=handles.Process.psContextMenuNoMFile;
+        if isInstance
+            remIdx = [];
         else
-            node.ContextMenu=handles.Process.commonContextMenu;
+            remIdx = [];
         end
     case handles.Process.groupUITree
-        if isPS
-            node.ContextMenu=handles.Process.psContextMenu;
+        if isInstance
+            remIdx = [];
         else
             error('What happened?');
         end
     case handles.Process.functionUITree
-%         if isPS
-            node.ContextMenu=handles.Process.psContextMenu;
-%         else
-%             error('What happened?');
-%         end
+        remIdx = [];
     case handles.Plot.allPlotsUITree
-        if isPS
-            node.ContextMenu=handles.Process.psContextMenu;
+        if isInstance
+            remIdx = [];
         else
-            node.ContextMenu=handles.Process.commonContextMenuNoMFile;
+            remIdx = [];
         end
     case handles.Plot.componentUITree
-        if isPS
-            node.ContextMenu=handles.Process.psContextMenu;
+        if isInstance
+            remIdx = [];
         else
             error('What happened?');
         end
     case handles.Plot.allComponentsUITree
-        if isPS
-            node.ContextMenu=handles.Process.psContextMenu;
+        if isInstance
+            remIdx = [];
         else
-            node.ContextMenu=handles.Process.commonContextMenu;
+            remIdx = [];
         end
     otherwise % No M files associated with this class
-        if isPS
-            node.ContextMenu=handles.Process.psContextMenuNoMFile;
+        if isInstance
+            remIdx = [];
         else
-            node.ContextMenu=handles.Process.commonContextMenuNoMFile;
+            remIdx = [];
         end
 end
+
+% node.ContextMenu.Children(remIdx) = [];

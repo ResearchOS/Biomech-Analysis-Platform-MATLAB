@@ -38,55 +38,55 @@ fillUITree_SpecifyTrials(fig); % Fill in the specify trials
 selectNode(handles.Projects.allProjectsUITree, Current_Project_Name);
 
 % Bring up the current project's project & data paths.
-allProjectsUITreeSelectionChanged(fig);
-currentProjectButtonPushed(fig);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Import tab
-selectNode(handles.Import.allLogsheetsUITree, projectStruct.Current_Logsheet);
-% Bring up the current logsheet's metadata.
-allLogsheetsUITreeSelectionChanged(fig, true);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Process tab
-if ~isempty(projectPath)
-    handles.Process.currentAnalysisLabel.Text=projectStruct.Current_Analysis;
-
-    for i=1:length(projectStruct.Process_Queue)
-        uitreenode(handles.Process.queueUITree,'Text',projectStruct.Process_Queue{i});
-    end
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Plot tab
+% allProjectsUITreeSelectionChanged(fig);
+% currentProjectButtonPushed(fig);
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Import tab
+% selectNode(handles.Import.allLogsheetsUITree, projectStruct.Current_Logsheet);
+% % Bring up the current logsheet's metadata.
+% allLogsheetsUITreeSelectionChanged(fig, true);
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Process tab
 % if ~isempty(projectPath)
-%     handles.Plot.currentPlotLabel.Text=projectSettings.Current_Plot_Name;
-%     fillPlotUITree(fig);
-%     plotPath=getClassFilePath(projectSettings.Current_Plot_Name,'Plot');
-%     plotStruct=loadJSON(plotPath);
-%     specifyTrialsPlot=plotStruct.SpecifyTrials;
-%     checkSpecifyTrialsUITree(specifyTrialsPlot,handles.Plot.allSpecifyTrialsUITree);
+%     handles.Process.currentAnalysisLabel.Text=projectStruct.Current_Analysis;
+% 
+%     for i=1:length(projectStruct.Process_Queue)
+%         uitreenode(handles.Process.queueUITree,'Text',projectStruct.Process_Queue{i});
+%     end
 % end
-% allPlotsUITreeSelectionChanged(fig);
-% allComponentsUITreeSelectionChanged(fig);
-% All components UI tree
-% handles.Plot.sortComponentsDropDown.Value=guiSettings.Plot.SortMethod.Components;
-% sortUITree(handles.Plot.allComponentsUITree,handles.Plot.sortComponentsDropDown.Value);
-% % All plots UI tree
-% handles.Plot.sortPlotsDropDown.Value=guiSettings.Plot.SortMethod.Plots;
-% sortUITree(handles.Plot.allPlotsUITree,handles.Plot.sortPlotsDropDown.Value);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Stats tab
-% The common path where all of the custom settings are stored independent
-% of any project.
-% handles.Settings.commonPathField.Value=commonPath;
-% % All stats tables UI tree
-% handles.Stats.sortStatsTablesDropDown.Value=guiSettings.Stats.SortMethod.StatsTables;
-% sortUITree(handles.Stats.allStatsTablesUITree,handles.Stats.sortStatsTablesDropDown.Value);
-% % All pub tables UI tree
-% handles.Stats.sortPubTablesDropDown.Value=guiSettings.Stats.SortMethod.PubTables;
-% sortUITree(handles.Stats.allPubTablesUITree,handles.Stats.sortPubTablesDropDown.Value);
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Plot tab
+% % if ~isempty(projectPath)
+% %     handles.Plot.currentPlotLabel.Text=projectSettings.Current_Plot_Name;
+% %     fillPlotUITree(fig);
+% %     plotPath=getClassFilePath(projectSettings.Current_Plot_Name,'Plot');
+% %     plotStruct=loadJSON(plotPath);
+% %     specifyTrialsPlot=plotStruct.SpecifyTrials;
+% %     checkSpecifyTrialsUITree(specifyTrialsPlot,handles.Plot.allSpecifyTrialsUITree);
+% % end
+% % allPlotsUITreeSelectionChanged(fig);
+% % allComponentsUITreeSelectionChanged(fig);
+% % All components UI tree
+% % handles.Plot.sortComponentsDropDown.Value=guiSettings.Plot.SortMethod.Components;
+% % sortUITree(handles.Plot.allComponentsUITree,handles.Plot.sortComponentsDropDown.Value);
+% % % All plots UI tree
+% % handles.Plot.sortPlotsDropDown.Value=guiSettings.Plot.SortMethod.Plots;
+% % sortUITree(handles.Plot.allPlotsUITree,handles.Plot.sortPlotsDropDown.Value);
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Stats tab
+% % The common path where all of the custom settings are stored independent
+% % of any project.
+% % handles.Settings.commonPathField.Value=commonPath;
+% % % All stats tables UI tree
+% % handles.Stats.sortStatsTablesDropDown.Value=guiSettings.Stats.SortMethod.StatsTables;
+% % sortUITree(handles.Stats.allStatsTablesUITree,handles.Stats.sortStatsTablesDropDown.Value);
+% % % All pub tables UI tree
+% % handles.Stats.sortPubTablesDropDown.Value=guiSettings.Stats.SortMethod.PubTables;
+% % sortUITree(handles.Stats.allPubTablesUITree,handles.Stats.sortPubTablesDropDown.Value);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Settings tab

@@ -629,42 +629,14 @@ settingsResize(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the context menus for UI trees
-handles.Process.commonContextMenu=uicontextmenu(fig);
-handles.Process.commonContextMenuItem1=uimenu(handles.Process.commonContextMenu,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
-handles.Process.commonContextMenuItem2=uimenu(handles.Process.commonContextMenu,'Text','Open M File','MenuSelectedFcn',{@openMFile});
-handles.Process.commonContextMenuItem3=uimenu(handles.Process.commonContextMenu,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
-handles.Process.commonContextMenuItem4=uimenu(handles.Process.commonContextMenu,'Text','Change Name','MenuSelectedFcn',{@changeName});
-handles.Process.commonContextMenuItem5=uimenu(handles.Process.commonContextMenu,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
-handles.Process.commonContextMenuItem6=uimenu(handles.Process.commonContextMenu,'Text','Delete','MenuSelectedFcn',{@deleteObject});
-handles.Process.commonContextMenuItem7=uimenu(handles.Process.commonContextMenu,'Text','Copy Text','MenuSelectedFcn',{@copyText});
-handles.Process.commonContextMenuItem8=uimenu(handles.Process.commonContextMenu,'Text','Paste Text','MenuSelectedFcn',{@pasteText});
-
-handles.Process.commonContextMenuNoMFile=uicontextmenu(fig);
-handles.Process.commonContextMenuNoMFileItem1=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
-handles.Process.commonContextMenuNoMFileItem2=uimenu(handles.Process.commonContextMenuNoMFile,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
-handles.Process.commonContextMenuNoMFileItem3=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Change Name','MenuSelectedFcn',{@changeName});
-handles.Process.commonContextMenuNoMFileItem4=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
-handles.Process.commonContextMenuNoMFileItem5=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Delete','MenuSelectedFcn',{@deleteObject});
-handles.Process.commonContextMenuNoMFileItem6=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Copy Text','MenuSelectedFcn',{@copyText});
-handles.Process.commonContextMenuNoMFileItem7=uimenu(handles.Process.commonContextMenuNoMFile,'Text','Paste Text','MenuSelectedFcn',{@pasteText});
-
-handles.Process.psContextMenu=uicontextmenu(fig);
-handles.Process.psContextMenuItem1=uimenu(handles.Process.psContextMenu,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
-handles.Process.psContextMenuItem2=uimenu(handles.Process.psContextMenu,'Text','Open M File','MenuSelectedFcn',{@openMFile});
-handles.Process.psContextMenuItem3=uimenu(handles.Process.psContextMenu,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});
-handles.Process.psContextMenuItem4=uimenu(handles.Process.psContextMenu,'Text','Change Name','MenuSelectedFcn',{@changeName});
-handles.Process.psContextMenuItem5=uimenu(handles.Process.psContextMenu,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
-handles.Process.psContextMenuItem6=uimenu(handles.Process.psContextMenu,'Text','Delete','MenuSelectedFcn',{@deleteObject});
-handles.Process.psContextMenuItem7=uimenu(handles.Process.psContextMenu,'Text','Copy Text','MenuSelectedFcn',{@copyText});
-handles.Process.psContextMenuItem8=uimenu(handles.Process.psContextMenu,'Text','Open PI JSON','MenuSelectedFcn',{@openPIJSONFile});
-handles.Process.psContextMenuItem9=uimenu(handles.Process.psContextMenu,'Text','Paste Text','MenuSelectedFcn',{@pasteText});
-
-handles.Process.psContextMenuNoMFile=uicontextmenu(fig);
-handles.Process.psContextMenuNoMFileItem1=uimenu(handles.Process.psContextMenuNoMFile,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
-handles.Process.psContextMenuNoMFileItem2=uimenu(handles.Process.psContextMenuNoMFile,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});
-handles.Process.psContextMenuNoMFileItem3=uimenu(handles.Process.psContextMenuNoMFile,'Text','Change Name','MenuSelectedFcn',{@changeName});
-handles.Process.psContextMenuNoMFileItem4=uimenu(handles.Process.psContextMenuNoMFile,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
-handles.Process.psContextMenuNoMFileItem5=uimenu(handles.Process.psContextMenuNoMFile,'Text','Delete','MenuSelectedFcn',{@deleteObject});
-handles.Process.psContextMenuNoMFileItem6=uimenu(handles.Process.psContextMenuNoMFile,'Text','Copy Text','MenuSelectedFcn',{@copyText});
-handles.Process.psContextMenuNoMFileItem7=uimenu(handles.Process.psContextMenuNoMFile,'Text','Open PI JSON','MenuSelectedFcn',{@openPIJSONFile});
-handles.Process.psContextMenuNoMFileItem8=uimenu(handles.Process.psContextMenuNoMFile,'Text','Paste Text','MenuSelectedFcn',{@pasteText});
+handles.Process.ContextMenuTop=uicontextmenu(fig);
+handles.Process.ContextMenu.ChangeName=uimenu(handles.Process.ContextMenuTop,'Text','Change Name','MenuSelectedFcn',{@changeName});
+handles.Process.ContextMenu.OpenJSON=uimenu(handles.Process.ContextMenuTop,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
+handles.Process.ContextMenu.OpenMFile=uimenu(handles.Process.ContextMenuTop,'Text','Open M File','MenuSelectedFcn',{@openMFile});
+handles.Process.ContextMenu.CopyToNew=uimenu(handles.Process.ContextMenuTop,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});
+handles.Process.ContextMenu.NewVersion=uimenu(handles.Process.ContextMenuTop,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
+handles.Process.ContextMenu.CompareVersions=uimenu(handles.Process.ContextMenuTop,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
+handles.Process.ContextMenu.Archive=uimenu(handles.Process.ContextMenuTop,'Text','Archive','MenuSelectedFcn',{@deleteObject});
+handles.Process.ContextMenu.CopyUUID=uimenu(handles.Process.ContextMenuTop,'Text','Copy UUID','MenuSelectedFcn',{@copyText});
+handles.Process.ContextMenu.PasteUUID=uimenu(handles.Process.ContextMenuTop,'Text','Paste UUID','MenuSelectedFcn',{@pasteText});
+handles.Process.ContextMenu.OpenAbstractJSON=uimenu(handles.Process.ContextMenuTop,'Text','Open Abstract JSON','MenuSelectedFcn',{@openPIJSONFile});

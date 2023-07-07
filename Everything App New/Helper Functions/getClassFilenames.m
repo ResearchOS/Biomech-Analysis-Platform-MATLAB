@@ -23,6 +23,15 @@ folders=[listing.isdir];
 listing=listing(~folders);
 
 names={listing.name};
+
+% Remove hidden folders
+remIdx = false(size(names));
+for i=1:length(names)
+    if isequal(names{i}(1),'.')
+        remIdx(i) = true;
+    end
+end
+names(remIdx) = [];
 exts=cell(size(names));
 
 for i=1:length(names)

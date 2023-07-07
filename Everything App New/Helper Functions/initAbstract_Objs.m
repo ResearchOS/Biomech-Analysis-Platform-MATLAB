@@ -5,35 +5,29 @@ classNames = className2Abbrev('list');
 
 for i=1:length(classNames)
 
-    class = classNames{i};
-    abstractFilenames = getClassFilenames(class, false);
+    class = classNames{i};      
+
+    % Existing abstract files
+    abstractFilenames = getClassFilenames(class, false);  
+    [~, abs_abstractIDs] = deText(abstractFilenames);
+
+    % Existing instance files (removing duplicate abstract ID's)
     instanceFilenames = getClassFilenames(class, true);
-
-    % Abstract
-    [abbrev, abs_abstractIDs] = deText(abstractFilenames);
-    for j=length(abs_abstractIDs):-1:1
-        abstractFiles{j} = genUUID(class, abs_abstractIDs{j});
-    end
-
-    % Instances
-    [abbrev, inst_abstractIDs, inst_instanceIDs] = deText(instanceFilenames);
+    [~, inst_abstractIDs, inst_instanceIDs] = deText(instanceFilenames);
     [inst_abstractIDs, idx] = unique(inst_abstractIDs,'stable'); % Remove duplicates
     inst_instanceIDs = inst_instanceIDs(idx);
 
     % Get the index of which abstract objects do not exist (but should)
-    missingIdx = ismember(inst_abstractIDs, abstractFiles);
-    missingAbstracts = abstractFiles(missingIdx);
+    missingIdx = ~ismember(inst_abstractIDs, abs_abstractIDs);
+    missingAbstracts = inst_abstractIDs(missingIdx);    
 
     % Create the missing abstract ID's, ensuring that there is a
     % corresponding abstract file.
     for j=1:length(missingAbstracts)
-        abstractID = missingAbstracts{j};
-
-
-        instanceID = genUUID(class, inst_abstractIDs{j}, inst_instanceIDs{j});
-        instance = loadJSON(instanceID);
-        createNewObject(false, class, instance.Text, abstractID, '', true);
-
+        instanceIDidx = ismember(inst_abstractIDs,missingAbstract);
+        instanceUUID = genUUID(class, inst_abstractIDs{j}, inst_instanceIDs{instanceIDidx}); % Get a random instance ID for this abstract object.
+        instanceStruct = loadJSON(instanceUUID);
+        createNewObject(false, class, instanceStruct.Text, inst_abstractIDs{j}, '', true);
     end
 
 end

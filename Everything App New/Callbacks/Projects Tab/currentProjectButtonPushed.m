@@ -11,23 +11,13 @@ if isempty(selNode)
     return;
 end
 
-handles.Projects.projectsLabel.Text=selNode.Text;
+% Include name & UUID because the name isn't guaranteed to be unique
+handles.Projects.projectsLabel.Text=[selNode.Text ' ' selNode.NodeData.UUID];
 
-rootSettingsFile=getRootSettingsFile();
+Current_Project_Name = selNode.NodeData.UUID;
+setCurrent('Current_Project_Name',Current_Project_Name);
 
-Current_Project_Name=selNode.Text;
-
-searchTerm=getSearchTerm(handles.Process.groupsSearchField);
-sortDropDown=handles.Process.sortGroupsDropDown;
-fillUITree(fig,'ProcessGroup',handles.Process.allGroupsUITree,searchTerm,sortDropDown);
-
-save(rootSettingsFile,'Current_Project_Name','-append');
-
-% Update visible group, update visible process functions, etc.
-if ~isempty(getProjectPath)
-    groupName=getCurrentProcessGroup();
-    if isempty(groupName)
-        return;
-    end
-    selectGroupButtonPushed(fig,groupName);
-end
+% Select the current analysis node, and show its entries.
+Current_Analysis = getCurrent('Current_Analysis');
+selectNode(handles.Process.allAnalysesUITree, Current_Analysis);
+selectAnalysisButtonPushed(fig);

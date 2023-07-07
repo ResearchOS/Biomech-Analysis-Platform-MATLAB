@@ -15,3 +15,5 @@ name = promptName('Enter New Name',struct.Text);
 struct.Text = name;
 writeJSON(getJSONPath(uuid),struct);
 selNode.Text = struct.Text;
+
+figure(fig);

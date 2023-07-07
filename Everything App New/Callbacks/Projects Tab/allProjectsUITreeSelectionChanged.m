@@ -1,6 +1,6 @@
 function []=allProjectsUITreeSelectionChanged(src)
 
-%% PURPOSE: UPDATE THE DATA & PROJECT PATHS, AND THE CURRENTLY SELECTED PROJECT.
+%% PURPOSE: UPDATE THE DATA & PROJECT PATHS FOR THE CURRENTLY SELECTED PROJECT NODE.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -11,27 +11,17 @@ if isempty(projectNode)
     return;
 end
 
-fullPath=getClassFilePath(projectNode);
-
-struct=loadJSON(fullPath);
+struct = loadJSON(projectNode.NodeData.UUID);
 
 computerID=getComputerID();
 
-if ~isfield(struct.DataPath,computerID)
-    dataPath='Data Path (contains ''Raw Data Files'' folder)';
-else
-    dataPath=struct.DataPath.(computerID);
-end
+dataPath=struct.DataPath.(computerID);
 
 if isempty(dataPath)
     dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
 
-if ~isfield(struct.ProjectPath,computerID)
-    projectPath='Path to Project Folder';
-else
-    projectPath=struct.ProjectPath.(computerID);
-end
+projectPath=struct.ProjectPath.(computerID);
 
 if isempty(projectPath)
     projectPath='Path to Project Folder';

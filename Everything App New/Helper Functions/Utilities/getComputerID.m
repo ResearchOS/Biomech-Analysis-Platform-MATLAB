@@ -6,6 +6,11 @@ function [id]=getComputerID()
 
 % Current method taken from this page: https://www.mathworks.com/matlabcentral/answers/101892-what-is-a-host-id-how-do-i-find-my-host-id-in-order-to-activate-my-license
 
+id = getCurrent('Computer_ID');
+if ~isempty(id)
+    return;
+end
+
 rootSettingsFile=getRootSettingsFile;
 warning('off','MATLAB:load:variableNotFound');
 load(rootSettingsFile,'Computer_ID');

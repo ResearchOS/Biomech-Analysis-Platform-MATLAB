@@ -1,17 +1,18 @@
 function [commonPath]=getCommonPath()
 
 %% PURPOSE: RETURN THE PATH TO THE DIRECTORY WHERE THE PGUI SETTINGS FILES ARE STORED.
-
 rootSettingsFile=getRootSettingsFile();
 
-%% Root settings simply contains the path to where all of the Settings variables are stored.
+%% Root settings contains all of the Settings variables
 try
     load(rootSettingsFile,'commonPath');
+    computerID = getComputerID();
+    commonPath = commonPath.(computerID);
 catch e
-    if ~isequal(e.identifier,'MATLAB:load:couldNotReadFile') % If the file does not exist.
+    if ~ismember(e.identifier,{'MATLAB:load:couldNotReadFile','MATLAB:nonExistentField'}) % If the file does not exist or the computerID field is missing for this computer.
         error(e); % Some other error occurred.
     end
 
     setCommonPath();
-    commonPath = getCommonPath;    
+    commonPath = getCommonPath;
 end

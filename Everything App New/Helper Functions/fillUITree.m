@@ -96,8 +96,8 @@ end
 selectNode(uiTree, selNode.NodeData.UUID);
 
 %% ADD THE PROJECT-SPECIFIC VERSIONS TO THE UI TREE
-if ismember(class,{'Variable'})
-    return;
-end
+% if ismember(class,{'Variable'})
+%     return;
+% end
 
 fillUITree_PS(fig, class, uiTree);

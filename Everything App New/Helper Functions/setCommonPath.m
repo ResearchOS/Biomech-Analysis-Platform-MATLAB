@@ -1,7 +1,8 @@
 function []=setCommonPath(commonPath)
 
 %% PURPOSE: PROMPT THE USER FOR THE SETTINGS PATH
-% handles=getappdata(fig,'handles');
+
+clearAllMemoizedCaches;
 
 rootSettingsFile=getRootSettingsFile();
 

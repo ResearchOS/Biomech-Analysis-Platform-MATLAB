@@ -1,10 +1,17 @@
 function [var] = getCurrent(varName)
 
 %% PURPOSE: RETURN THE VARIABLE FROM THE CURRENT SETTINGS VARIABLE
-% List of variables in this settings file:
 
+h = @memoizedGetCurrent;
+fcnH = memoize(h);
+var = fcnH(varName);
+
+end
+
+function [var] = memoizedGetCurrent(varName)
 var = [];
 
+% List of variables in this settings file:
 rootSettingsVars = {'commonPath', 'Computer_ID', 'Current_Project_Name',...
     'Current_Tab_Title','Store_Settings'};
 
@@ -35,4 +42,6 @@ if ismember(varName,projectSettingsVars)
     catch
     end
     return;
+end
+
 end

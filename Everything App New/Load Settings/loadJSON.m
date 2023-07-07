@@ -15,8 +15,7 @@ else
     fullPath = str;
 end
     
-rootSettingsFile=getRootSettingsFile;
-load(rootSettingsFile,'Store_Settings');
+Store_Settings = getCurrent('Store_Settings');
 
 if Store_Settings
     try
@@ -25,29 +24,21 @@ if Store_Settings
         fig=findall(0,'Name','pgui');
     end
     [~,uuid]=fileparts(fullPath);
-%     underscoreIdx=strfind(fileName,'_');
-%     if ~isempty(underscoreIdx)
-%         text=fileName(underscoreIdx(1)+1:end); % Remove the class prefix
-%     else
-%         text=fileName;
-%     end
     data=getappdata(fig,uuid);
     if ~isempty(data)
         return; % Returns empty if the variable is not found in
     end
 end
 
-if exist(fullPath,'file')~=2
-    data=struct;
-    error('File not found!');
-    return;
-end
-
 % Read the json file as unformatted char
-fid=fopen(fullPath);
-raw=fread(fid,inf);
-fclose(fid);
-str=char(raw');
+try
+    fid=fopen(fullPath);
+    raw=fread(fid,inf);
+    fclose(fid);
+    str=char(raw');
+catch e
+    error('File not found!');
+end
 
 % Convert json to struct
 data=jsondecode(str);

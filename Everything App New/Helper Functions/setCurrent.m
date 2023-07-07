@@ -2,6 +2,8 @@ function []=setCurrent(var, varName)
 
 %% PURPOSE: SET THE CURRENT VARIABLE IN THE SETTINGS FILE.
 
+clearAllMemoizedCaches;
+
 rootSettingsVars = {'commonPath', 'Computer_ID', 'Current_Project_Name',...
     'Current_Tab_Title','Store_Settings'};
 

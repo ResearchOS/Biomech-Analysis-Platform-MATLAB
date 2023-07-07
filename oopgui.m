@@ -13,6 +13,8 @@ if ismember('gui',names)
     return;
 end
 
+clearAllMemoizedCaches; % Clears memoized caches. Using these caches greatly improves startup time.
+
 %% Add all of the appropriate paths to MATLAB search path
 currFolder=fileparts(mfilename('fullpath'));
 addpath(genpath(currFolder));

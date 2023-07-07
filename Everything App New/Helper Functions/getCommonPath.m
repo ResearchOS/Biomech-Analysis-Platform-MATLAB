@@ -2,6 +2,14 @@ function [commonPath]=getCommonPath()
 
 %% PURPOSE: RETURN THE PATH TO THE DIRECTORY WHERE THE PGUI SETTINGS FILES ARE STORED.
 
+h = @memoizedGetCommonPath;
+memFcn = memoize(h);
+
+commonPath = memFcn();
+
+end
+
+function [commonPath] = memoizedGetCommonPath()
 rootSettingsFile=getRootSettingsFile();
 
 %% Root settings simply contains the path to where all of the Settings variables are stored.
@@ -14,4 +22,6 @@ catch e
 
     setCommonPath();
     commonPath = getCommonPath;    
+end
+
 end

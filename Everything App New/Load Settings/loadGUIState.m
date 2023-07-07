@@ -35,28 +35,27 @@ fillUITree_SpecifyTrials(fig); % Fill in the specify trials
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab
-selectNode(handles.Projects.allProjectsUITree, Current_Project_Name);
-
 % Bring up the current project's project & data paths.
-% allProjectsUITreeSelectionChanged(fig);
-% currentProjectButtonPushed(fig);
-% 
+selectNode(handles.Projects.allProjectsUITree, Current_Project_Name);
+allProjectsUITreeSelectionChanged(fig);
+currentProjectButtonPushed(fig);
+
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Import tab
-% selectNode(handles.Import.allLogsheetsUITree, projectStruct.Current_Logsheet);
+selectNode(handles.Import.allLogsheetsUITree, projectStruct.Current_Logsheet);
 % % Bring up the current logsheet's metadata.
-% allLogsheetsUITreeSelectionChanged(fig, true);
-% 
+allLogsheetsUITreeSelectionChanged(fig, true);
+ 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Process tab
-% if ~isempty(projectPath)
-%     handles.Process.currentAnalysisLabel.Text=projectStruct.Current_Analysis;
-% 
-%     for i=1:length(projectStruct.Process_Queue)
-%         uitreenode(handles.Process.queueUITree,'Text',projectStruct.Process_Queue{i});
-%     end
-% end
-% 
+queue = projectStruct.Process_Queue;
+for i=1:length(queue)
+    struct = loadJSON(queue{i});
+    uuid = struct.UUID;
+    node = uitreenode(handles.Process.queueUITree,'Text',[struct.Text ' ' uuid]);
+    node.NodeData.UUID = uuid;
+end
+
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Plot tab
 % % if ~isempty(projectPath)

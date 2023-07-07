@@ -1,23 +1,23 @@
-function []=createProcessGroupNode(parentNode,text,handles)
+function []=createProcessGroupNode(parentNode,uuid,handles)
 
 %% PURPOSE: CREATE NODES FOR ALL MEMBERS OF A PROCESS GROUP IN THE CURRENT GROUP UI TREE
 
-currGroupPath=getClassFilePath(text,'ProcessGroup');
-currGroupStruct=loadJSON(currGroupPath);
+groupStruct=loadJSON(uuid);
 
-texts=currGroupStruct.ExecutionListNames;
-types=currGroupStruct.ExecutionListTypes;
+uuids=groupStruct.RunList;
 
-for i=1:length(texts)
+% Get texts from UUID's
+uiTree = getUITreeFromNode(parentNode);
+texts=getTextsFromUUID(uuids, uiTree);
+
+for i=1:length(uuids)
 
     newNode=uitreenode(parentNode,'Text',texts{i});
-    newNode.NodeData.Class=types{i};
+    newNode.NodeData.UUID=uuids{i};
     assignContextMenu(newNode,handles);
 
-    if ~isequal(types{i},'ProcessGroup')
-        continue;
-    end
-
-    createProcessGroupNode(newNode,texts{i},handles);  
+    if isequal(abbrev,'PG') % Process group
+        createProcessGroupNode(newNode,uuids{i},handles);  
+    end    
 
 end

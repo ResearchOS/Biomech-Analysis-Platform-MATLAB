@@ -11,18 +11,19 @@ if isempty(selNode)
     return;
 end
 
-if ~isequal(selNode.NodeData.Class,'Process')
-    delete(handles.Process.functionUITree.Children);
+uuid = selNode.NodeData.UUID;
+
+delete(handles.Process.functionUITree.Children);
+
+abbrev = deText(uuid);
+if isequal(abbrev,'PG')
     return;
 end
 
-% Requires a Process function to be selected
 fillCurrentFunctionUITree(fig);
 
 %% Update which specifyTrials are checked.
-fullPath=getClassFilePath_PS(selNode.Text, 'Process');
-
-processStruct=loadJSON(fullPath);
+processStruct=loadJSON(uuid);
 
 specifyTrials=processStruct.SpecifyTrials;
 

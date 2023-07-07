@@ -11,16 +11,10 @@ if isempty(selNode)
     return;
 end
 
-fullPath=getClassFilePath(selNode);
-
-struct=loadJSON(fullPath);
+uuid = selNode.NodeData.UUID;
+struct=loadJSON(uuid);
 
 computerID=getComputerID();
-
-if ~isfield(struct.LogsheetPath,computerID)
-    struct.LogsheetPath.(computerID)='';
-    writeJSON(fullPath,struct);
-end
 
 % Set the logsheet path field.
 if exist(struct.LogsheetPath.(computerID),'file')==2
@@ -33,7 +27,6 @@ end
 handles.Import.numHeaderRowsField.Value=struct.NumHeaderRows;
 
 %% Set the items in the headers drop downs, reading from the logsheet
-% headers=getLogsheetHeaders(fig,computerID);
 headers=struct.Headers;
 
 % Set the subject codename header
@@ -63,12 +56,12 @@ handles.Import.targetTrialIDDropDown.Value=value;
 
 % Fill logsheet headers UI tree
 fillHeadersUITree(fig,headers);
-
-% Set the current logsheet name in the project settings file
-% If needSave var exists, then don't save.
-if nargin~=2
-    projectSettingsPath=getProjectSettingsFile();
-    projectSettingsStruct=loadJSON(projectSettingsPath);
-    projectSettingsStruct.Current_Logsheet=selNode.Text;
-    writeJSON(projectSettingsPath,projectSettingsStruct);
-end
+% 
+% % Set the current logsheet name in the project settings file
+% % If needSave var exists, then don't save.
+% if nargin~=2
+%     projectSettingsPath=getProjectSettingsFile();
+%     projectSettingsStruct=loadJSON(projectSettingsPath);
+%     projectSettingsStruct.Current_Logsheet=selNode.Text;
+%     writeJSON(projectSettingsPath,projectSettingsStruct);
+% end

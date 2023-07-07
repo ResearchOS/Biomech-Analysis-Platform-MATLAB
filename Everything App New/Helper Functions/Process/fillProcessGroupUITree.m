@@ -1,40 +1,51 @@
 function []=fillProcessGroupUITree(src)
 
-%% PURPOSE: FILL THE CURRENT GROUP UI TREE
+%% PURPOSE: FILL THE CURRENT GROUP UI TREE.
+% If a group is selected in the current analysis UI tree, then put in all
+% the elements of the group.
+% If a function is selected, then just put in that function.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile);
-Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
-Currrent_Analysis=projectSettings.Current_Analysis;
+anNode = handles.Process.analysisUITree.SelectedNodes;
 
-% fullPath=getClassFilePath_PS(Current_ProcessGroup_Name, 'ProcessGroup');
-fullPath=getClassFilePath_PS(Current_Analysis,'Analysis');
-struct=loadJSON(fullPath);
+if isempty(anNode)
+    return;
+end
 
-list = struct.RunList;
-% types=struct.ExecutionListTypes; % Process functions or groups
-% names=struct.ExecutionListNames; % The names of each function/group
+initUUID = anNode.NodeData.UUID;
+struct=loadJSON(initUUID);
+
+[initAbbrev] = deText(initUUID);
+
+if isequal(initAbbrev,'PG')
+    list = struct.RunList; 
+elseif isequal(initAbbrev,'PR')
+    list = {initUUID};
+end
+
+texts = getTextsFromUUID(list,handles.Process.allProcessUITree);
 
 uiTree=handles.Process.groupUITree;
 
 delete(uiTree.Children);
 
-if isempty(types)    
-    return;
-end
+for i=1:length(list)
+    uuid = list{i};
 
-for i=1:length(names)
-    newNode=uitreenode(uiTree,'Text',names{i});
-    newNode.NodeData.Class=types{i};
+    newNode=uitreenode(uiTree,'Text',texts{i});
+    newNode.NodeData.UUID = uuid;
     assignContextMenu(newNode,handles);
 
-    if ~isequal(types{i},'ProcessGroup')
-        continue;
-    end
+    [abbrev] = deText(uuid);
 
-    createProcessGroupNode(newNode,names{i},handles);    
+    if isequal(abbrev,'PG') % ProcessGroup
+        createProcessGroupNode(newNode,uuid,handles);
+    end  
 
+end
+
+if isequal(initAbbrev,'PR') % Process
+    node = selectNode(handles.Process.groupUITree,initUUID);
 end

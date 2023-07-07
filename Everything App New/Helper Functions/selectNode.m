@@ -11,5 +11,11 @@ end
 selNode = getNode(uiTree, uuid); % The heavy lifting to select the proper node.
 uiTree.SelectedNodes=selNode;
 
+% Expand the parents of this node.
+while isequal(class(selNode),class(selNode.Parent))
+    selNode = selNode.Parent;
+end
+
+expand(selNode);
 fig=ancestor(uiTree,'figure','toplevel');
 % feval(uiTree.SelectionChangedFcn, fig);

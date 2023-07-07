@@ -15,17 +15,20 @@ uiTree=handles.Process.functionUITree;
 
 delete(uiTree.Children);
 
-% Load project-specific file.
-fullPathPS=getClassFilePath_PS(selNode.Text, 'Process');
-struct=loadJSON(fullPathPS);
+uuid = selNode.NodeData.UUID;
+[abbrev, abstractID, ~] = deText(uuid);
+if isequal(abbrev,'PG')
+    return; % Process group selections can't fill the current function UI tree
+end
+
+struct=loadJSON(uuid);
 
 inputVarsPS=struct.InputVariables;
 outputVarsPS=struct.OutputVariables;
 
 % Load project-independent file.
-piText=getPITextFromPS(selNode.Text);
-fullPathPI=getClassFilePath(piText, 'Process');
-piStruct=loadJSON(fullPathPI);
+abstractUUID = genUUID(className2Abbrev(abbrev,true),abstractID);
+piStruct=loadJSON(abstractUUID);
 
 inputVarsPI=piStruct.InputVariablesNamesInCode;
 outputVarsPI=piStruct.OutputVariablesNamesInCode;

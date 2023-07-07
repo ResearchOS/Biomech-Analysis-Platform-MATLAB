@@ -2,6 +2,11 @@ function [texts] = getTextsFromUUID(uuids, uiTree)
 
 %% PURPOSE: GET TEXT FROM UUID BY SEARCHING THROUGH THE CORRESPONDING ALL OBJECTS UI TREE
 
+if isempty(uuids)
+    texts={};
+    return;
+end
+
 if ~iscell(uuids)
     uuids = {uuids};
 end

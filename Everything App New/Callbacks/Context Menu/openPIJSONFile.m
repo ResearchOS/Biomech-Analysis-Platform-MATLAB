@@ -6,16 +6,15 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
+uuid = selNode.NodeData.UUID;
 
-[name,id,psid]=deText(selNode.Text);
+[abbrev,abstractID,instanceID]=deText(uuid);
 
-text=[name '_' id];
+abstractUUID = genUUID(abbrev, abstractID);
 
-uiTree=getUITreeFromNode(selNode);
+fullPath = getJSONPath(abstractUUID);
 
-classType=getClassFromUITree(uiTree);
-
-fullPath=getClassFilePath(text, classType);
+class = className2Abbrev(abbrev, true);
 
 if exist(fullPath,'file')~=2
     a=questdlg('File does not exist. Create it?','Missing file','Yes','No','Cancel','No');    
@@ -23,8 +22,8 @@ if exist(fullPath,'file')~=2
         return;
     end
 
-    [name,id]=deText(selNode.Text);
-    piStruct=feval(['create' classType 'Struct'],name,id);
+    [~,abstractID]=deText(uuid);
+    createNewObject(false, class, selNode.Text, abstractID, '', true);    
 
 end
 

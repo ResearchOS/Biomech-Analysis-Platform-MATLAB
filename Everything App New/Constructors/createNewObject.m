@@ -37,6 +37,9 @@ end
 
 % Initialize the fields common to all structures (abstract & instances, all
 % object types).
+if ischar(class) && length(class)==2
+    class = className2Abbrev(class, true);
+end
 objStruct = initializeCommonStructFields(instanceBool, class, name, abstractID, instanceID);
 
 % If creating an abstract object AND an instance at the same time, need to run this twice.
@@ -62,8 +65,6 @@ if instanceBool
 else
     struct.IsHardCoded = false;
     struct.Level = 'T';
-    struct.OutOfDate = true;
-
 end
 
 end
@@ -153,14 +154,6 @@ function struct = createAnalysisStruct(instanceBool, struct, saveObj)
 if instanceBool
     struct.Tags = {};
     struct.RunList = {}; % The list of functions & groups to run, in order.
-
-%     if saveObj
-%         rootSettingsFile = getRootSettingsFile();
-%         load(rootSettingsFile, 'Current_Project_Name');
-%         projectStruct = loadJSON(Current_Project_Name);
-%         linkObjs(struct, projectStruct);       
-%     end
-
 else
     
 end

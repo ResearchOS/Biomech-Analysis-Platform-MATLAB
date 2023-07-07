@@ -1,9 +1,13 @@
 function uuid = genUUID(class, abstractID, instanceID, name)
 
 uuid='';
-abbrev = className2Abbrev(class);
+if ischar(class) && length(class)==2
+    abbrev = class;
+else
+    abbrev = className2Abbrev(class);
+end
 
-if nargin<=1    
+if nargin<=1
     return;
 end
 

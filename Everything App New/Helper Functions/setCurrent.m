@@ -9,7 +9,7 @@ rootSettingsVars = {'commonPath', 'Computer_ID', 'Current_Project_Name',...
 
 if ismember(varName,rootSettingsVars)
     rootSettingsFile = getRootSettingsFile();
-    varName = eval([varName ' = var;']); % Convert from var name to value
+    eval([varName ' = var;']); % Convert from var name to value
     save(rootSettingsFile,varName, '-append');
 end
 

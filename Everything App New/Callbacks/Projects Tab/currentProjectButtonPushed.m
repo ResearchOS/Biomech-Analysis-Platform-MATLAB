@@ -12,12 +12,17 @@ if isempty(selNode)
 end
 
 % Include name & UUID because the name isn't guaranteed to be unique
-handles.Projects.projectsLabel.Text=[selNode.Text ' ' selNode.NodeData.UUID];
+uuid = selNode.NodeData.UUID;
+handles.Projects.projectsLabel.Text=[selNode.Text ' ' uuid];
 
-Current_Project_Name = selNode.NodeData.UUID;
-setCurrent('Current_Project_Name',Current_Project_Name);
+setCurrent(uuid, 'Current_Project_Name');
 
 % Select the current analysis node, and show its entries.
 Current_Analysis = getCurrent('Current_Analysis');
 selectNode(handles.Process.allAnalysesUITree, Current_Analysis);
 selectAnalysisButtonPushed(fig);
+
+% Select the current logsheet.
+Current_Logsheet = getCurrent('Current_Logsheet');
+selectNode(handles.Import.allLogsheetsUITree, Current_Logsheet);
+allLogsheetsUITreeSelectionChanged(fig);

@@ -56,12 +56,6 @@ handles.Import.targetTrialIDDropDown.Value=value;
 
 % Fill logsheet headers UI tree
 fillHeadersUITree(fig,headers);
-% 
-% % Set the current logsheet name in the project settings file
-% % If needSave var exists, then don't save.
-% if nargin~=2
-%     projectSettingsPath=getProjectSettingsFile();
-%     projectSettingsStruct=loadJSON(projectSettingsPath);
-%     projectSettingsStruct.Current_Logsheet=selNode.Text;
-%     writeJSON(projectSettingsPath,projectSettingsStruct);
-% end
+
+% Set the current logsheet for the project.
+setCurrent(struct.UUID, 'Current_Logsheet');

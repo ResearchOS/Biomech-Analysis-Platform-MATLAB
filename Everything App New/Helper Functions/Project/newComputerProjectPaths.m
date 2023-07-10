@@ -1,26 +1,23 @@
-function []=newComputerProjectPaths(computerID)
+function [projectStruct]=newComputerProjectPaths(pjUUID)
 
 %% PURPOSE: ENSURE THAT THERE ARE FIELDS FOR THE COMPUTER-SPECIFIC PATHS
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_Project_Name');
+computerID = getComputerID();
 
-projectPath=getClassFilePath(Current_Project_Name,'Project');
-
-projectStruct=loadJSON(projectPath);
+projectStruct = loadJSON(pjUUID);
+pjStructTmp = createNewObject(true,'Project','Default','','',false);
 
 doWrite = false;
+if ~isfield(projectStruct.ProjectPath,computerID)
+    doWrite = true;
+    projectStruct.ProjectPath.(computerID) = pjStructTmp.ProjectPath.(computerID);
+end
 
 if ~isfield(projectStruct.DataPath,computerID)
-    projectStruct.DataPath.(computerID)='';
     doWrite = true;
+    projectStruct.DataPath.(computerID) = pjStructTmp.DataPath.(computerID);
 end
 
-if ~isfield(projectStruct.ProjectPath,computerID)
-    projectStruct.ProjectPath.(computerID)='';
-    doWrite = true;
-end
-
-if doWrite % Because a modification has been made.
-    writeJSON(projectPath,projectStruct);
+if doWrite
+    writeJSON(getJSONPath(projectStruct), projectStruct);
 end

@@ -62,7 +62,7 @@ end
 
 save(logsheetPathMAT,'logVar');
 
-saveClass('Logsheet',struct);
+writeJSON(getJSONPath(struct),struct);
 
 headersAll=[{''}; headers];
 

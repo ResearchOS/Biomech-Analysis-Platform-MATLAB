@@ -11,9 +11,12 @@ if isempty(projectNode)
     return;
 end
 
-struct = loadJSON(projectNode.NodeData.UUID);
+uuid = projectNode.NodeData.UUID;
 
-computerID=getComputerID();
+% Ensure that the current computer's ID field is present.
+struct = newComputerProjectPaths(uuid);
+
+computerID = getComputerID();
 
 dataPath=struct.DataPath.(computerID);
 

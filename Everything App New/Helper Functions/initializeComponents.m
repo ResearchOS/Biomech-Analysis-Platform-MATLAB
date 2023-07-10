@@ -327,8 +327,14 @@ handles.Process.removeFromQueueButton=uibutton(handles.Process.currentAnalysisTa
 % 30. Save as new analysis button
 handles.Process.copyToNewAnalysisButton=uibutton(handles.Process.currentAnalysisTab,'push','Text',{'Copy To New','Analysis'},'ButtonPushedFcn',@(copyToNewAnalysisButton,event) copyToNewAnalysisButtonPushed(copyToNewAnalysisButton));
 
-% 32. Current group label
+% 32. Current analysis label
 handles.Process.currentAnalysisLabel=uilabel(handles.Process.currentAnalysisTab,'Text','Current Analysis','FontWeight','bold');
+
+% 33. Current group label
+handles.Process.currentGroupLabel=uilabel(handles.Process.currentGroupTab,'Text','Current Group','FontWeight','bold');
+
+% 34. Current function label
+handles.Process.currentFunctionLabel=uilabel(handles.Process.currentFunctionTab,'Text','Current Function','FontWeight','bold');
 
 % 33. Add getArg/setArg button
 handles.Process.addArgsButton=uibutton(handles.Process.currentFunctionTab,'Text','+','ButtonPushedFcn',@(addArgsButton,event) addArgsButtonPushed(addArgsButton));

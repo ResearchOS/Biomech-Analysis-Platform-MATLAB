@@ -49,4 +49,5 @@ end
 
 if isequal(initAbbrev,'PR') % Process
     node = selectNode(handles.Process.groupUITree,initUUID);
+    groupUITreeSelectionChanged(fig);
 end

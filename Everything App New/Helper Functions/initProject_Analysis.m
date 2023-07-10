@@ -9,9 +9,14 @@ anName = getCurrent('Current_Analysis');
 
 projectExist = exist(getJSONPath(projectName),'file')==2;
 anExist = exist(getJSONPath(anName),'file')==2;
+
+%% Check if the current computer's paths are present in this project.
+if projectExist
+    newComputerProjectPaths();
+end
  
-% All good, nothing to do here.
-if projectExist && anExist        
+%% All good, nothing to do here.
+if projectExist && anExist
     return;
 end
 

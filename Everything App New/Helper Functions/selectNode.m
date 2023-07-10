@@ -17,5 +17,3 @@ while isequal(class(selNode),class(selNode.Parent))
 end
 
 expand(selNode);
-fig=ancestor(uiTree,'figure','toplevel');
-% feval(uiTree.SelectionChangedFcn, fig);

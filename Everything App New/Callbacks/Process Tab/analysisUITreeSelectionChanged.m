@@ -16,13 +16,6 @@ struct = loadJSON(uuid);
 
 delete(handles.Process.groupUITree.Children);
 
-[type, abstractID, instanceID] = deText(struct.UUID);
-
-if isequal(type,'PR')
-    node = uitreenode(handles.Process.groupUITree,'Text', struct.Text);
-    node.NodeData.UUID = struct.UUID;
-    selectNode(handles.Process.groupUITree, node.NodeData.UUID);
-    return;
-end
+handles.Process.currentGroupLabel.Text = [struct.Text ' ' struct.UUID];
 
 fillProcessGroupUITree(fig);

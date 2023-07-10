@@ -21,17 +21,17 @@ if isequal(abbrev,'PG')
     return; % Process group selections can't fill the current function UI tree
 end
 
-struct=loadJSON(uuid);
+instStruct=loadJSON(uuid);
 
-inputVarsPS=struct.InputVariables;
-outputVarsPS=struct.OutputVariables;
+inputVarsPS=instStruct.InputVariables;
+outputVarsPS=instStruct.OutputVariables;
 
 % Load project-independent file.
 abstractUUID = genUUID(className2Abbrev(abbrev,true),abstractID);
-piStruct=loadJSON(abstractUUID);
+abstractStruct=loadJSON(abstractUUID);
 
-inputVarsPI=piStruct.InputVariablesNamesInCode;
-outputVarsPI=piStruct.OutputVariablesNamesInCode;
+inputVarsPI=abstractStruct.InputVariablesNamesInCode;
+outputVarsPI=abstractStruct.OutputVariablesNamesInCode;
 
 % Create input variable nodes
 for i=1:length(inputVarsPI)
@@ -51,6 +51,7 @@ for i=1:length(inputVarsPI)
             suffix=[' (' currArgs{j} ')'];
         end
         newNode=uitreenode(argNode,'Text',[currArgsPI{j} suffix]);
+        newNode.NodeData.UUID = currArgs{j};
         assignContextMenu(newNode,handles);
     end
 
@@ -79,6 +80,7 @@ for i=1:length(outputVarsPI)
             suffix=[' (' currArgs{j} ')'];
         end
         newNode=uitreenode(argNode,'Text',[currArgsPI{j} suffix]);
+        newNode.NodeData.UUID = currArgs{j};
         assignContextMenu(newNode,handles);
     end
 

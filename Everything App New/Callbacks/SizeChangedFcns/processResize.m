@@ -166,8 +166,14 @@ objResize(tab.copyToNewAnalysisButton, [0.33 0.1], [0.07 2*compHeight]);
 % 31. Select group button
 objResize(tab.selectAnalysisButton, [0.3 0.3], [0.03 compHeight]);
 
-% 32. Current group name label
+% 32. Current analysis name label
 objResize(tab.currentAnalysisLabel, [0.01 0.83], [0.3 compHeight]);
+
+% 33. Current group label
+objResize(tab.currentGroupLabel, [0.01 0.83], [0.3 compHeight]);
+
+% 34. Current function label
+objResize(tab.currentFunctionLabel, [0.01 0.83],[0.3 compHeight]);
 
 % 33. Add args button
 objResize(tab.addArgsButton, [0.3 0.83], [0.03 compHeight]);

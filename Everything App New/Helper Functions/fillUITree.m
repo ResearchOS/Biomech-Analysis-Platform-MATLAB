@@ -50,16 +50,14 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
     idx=ismember(allTextsNoVis,allSearchResults{i});
 
     % If deleting an existing node. Otherwise, doesn't touch existing nodes.
-    if ismember(allSearchResults{i},currNodesTexts)
-        if classVar(idx).Visible==0
-            currNode=findobj(uiTree.Children,'Text',allSearchResults{i});
-            if isequal(currNode,selNode)
-                selNode=[]; % Make selNode empty so that a new node will be selected and the selectionChangedFcn will trigger.
-            end
-            delete(currNode);
-        end
-        continue;
-    end
+%     if ismember(allSearchResults{i},currNodesTexts)
+%         currNode=findobj(uiTree.Children,'Text',allSearchResults{i});
+%         if isequal(currNode,selNode)
+%             selNode=[]; % Make selNode empty so that a new node will be selected and the selectionChangedFcn will trigger.
+%         end
+%         delete(currNode);
+%         continue;
+%     end
 
     newNode=uitreenode(uiTree,'Text',allSearchResults{i});
     newNode.NodeData.UUID = allUUIDs{i};
@@ -96,8 +94,4 @@ end
 selectNode(uiTree, selNode.NodeData.UUID);
 
 %% ADD THE PROJECT-SPECIFIC VERSIONS TO THE UI TREE
-% if ismember(class,{'Variable'})
-%     return;
-% end
-
 fillUITree_PS(fig, class, uiTree);

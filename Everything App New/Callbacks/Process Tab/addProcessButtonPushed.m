@@ -11,7 +11,7 @@ if isempty(processName)
     return;
 end
 
-createProcessStruct(processName);
+createNewObject(false, 'Process', processName, '', '', true);
 
 searchTerm=getSearchTerm(handles.Process.processSearchField);
 

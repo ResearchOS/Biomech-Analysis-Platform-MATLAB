@@ -9,14 +9,18 @@ Current_Analysis = getCurrent('Current_Analysis');
 anStruct = loadJSON(Current_Analysis);
 
 list = anStruct.RunList;
-texts = getTextsFromUUID(list,handles.Process.allGroupsUITree);
+% texts = getTextsFromUUID(list,handles.Process.allGroupsUITree);
 
 uiTree = handles.Process.analysisUITree;
 
 for i=1:length(list)
     uuid = list{i};
 
-    newNode = uitreenode(uiTree,'Text',texts{i});
+    % Load every file to read its text. Slow! Should be improved in the
+    % future.
+    struct = loadJSON(uuid);
+
+    newNode = uitreenode(uiTree,'Text',struct.Text);
     newNode.NodeData.UUID = uuid;
     assignContextMenu(newNode,handles);
 

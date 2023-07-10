@@ -11,7 +11,7 @@ if isempty(groupName)
     return;
 end
 
-createProcessGroupStruct(groupName);
+createNewObject(false, 'ProcessGroup', groupName, '', '', true);
 
 searchTerm=getSearchTerm(handles.Process.groupsSearchField);
 

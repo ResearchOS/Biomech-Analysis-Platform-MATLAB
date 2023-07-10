@@ -5,6 +5,10 @@ function [fullPath] = getJSONPath(uuid)
 slash = filesep;
 commonPath = getCommonPath();
 
+if isstruct(uuid)
+    uuid = uuid.UUID;
+end
+
 [abbrev, abstractID, instanceID] = deText(uuid);
 
 class = className2Abbrev(abbrev, true);

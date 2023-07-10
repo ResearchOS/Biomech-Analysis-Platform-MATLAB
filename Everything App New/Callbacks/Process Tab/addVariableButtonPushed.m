@@ -11,7 +11,7 @@ if isempty(variableName)
     return;
 end
 
-createVariableStruct(variableName);
+createNewObject(false, 'Variable', variableName, '', '', true);
 
 searchTerm=getSearchTerm(handles.Process.variablesSearchField);
 

@@ -2,8 +2,8 @@ function [texts]=fileNames2Texts(filenames)
 
 %% PURPOSE: CONVERT FILE NAMES TO UITREENODE TEXT FORMAT
 
-% filename format: {class}_{name}_ID_PSID.json
-% text format: {name}_ID_PSID
+% filename format: AABBBBBB_CCC.json
+% text format: AABBBBBB_CCC
 
 isChar=false;
 if ischar(filenames)
@@ -21,11 +21,6 @@ for i=1:length(filenames)
     if ~isempty(extIdx)
         name=name(1:extIdx-1);
     end
-
-    % Remove class name
-    underscoreIdx=strfind(name,'_');
-
-    name=name(underscoreIdx(1)+1:end);
 
     texts{i}=name;
 

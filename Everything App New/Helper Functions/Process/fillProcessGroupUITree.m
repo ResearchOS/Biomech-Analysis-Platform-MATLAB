@@ -8,13 +8,13 @@ function []=fillProcessGroupUITree(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-anNode = handles.Process.analysisUITree.SelectedNodes;
+groupNode = handles.Process.analysisUITree.SelectedNodes;
 
-if isempty(anNode)
+if isempty(groupNode)
     return;
 end
 
-initUUID = anNode.NodeData.UUID;
+initUUID = groupNode.NodeData.UUID;
 struct=loadJSON(initUUID);
 
 [initAbbrev] = deText(initUUID);
@@ -25,7 +25,7 @@ elseif isequal(initAbbrev,'PR')
     list = {initUUID};
 end
 
-texts = getTextsFromUUID(list,handles.Process.allProcessUITree);
+% texts = getTextsFromUUID(list,handles.Process.allProcessUITree);
 
 uiTree=handles.Process.groupUITree;
 
@@ -34,7 +34,8 @@ delete(uiTree.Children);
 for i=1:length(list)
     uuid = list{i};
 
-    newNode=uitreenode(uiTree,'Text',texts{i});
+    struct = loadJSON(uuid);
+    newNode=uitreenode(uiTree,'Text',struct.Text);
     newNode.NodeData.UUID = uuid;
     assignContextMenu(newNode,handles);
 

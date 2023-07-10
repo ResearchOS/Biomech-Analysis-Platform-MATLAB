@@ -38,7 +38,7 @@ for i=1:length(classNames)
         instanceIDidx = ismember(inst_abstractUUIDs,missingAbstracts{j});
         instanceUUID = genUUID(class, inst_abstractIDs{instanceIDidx}, inst_instanceIDs{instanceIDidx}); % Get an instance ID for this abstract object.
         instanceStruct = loadJSON(instanceUUID);
-        createNewObject(false, class, instanceStruct.Text, inst_abstractIDs{j}, '', true);
+        createNewObject(false, class, instanceStruct.Text, inst_abstractIDs{instanceIDidx}, '', true);
     end
 
 end

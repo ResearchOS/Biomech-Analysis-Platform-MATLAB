@@ -2,6 +2,11 @@ function [fullPath] = getJSONPath(uuid)
 
 %% PURPOSE: GET THE FULL FILE PATH FOR THE JSON FILE WITH THE CORRESPONDING UUID
 
+if isempty(uuid)
+    fullPath = '';
+    return;
+end
+
 slash = filesep;
 commonPath = getCommonPath();
 

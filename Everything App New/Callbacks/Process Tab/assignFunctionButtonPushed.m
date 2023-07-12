@@ -1,184 +1,53 @@
-function []=assignFunctionButtonPushed(src,text,parentText)
+function []=assignFunctionButtonPushed(src)
 
-%% PURPOSE: ASSIGN PROCESSING FUNCTION TO THE CURRENT PROCESSING GROUP
-
-% text: A Process class object
-% parentText: A ProcessGroup class object
+%% PURPOSE: ASSIGN PROCESSING FUNCTION TO THE CURRENT ANALYSIS OR PROCESSING GROUP
+% If on Analysis tab, assign function directly to analysis
+% If on Group tab, assign function to group.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-if exist('text','var')~=1 % Selecting a node
-    selNode=handles.Process.allProcessUITree.SelectedNodes;
+selNode=handles.Process.allGroupsUITree.SelectedNodes;
 
-    if isempty(selNode)
-        return;
-    end
-
-    processName=selNode.Text;
-
-    % Create a new project-specific process version
-    if (isequal(selNode.Parent,handles.Process.allProcessUITree) && isempty(selNode.Children)) % Special case where there are no existing PS versions.
-        isNew=true;
-    else
-        isNew=false;
-    end
-
-    % PI node selected
-    if isequal(selNode.Parent,handles.Process.allProcessUITree)
-        if length(selNode.Children)==1
-            selNode=selNode.Children(1);
-            processName=selNode.Text;
-        elseif length(selNode.Children)>1
-            disp('Multiple options, please select a project-specific option!');
-            expand(selNode);
-            return;
-        end
-    end
-else
-
-    % Create a new project-specific process version
-    [name,id,psid]=deText(text);
-
-    % Create a new project-specific process version
-    piText=[name '_' id];
-    slash=filesep;
-    fileNames=getClassFilenames('Process',[getCommonPath slash 'Process' slash 'Implementations']);
-    psNames=fileNames(contains(fileNames,piText));
-    if isempty(psid) && isempty(psNames)
-        isNew=true;
-    else
-        isNew=false;
-    end
-
-    % PI node selected
-    if isempty(psid)
-        if length(psNames)==1
-            processName=psNames{1}; % Without project-specific ID.
-        elseif length(psNames)>1
-            disp('Multiple options, please select a project-specific option!');
-            return;
-        end
-    else
-        processName=text;
-    end
-end
-
-if exist('parentText','var')~=1
-    projectSettingsFile=getProjectSettingsFile();
-    projectSettings=loadJSON(projectSettingsFile);
-    Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
-else
-    Current_ProcessGroup_Name=parentText;
-end
-
-% Get the currently selected group struct.
-fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup');
-groupStruct=loadJSON(fullPath);
-
-% List is a Nx2, with the first column being "Process" or "ProcessGroup", 2nd
-% column is the name
-names=groupStruct.ExecutionListNames; % Execute these functions/groups in this order.
-types=groupStruct.ExecutionListTypes;
-
-switch isNew
-    case true
-        processPath=getClassFilePath(processName, 'Process');
-        piStruct=loadJSON(processPath);
-        processStruct=createProcessStruct_PS(piStruct);
-    case false
-        processPath=getClassFilePath_PS(processName, 'Process');
-        processStruct=loadJSON(processPath);
-end
-
-names=[names; {processStruct.Text}];
-types=[types; {'Process'}];
-
-groupStruct.ExecutionListNames=names;
-groupStruct.ExecutionListTypes=types;
-
-linkClasses(processStruct, groupStruct); % Also saves the structs
-
-
-
- 
-
-
-
-
-
-
-
-
-
-% fig=ancestor(src,'figure','toplevel');
-% handles=getappdata(fig,'handles');
-% 
-% selNode=handles.Process.allProcessUITree.SelectedNodes;
-% 
-% if isempty(selNode)
-%     return;
-% end
-% 
-% % Create a new project-specific process version
-% if (isequal(selNode.Parent,handles.Process.allProcessUITree) && isempty(selNode.Children)) % Special case where there are no existing PS versions.
-%     isNew=true;
-% else
-%     isNew=false;
-% end
-% 
-% % PI node selected
-% if isequal(selNode.Parent,handles.Process.allProcessUITree)
-%     if length(selNode.Children)==1
-%         selNode=selNode.Children(1);
-%     elseif length(selNode.Children)>1
-%         disp('Multiple options, please select a project-specific option!');
-%         expand(selNode);
-%         return;
-%     end
-% end
-% 
-% projectSettingsFile=getProjectSettingsFile();
-% projectSettings=loadJSON(projectSettingsFile);
-% Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
-% 
-% % Get the currently selected group struct.
-% fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup');
-% groupStruct=loadJSON(fullPath);
-% 
-% % List is a Nx2, with the first column being "Process" or "ProcessGroup", 2nd
-% % column is the name
-% names=groupStruct.ExecutionListNames; % Execute these functions/groups in this order.
-% types=groupStruct.ExecutionListTypes;
-% 
-% processName=selNode.Text; % Without project-specific ID.
-% 
-% switch isNew
-%     case true
-%         processPath=getClassFilePath(processName, 'Process');
-%         piStruct=loadJSON(processPath);
-%         processStruct=createProcessStruct_PS(piStruct);
-%     case false
-%         processPath=getClassFilePath_PS(selNode.Text, 'Process');
-%         processStruct=loadJSON(processPath);
-% end
-% 
-% names=[names; {processStruct.Text}];
-% types=[types; {'Process'}];
-% 
-% groupStruct.ExecutionListNames=names;
-% groupStruct.ExecutionListTypes=types;
-% 
-% linkClasses(processStruct, groupStruct); % Also saves the structs
-
-if ~isequal(groupStruct.Text,handles.Process.currentGroupLabel.Text)
+if isempty(selNode)
     return;
 end
 
-newNode=uitreenode(handles.Process.groupUITree,'Text',processStruct.Text);
-newNode.ContextMenu=handles.Process.psContextMenu;
-newNode.NodeData.Class='Process';
+selUUID = selNode.NodeData.UUID;
 
-if isNew
-    uitreenode(selNode,'Text',processStruct.Text,'ContextMenu',handles.Process.psContextMenu);
+[type, abstractID, instanceID] = deText(selUUID);
+
+% Abstract selected. Create new instance.
+if isempty(instanceID)
+    % Confirm that the user wants to create a new instance
+    a = questdlg('Are you sure you want to create a new instance of this object?','Confirm','No');
+    if ~isequal(a,'Yes')
+        return;
+    end
+    pgStruct = createNewObject(true, 'Process', selNode.Text, abstractID, '', true);
+    selUUID = pgStruct.UUID;
+    abstractUUID = genUUID(type, abstractID);
+    absNode = selectNode(handles.Process.allGroupsUITree, abstractUUID);
+
+    % Create the new node in the "all" UI tree
+    addNewNode(absNode, selUUID, pgStruct.Text);
+end
+
+[containerUUID, uiTree] = getContainer(fig);
+contStruct = loadJSON(containerUUID);
+contStruct.RunList = [contStruct.RunList; {selUUID}];
+writeJSON(getJSONPath(contStruct), contStruct);
+selStruct = loadJSON(selUUID);
+
+% Add a new node to the current UI tree
+addNewNode(uiTree, selStruct.UUID, selStruct.Text);
+selectNode(uiTree, selStruct.UUID);
+
+switch uiTree
+    case handles.Process.allGroupsUITree
+        fillCurrentFunctionUITree(fig);
+    case handles.Process.allAnalysesUITree
+        fillProcessGroupUITree(fig); % Added group to analysis. Completely refill the current process group UI tree
+    otherwise
+        error('Where am I?');
 end

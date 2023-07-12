@@ -11,11 +11,8 @@ if isempty(groupName)
     return;
 end
 
-createNewObject(false, 'ProcessGroup', groupName, '', '', true);
+groupStruct = createNewObject(false, 'ProcessGroup', groupName, '', '', true);
 
-searchTerm=getSearchTerm(handles.Process.groupsSearchField);
-
-fillUITree(fig,'ProcessGroup',handles.Process.allGroupsUITree, ...
-    searchTerm,handles.Process.sortGroupsDropDown);
+addNewNode(handles.Process.allGroupsUITree, groupStruct.UUID, groupStruct.Text);
 
 figure(fig);

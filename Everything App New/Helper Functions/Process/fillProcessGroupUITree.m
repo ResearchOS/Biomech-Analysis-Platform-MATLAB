@@ -19,17 +19,13 @@ struct=loadJSON(initUUID);
 
 [initAbbrev] = deText(initUUID);
 
+uiTree=handles.Process.groupUITree;
+delete(uiTree.Children);
 if isequal(initAbbrev,'PG')
-    list = struct.RunList; 
+    list = struct.RunList;
 elseif isequal(initAbbrev,'PR')
     list = {initUUID};
 end
-
-% texts = getTextsFromUUID(list,handles.Process.allProcessUITree);
-
-uiTree=handles.Process.groupUITree;
-
-delete(uiTree.Children);
 
 for i=1:length(list)
     uuid = list{i};

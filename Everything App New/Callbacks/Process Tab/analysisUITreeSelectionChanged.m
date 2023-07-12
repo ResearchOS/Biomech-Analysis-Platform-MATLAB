@@ -19,3 +19,13 @@ delete(handles.Process.groupUITree.Children);
 handles.Process.currentGroupLabel.Text = [struct.Text ' ' struct.UUID];
 
 fillProcessGroupUITree(fig);
+
+if isempty(handles.Process.groupUITree.Children)
+    return;
+end
+
+lastNode = handles.Process.groupUITree.Children(end);
+
+selectNode(lastNode, lastNode.NodeData.UUID);
+
+fillCurrentFunctionUITree(fig);

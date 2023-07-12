@@ -11,11 +11,8 @@ if isempty(variableName)
     return;
 end
 
-createNewObject(false, 'Variable', variableName, '', '', true);
+varStruct = createNewObject(false, 'Variable', variableName, '', '', true);
 
-searchTerm=getSearchTerm(handles.Process.variablesSearchField);
-
-fillUITree(fig,'Variable',handles.Process.allVariablesUITree, ...
-    searchTerm,handles.Process.sortVariablesDropDown);
+addNewNode(handles.Process.allVariablesUITree, varStruct.UUID, varStruct.Text);
 
 figure(fig);

@@ -12,7 +12,7 @@ anExist = exist(getJSONPath(anName),'file')==2;
 
 %% Check if the current computer's paths are present in this project.
 if projectExist
-    newComputerProjectPaths();
+    newComputerProjectPaths(projectName);
 end
  
 %% All good, nothing to do here.

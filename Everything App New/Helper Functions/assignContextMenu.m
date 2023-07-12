@@ -25,7 +25,7 @@ switch parent
         if isInstance
             remIdx = [];
         else
-            error('What happened?');
+            remIdx = [];
         end
     case handles.Process.functionUITree
         remIdx = [];
@@ -39,7 +39,7 @@ switch parent
         if isInstance
             remIdx = [];
         else
-            error('What happened?');
+            remIdx = [];
         end
     case handles.Plot.allComponentsUITree
         if isInstance

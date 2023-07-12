@@ -17,11 +17,15 @@ end
 fig=ancestor(parent,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+type = deText(uuid);
+
 newNode = uitreenode(parent, 'Text', text);
-
 newNode.NodeData.UUID = uuid;
-
 assignContextMenu(newNode,handles);
+
+if isequal(type,'PG')
+    createProcessGroupNode(newNode,uuid,handles);
+end
 
 allUITrees = [handles.Process.allAnalysesUITree; handles.Process.allGroupsUITree; handles.Process.allProcessUITree; handles.Process.allVariablesUITree];
 if ~ismember(parent,allUITrees)

@@ -14,9 +14,7 @@ for i=1:length(uuids)
     uuid = uuids{i};
     struct = loadJSON(uuid);
 
-    newNode=uitreenode(parentNode,'Text',struct.Text);
-    newNode.NodeData.UUID=uuids{i};
-    assignContextMenu(newNode,handles);
+    addNewNode(parentNode, uuid, struct.Text);    
 
     [abbrev] = deText(uuid);
 

@@ -3,8 +3,8 @@ function [newNode]=selectNeighborNode(currNode,dir)
 %% PURPOSE: SELECT THE NEIGHBORING NODE IN UI TREE. IF NONE, SELECT THE PARENT NODE.
 
 if exist('dir','var')~=1
-    dir=1; % Select the next node down.
-    % dir=0; % Select the next node up.
+    dir=1; % Select the next node down (after the current).
+    % dir=0; % Select the next node up (before the current).
 end
 
 uiTree=getUITreeFromNode(currNode);

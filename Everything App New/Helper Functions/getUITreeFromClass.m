@@ -40,5 +40,3 @@ elseif isequal(allOrCurr,'curr')
     % Some ambiguity here, because processes & process groups can be in
     % either the analysis or process group UI trees.
 end
-
-handles.Process.allProcessUITree

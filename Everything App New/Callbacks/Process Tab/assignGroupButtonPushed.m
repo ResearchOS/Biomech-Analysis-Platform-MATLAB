@@ -42,9 +42,9 @@ addNewNode(uiTree, selStruct.UUID, selStruct.Text);
 selectNode(uiTree, selStruct.UUID);
 
 switch uiTree
-    case handles.Process.allGroupsUITree
+    case handles.Process.groupUITree
         fillCurrentFunctionUITree(fig);
-    case handles.Process.allAnalysesUITree
+    case handles.Process.analysisUITree
         fillProcessGroupUITree(fig); % Added group to analysis. Completely refill the current process group UI tree
     otherwise
         error('Where am I?');

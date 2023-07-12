@@ -24,13 +24,13 @@ if isempty(instanceID)
     if ~isequal(a,'Yes')
         return;
     end
-    pgStruct = createNewObject(true, 'Process', selNode.Text, abstractID, '', true);
-    selUUID = pgStruct.UUID;
+    prStruct = createNewObject(true, 'Process', selNode.Text, abstractID, '', true);
+    selUUID = prStruct.UUID;
     abstractUUID = genUUID(type, abstractID);
-    absNode = selectNode(handles.Process.allGroupsUITree, abstractUUID);
+    absNode = selectNode(handles.Process.allProcessUITree, abstractUUID);
 
     % Create the new node in the "all" UI tree
-    addNewNode(absNode, selUUID, pgStruct.Text);
+    addNewNode(absNode, selUUID, prStruct.Text);
 end
 
 [containerUUID, uiTree] = getContainer(fig);

@@ -1,11 +1,11 @@
 function []=unassignGroupButtonPushed(src,event)
 
-%% PURPOSE: UNASSIGN PROCESSING GROUP FROM THE CURRENT GROUP
+%% PURPOSE: UNASSIGN PROCESSING GROUP FROM THE CURRENT ANALYSIS OR GROUP (DEPENDING ON WHICH TAB I'M ON)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-uiTree=handles.Process.groupUITree;
+[containerUUID, uiTree] = getContainer(fig);
 
 selNode=uiTree.SelectedNodes;
 
@@ -13,40 +13,23 @@ if isempty(selNode)
     return;
 end
 
-name=selNode.Text;
+selUUID = selNode.NodeData.UUID;
+type = deText(selUUID);
 
-nodeClass=selNode.NodeData.Class;
-
-if ~isequal(nodeClass,'ProcessGroup')
-    disp('Must have a processing group selected to use this button!');
+if ~isequal(type,'PG')
+    disp('Must have a process group selected to use this button!');
     return;
 end
 
-processGroupPath=getClassFilePath(name, 'ProcessGroup');
-processGroupStruct=loadJSON(processGroupPath);
+%% Update GUI
+proceed = deleteNode(selNode);
+if ~proceed
+    return;
+end
 
-selectNeighborNode(selNode);
-delete(selNode);
+%% Remove the group from the current group or analysis.
+contStruct = loadJSON(containerUUID);
+idx = ismember(contStruct.RunList,selUUID);
+contStruct.RunList(idx) = [];
 
-groupUITreeSelectionChanged(fig);
-
-projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile);
-Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
-
-% Get the currently selected group struct.
-fullPath=getClassFilePath_PS(Current_ProcessGroup_Name,'ProcessGroup');
-groupStruct=loadJSON(fullPath);
-
-names=groupStruct.ExecutionListNames; % Execute these functions/groups in this order.
-types=groupStruct.ExecutionListTypes;
-
-idx=ismember(names,name);
-
-names(idx)=[];
-types(idx)=[];
-
-groupStruct.ExecutionListNames=names;
-groupStruct.ExecutionListTypes=types;
-
-unlinkClasses(processGroupStruct, groupStruct);
+writeJSON(getJSONPath(contStruct), contStruct);

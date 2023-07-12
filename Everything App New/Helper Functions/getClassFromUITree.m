@@ -26,7 +26,7 @@ switch uiTree
         class='SpecifyTrials';
     case handles.Plot.allSpecifyTrialsUITree
         class='SpecifyTrials';
-    case handles.Process.groupUITree
+    case handles.Process.groupUITree    
         class='Process';
     case handles.Process.functionUITree
         class='Variable';

@@ -13,6 +13,13 @@ list = anStruct.RunList;
 
 uiTree = handles.Process.analysisUITree;
 
+% Delete all existing entries in current UI trees.
+delete(uiTree.Children);
+delete(handles.Process.groupUITree.Children);
+delete(handles.Process.functionUITree.Children);
+handles.Process.currentGroupLabel.Text = 'Current Group';
+handles.Process.currentFunctionLabel.Text = 'Current Process';
+
 for i=1:length(list)
     uuid = list{i};
 
@@ -31,3 +38,5 @@ for i=1:length(list)
     end
 
 end
+
+handles.Process.subtabCurrent.SelectedTab = handles.Process.currentAnalysisTab;

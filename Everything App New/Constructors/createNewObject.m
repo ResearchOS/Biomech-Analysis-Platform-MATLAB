@@ -113,6 +113,7 @@ else
     struct.Level = 'T';
     struct.InputVariablesNamesInCode = {};
     struct.OutputVariablesNamesInCode = {};
+    struct.MFileName = '';
 end
 
 end

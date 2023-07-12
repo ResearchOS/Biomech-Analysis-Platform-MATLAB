@@ -41,3 +41,7 @@ if any(missingFieldsIdx)
     end
     modified = true;
 end
+
+if modified
+    writeJSON(getJSONPath(struct),struct);
+end

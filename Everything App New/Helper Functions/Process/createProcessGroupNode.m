@@ -18,6 +18,8 @@ for i=1:length(uuids)
     newNode.NodeData.UUID=uuids{i};
     assignContextMenu(newNode,handles);
 
+    [abbrev] = deText(uuid);
+
     if isequal(abbrev,'PG') % Process group
         createProcessGroupNode(newNode,uuid,handles);  
     end    

@@ -11,11 +11,8 @@ if isempty(processName)
     return;
 end
 
-createNewObject(false, 'Process', processName, '', '', true);
+processStruct = createNewObject(false, 'Process', processName, '', '', true);
 
-searchTerm=getSearchTerm(handles.Process.processSearchField);
-
-fillUITree(fig,'Process',handles.Process.allProcessUITree,...
-    searchTerm,handles.Process.sortProcessDropDown);
+addNewNode(handles.Process.allProcessUITree, processStruct.UUID, processStruct.Text);
 
 figure(fig);

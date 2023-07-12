@@ -62,18 +62,17 @@ if isnan(number)
 end
 
 % Check if that number has already been used.
-namePS=handles.Process.groupUITree.SelectedNodes.Text;
-fullPathPS=getClassFilePath_PS(namePS, 'Process');
-psStruct=loadJSON(fullPathPS);
-
-namePI=getPITextFromPS(namePS);
-fullPathPI=getClassFilePath(namePI, 'Process');
-piStruct=loadJSON(fullPathPI);
+fcnNode=handles.Process.groupUITree.SelectedNodes.Text;
+fcnUUID = fcnNode.NodeData.UUID;
+fcnStruct = loadJSON(fcnUUID);
+[type, abstractID, instanceID] = deText(fcnUUID);
+fcnAbstractUUID = genUUID(type, abstractID);
+abstractFcnStruct = loadJSON(fcnAbstractUUID);
 
 if isequal(varType,'getArg')
-    checkArgs=piStruct.InputVariablesNamesInCode;
+    checkArgs=abstractFcnStruct.InputVariablesNamesInCode;
 elseif isequal(varType,'setArg')
-    checkArgs=piStruct.OutputVariablesNamesInCode;
+    checkArgs=abstractFcnStruct.OutputVariablesNamesInCode;
 end
 for i=1:length(checkArgs)
     if isequal(checkArgs{i}{1},number)
@@ -114,16 +113,16 @@ argsSplit=[{number}; argsSplit']; % Column vector for JSON format.
 
 % 3. Store the info in the PI process struct.
 if isequal(varType,'getArg')
-    piStruct.InputVariablesNamesInCode=[piStruct.InputVariablesNamesInCode; {argsSplit}];
-    psStruct.InputVariables=[psStruct.InputVariables; {argsEmpty}];
-    psStruct.InputSubvariables=[psStruct.InputSubvariables; {subVarsEmpty}];
+    abstractFcnStruct.InputVariablesNamesInCode=[abstractFcnStruct.InputVariablesNamesInCode; {argsSplit}];
+    fcnStruct.InputVariables=[abstractFcnStruct.InputVariables; {argsEmpty}];
+    fcnStruct.InputSubvariables=[fcnStruct.InputSubvariables; {subVarsEmpty}];
 elseif isequal(varType,'setArg')
-    piStruct.OutputVariablesNamesInCode=[piStruct.OutputVariablesNamesInCode; {argsSplit}];
-    psStruct.OutputVariables=[psStruct.OutputVariables; {argsEmpty}];
+    abstractFcnStruct.OutputVariablesNamesInCode=[abstractFcnStruct.OutputVariablesNamesInCode; {argsSplit}];
+    fcnStruct.OutputVariables=[fcnStruct.OutputVariables; {argsEmpty}];
 end
 
-writeJSON(fullPathPI, piStruct);
-writeJSON(fullPathPS, psStruct);
+writeJSON(getJSONPath(abstractFcnStruct), abstractFcnStruct);
+writeJSON(getJSONPath(fcnStruct), fcnStruct);
 
 % 4. Add the args to the UI tree
 fillCurrentFunctionUITree(fig);

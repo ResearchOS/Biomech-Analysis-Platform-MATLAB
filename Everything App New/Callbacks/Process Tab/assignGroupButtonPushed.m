@@ -1,6 +1,6 @@
-function []=assignGroupButtonPushed(src,text,parentText)
+function []=assignGroupButtonPushed(src)
 
-%% PURPOSE: ASSIGN PROCESSING GROUP TO THE CURRENT GROUP
+%% PURPOSE: ASSIGN PROCESSING GROUP TO THE CURRENT ANALYSIS OR GROUP, DEPENDING WHICH TAB I AM ON.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -11,12 +11,9 @@ if isempty(selNode)
     return;
 end
 
-uuid = selNode.NodeData.UUID;
+selUUID = selNode.NodeData.UUID;
 
-Current_Analysis = getCurrent('Current_Analysis');
-anStruct = loadJSON(Current_Analysis);
-
-[type, abstractID, instanceID] = deText(uuid);
+[type, abstractID, instanceID] = deText(selUUID);
 
 % Abstract selected. Create new instance.
 if isempty(instanceID)
@@ -26,21 +23,29 @@ if isempty(instanceID)
         return;
     end
     pgStruct = createNewObject(true, 'ProcessGroup', selNode.Text, abstractID, '', true);
-    uuid = pgStruct.UUID;
+    selUUID = pgStruct.UUID;
+    abstractUUID = genUUID(type, abstractID);
+    absNode = selectNode(handles.Process.allGroupsUITree, abstractUUID);
 
-    % Fill the UI tree
-    class = className2Abbrev(type, true);
-    uiTree = handles.Process.allGroupsUITree;
-    sortDropDown = handles.Process.sortGroupsDropDown;
-    searchTerm = getSearchTerm(handles.Process.groupsSearchField);
-    fillUITree(fig, class, uiTree, searchTerm, sortDropDown);
+    % Create the new node in the "all" UI tree
+    addNewNode(absNode, selUUID, pgStruct.Text);
 end
 
-%% Add the UUID to the current analysis.
-anStruct.RunList = [anStruct.RunList; {uuid}];
-writeJSON(getJSONPath(anStruct), anStruct);
+[containerUUID, uiTree] = getContainer(fig);
+contStruct = loadJSON(containerUUID);
+contStruct.RunList = [contStruct.RunList; {selUUID}];
+writeJSON(getJSONPath(contStruct), contStruct);
+selStruct = loadJSON(selUUID);
 
-%% Fill the current analysis UI tree
-fillAnalysisUITree(fig);
+% Add a new node to the current UI tree
+addNewNode(uiTree, selStruct.UUID, selStruct.Text);
+selectNode(uiTree, selStruct.UUID);
 
-
+switch uiTree
+    case handles.Process.allGroupsUITree
+        fillCurrentFunctionUITree(fig);
+    case handles.Process.allAnalysesUITree
+        fillProcessGroupUITree(fig); % Added group to analysis. Completely refill the current process group UI tree
+    otherwise
+        error('Where am I?');
+end

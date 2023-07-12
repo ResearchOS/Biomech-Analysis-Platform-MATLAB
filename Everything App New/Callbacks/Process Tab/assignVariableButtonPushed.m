@@ -8,12 +8,19 @@ function []=assignVariableButtonPushed(src,varName,varNameInCode)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+% All variables UI tree
+selNode=handles.Process.allVariablesUITree.SelectedNodes;
+
+if isempty(selNode)
+    return;
+end
+
 currTab=handles.Tabs.tabGroup1.SelectedTab.Title;
 
 switch currTab
     case 'Process'
         motherUITree=handles.Process.groupUITree;
-        daughterUITree=handles.Process.functionUITree;    
+        daughterUITree=handles.Process.functionUITree;
         daughterClass='Process';
         motherClass='ProcessGroup';
     case 'Plot'
@@ -23,13 +30,6 @@ switch currTab
         motherClass='Plot';
     case 'Stats'
 
-end
-
-% All variables UI tree
-selNode=handles.Process.allVariablesUITree.SelectedNodes;
-
-if isempty(selNode)
-    return;
 end
 
 % Current group UI tree
@@ -45,6 +45,28 @@ daughterNode=daughterUITree.SelectedNodes;
 if isempty(daughterNode)
     return;
 end
+
+selUUID = selNode.NodeData.UUID;
+[type, abstractID, instanceID] = deText(selUUID);
+
+% Abstract selected. Create new instance.
+if isempty(instanceID)
+    % Confirm that the user wants to create a new instance
+    a = questdlg('Are you sure you want to create a new instance of this object?','Confirm','No');
+    if ~isequal(a,'Yes')
+        return;
+    end
+    varStruct = createNewObject(true, 'Variable', selNode.Text, abstractID, '', true);
+    selUUID = varStruct.UUID;
+    abstractUUID = genUUID(type, abstractID);
+    absNode = selectNode(handles.Process.allVariablesUITree, abstractUUID);
+
+    % Create the new node in the "all" UI tree
+    addNewNode(absNode, selUUID, varStruct.Text);
+end
+
+
+
 
 if isequal(daughterNode.Parent,daughterUITree)
     disp('Must select an individual argument, not the getArg/setArg parent node!');

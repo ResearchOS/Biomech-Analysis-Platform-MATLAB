@@ -18,40 +18,43 @@ delete(uiTree.Children);
 uuid = selNode.NodeData.UUID;
 [abbrev, abstractID, ~] = deText(uuid);
 if isequal(abbrev,'PG')
+    handles.Process.currentFunctionLabel.Text = 'Current Process';
     return; % Process group selections can't fill the current function UI tree
 end
 
+handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
+
 instStruct=loadJSON(uuid);
 
-inputVarsPS=instStruct.InputVariables;
-outputVarsPS=instStruct.OutputVariables;
+inputVarsInst=instStruct.InputVariables;
+outputVarsInst=instStruct.OutputVariables;
 
 % Load project-independent file.
 abstractUUID = genUUID(className2Abbrev(abbrev,true),abstractID);
 abstractStruct=loadJSON(abstractUUID);
 
-inputVarsPI=abstractStruct.InputVariablesNamesInCode;
-outputVarsPI=abstractStruct.OutputVariablesNamesInCode;
+inputVarsAbstract=abstractStruct.InputVariablesNamesInCode;
+outputVarsAbstract=abstractStruct.OutputVariablesNamesInCode;
 
 % Create input variable nodes
-for i=1:length(inputVarsPI)
+for i=1:length(inputVarsAbstract)
 
     try
-        currArgs=inputVarsPS{i};
+        currArgsInst=inputVarsInst{i};
     catch
-        currArgs='';
+        currArgsInst='';
     end
-    currArgsPI=inputVarsPI{i};
-    argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsPI{1})]); % The ID number of the getArg/setArg is the first element.   
+    currArgsAbs=inputVarsAbstract{i};
+    argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsAbs{1})]); % The ID number of the getArg/setArg is the first element.   
     
-    for j=2:length(currArgsPI)
-        if ~iscell(currArgs) || length(currArgs)<j || isempty(currArgs{j})
+    for j=2:length(currArgsAbs)
+        if ~iscell(currArgsInst) || length(currArgsInst)<j || isempty(currArgsInst{j})
             suffix='';
         else
-            suffix=[' (' currArgs{j} ')'];
+            suffix=[' (' currArgsInst{j} ')'];
         end
-        newNode=uitreenode(argNode,'Text',[currArgsPI{j} suffix]);
-        newNode.NodeData.UUID = currArgs{j};
+        newNode=uitreenode(argNode,'Text',[currArgsAbs{j} suffix]);
+        newNode.NodeData.UUID = currArgsInst{j};
         assignContextMenu(newNode,handles);
     end
 
@@ -59,28 +62,28 @@ for i=1:length(inputVarsPI)
 end
 
 % Create output variable nodes
-for i=1:length(outputVarsPI)
+for i=1:length(outputVarsAbstract)
 
-    if ~iscell(outputVarsPI) || isempty(outputVarsPI{i})
+    if ~iscell(outputVarsAbstract) || isempty(outputVarsAbstract{i})
         continue;
     end
 
     try
-        currArgs=outputVarsPS{i};
+        currArgsInst=outputVarsInst{i};
     catch
-        currArgs='';
+        currArgsInst='';
     end
-    currArgsPI=outputVarsPI{i};
-    argNode=uitreenode(uiTree,'Text',['setArg ' num2str(currArgsPI{1})]);  % The ID number of the getArg/setArg is the first element. 
+    currArgsAbs=outputVarsAbstract{i};
+    argNode=uitreenode(uiTree,'Text',['setArg ' num2str(currArgsAbs{1})]);  % The ID number of the getArg/setArg is the first element. 
     
-    for j=2:length(currArgsPI)
-        if ~iscell(currArgs) || length(currArgs)<j || isempty(currArgs{j})
+    for j=2:length(currArgsAbs)
+        if ~iscell(currArgsInst) || length(currArgsInst)<j || isempty(currArgsInst{j})
             suffix='';
         else
-            suffix=[' (' currArgs{j} ')'];
-        end
-        newNode=uitreenode(argNode,'Text',[currArgsPI{j} suffix]);
-        newNode.NodeData.UUID = currArgs{j};
+            suffix=[' (' currArgsInst{j} ')'];
+        end        
+        newNode=uitreenode(argNode,'Text',[currArgsAbs{j} suffix]);
+        newNode.NodeData.UUID = currArgsInst{j};
         assignContextMenu(newNode,handles);
     end
 

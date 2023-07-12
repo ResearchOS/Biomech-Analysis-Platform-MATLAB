@@ -19,6 +19,8 @@ struct=loadJSON(initUUID);
 
 [initAbbrev] = deText(initUUID);
 
+handles.Process.currentGroupLabel.Text = [struct.Text ' ' initUUID];
+
 uiTree=handles.Process.groupUITree;
 delete(uiTree.Children);
 if isequal(initAbbrev,'PG')

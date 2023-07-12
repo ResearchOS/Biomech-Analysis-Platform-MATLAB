@@ -25,50 +25,51 @@ argSpecificIdx=contains(childrenNodesTexts,argType);
 argIdxNum=find(ismember(childrenNodes(argSpecificIdx), selNode)==1);
 
 processNode=handles.Process.groupUITree.SelectedNodes;
-processPath=getClassFilePath(processNode.Text, 'Process');
-processStruct=loadJSON(processPath);
+processUUID = processNode.NodeData.UUID;
+processStruct = loadJSON(processUUID);
 
 argSpaceIdx=strfind(selNode.Text,' ');
 number=str2double(selNode.Text(argSpaceIdx+1:end));
 
 switch argType
     case 'getArg'
-        fldName='InputVariables';
-        fldNamePI='InputVariablesNamesInCode';
+        fldNameInst='InputVariables';
+        fldNameSub='InputSubvariables';
+        fldNameAbs='InputVariablesNamesInCode';
     case 'setArg'
-        fldName='OutputVariables';
-        fldNamePI='OutputVariablesNamesInCode';
+        fldNameInst='OutputVariables';
+        fldNameAbs='OutputVariablesNamesInCode';
 end
 
 % Check that I'm putting things in the right place
-assert(isequal(processStruct.(fldName){argIdxNum}{1},number));
+assert(isequal(processStruct.(fldNameInst){argIdxNum}{1},number));
 
 % Unlink each variable from the processStruct
-for i=2:length(processStruct.(fldName){argIdxNum})
-
-    if isempty(processStruct.(fldName){argIdxNum}{i})
-        continue;
-    end
-
-    varPath=getClassFilePath(processStruct.(fldName){argIdxNum}{i},'Variable');
-    varStruct=loadJSON(varPath);
-    unlinkClasses(varStruct, processStruct);
-end
+% for i=2:length(processStruct.(fldNameInst){argIdxNum})
+% 
+%     if isempty(processStruct.(fldNameInst){argIdxNum}{i})
+%         continue;
+%     end
+% 
+%     varPath=getClassFilePath(processStruct.(fldNameInst){argIdxNum}{i},'Variable');
+%     varStruct=loadJSON(varPath);
+% %     unlinkClasses(varStruct, processStruct);
+% end
 
 % Remove the getArg/setArg from the processStruct, and do the same in the
 % PI project struct.
-processStruct.(fldName)(argIdxNum)=[];
+processStruct.(fldNameInst)(argIdxNum)=[];
 if isequal(argType,'getArg')
-    processStruct.InputSubvariables(argIdxNum)=[];
+    processStruct.(fldNameSub)(argIdxNum)=[];
 end
 
-piText=getPITextFromPS(processStruct.Text);
-piProcessPath=getClassFilePath(piText,'Process');
-piStruct=loadJSON(piProcessPath);
+[type, abstractID] = deText(processStruct.UUID);
+abstractUUID = genUUID(type, abstractID);
+absStruct = loadJSON(abstractUUID);
 
-piStruct.(fldNamePI)(argIdxNum)=[];
+absStruct.(fldNameAbs)(argIdxNum)=[];
 
-writeJSON(processPath,processStruct);
-writeJSON(piProcessPath,piStruct);
+writeJSON(getJSONPath(processStruct),processStruct);
+writeJSON(getJSONPath(absStruct),absStruct);
 
 delete(selNode);

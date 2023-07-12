@@ -61,23 +61,46 @@ if isnan(number)
     return;
 end
 
-% Check if that number has already been used.
-fcnNode=handles.Process.groupUITree.SelectedNodes.Text;
+fcnNode = handles.Process.groupUITree.SelectedNodes;
 fcnUUID = fcnNode.NodeData.UUID;
 fcnStruct = loadJSON(fcnUUID);
+
 [type, abstractID, instanceID] = deText(fcnUUID);
 fcnAbstractUUID = genUUID(type, abstractID);
 abstractFcnStruct = loadJSON(fcnAbstractUUID);
 
 if isequal(varType,'getArg')
-    checkArgs=abstractFcnStruct.InputVariablesNamesInCode;
+    checkArgsAbstract=abstractFcnStruct.InputVariablesNamesInCode;
+    checkArgsInst=fcnStruct.InputVariables;
+    checkSubArgsInst=fcnStruct.InputSubvariables;
 elseif isequal(varType,'setArg')
-    checkArgs=abstractFcnStruct.OutputVariablesNamesInCode;
+    checkArgsAbstract=abstractFcnStruct.OutputVariablesNamesInCode;
+    checkArgsInst=fcnStruct.OutputVariables;
 end
-for i=1:length(checkArgs)
-    if isequal(checkArgs{i}{1},number)
-        disp('This number is already taken!');
-        return;
+% The index to place the new arguments in the abstract function object.
+absIdx = length(checkArgsAbstract)+1;
+for i=1:length(checkArgsAbstract)
+    if isequal(checkArgsAbstract{i}{1},number)
+        absIdx = i;
+        break;
+    end
+end
+% The index to place the new arguments in the instance function object.
+instIdx = length(checkArgsInst)+1;
+for i=1:length(checkArgsInst)
+    if isequal(checkArgsInst{i}{1},number)
+        instIdx = i;
+        break;
+    end
+end
+if isequal(varType,'getArg')
+    % The index to place the new arguments in the instance function object.
+    instSubIdx = length(checkSubArgsInst)+1;
+    for i=1:length(checkSubArgsInst)
+        if isequal(checkSubArgsInst{i}{1},number)
+            instSubIdx = i;
+            break;
+        end
     end
 end
 
@@ -113,12 +136,32 @@ argsSplit=[{number}; argsSplit']; % Column vector for JSON format.
 
 % 3. Store the info in the PI process struct.
 if isequal(varType,'getArg')
-    abstractFcnStruct.InputVariablesNamesInCode=[abstractFcnStruct.InputVariablesNamesInCode; {argsSplit}];
-    fcnStruct.InputVariables=[abstractFcnStruct.InputVariables; {argsEmpty}];
-    fcnStruct.InputSubvariables=[fcnStruct.InputSubvariables; {subVarsEmpty}];
+    if absIdx<=length(abstractFcnStruct.InputVariablesNamesInCode)
+        abstractFcnStruct.InputVariablesNamesInCode(absIdx)={argsSplit};
+    else
+        abstractFcnStruct.InputVariablesNamesInCode = [abstractFcnStruct.InputVariablesNamesInCode; {argsSplit}];
+    end
+    if instIdx<=length(fcnStruct.InputVariables)
+        fcnStruct.InputVariables(instIdx)={argsEmpty};
+    else
+        fcnStruct.InputVariables = [fcnStruct.InputVariables; {argsEmpty}];
+    end
+    if instSubIdx<=length(fcnStruct.InputSubvariables)
+        fcnStruct.InputSubvariables(instSubIdx)={subVarsEmpty};
+    else
+        fcnStruct.InputSubvariables = [fcnStruct.InputSubvariables; {subVarsEmpty}];
+    end
 elseif isequal(varType,'setArg')
-    abstractFcnStruct.OutputVariablesNamesInCode=[abstractFcnStruct.OutputVariablesNamesInCode; {argsSplit}];
-    fcnStruct.OutputVariables=[fcnStruct.OutputVariables; {argsEmpty}];
+    if absIdx<=length(abstractFcnStruct.OutputVariablesNamesInCode)
+        abstractFcnStruct.OutputVariablesNamesInCode(absIdx)={argsSplit};
+    else
+        abstractFcnStruct.OutputVariablesNamesInCode = [abstractFcnStruct.OutputVariablesNamesInCode; {argsSplit}];
+    end
+    if instIdx<=length(fcnStruct.OutputVariables)
+        fcnStruct.OutputVariables(instIdx)={argsEmpty};
+    else
+        fcnStruct.OutputVariables = [fcnStruct.OutputVariables; {argsEmpty}];
+    end
 end
 
 writeJSON(getJSONPath(abstractFcnStruct), abstractFcnStruct);

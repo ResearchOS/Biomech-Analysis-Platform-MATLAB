@@ -12,6 +12,10 @@ struct = loadJSON(uuid);
 
 name = promptName('Enter New Name',struct.Text);
 
+if isempty(name)
+    return;
+end
+
 struct.Text = name;
 writeJSON(getJSONPath(uuid),struct);
 

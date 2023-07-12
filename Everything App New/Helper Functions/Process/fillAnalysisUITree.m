@@ -26,16 +26,8 @@ for i=1:length(list)
     % Load every file to read its text. Slow! Should be improved in the
     % future.
     struct = loadJSON(uuid);
-
-    newNode = uitreenode(uiTree,'Text',struct.Text);
-    newNode.NodeData.UUID = uuid;
-    assignContextMenu(newNode,handles);
-
-    [abbrev] = deText(uuid);
-
-    if isequal(abbrev,'PG') % ProcessGroup
-        createProcessGroupNode(newNode,uuid,handles);
-    end
+    
+    addNewNode(uiTree, struct.UUID, struct.Text);
 
 end
 

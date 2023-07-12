@@ -12,11 +12,22 @@ if isempty(selNode)
 end
 
 uuid = selNode.NodeData.UUID; % The selected group or function.
-struct = loadJSON(uuid);
-
-delete(handles.Process.groupUITree.Children);
-
-handles.Process.currentGroupLabel.Text = [struct.Text ' ' struct.UUID];
+abbrev = deText(uuid);
+if isequal(abbrev,'PR')
+    % If a process group encapsulates this process, select that instead. If
+    % not, select the process.
+    [uiTree,nodeList] = getUITreeFromNode(selNode);
+    for i=1:length(nodeList)
+        uuid = nodeList(i).NodeData.UUID;
+        type = deText(uuid);
+        if isequal(type,'PG')
+            selNode = nodeList(i);
+            uuid = selNode.NodeData.UUID;
+            selectNode(uiTree, uuid);
+            break;
+        end
+    end        
+end
 
 fillProcessGroupUITree(fig);
 

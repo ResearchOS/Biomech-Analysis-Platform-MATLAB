@@ -14,7 +14,7 @@ for i=1:length(uuids)
     uuid = uuids{i};
     struct = loadJSON(uuid);
 
-    addNewNode(parentNode, uuid, struct.Text);    
+    newNode = addNewNode(parentNode, uuid, struct.Text);    
 
     [abbrev] = deText(uuid);
 

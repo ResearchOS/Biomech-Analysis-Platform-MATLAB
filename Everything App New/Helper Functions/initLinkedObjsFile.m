@@ -14,6 +14,6 @@ end
 linksFile = [linksFolder slash 'Linkages.json'];
 
 if exist(linksFile,'file')~=2
-    struct.Links = repmat({''},1,4);
-    writeJSON(linksFile, struct);
+    links = [];
+    writeJSON(linksFile, links);
 end

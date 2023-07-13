@@ -33,3 +33,6 @@ idx = ismember(contStruct.RunList,selUUID);
 contStruct.RunList(idx) = [];
 
 writeJSON(getJSONPath(contStruct), contStruct);
+
+%% Unlink the group from the current group or analysis.
+unlinkObjs(selUUID, contStruct);

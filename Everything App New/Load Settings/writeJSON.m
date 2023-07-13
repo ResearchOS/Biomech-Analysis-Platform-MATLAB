@@ -11,7 +11,9 @@ if exist('date','var')~=1
     date=datetime('now');
 end
 
-json.DateModified=date;
+if isstruct(json)
+    json.DateModified=date;
+end
 
 if Store_Settings
     try
@@ -35,10 +37,11 @@ if ~isequal(fullPath(end-4:end),'.json')
 end
 
 % Format the linkage matrix to be written
-if isfield(json,'Links') && length(fieldnames(json))<=2
+if ~isstruct(json)
     json = formatLinkageMatrix(json,'write');
+else
+    json=jsonencode(json,'PrettyPrint',true);
 end
-json=jsonencode(json,'PrettyPrint',true);
 
 fid=fopen(fullPath,'w');
 fprintf(fid,'%s',json);

@@ -6,37 +6,28 @@ function []=linkObjs(leftObj, rightObj)
 
 slash = filesep;
 
-if ischar(leftObj)
-    leftObj = loadJSON(leftObj);
+if ~ischar(leftObj)
+    leftObj = leftObj.UUID;
 end
 
-if ischar(rightObj)
-    rightObj = loadJSON(rightObj);
+if ~ischar(rightObj)
+    rightObj = rightObj.UUID;
 end
 
-commonPath = getCommonPath();
-
-linksFolder = [commonPath slash 'Linkages'];
+linksFolder = [getCommonPath() slash 'Linkages'];
 linksFilePath = [linksFolder slash 'Linkages.json'];
 
 links = loadJSON(linksFilePath);
 
-projectName = getCurrent('Current_Project_Name');
-analysisName = getCurrent('Current_Analysis');
-
-% THE ORDER THINGS ARE ADDED IN.
-newline = {projectName analysisName leftObj.UUID rightObj.UUID};
-
-links.Links = [links.Links; newline]; % Append this link to the file.
-
-if isequal(links.Links(1,:),repmat({''},1,size(links.Links,2)))
-    links.Links(1,:)=[]; % Remove the initialization row.
+% IN THE ORDER THINGS WERE ADDED.
+newline = {leftObj, rightObj};
+existIdx = ismember(links(:,1),newline{1}) & ismember(links(:,2),newline{2});
+if any(existIdx)
+    if isequal(newline,links(existIdx,:)) % Redundant check
+        return; % Don't do anything if the connection already exists.
+    end
 end
 
-[~,analysisIdx] = sort(links.Links(:,2)); % Sort by analysis
-links.Links = links.Links(analysisIdx,:);
-
-[~,projectIdx] = sort(links.Links(:,1)); % Sort by project
-links.Links = links.Links(projectIdx,:);
+links = [links; newline]; % Append this link to the file.
 
 writeJSON(linksFilePath, links);

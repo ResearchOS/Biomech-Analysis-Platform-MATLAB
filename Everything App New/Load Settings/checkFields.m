@@ -7,10 +7,11 @@ function [struct, modified] = checkFields(struct)
 modified = false;
 
 %% Linkage matrix
-if isfield(struct,'Links') && length(fieldnames(struct))<=2
+if ~isstruct(struct)
     return;
 end
 
+%% Missing UUID
 if ~isfield(struct,'UUID')
     error('Missing UUID!');
 end

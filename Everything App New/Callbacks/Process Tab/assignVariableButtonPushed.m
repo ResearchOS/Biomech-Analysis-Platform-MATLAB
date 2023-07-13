@@ -89,3 +89,20 @@ writeJSON(getJSONPath(fcnStruct), fcnStruct);
 currVarNode.NodeData.UUID = allVarUUID;
 argTextSplit = strsplit(currVarNode.Text);
 currVarNode.Text = [argTextSplit{1} ' (' allVarUUID ')'];
+
+%% Link objects
+if isequal(parentNode.Text(1:6),'getArg')
+    linkObjs(allVarUUID, currFcnUUID);
+elseif isequal(parentNode.Text(1:6),'setArg')
+    linkObjs(currFcnUUID, allVarUUID);
+end
+
+%% Unlink the previous variable, if applicable.
+if length(argTextSplit)>1 % There was a variable there.
+    prevVarUUID = argTextSplit{2}(2:end-1); % Omit the parentheses
+    if isequal(parentNode.Text(1:6),'getArg')
+        unlinkObjs(prevVarUUID, currFcnUUID);
+    elseif isequal(parentNode.Text(1:6),'setArg')
+        unlinkObjs(currFcnUUID, prevVarUUID);
+    end
+end

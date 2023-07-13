@@ -55,3 +55,7 @@ if isPS
 else
     saveClass(class, classStruct);
 end
+
+%% If checked, link the specify trials to the current process struct!
+% If unchecked, unlink the specify trials from the current process struct.
+linkObjs(stStruct, processStruct);

@@ -1,4 +1,4 @@
-function []=addNewNode(parent, uuid, text)
+function [newNode]=addNewNode(parent, uuid, text)
 
 %% PURPOSE: CREATE A NEW NODE.
 

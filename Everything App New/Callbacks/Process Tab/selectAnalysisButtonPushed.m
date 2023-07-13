@@ -25,6 +25,10 @@ handles.Process.currentAnalysisLabel.Text = [selNode.Text ' ' uuid];
 Current_Analysis = selNode.NodeData.UUID;
 setCurrent(Current_Analysis,'Current_Analysis');
 
+% Link the current analysis to the current project. How to unlink??
+Current_Project = getCurrent('Current_Project_Name');
+linkObjs(Current_Analysis, Current_Project);
+
 % Delete pre-existing 
 delete(handles.Process.analysisUITree.Children);
 delete(handles.Process.groupUITree.Children);

@@ -41,11 +41,14 @@ selStruct = loadJSON(selUUID);
 addNewNode(uiTree, selStruct.UUID, selStruct.Text);
 selectNode(uiTree, selStruct.UUID);
 
+% Link objects
+linkObjs(selStruct.UUID, containerUUID);
+
 switch uiTree
-    case handles.Process.groupUITree
+    case handles.Process.groupUITree % Added group to group.
         anNode = getNode(handles.Process.analysisUITree, contStruct.UUID);
         addNewNode(anNode, selStruct.UUID, selStruct.Text);
-        fillCurrentFunctionUITree(fig);
+        fillCurrentFunctionUITree(fig);        
     case handles.Process.analysisUITree
         fillProcessGroupUITree(fig); % Added group to analysis. Completely refill the current process group UI tree
     otherwise

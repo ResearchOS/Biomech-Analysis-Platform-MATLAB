@@ -59,3 +59,7 @@ fillHeadersUITree(fig,headers);
 
 % Set the current logsheet for the project.
 setCurrent(struct.UUID, 'Current_Logsheet');
+
+% Link the logsheet to the project.
+Current_Project = getCurrent('Current_Project_Name');
+linkObjs(struct.UUID, Current_Project);

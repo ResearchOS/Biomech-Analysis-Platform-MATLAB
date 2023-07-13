@@ -43,6 +43,8 @@ selStruct = loadJSON(selUUID);
 addNewNode(uiTree, selStruct.UUID, selStruct.Text);
 selectNode(uiTree, selStruct.UUID);
 
+linkObjs(selStruct.UUID, containerUUID);
+
 switch uiTree
     case handles.Process.allGroupsUITree
         fillCurrentFunctionUITree(fig);

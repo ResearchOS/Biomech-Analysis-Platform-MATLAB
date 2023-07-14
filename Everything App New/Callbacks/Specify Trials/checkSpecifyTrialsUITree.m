@@ -3,19 +3,18 @@ function []=checkSpecifyTrialsUITree(specifyTrials, specifyTrialsUITree)
 %% PURPOSE: CHANGE WHICH NODES ARE CHECKED AFTER THE CURRENTLY SELECTED OBJECT HAS CHANGED.
 
 if isempty(specifyTrialsUITree.Children)
-    specifyTrialsTexts={};
-else
-    specifyTrialsTexts={specifyTrialsUITree.Children.Text};
+    specifyTrialsUITree.CheckedNodes = [];
+    return;
 end
 
-if isempty(specifyTrials)
-    checkedIdx=false;
-else
-    checkedIdx=ismember(specifyTrialsTexts,specifyTrials);
+tmp = [specifyTrialsUITree.Children.NodeData];
+uuids = {tmp.UUID};
+
+checkedIdx = ismember(uuids, specifyTrials);
+
+if ~any(checkedIdx)
+    specifyTrialsUITree.CheckedNodes = [];
+    return;
 end
 
-if any(checkedIdx)
-    specifyTrialsUITree.CheckedNodes=specifyTrialsUITree.Children(checkedIdx);
-else
-    specifyTrialsUITree.CheckedNodes=[];
-end
+specifyTrialsUITree.CheckedNodes = specifyTrialsUITree.Children(checkedIdx);

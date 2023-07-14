@@ -20,13 +20,8 @@ if isequal(abbrev,'PG')
     return;
 end
 
-fillCurrentFunctionUITree(fig);
-
 %% Update which specifyTrials are checked.
-processStruct=loadJSON(uuid);
+st = getST(uuid);
+checkSpecifyTrialsUITree(st, handles.Process.allSpecifyTrialsUITree);
 
-specifyTrials=processStruct.SpecifyTrials;
-
-specifyTrialsUITree=handles.Process.allSpecifyTrialsUITree;
-
-checkSpecifyTrialsUITree(specifyTrials, specifyTrialsUITree);
+fillCurrentFunctionUITree(fig);

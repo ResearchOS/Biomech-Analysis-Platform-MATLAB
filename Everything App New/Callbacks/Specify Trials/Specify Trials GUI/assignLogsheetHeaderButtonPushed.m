@@ -13,10 +13,9 @@ end
 
 title=fig.Name;
 titleSplit=strsplit(title,' ');
-specifyTrials=titleSplit{end};
+stUUID=titleSplit{end};
 
-fullPath=getClassFilePath(specifyTrials,'SpecifyTrials');
-stStruct=loadJSON(fullPath);
+stStruct=loadJSON(stUUID);
 
 %% Add header
 header=selNode.Text;
@@ -35,6 +34,6 @@ handles.logsheetLogicValueEditField.Value='';
 
 stStruct.Logsheet_Value=[stStruct.Logsheet_Value; {''}];
 
-saveClass('SpecifyTrials', stStruct);
+writeJSON(getJSONPath(stStruct), stStruct);
 
 handles.selectedLogsheetHeadersUITree.SelectedNodes=handles.selectedLogsheetHeadersUITree.Children(end);

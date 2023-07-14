@@ -2,6 +2,8 @@ function []=fillUITree(fig, class, uiTree, searchTerm, sortDropDown)
 
 %% PURPOSE: FILL IN THE UI TREE.
 
+delete(uiTree.Children);
+
 slash=filesep;
 commonPath=getCommonPath();
 classFolder=[commonPath slash class];
@@ -38,8 +40,8 @@ allUUIDs=allUUIDs(searchIdx);
 selNode=uiTree.SelectedNodes; % Get the currently selected node.
 
 %% Delete all of the nodes that don't match the search results right off the bat. If no search term, nothing will be deleted.
-notInSearchResultsIdx=~ismember(currNodesTexts,allSearchResults);
-delete(uiTree.Children(notInSearchResultsIdx));
+% notInSearchResultsIdx=~ismember(currNodesTexts,allSearchResults);
+% delete(uiTree.Children(notInSearchResultsIdx));
 
 %% Create nodes in the UI tree for the new instances, and add their properties. If it would be filtered out, it will not appear here.
 % checkedIdx=false(length(allSearchResults),1);
@@ -59,10 +61,7 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
 %         continue;
 %     end
 
-    newNode=uitreenode(uiTree,'Text',allSearchResults{i});
-    newNode.NodeData.UUID = allUUIDs{i};
-
-    assignContextMenu(newNode,handles);
+    addNewNode(uiTree, allUUIDs{i}, allSearchResults{i});
 
     childIdx=childIdx+1;
     

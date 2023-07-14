@@ -7,55 +7,62 @@ handles=getappdata(fig,'handles');
 
 tab=handles.Tabs.tabGroup1.SelectedTab.Title;
 
-%% Get which class is currently being modified.
+%% Get which class is currently being modified. Only depends on tab name.
 switch tab
     case 'Import'
-        class='Logsheet';
-        isPS=false;
+        class='Logsheet';        
     case 'Process'
-        class='Process';
-        isPS=true;
+        class='Process';        
     case 'Plot'
-        class='Plot';
-        isPS=true;
+        class='Plot';        
 end
 
-%% Get the instance of the class that is currently selected.
+%% Get the UI tree of the class that is currently selected.
 switch class
     case 'Logsheet'
         uiTree=handles.Import.allLogsheetsUITree;
-        text=uiTree.SelectedNodes.Text;
-
-        if isempty(text)
-            return;
-        end
     case 'Process'
-        uiTree=handles.Process.groupUITree;
-        text=uiTree.SelectedNodes.Text;
-
-        if isempty(text)
-            return;
+        currTab = handles.Process.subtabCurrent.SelectedTab.Title;
+        switch currTab
+            case 'Analysis'
+                uiTree = handles.Process.analysisUITree;
+            case 'Group'
+                uiTree=handles.Process.groupUITree;
         end
-    case 'Plot'
-        text=handles.Plot.currentPlotLabel.Text;
 end
 
-fullPath=getClassFilePath(text, class);
+classNode = uiTree.SelectedNodes;
 
-classStruct=loadJSON(fullPath);
-
-if isempty(src.CheckedNodes)
-    classStruct.SpecifyTrials={};
-else
-    classStruct.SpecifyTrials={src.CheckedNodes.Text};
+if isempty(classNode)
+    src.CheckedNodes = [];
+    return;
 end
 
-if isPS
-    saveClass_PS(class, classStruct);
-else
-    saveClass(class, classStruct);
+classUUID = classNode.NodeData.UUID;
+
+selSTNode = src.SelectedNodes;
+
+if isempty(selSTNode)
+    return;
 end
 
-%% If checked, link the specify trials to the current process struct!
-% If unchecked, unlink the specify trials from the current process struct.
-linkObjs(stStruct, processStruct);
+checkedIdx = ismember(src.CheckedNodes, selSTNode);
+
+[type] = deText(classUUID);
+if ~ismember(type,{'PR','LG'})    
+    if ~any(checkedIdx)
+        src.CheckedNodes = [src.CheckedNodes; selSTNode];
+    else
+        src.CheckedNodes(checkedIdx) = [];
+    end
+    return;
+end
+
+stUUID = selSTNode.NodeData.UUID;
+
+%% Put the objects in the linkage matrix.
+if any(checkedIdx) % Checked, link the objects.
+    linkObjs(stUUID, classUUID);
+else % Unchecked, unlink the objects.
+    unlinkObjs(stUUID, classUUID);
+end

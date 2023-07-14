@@ -17,6 +17,7 @@ delete(handles.Process.functionUITree.Children);
 
 abbrev = deText(uuid);
 if isequal(abbrev,'PG')
+    checkSpecifyTrialsUITree({}, handles.Process.allSpecifyTrialsUITree);
     return;
 end
 

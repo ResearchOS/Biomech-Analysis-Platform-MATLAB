@@ -14,8 +14,8 @@ end
 uuid = selNode.NodeData.UUID; % The selected group or function.
 abbrev = deText(uuid);
 if isequal(abbrev,'PR')
-    % If a process group encapsulates this process, select that instead. If
-    % not, select the process.
+    % Check if a process group encapsulates this process, and select that instead. 
+    % If this process is not in a group, select the process.
     [uiTree,nodeList] = getUITreeFromNode(selNode);
     for i=1:length(nodeList)
         uuid = nodeList(i).NodeData.UUID;
@@ -26,8 +26,11 @@ if isequal(abbrev,'PR')
             selectNode(uiTree, uuid);
             break;
         end
-    end        
+    end            
 end
+
+% Ensure that no specify trials are checked while the process group is selected.
+checkSpecifyTrialsUITree({}, handles.Process.allSpecifyTrialsUITree);
 
 fillProcessGroupUITree(fig);
 

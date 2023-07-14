@@ -5,43 +5,26 @@ function []=removeGroupButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-uiTree=handles.Process.allGroupsUITree;
+uiTree = handles.Process.allProcessGroupsUITree;
 
-groupNode=uiTree.SelectedNodes;
+selNode = uiTree.SelectedNodes;
 
-if isempty(groupNode)
+if isempty(selNode)
     return;
 end
 
-slash=filesep;
+uuid = selNode.NodeData.UUID;
 
-processGroupPath=getClassFilePath(groupNode.Text,'ProcessGroup');
-processGroupStruct=loadJSON(processGroupPath);
+currNode = getNode(handles.Process.analysisUITree, uuid);
 
-[folder,name]=fileparts(processGroupPath);
-
-archiveFolder=[folder slash 'Archive'];
-mkdir(archiveFolder);
-archivePath=[archiveFolder slash name '.json'];
-
-processGroupStruct.Archived=true;
-processGroupStruct.Checked=false;
-processGroupStruct.Visible=false;
-
-writeJSON(processGroupPath,processGroupStruct);
-
-movefile(processGroupPath,archivePath);
-
-%% Remove the node from the UI tree
-selectNeighborNode(groupNode);
-delete(groupNode);
-
-allGroupsUITreeSelectionChanged(fig);
-
-projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile);
-Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
-
-if isequal(groupNode.Text,Current_ProcessGroup_Name)
-    selectGroupButtonPushed(fig);
+if ~isempty(currNode)
+    disp('Cannot archive a group that is being used in the current analysis!');
+    return;
 end
+
+moveToArchive(uuid);
+
+selectNeighborNode(selNode);
+delete(selNode);
+
+% allGroupsUITreeSelectionChanged(fig);

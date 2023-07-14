@@ -13,31 +13,18 @@ if isempty(logsheetNode)
     return;
 end
 
-logPath=getClassFilePath(logsheetNode.Text,'Logsheet');
-logStruct=loadJSON(logPath);
+uuid = logsheetNode.NodeData.UUID;
 
-idx=ismember({uiTree.Children.Text},logsheetNode.Text);
+Current_Logsheet = getCurrent('Current_Logsheet');
 
-assert(any(idx));
+if isequal(Current_Logsheet,uuid)
+    disp('Cannot remove the current logsheet!');
+    return;
+end
 
-idxNum=find(idx==1);
+moveToArchive(uuid);
 
-logStruct.Checked=false;
-
-logStruct.Visible=false;
-
-saveClass('Logsheet',logStruct);
-
+selectNeighborNode(logsheetNode);
 delete(logsheetNode);
-
-if idxNum>length(uiTree.Children)
-    idxNum=idxNum-1;
-end
-
-if idxNum==0
-    uiTree.SelectedNodes=[];
-else
-    uiTree.SelectedNodes=uiTree.Children(idxNum);
-end
 
 allLogsheetsUITreeSelectionChanged(fig);

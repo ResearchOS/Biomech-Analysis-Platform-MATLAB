@@ -5,35 +5,24 @@ function []=removeProcessButtonPsuhed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-uiTree=handles.Process.allProcessUITree;
+uiTree = handles.Process.allProcessUITree;
 
-processNode=uiTree.SelectedNodes;
+selNode = uiTree.SelectedNodes;
 
-if isempty(processNode)
+if isempty(selNode)
     return;
 end
 
-slash=filesep;
+uuid = selNode.NodeData.UUID;
 
-processPath=getClassFilePath(processNode.Text,'Process');
-processStruct=loadJSON(processPath);
+currNode = getNode(handles.Process.analysisUITree, uuid);
 
-[folder,name]=fileparts(processPath);
+if ~isempty(currNode)
+    disp('Cannot archive a process function that is being used in the current analysis!');
+    return;
+end
 
-archiveFolder=[folder slash 'Archive'];
-mkdir(archiveFolder);
-archivePath=[archiveFolder slash name '.json'];
+moveToArchive(uuid);
 
-processStruct.Archived=true;
-processStruct.Checked=false;
-processStruct.Visible=false;
-
-writeJSON(processPath,processStruct);
-
-movefile(processPath,archivePath);
-
-%% Remove the node from the UI tree
-selectNeighborNode(processNode);
-delete(processNode);
-
-allProcessUITreeSelectionChanged(fig);
+selectNeighborNode(selNode);
+delete(selNode);

@@ -1,6 +1,6 @@
 function []=removeProjectButtonPushed(src)
 
-%% PURPOSE: CHANGE A PROJECT'S VISIBILITY TO BE REMOVED FROM THE LIST.
+%% PURPOSE: PUT A PROJECT JSON FILE INTO THE ARCHIVE FOLDER.
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -13,35 +13,18 @@ if isempty(projectNode)
     return;
 end
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_Project_Name');
+uuid = projectNode.NodeData.UUID;
 
-if isequal(Current_Project_Name,projectNode.Text)
+Current_Project_Name = getCurrent('Current_Project_Name');
+
+if isequal(Current_Project_Name,uuid)
     disp('Cannot remove the current project! Select another project to remove this one.');
     return;
 end
 
-fullPath=getClassFilePath(projectNode, 'Project');
-struct=loadJSON(fullPath);
+moveToArchive(uuid);
 
-struct.Checked=false;
-
-struct.Visible=false;
-
-saveClass('Project',struct);
-
-idxNum=find(ismember(projectNode,uiTree.Children)==1);
-
+selectNeighborNode(projectNode);
 delete(projectNode);
-
-if idxNum>length(uiTree.Children)
-    idxNum=idxNum-1;
-end
-
-if idxNum==0
-    uiTree.SelectedNodes=[];
-else
-    uiTree.SelectedNodes=uiTree.Children(idxNum);
-end
 
 allProjectsUITreeSelectionChanged(fig);

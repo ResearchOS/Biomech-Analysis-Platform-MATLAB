@@ -13,10 +13,9 @@ end
 
 title=fig.Name;
 titleSplit=strsplit(title,' ');
-specifyTrials=titleSplit{end};
+stUUID=titleSplit{end};
 
-fullPath=getClassFilePath(specifyTrials,'SpecifyTrials');
-stStruct=loadJSON(fullPath);
+stStruct=loadJSON(stUUID);
 
 idxNum=find(ismember(handles.selectedLogsheetHeadersUITree.Children,selNode)==1);
 
@@ -39,4 +38,4 @@ if ~isempty(handles.selectedLogsheetHeadersUITree.Children)
     selectedLogsheetHeadersUITreeSelectionChanged(fig);
 end
 
-saveClass('SpecifyTrials', stStruct);
+writeJSON(getJSONPath(stStruct), stStruct);

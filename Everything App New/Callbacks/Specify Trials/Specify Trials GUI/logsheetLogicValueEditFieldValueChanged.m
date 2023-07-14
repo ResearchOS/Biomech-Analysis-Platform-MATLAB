@@ -13,11 +13,10 @@ end
 
 title=fig.Name;
 titleSplit=strsplit(title,' ');
-specifyTrials=titleSplit{end};
+stUUID=titleSplit{end};
 
 %% Load the specify trials struct
-fullPath=getClassFilePath(specifyTrials,'SpecifyTrials');
-stStruct=loadJSON(fullPath);
+stStruct=loadJSON(stUUID);
 
 % Index of the selected node. Nodes are in same order as in JSON.
 idx=ismember(handles.selectedLogsheetHeadersUITree.Children,selNode);
@@ -25,4 +24,4 @@ idx=ismember(handles.selectedLogsheetHeadersUITree.Children,selNode);
 logicValue=handles.logsheetLogicValueEditField.Value;
 stStruct.Logsheet_Value{idx}=logicValue;
 
-saveClass('SpecifyTrials', stStruct);
+writeJSON(getJSONPath(stStruct), stStruct);

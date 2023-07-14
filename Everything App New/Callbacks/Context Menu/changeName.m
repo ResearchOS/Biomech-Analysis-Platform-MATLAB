@@ -24,9 +24,26 @@ figure(fig);
 %% Change the name in the all tree.
 type = deText(uuid);
 class = className2Abbrev(type, true);
-uiTree = getUITreeFromClass(fig, class, 'all');
-allNode = getNode(uiTree, uuid);
-allNode.Text = struct.Text;
+if isequal(class,'SpecifyTrials')
+    tabs = {'Import', 'Process'};
+    for i=1:length(tabs)
+        tab = tabs{i};
+        switch tab
+            case 'Import'
+                stClass = 'Logsheet';
+            case 'Process'
+                stClass = 'Process';
+        end
+        uiTree = getUITreeFromClass(fig, class, 'all', stClass);
+        allNode = getNode(uiTree, uuid);
+        allNode.Text = struct.Text;
+    end
+else
+    uiTree = getUITreeFromClass(fig, class, 'all');
+    allNode = getNode(uiTree, uuid);
+    allNode.Text = struct.Text;
+end
+
 
 %% Change the name in any/all of the current trees
 % Analysis node

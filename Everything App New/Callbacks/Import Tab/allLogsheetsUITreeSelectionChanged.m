@@ -63,3 +63,7 @@ setCurrent(struct.UUID, 'Current_Logsheet');
 % Link the logsheet to the project.
 Current_Project = getCurrent('Current_Project_Name');
 linkObjs(struct.UUID, Current_Project);
+
+%% Check the boxes for the specify trials for this logsheet.
+st = getST(struct.UUID);
+checkSpecifyTrialsUITree(st, handles.Import.allSpecifyTrialsUITree);

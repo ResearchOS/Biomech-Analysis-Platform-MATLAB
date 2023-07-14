@@ -7,10 +7,7 @@ handles=getappdata(fig,'handles');
 
 disp('Running process queue');
 
-projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile);
-
-queue=projectSettings.ProcessQueue;
+queue=getCurrent('Process_Queue');
 
 %% For now, just run everything. Later on, I can do checks to see if there are any dependencies that are not up to date.
 [bool,logVar]=checkLogsheetSetup(fig);

@@ -34,6 +34,11 @@ tmp = [checkedNodes.NodeData];
 uuids={tmp.UUID}'; % The process functions to add (checked in the process group list)
 texts = {checkedNodes.Text};
 
+% Remove everything that's not a process function (like process groups).
+processIdx = contains(uuids,'PR');
+uuids(~processIdx) = [];
+texts(~processIdx) = [];
+
 inQueueIdx=ismember(uuids,queue);
 
 if all(inQueueIdx)

@@ -63,3 +63,9 @@ fcnNode = getNode(handles.Process.functionUITree, uuid);
 if ~isempty(fcnNode)
     fcnNode.Text = struct.Text;
 end
+
+%% Change the name in the queue UI tree
+queueNode = getNode(handles.Process.queueUITree, uuid);
+if ~isempty(queueNode)
+    queueNode.Text = struct.Text;
+end

@@ -14,25 +14,18 @@ if isempty(checkedNodes)
     end
 end
 
-projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile);
-
-if ~isfield(projectSettings,'ProcessQueue')
-    error(['Check for ''ProcessQueue'' field in settings file at: ' projectSettingsFile]);
+queue = getCurrent('Process_Queue');
+if isempty(queue)
+    return; % This should never really happen here.
 end
 
-texts={checkedNodes.Text}';
+tmp = [checkedNodes.NodeData];
+uuids={tmp.UUID}';
 
-queue=projectSettings.ProcessQueue;
+idx = ismember(queue,uuids);
 
-queue=queue(~ismember(queue,texts));
+queue(idx) = [];
 
-projectSettings.ProcessQueue=queue;
+setCurrent(queue, 'Process_Queue');
 
-writeJSON(projectSettingsFile,projectSettings);
-
-delete(handles.Process.queueUITree.Children);
-
-for i=1:length(queue)
-    uitreenode(handles.Process.queueUITree,'Text',queue{i});
-end
+delete(checkedNodes);

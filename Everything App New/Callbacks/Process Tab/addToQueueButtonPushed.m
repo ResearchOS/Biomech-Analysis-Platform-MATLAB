@@ -5,15 +5,17 @@ function []=addToQueueButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-checkedNodes=handles.Process.groupUITree.CheckedNodes;
+%% Get the nodes to add. All checked nodes, or if none just a selected node.
+checkedNodes=handles.Process.analysisUITree.CheckedNodes;
 
 if isempty(checkedNodes)
-    checkedNodes=handles.Process.groupUITree.SelectedNodes;
+    checkedNodes=handles.Process.analysisUITree.SelectedNodes;
     if isempty(checkedNodes)
         return;
     end
 end
 
+%% Uncheck all the nodes that are being added.
 delIdx=[];
 for i=1:length(checkedNodes)
     if ~isempty(checkedNodes(i).Children)
@@ -23,41 +25,34 @@ end
 
 checkedNodes(delIdx)=[];
 
-projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile);
-
-if isfield(projectSettings,'ProcessQueue')
-    queue={};
-else
-    queue=projectSettings.ProcessQueue;
+queue = getCurrent('Process_Queue');
+if isempty(queue)
+    queue = '';
 end
 
-if ~iscell(queue)
-    queue={};
-end
+tmp = [checkedNodes.NodeData];
+uuids={tmp.UUID}'; % The process functions to add (checked in the process group list)
+texts = {checkedNodes.Text};
 
-texts={checkedNodes.Text}'; % The process functions to add (checked in the process group list)
+inQueueIdx=ismember(uuids,queue);
 
-inQueueIdx=ismember(texts,queue);
-
-if any(inQueueIdx)
-    disp('No action taken. Already present in queue!');
-    disp(texts(inQueueIdx));
+if all(inQueueIdx)
+    disp('No action taken. Everything already present in queue!');    
     beep;
     return;
 end
 
+% Remove the UUID's that are already in the queue.
+uuids = uuids(~inQueueIdx);
+texts = texts(~inQueueIdx);
+
 %% Check whether all pre-requisite variables are up to date.
 % [texts]=checkDeps(texts);
 
-queue=[queue; texts];
+%% Append UUIDs to queue, and add new nodes.
+queue=[queue; uuids];
+setCurrent(queue, 'Process_Queue');
 
-projectSettings.ProcessQueue=queue;
-
-writeJSON(projectSettingsFile,projectSettings);
-
-delete(handles.Process.queueUITree.Children);
-
-for i=1:length(queue)
-    uitreenode(handles.Process.queueUITree,'Text',queue{i});
+for i=1:length(uuids)    
+    addNewNode(handles.Process.queueUITree, uuids{i}, texts{i});
 end

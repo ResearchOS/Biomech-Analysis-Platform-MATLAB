@@ -17,6 +17,7 @@ if ~isempty(instanceID)
     return;
 end
 
+%% Move all instances for an abstract file.
 instPath = [folder slash 'Instances'];
 instArchiveFolder = [instPath slash 'Archive'];
 

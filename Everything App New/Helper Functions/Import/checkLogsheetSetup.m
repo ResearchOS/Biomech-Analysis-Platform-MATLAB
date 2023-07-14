@@ -5,18 +5,15 @@ function [bool,logVar]=checkLogsheetSetup(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-slash=filesep;
+Current_Logsheet = getCurrent('Current_Logsheet');
 
-selNode=handles.Import.allLogsheetsUITree.SelectedNodes;
-
-if isempty(selNode)
+if isempty(Current_Logsheet)
     disp('Select a logsheet in the UI tree!');
     bool=false;
     return;
 end
 
-fullPath=getClassFilePath(selNode);
-logsheetStruct=loadJSON(fullPath);
+logsheetStruct=loadJSON(Current_Logsheet);
 
 computerID=getComputerID();
 

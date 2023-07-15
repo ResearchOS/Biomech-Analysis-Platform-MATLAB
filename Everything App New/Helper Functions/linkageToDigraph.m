@@ -13,6 +13,11 @@ links = loadJSON(linksFile);
 varIdx = contains(links(:,1),'VR') | contains(links(:,2),'VR');
 links = links(varIdx,:);
 
+if isempty(links)
+    G = []; % No variables in the linkage matrix.
+    return;
+end
+
 % Get all of the names of all functions.
 % fcnIdx{1} = contains(links(:,1),'PR');
 % fcnIdx{2} = contains(links(:,2),'PR');
@@ -36,6 +41,8 @@ for i=1:length(varNames)
     if ~any(firstColIdx) || ~any(secondColIdx)
         continue;
     end
+
+    %% TODO: NEED TO ITERATE OVER THE FIRSTCOLIDX AND SECONDCOLIDX IF THERE IS MORE THAN ONE ENTRY.
 
     count = count+1;
     s = [s; links(secondColIdx,1)];

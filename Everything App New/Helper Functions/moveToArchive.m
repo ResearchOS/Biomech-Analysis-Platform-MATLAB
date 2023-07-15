@@ -13,7 +13,7 @@ archiveFolder = [folder slash 'Archive'];
 archivePath = [archiveFolder slash name ext];
 
 if ~isempty(instanceID)
-    movefile(initPath, archivePath);
+    movefile(initPath, archivePath); % Move the instance file to the archive.
     return;
 end
 

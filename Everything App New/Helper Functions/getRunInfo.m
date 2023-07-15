@@ -1,23 +1,23 @@
-function [runInfo]=getRunInfo(piStruct,psStruct)
+function [runInfo]=getRunInfo(absStruct,instStruct)
 
 %% PURPOSE: COMPILE INFO THAT GETARG/SETARG NEED TO RUN THE SPECIFIED FUNCTION.
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_Project_Name');
-fullPath=getClassFilePath(Current_Project_Name, 'Project');
-projectStruct=loadJSON(fullPath);
+Current_Project_Name = getCurrent('Current_Project_Name');
+projectStruct=loadJSON(Current_Project_Name);
 
 computerID=getComputerID();
 runInfo.DataPath=projectStruct.DataPath.(computerID);
 
 % Store the info for the function to run.
-runInfo.Fcn.PIStruct=piStruct;
-runInfo.Fcn.PSStruct=psStruct;
+runInfo.Fcn.AbsStruct=absStruct;
+runInfo.Fcn.InstStruct=instStruct;
 
-if isequal(piStruct.Class,'Process')
-    numIters=2;
+[fcnType] = deText(absStruct);
+
+if isequal(fcnType,'Process')
+    numIters=2; % Input and output variables.
 else
-    numIters=1;
+    numIters=1; % Inputs only.
 end
 
 % Store the info for each variable.
@@ -30,36 +30,35 @@ for inOut=1:numIters
             fldName='Output';
     end
 
-    vars=psStruct.([fldName 'Variables']);
-    varNamesInCode=piStruct.([fldName 'VariablesNamesInCode']);
+    vars=instStruct.([fldName 'Variables']);
+    varNamesInCode=absStruct.([fldName 'VariablesNamesInCode']);
 
     if isempty(varNamesInCode)
         error(['Missing ' fldName ' Variables Names In Code!']);
     end
     
-    assert(length(vars)==length(varNamesInCode),['Mismatch in number of getArgs! ' psStruct.Text]);
-    assert(~isempty(vars),['Missing ' lower(fldName) ' arguments to run the function! ' psStruct.Text])
+    assert(length(vars)==length(varNamesInCode),['Mismatch in number of getArgs! ' instStruct.UUID]);
+    assert(~isempty(vars),['Missing ' lower(fldName) ' arguments to run the function! ' instStruct.UUID])
     for i=1:length(vars)
-        assert(length(vars{i})==length(varNamesInCode{i}),['Mismatch in number of variables in getArg ' num2str(vars{i}{1}) ' ' psStruct.Text]);
+        assert(length(vars{i})==length(varNamesInCode{i}),['Mismatch in number of variables in getArg ' num2str(vars{i}{1}) ' ' instStruct.UUID]);
         for j=2:length(vars{i})
             
-            currVarPS=vars{i}{j};
-            filePathPS=getClassFilePath_PS(currVarPS, 'Variable');
-            varStructPS=loadJSON(filePathPS);   
+            currVarInst=vars{i}{j};            
+            varStructInst=loadJSON(currVarInst);   
 
-            currVarPI=getPITextFromPS(currVarPS);
-            filePathPI=getClassFilePath(currVarPI, 'Variable');
-            varStructPI=loadJSON(filePathPI);
+            [type, abstractID, instanceID] = deText(currVarInst);
+            currVarAbs = genUUID(type, abstractID);                        
+            varStructAbs=loadJSON(currVarAbs);
 
-            runInfo.Var.(fldName)(i).PSStruct{j-1}=varStructPS;
-            runInfo.Var.(fldName)(i).PIStruct{j-1}=varStructPI;
+            runInfo.Var.(fldName)(i).InstStruct{j-1}=varStructInst;
+            runInfo.Var.(fldName)(i).AbsStruct{j-1}=varStructAbs;
         end
     end
 
 end
 
-runInfo.Class=piStruct.Text;
+runInfo.Class=className2Abbrev(fcnType, true);
 
-if ~isequal(piStruct.Class,'Component')
+if ~isequal(fcnType,'Component')
     assignin('base','runInfo',runInfo);
 end

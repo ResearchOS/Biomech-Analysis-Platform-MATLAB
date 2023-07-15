@@ -1,4 +1,4 @@
-function []=runProcess(psText,guiInBase)
+function []=runProcess(instUUID,guiInBase)
 
 %% PURPOSE: ACTUALLY RUN THE SPECIFIED FUNCTION
 
@@ -16,28 +16,28 @@ end
 
 handles=getappdata(fig,'handles');
 
-piText=getPITextFromPS(psText);
+[type, abstractID, instanceID] = deText(instUUID);
+abstractUUID = genUUID(type, abstractID);
 
-filePath=getClassFilePath_PS(psText, 'Process');
-filePathPI=getClassFilePath(piText, 'Process');
+instStruct=loadJSON(instUUID);
+absStruct=loadJSON(abstractUUID);
 
-processStructPS=loadJSON(filePath);
-processStructPI=loadJSON(filePathPI);
+% This loads the linkage matrix for every process struct. Not a problem
+% while it's small, but may need to be changed to load just once per run in
+% the future.
+specifyTrials=getST(instUUID);
 
-specifyTrials=processStructPS.SpecifyTrials;
-
-fcnName=processStructPI.MFileName;
+fcnName=absStruct.MFileName;
 
 if exist(fcnName,'file')~=2
     error('Specified M file does not exist!');
 end
 
 %% NOTE: NEED THE VARIABLES' LEVELS, AND THE FUNCTION'S LEVELS.
-level=processStructPI.Level;
+fcnLevel=absStruct.Level;
 
-logNode=handles.Import.allLogsheetsUITree.SelectedNodes;
-logStructPath=getClassFilePath(logNode);
-logsheetStruct=loadJSON(logStructPath);
+Current_Logsheet = getCurrent('Current_Logsheet');
+logsheetStruct=loadJSON(Current_Logsheet);
 computerID=getComputerID();
 logsheetPath=logsheetStruct.LogsheetPath.(computerID);
 [logsheetFolder,name]=fileparts(logsheetPath);
@@ -64,16 +64,16 @@ subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
 % Store the info for the process struct
-getRunInfo(processStructPI,processStructPS);
+getRunInfo(absStruct,instStruct);
 
 %% Run the function!
-if ismember('P',level)
+if ismember('P',fcnLevel)
 
     disp(['Running ' fcnName]);
 
-    if ismember('T',level)
+    if ismember('T',fcnLevel)
         feval(fcnName,trialNames);
-    elseif ismember('S',level)
+    elseif ismember('S',fcnLevel)
         feval(fcnName,subNames);
     else
         feval(fcnName);
@@ -81,16 +81,16 @@ if ismember('P',level)
 
 end
 
-if ~ismember('P',level)
+if ~ismember('P',fcnLevel)
     for sub=1:length(subNames)
         subName=subNames{sub};
         currTrials=fieldnames(trialNames.(subName)); % The list of trial names in the current subject
 
-        if ismember('S',level)
+        if ismember('S',fcnLevel)
 
             disp(['Running ' fcnName ' Subject ' subName]);
 
-            if ismember('T',level)
+            if ismember('T',fcnLevel)
                 feval(fcnName,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
             else
                 feval(fcnName,subName);
@@ -114,18 +114,14 @@ if ~ismember('P',level)
 end
 
 %% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
-modifyVarsDate(processStructPS.Text);
+modifyVarsDate(instStruct.UUID);
 
 %% Remove the completed process function from the queue
-projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile);
-
-queue=projectSettings.ProcessQueue;
-remQueueIdx=ismember(queue,processStruct.Text);
+queue=getCurrent('Process_Queue');
+remQueueIdx=ismember(queue,instStruct.UUID);
 queue(remQueueIdx)=[];
 
-projectSettings.ProcessQueue=queue;
-writeJSON(projectSettingsFile,projectSettings);
+setCurrent(queue,'Process_Queue');
 
 evalin('base','clear runInfo'); % Clean up after myself
 if isempty(remQueueIdx)

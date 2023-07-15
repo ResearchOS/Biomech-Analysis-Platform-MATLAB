@@ -109,6 +109,7 @@ if instanceBool
     struct.InputVariables={};
     struct.InputSubvariables={};
     struct.OutputVariables={};
+    struct.DateLastRan='';
 else
     struct.Level = 'T';
     struct.InputVariablesNamesInCode = {};

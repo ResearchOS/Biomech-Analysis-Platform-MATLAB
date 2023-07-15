@@ -1,24 +1,21 @@
-function []=modifyVarsDate(text, class)
+function []=modifyVarsDate(uuid)
 
 %% PURPOSE: SET THE DATEMODIFIED PROPERTY OF THE OUTPUT VARIABLES OF A PROCESS FUNCTION TO NOW.
 % If a Process function, iterates over all output variables to give them a
 % new saved date.
 % If a Variable, saves that Variable with a new saved date.
 
-if nargin==1
-    class='Process';
-end
-
 date=datetime('now');
 
-structPath=getClassFilePath(text,class);
-struct=loadJSON(structPath);
+struct=loadJSON(uuid);
 
 struct.DateModified=date;
 struct.OutOfDate=false;
 struct.DateLastRan=date;
 writeJSON(structPath,struct); % Already overwrites the date saved.
 
+% Only run the below code if there are output variables, i.e. if this is a
+% Process function.
 if ~isequal(class,'Process')
     return;
 end
@@ -37,6 +34,7 @@ ids=runInfo.SetArgIDsUsed; % This ensures that if there's any setArg ID's that a
 
 outputVars=struct.OutputVariables;
 
+%% Update each of the output variables.
 for i=1:length(outputVars)
 
     currVars=outputVars{i};
@@ -49,11 +47,11 @@ for i=1:length(outputVars)
 
     for j=2:length(currVars)
 
-        varText=currVars{j};
-        varPath=getClassFilePath(varText,'Variable');
-        varStruct=loadJSON(varPath);
-
-        saveClass_PS('Variable', varStruct, date); % Updates the date modified.
+        varUUID=currVars{j};        
+        varStruct=loadJSON(varUUID);
+        varStruct.OutOfDate = false;        
+        
+        writeJSON(getJSONPath(varStruct), varStruct);
 
     end
 

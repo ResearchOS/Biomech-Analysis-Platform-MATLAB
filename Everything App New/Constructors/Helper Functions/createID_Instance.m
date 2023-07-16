@@ -2,26 +2,31 @@ function [instanceID]=createID_Instance(abstractID, class)
 
 %% PURPOSE: CREATE INSTANCE ID FOR THE SPECIFIED OBJECT.
 
+idLength = 3; % Number of characters in instanceID
+
 slash=filesep;
 
 commonPath=getCommonPath();
 classFolder=[commonPath slash class slash 'Instances'];
 
+files=dir(classFolder);
+fileNames={files.name};
+isDir=[files.isdir];
+fileNames=fileNames(~isDir); % Remove folders from the list.
+
 isNewID=false;
+maxNum = (16^idLength) - 1;
 while ~isNewID
-    newID=randi(4095,1); % Max 3 digits
+    newID=randi(maxNum,1);
+    newID = dec2hex(newID);
 
-    newID=dec2hex(newID); % Convert the randomly generated number to hexadecimal char
-    numDigits=length(newID);
-    instanceID=[repmat('0',1,3-numDigits) newID]; % Ensure that the hex code is 6 digits long
+    numDigits = length(newID);
+    instanceID = [repmat('0',1,idLength-numDigits) newID];
 
-    %% NEED TO CHANGE THIS TO CHECK THIS OBJECT TYPE'S COMMON FOLDER!
-    listing = dir(classFolder);
-    filenames = {listing.name};
+    uuid = genUUID(class, abstractID, instanceID);
 
-    uuid = genUUID(class, abstractID, instanceID);    
-    if ~ismember(uuid, filenames)
-        isNewID=true;
+    if ~any(contains(fileNames,uuid))
+        isNewID = true;
     end
 
 end

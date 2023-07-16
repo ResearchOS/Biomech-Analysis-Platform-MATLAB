@@ -1,12 +1,10 @@
-function [data]=loadJSON(str)
+function [data]=loadJSON(str, runCheck)
 
 %% PURPOSE: LOAD A JSON FILE AND RETURN IT DECODED.
 
-%% For retrieving the previously loaded data from the GUI appdata
-
-% SHOULD LOADJSON CHECK THAT ALL REQUIRED FIELDS EXIST?
-% Only when creating new Projects does anything really have to be
-% initialized (an analysis)
+if exist('runCheck','var')~=1
+    runCheck = true; % Helpful for testing.
+end
 
 % Provided a UUID, not a file path.
 if ~contains(str,filesep)
@@ -17,6 +15,7 @@ end
     
 Store_Settings = getCurrent('Store_Settings');
 
+%% For retrieving the previously loaded data from the GUI appdata
 if Store_Settings
     try
         fig=evalin('base','gui');
@@ -50,7 +49,9 @@ end
 % Check that this struct contains all required fields. If it does not,
 % default values are inserted. EXCEPT for UUID field, which throws an
 % error.
-data = checkFields(data);
+if runCheck
+    data = checkFields(data);
+end
 
 %% Now that the data has been loaded, 
 if exist('fig','var')==1 && Store_Settings 

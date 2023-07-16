@@ -12,9 +12,9 @@ archiveFolder = [folder slash 'Archive'];
 
 archivePath = [archiveFolder slash name ext];
 
-if ~isempty(instanceID)
-    movefile(initPath, archivePath); % Move the instance file to the archive.
-    return;
+movefile(initPath, archivePath); % Move the abstract or instance file to the archive.
+if ~isempty(instanceID)     
+    return; % Done after moving the instance file to the archive.
 end
 
 %% Move all instances for an abstract file.

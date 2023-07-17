@@ -22,6 +22,7 @@ if isempty(instanceID)
     if ~isequal(a,'Yes')
         return;
     end
+    figure(fig);
     pgStruct = createNewObject(true, 'ProcessGroup', selNode.Text, abstractID, '', true);
     selUUID = pgStruct.UUID;
     abstractUUID = genUUID(type, abstractID);

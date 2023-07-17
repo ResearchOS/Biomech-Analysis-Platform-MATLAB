@@ -21,6 +21,9 @@ if isempty(currVarNode)
     return;
 end
 
+varNameInCode = strsplit(currVarNode.Text);
+varNameInCode = varNameInCode{1};
+
 currVarUUID = currVarNode.NodeData.UUID;
 
 parentNode = currVarNode.Parent;
@@ -33,12 +36,18 @@ getSetArgIdxNum = str2double(parentNode.Text(isstrprop(parentNode.Text,'digit'))
 
 if isequal(parentNode.Text(1:6),'getArg')
     fldName = 'InputVariables';
+    absFldName = 'InputVariablesNamesInCode';
 elseif isequal(parentNode.Text(1:6),'setArg')
     fldName = 'OutputVariables';
+    absFldName = 'OutputVariablesNamesInCode';
 end
 
 currFcnUUID = currFcnNode.NodeData.UUID;
 fcnStruct = loadJSON(currFcnUUID);
+
+[fcnType, fcnAbstractID, fcnInstanceID] = deText(currFcnUUID);
+absFcnUUID = genUUID(fcnType, fcnAbstractID);
+absFcnStruct = loadJSON(absFcnUUID);
 
 getSetArgIdx = [];
 for i=1:length(fcnStruct.(fldName))
@@ -49,7 +58,7 @@ for i=1:length(fcnStruct.(fldName))
 end
 assert(~isempty(getSetArgIdx));
 
-argIdx = ismember(fcnStruct.(fldName){getSetArgIdx}(2:end),currVarUUID); % Get which argument this is.
+argIdx = ismember(absFcnStruct.(absFldName){getSetArgIdx}(2:end),varNameInCode); % Get which argument this is.
 argIdx = [false; argIdx];
 fcnStruct.(fldName){getSetArgIdx}(argIdx) = {''};
 if isequal(fldName,'InputVariables')

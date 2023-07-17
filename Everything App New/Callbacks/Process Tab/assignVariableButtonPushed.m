@@ -31,6 +31,9 @@ if isempty(currVarNode)
     return;
 end
 
+varNameInCode = strsplit(currVarNode.Text);
+varNameInCode = varNameInCode{1};
+
 currVarUUID = currVarNode.NodeData.UUID;
 
 parentNode = currVarNode.Parent;
@@ -49,6 +52,7 @@ if isempty(instanceID)
     if ~isequal(a,'Yes')
         return;
     end
+    figure(fig);
     varStruct = createNewObject(true, 'Variable', allNode.Text, abstractID, '', true);
     allVarUUID = varStruct.UUID;
     abstractUUID = genUUID(type, abstractID);
@@ -62,12 +66,18 @@ getSetArgIdxNum = str2double(parentNode.Text(isstrprop(parentNode.Text,'digit'))
 
 if isequal(parentNode.Text(1:6),'getArg')
     fldName = 'InputVariables';
+    absFldName = 'InputVariablesNamesInCode';
 elseif isequal(parentNode.Text(1:6),'setArg')
     fldName = 'OutputVariables';
+    absFldName = 'OutputVariablesNamesInCode';
 end
 
 currFcnUUID = currFcnNode.NodeData.UUID;
 fcnStruct = loadJSON(currFcnUUID);
+
+[fcnType, fcnAbstractID, fcnInstanceID] = deText(currFcnUUID);
+absFcnUUID = genUUID(fcnType, fcnAbstractID);
+absFcnStruct = loadJSON(absFcnUUID);
 
 getSetArgIdx = [];
 for i=1:length(fcnStruct.(fldName))
@@ -78,7 +88,7 @@ for i=1:length(fcnStruct.(fldName))
 end
 assert(~isempty(getSetArgIdx));
 
-argIdx = ismember(fcnStruct.(fldName){getSetArgIdx}(2:end),currVarUUID); % Get which argument this is.
+argIdx = ismember(absFcnStruct.(absFldName){getSetArgIdx}(2:end),varNameInCode); % Get which argument this is.
 argIdx = [false; argIdx];
 fcnStruct.(fldName){getSetArgIdx}(argIdx) = {allVarUUID};
 if isequal(fldName,'InputVariables')
@@ -100,9 +110,11 @@ end
 %% Unlink the previous variable, if applicable.
 if length(argTextSplit)>1 % There was a variable there.
     prevVarUUID = argTextSplit{2}(2:end-1); % Omit the parentheses
-    if isequal(parentNode.Text(1:6),'getArg')
-        unlinkObjs(prevVarUUID, currFcnUUID);
-    elseif isequal(parentNode.Text(1:6),'setArg')
-        unlinkObjs(currFcnUUID, prevVarUUID);
+    if ~isequal(prevVarUUID,allVarUUID) % This only happens if there's a fluke.
+        if isequal(parentNode.Text(1:6),'getArg')
+            unlinkObjs(prevVarUUID, currFcnUUID);
+        elseif isequal(parentNode.Text(1:6),'setArg')
+            unlinkObjs(currFcnUUID, prevVarUUID);
+        end
     end
 end

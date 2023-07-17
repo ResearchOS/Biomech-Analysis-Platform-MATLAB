@@ -8,12 +8,12 @@ projectStruct = loadJSON(pjUUID);
 pjStructTmp = createNewObject(true,'Project','Default','','',false);
 
 doWrite = false;
-if ~isfield(projectStruct.ProjectPath,computerID)
+if ~isfield(projectStruct,'ProjectPath') || ~isfield(projectStruct.ProjectPath,computerID)
     doWrite = true;
     projectStruct.ProjectPath.(computerID) = pjStructTmp.ProjectPath.(computerID);
 end
 
-if ~isfield(projectStruct.DataPath,computerID)
+if ~isfield(projectStruct,'DataPath') || ~isfield(projectStruct.DataPath,computerID)
     doWrite = true;
     projectStruct.DataPath.(computerID) = pjStructTmp.DataPath.(computerID);
 end

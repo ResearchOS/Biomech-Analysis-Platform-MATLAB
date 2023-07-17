@@ -21,8 +21,8 @@ if exist('Current_Project_Name','var')~=1
 end
 
 if isempty(Current_Project_Name) || exist(getJSONPath(Current_Project_Name),'file')~=2 % File for current project name does not exist.
-    [name, abstractID, instanceID] = deText(Current_Project_Name);
-    projectStruct = createNewObject(true, 'Project', name,abstractID,instanceID,true);
+    [type, abstractID, instanceID] = deText(Current_Project_Name);
+    projectStruct = createNewObject(true, 'Project', 'Default',abstractID,instanceID,true);
     Current_Project_Name = projectStruct.UUID;
 end
 

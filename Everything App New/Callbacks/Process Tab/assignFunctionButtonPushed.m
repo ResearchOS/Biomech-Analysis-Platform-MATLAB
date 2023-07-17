@@ -7,7 +7,7 @@ function []=assignFunctionButtonPushed(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-selNode=handles.Process.allGroupsUITree.SelectedNodes;
+selNode=handles.Process.allProcessUITree.SelectedNodes;
 
 if isempty(selNode)
     return;
@@ -24,6 +24,7 @@ if isempty(instanceID)
     if ~isequal(a,'Yes')
         return;
     end
+    figure(fig);
     prStruct = createNewObject(true, 'Process', selNode.Text, abstractID, '', true);
     selUUID = prStruct.UUID;
     abstractUUID = genUUID(type, abstractID);
@@ -46,10 +47,10 @@ selectNode(uiTree, selStruct.UUID);
 linkObjs(selStruct.UUID, containerUUID);
 
 switch uiTree
-    case handles.Process.allGroupsUITree
-        fillCurrentFunctionUITree(fig);
-    case handles.Process.allAnalysesUITree
-        fillProcessGroupUITree(fig); % Added group to analysis. Completely refill the current process group UI tree
+    case handles.Process.analysisUITree           
+        fillProcessGroupUITree(fig); % Added function or group to analysis. Completely refill the current process group UI tree
+    case handles.Process.groupUITree
+        fillCurrentFunctionUITree(fig); % Added function to group. Fill the current function UI tree     
     otherwise
         error('Where am I?');
 end

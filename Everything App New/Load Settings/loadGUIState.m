@@ -6,7 +6,7 @@ handles=getappdata(fig,'handles');
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
 
 Current_Project_Name = getCurrent('Current_Project_Name');
-projectStruct = loadJSON(Current_Project_Name);
+% projectStruct = loadJSON(Current_Project_Name);
 
 
 %% Fill the UI trees with their correct values
@@ -42,13 +42,16 @@ currentProjectButtonPushed(fig);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Import tab
-selectNode(handles.Import.allLogsheetsUITree, projectStruct.Current_Logsheet);
-% % Bring up the current logsheet's metadata.
-allLogsheetsUITreeSelectionChanged(fig, true);
+Current_Logsheet = getCurrent('Current_Logsheet');
+if ~isempty(Current_Logsheet)
+    selectNode(handles.Import.allLogsheetsUITree, Current_Logsheet);
+    % % Bring up the current logsheet's metadata.
+    allLogsheetsUITreeSelectionChanged(fig, true);
+end
  
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Process tab
-queue = projectStruct.Process_Queue;
+queue = getCurrent('Process_Queue');
 for i=1:length(queue)
     struct = loadJSON(queue{i});
     uuid = struct.UUID;

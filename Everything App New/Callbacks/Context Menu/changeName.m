@@ -69,3 +69,9 @@ queueNode = getNode(handles.Process.queueUITree, uuid);
 if ~isempty(queueNode)
     queueNode.Text = struct.Text;
 end
+
+%% Change the name in the current analysis label.
+Current_Analysis = getCurrent('Current_Analysis');
+if contains(Current_Analysis,uuid)
+    handles.Process.currentAnalysisLabel.Text = [struct.Text ' ' uuid];
+end

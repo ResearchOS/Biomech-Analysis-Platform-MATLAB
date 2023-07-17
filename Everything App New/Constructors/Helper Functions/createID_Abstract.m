@@ -16,6 +16,8 @@ fileNames=fileNames(~isDir); % Remove folders from the list.
 
 isNewID=false;
 maxNum = (16^idLength) - 1;
+s = rng; % Capture the current RNG settings.
+rng('shuffle');
 while ~isNewID
     newID=randi(maxNum,1);
     newID = dec2hex(newID); % Convert the randomly generated number to hexadecimal char
@@ -27,3 +29,5 @@ while ~isNewID
         isNewID=true;
     end
 end
+
+rng(s); % Restore the RNG settings.

@@ -17,22 +17,23 @@ end
 fig=ancestor(parent,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-type = deText(uuid);
+[type, abstractID, instanceID] = deText(uuid);
 
 newNode = uitreenode(parent, 'Text', text);
 newNode.NodeData.UUID = uuid;
 assignContextMenu(newNode,handles);
 
-if isequal(type,'PG')
+allUITrees = [handles.Process.allAnalysesUITree; handles.Process.allGroupsUITree; handles.Process.allProcessUITree; handles.Process.allVariablesUITree];
+uiTree = getUITreeFromNode(newNode);
+if isequal(type,'PG') && ~ismember(uiTree, allUITrees)
     createProcessGroupNode(newNode,uuid,handles);
 end
 
-allUITrees = [handles.Process.allAnalysesUITree; handles.Process.allGroupsUITree; handles.Process.allProcessUITree; handles.Process.allVariablesUITree];
 if ~ismember(parent,allUITrees)
     return; % No sorting needed.
 end
 
-%% WHEN ADDING A NEW ABSTRACT NODE TO THE "ALL" UI TREES, NEED TO PLACE THEM IN THE PROPER PLACE.
+%% WHEN ADDING A NEW ABSTRACT NODE TO THE "ALL" UI TREES, NEED TO SORT THEM PROPERLY.
 uiTree = getUITreeFromNode(newNode);
 uiTreeClass = getClassFromUITree(uiTree);
 switch uiTreeClass

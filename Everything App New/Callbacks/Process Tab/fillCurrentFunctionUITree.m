@@ -45,7 +45,8 @@ for i=1:length(inputVarsAbstract)
         currArgsInst='';
     end
     currArgsAbs=inputVarsAbstract{i};
-    argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsAbs{1})]); % The ID number of the getArg/setArg is the first element.   
+    argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsAbs{1})]); % The ID number of the getArg/setArg is the first element.  
+    argNode.NodeData.UUID = ''; % Because getNode needs everything to have a UUID
     
     for j=2:length(currArgsAbs)
         if ~iscell(currArgsInst) || length(currArgsInst)<j || isempty(currArgsInst{j})

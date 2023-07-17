@@ -1,4 +1,4 @@
-function []=assignVariableButtonPushed(src,varName,varNameInCode)
+function []=assignVariableButtonPushed(src,allVarUUID)
 
 %% PURPOSE: ASSIGN VARIABLE TO CURRENT PROCESSING FUNCTION
 
@@ -34,7 +34,7 @@ end
 varNameInCode = strsplit(currVarNode.Text);
 varNameInCode = varNameInCode{1};
 
-currVarUUID = currVarNode.NodeData.UUID;
+% currVarUUID = currVarNode.NodeData.UUID;
 
 parentNode = currVarNode.Parent;
 if isequal(parentNode, processUITree)
@@ -42,7 +42,10 @@ if isequal(parentNode, processUITree)
     return;
 end
 
-allVarUUID = allNode.NodeData.UUID;
+% Only not true when pasting a variable.
+if exist('allVarUUID','var')~=1
+    allVarUUID = allNode.NodeData.UUID;    
+end
 [type, abstractID, instanceID] = deText(allVarUUID);
 
 % Abstract selected. Create new instance.
@@ -64,12 +67,26 @@ end
 
 getSetArgIdxNum = str2double(parentNode.Text(isstrprop(parentNode.Text,'digit'))); % Number of this getArg or setArg
 
+isOut = false;
 if isequal(parentNode.Text(1:6),'getArg')
     fldName = 'InputVariables';
     absFldName = 'InputVariablesNamesInCode';
 elseif isequal(parentNode.Text(1:6),'setArg')
+    isOut = true;
     fldName = 'OutputVariables';
     absFldName = 'OutputVariablesNamesInCode';
+end
+
+% Check that this variable has not been an output of any functions anywhere
+% else. If so, stop the process.
+if isOut
+    linksFolder = [getCommonPath() filesep 'Linkages'];
+    linksFilePath = [linksFolder filesep 'Linkages.json'];
+    links = loadJSON(linksFilePath);
+    if ismember(allVarUUID,links(:,2))
+        disp('This variable is already an output elsewhere!');
+        return;
+    end
 end
 
 currFcnUUID = currFcnNode.NodeData.UUID;

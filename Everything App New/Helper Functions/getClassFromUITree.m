@@ -7,11 +7,13 @@ handles=getappdata(fig,'handles');
 
 switch uiTree
     case handles.Projects.allProjectsUITree
-        class='Project';
+        class='Project';    
     case handles.Import.allLogsheetsUITree
         class='Logsheet';
     case handles.Process.allProcessUITree
         class='Process';
+    case handles.Process.allAnalysesUITree
+        class='Analysis';
     case handles.Plot.allPlotsUITree
         class='Plot';
     case handles.Plot.allComponentsUITree

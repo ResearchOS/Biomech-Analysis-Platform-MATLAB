@@ -1,4 +1,4 @@
-function [delFcns] = getSubsetOfFcns(nodeMatrix, analysis)
+function [delFcns] = getSubset(nodeMatrix, analysis)
 
 %% PURPOSE: GET THE SUBSET OF LINKAGES THAT BELONG TO THE CURRENT ANALYSIS.
 

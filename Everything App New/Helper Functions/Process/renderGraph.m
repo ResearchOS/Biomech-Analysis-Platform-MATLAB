@@ -35,6 +35,16 @@ h.MarkerSize = markerSize;
 
 h.NodeColor = color;
 h.EdgeColor = defaultColor;
+h.LineWidth = 0.5;
+
+% If a node is selected, highlight its in and out edges.
+if ~isscalar(markerSize)
+    idx = [false; diff(markerSize)>0];
+    ins = inedges(G, G.Nodes.Name(idx));
+    highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
+    outs = outedges(G, G.Nodes.Name(idx));
+    highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
+end
 
 % labeledge(G, nodeMatrix(:,1), nodeMatrix(:,2), edges);
 

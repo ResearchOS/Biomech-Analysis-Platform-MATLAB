@@ -45,5 +45,5 @@ G = rmnode(G,delFcns);
 
 delIdx = ismember(nodes,delFcns);
 edges(delIdx) = [];
-nodes(delIdx) = [];
+nodes(delIdx,:) = [];
 renderGraph(fig, G, nodes, edges); % Show the graph.

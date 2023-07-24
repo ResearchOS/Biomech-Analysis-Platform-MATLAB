@@ -12,6 +12,8 @@ if isempty(ax.Children)
 end
 assert(length(ax.Children)==1);
 
+% bool = isDoubleClick(ax);
+
 currPoint = ax.CurrentPoint(1,1:2);
 [xTol, yTol] = getDigraphTol(ax);
 

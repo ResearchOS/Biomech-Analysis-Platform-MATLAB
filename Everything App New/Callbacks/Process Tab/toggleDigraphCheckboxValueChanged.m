@@ -28,5 +28,6 @@ end
 [Gall, nodesAll, edgesAll] = linkageToDigraph('all'); % A graph containing all analyses. Need to find the subset of functions in the current analysis.
 [G, nodes, edges] = linkageToDigraph('PR');
 Current_Analysis = getCurrent('Current_Analysis');
-G = getSubset(nodes, Current_Analysis); % The graph of just this analysis.
+delFcns = getSubset(nodesAll, Current_Analysis); % The graph of just the functions (nodes) & variables (edges) for just this analysis.
+G = rmnode(G,delFcns);
 renderGraph(fig, G); % Show the graph.

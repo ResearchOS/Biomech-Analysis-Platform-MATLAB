@@ -1,4 +1,4 @@
-function [] = renderGraph(src, G)
+function [] = renderGraph(src, G, nodeMatrix, edges)
 
 %% PURPOSE: RENDER THE DIGRAPH IN THE UI AXES.
 
@@ -19,3 +19,5 @@ defaultColor = [0 0.447 0.741]; % Default blue color
 
 h.NodeColor = defaultColor;
 h.EdgeColor = defaultColor;
+
+labeledge(G, nodeMatrix(:,1), nodeMatrix(:,2), edges);

@@ -30,4 +30,8 @@ end
 Current_Analysis = getCurrent('Current_Analysis');
 delFcns = getSubset(nodesAll, Current_Analysis); % The graph of just the functions (nodes) & variables (edges) for just this analysis.
 G = rmnode(G,delFcns);
-renderGraph(fig, G); % Show the graph.
+
+delIdx = ismember(nodes,delFcns);
+edges(delIdx) = [];
+nodes(delIdx) = [];
+renderGraph(fig, G, nodes, edges); % Show the graph.

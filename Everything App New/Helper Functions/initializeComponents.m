@@ -342,6 +342,12 @@ handles.Process.addArgsButton=uibutton(handles.Process.currentFunctionTab,'Text'
 % 34. Remove getArg/setArg button
 handles.Process.removeArgsButton=uibutton(handles.Process.currentFunctionTab,'Text','-','ButtonPushedFcn',@(removeArgsButton,event) removeArgsButtonPushed(removeArgsButton));
 
+% 35. Toggle digraph button
+handles.Process.toggleDigraphCheckbox=uicheckbox(processTab,'Value',false,'Text','Show Digraph','ValueChangedFcn',@(toggleDigraphCheckbox, event) toggleDigraphCheckboxValueChanged(toggleDigraphCheckbox));
+
+% 36. Digraph UI axes
+handles.Process.digraphAxes=uiaxes(processTab,'Visible',false,'Box','off','XTickLabel',{},'YTickLabel',{},'XTick',{},'YTick',{},'PickableParts','visible','HitTest','on','ButtonDownFcn',@(digraphAxes, event) digraphAxesButtonDownFcn(digraphAxes));
+
 % 35. Add specify trials button
 handles.Process.addSpecifyTrialsButton=uibutton(processTab,'Text','S+');
 addSpecifyTrialsButton=handles.Process.addSpecifyTrialsButton;

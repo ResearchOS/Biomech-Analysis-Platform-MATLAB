@@ -181,6 +181,12 @@ objResize(tab.addArgsButton, [0.3 0.83], [0.03 compHeight]);
 % 34. Remove args button
 objResize(tab.removeArgsButton, [0.35 0.83], [0.03 compHeight]);
 
+% 35. Toggle digraph checkbox
+objResize(tab.toggleDigraphCheckbox, [0.8 0.95], [0.1 compHeight]);
+
+% 36. Digraph axes
+objResize(tab.digraphAxes, [0.75 0.01], [0.25 0.89]);
+
 % 35. Add specify trials button
 objResize(tab.addSpecifyTrialsButton, [0.8 0.2], [0.03 compHeight]);
 

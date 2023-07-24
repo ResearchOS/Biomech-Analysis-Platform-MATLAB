@@ -5,7 +5,7 @@ function []=toggleDigraphCheckboxValueChanged(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-val = src.Value;
+val = handles.Process.toggleDigraphCheckbox.Value;
 
 %% Change visibility
 % Change digraph visibility
@@ -28,8 +28,8 @@ if ~val
     return; % Don't fill in the digraph if it's not visible!
 end
 
-[Gall, nodesAll, edgesAll] = linkageToDigraph('all'); % A graph containing all analyses. Need to find the subset of functions in the current analysis.
-[G, nodes, edges] = linkageToDigraph('PR');
+[Gall, nodesAll, edgesAll] = linkageToDigraph('all', fig); % A graph containing all analyses. Need to find the subset of functions in the current analysis.
+[G, nodes, edges] = linkageToDigraph('PR', fig);
 Current_Analysis = getCurrent('Current_Analysis');
 delFcns = getSubset(nodesAll, Current_Analysis); % The graph of just the functions (nodes) & variables (edges) for just this analysis.
 G = rmnode(G,delFcns);

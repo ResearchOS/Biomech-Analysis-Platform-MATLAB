@@ -29,7 +29,7 @@ if nargin == 1 || isempty(uuid)
     doSelectionChanged = true; % The selection was made in the digraph, so update the list selection accordingly.
 else
     G = getappdata(fig,'digraph');
-    idx = ismember(G.Nodes.UUID, uuid);
+    idx = ismember(G.Nodes.Name, uuid);
     doSelectionChanged = false; % Because the digraph wasn't clicked, it's just being updated.
 end
 if ~any(idx)
@@ -45,7 +45,7 @@ else
     colors = repmat([0 0.447 0.741], length(xdata), 1);
     colors(idx,:) = [0 0 0];    
     G = getappdata(fig,'digraph');
-    uuid = G.Nodes.UUID{idx};
+    uuid = G.Nodes.Name{idx};
 
 end
 

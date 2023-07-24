@@ -29,7 +29,7 @@ ax = handles.Process.digraphAxes;
 delete(ax.Children);
 set(ax,'ColorOrderIndex', 1);
 
-h  = plot(ax,G,'NodeLabel',G.Nodes.Name,'Interpreter','none','PickableParts','none','HitTest','on');
+h  = plot(ax,G,'NodeLabel',G.Nodes.PrettyName,'Interpreter','none','PickableParts','none','HitTest','on');
 
 h.MarkerSize = markerSize;
 

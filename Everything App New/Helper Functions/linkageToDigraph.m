@@ -1,4 +1,4 @@
-function [G, nodeMatrix, edgeNames] = linkageToDigraph(types)
+function [G, nodeMatrix, edgeNames] = linkageToDigraph(types, src)
 
 %% PURPOSE: CONVERT THE LINKAGE MATRIX TO A DIGRAPH (FUNCTIONS ONLY) SO THAT I CAN CHECK DEPENDENCIES.
 % types: Indicates what types of objects to return in the digraph.
@@ -6,6 +6,14 @@ function [G, nodeMatrix, edgeNames] = linkageToDigraph(types)
     % the edges are the variables.
     % 'ALL': Returns all objects as a node, from variables to projects.
         % Allows for checking which objects are in which containers.
+
+% Digraph fields:
+    % Nodes:
+        % Name: The UUID of the node.
+        % PrettyName: The human-readable name of the node (non-unique).
+
+fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
 
 types = upper(types);
 
@@ -110,4 +118,13 @@ end
 
 G = digraph(s, t);
 
-G.Nodes.UUID = G.Nodes.Name; % Copy the names to UUID (temporary) because the names should be human readable.
+% Faster way to get the names than loading each file one by one?
+uuids = G.Nodes.Name;
+names = cell(size(uuids));
+for i=1:length(uuids)
+    parent = getUITreeFromClass(fig, deText(uuids{i}), 'all');    
+    node = getNode(parent, uuids{i});
+    names{i} = node.Text;
+end
+
+G.Nodes.PrettyName = names; % Copy the names to UUID (temporary) because the names should be human readable.

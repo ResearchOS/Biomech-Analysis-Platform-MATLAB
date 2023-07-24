@@ -58,12 +58,6 @@ if ~isempty(groupNode)
     groupNode.Text = struct.Text;
 end
 
-% Function node
-% fcnNode = getNode(handles.Process.functionUITree, uuid);
-% if ~isempty(fcnNode)
-%     fcnNode.Text = struct.Text;
-% end
-
 %% Change the name in the queue UI tree
 queueNode = getNode(handles.Process.queueUITree, uuid);
 if ~isempty(queueNode)
@@ -74,4 +68,9 @@ end
 Current_Analysis = getCurrent('Current_Analysis');
 if contains(Current_Analysis,uuid)
     handles.Process.currentAnalysisLabel.Text = [struct.Text ' ' uuid];
+end
+
+%% Change the name in the digraph
+if isequal(type,'PR')
+    toggleDigraphCheckboxValueChanged(fig) % Refresh the graph.    
 end

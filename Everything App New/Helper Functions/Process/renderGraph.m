@@ -1,4 +1,4 @@
-function [] = renderGraph(src, G, nodeMatrix, edges, markerSize, color)
+function [] = renderGraph(src, G, nodeMatrix, edges, markerSize, color, edgeID)
 
 %% PURPOSE: RENDER THE DIGRAPH IN THE UI AXES
 
@@ -10,14 +10,14 @@ if nargin==1 || isempty(G)
     nodeMatrix = getappdata(fig,'nodeMatrix');
     edges = getappdata(fig,'edges');
 end
-if exist('markerSize','var')~=1
+if exist('markerSize','var')~=1 || isempty(markerSize)
     markerSize = getappdata(fig,'markerSize');
     if isempty(markerSize)
         markerSize = 4;
     end
 end
 defaultColor = [0 0.447 0.741];
-if ~exist('color','var')
+if ~exist('color','var') || isempty(color)
     color = getappdata(fig,'color');
     if isempty(color)
         color = defaultColor; % Default blue color
@@ -42,10 +42,14 @@ if ~isscalar(markerSize)
     idx = ismember(markerSize, 8);
     ins = inedges(G, G.Nodes.Name(idx));
     highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
-    labeledge(h, ins, edges(ins));
+    labeledge(h, ins, G.Edges.Name(ins));
     outs = outedges(G, G.Nodes.Name(idx));
     highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
-    labeledge(h, outs, edges(outs));
+    labeledge(h, outs, G.Edges.Name(outs));
+    if exist('edgeID','var') && ~isempty(edgeID)
+        edgeIdx = ismember(G.Edges.Name, edgeID);
+        highlight(h, 'Edges', edgeIdx, 'EdgeColor', rgb('orange'),'LineWidth',2);
+    end
 end
 
 setappdata(fig,'digraph',G);

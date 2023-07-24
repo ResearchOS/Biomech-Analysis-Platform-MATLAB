@@ -83,13 +83,15 @@ for i=1:length(names)
     end
 
     if isequal(types,'PR')
-        edgeNames = [edgeNames; repmat({name},numIters,1)];    
+        edgeNames = [edgeNames; repmat({name},numIters,1)];            
     end
     s = [s; srcFcn];
     t = [t; trgFcn];
     nodeMatrix = [s t];
 
 end
+
+prettyEdgeNames = getName(edgeNames);
 
 
 if isequal(types,'ALL')
@@ -126,5 +128,21 @@ for i=1:length(uuids)
     node = getNode(parent, uuids{i});
     names{i} = node.Text;
 end
-
 G.Nodes.PrettyName = names; % Copy the names to UUID (temporary) because the names should be human readable.
+
+if isequal(types,'PR')
+    for i=1:length(s)
+        row = [s(i) t(i)];
+        edgeRowIdx = ismember(G.Edges.EndNodes(:,1),row(1)) & ismember(G.Edges.EndNodes(:,2),row(2));
+%         edgeNameIdx = ismember(s(i),G.Edges.EndNodes(:,1)) & ismember(t(i),G.Edges.EndNodes(:,2));
+%         assert(find(edgeRowIdx==1)==i);
+        G.Edges.Name(edgeRowIdx) = edgeNames(i);
+        G.Edges.PrettyName(edgeRowIdx) = prettyEdgeNames(i);
+    end
+end
+
+
+% if isequal(types,'PR')
+%     G.Edges.Name = edgeNames;
+%     G.Edges.PrettyName = prettyEdgeNames;
+% end

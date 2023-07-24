@@ -1,4 +1,4 @@
-function []=fillProcessGroupUITree(src)
+function []=fillProcessGroupUITree(src, prUUID)
 
 %% PURPOSE: FILL THE CURRENT GROUP UI TREE.
 % If a group is selected in the current analysis UI tree, then put in all
@@ -40,12 +40,16 @@ for i=1:length(list)
     [abbrev] = deText(uuid);
 
     if isequal(abbrev,'PG') % ProcessGroup
-        createProcessGroupNode(newNode,uuid,handles);
+        uuids = createProcessGroupNode(newNode,uuid,handles);
     end  
 
 end
 
-if isequal(initAbbrev,'PR') % Process
-    node = selectNode(handles.Process.groupUITree,initUUID);
-    groupUITreeSelectionChanged(fig);
+% if isequal(initAbbrev,'PR') % Process
+if nargin == 1 && ~isequal(initAbbrev,'PG')
+    selectNode(handles.Process.groupUITree,uuids{end}); % Can't select a processing group.
+else
+    selectNode(handles.Process.groupUITree, prUUID);
 end
+groupUITreeSelectionChanged(fig);
+% end

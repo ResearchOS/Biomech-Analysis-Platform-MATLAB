@@ -109,3 +109,5 @@ if isequal(types,'ALL')
 end
 
 G = digraph(s, t);
+
+G.Nodes.UUID = G.Nodes.Name; % Copy the names to UUID (temporary) because the names should be human readable.

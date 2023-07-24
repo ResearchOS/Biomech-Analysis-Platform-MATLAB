@@ -1,4 +1,4 @@
-function []=fillCurrentFunctionUITree(src,event)
+function []=fillCurrentFunctionUITree(src,digraphUUID)
 
 %% PURPOSE: FILL THE CURRENT FUNCTION UI TREE WITH THE ARGUMENTS
 
@@ -15,7 +15,11 @@ uiTree=handles.Process.functionUITree;
 
 delete(uiTree.Children);
 
-uuid = selNode.NodeData.UUID;
+if nargin==1 || isempty(digraphUUID)
+    uuid = selNode.NodeData.UUID;
+else
+    uuid = digraphUUID;
+end
 [abbrev, abstractID, ~] = deText(uuid);
 if isequal(abbrev,'PG')
     handles.Process.currentFunctionLabel.Text = 'Current Process';

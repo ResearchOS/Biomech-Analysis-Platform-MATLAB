@@ -1,4 +1,4 @@
-function []=createProcessGroupNode(parentNode,uuid,handles)
+function [uuids]=createProcessGroupNode(parentNode,uuid,handles)
 
 %% PURPOSE: CREATE NODES FOR ALL MEMBERS OF A PROCESS GROUP IN THE CURRENT GROUP UI TREE
 

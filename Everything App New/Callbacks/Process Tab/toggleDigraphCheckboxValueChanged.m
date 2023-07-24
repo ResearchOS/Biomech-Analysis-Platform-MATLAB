@@ -10,6 +10,9 @@ val = src.Value;
 %% Change visibility
 % Change digraph visibility
 handles.Process.digraphAxes.Visible = val;
+if ~val
+    delete(handles.Process.digraphAxes.Children);
+end
 
 % Change queue & specify trials visibility
 handles.Process.queueLabel.Visible = ~val;

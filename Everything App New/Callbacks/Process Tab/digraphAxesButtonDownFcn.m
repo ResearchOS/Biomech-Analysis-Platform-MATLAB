@@ -5,6 +5,64 @@ function []=digraphAxesButtonDownFcn(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+ax = handles.Process.digraphAxes;
+
+if isempty(ax.Children)
+    return; % Do nothing if nothing to be done.
+end
+assert(length(ax.Children)==1);
+
+currPoint = ax.CurrentPoint(1,1:2);
+[xTol, yTol] = getDigraphTol(ax);
+
+h = ax.Children(1);
+
+xdata = h.XData';
+ydata = h.YData';
+
+xWins = [xdata-xTol/2 xdata+xTol/2];
+yWins = [ydata-yTol/2 ydata+yTol/2];
+
+idx = (currPoint(1)>xWins(:,1) & currPoint(1)<xWins(:,2)) & ...
+    (currPoint(2)>yWins(:,1) & currPoint(2)<yWins(:,2));
+if ~any(idx)
+    markerSize = 4;
+    colors = [0 0.447 0.741];
+    uuid = '';
+else
+    assert(sum(idx)==1);
+
+    markerSize = repmat(4,length(xdata),1);
+    markerSize(idx) = 8;
+
+    colors = repmat([0 0.447 0.741], length(xdata), 1);
+    colors(idx,:) = [0 0 0];    
+    G = getappdata(fig,'digraph');
+    uuid = G.Nodes.UUID{idx};
+
+end
+
+renderGraph(fig, [], [], [], markerSize, colors);
+
+% Change the selection in the current UI trees
+selectNode(handles.Process.analysisUITree, uuid);
+analysisUITreeSelectionChanged(fig, uuid);
+
+handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
+
+end
+
+function [tolX, tolY] = getDigraphTol(ax)
+
+perc = 0.08; % Percent of the graph that the click must be within next to a node.
+xlims = ax.XLim;
+ylims = ax.YLim;
+
+tolX = (xlims(2)-xlims(1))*perc; % Now in same units as axes limits.
+tolY = (ylims(2)-ylims(1))*perc;
+
+end
+
 %% Old code snippets
 % currPoint=handles.Process.mapFigure.CurrentPoint;
 % h=plot(handles.Process.mapFigure,Digraph,'XData',Digraph.Nodes.Coordinates(:,1),'YData',Digraph.Nodes.Coordinates(:,2),'NodeLabel',Digraph.Nodes.FunctionNames,'Interpreter','none');

@@ -39,14 +39,14 @@ h.LineWidth = 0.5;
 
 % If a node is selected, highlight its in and out edges.
 if ~isscalar(markerSize)
-    idx = [false; diff(markerSize)>0];
+    idx = ismember(markerSize, 8);
     ins = inedges(G, G.Nodes.Name(idx));
     highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
+    labeledge(h, ins, edges(ins));
     outs = outedges(G, G.Nodes.Name(idx));
     highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
+    labeledge(h, outs, edges(outs));
 end
-
-% labeledge(G, nodeMatrix(:,1), nodeMatrix(:,2), edges);
 
 setappdata(fig,'digraph',G);
 setappdata(fig,'nodeMatrix',nodeMatrix);

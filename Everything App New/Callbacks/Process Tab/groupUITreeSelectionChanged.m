@@ -26,3 +26,9 @@ st = getST(uuid);
 checkSpecifyTrialsUITree(st, handles.Process.allSpecifyTrialsUITree);
 
 fillCurrentFunctionUITree(fig);
+
+%% Select the corresponding processing node in the graph.
+obj=get(fig,'CurrentObject');
+if ~isequal(class(obj),'matlab.ui.control.UIAxes')
+    digraphAxesButtonDownFcn(src, uuid);
+end

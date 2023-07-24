@@ -135,3 +135,6 @@ if length(argTextSplit)>1 % There was a variable there.
         end
     end
 end
+
+%% Update the digraph
+toggleDigraphCheckboxValueChanged(fig);

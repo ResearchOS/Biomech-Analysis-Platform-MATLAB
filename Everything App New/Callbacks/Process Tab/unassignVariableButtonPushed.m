@@ -76,3 +76,6 @@ if isequal(parentNode.Text(1:6),'getArg')
 elseif isequal(parentNode.Text(1:6),'setArg')
     unlinkObjs(currFcnUUID, currVarUUID);
 end
+
+%% Update the digraph
+toggleDigraphCheckboxValueChanged(fig);

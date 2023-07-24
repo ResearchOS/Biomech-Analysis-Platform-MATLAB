@@ -23,6 +23,15 @@ handles.Process.editSpecifyTrialsButton.Visible = ~val;
 handles.Process.allSpecifyTrialsUITree.Visible = ~val;
 handles.Process.runButton.Visible = ~val;
 
+currTab=handles.Process.subtabCurrent.SelectedTab.Title;
+if isequal(currTab,'Analysis')
+    handles.Process.addToQueueButton.Visible = ~val;
+    handles.Process.removeFromQueueButton.Visible = ~val;
+else
+    handles.Process.addToQueueButton.Visible = false;
+    handles.Process.removeFromQueueButton.Visible = false;
+end
+
 %% Fill in the digraph. Placeholder for this, should probably happen elsewhere.
 if ~val
     return; % Don't fill in the digraph if it's not visible!

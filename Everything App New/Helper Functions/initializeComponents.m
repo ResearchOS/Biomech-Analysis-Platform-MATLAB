@@ -319,10 +319,10 @@ handles.Process.functionUITree=uitree(handles.Process.currentFunctionTab,'checkb
 handles.Process.analysisUITree=uitree(handles.Process.currentAnalysisTab,'checkbox','SelectionChangedFcn',@(analysisUITree,event) analysisUITreeSelectionChanged(analysisUITree));
 
 % 20. Add to queue button
-handles.Process.addToQueueButton=uibutton(handles.Process.currentAnalysisTab,'push','Text','->','ButtonPushedFcn',@(addToQueueButton,event) addToQueueButtonPushed(addToQueueButton));
+handles.Process.addToQueueButton=uibutton(processTab,'push','Text','->','ButtonPushedFcn',@(addToQueueButton,event) addToQueueButtonPushed(addToQueueButton));
 
 % 21. Remove from queue button
-handles.Process.removeFromQueueButton=uibutton(handles.Process.currentAnalysisTab,'push','Text','<-','ButtonPushedFcn',@(removeFromQueueButton,event) removeFromQueueButtonPushed(removeFromQueueButton));
+handles.Process.removeFromQueueButton=uibutton(processTab,'push','Text','<-','ButtonPushedFcn',@(removeFromQueueButton,event) removeFromQueueButtonPushed(removeFromQueueButton));
 
 % 30. Save as new analysis button
 handles.Process.copyToNewAnalysisButton=uibutton(handles.Process.currentAnalysisTab,'push','Text',{'Copy To New','Analysis'},'ButtonPushedFcn',@(copyToNewAnalysisButton,event) copyToNewAnalysisButtonPushed(copyToNewAnalysisButton));

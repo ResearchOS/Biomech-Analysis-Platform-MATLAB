@@ -37,6 +37,6 @@ end
 % Ensure that no specify trials are checked while the process group is selected.
 if isequal(containerUUID, origUUID)
     checkSpecifyTrialsUITree({}, handles.Process.allSpecifyTrialsUITree);
-else
-    fillProcessGroupUITree(fig, origUUID);
 end
+
+fillProcessGroupUITree(fig, origUUID);

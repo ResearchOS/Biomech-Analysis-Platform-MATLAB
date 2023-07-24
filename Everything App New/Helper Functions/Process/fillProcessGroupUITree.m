@@ -45,11 +45,18 @@ for i=1:length(list)
 
 end
 
+%% Select the corresponding processing node in the graph.
+obj=get(fig,'CurrentObject');
+if ~isequal(class(obj),'matlab.ui.control.UIAxes')
+    digraphAxesButtonDownFcn(src, prUUID);
+end
+
 % if isequal(initAbbrev,'PR') % Process
 if nargin == 1 && ~isequal(initAbbrev,'PG')
     selectNode(handles.Process.groupUITree,uuids{end}); % Can't select a processing group.
 else
     selectNode(handles.Process.groupUITree, prUUID);
 end
+
 groupUITreeSelectionChanged(fig);
 % end

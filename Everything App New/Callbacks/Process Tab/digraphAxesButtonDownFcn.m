@@ -1,4 +1,4 @@
-function []=digraphAxesButtonDownFcn(src,event)
+function []=digraphAxesButtonDownFcn(src, uuid)
 
 %% PURPOSE: SELECT OR DE-SELECT A NODE IN THE UI AXES
 
@@ -23,8 +23,15 @@ ydata = h.YData';
 xWins = [xdata-xTol/2 xdata+xTol/2];
 yWins = [ydata-yTol/2 ydata+yTol/2];
 
-idx = (currPoint(1)>xWins(:,1) & currPoint(1)<xWins(:,2)) & ...
+if nargin == 1 || isempty(uuid)
+    idx = (currPoint(1)>xWins(:,1) & currPoint(1)<xWins(:,2)) & ...
     (currPoint(2)>yWins(:,1) & currPoint(2)<yWins(:,2));
+    doSelectionChanged = true; % The selection was made in the digraph, so update the list selection accordingly.
+else
+    G = getappdata(fig,'digraph');
+    idx = ismember(G.Nodes.UUID, uuid);
+    doSelectionChanged = false; % Because the digraph wasn't clicked, it's just being updated.
+end
 if ~any(idx)
     markerSize = 4;
     colors = [0 0.447 0.741];
@@ -43,6 +50,10 @@ else
 end
 
 renderGraph(fig, [], [], [], markerSize, colors);
+
+if ~doSelectionChanged
+    return;
+end
 
 % Change the selection in the current UI trees
 selectNode(handles.Process.analysisUITree, uuid);

@@ -91,9 +91,6 @@ for i=1:length(names)
 
 end
 
-prettyEdgeNames = getName(edgeNames);
-
-
 if isequal(types,'ALL')
 
     % Convert to digraph
@@ -134,15 +131,9 @@ if isequal(types,'PR')
     for i=1:length(s)
         row = [s(i) t(i)];
         edgeRowIdx = ismember(G.Edges.EndNodes(:,1),row(1)) & ismember(G.Edges.EndNodes(:,2),row(2));
-%         edgeNameIdx = ismember(s(i),G.Edges.EndNodes(:,1)) & ismember(t(i),G.Edges.EndNodes(:,2));
-%         assert(find(edgeRowIdx==1)==i);
+        prettyEdgeNames = getName(edgeNames);
         G.Edges.Name(edgeRowIdx) = edgeNames(i);
-        G.Edges.PrettyName(edgeRowIdx) = prettyEdgeNames(i);
+        G.Edges.PrettyName(edgeRowIdx) = prettyEdgeNames(i);        
     end
+    G.Edges.NodesPrettyName = getName(G.Edges.EndNodes);
 end
-
-
-% if isequal(types,'PR')
-%     G.Edges.Name = edgeNames;
-%     G.Edges.PrettyName = prettyEdgeNames;
-% end

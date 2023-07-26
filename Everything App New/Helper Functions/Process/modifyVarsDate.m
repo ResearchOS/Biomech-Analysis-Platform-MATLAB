@@ -16,7 +16,8 @@ writeJSON(structPath,struct); % Already overwrites the date saved.
 
 % Only run the below code if there are output variables, i.e. if this is a
 % Process function.
-if ~isequal(class,'Process')
+[type] = deText(uuid);
+if ~isequal(type,'PR')
     return;
 end
 

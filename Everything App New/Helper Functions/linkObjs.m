@@ -1,4 +1,4 @@
-function []=linkObjs(leftObjs, rightObjs)
+function []=linkObjs(leftObjs, rightObjs, date)
 
 %% PURPOSE: LINK TWO OBJECTS TOGETHER. INPUTS ARE THE STRUCTS THEMSELVES, OR THEIR UUID'S.
 % LINKAGE INFORMATION IS STORED IN ITS OWN FILES, UNDER "LINKAGES" IN THE
@@ -54,4 +54,4 @@ for i=1:length(leftObjs)
     links = [links; newline]; % Append this link to the file.
 end
 
-writeJSON(linksFilePath, links);
+writeJSON(linksFilePath, links, date);

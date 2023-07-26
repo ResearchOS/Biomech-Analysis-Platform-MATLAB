@@ -15,8 +15,13 @@ slash=filesep;
 
 logsheetNode=handles.Import.allLogsheetsUITree.SelectedNodes;
 
-fullPath=getClassFilePath(logsheetNode);
-struct=loadJSON(fullPath);
+if isempty(logsheetNode)
+    return;
+end
+
+uuid = logsheetNode.NodeData.UUID;
+
+struct=loadJSON(uuid);
 
 if exist(path,'file')~=2
     disp('Specified path is not a file or does not exist!');
@@ -71,6 +76,3 @@ handles.Import.targetTrialIDDropDown.Items=headersAll;
 
 %% Fill the headers UI Tree
 fillHeadersUITree(fig,headers);
-
-%% Initialize the folders, pulling from the logsheet. If SpecifyTrials is empty, use all rows. If not, use those rows.
-% initFolders(fig, logVar, struct);

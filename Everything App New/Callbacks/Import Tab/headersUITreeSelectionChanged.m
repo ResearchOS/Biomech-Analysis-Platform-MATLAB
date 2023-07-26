@@ -11,8 +11,8 @@ if isempty(selNode)
     return;
 end
 
-fullPath=getClassFilePath(selNode);
-struct=loadJSON(fullPath);
+uuid = selNode.NodeData.UUID;
+struct=loadJSON(uuid);
 
 headers=struct.Headers;
 

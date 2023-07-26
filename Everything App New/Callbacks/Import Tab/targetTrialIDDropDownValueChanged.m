@@ -7,9 +7,13 @@ handles=getappdata(fig,'handles');
 
 selNode=handles.Import.allLogsheetsUITree.SelectedNodes;
 
-fullPath=getClassFilePath(selNode);
+if isempty(selNode)
+    return;
+end
 
-struct=loadJSON(fullPath);
+uuid = selNode.NodeData.UUID;
+
+struct=loadJSON(uuid);
 
 handles.Import.targetTrialIDDropDown.Items = handles.Import.targetTrialIDDropDown.Items(~ismember(handles.Import.targetTrialIDDropDown.Items,{''}));
 
@@ -17,4 +21,4 @@ value=handles.Import.targetTrialIDDropDown.Value;
 
 struct.TargetTrialIDHeader=value;
 
-saveClass('Logsheet',struct);
+writeJSON(getJSONPath(struct), struct);

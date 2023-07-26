@@ -14,8 +14,13 @@ end
 
 selNodeLogsheet=handles.Import.allLogsheetsUITree.SelectedNodes;
 
-fullPath=getClassFilePath(selNodeLogsheet);
-struct=loadJSON(fullPath);
+if isempty(selNodeLogsheet)
+    return;
+end
+
+uuid = selNodeLogsheet.NodeData.UUID;
+
+struct=loadJSON(uuid);
 
 headers=struct.Headers;
 types=struct.Type;
@@ -28,4 +33,4 @@ types{idx}=handles.Import.typeDropDown.Value;
 
 struct.Type=types;
 
-saveClass('Logsheet',struct);
+writeJSON(getJSONPath(struct), struct);

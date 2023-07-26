@@ -13,8 +13,13 @@ slash=filesep;
 
 selNode=handles.Import.allLogsheetsUITree.SelectedNodes;
 
-fullPath=getClassFilePath(selNode);
-logsheetStruct=loadJSON(fullPath);
+if isempty(selNode)
+    return;
+end
+
+uuid = selNode.NodeData.UUID;
+
+logsheetStruct=loadJSON(uuid);
 
 numHeaderRows=logsheetStruct.NumHeaderRows;
 subjIDColHeader=logsheetStruct.SubjectCodenameHeader;
@@ -40,7 +45,7 @@ load(pathMAT,'logVar');
 headers=logsheetStruct.Headers;
 levels=logsheetStruct.Level;
 types=logsheetStruct.Type;
-varNames=logsheetStruct.Variables;
+varUUIDs=logsheetStruct.Variables;
 
 trialIdx=ismember(levels,'Trial') & checkedIdx; % The trial level variables idx that were checked.
 subjectIdx=ismember(levels,'Subject') & checkedIdx; % The subject level variables idx that were checked.
@@ -48,26 +53,34 @@ subjectIdx=ismember(levels,'Subject') & checkedIdx; % The subject level variable
 subjIDCol=ismember(headers,subjIDColHeader);
 targetTrialIDCol=ismember(headers,targetTrialIDColHeader);
 
-specTrialsName=logsheetStruct.SpecifyTrials;
+specTrialsName = getST(uuid);
+% specTrialsName=logsheetStruct.SpecifyTrials;
 if isempty(specTrialsName)
     beep;
     disp('Need to select specify trials for the logsheet import!');
     return;
 end
 
-projectNode=handles.Projects.allProjectsUITree.SelectedNodes;
-if isempty(projectNode)
+projectUUID = getCurrent('Current_Project_Name');
+if isempty(projectUUID)
     disp('Select a project first!');
     return;
 end
 
-fullPath=getClassFilePath(projectNode);
-projectStruct=loadJSON(fullPath);
+projectStruct=loadJSON(projectUUID);
+
+dataPath=projectStruct.DataPath.(computerID);
+
+if exist(dataPath,'dir')~=7
+    disp('Invalid data path!');
+    return;
+end
 
 inclStruct=getInclStruct(specTrialsName);
 allTrialNames=getTrialNames(inclStruct,logVar,0,logsheetStruct);
 rowsIdx=false(size(logVar,1),1);
 subNames=fieldnames(allTrialNames);
+
 %% Apply specify trials
 for i=1:length(subNames)
     subName=subNames{i};
@@ -75,7 +88,6 @@ for i=1:length(subNames)
     trialNames=fieldnames(trialNames);
     rowsIdxCurrent=ismember(logVar(:,subjIDCol),subName) & ismember(logVar(:,targetTrialIDCol),trialNames);
     rowsIdx(rowsIdxCurrent)=true;
-
 end
 
 % Get the row numbers from the specify trials selected
@@ -113,77 +125,32 @@ for i=1:length(rowNums) % Iterate over each row to decide at the repetition leve
 
 end
 
-dataPath=projectStruct.DataPath.(computerID);
-
-if exist(dataPath,'dir')~=7
-    disp('Invalid data path!');
-    return;
-end
-
 % In case a new variable is created, this helps fill the UI tree
 searchTerm=getSearchTerm(handles.Process.variablesSearchField);
 sortDropDown=handles.Process.sortVariablesDropDown;
-
-projectSettingsFile=getProjectSettingsFile();
-projectSettings=loadJSON(projectSettingsFile);
-Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
-groupPath=getClassFilePath(Current_ProcessGroup_Name,'ProcessGroup');
-currGroup=loadJSON(groupPath);
-tag='';
-if ~isempty(currGroup.Tags)
-    tag=currGroup.Tags{end};
-end
 
 %% Create the variables settings JSON files for subject & trial levels
 date=datetime('now');
 selHeaders={handles.Import.headersUITree.CheckedNodes.Text};
 for i=1:length(selHeaders)
     idx=ismember(headers,selHeaders{i});
-    varName=varNames{idx};
+    varUUID=varUUIDs{idx};
     header=headers{idx};
-    type=types{idx};
-    level=levels{idx};
-
-    if isempty(varName)
-        varPath='';
-        varPathPI='';
-    else
-        varPath=getClassFilePath(varName,'Variable');
-        varNamePI=getPITextFromPS(varName);
-        varPathPI=getClassFilePath(varNamePI,'Variable');
+    
+    if ~isempty(varUUID) && exist(getJSONPath(varUUID),'file')==2
+        continue; % If the variable already exists (and I assume it's linked to the logsheet) don't do anything.
     end
 
-    [~, id, psid]=deText(varName);
+    varStruct = createNewObject(true, 'Variable', header, '', '', true);
+    varUUID = varStruct.UUID;
+    linkObjs(uuid, varUUID, date);
 
-    if exist(varPathPI,'file')~=2 % Because PI file does not exist.
-        varStruct=createVariableStruct(headers{idx},id);
-        if ~isequal(level,'T')
-            varStruct.Level=level;
-            saveClass('Variable',varStruct,date);
-        end
-        varPathPI = getClassFilePath(varStruct.Text, 'Variable');
-    end
-    if exist(varPath,'file')~=2 % PS file does not exist
-        if exist('varStruct','var')~=1
-            varStruct=loadJSON(varPathPI);
-        end
-        varStruct_PS=createVariableStruct_PS(varStruct,psid,tag);
-    else
-        varStructPath=getClassFilePath(varName,'Variable');
-        varStruct_PS=loadJSON(varStructPath);
-    end
-
-    [logsheetStruct,varStruct_PS]=linkClasses(logsheetStruct,varStruct_PS);
-
-    varName=varStruct_PS.Text;
-    logsheetStruct.Variables{idx}=varName;
-    varNames{idx}=varName; % For the next iteration
-
-    clear varStruct;
+    logsheetStruct.Variables{idx}=varUUID;
+    varUUIDs{idx}=varUUID; % For the next iteration
 
 end
 
-saveClass('Logsheet', logsheetStruct);
+writeJSON(getJSONPath(uuid), logsheetStruct);
 fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
 
 %% Trial level data
@@ -203,7 +170,7 @@ if any(trialIdx) % There is at least one trial level variable
 
             headerIdxNum=trialIdxNums(varNum); % The column index.
             type=lower(types{headerIdxNum});                      
-            varName=varNames{headerIdxNum}; % The name of the variable struct.
+            varUUID=varUUIDs{headerIdxNum}; % The name of the variable struct.
 
             var=rowDataTrial{varNum};
 
@@ -230,12 +197,12 @@ if any(trialIdx) % There is at least one trial level variable
 
             % 2. Save data and metadata to file.
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
-            saveMAT(dataPath, desc, varName, var, subName, trialName);
+            saveMAT(dataPath, desc, varUUID, var, subName, trialName);
 
             % Update the last modified date, but only for the last row so this doesn't take too much
             % time.
             if rowNumIdx==rowNumsReps(end)
-                modifyVarsDate(varName, 'Variable');
+                modifyVarsDate(varUUID, 'Variable');
             end
 
         end
@@ -273,7 +240,7 @@ if any(subjectIdx)
 
             headerIdxNum=subjectIdxNums(varNum); % The column index.
             type=lower(types{headerIdxNum});
-            varName=varNames{headerIdxNum}; % The name of the variable struct.
+            varUUID=varUUIDs{headerIdxNum}; % The name of the variable struct.
 
             count=0;
             var='';
@@ -318,9 +285,9 @@ if any(subjectIdx)
 
             % 2. Save data and metadata to file.
             desc=['Logsheet variable (header: ' headers{headerIdxNum} ')'];
-            saveMAT(dataPath, desc, varName, var, subName);
+            saveMAT(dataPath, desc, varUUID, var, subName);
 
-            modifyVarsDate(varName, 'Variable');
+            modifyVarsDate(varUUID, 'Variable');
 
         end
 

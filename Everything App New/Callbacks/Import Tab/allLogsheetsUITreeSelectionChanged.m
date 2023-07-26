@@ -17,11 +17,12 @@ struct=loadJSON(uuid);
 computerID=getComputerID();
 
 % Set the logsheet path field.
-if exist(struct.LogsheetPath.(computerID),'file')==2
-    handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID);
-else
-    handles.Import.logsheetPathField.Value='Enter Logsheet Path';
-end
+handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID); % The computer ID field should always exist.
+% if exist(struct.LogsheetPath.(computerID),'file')==2
+%     handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID);
+% else
+%     handles.Import.logsheetPathField.Value='Enter Logsheet Path';
+% end
 
 % Set the number of header rows.
 handles.Import.numHeaderRowsField.Value=struct.NumHeaderRows;

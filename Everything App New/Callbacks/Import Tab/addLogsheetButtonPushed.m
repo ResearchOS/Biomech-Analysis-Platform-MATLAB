@@ -11,9 +11,15 @@ if isempty(logsheetName)
     return;
 end
 
-createLogsheetStruct(logsheetName);
+struct = createNewObject(false, 'Logsheet', logsheetName, '', '', true);
 
 searchTerm=getSearchTerm(handles.Import.searchField);
 
 fillUITree(fig,'Logsheet',handles.Import.allLogsheetsUITree, ...
     searchTerm, handles.Import.sortLogsheetsDropDown);
+
+selectNode(handles.Import.allLogsheetsUITree, struct.UUID);
+
+allLogsheetsUITreeSelectionChanged(fig);
+
+linkObjs(struct.UUID, getCurrent('Current_Analysis'));

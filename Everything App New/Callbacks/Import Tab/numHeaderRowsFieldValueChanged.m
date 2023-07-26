@@ -12,12 +12,12 @@ if isempty(selNode)
     return;
 end
 
-fullPath=getClassFilePath(selNode);
+uuid = selNode.NodeData.UUID;
 
-struct=loadJSON(fullPath);
+struct=loadJSON(uuid);
 
 value=handles.Import.numHeaderRowsField.Value;
 
 struct.NumHeaderRows=value;
 
-saveClass('Logsheet',struct);
+writeJSON(getJSONPath(struct), struct);

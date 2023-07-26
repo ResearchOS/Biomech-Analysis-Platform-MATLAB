@@ -1,4 +1,4 @@
-function []=saveMAT(dataPath, Metadata2, psText, Data, subName, trialName)
+function []=saveMAT(dataPath, Metadata2, uuid, Data, subName, trialName)
 
 %% PURPOSE: SAVE DATA TO MAT FILE.
 
@@ -18,10 +18,11 @@ else
     end
 end
 
-piText=getPITextFromPS(psText);
-matFolder=[matFolder slash piText];
+[type, abstractID, instanceID] = deText(uuid);
+abstractUUID = genUUID(type, abstractID);
+matFolder=[matFolder slash abstractUUID];
 
-filePath=[matFolder slash psText '.mat'];
+filePath=[matFolder slash uuid '.mat'];
 
 Metadata.Metadata=Metadata2;
 Metadata.Data=Data;

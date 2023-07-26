@@ -1,4 +1,4 @@
-function [Data]=loadMAT(dataPath, psText, subName, trialName)
+function [Data]=loadMAT(dataPath, uuid, subName, trialName)
 
 %% PURPOSE: LOAD DATA FROM A MAT FILE.
 
@@ -18,9 +18,10 @@ else
     end
 end
 
-piText=getPITextFromPS(psText);
-matFolder=[matFolder slash piText];
+[type, abstractID, instanceID] = deText(uuid);
+abstractUUID = genUUID(type, abstractID);
+matFolder=[matFolder slash abstractUUID];
 
-filePath=[matFolder slash psText '.mat'];
+filePath=[matFolder slash uuid '.mat'];
 
 load(filePath,'Data');

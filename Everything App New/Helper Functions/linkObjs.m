@@ -54,4 +54,8 @@ for i=1:length(leftObjs)
     links = [links; newline]; % Append this link to the file.
 end
 
-writeJSON(linksFilePath, links, date);
+if nargin==3
+    writeJSON(linksFilePath, links, date);
+else
+    writeJSON(linksFilePath, links);
+end

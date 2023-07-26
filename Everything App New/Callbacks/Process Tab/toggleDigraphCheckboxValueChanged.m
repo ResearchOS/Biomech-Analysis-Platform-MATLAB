@@ -37,13 +37,14 @@ if ~val
     return; % Don't fill in the digraph if it's not visible!
 end
 
-[Gall, nodesAll, edgesAll] = linkageToDigraph('all', fig); % A graph containing all analyses. Need to find the subset of functions in the current analysis.
-[G, nodes, edges] = linkageToDigraph('PR', fig);
-Current_Analysis = getCurrent('Current_Analysis');
-delFcns = getSubset(nodesAll, Current_Analysis); % The graph of just the functions (nodes) & variables (edges) for just this analysis.
-G = rmnode(G,delFcns);
-
-delIdx = ismember(nodes,delFcns);
-edges(delIdx) = [];
-nodes(delIdx,:) = [];
-renderGraph(fig, G, nodes, edges); % Show the graph.
+% [Gall, nodesAll, edgesAll] = linkageToDigraph('all', fig); % A graph containing all analyses. Need to find the subset of functions in the current analysis.
+G = linkageToDigraph('PR', fig);
+% nodesAll = nodes; % When there's only one analysis.
+% Current_Analysis = getCurrent('Current_Analysis');
+% delFcns = getSubset(nodesAll, Current_Analysis); % The graph of just the functions (nodes) & variables (edges) for just this analysis.
+% G = rmnode(G,delFcns);
+% 
+% delIdx = ismember(nodes,delFcns);
+% edges(delIdx) = [];
+% nodes(delIdx,:) = [];
+renderGraph(fig, G); % Show the graph.

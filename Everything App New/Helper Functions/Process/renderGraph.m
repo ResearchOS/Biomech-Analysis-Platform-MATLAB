@@ -1,4 +1,4 @@
-function [] = renderGraph(src, G, nodeMatrix, edges, markerSize, color, edgeID)
+function [] = renderGraph(src, G, markerSize, color, edgeID)
 
 %% PURPOSE: RENDER THE DIGRAPH IN THE UI AXES
 
@@ -7,8 +7,8 @@ handles=getappdata(fig,'handles');
 
 if nargin==1 || isempty(G)
     G = getappdata(fig,'digraph');
-    nodeMatrix = getappdata(fig,'nodeMatrix');
-    edges = getappdata(fig,'edges');
+%     nodeMatrix = getappdata(fig,'nodeMatrix');
+%     edges = getappdata(fig,'edges');
 end
 if exist('markerSize','var')~=1 || isempty(markerSize)
     markerSize = getappdata(fig,'markerSize');
@@ -18,9 +18,10 @@ if exist('markerSize','var')~=1 || isempty(markerSize)
 end
 defaultColor = [0 0.447 0.741];
 if ~exist('color','var') || isempty(color)
-    color = getappdata(fig,'color');
-    if isempty(color)
-        color = defaultColor; % Default blue color
+%     color = getappdata(fig,'color');
+    color = repmat(defaultColor,length(markerSize),1); % Default blue color
+    if any(markerSize~=4)
+        color(markerSize~=4,:) = [0 0 0];
     end
 end
 
@@ -53,7 +54,7 @@ if ~isscalar(markerSize)
 end
 
 setappdata(fig,'digraph',G);
-setappdata(fig,'nodeMatrix',nodeMatrix);
-setappdata(fig,'edges',edges);
+% setappdata(fig,'nodeMatrix',nodeMatrix);
+% setappdata(fig,'edges',edges);
 setappdata(fig,'markerSize',markerSize);
-setappdata(fig,'color',color);
+% setappdata(fig,'color',color);

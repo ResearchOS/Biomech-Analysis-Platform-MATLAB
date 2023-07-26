@@ -1,6 +1,8 @@
 function [names] = getName(uuids)
 
 %% PURPOSE: CONVERT UUID TO HUMAN READABLE NAME
+% NOTE: In the future, can check if there's any duplicate UUID's to speed
+% this function up.
 
 if ischar(uuids)
     uuids = {uuids};

@@ -38,7 +38,13 @@ end
 
 % Format the linkage matrix to be written
 if ~isstruct(json)
+%     prettyJSON = getName(json); % Has to be before JSON gets formatted for the linkage matrix.
     json = formatLinkageMatrix(json,'write');
+%     prettyJSON = formatLinkageMatrix(prettyJSON, 'write');
+%     [folder] = fileparts(fullPath);
+%     fid = fopen([folder filesep 'PrettyLinkages.json'],'w');
+%     fprintf(fid, '%s', prettyJSON);
+%     fclose(fid);
 else
     json=jsonencode(json,'PrettyPrint',true);
 end

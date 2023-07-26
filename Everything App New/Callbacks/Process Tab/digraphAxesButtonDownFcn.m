@@ -51,7 +51,7 @@ else
 
 end
 
-renderGraph(fig, [], [], [], markerSize, colors);
+renderGraph(fig, [], markerSize, colors);
 
 if ~doSelectionChanged
     return;

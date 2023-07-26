@@ -12,7 +12,7 @@ struct=loadJSON(uuid);
 struct.DateModified=date;
 struct.OutOfDate=false;
 struct.DateLastRan=date;
-writeJSON(structPath,struct); % Already overwrites the date saved.
+writeJSON(getJSONPath(struct),struct); % Already overwrites the date saved.
 
 % Only run the below code if there are output variables, i.e. if this is a
 % Process function.

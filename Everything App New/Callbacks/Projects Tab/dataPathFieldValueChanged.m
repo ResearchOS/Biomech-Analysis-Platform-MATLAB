@@ -11,20 +11,16 @@ if isempty(path)
     return;
 end
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_Project_Name');
-project=Current_Project_Name;
-
-fullPath=getClassFilePath(project, 'Project');
-projectStruct=loadJSON(fullPath);
-
 if exist(path,'dir')~=7
     disp('Specified path is not a directory or does not exist!');
     return;
 end
 
+projectUUID = getCurrent('Current_Project_Name');
+struct=loadJSON(projectUUID);
+
 computerID=getComputerID();
 
-projectStruct.DataPath.(computerID)=path;
+struct.DataPath.(computerID)=path;
 
-saveClass('Project',projectStruct);
+writeJSON(getJSONPath(struct), struct);

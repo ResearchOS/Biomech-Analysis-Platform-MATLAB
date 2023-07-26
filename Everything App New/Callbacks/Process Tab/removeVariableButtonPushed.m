@@ -7,37 +7,23 @@ handles=getappdata(fig,'handles');
 
 uiTree=handles.Process.allVariablesUITree;
 
-variableNode=uiTree.SelectedNodes;
+selNode=uiTree.SelectedNodes;
 
-if isempty(variableNode)
+if isempty(selNode)
     return;
 end
 
-varPath=getClassFilePath(variableNode.Text, 'Variable');
-struct=loadJSON(varPath);
+uuid = selNode.NodeData.UUID;
 
-idx=ismember({uiTree.Children.Text},variableNode.Text);
-
-assert(any(idx));
-
-idxNum=find(idx==1);
-
-struct.Checked=false;
-
-struct.Visible=false;
-
-saveClass('Variable',struct);
-
-delete(variableNode);
-
-if idxNum>length(uiTree.Children)
-    idxNum=idxNum-1;
+linksFolder = [getCommonPath() filesep 'Linkages'];
+linksFile = [linksFolder filesep 'Linkages.json'];
+links = loadJSON(linksFile);
+if ismember(uuid,links(:,1)) || ismember(uuid,links(:,2))
+    disp('Cannot archive a variable that is being used!');
+    return;
 end
 
-if idxNum==0
-    uiTree.SelectedNodes=[];
-else
-    uiTree.SelectedNodes=uiTree.Children(idxNum);
-end
+moveToArchive(uuid);
 
-allVariablesUITreeSelectionChanged(fig);
+selectNeighborNode(selNode);
+delete(selNode);

@@ -18,11 +18,19 @@ end
 struct = loadJSON(uuid);
 
 if ~isfield(struct,'MFileName') || isempty(struct.MFileName)
-    disp('No M file specified!')
+    mkNewMFile(struct, struct.Text);
     return;
 end
 
-fileName = struct.MFileName;
+mkNewMFile(struct);
+
+end
+
+function [fileName]=mkNewMFile(struct, fileName)
+
+if nargin==1
+    fileName = struct.MFileName;
+end
 
 oldDir=cd([getCommonPath filesep 'Code']);
 try
@@ -40,10 +48,14 @@ if isempty(fileName)
     return;
 end
 fileName=fileName{1};
-[type] = deText(uuid);
-filePath = createMFile(fileName, className2Abbrev(type, true));
+[type] = deText(struct.UUID);
+filePath = createMFile(fileName, className2Abbrev(type, true), struct.Level);
+
+fileName = struct.MFileName;
 
 %% Assign the file to the current struct.
-uuid.MFileName = fileName;
+struct.MFileName = fileName;
 writeJSON(getJSONPath(struct), struct);
 edit(filePath);
+
+end

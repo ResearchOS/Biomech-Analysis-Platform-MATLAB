@@ -16,13 +16,18 @@ struct=loadJSON(uuid);
 
 computerID=getComputerID();
 
+if ~isfield(struct.LogsheetPath,computerID)
+    tmp = createNewObject(false, 'Logsheet', 'Default', '', '', false);
+    struct.LogsheetPath.(computerID) = tmp.LogsheetPath.(computerID);
+    writeJSON(getJSONPath(struct), struct);
+end
+
 % Set the logsheet path field.
-handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID); % The computer ID field should always exist.
-% if exist(struct.LogsheetPath.(computerID),'file')==2
-%     handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID);
-% else
-%     handles.Import.logsheetPathField.Value='Enter Logsheet Path';
-% end
+if exist(struct.LogsheetPath.(computerID),'file')==2
+    handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID);
+else
+    handles.Import.logsheetPathField.Value='Enter Logsheet Path';
+end
 
 % Set the number of header rows.
 handles.Import.numHeaderRowsField.Value=struct.NumHeaderRows;

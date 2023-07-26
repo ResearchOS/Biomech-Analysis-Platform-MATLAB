@@ -1,4 +1,4 @@
-function [fullPath] = createMFile(fileName, class)
+function [filePath] = createMFile(fileName, class, level)
 
 %% PURPOSE: CREATE A NEW .M FILE WITH THE GIVEN FILE NAME.
 

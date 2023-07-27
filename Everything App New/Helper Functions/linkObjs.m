@@ -28,20 +28,20 @@ end
 
 %% Update the "OutOfDate" field
 % No need to update the left object when it's just a variable being added as an input somewhere.
-if ~all(contains(leftObjs,{'VR','AN','PG'}))
-    for i=1:length(leftObjs)
-        recurseSetOutOfDate(leftObjs{i}, true); % Recursively set the "OutOfDate" field to be true for all dependencies!
-        leftObjsStruct = loadJSON(leftObjs{i});
-        leftObjsStruct.OutOfDate = true;
-        writeJSON(getJSONPath(leftObjsStruct), leftObjsStruct);
-    end
-end
-
-for i=1:length(rightObjs)
-    rightObjsStruct = loadJSON(rightObjs{i});
-    rightObjsStruct.OutOfDate = true;
-    writeJSON(getJSONPath(rightObjsStruct), rightObjsStruct);
-end
+% if ~all(contains(leftObjs,{'VR','AN','PG'}))
+%     for i=1:length(leftObjs)
+%         recurseSetOutOfDate(leftObjs{i}, true); % Recursively set the "OutOfDate" field to be true for all dependencies!
+%         leftObjsStruct = loadJSON(leftObjs{i});
+%         leftObjsStruct.OutOfDate = true;
+%         writeJSON(getJSONPath(leftObjsStruct), leftObjsStruct);
+%     end
+% end
+% 
+% for i=1:length(rightObjs)
+%     rightObjsStruct = loadJSON(rightObjs{i});
+%     rightObjsStruct.OutOfDate = true;
+%     writeJSON(getJSONPath(rightObjsStruct), rightObjsStruct);
+% end
 
 
 if length(leftObjs)>1 && length(rightObjs)>1

@@ -37,9 +37,9 @@ end
 st=dbstack;
 st(2).name;
 
-psStructFcn=runInfo.Fcn.PSStruct;
+instStructFcn=runInfo.Fcn.InstStruct;
 
-outputVars=psStructFcn.OutputVariables;
+outputVars=instStructFcn.OutputVariables;
 
 for i=1:length(outputVars)
 
@@ -51,11 +51,11 @@ for i=1:length(outputVars)
 
     for j=2:length(currVars)
 
-        psStruct=runInfo.Var.Output(i).PSStruct{j-1};
-        piStruct=runInfo.Var.Output(i).PIStruct{j-1};
-        varLevel=piStruct.Level;
+        instStruct=runInfo.Var.Output(i).InstStruct{j-1};
+        absStruct=runInfo.Var.Output(i).AbsStruct{j-1};
+        varLevel=absStruct.Level;
 
-        psText=psStruct.Text;
+        uuid=instStruct.UUID;
 
         if level<varLevel
             error('Missing subject and/or trial name specification');
@@ -63,11 +63,11 @@ for i=1:length(outputVars)
 
         switch varLevel
             case 'P'
-                saveMAT(dataPath,psStructFcn,psText,varargin{j-1});
+                saveMAT(dataPath,instStructFcn,uuid,varargin{j-1});
             case 'S'
-                saveMAT(dataPath,psStructFcn,psText,varargin{j-1},subName);
+                saveMAT(dataPath,instStructFcn,uuid,varargin{j-1},subName);
             case 'T'
-                saveMAT(dataPath,psStructFcn,psText,varargin{j-1},subName,trialName);
+                saveMAT(dataPath,instStructFcn,uuid,varargin{j-1},subName,trialName);
         end
 
     end

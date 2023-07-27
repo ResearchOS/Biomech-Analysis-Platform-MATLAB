@@ -30,11 +30,11 @@ switch nargin
         error('Need to specify getArg ID at minimum (nargin>=1)');    
 end
 
-psStructFcn=runInfo.Fcn.PSStruct;
+instStructFcn=runInfo.Fcn.InstStruct;
 
 % Get the actual variable names as stored in file.
-inputVars=psStructFcn.InputVariables;
-subVars=psStructFcn.InputSubvariables;
+inputVars=instStructFcn.InputVariables;
+subVars=instStructFcn.InputSubvariables;
 
 for i=1:length(inputVars)
 
@@ -49,19 +49,19 @@ for i=1:length(inputVars)
 
     for j=2:length(currVars)
 
-        psStruct=runInfo.Var.Input(i).PSStruct{j-1};
-        piStruct=runInfo.Var.Input(i).PIStruct{j-1};
+        instStruct=runInfo.Var.Input(i).InstStruct{j-1};
+        absStruct=runInfo.Var.Input(i).AbsStruct{j-1};
 
         % 1. If hard-coded, use value stored in struct and continue.
-        if piStruct.IsHardCoded
-            varargout{j-1}=psStruct.HardCodedValue;
+        if absStruct.IsHardCoded
+            varargout{j-1}=instStruct.HardCodedValue;
             continue;
         end
 
         % 3. If dynamic, find the proper file by looking at its text,
         % level, and subName/trialName/repNum values.
-        psText=psStruct.Text;
-        varLevel=piStruct.Level;
+        uuid=instStruct.UUID;
+        varLevel=absStruct.Level;
 
         if level<varLevel
             error('Missing subject and/or trial name specification');
@@ -70,11 +70,11 @@ for i=1:length(inputVars)
         % 4. Load the dynamic variable.
         switch varLevel
             case 'P'
-                varargout{j-1}=loadMAT(dataPath,psText);
+                varargout{j-1}=loadMAT(dataPath,uuid);
             case 'S'
-                varargout{j-1}=loadMAT(dataPath,psText,subName);
+                varargout{j-1}=loadMAT(dataPath,uuid,subName);
             case 'T'
-                varargout{j-1}=loadMAT(dataPath,psText,subName,trialName);
+                varargout{j-1}=loadMAT(dataPath,uuid,subName,trialName);
         end
 
         if ~isempty(currSubvars{j})

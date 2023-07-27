@@ -90,6 +90,11 @@ for inclExcl=1:2
                 passedCurrSubCond=zeros(1,length(logOrStruct));
                 currSubCond=inclStruct.(type).Condition(condNum).(currLogOrStruct);
 
+                if isempty(currSubCond)
+                    disp('Forget to include criteria in one of the specify trials conditions? Skipping!');
+                    continue; % I forgot to include something
+                end
+
                 switch currLogOrStruct
                     case 'Logsheet' % Logsheet criteria
                         passAllSubConds=zeros(length(currSubCond),1);

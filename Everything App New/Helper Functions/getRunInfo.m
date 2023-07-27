@@ -12,9 +12,9 @@ runInfo.DataPath=projectStruct.DataPath.(computerID);
 runInfo.Fcn.AbsStruct=absStruct;
 runInfo.Fcn.InstStruct=instStruct;
 
-[fcnType] = deText(absStruct);
+[fcnType] = deText(absStruct.UUID);
 
-if isequal(fcnType,'Process')
+if isequal(fcnType,'PR')
     numIters=2; % Input and output variables.
 else
     numIters=1; % Inputs only.

@@ -17,6 +17,7 @@ logsheetStruct=loadJSON(Current_Logsheet);
 
 computerID=getComputerID();
 
+slash = filesep;
 bool=true;
 try
 

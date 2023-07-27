@@ -21,6 +21,7 @@ end
 
 try
     testGUI=evalin('base','gui;'); % Var isn't used, just checking if GUI var is in base workspace.
+    clear testGUI;
 catch
     assignin('base','gui',fig); % Ensure that the fig variable is available for use.
 end
@@ -30,8 +31,8 @@ slash=filesep;
 oldDir=cd([getCommonPath slash 'Code']); % Ensure that the proper functions are being called.
 for i=1:length(queue)    
 
-    text=queue{i};
-    runProcess(text,true);           
+    uuid=queue{i};
+    runProcess(uuid,true);           
 
 end
 

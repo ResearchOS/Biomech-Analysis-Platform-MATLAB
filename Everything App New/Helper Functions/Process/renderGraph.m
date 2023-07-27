@@ -46,11 +46,21 @@ if any(diff(markerSize)~=0)
     labeledge(h, ins, G.Edges.Name(ins));
     outs = outedges(G, G.Nodes.Name(idx));
     highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
-    labeledge(h, outs, G.Edges.Name(outs));
-    if exist('edgeID','var') && ~isempty(edgeID)
-        edgeIdx = ismember(G.Edges.Name, edgeID);
-        highlight(h, 'Edges', edgeIdx, 'EdgeColor', rgb('orange'),'LineWidth',2);
+    labeledge(h, outs, G.Edges.Name(outs));    
+end
+
+% If an edge is selected (as in, a variable selected in the all variables list).
+if exist('edgeID','var') && ~isempty(edgeID)
+    [type, abstractID, instanceID] = deText(edgeID);
+    if ~isempty(instanceID) && ischar(edgeID)
+        edgeID = {edgeID}; % Instance selected
+    elseif isempty(instanceID)
+        edgeID = getInstances(edgeID);
     end
+    
+    edgeIdx = ismember(G.Edges.Name, edgeID);
+    highlight(h, 'Edges', edgeIdx, 'EdgeColor', rgb('orange'),'LineWidth',2);
+    labeledge(h, edgeIdx, G.Edges.Name(edgeIdx));
 end
 
 setappdata(fig,'digraph',G);

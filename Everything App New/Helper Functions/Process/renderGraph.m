@@ -63,5 +63,18 @@ if exist('edgeID','var') && ~isempty(edgeID)
     labeledge(h, edgeIdx, G.Edges.Name(edgeIdx));
 end
 
+% If I want the data all plotted in a line, do that.
+if isequal('Linear',handles.Process.switchDigraphModeDropDown.Value)
+    order = orderDeps(G);
+    x = zeros(length(order),1);
+    y = NaN(length(order),1);
+    for i=1:length(G.Nodes.Name)
+        idx = find(ismember(order,G.Nodes.Name(i)));
+        y(i) = -1*idx;
+    end
+    h.XData = x;
+    h.YData = y;
+end
+
 setappdata(fig,'digraph',G);
 setappdata(fig,'markerSize',markerSize);

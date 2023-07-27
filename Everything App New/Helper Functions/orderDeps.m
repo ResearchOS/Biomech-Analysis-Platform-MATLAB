@@ -1,9 +1,46 @@
-function [list] = orderDeps(src, trg)
+function [list] = orderDeps(G, src, trg)
 
 %% PURPOSE: GET ALL FUNCTIONS BETWEEN TWO FUNCTIONS, IN ORDER.
 % i.e. dependencies are before the functions that depend on them.
 
-G = linkageToDigraph();
+if exist('src','var')~=1 || exist('trg','var')~=1
+    linksFolder = [getCommonPath() filesep 'Linkages'];
+    linksFile = [linksFolder filesep 'Linkages.json'];
+    links = loadJSON(linksFile);
+end
+
+warning off;
+getG = true;
+if exist('src','var')~=1
+    getG = false;
+    src = 'PRZAAAAA_AAA';
+    G = addnode(G,src);
+    % Get the idx of the processing nodes with no inputs.
+%     idxNums = contains(links(:,2),'VR') & contains(links(:,1),{'LG','PR'}) & ismember(links(:,1), G.Nodes.Name) & ~ismember(links(:,2), G.Nodes.Name);
+%     noIns = unique(links(idxNums,1),'stable');
+%     G = addedge(G,repmat({src},length(noIns),1));
+    for i=1:length(G.Nodes.Name)
+        if indegree(G,G.Nodes.Name{i})==0 && ~isequal(G.Nodes.Name{i},src)
+            G = addedge(G,src, G.Nodes.Name{i});
+        end
+    end
+end
+
+if exist('trg','var')~=1
+    getG = false;
+    trg = 'PRZZZZZZ_ZZZ';
+    G = addnode(G,trg);
+    
+    % Get the idx of the processing nodes with no outputs.
+    idxNums = contains(links(:,1),'VR') & contains(links(:,2),'PR') & ismember(links(:,2), G.Nodes.Name) & ~ismember(links(:,1), G.Nodes.Name); 
+    noOuts = unique(links(idxNums,2),'stable');
+    G = addedge(G,noOuts,repmat({trg},length(noOuts),1));
+end
+warning on;
+
+if getG
+    G = linkageToDigraph('PR');
+end
 
 if isempty(G)
     list = {};
@@ -22,12 +59,21 @@ end
 list = getList(paths);
 list = [list; initList];
 
+if isequal(list{1},'PRZAAAAA_AAA')
+    list(1) = [];
+end
+
+if isequal(list{end},'PRZZZZZZ_ZZZ')
+    list(end) = [];
+end
+
 end
 
 function [list] = getList(paths)
 
 % Continue until there are no nodes left in any path.
 lengths = ones(size(paths)); % Just to make the loop run the first time.
+list = {};
 while any(lengths>0)
 
     % Check the last element of each path. If it appears earlier than the

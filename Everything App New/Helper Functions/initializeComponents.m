@@ -348,6 +348,9 @@ handles.Process.toggleDigraphCheckbox=uicheckbox(processTab,'Value',false,'Text'
 % 36. Digraph UI axes
 handles.Process.digraphAxes=uiaxes(processTab,'Visible',false,'Box','off','XTickLabel',{},'YTickLabel',{},'XTick',{},'YTick',{},'PickableParts','visible','HitTest','on','ButtonDownFcn',@(digraphAxes, event) digraphAxesButtonDownFcn(digraphAxes));
 
+% 37. Switch digraph mode
+handles.Process.switchDigraphModeDropDown=uidropdown(processTab,'Visible',false,'Items',{'Graph','Linear'},'Value','Graph','Editable','off','ValueChangedFcn',@(switchDigraphModeDropDown, event) switchDigraphModeDropDownValueChanged(switchDigraphModeDropDown));
+
 % 35. Add specify trials button
 handles.Process.addSpecifyTrialsButton=uibutton(processTab,'Text','S+');
 addSpecifyTrialsButton=handles.Process.addSpecifyTrialsButton;

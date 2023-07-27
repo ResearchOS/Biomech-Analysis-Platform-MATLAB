@@ -61,7 +61,7 @@ for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.
 %         continue;
 %     end
 
-    addNewNode(uiTree, allUUIDs{i}, allSearchResults{i});
+    addNewNode(uiTree, allUUIDs{i}, allSearchResults{i}, false);
 
     childIdx=childIdx+1;
     

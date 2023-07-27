@@ -18,6 +18,9 @@ end
 if length(markerSize)<length(G.Nodes.Name)
     markerSize = [markerSize; repmat(4,length(G.Nodes.Name)-length(markerSize),1)];
 end
+if length(markerSize)>length(G.Nodes.Name)
+    markerSize(length(G.Nodes.Name)+1:end) = [];
+end
 defaultColor = [0 0.447 0.741];
 if ~exist('color','var') || isempty(color)
     color = repmat(defaultColor,length(markerSize),1); % Default blue color
@@ -48,6 +51,16 @@ if any(diff(markerSize)~=0)
     highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
     labeledge(h, outs, G.Edges.Name(outs));    
 end
+
+% Get the indices of which variables are outdated.
+notDoneIdx = [];
+for i=1:length(G.Edges.Name)
+    varStruct = loadJSON(G.Edges.Name{i});
+    if varStruct.OutOfDate
+        notDoneIdx = [notDoneIdx; i];
+    end
+end
+highlight(h, 'Edges', notDoneIdx, 'LineStyle','--');
 
 % If an edge is selected (as in, a variable selected in the all variables list).
 if exist('edgeID','var') && ~isempty(edgeID)

@@ -35,10 +35,12 @@ end
 
 assert(length(leftObjs)==length(rightObjs));
 
-linksFolder = [getCommonPath() slash 'Linkages'];
-linksFilePath = [linksFolder slash 'Linkages.json'];
+if isempty(leftObjs{1}) || isempty(rightObjs{1})
+    error('Why is a left or right object linkage empty?!')
+    return;
+end
 
-links = loadJSON(linksFilePath);
+[links, linksPath] = loadLinks();
 
 for i=1:length(leftObjs)
     newline = {leftObjs{i}, rightObjs{i}};
@@ -47,4 +49,4 @@ for i=1:length(leftObjs)
     links(existIdx,:) = [];
 end
 
-writeJSON(linksFilePath,links);
+writeJSON(linksPath,links);

@@ -1,13 +1,13 @@
 function []=linkObjs(leftObjs, rightObjs, date)
 
 %% PURPOSE: LINK TWO OBJECTS TOGETHER. INPUTS ARE THE STRUCTS THEMSELVES, OR THEIR UUID'S.
-% LINKAGE INFORMATION IS STORED IN ITS OWN FILES, UNDER "LINKAGES" IN THE
+% LINKAGE INFORMATION IS STORED IN ITS OWN FILE, UNDER "LINKAGES" IN THE
 % COMMON PATH.
 
 slash = filesep;
 
 if ischar(leftObjs)
-    leftObjs = {leftObjs};
+    leftObjs = {leftObjs};    
 end
 
 if ischar(rightObjs)
@@ -15,12 +15,34 @@ if ischar(rightObjs)
 end
 
 if isstruct(leftObjs)
+%     leftObjsStruct = leftObjs;
+    % When do I need to update the left object as being out of date?
     leftObjs = {leftObjs.UUID};
 end
 
 if isstruct(rightObjs)
+%     rightObjsStruct = rightObjs;
+    % When do I need to update the right object as being out of date?
     rightObjs = {rightObjs.UUID};
 end
+
+%% Update the "OutOfDate" field
+% No need to update the left object when it's just a variable being added as an input somewhere.
+if ~all(contains(leftObjs,{'VR','AN','PG'}))
+    for i=1:length(leftObjs)
+        recurseSetOutOfDate(leftObjs{i}, true); % Recursively set the "OutOfDate" field to be true for all dependencies!
+        leftObjsStruct = loadJSON(leftObjs{i});
+        leftObjsStruct.OutOfDate = true;
+        writeJSON(getJSONPath(leftObjsStruct), leftObjsStruct);
+    end
+end
+
+for i=1:length(rightObjs)
+    rightObjsStruct = loadJSON(rightObjs{i});
+    rightObjsStruct.OutOfDate = true;
+    writeJSON(getJSONPath(rightObjsStruct), rightObjsStruct);
+end
+
 
 if length(leftObjs)>1 && length(rightObjs)>1
     error('Either the left or right element must be scalar');
@@ -37,10 +59,12 @@ end
 
 assert(length(leftObjs)==length(rightObjs));
 
-linksFolder = [getCommonPath() slash 'Linkages'];
-linksFilePath = [linksFolder slash 'Linkages.json'];
+if isempty(leftObjs{1}) || isempty(rightObjs{1})
+    error('Why is a left or right object linkage empty?!')
+    return;
+end
 
-links = loadJSON(linksFilePath);
+[links, linksPath] = loadLinks();
 
 for i=1:length(leftObjs)
     newline = {leftObjs{i}, rightObjs{i}};
@@ -55,7 +79,7 @@ for i=1:length(leftObjs)
 end
 
 if nargin==3
-    writeJSON(linksFilePath, links, date);
+    writeJSON(linksPath, links, date);
 else
-    writeJSON(linksFilePath, links);
+    writeJSON(linksPath, links);
 end

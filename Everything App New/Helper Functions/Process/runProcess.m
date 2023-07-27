@@ -1,4 +1,4 @@
-function []=runProcess(instUUID,guiInBase)
+function [stop]=runProcess(instUUID,guiInBase)
 
 %% PURPOSE: ACTUALLY RUN THE SPECIFIED FUNCTION
 
@@ -29,9 +29,13 @@ specifyTrials=getST(instUUID);
 
 fcnName=absStruct.MFileName;
 
+stop = false;
 if exist(fcnName,'file')~=2
-    error('Specified M file does not exist!');
+    disp('Specified M file does not exist!');
+    stop = true;
 end
+
+%% CHECK IF ALL UPSTREAM FUNCTIONS & VARIABLES ARE UP TO DATE!
 
 %% NOTE: NEED THE VARIABLES' LEVELS, AND THE FUNCTION'S LEVELS.
 fcnLevel=absStruct.Level;
@@ -52,14 +56,14 @@ trialNames=getTrialNames(inclStruct,logVar,0,logsheetStruct);
 
 % Remove multiple subjects
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
-% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
 % Remove all but one subject
 % remSubNames=fieldnames(trialNames);
 % idx=ismember(remSubNames,'Busan');
 % remSubNames(idx)=[];
 
-% trialNames=rmfield(trialNames,remSubNames);
+trialNames=rmfield(trialNames,remSubNames);
 subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
@@ -114,7 +118,7 @@ if ~ismember('P',fcnLevel)
 end
 
 %% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
-modifyVarsDate(instStruct.UUID);
+modifyVarsDate(instStruct.UUID); % When setting "OutOfDate" to false, this does NOT get recursively applied to up or downstream objects.
 
 %% Remove the completed process function from the queue
 queue=getCurrent('Process_Queue');

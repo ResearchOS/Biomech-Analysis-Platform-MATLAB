@@ -1,6 +1,10 @@
-function [newNode]=addNewNode(parent, uuid, text)
+function [newNode]=addNewNode(parent, uuid, text, doSort)
 
 %% PURPOSE: CREATE A NEW NODE.
+
+if exist('doSort','var')~=1
+    doSort = false;
+end
 
 if exist('text','var')~=1 || isempty(text)
     text = 'Default';
@@ -47,4 +51,6 @@ switch uiTreeClass
         plural = 'Variables';
 end
 sortMethod = handles.Process.(['sort' plural 'DropDown']).Value;
-sortUITree(uiTree, sortMethod);
+if doSort
+    sortUITree(uiTree, sortMethod);
+end

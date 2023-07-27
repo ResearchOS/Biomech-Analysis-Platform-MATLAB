@@ -36,3 +36,12 @@ writeJSON(getJSONPath(contStruct), contStruct);
 
 %% Unlink process function from group or analysis.
 unlinkObjs(selUUID, contStruct);
+
+%% Unlink the variables from the function. However, this maintains the variables in the function JSON!
+fcnStruct = loadJSON(selUUID);
+inVars = getVarNamesArray(fcnStruct, 'InputVariables');
+outVars = getVarNamesArray(fcnStruct, 'OutputVariables');
+links = loadLinks();
+unlinkObjs(inVars, fcnStruct);
+unlinkObjs(fcnStruct, outVars);
+links = loadLinks();

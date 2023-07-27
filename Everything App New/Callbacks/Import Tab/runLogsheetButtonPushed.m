@@ -200,7 +200,7 @@ if any(trialIdx) % There is at least one trial level variable
 
             % Update the last modified date, but only for the last row so this doesn't take too much
             % time.
-            if rowNumIdx==rowNumsReps(end)
+            if rowNumIdx==length(rowNumsReps)
                 modifyVarsDate(varUUID);
             end
 

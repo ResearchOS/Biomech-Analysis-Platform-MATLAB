@@ -54,3 +54,16 @@ switch uiTree
     otherwise
         error('Where am I?');
 end
+
+%% This happens if the function has been removed from the analysis previously, and is now being re-added.
+% This helps keep a history!
+inVars = getVarNamesArray(selStruct, 'InputVariables');
+outVars = getVarNamesArray(selStruct, 'OutputVariables');
+
+if ~isempty(inVars)
+    linkObjs(inVars, selStruct);
+end
+
+if ~isempty(outVars)
+    linkObjs(selStruct, outVars);
+end

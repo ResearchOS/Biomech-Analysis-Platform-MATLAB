@@ -14,6 +14,10 @@ uuids = reshape(uuids,m*n,1);
 names = cell(size(uuids));
 for i=1:length(uuids)
     uuid = uuids{i};
+    if isempty(uuid)
+        names{i}='';
+        continue;
+    end
     struct = loadJSON(uuid);
 
     names{i} = struct.Text;

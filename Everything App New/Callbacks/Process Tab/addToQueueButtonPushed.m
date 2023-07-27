@@ -9,10 +9,11 @@ handles=getappdata(fig,'handles');
 checkedNodes=handles.Process.analysisUITree.CheckedNodes;
 
 if isempty(checkedNodes)
-    checkedNodes=handles.Process.analysisUITree.SelectedNodes;
-    if isempty(checkedNodes)
-        return;
-    end
+%     checkedNodes=handles.Process.analysisUITree.SelectedNodes;
+%     if isempty(checkedNodes)
+%         return;
+%     end
+    return;
 end
 
 %% Uncheck all the nodes that are being added.

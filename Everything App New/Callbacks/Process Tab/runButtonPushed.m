@@ -32,10 +32,17 @@ oldDir=cd([getCommonPath slash 'Code']); % Ensure that the proper functions are 
 for i=1:length(queue)    
 
     uuid=queue{i};
-    runProcess(uuid,true);           
+    stop = runProcess(uuid,true);  
+    if stop
+        break;
+    end
 
 end
 
 cd(oldDir);
 
-disp(['Finished running all functions in queue in ' num2str(round(toc(startAll),2)) ' seconds']);
+if ~stop
+    disp(['Finished running all functions in queue in ' num2str(round(toc(startAll),2)) ' seconds']);
+else
+    disp(['Aborted running on function ' getName(uuid)]);
+end

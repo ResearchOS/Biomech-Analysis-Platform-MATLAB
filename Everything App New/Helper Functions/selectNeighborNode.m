@@ -7,6 +7,13 @@ if exist('dir','var')~=1
     % dir=0; % Select the next node up (before the current).
 end
 
+if isequal(dir,'before')
+    dir = 0;
+end
+if isequal(dir,'after')
+    dir = 1;
+end
+
 uiTree=getUITreeFromNode(currNode);
 
 if isempty(currNode)

@@ -14,6 +14,9 @@ selNode = handles.Process.functionUITree.SelectedNodes;
 if isempty(selNode)
     uuid = '';
 else
+    if ~isstruct(selNode.NodeData)
+        return;
+    end
     uuid = selNode.NodeData.UUID;
 end
 

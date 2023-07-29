@@ -41,15 +41,21 @@ h.NodeColor = color;
 h.EdgeColor = defaultColor;
 h.LineWidth = 0.5;
 
+if handles.Process.prettyVarsCheckbox.Value
+    edgenames = G.Edges.PrettyName;
+else
+    edgenames = G.Edges.Name;
+end
+
 % If a node is selected, highlight its in and out edges.
 if any(diff(markerSize)~=0)
     idx = ismember(markerSize, 8);
     ins = inedges(G, G.Nodes.Name(idx));
     highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
-    labeledge(h, ins, G.Edges.Name(ins));
+    labeledge(h, ins, edgenames(ins));
     outs = outedges(G, G.Nodes.Name(idx));
     highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
-    labeledge(h, outs, G.Edges.Name(outs));    
+    labeledge(h, outs, edgenames(outs));
 end
 
 % Get the indices of which variables are outdated.
@@ -73,7 +79,7 @@ if exist('edgeID','var') && ~isempty(edgeID)
     
     edgeIdx = ismember(G.Edges.Name, edgeID);
     highlight(h, 'Edges', edgeIdx, 'EdgeColor', rgb('orange'),'LineWidth',2);
-    labeledge(h, edgeIdx, G.Edges.Name(edgeIdx));
+    labeledge(h, edgeIdx, edgenames(edgeIdx));
 end
 
 % If I want the data all plotted in a line, do that.

@@ -9,10 +9,6 @@ handles=getappdata(fig,'handles');
 checkedNodes=handles.Process.analysisUITree.CheckedNodes;
 
 if isempty(checkedNodes)
-%     checkedNodes=handles.Process.analysisUITree.SelectedNodes;
-%     if isempty(checkedNodes)
-%         return;
-%     end
     return;
 end
 
@@ -53,7 +49,40 @@ uuids = uuids(~inQueueIdx);
 texts = texts(~inQueueIdx);
 
 %% Check whether all pre-requisite variables are up to date.
-% [texts]=checkDeps(texts);
+% outDated = false;
+% for i=1:length(uuids)
+%     varNames = getVarNamesArray(loadJSON(uuids{i}),'InputVariables');
+%     for j=1:length(varNames)
+%         varStruct = loadJSON(varNames{j});
+%         if varStruct.OutOfDate
+%             outDated = true;
+% %             disp(['Variables out of date! Cannot add Process function to queue']);
+%             break;
+% %             return;
+%         end
+%     end
+%     if outDated
+%         break;
+%     end
+% end
+% 
+% if outDated && length(uuids)>1
+%     % Not implemented yet
+%     return;
+% elseif outDated && length(uuids)==1
+%     list = orderDeps(getappdata(fig,'digraph'), '', uuids{1});
+%     for i=length(list):-1:1
+%         struct = loadJSON(list{i});
+%         type = deText(struct.UUID);
+%         if struct.OutOfDate && isequal(type,'PR')
+%             uuids = [{struct.UUID}; uuids];
+%             texts = [{struct.Text}; texts];
+%         end
+%     end
+% end
+% 
+% uuids = unique(uuids,'stable');
+% texts = unique(texts,'stable');
 
 %% Append UUIDs to queue, and add new nodes.
 queue=[queue; uuids];

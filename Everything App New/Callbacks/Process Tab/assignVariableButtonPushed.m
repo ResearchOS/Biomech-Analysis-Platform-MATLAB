@@ -63,6 +63,8 @@ if isempty(instanceID)
 
     % Create the new node in the "all" UI tree
     addNewNode(absNode, allVarUUID, varStruct.Text);
+else
+    varStruct = loadJSON(allVarUUID);
 end
 
 getSetArgIdxNum = str2double(parentNode.Text(isstrprop(parentNode.Text,'digit'))); % Number of this getArg or setArg
@@ -91,6 +93,8 @@ end
 
 currFcnUUID = currFcnNode.NodeData.UUID;
 fcnStruct = loadJSON(currFcnUUID);
+prevInputVars = getVarNamesArray(fcnStruct, 'InputVariables');
+prevOutputVars = getVarNamesArray(fcnStruct,'OutputVariables');
 
 [fcnType, fcnAbstractID, fcnInstanceID] = deText(currFcnUUID);
 absFcnUUID = genUUID(fcnType, fcnAbstractID);
@@ -111,17 +115,28 @@ fcnStruct.(fldName){getSetArgIdx}(argIdx) = {allVarUUID};
 if isequal(fldName,'InputVariables')
     fcnStruct.InputSubvariables{getSetArgIdx}(argIdx) = {''}; % Changing the variable, so the subvariable should be reset.
 end
+
+
+%% Update function OutOfDate parameter if any input or output variable has changed.
+newInputVars = getVarNamesArray(fcnStruct, 'InputVariables');
+newOutputVars = getVarNamesArray(fcnStruct,'OutputVariables');
+if ~(isequal(newInputVars,prevInputVars) && isequal(newOutputVars, prevOutputVars))
+    fcnStruct.OutOfDate = true;
+end
+
 writeJSON(getJSONPath(fcnStruct), fcnStruct);
 
 currVarNode.NodeData.UUID = allVarUUID;
 argTextSplit = strsplit(currVarNode.Text);
 currVarNode.Text = [argTextSplit{1} ' (' allVarUUID ')'];
 
-%% Link objects
+%% Link objects. Update variable OutOfDate field.
 if isequal(parentNode.Text(1:6),'getArg')
     linkObjs(allVarUUID, currFcnUUID);
 elseif isequal(parentNode.Text(1:6),'setArg')
     linkObjs(currFcnUUID, allVarUUID);
+    varStruct.OutOfDate = true;
+    writeJSON(getJSONPath(varStruct), varStruct);
 end
 
 %% Unlink the previous variable, if applicable.
@@ -132,6 +147,27 @@ if length(argTextSplit)>1 % There was a variable there.
             unlinkObjs(prevVarUUID, currFcnUUID);
         elseif isequal(parentNode.Text(1:6),'setArg')
             unlinkObjs(currFcnUUID, prevVarUUID);
+        end
+    end
+end
+
+%% Change OutOfDate values for any functions or variables downstream.
+if fcnStruct.OutOfDate
+    list = orderDeps(getappdata(fig,'digraph'), fcnStruct.UUID,[]);
+    for i = 1:length(list)
+        currFcnStruct = loadJSON(list{i});
+        currFcnStruct.OutOfDate = true;
+        writeJSON(getJSONPath(currFcnStruct), currFcnStruct);
+
+        % Update variables.
+        varsOut = getVarNamesArray(currFcnStruct, 'OutputVariables');
+        for j = 1:length(varsOut)
+            if isempty(varsOut{j})
+                continue;
+            end
+            varStruct = loadJSON(varsOut{j});
+            varStruct.OutOfDate = true;
+            writeJSON(getJSONPath(varStruct), varStruct);
         end
     end
 end

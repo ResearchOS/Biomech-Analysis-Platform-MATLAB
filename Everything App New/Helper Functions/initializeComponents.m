@@ -352,7 +352,7 @@ handles.Process.digraphAxes=uiaxes(processTab,'Visible',false,'Box','off','XTick
 handles.Process.switchDigraphModeDropDown=uidropdown(processTab,'Visible',false,'Items',{'Graph','Linear'},'Value','Graph','Editable','off','ValueChangedFcn',@(switchDigraphModeDropDown, event) switchDigraphModeDropDownValueChanged(switchDigraphModeDropDown));
 
 % 38. Pretty variables checkbox
-handles.Process.prettyVarsCheckbox=uicheckbox(processTab,'Value',false,'Text','Pretty Vars','ValueChangedFcn',@(prettyVarsCheckbox, event) prettyVarsCheckboxValueChanged(prettyVarsCheckbox));
+handles.Process.prettyVarsCheckbox=uicheckbox(processTab,'Visible',false,'Value',false,'Text','Pretty Vars','ValueChangedFcn',@(prettyVarsCheckbox, event) prettyVarsCheckboxValueChanged(prettyVarsCheckbox));
 
 % 35. Add specify trials button
 handles.Process.addSpecifyTrialsButton=uibutton(processTab,'Text','S+');

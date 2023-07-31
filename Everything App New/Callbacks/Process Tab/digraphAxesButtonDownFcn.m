@@ -25,18 +25,25 @@ ydata = h.YData';
 xWins = [xdata-xTol/2 xdata+xTol/2];
 yWins = [ydata-yTol/2 ydata+yTol/2];
 
+G = getappdata(fig,'digraph');
 if nargin == 1 || isempty(uuid)
     idx = (currPoint(1)>xWins(:,1) & currPoint(1)<xWins(:,2)) & ...
     (currPoint(2)>yWins(:,1) & currPoint(2)<yWins(:,2));
     doSelectionChanged = true; % The selection was made in the digraph, so update the list selection accordingly.
-else
-    G = getappdata(fig,'digraph');
+    if sum(idx)>1
+        dists = sqrt((xdata-currPoint(1)).^2+(ydata-currPoint(2)).^2);
+        [~,minDistIdx] = min(dists);
+        assert(ismember(minDistIdx,find(idx==1))); % Only one node found, and it's close to the cursor.
+        idx = false(length(xdata),1);
+        idx(minDistIdx) = true;
+    end
+else    
     idx = ismember(G.Nodes.Name, uuid);
     doSelectionChanged = false; % Because the digraph wasn't clicked, it's just being updated.
 end
 if ~any(idx)
-    markerSize = 4;
-    colors = [0 0.447 0.741];
+    markerSize = repmat(4,length(G.Nodes.Name),1);
+    colors = repmat([0 0.447 0.741],length(G.Nodes.Name),1);
     uuid = '';
 else
     assert(sum(idx)==1);

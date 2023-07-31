@@ -140,3 +140,6 @@ if guiInBase
     delete(handles.Process.queueUITree.Children(remQueueIdx));
     drawnow;
 end
+
+%% Update the digraph
+% toggleDigraphCheckboxValueChanged(fig);

@@ -2,16 +2,16 @@ function [list] = orderDeps(G, src, trg)
 
 %% PURPOSE: GET ALL FUNCTIONS BETWEEN TWO FUNCTIONS, IN ORDER.
 % i.e. dependencies are before the functions that depend on them.
+% If src exists but not trg: get all functions downstream from the src
+% If trg exists but not src: get all functions upstream from the trg
 
-if exist('src','var')~=1 || exist('trg','var')~=1
-    linksFolder = [getCommonPath() filesep 'Linkages'];
-    linksFile = [linksFolder filesep 'Linkages.json'];
-    links = loadJSON(linksFile);
-end
+linksFolder = [getCommonPath() filesep 'Linkages'];
+linksFile = [linksFolder filesep 'Linkages.json'];
+links = loadJSON(linksFile);
 
 warning off;
 getG = true;
-if exist('src','var')~=1
+if exist('src','var')~=1 || isempty(src)
     getG = false;
     src = 'PRZAAAAA_AAA';
     G = addnode(G,src);
@@ -26,15 +26,20 @@ if exist('src','var')~=1
     end
 end
 
-if exist('trg','var')~=1
+if exist('trg','var')~=1 || isempty(trg)
     getG = false;
     trg = 'PRZZZZZZ_ZZZ';
     G = addnode(G,trg);
     
     % Get the idx of the processing nodes with no outputs.
-    idxNums = contains(links(:,1),'VR') & contains(links(:,2),'PR') & ismember(links(:,2), G.Nodes.Name) & ~ismember(links(:,1), G.Nodes.Name); 
-    noOuts = unique(links(idxNums,2),'stable');
-    G = addedge(G,noOuts,repmat({trg},length(noOuts),1));
+    for i=1:length(G.Nodes.Name)
+        if outdegree(G,G.Nodes.Name{i})==0 && ~isequal(G.Nodes.Name{i},trg)
+            G = addedge(G, G.Nodes.Name{i}, trg);
+        end
+    end
+%     idxNums = contains(links(:,1),'VR') & contains(links(:,2),'PR') & ismember(links(:,2), G.Nodes.Name) & ~ismember(links(:,1), G.Nodes.Name); 
+%     noOuts = unique(links(idxNums,2),'stable');
+%     G = addedge(G,noOuts,repmat({trg},length(noOuts),1));
 end
 warning on;
 

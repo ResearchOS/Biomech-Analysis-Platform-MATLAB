@@ -23,10 +23,18 @@ if length(markerSize)>length(G.Nodes.Name)
 end
 defaultColor = [0 0.447 0.741];
 if ~exist('color','var') || isempty(color)
+    % All nodes
     color = repmat(defaultColor,length(markerSize),1); % Default blue color
-    if any(markerSize~=4)
-        color(markerSize~=4,:) = [0 0 0];
-    end
+end
+
+% The nodes that haven't had all of their variables filled in.
+unfinishedIdx = getUnfinishedFcns(G);
+color(unfinishedIdx,:) = repmat(rgb('bright orange'),sum(unfinishedIdx),1);
+markerSize(unfinishedIdx,:) = repmat(6,sum(unfinishedIdx),1);
+
+% The selected node.
+if any(markerSize==8)
+    color(markerSize==8,:) = [0 0 0]; % Black
 end
 
 % Reset the axes.
@@ -48,7 +56,7 @@ else
 end
 
 % If a node is selected, highlight its in and out edges.
-if any(diff(markerSize)~=0)
+if any(markerSize==8)
     idx = ismember(markerSize, 8);
     ins = inedges(G, G.Nodes.Name(idx));
     highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
@@ -58,7 +66,7 @@ if any(diff(markerSize)~=0)
     labeledge(h, outs, edgenames(outs));
 end
 
-% Get the indices of which variables are outdated.
+%% Change line style to '--' for edges (variables) that are outdated.
 notDoneIdx = [];
 for i=1:length(G.Edges.Name)
     varStruct = loadJSON(G.Edges.Name{i});

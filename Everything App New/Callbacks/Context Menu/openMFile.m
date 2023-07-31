@@ -51,7 +51,7 @@ fileName=fileName{1};
 [type] = deText(struct.UUID);
 filePath = createMFile(fileName, className2Abbrev(type, true), struct.Level);
 
-fileName = struct.MFileName;
+% fileName = struct.MFileName;
 
 %% Assign the file to the current struct.
 struct.MFileName = fileName;

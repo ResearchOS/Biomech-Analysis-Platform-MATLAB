@@ -21,6 +21,10 @@ if isequal(abbrev,'PG')
     return;
 end
 
+%% Update the out of date checkbox.
+struct = loadJSON(uuid);
+handles.Process.outOfDateCheckbox.Value = struct.OutOfDate;
+
 %% Update which specifyTrials are checked.
 st = getST(uuid);
 checkSpecifyTrialsUITree(st, handles.Process.allSpecifyTrialsUITree);

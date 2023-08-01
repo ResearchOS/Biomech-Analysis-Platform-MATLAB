@@ -354,6 +354,9 @@ handles.Process.switchDigraphModeDropDown=uidropdown(processTab,'Visible',false,
 % 38. Pretty variables checkbox
 handles.Process.prettyVarsCheckbox=uicheckbox(processTab,'Visible',false,'Value',false,'Text','Pretty Vars','ValueChangedFcn',@(prettyVarsCheckbox, event) prettyVarsCheckboxValueChanged(prettyVarsCheckbox));
 
+% 49. Out of date checkbox
+handles.Process.outOfDateCheckbox=uicheckbox(handles.Process.currentGroupTab,'Value',false,'Text','Out of Date','ValueChangedFcn',@(outOfDateCheckbox, event) outOfDateCheckboxValueChanged(outOfDateCheckbox));
+
 % 35. Add specify trials button
 handles.Process.addSpecifyTrialsButton=uibutton(processTab,'Text','S+');
 addSpecifyTrialsButton=handles.Process.addSpecifyTrialsButton;

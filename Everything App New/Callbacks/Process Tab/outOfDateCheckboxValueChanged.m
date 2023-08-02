@@ -20,10 +20,6 @@ struct.OutOfDate = value;
 
 writeJSON(getJSONPath(struct), struct);
 
-% if ~value
-%     return;
-% end
-
 %% UPDATE EACH OF THE OUTPUT VARIABLES TO ALSO BE OUT OF DATE, RECURSIVELY (ALL DEPENDENCIES)
 if ~value
     depPR = {uuid};
@@ -40,3 +36,5 @@ for i=1:length(depPR)
         writeJSON(getJSONPath(varStruct), varStruct);
     end
 end
+
+toggleDigraphCheckboxValueChanged(fig);

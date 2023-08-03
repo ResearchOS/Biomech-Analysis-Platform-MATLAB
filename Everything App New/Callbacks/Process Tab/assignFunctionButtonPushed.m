@@ -30,8 +30,26 @@ if isempty(instanceID)
     abstractUUID = genUUID(type, abstractID);
     absNode = selectNode(handles.Process.allProcessUITree, abstractUUID);
 
+    % Add input, input subvariables, and output variables to process struct.
+    absStruct = loadJSON(abstractUUID);
+    numIns = length(absStruct.InputVariablesNamesInCode);
+    prStruct.InputVariables = cell(numIns,1);
+    for i=1:numIns
+        prStruct.InputVariables{i} = cell(length(absStruct.InputVariablesNamesInCode{i}),1);
+        prStruct.InputVariables{i}{1} = absStruct.InputVariablesNamesInCode{i}{1};
+        prStruct.InputSubvariables{i} = cell(length(absStruct.InputVariablesNamesInCode{i}),1);
+    end
+    numOuts = length(absStruct.OutputVariablesNamesInCode);
+    prStruct.OutputVariables = cell(numIns,1);
+    for i=1:numOuts
+        prStruct.OutputVariables{i} = cell(length(absStruct.OutputVariablesNamesInCode{i}),1);
+        prStruct.OutputVariables{i}{1} = absStruct.OutputVariablesNamesInCode{i}{1};
+        prStruct.OutputSubvariables{i} = cell(length(absStruct.OutputVariablesNamesInCode{i}),1);
+    end
+
     % Create the new node in the "all" UI tree
     addNewNode(absNode, selUUID, prStruct.Text);
+    writeJSON(getJSONPath(prStruct), prStruct);
 end
 
 [containerUUID, uiTree] = getContainer(selUUID, fig);
@@ -63,10 +81,10 @@ end
 inVars = getVarNamesArray(selStruct, 'InputVariables');
 outVars = getVarNamesArray(selStruct, 'OutputVariables');
 
-if ~isempty(inVars)
+if ~all(cellfun(@isempty, inVars))
     linkObjs(inVars, selStruct);
 end
 
-if ~isempty(outVars)
+if ~all(cellfun(@isempty, outVars))
     linkObjs(selStruct, outVars);
 end

@@ -14,6 +14,10 @@ if ~exist('G','var') || isempty(G)
     getG = true;
 end
 
+if getG
+    G = linkageToDigraph('PR');
+end
+
 if ~exist('src','var') || isempty(src)
     src = '';
 end
@@ -32,10 +36,6 @@ end
 if ismember(trg,G.Nodes.Name)
     srcOutEdgesIdx = find(ismember(G.Edges.EndNodes(:,1),trg));
     G = rmedge(G, srcOutEdgesIdx);
-end
-
-if getG
-    G = linkageToDigraph('PR');
 end
 
 if isempty(G)

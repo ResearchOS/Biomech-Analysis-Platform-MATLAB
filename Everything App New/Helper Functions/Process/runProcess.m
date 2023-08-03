@@ -55,7 +55,8 @@ inclStruct=getInclStruct(specifyTrials);
 trialNames=getTrialNames(inclStruct,logVar,0,logsheetStruct);
 
 % Remove multiple subjects
-remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+remSubNames={}; % Remove nothing
+% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
 % Remove all but one subject

@@ -34,7 +34,8 @@ for inOut=1:numIters
     varNamesInCode=absStruct.([fldName 'VariablesNamesInCode']);
 
     if isempty(varNamesInCode)
-        error(['Missing ' fldName ' Variables Names In Code!']);
+        continue; % For plotting (when making them process functions)
+%         error(['Missing ' fldName ' Variables Names In Code!']);
     end
     
     assert(length(vars)==length(varNamesInCode),['Mismatch in number of getArgs! ' instStruct.UUID]);

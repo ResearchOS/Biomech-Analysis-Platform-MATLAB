@@ -17,7 +17,7 @@ if ischar(src)
     if isequal(type,'VR')
 
     end
-    if isequal(type,'PR')
+    if ismember({type},{'PR','PG'})
         idx = ismember(links(:,1),src);
         pgIdx = idx & ismember(links(:,2),groupUUID);
         anIdx = idx & ismember(links(:,2),anUUID);
@@ -33,7 +33,7 @@ if ischar(src)
             container = handles.Process.subtabCurrent.SelectedTab.Title;
             switch container
                 case 'Analysis'
-                    containerUUID = getCurrent('Current_Analysis');
+                    containerUUID = anUUID;
                     handle = handles.Process.analysisUITree;
                 case 'Group'
                     groupNode = handles.Process.analysisUITree.SelectedNodes;

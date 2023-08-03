@@ -5,7 +5,13 @@ function []=unassignFunctionButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-[containerUUID, uiTree] = getContainer(fig);
+currTab = handles.Process.subtabCurrent.SelectedTab.Title;
+switch currTab
+    case 'Analysis'
+        uiTree = handles.Process.analysisUITree;
+    case 'Group'
+        uiTree = handles.Process.groupUITree;
+end
 
 selNode=uiTree.SelectedNodes;
 
@@ -14,6 +20,9 @@ if isempty(selNode)
 end
 
 selUUID = selNode.NodeData.UUID;
+
+[containerUUID] = getContainer(selUUID, fig);
+
 type = deText(selUUID);
 
 if ~isequal(type,'PR')
@@ -22,10 +31,13 @@ if ~isequal(type,'PR')
 end
 
 %% Update GUI
+% Delete the function from the group UI tree
 proceed = deleteNode(selNode);
 if ~proceed
     return;
 end
+% Delete the function from the analysis UI tree
+% proceed = deleteNode(getNode(handles.Process.analysisUITree, selUUID));
 
 %% Remove the group from the current group or analysis.
 contStruct = loadJSON(containerUUID);
@@ -41,7 +53,9 @@ unlinkObjs(selUUID, contStruct);
 fcnStruct = loadJSON(selUUID);
 inVars = getVarNamesArray(fcnStruct, 'InputVariables');
 outVars = getVarNamesArray(fcnStruct, 'OutputVariables');
-links = loadLinks();
-unlinkObjs(inVars, fcnStruct);
-unlinkObjs(fcnStruct, outVars);
-links = loadLinks();
+if any(~cellfun(@isempty, inVars))
+    unlinkObjs(inVars, fcnStruct);
+end
+if any(~cellfun(@isempty, outVars))
+    unlinkObjs(fcnStruct, outVars);
+end

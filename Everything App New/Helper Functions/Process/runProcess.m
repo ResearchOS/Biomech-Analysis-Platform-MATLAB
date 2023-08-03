@@ -55,20 +55,39 @@ inclStruct=getInclStruct(specifyTrials);
 trialNames=getTrialNames(inclStruct,logVar,0,logsheetStruct);
 
 % Remove multiple subjects
-% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
-remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
 % Remove all but one subject
 % remSubNames=fieldnames(trialNames);
 % idx=ismember(remSubNames,'Busan');
 % remSubNames(idx)=[];
 
-trialNames=rmfield(trialNames,remSubNames);
+if any(ismember(remSubNames,fieldnames(trialNames)))
+    trialNames=rmfield(trialNames,remSubNames);
+end
 subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
 % Store the info for the process struct
 getRunInfo(absStruct,instStruct);
+
+%% Check if all of the input variables are up to date!
+inVars = getVarNamesArray(instStruct, 'InputVariables');
+for i=1:length(inVars)
+    if isempty(inVars{i})
+        disp('Missing an input variable!');
+        return;
+    end
+    varStruct = loadJSON(inVars{i});
+    [type, abstractID] = deText(varStruct.UUID);
+    absVar = genUUID(type, abstractID);
+    varAbsStruct = loadJSON(absVar);
+    if varStruct.OutOfDate && ~varAbsStruct.IsHardCoded
+        disp(['Cannot run this function because input variable ' getName(varStruct.UUID) ' ' varStruct.UUID ' is out of date!']);
+        return;
+    end
+end
 
 %% Run the function!
 if ismember('P',fcnLevel)

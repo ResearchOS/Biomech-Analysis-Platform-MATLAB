@@ -19,13 +19,8 @@ edgeNames = {};
 s = {};
 t = {};
 
-slash = filesep;
-
-linksFolder = [getCommonPath() slash 'Linkages'];
-linksFile = [linksFolder slash 'Linkages.json'];
-
 if exist('links','var')~=1
-    links = loadJSON(linksFile);
+    links = loadLinks();
 end
 
 % Remove everything except for functions and variables.

@@ -4,7 +4,9 @@ function [names] = getName(uuids)
 % NOTE: In the future, can check if there's any duplicate UUID's to speed
 % this function up.
 
+beChar = false;
 if ischar(uuids)
+    beChar = true;
     uuids = {uuids};
 end
 
@@ -24,3 +26,7 @@ for i=1:length(uuids)
 end
 
 names = reshape(names,m,n);
+
+if beChar
+    names = names{1};
+end

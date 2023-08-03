@@ -15,8 +15,9 @@ end
 uiTree.SelectedNodes=selNode;
 
 % Expand the parents of this node.
-while isequal(class(selNode),class(selNode.Parent))
-    selNode = selNode.Parent;
+selNodeParent = selNode;
+while isequal(class(selNodeParent),class(selNodeParent.Parent))
+    selNodeParent = selNodeParent.Parent;
 end
 
-expand(selNode);
+expand(selNodeParent);

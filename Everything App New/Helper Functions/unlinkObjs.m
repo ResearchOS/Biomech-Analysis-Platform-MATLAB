@@ -24,6 +24,14 @@ if length(leftObjs)>1 && length(rightObjs)>1
     error('Either the left or right element must be scalar');
 end
 
+if length(leftObjs)>1
+    leftObjs(cellfun(@isempty, leftObjs)) = [];
+end
+
+if length(rightObjs)>1
+    rightObjs(cellfun(@isempty, rightObjs)) = [];
+end
+
 % Ensure that there are two lists of equal length.
 if length(leftObjs)==1
     leftObjs = repmat(leftObjs,length(rightObjs),1);

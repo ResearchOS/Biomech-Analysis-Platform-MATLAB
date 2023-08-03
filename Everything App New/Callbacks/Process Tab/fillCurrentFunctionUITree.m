@@ -86,11 +86,13 @@ for i=1:length(outputVarsAbstract)
     for j=2:length(currArgsAbs)
         if ~iscell(currArgsInst) || length(currArgsInst)<j || isempty(currArgsInst{j})
             suffix='';
+            uuid = '';
         else
             suffix=[' (' currArgsInst{j} ')'];
+            uuid = currArgsInst{j};
         end        
         newNode=uitreenode(argNode,'Text',[currArgsAbs{j} suffix]);
-        newNode.NodeData.UUID = currArgsInst{j};
+        newNode.NodeData.UUID = uuid;
         assignContextMenu(newNode,handles);
     end
 

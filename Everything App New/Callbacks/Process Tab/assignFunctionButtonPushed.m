@@ -34,7 +34,7 @@ if isempty(instanceID)
     addNewNode(absNode, selUUID, prStruct.Text);
 end
 
-[containerUUID, uiTree] = getContainer(fig);
+[containerUUID, uiTree] = getContainer(selUUID, fig);
 contStruct = loadJSON(containerUUID);
 contStruct.RunList = [contStruct.RunList; {selUUID}];
 writeJSON(getJSONPath(contStruct), contStruct);
@@ -43,6 +43,9 @@ selStruct = loadJSON(selUUID);
 % Add a new node to the current UI tree
 addNewNode(uiTree, selStruct.UUID, selStruct.Text);
 selectNode(uiTree, selStruct.UUID);
+
+% Add a new node to the analysis UI tree
+addNewNode(getNode(handles.Process.analysisUITree, containerUUID), selUUID, selStruct.Text);
 
 linkObjs(selStruct.UUID, containerUUID);
 

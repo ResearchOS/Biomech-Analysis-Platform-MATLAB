@@ -32,7 +32,7 @@ if isempty(instanceID)
     addNewNode(absNode, selUUID, pgStruct.Text);
 end
 
-[containerUUID, uiTree] = getContainer(fig);
+[containerUUID, uiTree] = getContainer(selUUID, fig);
 contStruct = loadJSON(containerUUID);
 contStruct.RunList = [contStruct.RunList; {selUUID}];
 writeJSON(getJSONPath(contStruct), contStruct);

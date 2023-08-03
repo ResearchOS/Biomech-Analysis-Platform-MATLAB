@@ -5,7 +5,13 @@ function []=unassignGroupButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-[containerUUID, uiTree] = getContainer(fig);
+currTab = handles.Process.currentSubtab.SelectedTab.Title;
+switch currTab
+    case 'Analysis'
+        uiTree = handles.Process.analysisUITree;
+    case 'Group'
+        uiTree = handles.Process.groupUITree;
+end
 
 selNode=uiTree.SelectedNodes;
 
@@ -14,6 +20,8 @@ if isempty(selNode)
 end
 
 selUUID = selNode.NodeData.UUID;
+
+[containerUUID] = getContainer(selUUID, fig);
 type = deText(selUUID);
 
 if ~isequal(type,'PG')

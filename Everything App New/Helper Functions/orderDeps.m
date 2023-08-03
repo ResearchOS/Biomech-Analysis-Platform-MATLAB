@@ -1,4 +1,4 @@
-function [list] = orderDeps(G, type, src, trg)
+function [list, isCyclic] = orderDeps(G, type, src, trg)
 
 %% PURPOSE: GET ALL FUNCTIONS BETWEEN TWO FUNCTIONS, IN ORDER.
 % Type: 
@@ -9,20 +9,20 @@ function [list] = orderDeps(G, type, src, trg)
 % If trg exists but not src: get all functions upstream from the trg
 
 
-links = loadLinks();
-
 getG = false;
 if ~exist('G','var') || isempty(G)
     getG = true;
 end
 
-if ~exist('src','var')
-    src = {};
+if ~exist('src','var') || isempty(src)
+    src = '';
 end
 
-if ~exist('trg','var')
-    trg = {};
+if ~exist('trg','var') || isempty(trg)
+    trg = '';
 end
+
+assert(isempty(src) || isempty(trg));
 
 if ismember(src,G.Nodes.Name)
     srcInEdgesIdx = find(ismember(G.Edges.EndNodes(:,2),src));
@@ -60,12 +60,25 @@ end
 %     return error   (graph has at least one cycle)
 % else 
 %     return L   (a topologically sorted order)
+list = {};
 noInsIdx = indegree(G,G.Nodes.Name)==0;
+if ~any(noInsIdx)
+    isCyclic = true; % There is no node with in degree = 0.
+    return;
+end
+
 srcIdx = ismember(G.Nodes.Name,src);
 if any(srcIdx)
     noInsIdx = noInsIdx & srcIdx;
+elseif ~isempty(trg) || ~isempty(src) % The specified source node is not connected to anything. Skipped if no source specified.
+    if isempty(trg)
+        list = {src};
+    elseif isempty(src)
+        list = {trg};
+    end
+    return;
 end
-list = {};
+
 s = G.Nodes.Name(noInsIdx);  
 while ~isempty(s)
     nodeN = s(1);
@@ -90,4 +103,9 @@ while ~isempty(s)
             s = [s; nodeM];
         end
     end
+end
+
+isCyclic = false;
+if ~isempty(G.Edges.Name)
+    isCyclic = true;
 end

@@ -79,19 +79,23 @@ elseif isequal(parentNode.Text(1:6),'setArg')
     absFldName = 'OutputVariablesNamesInCode';
 end
 
-% Check that this variable has not been an output of any functions anywhere
-% else. If so, stop the process.
-if isOut
-    linksFolder = [getCommonPath() filesep 'Linkages'];
-    linksFilePath = [linksFolder filesep 'Linkages.json'];
-    links = loadJSON(linksFilePath);
-    if ismember(allVarUUID,links(:,2))
-        disp('This variable is already an output elsewhere!');
-        return;
-    end
+%% Test that adding this variable to this function does not result in a cyclic graph.
+% If so, stop the process.
+currFcnUUID = currFcnNode.NodeData.UUID;
+links = loadLinks();
+% Add the linkage
+if isOut    
+    links = [links; {currFcnUUID, allVarUUID}];
+else
+    links = [links; {allVarUUID, currFcnUUID}];
+end
+G = linkageToDigraph('PR', links); % Convert the updated linkage matrix to digraph.
+[~,isCyclic] = orderDeps(G, 'full'); % Check if the resulting graph is cyclic or not.
+if isCyclic
+    disp('Cannot add this variable here, as it results in a cyclic graph!');
+    return;
 end
 
-currFcnUUID = currFcnNode.NodeData.UUID;
 fcnStruct = loadJSON(currFcnUUID);
 prevInputVars = getVarNamesArray(fcnStruct, 'InputVariables');
 prevOutputVars = getVarNamesArray(fcnStruct,'OutputVariables');
@@ -126,6 +130,7 @@ end
 
 writeJSON(getJSONPath(fcnStruct), fcnStruct);
 
+%% Update the node text.
 currVarNode.NodeData.UUID = allVarUUID;
 argTextSplit = strsplit(currVarNode.Text);
 currVarNode.Text = [argTextSplit{1} ' (' allVarUUID ')'];
@@ -153,7 +158,7 @@ end
 
 %% Change OutOfDate values for any functions or variables downstream.
 if fcnStruct.OutOfDate
-    list = orderDeps(getappdata(fig,'digraph'), fcnStruct.UUID,[]);
+    list = orderDeps(getappdata(fig,'digraph'), 'partial', fcnStruct.UUID,'');
     for i = 1:length(list)
         currFcnStruct = loadJSON(list{i});
         currFcnStruct.OutOfDate = true;

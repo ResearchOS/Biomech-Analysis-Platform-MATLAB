@@ -2,10 +2,13 @@ function []=writeJSON(fullPath, json, date)
 
 %% PURPOSE: WRITE A JSON TO FILE.
 
-%% For saving the data into the GUI appdata
+%% For saving the data into the GUI appdata 
 
-rootSettingsFile=getRootSettingsFile;
-load(rootSettingsFile,'Store_Settings');    
+try
+    fig=evalin('base','gui');
+catch
+    fig=findall(0,'Name','pgui');
+end
 
 if exist('date','var')~=1
     date=datetime('now');
@@ -15,40 +18,27 @@ if isstruct(json)
     json.DateModified=date;
 end
 
-if Store_Settings
-    try
-        fig=evalin('base','gui');
-    catch
-        fig=findall(0,'Name','pgui');
-    end
-    [~,fileName]=fileparts(fullPath);
-    underscoreIdx=strfind(fileName,'_');
-    if ~isempty(underscoreIdx)
-        text=fileName(underscoreIdx(1)+1:end); % Remove the class prefix
-    else
-        text=fileName;
-    end
-    % Maybe check here if there are any duplicate texts because they're not currently split by class?
-    setappdata(fig,text,json);
-end
-
 if ~isequal(fullPath(end-4:end),'.json')
     fullPath=[fullPath '.json'];
 end
 
-% Format the linkage matrix to be written
+%% Format the linkage matrix to be written
 if ~isstruct(json)
 %     prettyJSON = getName(json); % Has to be before JSON gets formatted for the linkage matrix.
-    json = formatLinkageMatrix(json,'write');
+    jsonStr = formatLinkageMatrix(json,'write');
+    uuid = 'Linkages';
 %     prettyJSON = formatLinkageMatrix(prettyJSON, 'write');
 %     [folder] = fileparts(fullPath);
 %     fid = fopen([folder filesep 'PrettyLinkages.json'],'w');
 %     fprintf(fid, '%s', prettyJSON);
 %     fclose(fid);
 else
-    json=jsonencode(json,'PrettyPrint',true);
+    jsonStr=jsonencode(json,'PrettyPrint',true);
+    uuid = json.UUID;
 end
 
 fid=fopen(fullPath,'w');
-fprintf(fid,'%s',json);
+fprintf(fid,'%s',jsonStr);
 fclose(fid);
+
+setappdata(fig, uuid, json);

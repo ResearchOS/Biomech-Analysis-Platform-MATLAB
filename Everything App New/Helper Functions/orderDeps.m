@@ -8,6 +8,9 @@ function [list, isCyclic] = orderDeps(G, type, src, trg)
 % If src exists but not trg: get all functions downstream from the src
 % If trg exists but not src: get all functions upstream from the trg
 
+if nargin==1
+    type='full';
+end
 
 getG = false;
 if ~exist('G','var') || isempty(G)

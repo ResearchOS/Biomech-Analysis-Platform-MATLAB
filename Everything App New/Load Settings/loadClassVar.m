@@ -13,10 +13,14 @@ if isempty(fileNames)
     return;
 end
 
+[~,uuids] = fileparts(fileNames);
+if ischar(uuids)
+    uuids = {uuids};
+end
 classVarFields = {'Class', 'Text', 'UUID'}; % Only loads these fields from the struct. Ensures that all objects will always return a similar struct.
-for i=length(fileNames):-1:1 % Loop is backwards to pre-allocate memory for the classVar
-    fileName=fileNames{i};
-       
+for i=length(uuids):-1:1 % Loop is backwards to pre-allocate memory for the classVar
+    fileName=uuids{i};
+           
     settingsStruct=loadJSON(fileName);
     allFields = fieldnames(settingsStruct);
     fldsToRemove = allFields(~ismember(allFields,classVarFields));

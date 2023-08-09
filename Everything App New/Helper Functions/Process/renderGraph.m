@@ -105,3 +105,5 @@ end
 
 setappdata(fig,'digraph',G);
 setappdata(fig,'markerSize',markerSize);
+
+drawnow;

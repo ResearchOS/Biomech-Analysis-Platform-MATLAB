@@ -1,48 +1,54 @@
 function [data]=loadJSON(str, runCheck)
 
 %% PURPOSE: LOAD A JSON FILE AND RETURN IT DECODED.
+% str is either a path or a UUID
+
+try
+    fig=evalin('base','gui');
+catch
+    fig=findall(0,'Name','pgui');
+end
 
 if exist('runCheck','var')~=1
     runCheck = true; % Helpful for testing.
 end
 
 % Provided a UUID, not a file path.
-if ~contains(str,filesep)
+if ~contains(str,filesep) && ~contains(str,'.json') % UUID
     fullPath = getJSONPath(str);
-else
+    uuid = str;
+else % Path
     fullPath = str;
-end
-    
-Store_Settings = getCurrent('Store_Settings');
-
-%% For retrieving the previously loaded data from the GUI appdata
-if Store_Settings
-    try
-        fig=evalin('base','gui');
-    catch
-        fig=findall(0,'Name','pgui');
-    end
     [~,uuid]=fileparts(fullPath);
-    data=getappdata(fig,uuid);
-    if ~isempty(data)
-        return; % Returns empty if the variable is not found in
+end
+
+data = getappdata(fig, uuid);
+
+% Testing only %
+% if ~isequal(uuid,'Linkages')
+%     data='';
+% end
+% End testing only %
+
+%% If data not in appdata, read the json file as unformatted char
+setTheAppData = true;
+if isempty(data)
+    try
+        fid=fopen(fullPath);
+        raw=fread(fid,inf);
+        fclose(fid);
+        jsonStr=char(raw');
+    catch e
+        error('File not found!');
     end
+
+    % Convert json to struct
+    data=jsondecode(jsonStr);
+else
+    runCheck = false; % It's been checked previously. For max speed, don't re-do this.
+    setTheAppData = false;
 end
-
-% Read the json file as unformatted char
-try
-    fid=fopen(fullPath);
-    raw=fread(fid,inf);
-    fclose(fid);
-    str=char(raw');
-catch e
-    error('File not found!');
-end
-
-% Convert json to struct
-data=jsondecode(str);
-
-if ~isstruct(data)
+if ~isstruct(data) && setTheAppData
     data = formatLinkageMatrix(data, 'read');
 end
 
@@ -54,6 +60,6 @@ if runCheck
 end
 
 %% Now that the data has been loaded, 
-if exist('fig','var')==1 && Store_Settings 
+if setTheAppData
     setappdata(fig,uuid,data);
 end

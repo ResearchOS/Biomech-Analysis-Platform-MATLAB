@@ -188,7 +188,7 @@ objResize(tab.toggleDigraphCheckbox, [0.58 0.95], [0.1 compHeight]);
 objResize(tab.digraphAxes, [0.58 0.01], [0.41 0.94]);
 
 % 37. Switch digraph mode dropdown
-objResize(tab.switchDigraphModeDropDown, [0.7 0.95], [0.1 compHeight]);
+% objResize(tab.switchDigraphModeDropDown, [0.7 0.95], [0.1 compHeight]);
 
 % 38. Pretty variables dropdown
 objResize(tab.prettyVarsCheckbox, [0.82 0.95], [0.1 compHeight]);

@@ -10,7 +10,7 @@ val = handles.Process.toggleDigraphCheckbox.Value;
 %% Change visibility
 % Change digraph visibility
 handles.Process.digraphAxes.Visible = val;
-handles.Process.switchDigraphModeDropDown.Visible = val;
+% handles.Process.switchDigraphModeDropDown.Visible = val;
 handles.Process.prettyVarsCheckbox.Visible = val;
 if ~val
     delete(handles.Process.digraphAxes.Children);

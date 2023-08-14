@@ -9,6 +9,10 @@ catch
     fig=findall(0,'Name','pgui');
 end
 
+if isempty(fig)
+    error('No gui found');
+end
+
 if exist('runCheck','var')~=1
     runCheck = true; % Helpful for testing.
 end

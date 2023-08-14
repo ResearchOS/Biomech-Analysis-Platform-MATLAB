@@ -50,15 +50,15 @@ for i=1:length(depPR)
 
     if elig
         %% Updates all of the output variables downstream. May or may not want this, depending.
-%         outVars = getVarNamesArray(struct,'OutputVariables');
-%         for j=1:length(outVars)
-%             if isempty(outVars{j})
-%                 continue;
-%             end
-%             varStruct = loadJSON(outVars{j});
-%             varStruct.OutOfDate = outOfDateBool;
-%             writeJSON(getJSONPath(varStruct), varStruct);
-%         end
+        outVars = getVarNamesArray(struct,'OutputVariables');
+        for j=1:length(outVars)
+            if isempty(outVars{j})
+                continue;
+            end
+            varStruct = loadJSON(outVars{j});
+            varStruct.OutOfDate = outOfDateBool;
+            writeJSON(getJSONPath(varStruct), varStruct);
+        end
         % Update the process function.
         struct.OutOfDate = outOfDateBool;
         writeJSON(getJSONPath(struct), struct);

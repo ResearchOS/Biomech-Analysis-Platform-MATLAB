@@ -18,7 +18,6 @@ end
 
 % Make sure that a data path has been set up
 
-
 try
     testGUI=evalin('base','gui;'); % Var isn't used, just checking if GUI var is in base workspace.
     clear testGUI;
@@ -32,7 +31,7 @@ oldDir=cd([getCommonPath slash 'Code']); % Ensure that the proper functions are 
 for i=1:length(queue)    
 
     uuid=queue{i};
-    stop = runProcess(uuid,true);  
+    [stop, message, subjectError] = runProcess(uuid,true);  
     if stop
         break;
     end
@@ -41,8 +40,18 @@ end
 
 cd(oldDir);
 
+sendEmail = handles.Process.sendEmailCheckbox.Value;
+
 if ~stop
     disp(['Finished running all functions in queue in ' num2str(round(toc(startAll),2)) ' seconds']);
+    if sendEmail
+        subjectSuccess = 'Successfully ran all functions';
+        messageSuccess = 'Nice job';
+        sendEmails(subjectSuccess, messageSuccess);
+    end
 else
     disp(['Aborted running on function ' getName(uuid)]);
+    if sendEmail
+        sendEmails(subjectError, message);
+    end
 end

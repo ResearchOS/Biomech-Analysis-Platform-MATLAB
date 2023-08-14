@@ -206,4 +206,7 @@ objResize(tab.allSpecifyTrialsUITree, [0.58 0.01], [0.41 0.19]);
 objResize(tab.editSpecifyTrialsButton, [0.66 0.2], [0.1 compHeight]);
 
 % 39. Out of date checkbox
-objResize(tab.outOfDateCheckbox, [0.22 0.83], [0.1 compHeight])
+objResize(tab.outOfDateCheckbox, [0.22 0.83], [0.1 compHeight]);
+
+% 50. Send emails checkbox
+objResize(tab.sendEmailsCheckbox, [0.9 0.95], [0.1 compHeight]);

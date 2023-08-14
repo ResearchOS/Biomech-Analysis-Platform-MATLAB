@@ -12,9 +12,6 @@ val = handles.Process.toggleDigraphCheckbox.Value;
 handles.Process.digraphAxes.Visible = val;
 % handles.Process.switchDigraphModeDropDown.Visible = val;
 handles.Process.prettyVarsCheckbox.Visible = val;
-if ~val
-    delete(handles.Process.digraphAxes.Children);
-end
 
 % Change queue & specify trials visibility
 handles.Process.queueLabel.Visible = ~val;
@@ -24,6 +21,11 @@ handles.Process.removeSpecifyTrialsButton.Visible = ~val;
 handles.Process.editSpecifyTrialsButton.Visible = ~val;
 handles.Process.allSpecifyTrialsUITree.Visible = ~val;
 handles.Process.runButton.Visible = ~val;
+handles.Process.sendEmailsCheckbox.Visible = ~val;
+
+if ~val
+    delete(handles.Process.digraphAxes.Children);
+end
 
 currTab=handles.Process.subtabCurrent.SelectedTab.Title;
 if isequal(currTab,'Analysis')

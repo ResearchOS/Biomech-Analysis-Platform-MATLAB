@@ -1,4 +1,4 @@
-function [stop]=runProcess(instUUID,guiInBase)
+function [stop, message, emailSubject]=runProcess(instUUID,guiInBase)
 
 %% PURPOSE: ACTUALLY RUN THE SPECIFIED FUNCTION
 
@@ -28,18 +28,23 @@ absStruct=loadJSON(abstractUUID);
 specifyTrials=getST(instUUID);
 
 fcnName=absStruct.MFileName;
+fcnLevel=absStruct.Level;
+
+message = '';
+emailSubject = ['Error running process function ' instStruct.UUID ' ' instStruct.Text];
+messageProj = ['Date: ' char(datetime('now')) newline 'Subject: ' emailSubject newline 'This function is level: ' fcnLevel newline];
 
 stop = false;
 if exist(fcnName,'file')~=2
-    disp('Specified M file does not exist!');
-    stop = true;
+    message = 'Specified M file does not exist!';
+    disp(message);
+    stop = true;    
+    return;
 end
 
 %% CHECK IF ALL UPSTREAM FUNCTIONS & VARIABLES ARE UP TO DATE!
 
 %% NOTE: NEED THE VARIABLES' LEVELS, AND THE FUNCTION'S LEVELS.
-fcnLevel=absStruct.Level;
-
 Current_Logsheet = getCurrent('Current_Logsheet');
 logsheetStruct=loadJSON(Current_Logsheet);
 computerID=getComputerID();
@@ -102,12 +107,18 @@ if ismember('P',fcnLevel)
 
     disp(['Running ' fcnName]);
 
-    if ismember('T',fcnLevel)
-        feval(fcnName,trialNames);
-    elseif ismember('S',fcnLevel)
-        feval(fcnName,subNames);
-    else
-        feval(fcnName);
+    try
+        if ismember('T',fcnLevel)
+            feval(fcnName,trialNames);
+        elseif ismember('S',fcnLevel)
+            feval(fcnName,subNames);
+        else
+            feval(fcnName);
+        end
+    catch     
+        message = messageProj;
+        stop = true;
+        return;
     end
 
 end
@@ -117,14 +128,22 @@ if ~ismember('P',fcnLevel)
         subName=subNames{sub};
         currTrials=fieldnames(trialNames.(subName)); % The list of trial names in the current subject
 
+        messageSubj = [messageProj 'Stopped on subject #' num2str(sub) ': ' subName newline];
+
         if ismember('S',fcnLevel)
 
             disp(['Running ' fcnName ' Subject ' subName]);
 
-            if ismember('T',fcnLevel)
-                feval(fcnName,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
-            else
-                feval(fcnName,subName);
+            try
+                if ismember('T',fcnLevel)
+                    feval(fcnName,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
+                else
+                    feval(fcnName,subName);
+                end
+            catch       
+                message = messageSubj;
+                stop = true;
+                return;
             end
             continue; % Don't iterate through trials, that's done within the processing function if necessary
         end
@@ -136,7 +155,14 @@ if ~ismember('P',fcnLevel)
 
             for repNum=trialNames.(subName).(trialName)
 
-                feval(fcnName,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
+                try
+                    feval(fcnName,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
+                catch
+                    messageTrial = [messageSubj 'Stopped on trial #' num2str(trialNum) ': ' trialName];
+                    message = messageTrial;
+                    stop = true;
+                    return;
+                end
 
             end
         end

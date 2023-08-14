@@ -357,6 +357,9 @@ handles.Process.prettyVarsCheckbox=uicheckbox(processTab,'Visible',false,'Value'
 % 49. Out of date checkbox
 handles.Process.outOfDateCheckbox=uicheckbox(handles.Process.currentGroupTab,'Value',false,'Text','Out of Date','ValueChangedFcn',@(outOfDateCheckbox, event) outOfDateCheckboxValueChanged(outOfDateCheckbox));
 
+% 50. Send emails checkbox
+handles.Process.sendEmailsCheckbox=uicheckbox(processTab, 'Visible', true, 'Value', false, 'Text', 'Send Email','ValueChangedFcn',@(sendEmailsCheckbox, event) sendEmailsCheckboxValueChanged(sendEmailsCheckbox));
+
 % 35. Add specify trials button
 handles.Process.addSpecifyTrialsButton=uibutton(processTab,'Text','S+');
 addSpecifyTrialsButton=handles.Process.addSpecifyTrialsButton;

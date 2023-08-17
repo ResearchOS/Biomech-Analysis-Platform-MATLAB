@@ -31,7 +31,7 @@ oldDir=cd([getCommonPath slash 'Code']); % Ensure that the proper functions are 
 for i=1:length(queue)    
 
     uuid=queue{i};
-    [stop, message, subjectError] = runProcess(uuid,true);  
+    [stop, message, subjectError, e] = runProcess(uuid,true);  
     if stop
         break;
     end
@@ -40,7 +40,7 @@ end
 
 cd(oldDir);
 
-sendEmail = handles.Process.sendEmailCheckbox.Value;
+sendEmail = handles.Process.sendEmailsCheckbox.Value;
 
 if ~stop
     disp(['Finished running all functions in queue in ' num2str(round(toc(startAll),2)) ' seconds']);
@@ -54,4 +54,9 @@ else
     if sendEmail
         sendEmails(subjectError, message);
     end
+end
+
+if ~isempty(e)
+    throw(e);
+%     error(e);
 end

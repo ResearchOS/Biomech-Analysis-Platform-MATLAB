@@ -1,8 +1,9 @@
-function [stop, message, emailSubject]=runProcess(instUUID,guiInBase)
+function [stop, message, emailSubject, e]=runProcess(instUUID,guiInBase)
 
 %% PURPOSE: ACTUALLY RUN THE SPECIFIED FUNCTION
 
 slash=filesep;
+e='';
 
 startFcn=tic;
 
@@ -57,13 +58,13 @@ load(logsheetPathMAT,'logVar');
 % projectPath=getProjectPath(fig);
 % oldPath=cd([projectPath slash 'Process']);
 inclStruct=getInclStruct(specifyTrials);
-conds = 1;
+conds = 0;
 trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
 % remSubNames={}; % Remove nothing
-% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
-remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
 % Remove all but one subject
 % remSubNames=fieldnames(trialNames);
@@ -103,11 +104,26 @@ for i=1:length(inVars)
 end
 
 %% Run the function!
+sendEmail = handles.Process.sendEmailsCheckbox.Value;
 if ismember('P',fcnLevel)
 
     disp(['Running ' fcnName]);
 
-    try
+    if sendEmail
+        try
+            if ismember('T',fcnLevel)
+                feval(fcnName,trialNames);
+            elseif ismember('S',fcnLevel)
+                feval(fcnName,subNames);
+            else
+                feval(fcnName);
+            end
+        catch e
+            message = messageProj;
+            stop = true;
+            return;
+        end
+    else
         if ismember('T',fcnLevel)
             feval(fcnName,trialNames);
         elseif ismember('S',fcnLevel)
@@ -115,10 +131,6 @@ if ismember('P',fcnLevel)
         else
             feval(fcnName);
         end
-    catch     
-        message = messageProj;
-        stop = true;
-        return;
     end
 
 end
@@ -134,16 +146,24 @@ if ~ismember('P',fcnLevel)
 
             disp(['Running ' fcnName ' Subject ' subName]);
 
-            try
+            if sendEmail
+                try
+                    if ismember('T',fcnLevel)
+                        feval(fcnName,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
+                    else
+                        feval(fcnName,subName);
+                    end
+                catch e
+                    message = messageSubj;
+                    stop = true;
+                    return;
+                end
+            else
                 if ismember('T',fcnLevel)
                     feval(fcnName,subName,trialNames.(subName)); % projectStruct is an input argument for convenience of viewing the data only
                 else
                     feval(fcnName,subName);
                 end
-            catch       
-                message = messageSubj;
-                stop = true;
-                return;
             end
             continue; % Don't iterate through trials, that's done within the processing function if necessary
         end
@@ -155,13 +175,17 @@ if ~ismember('P',fcnLevel)
 
             for repNum=trialNames.(subName).(trialName)
 
-                try
-                    feval(fcnName,subName,trialName,repNum); % projectStruct is an input argument for convenience of viewing the data only
-                catch
-                    messageTrial = [messageSubj 'Stopped on trial #' num2str(trialNum) ': ' trialName];
-                    message = messageTrial;
-                    stop = true;
-                    return;
+                if sendEmail
+                    try
+                        feval(fcnName,subName,trialName,repNum);
+                    catch e
+                        messageTrial = [messageSubj 'Stopped on trial #' num2str(trialNum) ': ' trialName];
+                        message = messageTrial;
+                        stop = true;
+                        return;
+                    end
+                else
+                    feval(fcnName,subName,trialName,repNum);
                 end
 
             end

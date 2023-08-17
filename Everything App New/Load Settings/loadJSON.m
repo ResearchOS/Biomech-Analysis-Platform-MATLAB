@@ -36,7 +36,19 @@ data = getappdata(fig, uuid);
 
 %% If data not in appdata, read the json file as unformatted char
 setTheAppData = true;
-if isempty(data)
+loadData = true;
+loadedDates = getappdata(fig,'loadedDates');
+if ~isempty(data)
+    loadData = false;
+    runCheck = false; % It's been checked previously. For max speed, don't re-do this.
+    setTheAppData = false;
+    file = dir(fullPath);
+    if isUUID(uuid) && isfield(loadedDates,uuid) && loadedDates.(uuid) < max([datetime(file.date) datetime(data.DateModified)])
+        loadData = true;
+    end
+end
+
+if loadData
     try
         fid=fopen(fullPath);
         raw=fread(fid,inf);
@@ -48,9 +60,6 @@ if isempty(data)
 
     % Convert json to struct
     data=jsondecode(jsonStr);
-else
-    runCheck = false; % It's been checked previously. For max speed, don't re-do this.
-    setTheAppData = false;
 end
 if ~isstruct(data) && setTheAppData
     data = formatLinkageMatrix(data, 'read');
@@ -64,6 +73,9 @@ if runCheck
 end
 
 %% Now that the data has been loaded, 
-if setTheAppData
-    setappdata(fig,uuid,data);
+if setTheAppData    
+    setappdata(fig,uuid,data);    
 end
+
+loadedDates.(uuid) = datetime('now');
+setappdata(fig,'loadedDates',loadedDates);

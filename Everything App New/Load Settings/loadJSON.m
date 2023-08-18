@@ -45,6 +45,7 @@ if ~isempty(data)
     file = dir(fullPath);
     if isUUID(uuid) && isfield(loadedDates,uuid) && loadedDates.(uuid) < max([datetime(file.date) datetime(data.DateModified)])
         loadData = true;
+        setTheAppData = true;
     end
 end
 

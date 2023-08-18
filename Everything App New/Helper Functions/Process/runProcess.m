@@ -63,23 +63,18 @@ trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
 % remSubNames={}; % Remove nothing
-remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
-% Remove all but one subject
-% remSubNames=fieldnames(trialNames);
-% idx=ismember(remSubNames,'Busan');
-% remSubNames(idx)=[];
-
-if ~conds
-    if any(ismember(remSubNames,fieldnames(trialNames)))
-        trialNames=rmfield(trialNames,remSubNames);
-    end
-else
-    if any(ismember(remSubNames,fieldnames(trialNames.Condition)))
-        trialNames.Condition=rmfield(trialNames.Condition,remSubNames);
-    end
-end
+% if ~conds
+%     if any(ismember(remSubNames,fieldnames(trialNames)))
+%         trialNames=rmfield(trialNames,remSubNames);
+%     end
+% else
+%     if any(ismember(remSubNames,fieldnames(trialNames.Condition)))
+%         trialNames.Condition=rmfield(trialNames.Condition,remSubNames);
+%     end
+% end
 subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.

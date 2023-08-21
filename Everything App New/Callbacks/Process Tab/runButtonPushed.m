@@ -4,6 +4,8 @@ function []=runButtonPushed(src,event)
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+stop = false;
+e = '';
 
 disp('Running process queue');
 

@@ -1,0 +1,3 @@
+function []=renderCompareResize(src,event)
+
+%% PURPOSE: RESIZE THE COMPONENTS IN THE VISUAL VERSION COMPARISON WINDOW

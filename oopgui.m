@@ -28,12 +28,20 @@ handles=initializeComponents(fig); % Put all of the components in their place
 setappdata(fig,'handles',handles);
 assignin('base','gui',fig); % Put the GUI object into the base workspace.
 
-%% Initialize the class folders and the contents of the root settings file.
-initializeClassFolders(); % Initialize all of the folders for all classes in the common path
-initRootSettingsFile(); % Initialize the root settings file.
-initLinkedObjsFile(); % Initialize the file containing object linkages
-initProject_Analysis(); % Make sure that a project & analysis exists
-initAbstract_Objs(); % Make sure that every instance has a corresponding abstract object (in case they were deleted, etc.)
+%% Initialize the SQL database
+slash = filesep;
+dbFolder = [currFolder slash 'Databases'];
+if exist(dbFolder,'dir')~=7
+    mkdir(dbFolder);
+end
+dbFile = [dbFolder slash 'biomechOS.db'];
+conn = DBSetup(dbFile);
+setappdata(fig,'conn',conn);
+% initializeClassFolders(); % Initialize all of the folders for all classes in the common path
+% initRootSettingsFile(); % Initialize the root settings file.
+% initLinkedObjsFile(); % Initialize the file containing object linkages
+% initProject_Analysis(); % Make sure that a project & analysis exists
+% initAbstract_Objs(); % Make sure that every instance has a corresponding abstract object (in case they were deleted, etc.)
 
 %% Load the GUI object settings (i.e. selected nodes in UI trees, checkbox selections, projects to filter, etc.)
 loadGUIState(fig);

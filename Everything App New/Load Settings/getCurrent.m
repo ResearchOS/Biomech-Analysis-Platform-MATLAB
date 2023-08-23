@@ -10,38 +10,31 @@ end
 
 function [var] = memoizedGetCurrent(varName)
 var = [];
+global conn;
 
 % List of variables in this settings file:
 rootSettingsVars = {'commonPath', 'Computer_ID', 'Current_Project_Name',...
-    'Current_Tab_Title','Store_Settings'};
+    'Current_Tab_Title'};
 
-if ismember(varName,rootSettingsVars)
-    try
-        rootSettingsFile = getRootSettingsFile();
-        var = load(rootSettingsFile, varName);
-        var = var.(varName);
-    catch
-    end
-    return;
+if ismember(varName,rootSettingsVars)  
+    sqlquery = ['SELECT Value FROM Settings WHERE VariableNames = ' varName];
+    var = fetch(conn, sqlquery);
 end
 
-projectSettingsVars = {'DataPath','ProjectPath','Process_Queue','Current_Analysis',...
-    'Current_Logsheet'};
+projectSettingsVars = {'DataPath','ProjectPath','Current_Analysis',...
+    'Current_Logsheet','Process_Queue'};
 
-if ismember(varName,projectSettingsVars)
-    try
-        projectName = getCurrent('Current_Project_Name');
-        projectSettings = loadJSON(projectName);
+if ismember(varName,projectSettingsVars)        
+    computerID = getCurrent('Computer_ID');
+    projectName = getCurrent('Current_Project_Name');
+    sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ' projectName];
+    var = fetch(conn, sqlquery);
 
-        if contains(varName,'Path')
-            computerID = getCurrent('Computer_ID');
-            var = projectSettings.(computerID).(varName);
-        else
-            var = projectSettings.(varName);
-        end
-    catch
+    if ismember(varName,{'DataPath','ProjectPath'})
+        var = jsondecode(var);
+        var = var.(computerID);
     end
-    return;
+
 end
 
 end

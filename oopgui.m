@@ -35,8 +35,8 @@ if exist(dbFolder,'dir')~=7
     mkdir(dbFolder);
 end
 dbFile = [dbFolder slash 'biomechOS.db'];
-conn = DBSetup(dbFile);
-setappdata(fig,'conn',conn);
+DBSetup(dbFile);
+
 % initializeClassFolders(); % Initialize all of the folders for all classes in the common path
 % initRootSettingsFile(); % Initialize the root settings file.
 % initLinkedObjsFile(); % Initialize the file containing object linkages

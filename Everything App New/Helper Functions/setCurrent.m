@@ -5,26 +5,34 @@ function []=setCurrent(var, varName)
 clearAllMemoizedCaches;
 
 rootSettingsVars = {'commonPath', 'Computer_ID', 'Current_Project_Name',...
-    'Current_Tab_Title','Store_Settings'};
+    'Current_Tab_Title'};
 
 if ismember(varName,rootSettingsVars)
-    rootSettingsFile = getRootSettingsFile();
-    eval([varName ' = var;']); % Convert from var name to value
-    save(rootSettingsFile,varName, '-append');
+    t = table(var,'VariableNames','VariableNames');
+    % sqlquery = ['SELECT * FROM Settings'];
+    % t = fetch(conn, sqlquery);
+    % tIdx = ismember(t.VariableNames,varName);
+    % t.Value(tIdx) = var;
+    rf = rowfilter('VariableNames');
+    rf = rf.VariableNames==varName;
+    sqlupdate(conn, 'Settings',t,rf);
 end
 
-projectSettingsVars = {'DataPath','ProjectPath','Process_Queue','Current_Analysis',...
-    'Current_Logsheet'};
+projectSettingsVars = {'DataPath','ProjectPath','Process_Queue',...
+    'Current_Analysis','Current_Logsheet'};
 
-if ismember(varName, projectSettingsVars)
+if ismember(varName, projectSettingsVars)    
     projectName = getCurrent('Current_Project_Name');
-    projectStruct = loadJSON(projectName);
-
-    if contains(upper(varName),'PATH')
+    currVal = getCurrent(varName);
+    if ismember(varName,{'DataPath','ProjectPath'})
         computerID = getCurrent('Computer_ID');
-        projectStruct.(computerID).(varName) = var;
+        currVal.(computerID) = var;
+        currVal = jsonencode(currVal);
     else
-        projectStruct.(varName) = var;
+        currVal = var;
     end
-    writeJSON(getJSONPath(projectName),projectStruct);
+    t = table(currVal,'VariableNames',varName);
+    rf = rowfilter('UUID');
+    rf = rf.UUID==projectName;
+    sqlupdate(conn, 'Projects_Instances', t, rf);
 end

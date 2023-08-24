@@ -13,18 +13,18 @@ if exist('instanceID','var')~=1
 end
 
 currDate = datetime('now');
-struct.DateCreated = currDate;
-struct.DateModified = currDate;
+struct.Date_Created = currDate;
+struct.Date_Modified = currDate;
 
-struct.Text = name;
+struct.Name = name;
 
 % struct.Class = class;
 
 user='MT'; % Stand-in for username
-struct.CreatedBy=user;
+struct.Created_By=user;
 
 user2=user; % Stand-in for username
-struct.LastModifiedBy=user2;
+struct.Last_Modified_By=user2;
 
 struct.Description='';
 
@@ -40,5 +40,8 @@ end
 
 struct.UUID = genUUID(class, abstractID, instanceID);
 
+if instanceBool
+    [type, abstractID] = deText(struct.UUID);
+    struct.Abstract_UUID = genUUID(type, abstractID);
 end
 

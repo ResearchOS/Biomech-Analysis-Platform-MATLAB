@@ -15,29 +15,38 @@ end
 class = makeClassPlural(class);
 tablename = [class '_' suffix];
 
-types = fetch(conn, ['PRAGMA table_info(' tablename ');']);
+colNames = fieldnames(classStruct);
+colNamesStr = '(';
+for i=1:length(colNames)
+    colNamesStr = [colNamesStr colNames{i} ', '];
+end
+colNamesStr = [colNamesStr(1:end-2) ')'];
+valsStr = '(';
+for i=1:length(colNames)
+    currVar = classStruct.(colNames{i});
+    if isa(currVar,'datetime')
+        currVar = char(currVar);
+    end
+    if isa(currVar,'char') || (isa(currVar,'string') && isscalar(currVar))
+        currVar = char(currVar);
+        valsStr = [valsStr '''' currVar ''', '];
+    elseif isnumeric(currVar) || islogical(currVar)
+        valsStr = [valsStr num2str(currVar) ', '];
+    elseif isstruct(currVar)
+        valsStr = [valsStr '''' jsonencode(currVar) ''', '];
+    elseif iscell(currVar)
+        cellStr = '''';
+        for j=1:length(currVar)
+            cellStr = [cellStr currVar{j} ', '];
+        end
+        cellStr = [cellStr ''''];
+        valsStr = [valsStr '''' cellStr ''', '];
+    else
+        error('What is this?');
+    end
+end
 
-t = struct2table(classStruct,'AsArray',true);
+valsStr = [valsStr(1:end-2) ')'];
 
-% sqlquery = ['UPDATE ' class '_' suffix ' SET VariableValue = ''' Current_Tab_Title ''' WHERE VariableName = ''Current_Tab_Title'''];
-
-sqlwrite(conn, tablename, t);
-% slash=filesep;
-
-% filename=classStruct.UUID;
-
-% rootPath=getCommonPath();
-
-% if ~isempty(instanceID)
-%     rootPath=[rootPath slash class slash 'Instances'];
-% else
-%     rootPath=[rootPath slash class];
-% end
-% 
-% filepath=[rootPath slash filename];
-% 
-% if nargin<3
-%     date=datetime('now');
-% end
-
-% writeJSON(filepath,classStruct,date);
+sqlquery = ['INSERT INTO ' tablename ' ' colNamesStr ' VALUES ' valsStr ';'];
+execute(conn, sqlquery);

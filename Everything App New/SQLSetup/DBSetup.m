@@ -99,13 +99,17 @@ end
 % Projects_Instances
 if ismember('Projects_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Projects_Instances ADD Data_Path TEXT'];
-    execute(conn, sqlquery);
+    execute(conn, sqlquery);    
     sqlquery = ['ALTER TABLE Projects_Instances ADD Project_Path TEXT'];
+    execute(conn, sqlquery);
+    sqlquery = ['ALTER TABLE Projects_Instances ADD Process_Queue TEXT'];
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Analysis TEXT REFERENCES Analyses_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE'];
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Logsheet TEXT REFERENCES Logsheets_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE'];
-    execute(conn, sqlquery);    
+    execute(conn, sqlquery);  
+    sqlquery = ['INSERT INTO TABLE Projects_Instances (Data_Path, Project_Path, Process_Queue, Current_Logsheet, Current_Analysis) VALUES (''NULL'', ''NULL'', ''NULL'', ''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
+    execute(conn, sqlquery);
 end
 
 if ismember('Process_Abstract',modifiedNames)
@@ -115,12 +119,16 @@ if ismember('Process_Abstract',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Abstract ADD ExecFileName TEXT'];
     execute(conn, sqlquery);
+    sqlquery = ['INSERT INTO TABLE Process_Abstract (NamesInCode, ExecFileName) VALUES (''NULL'', ''NULL'');'];
+    execute(conn, sqlquery);
 end
 
 if ismember('Process_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Process_Instances ADD SpecifyTrials TEXT'];
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Instances ADD Date_Last_Ran TEXT'];
+    execute(conn, sqlquery);
+    sqlquery = ['INSERT INTO TABLE Process_Instances (SpecifyTrials, Date_Last_Ran) VALUES (''NULL'',''NULL'');'];
     execute(conn, sqlquery);
 end
 
@@ -132,7 +140,7 @@ if ismember('Variables_Abstract',modifiedNames)
 end
 
 if ismember('Variables_Instances',modifiedNames)
-    sqlquery = ['ALTER TABLE Variables_Instances ADD HardCodedValue TEXT DEFAULT [NULL]'];
+    sqlquery = ['ALTER TABLE Variables_Instances ADD HardCodedValue TEXT DEFAULT [''NULL'']'];
     execute(conn, sqlquery);
 end
 
@@ -140,6 +148,8 @@ if ismember('SpecifyTrials_Abstract',modifiedNames)
     sqlquery = ['ALTER TABLE SpecifyTrials_Abstract ADD Logsheet_Parameters TEXT'];
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE SpecifyTrials_Abstract ADD Data_Parameters TEXT'];
+    execute(conn, sqlquery);
+    sqlquery = ['INSERT INTO TABLE SpecifyTrials_Abstract (Logsheet_Parameters, Data_Parameters) VALUES (''NULL'', ''NULL'');'];
     execute(conn, sqlquery);
 end
 
@@ -154,10 +164,15 @@ if ismember('Logsheets_Abstract',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Logsheets_Abstract ADD LogsheetVar_Params TEXT'];
     execute(conn, sqlquery);
+    sqlquery = ['INSERT INTO TABLE Logsheets_Abstract (Logsheet_Path, Subject_Codename_Header, Target_TrialID_Header, LogsheetVar_Params)',...
+        ' VALUES (''NULL'', ''NULL'', ''NULL'', ''NULL'', ''NULL'');'];
+    execute(conn, sqlquery);
 end
 
 if ismember('Analyses_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Analyses_Instances ADD Tags TEXT'];
+    execute(conn, sqlquery);
+    sqlquery = ['INSERT INTO TABLE Analyses_Instances (Tags) VALUES (''NULL'');'];
     execute(conn, sqlquery);
 end
 

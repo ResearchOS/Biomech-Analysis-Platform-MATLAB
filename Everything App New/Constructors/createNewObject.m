@@ -45,18 +45,22 @@ end
 % Once to create abstract object-specific fields and once to create
 % instance object-specific fields.
 if createAbstract
-    objStruct = initializeCommonStructFields(instanceBool, class, name, abstractID, instanceID);
+    objStruct = initializeCommonStructFields(false, class, name, abstractID, instanceID);
     absStruct = feval(['create' class 'Struct'],false, objStruct, saveObj);
     if saveObj
         saveClass(class, absStruct);
     end
+    [type,abstractID] = deText(absStruct.UUID);
+    objStruct = absStruct;
 end
 
 if instanceBool
-    instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);
+    objStruct = initializeCommonStructFields(true, class, name, abstractID, instanceID);
+    instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);    
     if saveObj
         saveClass(class,instStruct);
     end
+    objStruct = instStruct;
 end
 
 end
@@ -77,14 +81,14 @@ end
 function struct = createProjectStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-
-else
     computerID=getComputerID();
-    struct.DataPath.(computerID)=''; % Where the Raw Data Files are located.
-    struct.ProjectPath.(computerID)=''; % Where the project's files are located.
+    struct.Data_Path.(computerID)=''; % Where the Raw Data Files are located.
+    struct.Project_Path.(computerID)=''; % Where the project's files are located.
     struct.Process_Queue = {};
     struct.Current_Logsheet = '';  
     struct.Current_Analysis = '';
+else
+    
 end
 
 end

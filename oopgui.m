@@ -30,11 +30,15 @@ assignin('base','gui',fig); % Put the GUI object into the base workspace.
 
 %% Initialize the SQL database
 slash = filesep;
-dbFolder = [currFolder slash 'Databases'];
-if exist(dbFolder,'dir')~=7
-    mkdir(dbFolder);
+try
+    dbFile = getCommonPath();
+catch
+    dbFolder = [currFolder slash 'Databases'];
+    if exist(dbFolder,'dir')~=7
+        mkdir(dbFolder);
+    end
+    dbFile = [dbFolder slash 'biomechOS.db'];
 end
-dbFile = [dbFolder slash 'biomechOS.db'];
 DBSetup(dbFile);
 
 % initializeClassFolders(); % Initialize all of the folders for all classes in the common path

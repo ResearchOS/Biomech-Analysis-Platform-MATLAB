@@ -2,39 +2,21 @@ function []=fillUITree(fig, class, uiTree, searchTerm, sortDropDown)
 
 %% PURPOSE: FILL IN THE UI TREE.
 
+global conn;
+
 delete(uiTree.Children);
 
-slash=filesep;
-commonPath=getCommonPath();
-classFolder=[commonPath slash class];
-classVar=loadClassVar(classFolder);
-handles=getappdata(fig,'handles');
+tablename = getTableName(class);
+sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
+t = fetch(conn,sqlquery);
+t(1,:) = []; % ALWAYS REMOVE THE FIRST ROW.
 
-%% Get all of the existing nodes' text. The node text is the ".Text" field of the struct
-nodes=uiTree.Children;
-if ~isempty(nodes)
-    currNodesTexts={nodes.Text};
-else
-    currNodesTexts={};   
-end
-
-if isempty(classVar)
-    delete(uiTree.Children); % Just triple checking that there are no nodes in the box when there are no files present.
-    return;
-end
-
-if exist('searchTerm','var')~=1
-    searchTerm='';
-end
+allUUIDs = cellstr(t.UUID);
+allNames = cellstr(t.Name);
 
 %% Get the list of all files
-% isVis=[classVar.Visible];
-allTexts={classVar.Text}; % Has the existing node texts and the ones to be added already in it.
-% allTexts=allTexts(isVis);
-allUUIDs = {classVar.UUID};
-% allUUIDs=allUUIDs(isVis);
-searchIdx = contains(allTexts,searchTerm);
-allSearchResults=allTexts(searchIdx); % Include only the nodes that match the search term
+searchIdx = contains(allNames,searchTerm);
+allSearchResults=allNames(searchIdx); % Include only the nodes that match the search term
 allUUIDs=allUUIDs(searchIdx);
 
 selNode=uiTree.SelectedNodes; % Get the currently selected node.
@@ -46,7 +28,7 @@ selNode=uiTree.SelectedNodes; % Get the currently selected node.
 %% Create nodes in the UI tree for the new instances, and add their properties. If it would be filtered out, it will not appear here.
 % checkedIdx=false(length(allSearchResults),1);
 childIdx=0;
-allTextsNoVis={classVar.Text}; % Includes class variable instances that are not visible.
+allTextsNoVis=allNames; % Includes class variable instances that are not visible.
 for i=1:length(allSearchResults) % Iterate over all of the sibling nodes.    
 
     idx=ismember(allTextsNoVis,allSearchResults{i});

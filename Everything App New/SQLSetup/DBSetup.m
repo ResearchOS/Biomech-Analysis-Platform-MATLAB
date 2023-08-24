@@ -108,7 +108,8 @@ if ismember('Projects_Instances',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Logsheet TEXT REFERENCES Logsheets_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE'];
     execute(conn, sqlquery);  
-    sqlquery = ['INSERT INTO TABLE Projects_Instances (Data_Path, Project_Path, Process_Queue, Current_Logsheet, Current_Analysis) VALUES (''NULL'', ''NULL'', ''NULL'', ''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
+    % sqlquery = ['INSERT INTO TABLE Projects_Instances (Data_Path, Project_Path, Process_Queue, Current_Logsheet, Current_Analysis) VALUES (''NULL'', ''NULL'', ''NULL'', ''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
+    sqlquery = ['UPDATE Projects_Instances SET Data_Path = ''NULL'', Project_Path = ''NULL'', Process_Queue = ''NULL'', Current_Analysis = ''ZZZZZZ_ZZZ'', Current_Logsheet = ''ZZZZZZ_ZZZ'';'];
     execute(conn, sqlquery);
 end
 
@@ -119,7 +120,7 @@ if ismember('Process_Abstract',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Abstract ADD ExecFileName TEXT'];
     execute(conn, sqlquery);
-    sqlquery = ['INSERT INTO TABLE Process_Abstract (NamesInCode, ExecFileName) VALUES (''NULL'', ''NULL'');'];
+    sqlquery = 'UPDATE Process_Abstract SET NamesInCode = ''NULL'', ExecFileName = ''NULL'';';
     execute(conn, sqlquery);
 end
 
@@ -128,7 +129,7 @@ if ismember('Process_Instances',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Instances ADD Date_Last_Ran TEXT'];
     execute(conn, sqlquery);
-    sqlquery = ['INSERT INTO TABLE Process_Instances (SpecifyTrials, Date_Last_Ran) VALUES (''NULL'',''NULL'');'];
+    sqlquery = ['UPDATE Process_Instances SET SpecifyTrials = ''NULL'', Date_Last_Ran = ''NULL'';'];
     execute(conn, sqlquery);
 end
 
@@ -149,7 +150,7 @@ if ismember('SpecifyTrials_Abstract',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE SpecifyTrials_Abstract ADD Data_Parameters TEXT'];
     execute(conn, sqlquery);
-    sqlquery = ['INSERT INTO TABLE SpecifyTrials_Abstract (Logsheet_Parameters, Data_Parameters) VALUES (''NULL'', ''NULL'');'];
+    sqlquery = ['UPDATE SpecifyTrials_Abstract SET Logsheet_Parameters = ''NULL'', Data_Parameters = ''NULL'';'];
     execute(conn, sqlquery);
 end
 
@@ -164,25 +165,25 @@ if ismember('Logsheets_Abstract',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Logsheets_Abstract ADD LogsheetVar_Params TEXT'];
     execute(conn, sqlquery);
-    sqlquery = ['INSERT INTO TABLE Logsheets_Abstract (Logsheet_Path, Subject_Codename_Header, Target_TrialID_Header, LogsheetVar_Params)',...
-        ' VALUES (''NULL'', ''NULL'', ''NULL'', ''NULL'', ''NULL'');'];
+    sqlquery = ['UPDATE Logsheets_Abstract SET Logsheet_Path = ''NULL'', Subject_Codename_Header = ''NULL'', Target_TrialID_Header = ''NULL'', LogsheetVar_Params = ''NULL'';'];        
     execute(conn, sqlquery);
 end
 
 if ismember('Analyses_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Analyses_Instances ADD Tags TEXT'];
     execute(conn, sqlquery);
-    sqlquery = ['INSERT INTO TABLE Analyses_Instances (Tags) VALUES (''NULL'');'];
+    sqlquery = ['UPDATE Analyses_Instances SET Tags = ''NULL'';'];
     execute(conn, sqlquery);
 end
 
 
 %% JOIN TABLES
 createJoinTable = ['CREATE TABLE XXX_YYY (',...
-    'AAA_ID TEXT REFERENCES CCC_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,',...
-    'BBB_ID TEXT REFERENCES DDD_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,',...
+    'AAA_ID TEXT REFERENCES CCC_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL, ',...
+    'BBB_ID TEXT REFERENCES DDD_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL, ',...
     'PRIMARY KEY (AAA_ID, BBB_ID)',...
     ');'];
+initJoinTable = ['INSERT INTO XXX (AAA_ID, BBB_ID) VALUES (''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
 
 objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},{'PR','VR'},{'VR','PR'},{'PJ','LG'}};
 modifiedNames = {};
@@ -215,7 +216,7 @@ for i=1:length(objAbbrevs)
     end
     if isequal(abbrevs{2},'AN')
         class2(end-1) = 'e'; % Analyses
-    end    
+    end        
 
     createJoinTableCurr = strrep(createJoinTable,'XXX',abbrevs{1});
     createJoinTableCurr = strrep(createJoinTableCurr,'YYY',abbrevs{2});
@@ -226,16 +227,26 @@ for i=1:length(objAbbrevs)
 
     execute(conn, createJoinTableCurr);
 
+    initJoinTableCurr = strrep(initJoinTable,'XXX',name);
+    initJoinTableCurr = strrep(initJoinTableCurr,'AAA',newAbbrevs{1});
+    initJoinTableCurr = strrep(initJoinTableCurr,'BBB',newAbbrevs{2});
+
+    execute(conn, initJoinTableCurr);
+
 end
 
 % Custom Join table columns
 if ismember('VR_PR',modifiedNames)
     sqlquery = ['ALTER TABLE VR_PR ADD NameInCode TEXT'];
     execute(conn, sqlquery);
+    sqlquery = ['UPDATE VR_PR SET NameInCode = ''NULL'';'];
+    execute(conn, sqlquery);
 end
 
 if ismember('PR_VR',modifiedNames)
     sqlquery = ['ALTER TABLE PR_VR ADD NameInCode TEXT'];
+    execute(conn, sqlquery);
+    sqlquery = ['UPDATE PR_VR SET NameInCode = ''NULL'';'];
     execute(conn, sqlquery);
 end
 

@@ -15,6 +15,8 @@ end
 class = makeClassPlural(class);
 tablename = [class '_' suffix];
 
+sqlquery = struct2SQL(tablename, classStruct);
+
 colNames = fieldnames(classStruct);
 colNamesStr = '(';
 for i=1:length(colNames)

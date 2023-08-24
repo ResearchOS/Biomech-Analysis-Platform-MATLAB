@@ -4,8 +4,7 @@ function [instanceID]=createID_Instance(abstractID, class)
 global conn;
 idLength = 3; % Number of characters in instanceID
 
-class = makeClassPlural(class);
-tablename = [class '_Instances'];
+tablename = getTableName(class);
 sqlquery = ['SELECT UUID FROM ' tablename];
 uuids = fetch(conn, sqlquery);
 uuids = uuids.UUID;

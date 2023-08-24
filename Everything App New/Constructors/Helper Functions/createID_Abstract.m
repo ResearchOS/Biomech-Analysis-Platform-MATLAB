@@ -5,8 +5,7 @@ function [id]=createID_Abstract(class)
 global conn;
 idLength = 6; % Number of characters in abstract ID
 
-class = makeClassPlural(class);
-tablename = [class '_Abstract'];
+tablename = getTableName(class);
 sqlquery = ['SELECT UUID FROM ' tablename];
 uuids = fetch(conn, sqlquery);
 uuids = uuids.UUID;

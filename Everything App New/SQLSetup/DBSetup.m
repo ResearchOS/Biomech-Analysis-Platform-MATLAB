@@ -237,9 +237,21 @@ if ~ismember('Settings',tableNames)
     t = table(VariableName, VariableValue);
     sqlwrite(conn, 'Settings', t);
 
-    % Now that the table has been initialized, put the proper values in it.
-    commonPath = dbFile;
-    computerID = getComputerID();
+    %% Now that the table has been initialized, put the proper values in it.
+    % Computer ID
+    computerID = getComputerID(); % Also sets the Computer ID
+
+    % DB file path (previously known as common path)
+    commonPath.(computerID) = dbFile;
+    sqlquery = ['UPDATE Settings SET VariableValue = ''' jsonencode(commonPath) ''' WHERE VariableName = ''commonPath'''];
+    execute(conn, sqlquery);    
+
+    % Current_Tab_Title
+    Current_Tab_Title = 'Projects';
+    sqlquery = ['UPDATE Settings SET VariableValue = ''' Current_Tab_Title ''' WHERE VariableName = ''Current_Tab_Title'''];
+    execute(conn, sqlquery);
+
+    % Current_Project_Name
 
     % Try to get the second row of the Projects_Instances table. If there's
     % only one row (the initialization row), then create a new row, and set
@@ -250,7 +262,7 @@ if ~ismember('Settings',tableNames)
     if numRows == 1
         projStruct = createNewObject(true, 'Project', 'Default','','', true);
         uuid = projStruct.UUID;
-    else
+    else % Projects instances already exists, but the Settings table is being rebuilt for some reason.
         sqlquery = 'SELECT Date_Modified FROM Projects_Instances';
         dates = sqlread(conn, sqlquery);
         dates = datetime(dates);
@@ -259,7 +271,6 @@ if ~ismember('Settings',tableNames)
         uuid = sqlread(conn, sqlquery);
     end
 
-    VariableValue = {commonPath, computerID, uuid, 'Projects'}';
-    t = table(VariableName, VariableValue);
-    sqlwrite(conn, 'Settings', t);
+    sqlquery = ['UPDATE Settings SET VariableValue = ''' uuid ''' WHERE VariableName = ''Current_Project_Name'''];
+    execute(conn, sqlquery);
 end

@@ -1,25 +1,43 @@
 function []=saveClass(class, classStruct, date)
 
-%% PURPOSE: SAVE A CLASS INSTANCE TO JSON FILE.
+%% PURPOSE: SAVE A CLASS INSTANCE TO A NEW ROW.
+global conn;
 
-[~,abstractID,instanceID]=deText(classStruct.UUID);
-
-slash=filesep;
-
-filename=classStruct.UUID;
-
-rootPath=getCommonPath();
+uuid = classStruct.UUID;
+[~,abstractID,instanceID]=deText(uuid);
 
 if ~isempty(instanceID)
-    rootPath=[rootPath slash class slash 'Instances'];
+    suffix = 'Instances';
 else
-    rootPath=[rootPath slash class];
+    suffix = 'Abstract';
 end
 
-filepath=[rootPath slash filename];
+class = makeClassPlural(class);
+tablename = [class '_' suffix];
 
-if nargin<3
-    date=datetime('now');
-end
+types = fetch(conn, ['PRAGMA table_info(' tablename ');']);
 
-writeJSON(filepath,classStruct,date);
+t = struct2table(classStruct,'AsArray',true);
+
+% sqlquery = ['UPDATE ' class '_' suffix ' SET VariableValue = ''' Current_Tab_Title ''' WHERE VariableName = ''Current_Tab_Title'''];
+
+sqlwrite(conn, tablename, t);
+% slash=filesep;
+
+% filename=classStruct.UUID;
+
+% rootPath=getCommonPath();
+
+% if ~isempty(instanceID)
+%     rootPath=[rootPath slash class slash 'Instances'];
+% else
+%     rootPath=[rootPath slash class];
+% end
+% 
+% filepath=[rootPath slash filename];
+% 
+% if nargin<3
+%     date=datetime('now');
+% end
+
+% writeJSON(filepath,classStruct,date);

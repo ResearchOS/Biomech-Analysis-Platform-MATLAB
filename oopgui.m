@@ -1,8 +1,9 @@
 function []=oopgui()
 
 %% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
-% fig = findall(0,'Name','pgui');
-% close(fig); clear fig;
+fig = findall(0,'Name','pgui');
+close(fig); clear fig;
+delete('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Databases/biomechOS.db');
 tic;
 
 %% Ensure that there's max one figure open

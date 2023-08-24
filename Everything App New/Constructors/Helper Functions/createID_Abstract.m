@@ -2,17 +2,14 @@ function [id]=createID_Abstract(class)
 
 %% PURPOSE: CREATE AN ID NUMBER FOR THE CURRENTLY SPECIFIED CLASS
 
+global conn;
 idLength = 6; % Number of characters in abstract ID
 
-slash=filesep;
-
-commonPath=getCommonPath();
-classFolder=[commonPath slash class];
-
-files=dir(classFolder);
-fileNames={files.name};
-isDir=[files.isdir];
-fileNames=fileNames(~isDir); % Remove folders from the list.
+class = makeClassPlural(class);
+tablename = [class '_Abstract'];
+sqlquery = ['SELECT UUID FROM ' tablename];
+uuids = fetch(conn, sqlquery);
+uuids = uuids.UUID;
 
 isNewID=false;
 maxNum = (16^idLength) - 1;
@@ -25,7 +22,7 @@ while ~isNewID
     numDigits=length(newID);
     id=[repmat('0',1,idLength-numDigits) newID]; % Ensure that the hex code is 6 digits long
 
-    if ~any(contains(fileNames,id))
+    if ~any(ismember(uuids,id))
         isNewID=true;
     end
 end

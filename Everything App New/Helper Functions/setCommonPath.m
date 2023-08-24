@@ -20,7 +20,9 @@ sqlquery = ['UPDATE Settings SET VariableValue = ''' commonPath ''' WHERE Variab
 execute(conn, sqlquery);
 
 % Move the database to the new location.
-movefile(commonPathPrev,commonPath);
+if exist(commonPathPrev,'file')==2
+    movefile(commonPathPrev,commonPath);
+end
 
 
 % try

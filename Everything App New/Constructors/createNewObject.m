@@ -40,19 +40,23 @@ end
 if ischar(class) && length(class)==2
     class = className2Abbrev(class, true);
 end
-objStruct = initializeCommonStructFields(instanceBool, class, name, abstractID, instanceID);
 
 % If creating an abstract object AND an instance at the same time, need to run this twice.
 % Once to create abstract object-specific fields and once to create
 % instance object-specific fields.
-if createAbstract && instanceBool
-    objStruct = feval(['create' class 'Struct'],false, objStruct, saveObj);
+if createAbstract
+    objStruct = initializeCommonStructFields(instanceBool, class, name, abstractID, instanceID);
+    absStruct = feval(['create' class 'Struct'],false, objStruct, saveObj);
+    if saveObj
+        saveClass(class, absStruct);
+    end
 end
 
-objStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);
-
-if saveObj
-    saveClass(class,objStruct);
+if instanceBool
+    instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);
+    if saveObj
+        saveClass(class,instStruct);
+    end
 end
 
 end

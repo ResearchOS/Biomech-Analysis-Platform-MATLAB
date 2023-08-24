@@ -19,9 +19,13 @@ rootSettingsVars = {'commonPath', 'Computer_ID', 'Current_Project_Name',...
 if ismember(varName,rootSettingsVars)  
     sqlquery = ['SELECT VariableValue FROM Settings WHERE VariableName = ''' varName ''''];
     var = fetch(conn, sqlquery);
-    var = var.VariableValue;    
+    var = var.VariableValue;
+    if ismember(varName,{'commonPath'})
+        var = jsondecode(var);
+        computerID = getCurrent('Computer_ID');
+        var = var.(computerID);
+    end
 end
-
 
 %% Look at projects table to determine.
 projectSettingsVars = {'DataPath','ProjectPath','Current_Analysis',...
@@ -30,7 +34,7 @@ projectSettingsVars = {'DataPath','ProjectPath','Current_Analysis',...
 if ismember(varName,projectSettingsVars)        
     computerID = getCurrent('Computer_ID');
     projectName = getCurrent('Current_Project_Name');
-    sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ' projectName];
+    sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ''' projectName ''];
     var = fetch(conn, sqlquery);
 
     if ismember(varName,{'DataPath','ProjectPath'})

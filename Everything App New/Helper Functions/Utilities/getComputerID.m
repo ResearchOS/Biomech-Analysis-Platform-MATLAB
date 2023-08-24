@@ -29,6 +29,3 @@ end
 id=genvarname(id);
 
 setCurrent(id,'Computer_ID');
-
-% Computer_ID=id;
-% save(rootSettingsFile,'Computer_ID','-append','-v6');

@@ -18,7 +18,7 @@ struct.DateModified = currDate;
 
 struct.Text = name;
 
-struct.Class = class;
+% struct.Class = class;
 
 user='MT'; % Stand-in for username
 struct.CreatedBy=user;

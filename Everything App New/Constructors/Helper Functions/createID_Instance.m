@@ -1,18 +1,14 @@
 function [instanceID]=createID_Instance(abstractID, class)
 
 %% PURPOSE: CREATE INSTANCE ID FOR THE SPECIFIED OBJECT.
-
+global conn;
 idLength = 3; % Number of characters in instanceID
 
-slash=filesep;
-
-commonPath=getCommonPath();
-classFolder=[commonPath slash class slash 'Instances'];
-
-files=dir(classFolder);
-fileNames={files.name};
-isDir=[files.isdir];
-fileNames=fileNames(~isDir); % Remove folders from the list.
+class = makeClassPlural(class);
+tablename = [class '_Instances'];
+sqlquery = ['SELECT UUID FROM ' tablename];
+uuids = fetch(conn, sqlquery);
+uuids = uuids.UUID;
 
 isNewID=false;
 maxNum = (16^idLength) - 1;
@@ -27,7 +23,7 @@ while ~isNewID
 
     uuid = genUUID(class, abstractID, instanceID);
 
-    if ~any(contains(fileNames,uuid))
+    if ~any(ismember(uuids,uuid))
         isNewID = true;
     end
 

@@ -4,9 +4,9 @@ function [data]=loadJSON(uuid, runCheck)
 % str is either a path or a UUID
 global conn;
 
-if exist('runCheck','var')~=1
-    runCheck = true; % Helpful for testing.
-end
+% if exist('runCheck','var')~=1
+%     runCheck = true; % Helpful for testing.
+% end
 
 [type, abstractID, instanceID] = deText(uuid);
 if ~isempty(instanceID)
@@ -22,6 +22,6 @@ data = table2MyStruct(t);
 % Check that this struct contains all required fields. If it does not,
 % default values are inserted. EXCEPT for UUID field, which throws an
 % error.
-if runCheck
-    data = checkFields(data);
-end
+% if runCheck
+%     data = checkFields(data);
+% end

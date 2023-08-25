@@ -13,7 +13,7 @@ for i=1:length(varNames)
     var = table.(varName);
 
     if ismember(varName,numericCols)
-
+        var = double(var);
     elseif ismember(varName,jsonCols)
         var = jsondecode(var);
     elseif ismember(varName,dateCols)

@@ -1,44 +1,38 @@
-function []=writeJSON(fullPath, json, date)
+function []=writeJSON(struct, date)
 
 %% PURPOSE: WRITE A JSON TO FILE.
 
-%% For saving the data into the GUI appdata 
-
-try
-    fig=evalin('base','gui');
-catch
-    fig=findall(0,'Name','pgui');
-end
+global conn;
 
 if exist('date','var')~=1
     date=datetime('now');
 end
 
-if isstruct(json)
-    json.DateModified=date;
-end
-
-if ~isequal(fullPath(end-4:end),'.json')
-    fullPath=[fullPath '.json'];
+if isstruct(struct)
+    struct.Date_Modified=date;
 end
 
 %% Format the linkage matrix to be written
-if ~isstruct(json)
-%     prettyJSON = getName(json); % Has to be before JSON gets formatted for the linkage matrix.
-    jsonStr = formatLinkageMatrix(json,'write');
-    uuid = 'Linkages';
-%     prettyJSON = formatLinkageMatrix(prettyJSON, 'write');
-%     [folder] = fileparts(fullPath);
-%     fid = fopen([folder filesep 'PrettyLinkages.json'],'w');
-%     fprintf(fid, '%s', prettyJSON);
-%     fclose(fid);
+% if ~isstruct(struct)
+% %     prettyJSON = getName(json); % Has to be before JSON gets formatted for the linkage matrix.
+%     jsonStr = formatLinkageMatrix(struct,'write');
+%     uuid = 'Linkages';
+% %     prettyJSON = formatLinkageMatrix(prettyJSON, 'write');
+% %     [folder] = fileparts(fullPath);
+% %     fid = fopen([folder filesep 'PrettyLinkages.json'],'w');
+% %     fprintf(fid, '%s', prettyJSON);
+% %     fclose(fid);
+% else
+    % jsonStr=jsonencode(json,'PrettyPrint',true);
+uuid = struct.UUID;
+% end
+
+[type, abstractID, instanceID] = deText(uuid);
+if isempty(instanceID)
+    isInstance = false;
 else
-    jsonStr=jsonencode(json,'PrettyPrint',true);
-    uuid = json.UUID;
+    isInstance = true;
 end
-
-fid=fopen(fullPath,'w');
-fprintf(fid,'%s',jsonStr);
-fclose(fid);
-
-setappdata(fig, uuid, json);
+tablename = getTableName(type, isInstance);
+sqlquery = struct2SQL(tablename, struct);
+exec(conn, sqlquery);

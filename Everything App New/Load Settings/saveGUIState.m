@@ -5,6 +5,7 @@ function []=saveGUIState(fig)
 
 global conn;
 close(conn);
+clear global conn;
 
 evalin('base','clear gui;');
 

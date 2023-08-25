@@ -103,11 +103,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Settings tab
 %% Put the common path into the edit field
-commonPath=getCommonPath();
+commonPath=getCurrent('commonPath');
 handles.Settings.commonPathEditField.Value=commonPath;
-
-Store_Settings = getCurrent('Store_Settings');
-handles.Settings.storeSettingsCheckbox.Value=Store_Settings;
 
 Current_Tab_Title = getCurrent('Current_Tab_Title');
 handles.Tabs.tabGroup1.SelectedTab=handles.(Current_Tab_Title).Tab;

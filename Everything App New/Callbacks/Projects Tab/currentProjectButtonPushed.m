@@ -19,6 +19,14 @@ setCurrent(uuid, 'Current_Project_Name');
 
 % Select the current analysis node, and show its entries.
 Current_Analysis = getCurrent('Current_Analysis');
+% If this project has never had an analysis assigned, create one and assign it.
+if isempty(Current_Analysis)
+    [anStructInst, anStructAbs] = createNewObject(true, 'AN', 'Default', '', '', true);
+    absNode = addNewNode(handles.Process.allAnalysesUITree, anStructAbs.UUID, anStructAbs.Name);
+    addNewNode(absNode, anStructInst.UUID, anStructInst.Name);
+    Current_Analysis = anStructInst.UUID;
+    setCurrent(Current_Analysis, 'Current_Analysis');
+end
 selectNode(handles.Process.allAnalysesUITree, Current_Analysis);
 selectAnalysisButtonPushed(fig);
 

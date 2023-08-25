@@ -25,22 +25,29 @@ if ismember(varName,rootSettingsVars)
         computerID = getCurrent('Computer_ID');
         var = var.(computerID);
     end
+    var = char(var);
 end
 
 %% Look at projects table to determine.
-projectSettingsVars = {'DataPath','ProjectPath','Current_Analysis',...
+projectSettingsVars = {'Data_Path','Project_Path','Current_Analysis',...
     'Current_Logsheet','Process_Queue'};
 
 if ismember(varName,projectSettingsVars)        
     computerID = getCurrent('Computer_ID');
     projectName = getCurrent('Current_Project_Name');
-    sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ''' projectName ''];
-    var = fetch(conn, sqlquery);
-
-    if ismember(varName,{'DataPath','ProjectPath'})
-        var = jsondecode(var);
-        var = var.(computerID);
+    sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ''' projectName ''';'];
+    t = fetch(conn, sqlquery);
+    struct = table2MyStruct(t);
+    if isstruct(struct.(varName))
+        var = struct.(varName).(computerID);
+    else
+        var = struct.(varName);
     end
+
+    % if ismember(varName,{'Data_Path','Project_Path'})
+    %     var = jsondecode(var);
+    %     var = char(var.(computerID));
+    % end
 
 end
 

@@ -1,21 +1,17 @@
 function []=openDataPathButtonPushed(src,event)
 
 %% PURPOSE: OPEN THE SPECIFIED DATA PATH LOCATION
-
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_Project_Name');
-project=Current_Project_Name;
-fullPath=getClassFilePath(project, 'Project');
-struct=loadJSON(fullPath);
-computerID=getComputerID();
-path=struct.DataPath.(computerID);
+projectName = getCurrent('Current_Project_Name');
+projectStruct = newComputerProjectPaths(projectName); % Ensure that even if the project isn't "current", it still has a field for this computer.
+computerID = getCurrent('Computer_ID');
+path = projectStruct.Data_Path.(computerID);
 
 if isempty(path) || exist(path,'dir')~=7
     beep;
-    warning('Need to enter a valid project path!');
+    disp('Need to enter a valid data path!');
     return;
 end
 

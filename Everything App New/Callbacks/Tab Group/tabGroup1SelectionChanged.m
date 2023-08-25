@@ -4,22 +4,15 @@ function []=tabGroup1SelectionChanged(src,currTab)
 % Also, set the parent tab of the processing map figure objects to the
 % currently selected tab.
 
+global conn;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-% path=getProjectPath();
-
-% if isempty(path)
-%     disp('Check the project path!');
-%     if ~isequal(handles.Tabs.tabGroup1.SelectedTab,handles.Settings.Tab)
-%         handles.Tabs.tabGroup1.SelectedTab=handles.Projects.Tab;
-%     end
-% end
-
 %% Store the current tab.
-rootSettingsFile=getRootSettingsFile();
 Current_Tab_Title=handles.Tabs.tabGroup1.SelectedTab.Title;
-save(rootSettingsFile,'Current_Tab_Title','-append');
+sqlquery = ['UPDATE Settings SET VariableValue = ''' Current_Tab_Title ''' WHERE VariableName  = ''Current_Tab_Title'';'];
+execute(conn, sqlquery);
 
 %% If switching between Plot and Process tab, change the visibility of the "Variables" tab.
 if ismember(Current_Tab_Title,{'Projects','Import','Stats','Settings'})

@@ -1,4 +1,4 @@
-function [objStruct] = createNewObject(instanceBool, class, name, abstractID, instanceID, saveObj)
+function [objStruct, absStruct] = createNewObject(instanceBool, class, name, abstractID, instanceID, saveObj)
 
 %% PURPOSE: CREATE A NEW STRUCT OF ANY CLASS
 % This function is only used when creating a *new* project. Not when
@@ -6,6 +6,10 @@ function [objStruct] = createNewObject(instanceBool, class, name, abstractID, in
 
 % instanceBool: True: create an instance of an object, and abstract if not yet created. False: create an
 % abstract object
+
+% 1st output argument is the struct that was requested (instance or
+% abstract). 2nd output argument is always the abstract. This is helpful
+% when creating instance & abstract at the same time.
 
 assert(islogical(instanceBool) && isscalar(instanceBool)); % Check that it's a boolean
 
@@ -51,7 +55,7 @@ if createAbstract
         saveClass(class, absStruct);
     end
     [type,abstractID] = deText(absStruct.UUID);
-    objStruct = absStruct;
+    objStruct = absStruct;    
 end
 
 if instanceBool
@@ -163,7 +167,7 @@ function struct = createAnalysisStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.Tags = {};
-    struct.RunList = {}; % The list of functions & groups to run, in order.
+    % struct.RunList = {}; % The list of functions & groups to run, in order.
 else
     
 end

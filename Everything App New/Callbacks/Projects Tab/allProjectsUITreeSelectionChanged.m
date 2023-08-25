@@ -18,13 +18,13 @@ struct = newComputerProjectPaths(uuid);
 
 computerID = getComputerID();
 
-dataPath=struct.DataPath.(computerID);
+dataPath=struct.Data_Path.(computerID);
 
 if isempty(dataPath)
     dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
 
-projectPath=struct.ProjectPath.(computerID);
+projectPath=struct.Project_Path.(computerID);
 
 if isempty(projectPath)
     projectPath='Path to Project Folder';

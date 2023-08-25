@@ -11,7 +11,7 @@ if isempty(projectName)
     return;
 end
 
-struct = createProjectStruct(projectName);
+struct = createNewObject(true, 'Project',projectName, '', '', true);
 
 searchTerm=getSearchTerm(handles.Projects.searchField);
 
@@ -19,5 +19,5 @@ fillUITree(fig,'Project',handles.Projects.allProjectsUITree, ...
     searchTerm,handles.Projects.sortProjectsDropDown);
 
 % Select the new project in the list
-selectNode(handles.Projects.allProjectsUITree, struct.Text);
+selectNode(handles.Projects.allProjectsUITree, struct.UUID);
 currentProjectButtonPushed(fig);

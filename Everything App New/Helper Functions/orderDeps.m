@@ -41,7 +41,7 @@ if ismember(trg,G.Nodes.Name)
     G = rmedge(G, srcOutEdgesIdx);
 end
 
-if isempty(G)
+if isempty(G.Nodes) || isempty(G.Edges)
     list = {};
     return;
 end

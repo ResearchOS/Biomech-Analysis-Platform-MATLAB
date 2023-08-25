@@ -5,17 +5,14 @@ function []=openProjectPathButtonPushed(src,event)
 % fig=ancestor(src,'figure','toplevel');
 % handles=getappdata(fig,'handles');
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'Current_Project_Name');
-project=Current_Project_Name;
-fullPath=getClassFilePath(project, 'Project');
-struct=loadJSON(fullPath);
-computerID=getComputerID();
-path=struct.ProjectPath.(computerID);
+projectName = getCurrent('Current_Project_Name');
+projectStruct = newComputerProjectPaths(projectName);
+computerID = getCurrent('Computer_ID');
+path = projectStruct.Project_Path.(computerID);
 
 if isempty(path) || exist(path,'dir')~=7
     beep;
-    warning('Need to enter a valid project path!');
+    disp('Need to enter a valid project path!');
     return;
 end
 

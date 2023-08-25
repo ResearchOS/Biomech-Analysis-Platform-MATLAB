@@ -21,6 +21,6 @@ struct=loadJSON(projectUUID);
 
 computerID=getComputerID();
 
-struct.ProjectPath.(computerID)=path;
+struct.Project_Path.(computerID)=path;
 
-writeJSON(getJSONPath(struct), struct);
+writeJSON(struct);

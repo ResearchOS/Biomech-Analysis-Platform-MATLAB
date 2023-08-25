@@ -22,4 +22,4 @@ selectNode(handles.Import.allLogsheetsUITree, struct.UUID);
 
 allLogsheetsUITreeSelectionChanged(fig);
 
-linkObjs(struct.UUID, getCurrent('Current_Analysis'));
+linkObjs(struct.UUID, getCurrent('Current_Project_Name'));

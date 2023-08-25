@@ -13,6 +13,6 @@ end
 
 processStruct = createNewObject(false, 'Process', processName, '', '', true);
 
-addNewNode(handles.Process.allProcessUITree, processStruct.UUID, processStruct.Text);
+addNewNode(handles.Process.allProcessUITree, processStruct.UUID, processStruct.Name);
 
 figure(fig);

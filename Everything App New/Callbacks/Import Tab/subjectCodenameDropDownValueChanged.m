@@ -19,6 +19,6 @@ handles.Import.subjectCodenameDropDown.Items = handles.Import.subjectCodenameDro
 
 value=handles.Import.subjectCodenameDropDown.Value;
 
-struct.SubjectCodenameHeader=value;
+struct.Subject_Codename_Header=value;
 
-writeJSON(getJSONPath(struct),struct);
+writeJSON(struct);

@@ -1,8 +1,29 @@
-function [names] = getName(uuids)
+function [names] = getName(uuids, isInstance)
 
 %% PURPOSE: CONVERT UUID TO HUMAN READABLE NAME
 % NOTE: In the future, can check if there's any duplicate UUID's to speed
 % this function up.
+
+global conn;
+
+if exist('isInstance','var')~=1
+    isInstance = true;
+end
+
+types = deText(uuids);
+uniqueTypes = unique(types,'stable');
+
+names = cell(size(types));
+for i=1:length(uniqueTypes)
+    tablename = getTableName(types{i}, isInstance);
+    sqlquery = ['SELECT UUID, Name FROM ' tablename];
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    uuidIdx = ismember(uuids, t.UUID); % Where in the original list the UUID's are.
+    names{uuidIdx} = t.Name;
+end
+
+return;
 
 beChar = false;
 if ischar(uuids)

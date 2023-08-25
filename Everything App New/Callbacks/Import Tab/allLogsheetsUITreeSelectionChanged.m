@@ -16,24 +16,29 @@ struct=loadJSON(uuid);
 
 computerID=getComputerID();
 
-if ~isfield(struct.LogsheetPath,computerID)
+if ~isfield(struct.Logsheet_Path,computerID)
     tmp = createNewObject(false, 'Logsheet', 'Default', '', '', false);
-    struct.LogsheetPath.(computerID) = tmp.LogsheetPath.(computerID);
+    struct.Logsheet_Path.(computerID) = tmp.Logsheet_Path.(computerID);
     writeJSON(getJSONPath(struct), struct);
 end
 
 % Set the logsheet path field.
-if exist(struct.LogsheetPath.(computerID),'file')==2
-    handles.Import.logsheetPathField.Value=struct.LogsheetPath.(computerID);
+if exist(struct.Logsheet_Path.(computerID),'file')==2
+    handles.Import.logsheetPathField.Value=struct.Logsheet_Path.(computerID);
 else
     handles.Import.logsheetPathField.Value='Enter Logsheet Path';
 end
 
 % Set the number of header rows.
-handles.Import.numHeaderRowsField.Value=struct.NumHeaderRows;
+handles.Import.numHeaderRowsField.Value=struct.Num_Header_Rows;
 
 %% Set the items in the headers drop downs, reading from the logsheet
-headers=struct.Headers;
+params=struct.LogsheetVar_Params;
+if isempty(params)
+    headers = {};
+else
+    headers = {params.Header};
+end
 
 % Set the subject codename header
 if ~isempty(headers)
@@ -52,8 +57,8 @@ end
 handles.Import.subjectCodenameDropDown.Value=value;
 
 % Set the target trial column header
-if ismember(struct.TargetTrialIDHeader,headers)
-    value=struct.TargetTrialIDHeader;
+if ismember(struct.Target_TrialID_Header,headers)
+    value=struct.Target_TrialID_Header;
 else
     handles.Import.targetTrialIDDropDown.Items=[{''} handles.Import.targetTrialIDDropDown.Items];
     value='';

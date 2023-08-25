@@ -3,8 +3,9 @@ function [data] = table2MyStruct(table)
 %% PURPOSE: CONVERT A TABLE FROM SQL TO A STRUCT WITH THE PROPER DATA TYPES
 
 numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows'};
-jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','NamesInCode','Logsheet_Parameters','Data_Parameters','HardCodedValue'};
-dateCols = {'Date_Created','Date_Modified'};
+jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','NamesInCode',...
+    'Logsheet_Parameters','Data_Parameters','HardCodedValue','ST_ID'};
+dateCols = {'Date_Created','Date_Modified','Date_Last_Ran'};
 
 varNames = table.Properties.VariableNames;
 

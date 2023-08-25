@@ -6,17 +6,19 @@ function []=modifyVarsDate(uuid)
 % If a Variable, saves that Variable with a new saved date.
 
 date=datetime('now');
+[type] = deText(uuid);
 
 struct=loadJSON(uuid);
 
-struct.DateModified=date;
+struct.Date_Modified=date;
 struct.OutOfDate=false;
-struct.DateLastRan=date;
-writeJSON(getJSONPath(struct),struct); % Already overwrites the date saved.
+if isfield(struct,'Date_Last_Ran')
+    struct.Date_Last_Ran=date;
+end
+writeJSON(struct); % Already overwrites the date saved.
 
 % Only run the below code if there are output variables, i.e. if this is a
 % Process function.
-[type] = deText(uuid);
 if ~isequal(type,'PR')
     return;
 end
@@ -52,7 +54,7 @@ for i=1:length(outputVars)
         varStruct=loadJSON(varUUID);
         varStruct.OutOfDate = false;        
         
-        writeJSON(getJSONPath(varStruct), varStruct);
+        writeJSON(varStruct);
 
     end
 

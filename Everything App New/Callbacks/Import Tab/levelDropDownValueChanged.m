@@ -22,15 +22,12 @@ uuid = selNodeLogsheet.NodeData.UUID;
 
 struct=loadJSON(uuid);
 
-headers=struct.Headers;
-levels=struct.Level;
+headers={struct.LogsheetVar_Params.Headers};
 
 header=selNode.Text;
 
 idx=ismember(headers,header);
 
-levels{idx}=handles.Import.levelDropDown.Value;
+struct.LogsheetVar_Params(idx).Level=handles.Import.levelDropDown.Value;
 
-struct.Level=levels;
-
-writeJSON(getJSONPath(struct), struct);
+writeJSON(struct);

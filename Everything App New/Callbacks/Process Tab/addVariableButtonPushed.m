@@ -13,6 +13,6 @@ end
 
 varStruct = createNewObject(false, 'Variable', variableName, '', '', true);
 
-addNewNode(handles.Process.allVariablesUITree, varStruct.UUID, varStruct.Text);
+addNewNode(handles.Process.allVariablesUITree, varStruct.UUID, varStruct.Name);
 
 figure(fig);

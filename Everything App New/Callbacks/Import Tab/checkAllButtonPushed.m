@@ -11,11 +11,11 @@ if isempty(selNode)
     return;
 end
 
-fullPath=getClassFilePath(selNode);
-struct=loadJSON(fullPath);
+Current_Logsheet = getCurrent('Current_Logsheet');
+struct=loadJSON(Current_Logsheet);
 
-levels=struct.Level;
-type=struct.Type;
+levels={struct.LogsheetVar_Params.Level};
+type={struct.LogsheetVar_Params.Type};
 
 emptyIdxLevel=cellfun(@isempty,levels);
 emptyIdxType=cellfun(@isempty,type);

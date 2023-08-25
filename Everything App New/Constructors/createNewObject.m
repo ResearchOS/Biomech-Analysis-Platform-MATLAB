@@ -118,15 +118,16 @@ function struct = createProcessStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.SpecifyTrials={};
-    struct.InputVariables={};
-    struct.InputSubvariables={};
-    struct.OutputVariables={};
-    struct.DateLastRan='';
+    % struct.InputVariables={};
+    % struct.InputSubvariables={};
+    % struct.OutputVariables={};
+    struct.Date_Last_Ran='';
 else
     struct.Level = 'T';
-    struct.InputVariablesNamesInCode = {};
-    struct.OutputVariablesNamesInCode = {};
-    struct.MFileName = '';
+    struct.NamesInCode = {};
+    % struct.InputVariablesNamesInCode = {};
+    % struct.OutputVariablesNamesInCode = {};
+    struct.ExecFileName = '';
 end
 
 end

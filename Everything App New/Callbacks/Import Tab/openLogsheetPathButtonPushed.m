@@ -5,7 +5,10 @@ function []=openLogsheetPathButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-path=handles.Import.logsheetPathField.Value;
+% path=handles.Import.logsheetPathField.Value;
+logsheet = getCurrent('Current_Logsheet');
+computerID = getCurrent('Computer_ID');
+path = logsheet.Logsheet_Path.(computerID);
 
 if isempty(path) || exist(path,'file')~=2
     beep;

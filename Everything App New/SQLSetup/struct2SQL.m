@@ -9,8 +9,9 @@ end
 assert(ismember(upper(type),{'INSERT','UPDATE'}));
 
 numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows'};
-jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','NamesInCode','Logsheet_Parameters','Data_Parameters','HardCodedValue'};
-dateCols = {'Date_Created','Date_Modified'};
+jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','NamesInCode',...
+    'Logsheet_Parameters','Data_Parameters','HardCodedValue','ST_ID'};
+dateCols = {'Date_Created','Date_Modified','Date_Last_Ran'};
 
 varNames = fieldnames(struct);
 
@@ -46,7 +47,7 @@ if isequal(type,'UPDATE')
         end
         sqlquery = [sqlquery varName ' = ' data.(varName) ', '];
     end
-    sqlquery = [sqlquery(1:end-2) ' WHERE UUID = ''' data.UUID ''';'];
+    sqlquery = [sqlquery(1:end-2) ' WHERE UUID = ' data.UUID ';'];
 end
 
 if isequal(type,'INSERT')

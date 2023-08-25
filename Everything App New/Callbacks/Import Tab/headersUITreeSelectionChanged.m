@@ -14,14 +14,14 @@ end
 uuid = selNode.NodeData.UUID;
 struct=loadJSON(uuid);
 
-headers=struct.Headers;
+headers={struct.LogsheetVar_Params.Headers};
 
 header=handles.Import.headersUITree.SelectedNodes.Text;
 
 idx=ismember(headers,header);
 
-level=struct.Level{idx};
-type=struct.Type{idx};
+level=struct.LogsheetVar_Params(idx).Level;
+type=struct.LogsheetVar_Params(idx).Type;
 
 handles.Import.levelDropDown.Value=level;
 handles.Import.typeDropDown.Value=type;

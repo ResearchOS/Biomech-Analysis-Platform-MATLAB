@@ -5,14 +5,14 @@ function [bool] = isDoubleClick(obj)
 persistent count prevTime;
 
 if isempty(count)
-    count=0;
+    count=0; % Only runs once per session.
 end
 
 if isempty(prevTime)
     prevTime = datetime('now');
-    currTime = prevTime;
+    % currTime = prevTime;
     bool = false;
-    return;
+    return; % Only runs once per session
 else
     currTime = datetime('now');
 end

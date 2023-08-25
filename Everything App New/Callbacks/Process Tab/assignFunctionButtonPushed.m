@@ -28,42 +28,69 @@ if isempty(instanceID)
     prStruct = createNewObject(true, 'Process', selNode.Text, abstractID, '', true);
     selUUID = prStruct.UUID;
     abstractUUID = genUUID(type, abstractID);
-    absNode = selectNode(handles.Process.allProcessUITree, abstractUUID);
+    absNode = getNode(handles.Process.allProcessUITree, abstractUUID);
 
-    % Add input, input subvariables, and output variables to process struct.
-    absStruct = loadJSON(abstractUUID);
-    numIns = length(absStruct.InputVariablesNamesInCode);
-    prStruct.InputVariables = cell(numIns,1);
-    for i=1:numIns
-        prStruct.InputVariables{i} = cell(length(absStruct.InputVariablesNamesInCode{i}),1);
-        prStruct.InputVariables{i}{1} = absStruct.InputVariablesNamesInCode{i}{1};
-        prStruct.InputSubvariables{i} = cell(length(absStruct.InputVariablesNamesInCode{i}),1);
-    end
-    numOuts = length(absStruct.OutputVariablesNamesInCode);
-    prStruct.OutputVariables = cell(numIns,1);
-    for i=1:numOuts
-        prStruct.OutputVariables{i} = cell(length(absStruct.OutputVariablesNamesInCode{i}),1);
-        prStruct.OutputVariables{i}{1} = absStruct.OutputVariablesNamesInCode{i}{1};
-        prStruct.OutputSubvariables{i} = cell(length(absStruct.OutputVariablesNamesInCode{i}),1);
-    end
+    % % Add input, input subvariables, and output variables to process struct.
+    % absStruct = loadJSON(abstractUUID);
+    % numIns = length(absStruct.InputVariablesNamesInCode);
+    % prStruct.InputVariables = cell(numIns,1);
+    % for i=1:numIns
+    %     prStruct.InputVariables{i} = cell(length(absStruct.InputVariablesNamesInCode{i}),1);
+    %     prStruct.InputVariables{i}{1} = absStruct.InputVariablesNamesInCode{i}{1};
+    %     prStruct.InputSubvariables{i} = cell(length(absStruct.InputVariablesNamesInCode{i}),1);
+    % end
+    % numOuts = length(absStruct.OutputVariablesNamesInCode);
+    % prStruct.OutputVariables = cell(numIns,1);
+    % for i=1:numOuts
+    %     prStruct.OutputVariables{i} = cell(length(absStruct.OutputVariablesNamesInCode{i}),1);
+    %     prStruct.OutputVariables{i}{1} = absStruct.OutputVariablesNamesInCode{i}{1};
+    %     prStruct.OutputSubvariables{i} = cell(length(absStruct.OutputVariablesNamesInCode{i}),1);
+    % end
 
     % Create the new node in the "all" UI tree
-    addNewNode(absNode, selUUID, prStruct.Text);
-    writeJSON(getJSONPath(prStruct), prStruct);
+    addNewNode(absNode, selUUID, prStruct.Name);
+    % writeJSON(prStruct);
 end
 
-[containerUUID, uiTree] = getContainer(selUUID, fig);
-contStruct = loadJSON(containerUUID);
-contStruct.RunList = [contStruct.RunList; {selUUID}];
-writeJSON(getJSONPath(contStruct), contStruct);
+selCurrTab = handles.Process.subtabCurrent.SelectedTab.Title;
+switch selCurrTab
+    case 'Analysis'
+        currTree = handles.Process.analysisUITree;
+        containerUUID = getCurrent('Current_Analysis');
+    case 'Group'
+        currTree = handles.Process.groupUITree;        
+        groupLabel = handles.Process.currentGroupLabel.Text;
+        groupLabel = strsplit(groupLabel, ' ');
+        containerUUID = groupLabel{end};
+end
+
+currTreeNode = currTree.SelectedNodes;
+
+if isempty(currTreeNode)
+    parent = currTree;
+else
+    [~, list] = getUITreeFromNode(currTreeNode);
+    if length(list)>1
+        parent = list(2); % The parent node of the currently selected node.
+    else
+        parent = currTree;
+    end
+end
+
+% [containerUUID, uiTree] = getContainer(selUUID, fig);
+% contStruct = loadJSON(containerUUID);
+% contStruct.RunList = [contStruct.RunList; {selUUID}];
+% writeJSON(getJSONPath(contStruct), contStruct);
 selStruct = loadJSON(selUUID);
 
 % Add a new node to the current UI tree
-addNewNode(uiTree, selStruct.UUID, selStruct.Text);
-selectNode(uiTree, selStruct.UUID);
+addNewNode(parent, selStruct.UUID, selStruct.Text);
+selectNode(currTree, selStruct.UUID);
 
 % Add a new node to the analysis UI tree
-addNewNode(getNode(handles.Process.analysisUITree, containerUUID), selUUID, selStruct.Text);
+if ~isequal(selCurrTab,'Analysis')
+    addNewNode(getNode(handles.Process.analysisUITree, containerUUID), selUUID, selStruct.Text);
+end
 
 linkObjs(selStruct.UUID, containerUUID);
 

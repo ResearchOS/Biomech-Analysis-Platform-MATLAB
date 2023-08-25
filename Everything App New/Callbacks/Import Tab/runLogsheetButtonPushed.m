@@ -21,13 +21,13 @@ uuid = selNode.NodeData.UUID;
 
 logsheetStruct=loadJSON(uuid);
 
-numHeaderRows=logsheetStruct.NumHeaderRows;
-subjIDColHeader=logsheetStruct.SubjectCodenameHeader;
-targetTrialIDColHeader=logsheetStruct.TargetTrialIDHeader;
+numHeaderRows=logsheetStruct.Num_Header_Rows;
+subjIDColHeader=logsheetStruct.Subject_Codename_Header;
+targetTrialIDColHeader=logsheetStruct.Target_TrialID_Header;
 
 computerID=getComputerID();
 
-path=logsheetStruct.LogsheetPath.(computerID);
+path=logsheetStruct.Logsheet_Path.(computerID);
 
 [folder,file,ext]=fileparts(path);
 
@@ -42,10 +42,10 @@ end
 
 load(pathMAT,'logVar');
 
-headers=logsheetStruct.Headers;
-levels=logsheetStruct.Level;
-types=logsheetStruct.Type;
-varUUIDs=logsheetStruct.Variables;
+headers={logsheetStruct.LogsheetVar_Params.Headers};
+levels={logsheetStruct.LogsheetVar_Params.Level};
+types={logsheetStruct.LogsheetVar_Params.Type};
+varUUIDs={logsheetStruct.LogsheetVar_Params.Variables};
 
 trialIdx=ismember(levels,'Trial') & checkedIdx; % The trial level variables idx that were checked.
 subjectIdx=ismember(levels,'Subject') & checkedIdx; % The subject level variables idx that were checked.
@@ -68,7 +68,7 @@ end
 
 projectStruct=loadJSON(projectUUID);
 
-dataPath=projectStruct.DataPath.(computerID);
+dataPath=projectStruct.Data_Path.(computerID);
 
 if exist(dataPath,'dir')~=7
     disp('Invalid data path!');
@@ -149,7 +149,7 @@ for i=1:length(selHeaders)
 
 end
 
-writeJSON(getJSONPath(uuid), logsheetStruct);
+writeJSON(logsheetStruct);
 fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
 
 %% Trial level data

@@ -13,6 +13,6 @@ end
 
 anStruct = createNewObject(false, 'Analysis', anName, '', '', true);
 
-addNewNode(handles.Process.allAnalysesUITree, anStruct.UUID, anStruct.Text);
+addNewNode(handles.Process.allAnalysesUITree, anStruct.UUID, anStruct.Name);
 
 figure(fig);

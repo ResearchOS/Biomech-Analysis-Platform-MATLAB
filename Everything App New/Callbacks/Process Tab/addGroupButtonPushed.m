@@ -13,6 +13,6 @@ end
 
 groupStruct = createNewObject(false, 'ProcessGroup', groupName, '', '', true);
 
-addNewNode(handles.Process.allGroupsUITree, groupStruct.UUID, groupStruct.Text);
+addNewNode(handles.Process.allGroupsUITree, groupStruct.UUID, groupStruct.Name);
 
 figure(fig);

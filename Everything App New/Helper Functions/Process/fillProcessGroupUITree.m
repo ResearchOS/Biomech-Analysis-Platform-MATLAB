@@ -1,40 +1,48 @@
 function []=fillProcessGroupUITree(src, prUUID)
 
 %% PURPOSE: FILL THE CURRENT GROUP UI TREE.
-% If a group is selected in the current analysis UI tree, then put in all
-% the elements of the group.
-% If a function is selected, then just put in that function.
+% Check if the specified function is in a group. If so, populate that
+% group. If not, just put in that function name. Update the group label to
+% reflect the current group name, or no group name.
+
+global conn;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-groupNode = handles.Process.analysisUITree.SelectedNodes;
+uiTree = handles.Process.groupUITree;
 
-if isempty(groupNode)
-    return;
+sqlquery = ['SELECT PG_ID FROM PG_PR WHERE PR_ID = ''' prUUID ''';'];
+t = fetch(conn, sqlquery);
+group = table2MyStruct(t);
+pgUUID = group.PG_ID;
+
+if isempty(pgUUID) % Function does not belong to a group.
+    runList = {prUUID};
+else
+    % Get all of the group and function names in the group
+    runList = getRunList(prUUID);    
 end
 
-initUUID = groupNode.NodeData.UUID;
-struct=loadJSON(initUUID);
+pgStruct=loadJSON(pgUUID);
 
-[initAbbrev] = deText(initUUID);
+[abbrev] = deText(initUUID);
 
-handles.Process.currentGroupLabel.Text = [struct.Text ' ' initUUID];
+handles.Process.currentGroupLabel.Text = [pgStruct.Name ' ' pgUUID];
 
-uiTree=handles.Process.groupUITree;
 delete(uiTree.Children);
-if isequal(initAbbrev,'PG')
-    list = struct.RunList;
-elseif isequal(initAbbrev,'PR')
-    list = {initUUID};
-end
 
-for i=1:length(list)
-    uuid = list{i};
+% Get all of the names of the objects in the ordered list
+sqlquery = ['SELECT UUID, Name FROM ProcessGroup_Instances;'];
+t = fetch(conn, sqlquery);
+tList = table2MyStruct(t);
+[a,b,idx] = intersect(tList.UUID,runList); % FIX THIS
+nameList = tList.Name(idx); % Fix this too
 
-    struct = loadJSON(uuid);
-    newNode=uitreenode(uiTree,'Text',struct.Text);
-    newNode.NodeData.UUID = uuid;
+for i=1:length(runList)
+    uuid = runList{i};
+
+    newNode = addNewNode(uiTree, uuid, nameList{i});
     assignContextMenu(newNode,handles);
 
     [abbrev] = deText(uuid);
@@ -53,14 +61,13 @@ if ~isequal(class(obj),'matlab.ui.control.UIAxes')
     end
 end
 
-% if isequal(initAbbrev,'PR') % Process
+%% Select the corresponding node in the UI tree
 if nargin == 2
-    if ~isequal(initAbbrev,'PG')
-        selectNode(handles.Process.groupUITree,uuids{end}); % Can't select a processing group.
+    if ~isequal(abbrev,'PG')
+        selectNode(handles.Process.groupUITree,runList{end}); % Can't select a processing group.
     else
         selectNode(handles.Process.groupUITree, prUUID);
     end
 end
 
 groupUITreeSelectionChanged(fig);
-% end

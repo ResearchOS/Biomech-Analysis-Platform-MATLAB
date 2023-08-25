@@ -18,6 +18,6 @@ struct=loadJSON(uuid);
 
 value=handles.Import.numHeaderRowsField.Value;
 
-struct.NumHeaderRows=value;
+struct.Num_Header_Rows=value;
 
-writeJSON(getJSONPath(struct), struct);
+writeJSON(struct);

@@ -316,7 +316,7 @@ handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','S
 handles.Process.functionUITree=uitree(handles.Process.currentFunctionTab,'checkbox','SelectionChangedFcn',@(functionUITree,event) functionUITreeSelectionChanged(functionUITree));
 
 % 28. Current analysis UI tree
-handles.Process.analysisUITree=uitree(handles.Process.currentAnalysisTab,'checkbox','SelectionChangedFcn',@(analysisUITree,event) analysisUITreeSelectionChanged(analysisUITree));
+handles.Process.analysisUITree=uitree(handles.Process.currentAnalysisTab,'checkbox','SelectionChangedFcn',@(analysisUITree,event) analysisUITreeSelectionChanged(analysisUITree),'DoubleClickedFcn',@(analysisUITree, event) analysisUITreeDoubleClickedFcn(analysisUITree));
 
 % 20. Add to queue button
 handles.Process.addToQueueButton=uibutton(processTab,'push','Text','->','ButtonPushedFcn',@(addToQueueButton,event) addToQueueButtonPushed(addToQueueButton));

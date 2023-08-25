@@ -2,6 +2,8 @@ function []=addToQueueButtonPushed(src,event)
 
 %% PURPOSE: ADD THE CURRENT PROCESSING FUNCTION OR GROUP TO QUEUE
 
+global conn;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -49,6 +51,32 @@ uuids = uuids(~inQueueIdx);
 texts = texts(~inQueueIdx);
 
 %% Check whether all pre-requisite variables are up to date.
+% 1. Get the run list. Make sure that all process functions before this are
+% up to date.
+Current_Analysis = getCurrent('Current_Analysis');
+runList = getRunList(Current_Analysis);
+
+% 2. Get the input variables. Make sure that all of the input variables are
+% up to date.
+for i=1:length(uuids)
+    uuid = uuids{i};
+    listIdx = find(ismember(runList, uuid)==1);
+    tmpList = runList(1:listIdx(end));
+    sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    if any(t.OutOfDate==0)
+        disp('Dependencies are out of date! Not adding to queue.');
+    end
+
+    [inputVars, outOfDate] = getInputVars(uuid);
+    if any(outOfDate==0)
+        disp('Input variable(s) are out of date! Not adding to queue.');
+    end
+end
+
+
+
 % outDated = false;
 % for i=1:length(uuids)
 %     varNames = getVarNamesArray(loadJSON(uuids{i}),'InputVariables');

@@ -33,7 +33,7 @@ end
 
 computerID=getComputerID();
 
-struct.LogsheetPath.(computerID)=path;
+struct.Logsheet_Path.(computerID)=path;
 
 [logsheetFolder,name,ext]=fileparts(path);
 logsheetPathMAT=[logsheetFolder slash name '.mat'];
@@ -58,16 +58,18 @@ if any(~isValidName)
     return;
 end
 
-if isempty(struct.Headers)
-    struct.Headers=headers;
-    struct.Level=repmat({''},length(headers),1);
-    struct.Type=repmat({''},length(headers),1);
-    struct.Variables=repmat({''},length(headers),1);
+if isempty(struct.LogsheetVar_Params.Headers)
+    for i=1:length(headers)
+        struct.LogsheetVar_Params(i).Header=headers{i};
+        struct.LogsheetVar_Params(i).Level={''};
+        struct.LogsheetVar_Params(i).Type={''};
+        struct.LogsheetVar_Params(i).Variables={''};
+    end
 end
 
 save(logsheetPathMAT,'logVar');
 
-writeJSON(getJSONPath(struct),struct);
+writeJSON(struct);
 
 headersAll=[{''}; headers];
 

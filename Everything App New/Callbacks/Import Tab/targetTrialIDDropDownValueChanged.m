@@ -19,6 +19,6 @@ handles.Import.targetTrialIDDropDown.Items = handles.Import.targetTrialIDDropDow
 
 value=handles.Import.targetTrialIDDropDown.Value;
 
-struct.TargetTrialIDHeader=value;
+struct.Target_TrialID_Header=value;
 
-writeJSON(getJSONPath(struct), struct);
+writeJSON(struct);

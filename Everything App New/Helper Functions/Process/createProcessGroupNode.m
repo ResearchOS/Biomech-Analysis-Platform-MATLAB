@@ -2,19 +2,12 @@ function [uuids]=createProcessGroupNode(parentNode,uuid,handles)
 
 %% PURPOSE: CREATE NODES FOR ALL MEMBERS OF A PROCESS GROUP IN THE CURRENT GROUP UI TREE
 
-groupStruct=loadJSON(uuid);
-
-uuids=groupStruct.RunList;
-
-% Get texts from UUID's
-% uiTree = getUITreeFromNode(parentNode);
-% texts=getTextsFromUUID(uuids, uiTree);
+[uuids, names] = getRunList(uuid);
 
 for i=1:length(uuids)
     uuid = uuids{i};
-    struct = loadJSON(uuid);
 
-    newNode = addNewNode(parentNode, uuid, struct.Text);    
+    newNode = addNewNode(parentNode, uuid, names{i});    
 
     [abbrev] = deText(uuid);
 

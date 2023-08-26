@@ -3,7 +3,10 @@ function []=oopgui()
 %% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
 fig = findall(0,'Name','pgui');
 close(fig); clear fig;
-delete('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Databases/biomechOS.db');
+isDel = false;
+if isDel
+    delete('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Databases/biomechOS.db');
+end
 tic;
 
 %% Ensure that there's max one figure open
@@ -54,3 +57,7 @@ loadGUIState(fig);
 drawnow;
 elapsedTime=toc;
 disp(['Elapsed time is ' num2str(round(elapsedTime,2)) ' seconds.']);
+
+if isDel
+    transferJSON_SQL;
+end

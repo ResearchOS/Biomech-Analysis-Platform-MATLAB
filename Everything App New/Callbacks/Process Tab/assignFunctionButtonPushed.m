@@ -2,7 +2,21 @@ function []=assignFunctionButtonPushed(src)
 
 %% PURPOSE: ASSIGN PROCESSING FUNCTION TO THE CURRENT ANALYSIS OR PROCESSING GROUP
 % If on Analysis tab, assign function directly to analysis
-% If on Group tab, assign function to group.
+% If on Group tab, assign function to group. If no group is selected in
+% analysis UI tree, can't be added.
+
+% Use case: assign function to analysis
+%   1. Clear group UI tree. Update group UI tree label XX
+%   2. Add node to group UI tree
+%   3. Link function to analysis XX
+%   4. Add node to analysis UI tree (in order from RunList)
+%   5. Run fillProcessUITree
+% Use case: assign function to group
+%   1. Link function to group XX
+%   2. Add node to analysis UI tree (in order from RunList)
+%   3. Add node to group UI tree (in order from RunList)
+%   4. Run fillProcessUITree
+
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -17,6 +31,29 @@ selUUID = selNode.NodeData.UUID;
 
 [type, abstractID, instanceID] = deText(selUUID);
 
+currTab = handles.Process.subtabCurrent.SelectedTab.Title;
+switch currTab
+    case 'Analysis'
+        containerUUID = getCurrent('Current_Analysis');
+        uiTree = handles.Process.analysisUITree;
+        delete(handles.Process.groupUITree.Children);
+        handles.Process.currentGroupLabel.Text = 'Function';
+    case 'Group'
+        % Check if there is a group selected in the analysis UI tree
+        anTreeNode = handles.Process.allAnalysesUITree.SelectedNodes;
+        [~, list] = getUITreeFromNode(anTreeNode);
+        pgIdx = find(contains(list,'PG')==1);
+        containerUUID = ''; % No group selected.
+        if ~isempty(pgIdx)
+            containerUUID = list(min(pgIdx));
+        end
+        uiTree = handles.Process.groupUITree;
+end
+
+if isempty(containerUUID)
+    return;
+end
+
 % Abstract selected. Create new instance.
 if isempty(instanceID)
     % Confirm that the user wants to create a new instance
@@ -30,88 +67,21 @@ if isempty(instanceID)
     abstractUUID = genUUID(type, abstractID);
     absNode = getNode(handles.Process.allProcessUITree, abstractUUID);
 
-    % % Add input, input subvariables, and output variables to process struct.
-    % absStruct = loadJSON(abstractUUID);
-    % numIns = length(absStruct.InputVariablesNamesInCode);
-    % prStruct.InputVariables = cell(numIns,1);
-    % for i=1:numIns
-    %     prStruct.InputVariables{i} = cell(length(absStruct.InputVariablesNamesInCode{i}),1);
-    %     prStruct.InputVariables{i}{1} = absStruct.InputVariablesNamesInCode{i}{1};
-    %     prStruct.InputSubvariables{i} = cell(length(absStruct.InputVariablesNamesInCode{i}),1);
-    % end
-    % numOuts = length(absStruct.OutputVariablesNamesInCode);
-    % prStruct.OutputVariables = cell(numIns,1);
-    % for i=1:numOuts
-    %     prStruct.OutputVariables{i} = cell(length(absStruct.OutputVariablesNamesInCode{i}),1);
-    %     prStruct.OutputVariables{i}{1} = absStruct.OutputVariablesNamesInCode{i}{1};
-    %     prStruct.OutputSubvariables{i} = cell(length(absStruct.OutputVariablesNamesInCode{i}),1);
-    % end
-
     % Create the new node in the "all" UI tree
     addNewNode(absNode, selUUID, prStruct.Name);
-    % writeJSON(prStruct);
 end
 
-selCurrTab = handles.Process.subtabCurrent.SelectedTab.Title;
-switch selCurrTab
-    case 'Analysis'
-        currTree = handles.Process.analysisUITree;
-        containerUUID = getCurrent('Current_Analysis');
-    case 'Group'
-        currTree = handles.Process.groupUITree;        
-        groupLabel = handles.Process.currentGroupLabel.Text;
-        groupLabel = strsplit(groupLabel, ' ');
-        containerUUID = groupLabel{end};
-end
+linkObjs(selUUID, containerUUID);
+nodeList = getRunList(containerUUID,{},'struct');
 
-currTreeNode = currTree.SelectedNodes;
-
-if isempty(currTreeNode)
-    parent = currTree;
-else
-    [~, list] = getUITreeFromNode(currTreeNode);
-    if length(list)>1
-        parent = list(2); % The parent node of the currently selected node.
-    else
-        parent = currTree;
-    end
-end
-
-% [containerUUID, uiTree] = getContainer(selUUID, fig);
-% contStruct = loadJSON(containerUUID);
-% contStruct.RunList = [contStruct.RunList; {selUUID}];
-% writeJSON(getJSONPath(contStruct), contStruct);
-selStruct = loadJSON(selUUID);
-
-% Add a new node to the current UI tree
-addNewNode(parent, selStruct.UUID, selStruct.Text);
-selectNode(currTree, selStruct.UUID);
-
-% Add a new node to the analysis UI tree
-if ~isequal(selCurrTab,'Analysis')
-    addNewNode(getNode(handles.Process.analysisUITree, containerUUID), selUUID, selStruct.Text);
-end
-
-linkObjs(selStruct.UUID, containerUUID);
 
 switch uiTree
     case handles.Process.analysisUITree           
         fillProcessGroupUITree(fig); % Added function or group to analysis. Completely refill the current process group UI tree
     case handles.Process.groupUITree
+        newNode = addNewNode(uiTree, selUUID, selNode.Text);
+        selectNode(uiTree, newNode);
         fillCurrentFunctionUITree(fig); % Added function to group. Fill the current function UI tree     
     otherwise
         error('Where am I?');
-end
-
-%% This happens if the function has been removed from the analysis previously, and is now being re-added.
-% This helps keep a history!
-inVars = getVarNamesArray(selStruct, 'InputVariables');
-outVars = getVarNamesArray(selStruct, 'OutputVariables');
-
-if ~all(cellfun(@isempty, inVars))
-    linkObjs(inVars, selStruct);
-end
-
-if ~all(cellfun(@isempty, outVars))
-    linkObjs(selStruct, outVars);
 end

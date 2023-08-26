@@ -7,7 +7,9 @@ handles=getappdata(fig,'handles');
 
 selNode = handles.Process.allAnalysesUITree.SelectedNodes;
 
-if isempty(selNode)
+delete(handles.Process.analysisUITree.Children);
+if isempty(selNode)    
+    handles.Process.currentAnalysisLabel.Text = 'Current Analysis';
     return;
 end
 
@@ -30,7 +32,6 @@ Current_Project = getCurrent('Current_Project_Name');
 linkObjs(Current_Analysis, Current_Project);
 
 % Delete pre-existing 
-delete(handles.Process.analysisUITree.Children);
 delete(handles.Process.groupUITree.Children);
 delete(handles.Process.functionUITree.Children);
 

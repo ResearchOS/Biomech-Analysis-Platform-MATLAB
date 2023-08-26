@@ -136,7 +136,7 @@ end
 function struct = createProcessGroupStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-    struct.RunList={};  
+    % struct.RunList={};  
 else
 
 end
@@ -150,10 +150,10 @@ if instanceBool
 
 else
     computerID=getComputerID();
-    struct.LogsheetPath.(computerID)='';
-    struct.NumHeaderRows=-1;
-    struct.SubjectCodenameHeader='';
-    struct.TargetTrialIDHeader='';
+    struct.Logsheet_Path.(computerID)='';
+    struct.Num_Header_Rows=-1;
+    struct.Subject_Codename_Header='';
+    struct.Target_TrialID_Header='';
 
     struct.Headers={}; % The headers for the current logsheet.
     struct.Level={}; % Trial or subject

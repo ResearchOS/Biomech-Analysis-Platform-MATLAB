@@ -23,32 +23,20 @@ end
 abbrev = deText(origUUID);
 
 prUUID = ''; % A group was selected.
+pgUUID = '';
 if isequal(abbrev, 'PR')
     prUUID = origUUID; % A function node was selected
+    [~,list] = getUITreeFromNode(selNode);
+    if length(list)>2
+        pgUUID = list{2};
+    end
 end
-
-
-% containerUUID = origUUID; % No processing group encloses the selection.
-% 
-% if isequal(abbrev,'PR')
-%     % Check if a process group encapsulates this process, and select that instead. 
-%     % If this process is not in a group, select the process.
-%     [uiTree,nodeList] = getUITreeFromNode(selNode);
-%     for i=1:length(nodeList)
-%         containerUUID = nodeList(i).NodeData.UUID;
-%         type = deText(containerUUID);
-%         if isequal(type,'PG')
-%             selNode = nodeList(i);
-%             containerUUID = selNode.NodeData.UUID;
-%             selectNode(uiTree, containerUUID);
-%             break;
-%         end
-%     end         
-% end
 
 % Ensure that no specify trials are checked while the process group is selected.
 if isequal(abbrev,'PG')
     checkSpecifyTrialsUITree({}, handles.Process.allSpecifyTrialsUITree);
+elseif ~isempty(prUUID)
+    checkSpecifyTrialsUITree(getST(prUUID), handles.Process.allSpecifyTrialsUITree);
 end
 
-fillProcessGroupUITree(fig, prUUID);
+fillProcessGroupUITree(fig, prUUID, pgUUID);

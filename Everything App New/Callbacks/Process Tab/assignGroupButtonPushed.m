@@ -1,8 +1,13 @@
 function []=assignGroupButtonPushed(src)
 
 %% PURPOSE: ASSIGN PROCESSING GROUP TO THE CURRENT ANALYSIS OR GROUP, DEPENDING WHICH TAB I AM ON.
+% What do I need to assign the group?
+% 1. What container is it being assigned to?
+%   - Analysis, or Group. Depends on which current UI tree tab is selected.
+%       - Group: Group UI tree. If no group is selected in analysis UI tree, can't be added.
+%       - Analysis: Analysis UI tree
 
-fig=ancestor(src,'figure','toplevel');
+fig=ancestor(src,'figure','toplevel'); 
 handles=getappdata(fig,'handles');
 
 selNode=handles.Process.allGroupsUITree.SelectedNodes;
@@ -14,6 +19,27 @@ end
 selUUID = selNode.NodeData.UUID;
 
 [type, abstractID, instanceID] = deText(selUUID);
+
+currTab = handles.Process.subtabCurrent.SelectedTab.Title;
+switch currTab
+    case 'Analysis'
+        containerUUID = getCurrent('Current_Analysis');
+        uiTree = handles.Process.analysisUITree;        
+    case 'Group'
+        % Check if there is a group selected in the analysis UI tree
+        anTreeNode = handles.Process.allAnalysesUITree.SelectedNodes;
+        [~, list] = getUITreeFromNode(anTreeNode);
+        pgIdx = find(contains(list,'PG')==1);
+        containerUUID = '';
+        if ~isempty(pgIdx)
+            containerUUID = list(min(pgIdx));
+        end
+        uiTree = handles.Process.groupUITree;
+end
+
+if isempty(containerUUID)
+    return;
+end
 
 % Abstract selected. Create new instance.
 if isempty(instanceID)
@@ -29,29 +55,17 @@ if isempty(instanceID)
     absNode = selectNode(handles.Process.allGroupsUITree, abstractUUID);
 
     % Create the new node in the "all" UI tree
-    addNewNode(absNode, selUUID, pgStruct.Text);
+    addNewNode(absNode, selUUID, pgStruct.Name);
 end
 
-[containerUUID, uiTree] = getContainer(selUUID, fig);
-contStruct = loadJSON(containerUUID);
-contStruct.RunList = [contStruct.RunList; {selUUID}];
-writeJSON(getJSONPath(contStruct), contStruct);
-selStruct = loadJSON(selUUID);
+linkObjs(selUUID, containerUUID);
+newNode = addNewNode(uiTree, selUUID, selNode.Text);
 
-% Add a new node to the current UI tree
-addNewNode(uiTree, selStruct.UUID, selStruct.Text);
-selectNode(uiTree, selStruct.UUID);
+selectNode(uiTree, newNode);
 
-% Link objects
-linkObjs(selStruct.UUID, containerUUID);
-
-switch uiTree
-    case handles.Process.groupUITree % Added group to group.
-        anNode = getNode(handles.Process.analysisUITree, contStruct.UUID);
-        addNewNode(anNode, selStruct.UUID, selStruct.Text);
-        fillCurrentFunctionUITree(fig);        
-    case handles.Process.analysisUITree
-        fillProcessGroupUITree(fig); % Added group to analysis. Completely refill the current process group UI tree
-    otherwise
-        error('Where am I?');
+if isequal(currTab,'Analysis')
+    fillProcessGroupUITree(fig, '', selUUID);
 end
+
+delete(handles.Process.currentFunctionUITree.Children);
+handles.Process.currentFunctionLabel.Text = 'Current Function';

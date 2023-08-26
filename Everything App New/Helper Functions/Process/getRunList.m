@@ -1,4 +1,4 @@
-function [runList] = getRunList(uuids, list)
+function [runList, names] = getRunList(uuids, list)
 
 %% PURPOSE: GET THE LIST OF ITEMS TO RUN IN THE UUID SPECIFIED (ANALYSIS OR PROCESS GROUP)
 % To put any combination of processing functions in order, specify UUIDs as
@@ -17,6 +17,12 @@ end
 for i=1:length(uuids)
     list = getUnorderedList(uuids{i}, list);
 end
+if isempty(list)
+    runList = {};
+    names = {};
+    return;
+end
+
 links = loadLinks(list);
 
 %% 2. Order them with the help of the digraph.
@@ -43,6 +49,9 @@ t = fetch(conn, sqlquery);
 tList = table2MyStruct(t); % Convert data types from SQL to MATLAB.
 fldNames = fieldnames(tList);
 for i=1:length(fldNames)
+    if isempty(tList.(fldNames{i}))
+        tList.(fldNames{i}) = {};
+    end
     list = [list; tList.(fldNames{i})];
 end
 [types] = deText(list);

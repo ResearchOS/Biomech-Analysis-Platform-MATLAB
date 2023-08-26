@@ -27,7 +27,7 @@ createAbstract = false;
 if exist('abstractID','var')~=1
     abstractID = '';    
 end
-if isempty(abstractID)
+if isempty(abstractID) || ~instanceBool
     createAbstract=true;
 end
 

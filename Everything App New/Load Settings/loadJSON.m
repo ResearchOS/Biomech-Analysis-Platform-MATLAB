@@ -18,10 +18,3 @@ tablename = getTableName(type, isInstance);
 sqlquery = ['SELECT * FROM ' tablename ' WHERE UUID = ''' uuid ''';'];
 t = fetch(conn, sqlquery);
 data = table2MyStruct(t);
-
-% Check that this struct contains all required fields. If it does not,
-% default values are inserted. EXCEPT for UUID field, which throws an
-% error.
-% if runCheck
-%     data = checkFields(data);
-% end

@@ -9,7 +9,8 @@ delete(uiTree.Children);
 tablename = getTableName(class);
 sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
 t = fetch(conn,sqlquery);
-t(1,:) = []; % ALWAYS REMOVE THE FIRST ROW.
+zIdx = contains(t.UUID,'ZZZ');
+t(zIdx,:) = []; % ALWAYS REMOVE THE ZZZ ROW.
 
 allUUIDs = cellstr(t.UUID);
 allNames = cellstr(t.Name);

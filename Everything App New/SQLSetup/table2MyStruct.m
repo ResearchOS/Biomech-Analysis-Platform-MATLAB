@@ -22,7 +22,11 @@ for i=1:length(varNames)
     elseif ismissing(var)
         var = '';
     else
-        var = char(var); % String to char
+        if isstring(var) && isscalar(var)
+            var = char(var); % String to char
+        elseif isstring(var)
+            var = cellstr(var); % String to cell array of chars
+        end
     end
 
     data.(varName) = var;

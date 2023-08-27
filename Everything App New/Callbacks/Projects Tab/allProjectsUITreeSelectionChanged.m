@@ -13,18 +13,22 @@ end
 
 uuid = projectNode.NodeData.UUID;
 
-% Ensure that the current computer's ID field is present.
-struct = newComputerProjectPaths(uuid);
+[type, abstractID, instanceID] = deText(uuid);
 
-computerID = getComputerID();
-
-dataPath=struct.Data_Path.(computerID);
+if ~isempty(instanceID)
+    % Ensure that the current computer's ID field is present.
+    struct = newComputerProjectPaths(uuid);
+    computerID = getComputerID();
+    dataPath=struct.Data_Path.(computerID);
+    projectPath=struct.Project_Path.(computerID);
+else
+    dataPath = '';
+    projectPath = '';
+end
 
 if isempty(dataPath)
     dataPath='Data Path (contains ''Raw Data Files'' folder)';
 end
-
-projectPath=struct.Project_Path.(computerID);
 
 if isempty(projectPath)
     projectPath='Path to Project Folder';

@@ -83,10 +83,13 @@ elseif ~isempty(trg) || ~isempty(src) % The specified source node is not connect
 end
 
 s = G.Nodes.Name(noInsIdx);  
-while ~isempty(s)
+count = 1;
+list = cell(0, 2);
+while ~isempty(s)    
     nodeN = s(1);
     s(1) = [];
-    list = [list; nodeN];
+    incrCount = true;
+    list = [list; {nodeN{1}, count}];
     % Get the list of edges from nodeN
     edgesOutE = outedges(G, nodeN);
     % Get the list of nodes that these edges go to.
@@ -104,6 +107,10 @@ while ~isempty(s)
         G = rmedge(G,currNodesEdgesIdx);
         if indegree(G, nodeM)==0
             s = [s; nodeM];
+            if incrCount
+                count = count+1;
+            end
+            incrCount = false;
         end
     end
 end

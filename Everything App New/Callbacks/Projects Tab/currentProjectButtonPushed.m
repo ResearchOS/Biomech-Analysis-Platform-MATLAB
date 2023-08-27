@@ -13,6 +13,11 @@ end
 
 % Include name & UUID because the name isn't guaranteed to be unique
 uuid = selNode.NodeData.UUID;
+[type, abstractID, instanceID] = deText(uuid);
+if isempty(instanceID)
+    return;
+end
+
 handles.Projects.projectsLabel.Text=[selNode.Text ' ' uuid];
 
 setCurrent(uuid, 'Current_Project_Name');

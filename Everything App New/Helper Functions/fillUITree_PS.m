@@ -16,7 +16,8 @@ uuids = {tmp.UUID};
 tablename = getTableName(class, true);
 sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
 t = fetch(conn,sqlquery);
-t(1,:) = [];
+zIdx = ismember(t.UUID,'ZZZZZZ_ZZZ');
+t(zIdx,:) = [];
 
 instUUIDs = cellstr(t.UUID);
 instNames = cellstr(t.Name);

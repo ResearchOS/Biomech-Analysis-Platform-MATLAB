@@ -45,12 +45,6 @@ catch
 end
 DBSetup(dbFile);
 
-% initializeClassFolders(); % Initialize all of the folders for all classes in the common path
-% initRootSettingsFile(); % Initialize the root settings file.
-% initLinkedObjsFile(); % Initialize the file containing object linkages
-% initProject_Analysis(); % Make sure that a project & analysis exists
-% initAbstract_Objs(); % Make sure that every instance has a corresponding abstract object (in case they were deleted, etc.)
-
 %% Load the GUI object settings (i.e. selected nodes in UI trees, checkbox selections, projects to filter, etc.)
 loadGUIState(fig);
 

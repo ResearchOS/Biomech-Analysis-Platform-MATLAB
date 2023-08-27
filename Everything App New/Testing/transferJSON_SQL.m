@@ -185,16 +185,16 @@ for classNum = 1:length(classNames)
                 end
 
 
-            end
+            end            
 
-            try
-                saveClass(className, sql);
-            catch e
-                if ~contains(e.message,'UNIQUE constraint failed')
-                    error(e);
-                end
-            end
+        end
 
+        try
+            saveClass(className, sql);
+        catch e
+            if ~contains(e.message,'UNIQUE constraint failed')
+                error(e);
+            end
         end
 
     end

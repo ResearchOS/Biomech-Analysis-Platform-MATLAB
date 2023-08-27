@@ -14,6 +14,7 @@ if ~iscell(uuids)
     uuids = {uuids};
 end
 
+names = {};
 types = deText(uuids);
 uniqueTypes = unique(types,'stable');
 
@@ -25,6 +26,9 @@ for i=1:length(uniqueTypes)
     zIdx = ismember(t.UUID,'ZZZZZZ_ZZZ');
     t(zIdx,:) = [];
     t = table2MyStruct(t);
+    if isempty(t.UUID)
+        continue;
+    end
     for j=1:length(uuids)
         uuid = uuids{j};        
         nameIdx = ismember(t.UUID, uuid); % Where in the object list the UUID's & names are.

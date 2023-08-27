@@ -13,28 +13,7 @@ Current_Analysis = getCurrent('Current_Analysis');
 anStruct = loadJSON(Current_Analysis);
 
 %% Get the list of functions & groups in the current analysis. How to order them?
-sqlquery = ['SELECT PG_ID FROM AN_PG WHERE AN_ID = ''' anStruct.UUID ''';'];
-listPG = fetch(conn, sqlquery);
-listPG = table2MyStruct(listPG);
-listPG = listPG.PG_ID;
-if isempty(listPG)
-    listPG = {};
-end
-sqlquery = ['SELECT PR_ID FROM AN_PR WHERE AN_ID = ''' anStruct.UUID ''';'];
-listPR = fetch(conn, sqlquery);
-listPR = table2MyStruct(listPR);
-listPR = listPR.PR_ID;
-if isempty(listPR)
-    listPR = {};
-end
-listPG_PR_FromAN = [listPR; listPG]; % The top level groups & functions in the analysis.
-listPG_PR_FromAN(:,2) = {anStruct.UUID}; % Include the analysis name.
-listPR_PG_AN = getPRFromPG(listPG_PR_FromAN(:,1), listPG_PR_FromAN); % Get all processing functions in the groups.
-prIdx = contains(listPR_PG_AN(:,1),'PR'); % All processing functions together (from all groups in current analysis).
-listPR_Only = listPR_PG_AN(prIdx,:); % Isolate the rows that have processing functions, not groups in groups.
-links = loadLinks(listPR_Only(:,1)); % Convert unordered list of processing functions into a linkage table.
-G = linkageToDigraph('PR', links);
-orderedList = orderDeps(G,'full'); % All PR. Need to convert this to parent objects.
+[orderedList, listPR_PG_AN] = getRunList(anStruct.UUID);
 orderedStruct = orderedList2Struct(orderedList, listPR_PG_AN);
 
 uiTree = handles.Process.analysisUITree;

@@ -10,12 +10,22 @@ if isempty(uuid)
     return;
 end
 
+% Passed in as char.
+makeChar = false;
 if ~iscell(uuid)
+    makeChar = true;
     uuid = {uuid};
 end
 
 for i=length(uuid):-1:1
     [objectType{i}, abstractID{i}, instanceID{i}] = parseUUID(uuid{i});
+end
+
+% Convert back to char.
+if makeChar
+    objectType = objectType{1};
+    abstractID = abstractID{1};
+    instanceID = instanceID{1};
 end
 
 end

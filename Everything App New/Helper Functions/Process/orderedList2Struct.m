@@ -1,4 +1,4 @@
-function [ordStruct]=orderedList2Struct(prList, containerList, ordStruct)
+function [ordStruct]=orderedList2Struct(prList, containerList)
 
 %% PURPOSE: CONVERT THE LIST TO STRUCT FORM TO CREATE THE ANALYSIS OR PROCESS GROUP UI TREE NODES
 % 1. Get all PR's containers. Order the PR's in each container. Each
@@ -15,135 +15,101 @@ function [ordStruct]=orderedList2Struct(prList, containerList, ordStruct)
 %       - struct.(newContainer).MinNum = min([tmpStruct.(containers).MinNum])
 % 4. Finally, order the top level fields according to MinNum
 
-% 1. Get all PR's containers.
-prIdx = contains(containerList(:,1),'PR');
-prContainers = unique(containerList(prIdx,2));
-for i=1:length(prContainers)
-    prsInContainerIdx = ismember(containerList(:,2),prContainers{i});
-    prsInContainer = containerList(prsInContainerIdx,1);    
-    prListIdx = ismember(prList(:,1),prsInContainer);
-    nums = cell2mat(prList(prListIdx,2));
-    [~,k] = sort(nums);
-    prsInContainer = prsInContainer(k);
-    struct.(prContainers{i}).Contains = prsInContainer;
-    minNum = min(nums);
-    struct.(prContainers{i}).MinNum = minNum;
-end
-
-% 2. Get all child PG's that are not also parent PG's
-orphanPGIdx = contains(containerList(:,1),'PG') & ~contains(containerList(:,2),'PG'); % FIX THIS
-orphanPGs = containerList(orphanPGIdx,1);
-for i=1:length(orphanPGs)
-    struct.(orphanPGs{i}).Contains = {};
-    struct.(orphanPGs{i}).MinNum = inf; % Put at the back
-end
-
-% 3. Loop through all containers' UUID's, find their parent containers until the analysis is found
-currContainers = {};
-while ~all(contains(currContainers,'AN'))
-    currContainers = fieldnames(struct);
-
-    for i=1:length(currContainers)
-        currContainer = currContainers{i};
-        tmpStruct = struct.(currContainer);
-        struct.(currCon) = [];
-    end
-
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if exist('ordStruct','var')~=1
+if isempty(prList)
     ordStruct = struct();
+    return;
 end
 
-anIdx = contains(containerList(:,2),'AN');
-if any(anIdx)
-    containerUUID = char(unique(containerList(anIdx,2)));
-else
-    pgIdx = contains(containerList(:,2),'PG');
-    if ~any(pgIdx)
-        ordStruct = struct();
-        for i=1:length(prList)
-            ordStruct.(prList{i}) = struct();
+prettyContainerList = cell(size(containerList));
+prettyContainerList(:,1) = getName(containerList(:,1));
+prettyContainerList(:,2) = getName(containerList(:,2));
+
+%% 1. Get all PR's containers.
+prIdx = contains(containerList(:,1),'PR');
+prContainers = unique(containerList(prIdx,2),'stable');
+prettyPRContainers = unique(prettyContainerList(prIdx,2),'stable');
+for i=1:length(prContainers)       
+    prsInContainerIdx = ismember(containerList(:,2),prContainers{i});
+    prsInContainer = containerList(prsInContainerIdx,1); % Returns things in the wrong order.Fix!
+    prettyPRsInContainer = prettyContainerList(prsInContainerIdx,1);    
+    % Sometimes the PR won't exist in the PR list. In that case, but it at
+    % the start of the list.
+    nums = NaN(length(prsInContainer),1);
+    for j = 1:length(prsInContainer)
+        num = find(ismember(prList(:,1),prsInContainer{j}));
+        if ~isempty(num)
+            nums(j) = num;
         end
-        return;
     end
-    containerUUID = char(unique(containerList(pgIdx,2)));
+    nums(isnan(nums)) = -inf;
+    [~,k] = sort(nums);
+    nums = nums(k);
+    prsInContainer = prsInContainer(k);
+    prettyPRsInContainer = prettyPRsInContainer(k);
+    for j=1:length(prsInContainer)
+        ordStruct.(prContainers{i}).Contains.(prsInContainer{j}).Contains = {};
+        ordStruct.(prContainers{i}).Contains.(prsInContainer{j}).MinNum = nums(j);
+        ordStruct.(prContainers{i}).Contains.(prsInContainer{j}).PrettyName = prettyPRsInContainer{j};
+    end
+    nums(isinf(nums)) = []; % Exclude the minus infinity when ordering the groups.
+    minNum = min(nums);
+    ordStruct.(prContainers{i}).MinNum = minNum;
+    ordStruct.(prContainers{i}).PrettyName = prettyPRContainers{i};
 end
 
-unOrdStruct = struct();
-unOrdStruct = getUnordStruct(unOrdStruct, containerUUID, prList, containerList);
-
+%% 2. Get all child PG's that are not also parent PG's
+childPGIdx = contains(containerList(:,1),'PG');
+childPGs = containerList(childPGIdx,1);
+orphanPGs = {};
+for i=1:length(childPGs)
+    pgIdx = ismember(containerList(:,2),childPGs{i});
+    if ~any(pgIdx)
+        orphanPGs = [orphanPGs; childPGs(i)];
+    end
+end
+prettyOrphanPGsIdx = ismember(containerList(:,1),orphanPGs);
+prettyOrphanPGs = prettyContainerList(prettyOrphanPGsIdx,1);
+for i=1:length(orphanPGs)
+    ordStruct.(orphanPGs{i}).Contains = {};
+    ordStruct.(orphanPGs{i}).MinNum = inf; % Put at the back
+    ordStruct.(orphanPGs{i}).PrettyName = prettyOrphanPGs{i};
 end
 
-function [unOrdStruct, prList, containerList] = getUnordStruct(unOrdStruct, containerUUID, prList, containerList)
+%% 3. Loop through all containers' UUID's, find their parent containers until the top level parent container is found
+% Hard-coded the index (1,2) for the top-level parent container in
+% containerList. Is this an OK assumption? Seems to be, because of the
+% input to "getPRFromPG"
+while ~all(ismember(fieldnames(ordStruct),containerList{1,2}))
+    topLevelContainers = fieldnames(ordStruct);
 
-disp('a');
-containerIdx = ismember(containerList(:,2),containerUUID);
-containedUUIDs = containerList(containerIdx,1);
-
-for i=1:length(containedUUIDs)
-    unOrdStruct.(containedUUIDs{i}).Contains = struct();
-
-    % Get the minimum number of the PR's
-    prIdx = ismember(prList(:,1), containedUUIDs{i});
-    minNum = min(prList(prIdx,2));
-    if ~isempty(minNum)
-        unOrdStruct.(containedUUIDs{i}).MinNum = minNum;
+    for i=1:length(topLevelContainers)
+        currContainer = topLevelContainers{i};
+        currContainerIdx = ismember(containerList(:,1), currContainer);        
+        parentContainers = containerList(currContainerIdx,2);        
+        currPrettyNames = prettyContainerList(currContainerIdx,2);
+        for j = 1:length(parentContainers)
+            parentContainer = parentContainers{j};
+            prettyParentContainer = currPrettyNames{j};
+            ordStruct.(parentContainer).Contains.(currContainer) = ordStruct.(currContainer);
+            minNum = [ordStruct.(currContainer).MinNum];
+            ordStruct = rmfield(ordStruct, currContainer);
+            if isfield(ordStruct.(parentContainer),'MinNum')
+                ordStruct.(parentContainer).MinNum = min([minNum, ordStruct.(parentContainer).MinNum]);
+            else
+                ordStruct.(parentContainer).MinNum = minNum;
+            end
+            ordStruct.(parentContainer).PrettyName = prettyParentContainer;
+        end
     end
 
-    % Recursively get the rest
+    % Reorder the struct fields according to their min nums
+    currContainers = fieldnames(ordStruct.(parentContainer).Contains);
+    nums = [];
+    for i=1:length(currContainers)
+        nums = [nums; ordStruct.(parentContainer).Contains.(currContainers{i}).MinNum];
+    end
+
+    [~,k] = sort(nums);
+    ordStruct.(parentContainer).Contains = orderfields(ordStruct.(parentContainer).Contains, k);
 
 end
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-% listTmp = containerList;
-% nums = cell2mat(listTmp(:,2));
-% while ~isempty(listTmp)
-%     containerUUID = listTmp{1,2};
-%     containerIdx = ismember(listTmp(:,2),containerUUID);
-% 
-%     containedIdx = ismember(containerList(:,2), containerUUID);
-%     containedUUIDs = containerList(containedIdx,1); % Get the UUID of the contained objects.
-% 
-%     if ~any(contains(containedUUIDs,'PG'))
-%         for i=1:length(containedUUIDs)
-%             listTmp(containerIdx,:) = [];
-%             if ~contains(containedUUIDs{i},'PG')
-%                 ordStruct.(containerUUID).(containedUUIDs{i}) = struct();
-%             else                
-%                 listTmp
-%             end
-%         end
-%         continue;
-%     end
-% 
-%     % Put the 
-% 
-% 
-% end

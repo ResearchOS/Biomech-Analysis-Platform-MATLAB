@@ -1,10 +1,10 @@
-function []=saveClass(class, classStruct, date)
+function []=saveClass(classStruct, date)
 
 %% PURPOSE: SAVE A CLASS INSTANCE TO A NEW ROW (USING INSERT STATEMENT)
 global conn;
 
 uuid = classStruct.UUID;
-[~,abstractID,instanceID]=deText(uuid);
+[type,abstractID,instanceID]=deText(uuid);
 
 if ~isempty(instanceID)
     suffix = 'Instances';
@@ -12,6 +12,7 @@ else
     suffix = 'Abstract';
 end
 
+class = className2Abbrev(type, true);
 class = makeClassPlural(class);
 tablename = [class '_' suffix];
 

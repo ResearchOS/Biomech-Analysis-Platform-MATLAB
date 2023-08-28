@@ -29,13 +29,16 @@ if ~exist('trg','var') || isempty(trg)
     trg = '';
 end
 
+% Only source or target can be provided, not both. Or neither.
 assert(isempty(src) || isempty(trg));
 
+% If source was provided, remove existing connections to it.
 if ismember(src,G.Nodes.Name)
     srcInEdgesIdx = find(ismember(G.Edges.EndNodes(:,2),src));
     G = rmedge(G, srcInEdgesIdx);
 end
 
+% If target was provided, remove existing connections to it.
 if ismember(trg,G.Nodes.Name)
     srcOutEdgesIdx = find(ismember(G.Edges.EndNodes(:,1),trg));
     G = rmedge(G, srcOutEdgesIdx);
@@ -46,7 +49,7 @@ if isempty(G.Nodes) || isempty(G.Edges)
     return;
 end
 
-%% Try the new algorithm
+%% Order the nodes according to Kahn's algorithm
 % https://en.wikipedia.org/wiki/Topological_sorting (Kahn's algorithm)
 % L ← Empty list that will contain the sorted elements
 % S ← Set of all nodes with no incoming edge
@@ -63,6 +66,7 @@ end
 %     return error   (graph has at least one cycle)
 % else 
 %     return L   (a topologically sorted order)
+
 list = {};
 noInsIdx = indegree(G,G.Nodes.Name)==0;
 if ~any(noInsIdx)
@@ -90,8 +94,10 @@ while ~isempty(s)
     s(1) = [];
     incrCount = true;
     list = [list; {nodeN{1}, count}];
+
     % Get the list of edges from nodeN
     edgesOutE = outedges(G, nodeN);
+    
     % Get the list of nodes that these edges go to.
     nodesM = G.Edges.EndNodes(edgesOutE,2);
     nodesM = unique(nodesM,'stable');

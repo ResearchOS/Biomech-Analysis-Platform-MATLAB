@@ -1,12 +1,21 @@
-function [Current_ProcessGroup_Name]=getCurrentProcessGroup()
+function [Current_ProcessGroup_Name]=getCurrentProcessGroup(src)
 
-%% PURPOSE: RETURN THE CURRENT PROCESS GROUP PS NAME FOR THE CURRENT PROJECT.
+%% PURPOSE: RETURN THE CURRENT PROCESS GROUP UUID AS SELECTED IN THE GUI.
 
-projectSettingsFile=getProjectSettingsFile();
-if isempty(projectSettingsFile)
-    Current_ProcessGroup_Name='';
+fig=ancestor(src,'figure','toplevel');
+handles=getappdata(fig,'handles');
+
+selNode = handles.Process.analysisUITree.SelectedNodes;
+Current_ProcessGroup_Name = '';
+if isempty(selNode)    
     return;
 end
-projectSettings=loadJSON(projectSettingsFile);
 
-Current_ProcessGroup_Name=projectSettings.Current_ProcessGroup_Name;
+list = getUITreeFromNode(selNode);
+for i=1:length(list)
+    uuid = list(i).NodeData.UUID;
+    if contains(uuid,'PG')
+        Current_ProcessGroup_Name = uuid;
+        return;
+    end
+end

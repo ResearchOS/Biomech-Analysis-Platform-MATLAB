@@ -19,11 +19,12 @@ if isempty(pgUUID) && isempty(prUUID)
 end
 
 if isempty(pgUUID) % Function does not belong to a group.
-    runList= {prUUID};
-    nameList = getName(prUUID);
+    ordStruct.NULL.Contains.(prUUID).Contains = [];
+    ordStruct.NULL.Contains.(prUUID).PrettyName = getName(prUUID);
 else
     % Get all of the group and function names in the group
-    [runList, nameList] = getRunList(pgUUID);    
+    [runList, containerList] = getRunList(pgUUID);   
+    ordStruct = orderedList2Struct(runList, containerList);
 end
 
 pgStruct=loadJSON(pgUUID);
@@ -32,35 +33,38 @@ handles.Process.currentGroupLabel.Text = [pgStruct.Name ' ' pgUUID];
 
 delete(uiTree.Children);
 
-for i=1:length(runList)
-    uuid = runList{i};
+topLevel = fieldnames(ordStruct);
+if isempty(topLevel)
+    return;
+end
 
-    newNode = addNewNode(uiTree, uuid, nameList{i});
-    assignContextMenu(newNode,handles);
+ordStruct = ordStruct.(topLevel{1}).Contains;
 
-    [abbrev] = deText(uuid);
+fldNames = fieldnames(ordStruct);
 
-    if isequal(abbrev,'PG') % ProcessGroup
-        createProcessGroupNode(newNode,uuid,handles);
-    end  
+for i=1:size(fldNames,1)
+    uuid = fldNames{i};
+    prettyName = ordStruct.(uuid).PrettyName;
 
+    addNewNode(uiTree, uuid, prettyName, '', ordStruct.(uuid).Contains);    
+
+end
+
+%% Select the corresponding node in the UI tree
+if isempty(prUUID)
+    selectNode(handles.Process.groupUITree, runList{end,1}); % Can't select a processing group.
+else
+    selectNode(handles.Process.groupUITree, prUUID);
 end
 
 %% Select the corresponding processing node in the graph.
 obj=get(fig,'CurrentObject');
+buttonDownFcn = true;
 if ~isequal(class(obj),'matlab.ui.control.UIAxes')
-    if nargin==2
+    if ~isempty(prUUID)
+        buttonDownFcn = false;
         digraphAxesButtonDownFcn(src, prUUID);
     end
 end
 
-%% Select the corresponding node in the UI tree
-if nargin == 2
-    if ~isequal(abbrev,'PG')
-        selectNode(handles.Process.groupUITree, runList{end}); % Can't select a processing group.
-    else
-        selectNode(handles.Process.groupUITree, prUUID);
-    end
-end
-
-groupUITreeSelectionChanged(fig);
+groupUITreeSelectionChanged(fig, buttonDownFcn);

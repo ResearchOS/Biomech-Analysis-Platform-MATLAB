@@ -20,7 +20,7 @@ uniqueTypes = unique(types,'stable');
 
 names = cell(length(types),1);
 for i=1:length(uniqueTypes)
-    tablename = getTableName(types{i}, isInstance);
+    tablename = getTableName(uniqueTypes{i}, isInstance);
     sqlquery = ['SELECT UUID, Name FROM ' tablename];
     t = fetch(conn, sqlquery);        
     zIdx = ismember(t.UUID,'ZZZZZZ_ZZZ');
@@ -32,7 +32,9 @@ for i=1:length(uniqueTypes)
     for j=1:length(uuids)
         uuid = uuids{j};        
         nameIdx = ismember(t.UUID, uuid); % Where in the object list the UUID's & names are.
-        name = t.Name{nameIdx};
-        names{j,1} = name;
+        name = t.Name(nameIdx);
+        if ~isempty(name)
+            names(j,1) = name;
+        end
     end
 end

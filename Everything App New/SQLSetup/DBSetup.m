@@ -4,12 +4,9 @@ function []=DBSetup(dbFile)
 global conn
 
 %% Create or set up the database.
-mode = 'connect';
-if exist(dbFile,'file')~=2
-    mode = 'create';
-end
-
-conn = sqlite(dbFile, mode);
+method = 'default';
+% method = 'JDBC';
+conn = connectToSQLite(dbFile,method);
 
 %% Ensure the existence of the object tables
 tableNames = sqlfind(conn,'');
@@ -43,25 +40,25 @@ end
 
 %% Object tables
 % Create the abstract & instance tables.
-createAbs = strcat(['CREATE TABLE XXX_Abstract (UUID TEXT PRIMARY KEY NOT NULL UNIQUE,',...
-    'Date_Created     TEXT    NOT NULL,',...
-    'Date_Modified    TEXT    NOT NULL,',...
-    'Name             TEXT    NOT NULL DEFAULT [Default],',...
-    'Created_By       TEXT    NOT NULL,',...
-    'Last_Modified_By TEXT    NOT NULL,',...
-    'Description      TEXT    NOT NULL,',...
+createAbs = strcat(['CREATE TABLE XXX_Abstract (UUID TEXT PRIMARY KEY NOT NULL UNIQUE DEFAULT [ZZZZZZ], ',...
+    'Date_Created     TEXT    NOT NULL DEFAULT [NULL], ',...
+    'Date_Modified    TEXT    NOT NULL DEFAULT [NULL], ',...
+    'Name             TEXT    NOT NULL DEFAULT [Default], ',...
+    'Created_By       TEXT    NOT NULL DEFAULT [NULL], ',...
+    'Last_Modified_By TEXT    NOT NULL DEFAULT [NULL], ',...
+    'Description      TEXT    NOT NULL DEFAULT [NULL], ',...
     'OutOfDate        INTEGER NOT NULL DEFAULT (true)',...
     ');']); 
-createInst = ['CREATE TABLE XXX_Instances (UUID TEXT NOT NULL UNIQUE,',...
-    'Date_Created     TEXT    NOT NULL,',...
-    'Created_By       TEXT    NOT NULL,',...
-    'Abstract_UUID    TEXT    REFERENCES XXX_Abstract (UUID) NOT NULL,',...
-    'Name             TEXT    NOT NULL DEFAULT [Default],',...
-    'Date_Modified    TEXT    NOT NULL,',...
-    'Last_Modified_By TEXT    NOT NULL,',...
-    'Description      TEXT    NOT NULL,',...
-    'OutOfDate        INTEGER NOT NULL DEFAULT (true),',...
-    'PRIMARY KEY (UUID, Abstract_UUID));'];
+createInst = ['CREATE TABLE XXX_Instances (UUID TEXT PRIMARY KEY NOT NULL UNIQUE DEFAULT [ZZZZZZ_ZZZ], ',...
+    'Date_Created     TEXT    NOT NULL DEFAULT [NULL], ',...
+    'Created_By       TEXT    NOT NULL DEFAULT [NULL], ',...
+    'Abstract_UUID    TEXT    REFERENCES XXX_Abstract (UUID) NOT NULL DEFAULT [ZZZZZZ], ',...
+    'Name             TEXT    NOT NULL DEFAULT [Default], ',...
+    'Date_Modified    TEXT    NOT NULL DEFAULT [NULL], ',...
+    'Last_Modified_By TEXT    NOT NULL DEFAULT [NULL], ',...
+    'Description      TEXT    NOT NULL DEFAULT [NULL], ',...
+    'OutOfDate        INTEGER NOT NULL DEFAULT (true)',...
+    ');'];
 
 % Create a first row that means nothing because MATLAB can't have a NULL
 % value in the first row.
@@ -98,89 +95,89 @@ end
 % Add custom columns to each table.
 % Projects_Instances
 if ismember('Projects_Instances',modifiedNames)
-    sqlquery = ['ALTER TABLE Projects_Instances ADD Data_Path TEXT'];
+    sqlquery = ['ALTER TABLE Projects_Instances ADD Data_Path TEXT NOT NULL DEFAULT [NULL]'];
     execute(conn, sqlquery);    
-    sqlquery = ['ALTER TABLE Projects_Instances ADD Project_Path TEXT'];
+    sqlquery = ['ALTER TABLE Projects_Instances ADD Project_Path TEXT NOT NULL DEFAULT [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Projects_Instances ADD Process_Queue TEXT'];
+    sqlquery = ['ALTER TABLE Projects_Instances ADD Process_Queue TEXT NOT NULL DEFAULT [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Analysis TEXT REFERENCES Analyses_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE'];
+    sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Analysis TEXT REFERENCES Analyses_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Logsheet TEXT REFERENCES Logsheets_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE'];
+    sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Logsheet TEXT REFERENCES Logsheets_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ]'];
     execute(conn, sqlquery);  
     % sqlquery = ['INSERT INTO TABLE Projects_Instances (Data_Path, Project_Path, Process_Queue, Current_Logsheet, Current_Analysis) VALUES (''NULL'', ''NULL'', ''NULL'', ''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
-    sqlquery = ['UPDATE Projects_Instances SET Data_Path = ''NULL'', Project_Path = ''NULL'', Process_Queue = ''NULL'', Current_Analysis = ''ZZZZZZ_ZZZ'', Current_Logsheet = ''ZZZZZZ_ZZZ'';'];
-    execute(conn, sqlquery);
+    % sqlquery = ['UPDATE Projects_Instances SET Data_Path = ''NULL'', Project_Path = ''NULL'', Process_Queue = ''NULL'', Current_Analysis = ''ZZZZZZ_ZZZ'', Current_Logsheet = ''ZZZZZZ_ZZZ'';'];
+    % execute(conn, sqlquery);
 end
 
 if ismember('Process_Abstract',modifiedNames)
-    sqlquery = ['ALTER TABLE Process_Abstract ADD NamesInCode TEXT'];
+    sqlquery = ['ALTER TABLE Process_Abstract ADD NamesInCode TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Process_Abstract ADD Level TEXT DEFAULT [''T'']'];
+    sqlquery = ['ALTER TABLE Process_Abstract ADD Level TEXT NOT NULL DEFAULT [''T'']'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Process_Abstract ADD ExecFileName TEXT'];
+    sqlquery = ['ALTER TABLE Process_Abstract ADD ExecFileName TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = 'UPDATE Process_Abstract SET NamesInCode = ''NULL'', ExecFileName = ''NULL'';';
-    execute(conn, sqlquery);
+    % sqlquery = 'UPDATE Process_Abstract SET NamesInCode = ''NULL'', ExecFileName = ''NULL'';';
+    % execute(conn, sqlquery);
 end
 
 if ismember('Process_Instances',modifiedNames)
-    sqlquery = ['ALTER TABLE Process_Instances ADD SpecifyTrials TEXT'];
+    sqlquery = ['ALTER TABLE Process_Instances ADD SpecifyTrials TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Process_Instances ADD Date_Last_Ran TEXT'];
+    sqlquery = ['ALTER TABLE Process_Instances ADD Date_Last_Ran TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['UPDATE Process_Instances SET SpecifyTrials = ''NULL'', Date_Last_Ran = ''NULL'';'];
-    execute(conn, sqlquery);
+    % sqlquery = ['UPDATE Process_Instances SET SpecifyTrials = ''NULL'', Date_Last_Ran = ''NULL'';'];
+    % execute(conn, sqlquery);
 end
 
 if ismember('Variables_Abstract',modifiedNames)
-    sqlquery = ['ALTER TABLE Variables_Abstract ADD IsHardCoded INTEGER DEFAULT (false)'];
+    sqlquery = ['ALTER TABLE Variables_Abstract ADD IsHardCoded INTEGER NOT NULL DEFAULT (false)'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Variables_Abstract ADD Level TEXT DEFAULT [''T'']'];
+    sqlquery = ['ALTER TABLE Variables_Abstract ADD Level TEXT NOT NULL DEFAULT [''T'']'];
     execute(conn, sqlquery);
 end
 
 if ismember('Variables_Instances',modifiedNames)
-    sqlquery = ['ALTER TABLE Variables_Instances ADD HardCodedValue TEXT DEFAULT [''NULL'']'];
+    sqlquery = ['ALTER TABLE Variables_Instances ADD HardCodedValue TEXT NOT NULL DEFAULT [NULL]'];
     execute(conn, sqlquery);
 end
 
 if ismember('SpecifyTrials_Abstract',modifiedNames)
-    sqlquery = ['ALTER TABLE SpecifyTrials_Abstract ADD Logsheet_Parameters TEXT'];
+    sqlquery = ['ALTER TABLE SpecifyTrials_Abstract ADD Logsheet_Parameters TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE SpecifyTrials_Abstract ADD Data_Parameters TEXT'];
+    sqlquery = ['ALTER TABLE SpecifyTrials_Abstract ADD Data_Parameters TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['UPDATE SpecifyTrials_Abstract SET Logsheet_Parameters = ''NULL'', Data_Parameters = ''NULL'';'];
-    execute(conn, sqlquery);
+    % sqlquery = ['UPDATE SpecifyTrials_Abstract SET Logsheet_Parameters = ''NULL'', Data_Parameters = ''NULL'';'];
+    % execute(conn, sqlquery);
 end
 
 if ismember('Logsheets_Abstract',modifiedNames)
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Logsheet_Path TEXT'];
+    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Logsheet_Path TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Num_Header_Rows INTEGER DEFAULT -1'];
+    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Num_Header_Rows INTEGER NOT NULL DEFAULT -1'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Subject_Codename_Header TEXT'];
+    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Subject_Codename_Header TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Target_TrialID_Header TEXT'];
+    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Target_TrialID_Header TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD LogsheetVar_Params TEXT'];
+    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD LogsheetVar_Params TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['UPDATE Logsheets_Abstract SET Logsheet_Path = ''NULL'', Subject_Codename_Header = ''NULL'', Target_TrialID_Header = ''NULL'', LogsheetVar_Params = ''NULL'';'];        
-    execute(conn, sqlquery);
+    % sqlquery = ['UPDATE Logsheets_Abstract SET Logsheet_Path = ''NULL'', Subject_Codename_Header = ''NULL'', Target_TrialID_Header = ''NULL'', LogsheetVar_Params = ''NULL'';'];        
+    % execute(conn, sqlquery);
 end
 
 if ismember('Analyses_Instances',modifiedNames)
-    sqlquery = ['ALTER TABLE Analyses_Instances ADD Tags TEXT'];
+    sqlquery = ['ALTER TABLE Analyses_Instances ADD Tags TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['UPDATE Analyses_Instances SET Tags = ''NULL'';'];
-    execute(conn, sqlquery);
+    % sqlquery = ['UPDATE Analyses_Instances SET Tags = ''NULL'';'];
+    % execute(conn, sqlquery);
 end
 
 
 %% JOIN TABLES
 createJoinTable = ['CREATE TABLE XXX_YYY (',...
-    'AAA_ID TEXT REFERENCES CCC_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL, ',...
-    'BBB_ID TEXT REFERENCES DDD_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL, ',...
+    'AAA_ID TEXT REFERENCES CCC_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ], ',...
+    'BBB_ID TEXT REFERENCES DDD_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ], ',...
     'PRIMARY KEY (AAA_ID, BBB_ID)',...
     ');'];
 initJoinTable = ['INSERT INTO XXX (AAA_ID, BBB_ID) VALUES (''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
@@ -235,26 +232,26 @@ for i=1:length(objAbbrevs)
 
 end
 
-% Custom Join table columns
+%% Custom Join table columns
 if ismember('VR_PR',modifiedNames)
-    sqlquery = ['ALTER TABLE VR_PR ADD NameInCode TEXT'];
+    sqlquery = ['ALTER TABLE VR_PR ADD NameInCode TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['UPDATE VR_PR SET NameInCode = ''NULL'';'];
-    execute(conn, sqlquery);
+    % sqlquery = ['UPDATE VR_PR SET NameInCode = ''NULL'';'];
+    % execute(conn, sqlquery);
 end
 
 if ismember('PR_VR',modifiedNames)
-    sqlquery = ['ALTER TABLE PR_VR ADD NameInCode TEXT'];
+    sqlquery = ['ALTER TABLE PR_VR ADD NameInCode TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['UPDATE PR_VR SET NameInCode = ''NULL'';'];
-    execute(conn, sqlquery);
+    % sqlquery = ['UPDATE PR_VR SET NameInCode = ''NULL'';'];
+    % execute(conn, sqlquery);
 end
 
 %% Settings table
 % Put values into the table.
 if ~ismember('Settings',tableNames)
-    sqlquery = ['CREATE TABLE Settings (VariableName TEXT PRIMARY KEY NOT NULL UNIQUE,',...
-        'VariableValue NOT NULL);'];    
+    sqlquery = ['CREATE TABLE Settings (VariableName TEXT PRIMARY KEY NOT NULL UNIQUE DEFAULT [NULL],',...
+        'VariableValue NOT NULL DEFAULT [NULL]);'];    
     execute(conn, sqlquery);
 
     % Initialize the settings in the table.

@@ -52,7 +52,7 @@ if createAbstract
     objStruct = initializeCommonStructFields(false, class, name, abstractID, instanceID);
     absStruct = feval(['create' class 'Struct'],false, objStruct, saveObj);
     if saveObj
-        saveClass(class, absStruct);
+        saveClass(absStruct);
     end
     [type,abstractID] = deText(absStruct.UUID);
     objStruct = absStruct;    
@@ -62,7 +62,7 @@ if instanceBool
     objStruct = initializeCommonStructFields(true, class, name, abstractID, instanceID);
     instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);    
     if saveObj
-        saveClass(class,instStruct);
+        saveClass(instStruct);
     end
     objStruct = instStruct;
 end

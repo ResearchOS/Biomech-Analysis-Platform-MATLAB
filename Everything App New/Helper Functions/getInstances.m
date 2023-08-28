@@ -2,6 +2,8 @@ function [uuids]=getInstances(uuid)
 
 %% PURPOSE: RETURN ALL INSTANCES OF AN ABSTRACT OBJECT. IF INSTANCE OBJECT PASSED IN, RETURNS ITSELF.
 
+global conn;
+
 [type, abstractID, instanceID] = deText(uuid);
 
 % Passed in instance object, returns itself.
@@ -10,9 +12,9 @@ if ~isempty(instanceID)
     return;
 end
 
-% Passed in abstract object, return all instances of that object.
-filenames = getClassFilenames(className2Abbrev(type, true), true);
-allUUIDs = fileNames2Texts(filenames);
+tablename = getTableName(type, true);
 
-idx = contains(allUUIDs, uuid);
-uuids = allUUIDs(idx);
+sqlquery = ['SELECT UUID FROM ' tablename 'WHERE Abstract_UUID = ''' uuid ''';'];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
+uuids = t.UUID;

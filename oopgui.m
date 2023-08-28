@@ -1,8 +1,20 @@
 function []=oopgui()
 
 %% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
-fig = findall(0,'Name','pgui');
-close(fig); clear fig;
+% Check that the connection is valid or not. Close/delete it so the GUI can open a new clean connection.
+global conn;
+if ~isempty(conn) && isa(conn,'sqlite')
+    if isvalid(conn)
+        close(conn); % The processing was stopped in a way that was not just closing the GUI. Most likely during testing/interacting with the code.
+    end
+    clear global conn;
+end
+figs = groot().Children;
+if ~isempty(figs)
+    figIdx = ismember({figs.Name},'pgui');
+    fig = figs(figIdx);
+    close(fig); clear fig;
+end
 isDel = false;
 if isDel
     delete('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Databases/biomechOS.db');
@@ -11,8 +23,7 @@ tic;
 
 %% Ensure that there's max one figure open
 a=evalin('base','whos;');
-names={a.name};
-if ismember('gui',names)
+if exist('fig','var')==1
     beep; disp('GUI already open, two simultaneous PGUI windows is not supported');
     return;
 end
@@ -45,13 +56,14 @@ catch
 end
 DBSetup(dbFile);
 
+if isDel
+    transferJSON_SQL;
+    transferLinks_SQL;
+end
+
 %% Load the GUI object settings (i.e. selected nodes in UI trees, checkbox selections, projects to filter, etc.)
 loadGUIState(fig);
 
 drawnow;
 elapsedTime=toc;
 disp(['Elapsed time is ' num2str(round(elapsedTime,2)) ' seconds.']);
-
-if isDel
-    transferJSON_SQL;
-end

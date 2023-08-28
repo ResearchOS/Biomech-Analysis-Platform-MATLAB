@@ -15,13 +15,18 @@ if exist('allPR','var')~=1
     allPR = cell(0,2);
 end
 
+if isempty(pg)
+    allPR = {};
+    return;
+end
+
 if ~iscell(pg)
     pg = {pg};
 end
 
 for i=1:length(pg)    
 
-    if contains(pg{i},'PR')
+    if contains(pg{i},'PR')        
         continue;
     end
     

@@ -28,7 +28,7 @@ piStruct=loadJSON(piPath);
 
 assert(isequal(structClass,piStruct.Class)); % Just checking that the correct class was loaded.
 
-psTexts=getVersions(piStruct);
+psTexts=getVersions(piStruct); % No longer exists.
 
 if isempty(psTexts)
     disp('There are no versions to compare!');

@@ -10,12 +10,12 @@ if isempty(uuid)
     return;
 end
 
-if iscell(uuid)
-    for i=length(uuid):-1:1
-        [objectType{i}, abstractID{i}, instanceID{i}] = parseUUID(uuid{i});
-    end
-else
-    [objectType, abstractID, instanceID] = parseUUID(uuid);
+if ~iscell(uuid)
+    uuid = {uuid};
+end
+
+for i=length(uuid):-1:1
+    [objectType{i}, abstractID{i}, instanceID{i}] = parseUUID(uuid{i});
 end
 
 end

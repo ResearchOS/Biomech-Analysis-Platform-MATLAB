@@ -28,8 +28,10 @@ if isequal(abbrev, 'PR')
     prUUID = origUUID; % A function node was selected
     [~,list] = getUITreeFromNode(selNode);
     if length(list)>2
-        pgUUID = list{2};
+        pgUUID = list(2).NodeData.UUID;
     end
+else
+    pgUUID = origUUID;
 end
 
 % Ensure that no specify trials are checked while the process group is selected.

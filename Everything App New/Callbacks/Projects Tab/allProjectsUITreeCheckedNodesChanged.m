@@ -16,4 +16,4 @@ projectText=selNode.Text;
 fullPath=getClassFilePath(projectText,'Project');
 projectStruct=loadJSON(fullPath);
 
-saveClass('Project',projectStruct);
+saveClass(projectStruct);

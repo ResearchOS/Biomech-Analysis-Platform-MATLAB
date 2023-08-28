@@ -4,6 +4,10 @@ function [st]=getST(uuid)
 % UUID is in the right column
 global conn;
 
+st = {};
+disp('ST not implemented yet!');
+return;
+
 [type] = deText(uuid);
 
 st = {};

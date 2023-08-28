@@ -44,11 +44,6 @@ if ismember(varName,projectSettingsVars)
         var = struct.(varName);
     end
 
-    % if ismember(varName,{'Data_Path','Project_Path'})
-    %     var = jsondecode(var);
-    %     var = char(var.(computerID));
-    % end
-
 end
 
 end

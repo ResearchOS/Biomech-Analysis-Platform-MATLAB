@@ -1,8 +1,8 @@
-function [newNode]=addNewNode(parent, uuid, text, doSort)
+function [newNode]=addNewNode(parent, uuid, text, doSort, ordStruct)
 
 %% PURPOSE: CREATE A NEW NODE.
 
-if exist('doSort','var')~=1
+if exist('doSort','var')~=1 || isempty(doSort)
     doSort = false;
 end
 
@@ -30,7 +30,7 @@ assignContextMenu(newNode,handles);
 allUITrees = [handles.Process.allAnalysesUITree; handles.Process.allGroupsUITree; handles.Process.allProcessUITree; handles.Process.allVariablesUITree];
 uiTree = getUITreeFromNode(newNode);
 if isequal(type,'PG') && ~ismember(uiTree, allUITrees)
-    createProcessGroupNode(newNode,uuid,handles);
+    createProcessGroupNode(newNode, ordStruct);
 end
 
 if ~ismember(parent,allUITrees)

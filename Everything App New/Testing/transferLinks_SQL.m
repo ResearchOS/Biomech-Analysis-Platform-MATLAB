@@ -63,13 +63,25 @@ for i=1:size(out,1)
         type2 = ['Child_' type2];
     end
 
-    sqlquery = ['INSERT INTO ' tablename ' (' type1 '_ID, ' type2 '_ID) VALUES (''' uuid1 ''', ''' uuid2 ''');'];
+    % Initialize rows
+    if (contains(tablename,'VR') && contains(tablename,'PR'))
+        sqlquery = ['INSERT INTO ' tablename ' (' type1 '_ID, ' type2 '_ID, NameInCode) VALUES (''' uuid1 ''', ''' uuid2 ''', ''NULL'');'];        
+    else
+        sqlquery = ['INSERT INTO ' tablename ' (' type1 '_ID, ' type2 '_ID) VALUES (''' uuid1 ''', ''' uuid2 ''');'];
+    end
+    % Update rows
+    % sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''NULL'';'];
     try
         execute(conn, sqlquery);
     catch e
+        % Inserting
         if ~contains(e.message, 'UNIQUE constraint failed')
             error(e);
         end
+        % Updating
+        % if ~contains(e.message,'no such column: NameInCode')
+        %     error(e);
+        % end
     end
 
 end

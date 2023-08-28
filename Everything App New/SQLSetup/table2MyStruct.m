@@ -16,7 +16,9 @@ for i=1:length(varNames)
     if ismember(varName,numericCols)
         var = double(var);
     elseif ismember(varName,jsonCols)
-        var = jsondecode(var);
+        if ~isequal(var,'NULL')            
+            var = jsondecode(var);
+        end
     elseif ismember(varName,dateCols)
         var = datetime(var);
     elseif ismissing(var)

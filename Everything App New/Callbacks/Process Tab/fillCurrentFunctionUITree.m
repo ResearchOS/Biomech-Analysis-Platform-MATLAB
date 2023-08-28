@@ -28,17 +28,28 @@ end
 
 handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
 
-instStruct=loadJSON(uuid);
-
-inputVarsInst=instStruct.InputVariables;
-outputVarsInst=instStruct.OutputVariables;
+[inputVarsInst] = getAssignedVars(uuid, 'Input');
+[outputVarsInst] = getAssignedVars(uuid, 'Output');
 
 % Load project-independent file.
 abstractUUID = genUUID(className2Abbrev(abbrev,true),abstractID);
 abstractStruct=loadJSON(abstractUUID);
 
-inputVarsAbstract=abstractStruct.InputVariablesNamesInCode;
-outputVarsAbstract=abstractStruct.OutputVariablesNamesInCode;
+namesInCode = abstractStruct.NamesInCode;
+if isequal(namesInCode,'NULL')
+    return;
+end
+
+allVars = [inputVarsInst; outputVarsInst]
+for i=1:length(namesInCode)
+    name = namesInCode{i};
+    varIdx = ismember(input)
+
+
+end
+
+% inputVarsAbstract=abstractStruct.InputVariablesNamesInCode;
+% outputVarsAbstract=abstractStruct.OutputVariablesNamesInCode;
 
 % Create input variable nodes
 for i=1:length(inputVarsAbstract)

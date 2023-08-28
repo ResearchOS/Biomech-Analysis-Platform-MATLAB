@@ -17,7 +17,7 @@ if isempty(name)
 end
 
 struct.Text = name;
-writeJSON(getJSONPath(uuid),struct);
+writeJSON(struct);
 
 figure(fig);
 
@@ -68,6 +68,18 @@ end
 Current_Analysis = getCurrent('Current_Analysis');
 if contains(Current_Analysis,uuid)
     handles.Process.currentAnalysisLabel.Text = [struct.Text ' ' uuid];
+end
+
+%% Change the name in the current group label.
+Current_Group = getCurrentProcessGroup(fig);
+if contains(Current_Group,uuid)
+    handles.Process.currentProcessGroupLabel.Text = [struct.Text ' ' uuid];
+end
+
+%% Change the name in the current function label.
+Current_Process = getCurrentProcess(fig);
+if contains(Current_Process,uuid)
+    handles.Process.currentFunctionLabel.Text = [struct.Text ' ' uuid];
 end
 
 %% Change the name in the digraph

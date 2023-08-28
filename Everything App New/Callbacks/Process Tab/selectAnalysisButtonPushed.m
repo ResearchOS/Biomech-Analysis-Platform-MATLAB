@@ -31,8 +31,4 @@ setCurrent(Current_Analysis,'Current_Analysis');
 Current_Project = getCurrent('Current_Project_Name');
 linkObjs(Current_Analysis, Current_Project);
 
-% Delete pre-existing 
-delete(handles.Process.groupUITree.Children);
-delete(handles.Process.functionUITree.Children);
-
 fillAnalysisUITree(fig);

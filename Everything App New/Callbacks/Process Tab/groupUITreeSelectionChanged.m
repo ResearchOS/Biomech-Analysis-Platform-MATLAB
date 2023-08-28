@@ -1,4 +1,4 @@
-function []=groupUITreeSelectionChanged(src,event)
+function []=groupUITreeSelectionChanged(src, doButtonDownFcn)
 
 %% PURPOSE: SHOW THE CURRENT FUNCTION'S VARIABLES IN THE FUNCTIONS UI TREE
 
@@ -33,13 +33,12 @@ fillCurrentFunctionUITree(fig);
 
 %% Select the corresponding processing node in the graph.
 obj=get(fig,'CurrentObject');
-if ~isequal(class(obj),'matlab.ui.control.UIAxes')
+if ~isequal(class(obj),'matlab.ui.control.UIAxes') && doButtonDownFcn
     digraphAxesButtonDownFcn(src, uuid);
 end
 
 %% Select the corresponding node in the analysis UI tree
 node = selectNode(handles.Process.analysisUITree, uuid);
-% handles.Process.analysisUITree.SelectedNodes = node;
 if ~isequal(node.Parent,handles.Process.analysisUITree)
     handles.Process.analysisUITree.SelectedNodes = node.Parent;
     drawnow;

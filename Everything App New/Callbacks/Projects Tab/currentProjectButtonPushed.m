@@ -38,4 +38,4 @@ selectAnalysisButtonPushed(fig);
 % Select the current logsheet.
 Current_Logsheet = getCurrent('Current_Logsheet');
 selectNode(handles.Import.allLogsheetsUITree, Current_Logsheet);
-allLogsheetsUITreeSelectionChanged(fig);
+% allLogsheetsUITreeSelectionChanged(fig);

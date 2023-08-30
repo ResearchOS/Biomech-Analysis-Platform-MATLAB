@@ -36,10 +36,3 @@ obj=get(fig,'CurrentObject');
 if ~isequal(class(obj),'matlab.ui.control.UIAxes') && doButtonDownFcn
     digraphAxesButtonDownFcn(src, uuid);
 end
-
-%% Select the corresponding node in the analysis UI tree
-node = selectNode(handles.Process.analysisUITree, uuid);
-if ~isequal(node.Parent,handles.Process.analysisUITree)
-    handles.Process.analysisUITree.SelectedNodes = node.Parent;
-    drawnow;
-end

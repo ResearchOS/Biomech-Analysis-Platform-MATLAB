@@ -12,8 +12,6 @@ if isempty(ax.Children)
 end
 assert(length(ax.Children)==1);
 
-% bool = isDoubleClick(ax);
-
 currPoint = ax.CurrentPoint(1,1:2);
 [xTol, yTol] = getDigraphTol(ax);
 
@@ -25,11 +23,11 @@ ydata = h.YData';
 xWins = [xdata-xTol/2 xdata+xTol/2];
 yWins = [ydata-yTol/2 ydata+yTol/2];
 
+doSelectionChanged = false; % Because the digraph wasn't clicked, it's just being updated. OR no node was clicked on.
 G = getappdata(fig,'digraph');
 if nargin == 1 || isempty(uuid)
     idx = (currPoint(1)>xWins(:,1) & currPoint(1)<xWins(:,2)) & ...
-    (currPoint(2)>yWins(:,1) & currPoint(2)<yWins(:,2));
-    doSelectionChanged = true; % The selection was made in the digraph, so update the list selection accordingly.
+    (currPoint(2)>yWins(:,1) & currPoint(2)<yWins(:,2));    
     if sum(idx)>1
         dists = sqrt((xdata-currPoint(1)).^2+(ydata-currPoint(2)).^2);
         [~,minDistIdx] = min(dists);
@@ -37,19 +35,16 @@ if nargin == 1 || isempty(uuid)
         idx = false(length(xdata),1);
         idx(minDistIdx) = true;
     end
+    if sum(idx)==1
+        doSelectionChanged = true; % The selection was made in the digraph, so update the list selection accordingly.
+    end
 else    
-    idx = ismember(G.Nodes.Name, uuid);
-    doSelectionChanged = false; % Because the digraph wasn't clicked, it's just being updated.
+    idx = ismember(G.Nodes.Name, uuid);    
 end
 if ~any(idx)
     markerSize = repmat(4,length(G.Nodes.Name),1);
-    colors = repmat([0 0.447 0.741],length(G.Nodes.Name),1);
-    groupSelNode = handles.Process.groupUITree.SelectedNodes;
-    if isempty(groupSelNode)
-        uuid = '';
-    else
-        uuid = groupSelNode.NodeData.UUID;
-    end
+    colors = repmat([0 0.447 0.741],length(G.Nodes.Name),1);    
+    uuid = '';
 else
     assert(sum(idx)==1);
 
@@ -65,6 +60,20 @@ end
 renderGraph(fig, [], markerSize, colors);
 
 if ~doSelectionChanged
+    % Clear current function UI tree
+    delete(handles.Process.functionUITree.Children);
+    handles.Process.currentFunctionLabel.Text = 'Current Process';
+    % Pass focus to current analysis UI tree, expanding the group that the
+    % currently selected node is in.
+    handles.Process.subtabCurrent.SelectedTab = handles.Process.currentAnalysisTab;
+    selNode = handles.Process.analysisUITree.SelectedNodes;
+    if isempty(selNode)
+        return;
+    end
+    [~, list] = getUITreeFromNode(selNode);
+    for i=1:length(list)-1
+        expand(list(i));
+    end
     return;
 end
 

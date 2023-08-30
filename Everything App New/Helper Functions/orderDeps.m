@@ -18,7 +18,10 @@ if ~exist('G','var') || isempty(G)
 end
 
 if getG
-    G = linkageToDigraph('PR');
+    containerUUID = getCurrent('Current_Analysis');
+    list = getUnorderedList(containerUUID);
+    links = loadLinks(list);
+    G = linkageToDigraph(links);
 end
 
 if ~exist('src','var') || isempty(src)

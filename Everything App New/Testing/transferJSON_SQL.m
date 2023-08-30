@@ -24,6 +24,8 @@ maps.Logsheet.Abstract.TargetTrialIDHeader = 'Target_TrialID_Header';
 maps.Logsheet.Abstract.Other = {'LogsheetVar_Params'};
 maps.Process.Abstract.MFileName = 'ExecFileName';
 maps.Process.Abstract.Level = 'Level';
+maps.Process.Abstract.InputVariablesNamesInCode = 'InputVariablesNamesInCode';
+maps.Process.Abstract.OutputVariablesNamesInCode = 'OutputVariablesNamesInCode';
 maps.Process.Instances.DateLastRan = 'Date_Last_Ran';
 maps.Process.Instances.Other = {'SpecifyTrials'};
 maps.Project.Instances.DataPath = 'Data_Path';
@@ -123,6 +125,7 @@ for classNum = 1:length(classNames)
 
     end
 
+    % Instance objects
     instanceClassFolder = [classFolder filesep 'Instances'];
 
     instListing = dir(instanceClassFolder);
@@ -130,8 +133,7 @@ for classNum = 1:length(classNames)
 
     jsonIdx = contains(names,'.json');
     names(~jsonIdx) = [];
-
-    % Instance objects
+    
     for nameNum = 1:length(names)
         name = names{nameNum};
         path = [instanceClassFolder filesep name];

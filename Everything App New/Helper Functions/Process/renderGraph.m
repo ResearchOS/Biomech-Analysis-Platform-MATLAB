@@ -2,6 +2,8 @@ function [] = renderGraph(src, G, markerSize, color, edgeID)
 
 %% PURPOSE: RENDER THE DIGRAPH IN THE UI AXES
 
+global conn;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -28,7 +30,8 @@ if ~exist('color','var') || isempty(color)
 end
 
 % The nodes that haven't had all of their variables filled in.
-unfinishedIdx = getUnfinishedFcns(G);
+% unfinishedIdx = getUnfinishedFcns(G); % FIX THIS AFTER RE-IMPLEMENTING NAMES IN CODE
+unfinishedIdx = false(size(markerSize)); % TEMPORARY
 color(unfinishedIdx,:) = repmat(rgb('bright orange'),sum(unfinishedIdx),1);
 markerSize(unfinishedIdx,:) = repmat(6,sum(unfinishedIdx),1);
 
@@ -67,13 +70,11 @@ if any(markerSize==8)
 end
 
 %% Change line style to '--' for edges (variables) that are outdated.
-notDoneIdx = [];
-for i=1:length(G.Edges.Name)
-    varStruct = loadJSON(G.Edges.Name{i});
-    if varStruct.OutOfDate
-        notDoneIdx = [notDoneIdx; i];
-    end
-end
+sqlquery = ['SELECT UUID, OutOfDate FROM Variables_Instances'];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
+outOfDateIdx = t.OutOfDate==1;
+notDoneIdx = find(ismember(G.Edges.Name,t.UUID(outOfDateIdx)));
 highlight(h, 'Edges', notDoneIdx, 'LineStyle','--');
 
 % If an edge is selected (as in, a variable selected in the all variables list).

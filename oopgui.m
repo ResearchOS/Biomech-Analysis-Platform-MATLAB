@@ -9,13 +9,11 @@ if ~isempty(conn) && isa(conn,'sqlite')
     end
     clear global conn;
 end
-figs = groot().Children;
-if ~isempty(figs)
-    figIdx = ismember({figs.Name},'pgui');
-    fig = figs(figIdx);
-    close(fig); clear fig;
-end
-isDel = false;
+fig = findall(0,'Name','pgui'); 
+close(fig); 
+clear fig;
+
+isDel = true;
 if isDel
     delete('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Databases/biomechOS.db');
 end
@@ -59,6 +57,7 @@ DBSetup(dbFile);
 if isDel
     transferJSON_SQL;
     transferLinks_SQL;
+    % transferVarsToNamesInCode;
 end
 
 %% Load the GUI object settings (i.e. selected nodes in UI trees, checkbox selections, projects to filter, etc.)

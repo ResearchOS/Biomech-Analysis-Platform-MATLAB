@@ -16,8 +16,11 @@ uuids = {tmp.UUID};
 tablename = getTableName(class, true);
 sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
 t = fetch(conn,sqlquery);
-zIdx = ismember(t.UUID,'ZZZZZZ_ZZZ');
-t(zIdx,:) = [];
+t = table2MyStruct(t);
+
+if isempty(t.UUID)
+    return; % Nothing in the table!
+end
 
 instUUIDs = cellstr(t.UUID);
 instNames = cellstr(t.Name);

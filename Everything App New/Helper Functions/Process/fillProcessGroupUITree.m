@@ -62,8 +62,13 @@ obj=get(fig,'CurrentObject');
 buttonDownFcn = true;
 if ~isequal(class(obj),'matlab.ui.control.UIAxes')
     if ~isempty(prUUID)
-        buttonDownFcn = false;
-        digraphAxesButtonDownFcn(src, prUUID);
+        % Get the stack to see if the digraphAxesButtonDownFcn is already
+        % on the call stack
+        st = dbstack();
+        if ~any(contains({st.name},'digraphAxesButtonDownFcn'))
+            buttonDownFcn = false;
+            digraphAxesButtonDownFcn(src, prUUID);
+        end
     end
 end
 

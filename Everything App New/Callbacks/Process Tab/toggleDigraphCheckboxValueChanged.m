@@ -10,7 +10,6 @@ val = handles.Process.toggleDigraphCheckbox.Value;
 %% Change visibility
 % Change digraph visibility
 handles.Process.digraphAxes.Visible = val;
-% handles.Process.switchDigraphModeDropDown.Visible = val;
 handles.Process.prettyVarsCheckbox.Visible = val;
 
 % Change queue & specify trials visibility
@@ -41,14 +40,9 @@ if ~val
     return; % Don't fill in the digraph if it's not visible!
 end
 
-% [Gall, nodesAll, edgesAll] = linkageToDigraph('all', fig); % A graph containing all analyses. Need to find the subset of functions in the current analysis.
-G = linkageToDigraph('PR');
-% nodesAll = nodes; % When there's only one analysis.
-% Current_Analysis = getCurrent('Current_Analysis');
-% delFcns = getSubset(nodesAll, Current_Analysis); % The graph of just the functions (nodes) & variables (edges) for just this analysis.
-% G = rmnode(G,delFcns);
-% 
-% delIdx = ismember(nodes,delFcns);
-% edges(delIdx) = [];
-% nodes(delIdx,:) = [];
+containerUUID = getCurrent('Current_Analysis');
+list = getUnorderedList(containerUUID);
+links = loadLinks(list);
+G = linkageToDigraph(links);
+
 renderGraph(fig, G); % Show the graph.

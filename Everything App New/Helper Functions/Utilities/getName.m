@@ -10,11 +10,12 @@ if exist('isInstance','var')~=1
     isInstance = true;
 end
 
+makeChar = false;
 if ~iscell(uuids)
+    makeChar = true;
     uuids = {uuids};
 end
 
-names = {};
 types = deText(uuids);
 uniqueTypes = unique(types,'stable');
 
@@ -37,4 +38,8 @@ for i=1:length(uniqueTypes)
             names(j,1) = name;
         end
     end
+end
+
+if makeChar
+    names = char(names);
 end

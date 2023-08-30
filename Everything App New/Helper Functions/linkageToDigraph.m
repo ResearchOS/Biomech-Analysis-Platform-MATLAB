@@ -1,4 +1,4 @@
-function [G] = linkageToDigraph(types, links)
+function [G] = linkageToDigraph(links)
 
 %% PURPOSE: CONVERT THE LINKAGE MATRIX TO A DIGRAPH (FUNCTIONS ONLY) SO THAT I CAN CHECK DEPENDENCIES.
 % types: Indicates what types of objects to return in the digraph.
@@ -13,7 +13,9 @@ function [G] = linkageToDigraph(types, links)
         % PrettyName: The human-readable name of the node (non-unique).
 
 if exist('links','var')~=1
-    links = loadLinks();
+    containerUUID = getCurrent('Current_Analysis');
+    list = getUnorderedList(containerUUID);
+    links = loadLinks(list);
 end
 
 % Remove everything except for functions and variables.
@@ -30,7 +32,7 @@ end
 
 % Exclude rows from the linkage matrix with only an output or input
 % variable
-varsIdx = contains(links(:,1),abbrevs1) & contains(links(:,2),abbrevs2) & contains(links(:,3),abbrevs1);
+varsIdx = (contains(links(:,1),abbrevs1) & contains(links(:,3),abbrevs1)) | contains(links(:,2),abbrevs2);
 
 s = links(varsIdx,1); % The UUID of the PR that the variable is an output of.
 t = links(varsIdx,3); % The UUID of the PR that the variable is an input to.

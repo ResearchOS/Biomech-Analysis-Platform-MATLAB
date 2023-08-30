@@ -4,7 +4,6 @@ function []=fillAnalysisUITree(src)
 % 1. Look in the AN_PR & AN_PG tables for all objects in the current
 % analysis.
 % 2. Get all the PR in each PG, preserving PG_PR relationships.
-tic;
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -20,4 +19,3 @@ fillAN_PG_UITree(uiTree, handles, orderedStruct);
 
 handles.Process.subtabCurrent.SelectedTab = handles.Process.currentAnalysisTab;
 drawnow;
-toc;

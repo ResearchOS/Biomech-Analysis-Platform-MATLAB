@@ -9,8 +9,8 @@ end
 assert(ismember(upper(type),{'INSERT','UPDATE'}));
 
 numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows'};
-jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','NamesInCode',...
-    'Logsheet_Parameters','Data_Parameters','HardCodedValue','ST_ID'};
+jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params',...
+    'Logsheet_Parameters','Data_Parameters','HardCodedValue','ST_ID','InputVariablesNamesInCode','OutputVariablesNamesInCode'};
 dateCols = {'Date_Created','Date_Modified','Date_Last_Ran'};
 
 varNames = fieldnames(struct);

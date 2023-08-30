@@ -17,8 +17,8 @@ end
 
 struct = loadJSON(uuid);
 
-if ~isfield(struct,'MFileName') || isempty(struct.MFileName)
-    mkNewMFile(struct, struct.Text);
+if ~isfield(struct,'ExecFileName') || isempty(struct.ExecFileName)
+    mkNewMFile(struct, struct.Name);
     return;
 end
 
@@ -29,7 +29,7 @@ end
 function [fileName]=mkNewMFile(struct, fileName)
 
 if nargin==1
-    fileName = struct.MFileName;
+    fileName = struct.ExecFileName;
 end
 
 oldDir=cd([getCommonPath filesep 'Code']);
@@ -51,11 +51,9 @@ fileName=fileName{1};
 [type] = deText(struct.UUID);
 filePath = createMFile(fileName, className2Abbrev(type, true), struct.Level);
 
-% fileName = struct.MFileName;
-
 %% Assign the file to the current struct.
-struct.MFileName = fileName;
-writeJSON(getJSONPath(struct), struct);
+struct.ExecFileName = fileName;
+writeJSON(struct);
 edit(filePath);
 
 end

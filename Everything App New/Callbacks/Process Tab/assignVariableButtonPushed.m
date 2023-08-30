@@ -89,7 +89,7 @@ if isOut
 else
     links = [links; {allVarUUID, currFcnUUID}];
 end
-G = linkageToDigraph('PR', links); % Convert the updated linkage matrix to digraph.
+G = linkageToDigraph(links); % Convert the updated linkage matrix to digraph.
 [~,isCyclic] = orderDeps(G, 'full'); % Check if the resulting graph is cyclic or not.
 if isCyclic
     disp('Cannot add this variable here, as it results in a cyclic graph!');

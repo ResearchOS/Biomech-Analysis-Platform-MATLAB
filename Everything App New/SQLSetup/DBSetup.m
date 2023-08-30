@@ -40,6 +40,9 @@ end
 
 %% Object tables
 % Create the abstract & instance tables.
+% NOTE: ALL COLUMNS MUST HAVE A DEFAULT VALUE THAT IS NOT A NULL VALUE
+% BECAUSE MATLAB CANNOT HANDLE NULL VALUES FROM SQLITE USING "SQLITE" COMMAND.
+% 'NULL' STRING VALUES ARE USED INSTEAD.
 createAbs = strcat(['CREATE TABLE XXX_Abstract (UUID TEXT PRIMARY KEY NOT NULL UNIQUE DEFAULT [ZZZZZZ], ',...
     'Date_Created     TEXT    NOT NULL DEFAULT [NULL], ',...
     'Date_Modified    TEXT    NOT NULL DEFAULT [NULL], ',...
@@ -62,11 +65,11 @@ createInst = ['CREATE TABLE XXX_Instances (UUID TEXT PRIMARY KEY NOT NULL UNIQUE
 
 % Create a first row that means nothing because MATLAB can't have a NULL
 % value in the first row.
-date = char(datetime('now'));
-defaultAbsInit = ['INSERT INTO XXX_Abstract (UUID, Date_Created, Date_Modified, Name, Created_By, Last_Modified_By, Description, OutOfDate)',...
-    'VALUES (''ZZZZZZ'', ''' date ''', ''' date ''', ''INIT'', ''INIT'', ''INIT'', ''INIT'', 0);'];
-defaultInstInit = ['INSERT INTO XXX_Instances (UUID, Date_Created, Date_Modified, Name, Created_By, Last_Modified_By, Description, OutOfDate, Abstract_UUID)',...
-    'VALUES (''ZZZZZZ_ZZZ'', ''' date ''', ''' date ''', ''INIT'', ''INIT'', ''INIT'', ''INIT'', 0, ''ZZZZZZ'');'];
+% date = char(datetime('now'));
+% defaultAbsInit = ['INSERT INTO XXX_Abstract (UUID, Date_Created, Date_Modified, Name, Created_By, Last_Modified_By, Description, OutOfDate)',...
+%     'VALUES (''ZZZZZZ'', ''' date ''', ''' date ''', ''INIT'', ''INIT'', ''INIT'', ''INIT'', 0);'];
+% defaultInstInit = ['INSERT INTO XXX_Instances (UUID, Date_Created, Date_Modified, Name, Created_By, Last_Modified_By, Description, OutOfDate, Abstract_UUID)',...
+%     'VALUES (''ZZZZZZ_ZZZ'', ''' date ''', ''' date ''', ''INIT'', ''INIT'', ''INIT'', ''INIT'', 0, ''ZZZZZZ'');'];
 
 objTableNames = {'Projects','Analyses','ProcessGroups','Process','Variables','Logsheets','SpecifyTrials'};
 modifiedNames = {};
@@ -77,8 +80,8 @@ for i=1:length(objTableNames)
     if ~any(contains(tableNames,tableName) & contains(tableNames,'Abstract'))
         createAbsCurr = strrep(createAbs, 'XXX', tableName);
         execute(conn, createAbsCurr);
-        defaultAbsInitCurr = strrep(defaultAbsInit, 'XXX', tableName);
-        execute(conn, defaultAbsInitCurr);
+        % defaultAbsInitCurr = strrep(defaultAbsInit, 'XXX', tableName);
+        % execute(conn, defaultAbsInitCurr);
         modifiedNames = [modifiedNames; {[tableName '_Abstract']}];
     end
 
@@ -86,13 +89,13 @@ for i=1:length(objTableNames)
     if ~any(contains(tableNames,tableName) & contains(tableNames,'Instance'))
         createInstCurr = strrep(createInst, 'XXX', tableName);
         execute(conn, createInstCurr);
-        defaultInstInitCurr = strrep(defaultInstInit, 'XXX', tableName);
-        execute(conn, defaultInstInitCurr);
+        % defaultInstInitCurr = strrep(defaultInstInit, 'XXX', tableName);
+        % execute(conn, defaultInstInitCurr);
         modifiedNames = [modifiedNames; {[tableName '_Instances']}];
     end
 end
 
-% Add custom columns to each table.
+%% Add custom columns to each object table.
 % Projects_Instances
 if ismember('Projects_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Projects_Instances ADD Data_Path TEXT NOT NULL DEFAULT [NULL]'];
@@ -105,20 +108,17 @@ if ismember('Projects_Instances',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Logsheet TEXT REFERENCES Logsheets_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ]'];
     execute(conn, sqlquery);  
-    % sqlquery = ['INSERT INTO TABLE Projects_Instances (Data_Path, Project_Path, Process_Queue, Current_Logsheet, Current_Analysis) VALUES (''NULL'', ''NULL'', ''NULL'', ''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
-    % sqlquery = ['UPDATE Projects_Instances SET Data_Path = ''NULL'', Project_Path = ''NULL'', Process_Queue = ''NULL'', Current_Analysis = ''ZZZZZZ_ZZZ'', Current_Logsheet = ''ZZZZZZ_ZZZ'';'];
-    % execute(conn, sqlquery);
 end
 
 if ismember('Process_Abstract',modifiedNames)
-    sqlquery = ['ALTER TABLE Process_Abstract ADD NamesInCode TEXT NOT NULL Default [NULL]'];
+    sqlquery = ['ALTER TABLE Process_Abstract ADD InputVariablesNamesInCode TEXT NOT NULL Default [NULL]'];
+    execute(conn, sqlquery);
+    sqlquery = ['ALTER TABLE Process_Abstract ADD OutputVariablesNamesInCode TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Abstract ADD Level TEXT NOT NULL DEFAULT [''T'']'];
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Abstract ADD ExecFileName TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    % sqlquery = 'UPDATE Process_Abstract SET NamesInCode = ''NULL'', ExecFileName = ''NULL'';';
-    % execute(conn, sqlquery);
 end
 
 if ismember('Process_Instances',modifiedNames)
@@ -126,8 +126,6 @@ if ismember('Process_Instances',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Instances ADD Date_Last_Ran TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    % sqlquery = ['UPDATE Process_Instances SET SpecifyTrials = ''NULL'', Date_Last_Ran = ''NULL'';'];
-    % execute(conn, sqlquery);
 end
 
 if ismember('Variables_Abstract',modifiedNames)
@@ -147,8 +145,6 @@ if ismember('SpecifyTrials_Abstract',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE SpecifyTrials_Abstract ADD Data_Parameters TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    % sqlquery = ['UPDATE SpecifyTrials_Abstract SET Logsheet_Parameters = ''NULL'', Data_Parameters = ''NULL'';'];
-    % execute(conn, sqlquery);
 end
 
 if ismember('Logsheets_Abstract',modifiedNames)
@@ -162,15 +158,11 @@ if ismember('Logsheets_Abstract',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Logsheets_Abstract ADD LogsheetVar_Params TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    % sqlquery = ['UPDATE Logsheets_Abstract SET Logsheet_Path = ''NULL'', Subject_Codename_Header = ''NULL'', Target_TrialID_Header = ''NULL'', LogsheetVar_Params = ''NULL'';'];        
-    % execute(conn, sqlquery);
 end
 
 if ismember('Analyses_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Analyses_Instances ADD Tags TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    % sqlquery = ['UPDATE Analyses_Instances SET Tags = ''NULL'';'];
-    % execute(conn, sqlquery);
 end
 
 
@@ -180,7 +172,7 @@ createJoinTable = ['CREATE TABLE XXX_YYY (',...
     'BBB_ID TEXT REFERENCES DDD_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ], ',...
     'PRIMARY KEY (AAA_ID, BBB_ID)',...
     ');'];
-initJoinTable = ['INSERT INTO XXX (AAA_ID, BBB_ID) VALUES (''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
+% initJoinTable = ['INSERT INTO XXX (AAA_ID, BBB_ID) VALUES (''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
 
 objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},{'PR','VR'},{'VR','PR'},{'PJ','LG'}};
 modifiedNames = {};
@@ -224,27 +216,27 @@ for i=1:length(objAbbrevs)
 
     execute(conn, createJoinTableCurr);
 
-    initJoinTableCurr = strrep(initJoinTable,'XXX',name);
-    initJoinTableCurr = strrep(initJoinTableCurr,'AAA',newAbbrevs{1});
-    initJoinTableCurr = strrep(initJoinTableCurr,'BBB',newAbbrevs{2});
-
-    execute(conn, initJoinTableCurr);
+    % initJoinTableCurr = strrep(initJoinTable,'XXX',name);
+    % initJoinTableCurr = strrep(initJoinTableCurr,'AAA',newAbbrevs{1});
+    % initJoinTableCurr = strrep(initJoinTableCurr,'BBB',newAbbrevs{2});
+    % 
+    % execute(conn, initJoinTableCurr);
 
 end
 
 %% Custom Join table columns
+% Input variables.
 if ismember('VR_PR',modifiedNames)
     sqlquery = ['ALTER TABLE VR_PR ADD NameInCode TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    % sqlquery = ['UPDATE VR_PR SET NameInCode = ''NULL'';'];
-    % execute(conn, sqlquery);
+    sqlquery = ['ALTER TABLE VR_PR ADD Subvariable TEXT NOT NULL Default [NULL]'];
+    execute(conn, sqlquery);
 end
 
+% Output variables.
 if ismember('PR_VR',modifiedNames)
     sqlquery = ['ALTER TABLE PR_VR ADD NameInCode TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    % sqlquery = ['UPDATE PR_VR SET NameInCode = ''NULL'';'];
-    % execute(conn, sqlquery);
 end
 
 %% Settings table
@@ -282,7 +274,7 @@ if ~ismember('Settings',tableNames)
     sqlquery = 'SELECT COUNT(UUID) FROM Projects_Instances;';
     numRows = fetch(conn, sqlquery);
     numRows = double(numRows.("COUNT(UUID)"));
-    if numRows == 1
+    if numRows == 0
         projStruct = createNewObject(true, 'Project', 'Default','','', true);
         uuid = projStruct.UUID;
     else % Projects instances already exists, but the Settings table is being rebuilt for some reason.

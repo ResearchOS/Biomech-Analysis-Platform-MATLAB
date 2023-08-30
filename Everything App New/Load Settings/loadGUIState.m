@@ -62,11 +62,9 @@ end
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Process tab
 queue = getCurrent('Process_Queue');
+queueNames = getName(queue);
 for i=1:length(queue)
-    struct = loadJSON(queue{i});
-    uuid = struct.UUID;
-    node = uitreenode(handles.Process.queueUITree,'Text',[struct.Text ' ' uuid]);
-    node.NodeData.UUID = uuid;
+    addNewNode(handles.Process.queueUITree, queue{i}, queueNames{i});
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

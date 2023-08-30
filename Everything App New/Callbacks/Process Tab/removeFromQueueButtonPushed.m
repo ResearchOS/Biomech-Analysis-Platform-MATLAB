@@ -8,10 +8,12 @@ handles=getappdata(fig,'handles');
 checkedNodes=handles.Process.queueUITree.CheckedNodes;
 
 if isempty(checkedNodes)
-    checkedNodes=handles.Process.queueUITree.SelectedNodes;
-    if isempty(checkedNodes)
+    remNodes=handles.Process.queueUITree.SelectedNodes;
+    if isempty(remNodes)
         return;
     end
+else
+    remNodes = checkedNodes;
 end
 
 queue = getCurrent('Process_Queue');
@@ -19,7 +21,7 @@ if isempty(queue)
     return; % This should never really happen here.
 end
 
-tmp = [checkedNodes.NodeData];
+tmp = [remNodes.NodeData];
 uuids={tmp.UUID}';
 
 idx = ismember(queue,uuids);
@@ -28,4 +30,4 @@ queue(idx) = [];
 
 setCurrent(queue, 'Process_Queue');
 
-delete(checkedNodes);
+delete(remNodes);

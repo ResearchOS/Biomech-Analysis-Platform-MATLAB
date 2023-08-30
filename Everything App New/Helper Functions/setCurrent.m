@@ -32,10 +32,11 @@ if ismember(varName, projectSettingsVars)
         currVal = getCurrent(varName);
         currVal.(computerID) = var;
         currVal = jsonencode(currVal);
+    elseif ismember(varName,{'Process_Queue'})
+        currVal = jsonencode(var);
     else
         currVal = var;
     end    
     sqlquery = ['UPDATE Projects_Instances SET ' varName ' = ''' currVal ''' WHERE UUID = ''' projectName ''''];
-    execute(conn, sqlquery);
-    % sqlupdate(conn, 'Projects_Instances', t, rf);
+    execute(conn, sqlquery);    
 end

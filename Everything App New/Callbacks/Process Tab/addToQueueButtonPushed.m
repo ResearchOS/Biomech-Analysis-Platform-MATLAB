@@ -1,6 +1,13 @@
 function []=addToQueueButtonPushed(src,event)
 
 %% PURPOSE: ADD THE CURRENT PROCESSING FUNCTION OR GROUP TO QUEUE
+% 1. Get the existing queue.
+% 2. Add the new (selected or checked) PR to the queue.
+%   - If a PG is selected and nothing is checked, add its PR to the queue.
+% 3. Get the highest index of the PR in the queue.
+% 4. Check that all PR before it are not out of date.
+% 5. If they are out of date, add them to the queue too.
+% 6. Uncheck all of the nodes being added.
 
 global conn;
 
@@ -11,32 +18,34 @@ handles=getappdata(fig,'handles');
 checkedNodes=handles.Process.analysisUITree.CheckedNodes;
 
 if isempty(checkedNodes)
-    return;
-end
-
-%% Uncheck all the nodes that are being added.
-delIdx=[];
-for i=1:length(checkedNodes)
-    if ~isempty(checkedNodes(i).Children)
-        delIdx=[delIdx; i];
+    addNodes = handles.Process.analysisUITree.SelectedNodes;
+    if isempty(addNodes)
+        return;
     end
+else
+    addNodes = checkedNodes;
 end
 
-checkedNodes(delIdx)=[];
-
+%% 1. Get the existing queue
 queue = getCurrent('Process_Queue');
 if isempty(queue)
     queue = '';
 end
 
-tmp = [checkedNodes.NodeData];
+%% 2. Add new (selected or checked) PR to the queue
+tmp = [addNodes.NodeData];
 uuids={tmp.UUID}'; % The process functions to add (checked in the process group list)
-texts = {checkedNodes.Text};
+
+% If a PG is selected and nothing is checked, add its contained PR to the queue.
+if isempty(checkedNodes) && contains(uuids,'PG') % Assumes that uuid's is length 1 because only one selection at a time is possible
+    assert(length(uuids)==1);
+    uuid_Containers = getUnorderedList(uuids{1});
+    uuids = uuid_Containers(:,1);    
+end
 
 % Remove everything that's not a process function (like process groups).
 processIdx = contains(uuids,'PR');
 uuids(~processIdx) = [];
-texts(~processIdx) = [];
 
 inQueueIdx=ismember(uuids,queue);
 
@@ -48,74 +57,44 @@ end
 
 % Remove the UUID's that are already in the queue.
 uuids = uuids(~inQueueIdx);
-texts = texts(~inQueueIdx);
 
-%% Check whether all pre-requisite variables are up to date.
-% 1. Get the run list. Make sure that all process functions before this are
-% up to date.
+%% 3. Get the highest index in the run list of the PR in the queue
 Current_Analysis = getCurrent('Current_Analysis');
 runList = getRunList(Current_Analysis);
+idx = find(ismember(runList(:,1),uuids));
+maxIdx = max(idx);
 
-% 2. Get the input variables. Make sure that all of the input variables are
-% up to date.
-for i=1:length(uuids)
-    uuid = uuids{i};
-    listIdx = find(ismember(runList, uuid)==1);
-    tmpList = runList(1:listIdx(end));
-    sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
-    if any(t.OutOfDate==0)
-        disp('Dependencies are out of date! Not adding to queue.');
-    end
+%% 4. Check that all dependencies for all PR are up to date. If not, add them to the queue.
+sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
+outOfDateIdx = t.OutOfDate==1;
+outOfDateUUID = t.UUID(outOfDateIdx);
+runListCurr = runList(1:maxIdx,1);
 
-    [inputVars, outOfDate] = getInputVars(uuid);
-    if any(outOfDate==0)
-        disp('Input variable(s) are out of date! Not adding to queue.');
+% Obviously it doesn't matter if the PR about to be added to the queue are out of date.
+outOfDateUUIDIdxInRunList = ismember(runListCurr(1:maxIdx),outOfDateUUID) & ~ismember(runListCurr(1:maxIdx),uuids);
+outdatedUUIDsInRunList = runListCurr(outOfDateUUIDIdxInRunList);
+uuids = [outdatedUUIDsInRunList; uuids];
+
+orderedUUIDsIdx = ismember(runListCurr, uuids); % In case some out of date PR is between the ones to add.
+addUUIDs = runListCurr(orderedUUIDsIdx);
+
+
+%% 6. Uncheck all the nodes that are being added.
+delIdx=[];
+for i=1:length(checkedNodes)
+    if ~isempty(checkedNodes(i).Children)
+        delIdx=[delIdx; i];
     end
 end
+checkedNodes(delIdx)=[];
 
-
-
-% outDated = false;
-% for i=1:length(uuids)
-%     varNames = getVarNamesArray(loadJSON(uuids{i}),'InputVariables');
-%     for j=1:length(varNames)
-%         varStruct = loadJSON(varNames{j});
-%         if varStruct.OutOfDate
-%             outDated = true;
-% %             disp(['Variables out of date! Cannot add Process function to queue']);
-%             break;
-% %             return;
-%         end
-%     end
-%     if outDated
-%         break;
-%     end
-% end
-% 
-% if outDated && length(uuids)>1
-%     % Not implemented yet
-%     return;
-% elseif outDated && length(uuids)==1
-%     list = orderDeps(getappdata(fig,'digraph'), '', uuids{1});
-%     for i=length(list):-1:1
-%         struct = loadJSON(list{i});
-%         type = deText(struct.UUID);
-%         if struct.OutOfDate && isequal(type,'PR')
-%             uuids = [{struct.UUID}; uuids];
-%             texts = [{struct.Text}; texts];
-%         end
-%     end
-% end
-% 
-% uuids = unique(uuids,'stable');
-% texts = unique(texts,'stable');
-
-%% Append UUIDs to queue, and add new nodes.
-queue=[queue; uuids];
+%% Append UUIDs to queue, and add new nodes to queue UI tree
+queue=[queue; addUUIDs];
+texts = getName(addUUIDs);
 setCurrent(queue, 'Process_Queue');
 
-for i=1:length(uuids)    
-    addNewNode(handles.Process.queueUITree, uuids{i}, texts{i});
+for i=1:length(addUUIDs)    
+    addNewNode(handles.Process.queueUITree, addUUIDs{i}, texts{i});
 end

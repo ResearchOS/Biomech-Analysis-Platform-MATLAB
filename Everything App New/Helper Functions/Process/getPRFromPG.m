@@ -3,7 +3,7 @@ function [allPR] = getPRFromPG(pg, allPR)
 %% PURPOSE: GIVEN ONE OR MORE PROCESSING GROUPS, RETURN AN UNORDERED LIST OF ALL THE PROCESSING FUNCTIONS IN THOSE GROUPS.
 % Inputs:
 %   pg: List of processing groups
-%   prevAllPR: List of processing functions
+%   allPR: List of processing functions (2nd input optional)
 
 % Outputs:
 %   pr: List of processing functions

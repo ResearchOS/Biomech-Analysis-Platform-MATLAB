@@ -3,9 +3,12 @@ function []=assignGroupButtonPushed(src)
 %% PURPOSE: ASSIGN PROCESSING GROUP TO THE CURRENT ANALYSIS OR GROUP, DEPENDING WHICH TAB I AM ON.
 % What do I need to assign the group?
 % 1. What container is it being assigned to?
-%   - Analysis, or Group. Depends on which current UI tree tab is selected.
-%       - Group: Group UI tree. If no group is selected in analysis UI tree, can't be added.
-%       - Analysis: Analysis UI tree
+%   - Analysis, or Group. Depends on:
+%       - Which current UI tree tab is selected.
+%           - Group: Put the group into the currently selected group. If no
+%           group returned from currentProcessGroup, abort.
+%           - Analysis: (maybe) ask the user if they want to
+%       add it to the group or the analysis.
 
 fig=ancestor(src,'figure','toplevel'); 
 handles=getappdata(fig,'handles');

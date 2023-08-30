@@ -5,11 +5,4 @@ function []=analysisUITreeDoubleClickedFcn(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-if isequal(class(src),'matlab.ui.container.CheckBoxTree')
-    return;
-end
-
-handles.Process.analysisUITree.SelectedNodes = src;
-analysisUITreeSelectionChanged(src); % Make sure that the 
-
-disp('We got one!');
+handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;

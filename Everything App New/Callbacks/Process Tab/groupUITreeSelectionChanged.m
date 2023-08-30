@@ -33,6 +33,9 @@ fillCurrentFunctionUITree(fig);
 
 %% Select the corresponding processing node in the graph.
 obj=get(fig,'CurrentObject');
+if nargin==1
+    doButtonDownFcn = true;
+end
 if ~isequal(class(obj),'matlab.ui.control.UIAxes') && doButtonDownFcn
     digraphAxesButtonDownFcn(src, uuid);
 end

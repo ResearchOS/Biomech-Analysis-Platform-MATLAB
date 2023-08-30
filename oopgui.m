@@ -9,21 +9,23 @@ if ~isempty(conn) && isa(conn,'sqlite')
     end
     clear global conn;
 end
-fig = findall(0,'Name','pgui'); 
-close(fig); 
-clear fig;
 
-isDel = true;
+isDel = false;
 if isDel
     delete('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Databases/biomechOS.db');
 end
 tic;
 
 %% Ensure that there's max one figure open
-a=evalin('base','whos;');
-if exist('fig','var')==1
-    beep; disp('GUI already open, two simultaneous PGUI windows is not supported');
-    return;
+isTest = true;
+fig = findall(0,'Name','pgui'); 
+if ~isempty(fig)
+    if ~isTest
+        beep; disp('GUI already open, two simultaneous PGUI windows is not supported');
+        return;
+    else
+        close(fig); clear fig;
+    end
 end
 
 clearAllMemoizedCaches; % Clears memoized caches. Using these caches greatly improves startup time.

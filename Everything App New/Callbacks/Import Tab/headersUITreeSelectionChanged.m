@@ -14,7 +14,7 @@ end
 uuid = selNode.NodeData.UUID;
 struct=loadJSON(uuid);
 
-headers={struct.LogsheetVar_Params.Headers};
+headers={struct.LogsheetVar_Params.Header};
 
 header=handles.Import.headersUITree.SelectedNodes.Text;
 

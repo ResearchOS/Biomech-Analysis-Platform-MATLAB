@@ -78,7 +78,8 @@ if ~doSelectionChanged
 end
 
 % Change the selection in the current UI trees
-selectNode(handles.Process.analysisUITree, uuid);
+node = selectNode(handles.Process.analysisUITree, uuid);
+scroll(handles.Process.analysisUITree, node);
 analysisUITreeSelectionChanged(fig, uuid);
 
 handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;

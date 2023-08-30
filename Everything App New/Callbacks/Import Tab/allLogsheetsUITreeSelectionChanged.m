@@ -18,8 +18,11 @@ computerID=getComputerID();
 
 if ~isfield(struct.Logsheet_Path,computerID)
     tmp = createNewObject(false, 'Logsheet', 'Default', '', '', false);
+    if ~isstruct(struct.Logsheet_Path)
+        struct = rmfield(struct,'Logsheet_Path');  
+    end
     struct.Logsheet_Path.(computerID) = tmp.Logsheet_Path.(computerID);
-    writeJSON(getJSONPath(struct), struct);
+    writeJSON(struct);
 end
 
 % Set the logsheet path field.
@@ -48,8 +51,8 @@ else
     handles.Import.subjectCodenameDropDown.Items={''};
     handles.Import.targetTrialIDDropDown.Items={''};
 end
-if ismember(struct.SubjectCodenameHeader,headers)
-    value=struct.SubjectCodenameHeader;
+if ismember(struct.Subject_Codename_Header,headers)
+    value=struct.Subject_Codename_Header;
 else
     handles.Import.subjectCodenameDropDown.Items=[{''} handles.Import.subjectCodenameDropDown.Items];
     value='';    

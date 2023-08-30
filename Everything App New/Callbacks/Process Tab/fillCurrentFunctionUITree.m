@@ -35,7 +35,10 @@ handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
 abstractUUID = genUUID(className2Abbrev(abbrev,true),abstractID);
 abstractStruct=loadJSON(abstractUUID);
 
-namesInCode = abstractStruct.NamesInCode;
+% Test here
+return;
+
+namesInCode = abstractStruct.InputVariablesNamesInCode;
 if isequal(namesInCode,'NULL')
     return;
 end

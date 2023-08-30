@@ -1,13 +1,8 @@
 function []=addToQueueButtonPushed(src,event)
 
 %% PURPOSE: ADD THE CURRENT PROCESSING FUNCTION OR GROUP TO QUEUE
-% 1. Get the existing queue.
-% 2. Add the new (selected or checked) PR to the queue.
-%   - If a PG is selected and nothing is checked, add its PR to the queue.
-% 3. Get the highest index of the PR in the queue.
-% 4. Check that all PR before it are not out of date.
-% 5. If they are out of date, add them to the queue too.
-% 6. Uncheck all of the nodes being added.
+% Uses the reachability matrix using transclosure to determine
+% dependencies.
 
 global conn;
 
@@ -58,43 +53,49 @@ end
 % Remove the UUID's that are already in the queue.
 uuids = uuids(~inQueueIdx);
 
-%% 3. Get the highest index in the run list of the PR in the queue
-Current_Analysis = getCurrent('Current_Analysis');
-runList = getRunList(Current_Analysis);
-idx = find(ismember(runList(:,1),uuids));
-maxIdx = max(idx);
+containerUUID = getCurrent('Current_Analysis');
+G = getappdata(fig,'digraph');
+if isempty(G)    
+    list = getUnorderedList(containerUUID);
+    links = loadLinks(list);
+    G = linkageToDigraph(links);
+    setappdata(fig,'digraph',G);
+end
+% Get the reachability matrix for upstream dependencies (where all nodes
+% can reach)
+[R] = getDeps(G,'up'); % 'up' because I want to know the PR that the current PR's rely on that are not up to date.
 
-%% 4. Check that all dependencies for all PR are up to date. If not, add them to the queue.
+% Get the out of date values for all PR instances.
 sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
 outOfDateIdx = t.OutOfDate==1;
 outOfDateUUID = t.UUID(outOfDateIdx);
-runListCurr = runList(1:maxIdx,1);
 
-% Obviously it doesn't matter if the PR about to be added to the queue are out of date.
-outOfDateUUIDIdxInRunList = ismember(runListCurr(1:maxIdx),outOfDateUUID) & ~ismember(runListCurr(1:maxIdx),uuids);
-outdatedUUIDsInRunList = runListCurr(outOfDateUUIDIdxInRunList);
-uuids = [outdatedUUIDsInRunList; uuids];
+idx = ismember(G.Nodes.Name,uuids); % Get UUIDs index in digraph.
 
-orderedUUIDsIdx = ismember(runListCurr, uuids); % In case some out of date PR is between the ones to add.
-addUUIDs = runListCurr(orderedUUIDsIdx);
+% Get the reachable nodes.
+reachableIdx = any(R(idx,:),1);
+reachableUUIDs = G.Nodes.Name(reachableIdx);
 
+outOfDateDepIdx = ismember(outOfDateUUID, reachableUUIDs); % Find the out of date UUID's in the dependencies list.
+
+outOfDateDeps = outOfDateUUID(outOfDateDepIdx); % Get the out of date dependencies
+
+allUUIDs = [outOfDateDeps; uuids]; % Append the out of date dependencies to the ones specified to add.
+
+runList = getRunList(containerUUID, G);
+orderedUUIDsIdx = ismember(runList(:,1), allUUIDs); % In case some out of date PR is between the ones to add.
+addUUIDs = runList(orderedUUIDsIdx,1);
 
 %% 6. Uncheck all the nodes that are being added.
-delIdx=[];
-for i=1:length(checkedNodes)
-    if ~isempty(checkedNodes(i).Children)
-        delIdx=[delIdx; i];
-    end
-end
-checkedNodes(delIdx)=[];
+handles.Process.analysisUITree.CheckedNodes = [];
 
 %% Append UUIDs to queue, and add new nodes to queue UI tree
 queue=[queue; addUUIDs];
-texts = getName(addUUIDs);
+names = getName(addUUIDs);
 setCurrent(queue, 'Process_Queue');
 
 for i=1:length(addUUIDs)    
-    addNewNode(handles.Process.queueUITree, addUUIDs{i}, texts{i});
+    addNewNode(handles.Process.queueUITree, addUUIDs{i}, names{i});
 end

@@ -5,6 +5,8 @@ function []=assignVariableButtonPushed(src,allVarUUID)
 % motherNode is the "grouping" class object, and daughterNode is the
 % "grouped" class object.
 
+%% NOTE: built-in isdag(G) to check if there are cycles in the graph! May be faster than getting run list to do this?
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 

@@ -11,8 +11,8 @@ if isempty(selNode)
     return;
 end
 
-list = getUITreeFromNode(selNode);
-for i=1:length(list)
+[~,list] = getUITreeFromNode(selNode);
+for i=1:length(list)-1
     uuid = list(i).NodeData.UUID;
     if contains(uuid,'PG')
         Current_ProcessGroup_Name = uuid;

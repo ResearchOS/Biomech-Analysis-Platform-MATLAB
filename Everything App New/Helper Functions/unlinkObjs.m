@@ -2,7 +2,9 @@ function [] = unlinkObjs(leftObjs, rightObjs)
 
 %% PURPOSE: UNLINK OBJECTS IN THE LINKAGE MATRIX.
 
-slash = filesep;
+allTypes = {'PJ','AN','PG','PR','VR','LG','ST'};
+
+global conn;
 
 if ischar(leftObjs)
     leftObjs = {leftObjs};
@@ -43,18 +45,37 @@ end
 
 assert(length(leftObjs)==length(rightObjs));
 
-if isempty(leftObjs{1}) || isempty(rightObjs{1})
-    error('Why is a left or right object linkage empty?!')
-    return;
+tablenames = sqlfind(conn,'');
+tablenames = cellstr(tablenames.Table);
+
+[type1] = deText(leftObjs{1});
+[type2] = deText(rightObjs{1});
+otherTypes = allTypes(~ismember(allTypes,{type1,type2}));
+tableIdx = contains(tablenames, type1) & contains(tablenames, type2) & ~contains(tablenames,otherTypes);
+assert(sum(tableIdx)==1);
+
+tablename = tablenames{tableIdx};
+tableInfo = sqlfind(conn,tablename);
+
+col1 = char(tableInfo.Columns{1}(1));
+col2 = char(tableInfo.Columns{1}(2));
+type1 = deText(leftObjs{1});
+type2 = deText(rightObjs{1});
+% Switch the left and right objects if necessary.
+if contains(col1,type2)
+    tmpL = leftObjs;
+    tmpR = rightObjs;
+    leftObjs = tmpR;
+    rightObjs = tmpL;
 end
-
-[links, linksPath] = loadLinks();
-
 for i=1:length(leftObjs)
-    newline = {leftObjs{i}, rightObjs{i}};
-    existIdx = ismember(links(:,1),newline{1}) & ismember(links(:,2),newline{2});
-
-    links(existIdx,:) = [];
+    type1 = deText(leftObjs{i});
+    type2 = deText(rightObjs{i});
+    assert(contains(col1,type1) && contains(col2, type2)); % Check that things are being removed from the proper column.
+    sqlquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
+    try
+        execute(conn, sqlquery);
+    catch e
+        disp(e.message);
+    end
 end
-
-writeJSON(linksPath,links);

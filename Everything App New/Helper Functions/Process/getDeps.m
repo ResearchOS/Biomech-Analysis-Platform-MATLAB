@@ -31,6 +31,7 @@ R = full(adjacency(H)); % "Reachability matrix"
 deps = {};
 if nargin==3
     uuidIdx = ismember(G.Nodes.Name, uuid);
-    deps = G.Nodes.Name(R(uuidIdx,:));
+    tmpIdx = logical(R(uuidIdx,:))'; % Make column vector.
+    deps = G.Nodes.Name(tmpIdx); % The uuids reachable from this UUID
     % deps = successors(G, uuid);
 end

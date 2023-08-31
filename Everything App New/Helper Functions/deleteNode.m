@@ -10,19 +10,8 @@ end
 fig=ancestor(selNode,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-uiTree = getUITreeFromNode(selNode);
+anNode = getNode(handles.Process.analysisUITree, selNode.NodeData.UUID);
+selectNeighborNode(anNode,'before');
+delete(anNode);
 
-selectNeighborNode(selNode,'before');
-
-%% Removing something from the analysis or processGroup UI tree
-if isequal(uiTree,handles.Process.analysisUITree)    
-    fillProcessGroupUITree(fig);
-end
-
-if isequal(uiTree, handles.Process.groupUITree)
-    anNode = getNode(handles.Process.analysisUITree, selNode.NodeData.UUID);
-    delete(anNode);
-    fillCurrentFunctionUITree(fig);
-end
-
-delete(selNode);
+fillAnalysisUITree(fig);

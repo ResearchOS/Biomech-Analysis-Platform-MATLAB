@@ -50,11 +50,11 @@ orderedList = orderDeps(G,'full'); % All PR. Need to convert this to parent obje
 
 if exist('listPR_PG_AN','var')==1
     inListIdx = ismember(orderedList(:,1),listPR_PG_AN(:,1)); % Only the PR in the current container
-    assert(all(inListIdx)); % Why would this ever not be true, if getUnorderedList only looks in the current container?
+    % assert(all(inListIdx)); % Why would this ever not be true, if getUnorderedList only looks in the current container?
     orderedList(~inListIdx,:) = [];
 end
 
 % a = toc;
-disp(['Run list in ' num2str(round(a,2)) 'sec']);
+% disp(['Run list in ' num2str(round(a,2)) 'sec']);
 
 end

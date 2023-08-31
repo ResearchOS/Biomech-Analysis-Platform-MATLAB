@@ -31,24 +31,9 @@ selUUID = selNode.NodeData.UUID;
 
 [type, abstractID, instanceID] = deText(selUUID);
 
-currTab = handles.Process.subtabCurrent.SelectedTab.Title;
-switch currTab
-    case 'Analysis'
-        containerUUID = getCurrent('Current_Analysis');
-        uiTree = handles.Process.analysisUITree;
-        delete(handles.Process.groupUITree.Children);
-        handles.Process.currentGroupLabel.Text = 'Function';
-    case 'Group'
-        % Check if there is a group selected in the analysis UI tree
-        anTreeNode = handles.Process.allAnalysesUITree.SelectedNodes;
-        [~, list] = getUITreeFromNode(anTreeNode);
-        pgIdx = find(contains(list,'PG')==1);
-        containerUUID = ''; % No group selected.
-        if ~isempty(pgIdx)
-            containerUUID = list(min(pgIdx));
-        end
-        uiTree = handles.Process.groupUITree;
-end
+currTab = handles.Process.subtabCurrent.SelectedTab;
+tabTitle = currTab.Title;
+containerUUID = getContainer(currTab);
 
 if isempty(containerUUID)
     return;
@@ -71,17 +56,15 @@ if isempty(instanceID)
     addNewNode(absNode, selUUID, prStruct.Name);
 end
 
-linkObjs(selUUID, containerUUID);
-nodeList = getRunList(containerUUID,{},'struct');
-
-
-switch uiTree
-    case handles.Process.analysisUITree           
-        fillProcessGroupUITree(fig); % Added function or group to analysis. Completely refill the current process group UI tree
-    case handles.Process.groupUITree
-        newNode = addNewNode(uiTree, selUUID, selNode.Text);
-        selectNode(uiTree, newNode);
-        fillCurrentFunctionUITree(fig); % Added function to group. Fill the current function UI tree     
-    otherwise
-        error('Where am I?');
+isDupl = linkObjs(selUUID, containerUUID);
+if isDupl
+    return;
 end
+
+if isequal(tabTitle,'Analysis')
+    fillAnalysisUITree(fig);
+    uiTree = handles.Process.analysisUITree;
+    selectNode(uiTree, selUUID);
+end
+pgUUID = getCurrentProcessGroup(fig);
+fillProcessGroupUITree(fig,selUUID,pgUUID);

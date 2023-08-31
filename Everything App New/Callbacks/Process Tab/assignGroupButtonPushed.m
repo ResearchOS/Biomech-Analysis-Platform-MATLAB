@@ -9,6 +9,8 @@ function []=assignGroupButtonPushed(src)
 %           group returned from currentProcessGroup, abort.
 %           - Analysis: (maybe) ask the user if they want to
 %       add it to the group or the analysis.
+% 2. If there are any other PR/groups that are upstream dependencies and
+% are missing from the analysis/group, then pull those in too.
 
 fig=ancestor(src,'figure','toplevel'); 
 handles=getappdata(fig,'handles');
@@ -23,22 +25,9 @@ selUUID = selNode.NodeData.UUID;
 
 [type, abstractID, instanceID] = deText(selUUID);
 
-currTab = handles.Process.subtabCurrent.SelectedTab.Title;
-switch currTab
-    case 'Analysis'
-        containerUUID = getCurrent('Current_Analysis');
-        uiTree = handles.Process.analysisUITree;        
-    case 'Group'
-        % Check if there is a group selected in the analysis UI tree
-        anTreeNode = handles.Process.allAnalysesUITree.SelectedNodes;
-        [~, list] = getUITreeFromNode(anTreeNode);
-        pgIdx = find(contains(list,'PG')==1);
-        containerUUID = '';
-        if ~isempty(pgIdx)
-            containerUUID = list(min(pgIdx));
-        end
-        uiTree = handles.Process.groupUITree;
-end
+currTab = handles.Process.subtabCurrent.SelectedTab;
+tabTitle = currTab.Title;
+containerUUID = getContainer(currTab);
 
 if isempty(containerUUID)
     return;
@@ -61,14 +50,17 @@ if isempty(instanceID)
     addNewNode(absNode, selUUID, pgStruct.Name);
 end
 
-linkObjs(selUUID, containerUUID);
-newNode = addNewNode(uiTree, selUUID, selNode.Text);
-
-selectNode(uiTree, newNode);
-
-if isequal(currTab,'Analysis')
-    fillProcessGroupUITree(fig, '', selUUID);
+isDupl = linkObjs(selUUID, containerUUID);
+if isDupl
+    return; % Don't worry about deleting a newly created instance, because if a new instance were created, it wouldn't be a duplicate.
 end
 
-delete(handles.Process.currentFunctionUITree.Children);
+if isequal(tabTitle,'Analysis')
+    fillAnalysisUITree(fig);
+    uiTree = handles.Process.analysisUITree;
+    selectNode(uiTree, selUUID);
+end
+fillProcessGroupUITree(fig, '', selUUID);
+
+delete(handles.Process.functionUITree.Children);
 handles.Process.currentFunctionLabel.Text = 'Current Function';

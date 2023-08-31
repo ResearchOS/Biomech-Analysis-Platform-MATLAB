@@ -5,7 +5,8 @@ function []=unassignGroupButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-currTab = handles.Process.currentSubtab.SelectedTab.Title;
+tab = handles.Process.subtabCurrent.SelectedTab;
+currTab = tab.Title;
 switch currTab
     case 'Analysis'
         uiTree = handles.Process.analysisUITree;
@@ -21,7 +22,7 @@ end
 
 selUUID = selNode.NodeData.UUID;
 
-[containerUUID] = getContainer(selUUID, fig);
+[containerUUID] = getContainer(tab);
 type = deText(selUUID);
 
 if ~isequal(type,'PG')
@@ -29,18 +30,11 @@ if ~isequal(type,'PG')
     return;
 end
 
+%% Unlink the group from the current group or analysis.
+unlinkObjs(selUUID, containerUUID);
+
 %% Update GUI
 proceed = deleteNode(selNode);
 if ~proceed
     return;
 end
-
-%% Remove the group from the current group or analysis.
-contStruct = loadJSON(containerUUID);
-idx = ismember(contStruct.RunList,selUUID);
-contStruct.RunList(idx) = [];
-
-writeJSON(getJSONPath(contStruct), contStruct);
-
-%% Unlink the group from the current group or analysis.
-unlinkObjs(selUUID, contStruct);

@@ -31,8 +31,8 @@ if isempty(links)
 end
 
 % Exclude rows from the linkage matrix with only an output or input
-% variable
-varsIdx = (contains(links(:,1),abbrevs1) & contains(links(:,3),abbrevs1)) | contains(links(:,2),abbrevs2);
+% variable. What happens if an element in s or t is empty?
+varsIdx = contains(links(:,2),abbrevs2) & (contains(links(:,1),abbrevs1) | contains(links(:,3),abbrevs1));
 
 s = links(varsIdx,1); % The UUID of the PR that the variable is an output of.
 t = links(varsIdx,3); % The UUID of the PR that the variable is an input to.

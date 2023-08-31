@@ -1,8 +1,10 @@
-function []=linkObjs(leftObjs, rightObjs, date)
+function [isDupl]=linkObjs(leftObjs, rightObjs, date)
 
 %% PURPOSE: LINK TWO OBJECTS TOGETHER. INPUTS ARE THE STRUCTS THEMSELVES, OR THEIR UUID'S.
 % LINKAGE INFORMATION IS STORED IN ITS OWN FILE, UNDER "LINKAGES" IN THE
 % COMMON PATH.
+
+allTypes = {'PJ','AN','PG','PR','VR','LG','ST'};
 
 global conn;
 
@@ -44,7 +46,8 @@ tablenames = cellstr(tablenames.Table);
 
 [type1] = deText(leftObjs{1});
 [type2] = deText(rightObjs{1});
-tableIdx = contains(tablenames, type1) & contains(tablenames, type2);
+otherTypes = allTypes(~ismember(allTypes,{type1,type2}));
+tableIdx = contains(tablenames, type1) & contains(tablenames, type2) & ~contains(tablenames,otherTypes);
 assert(sum(tableIdx)==1);
 
 tablename = tablenames{tableIdx};
@@ -61,17 +64,34 @@ if contains(col1,type2)
     leftObjs = tmpR;
     rightObjs = tmpL;
 end
+isDupl = false; % Initialize that this is not a duplicate entry.
 for i=1:length(leftObjs)
     sqlquery = ['INSERT INTO ' tablename ' (' col1 ', ' col2 ') VALUES ',...
         '(''' leftObjs{i} ''', ''' rightObjs{i} ''');'];
     type1 = deText(leftObjs{i});
     type2 = deText(rightObjs{i});
     assert(contains(col1,type1) && contains(col2, type2)); % Check that things are being put in the proper column.
+
+    undoquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
     try
         execute(conn, sqlquery);
+        % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH
+        anUUID = getCurrent('Current_Analysis');
+        list = getUnorderedList(anUUID);
+        links = loadLinks(list);
+        G = linkageToDigraph(links);
+        if ~isdag(G)
+            isDupl = true;
+            execute(conn, undoquery);
+            disp(['Cannot link ' leftObjs{i} ' and ' rightObjs{i} ' because it forms a cyclic graph in the current analysis']);
+            return;
+        end
     catch e
         if ~contains(e.message,'UNIQUE constraint failed')
             error(e);
         end
+        disp(['Cannot add duplicate entries to ' tablename]);
+        isDupl = true;
+        return;
     end
 end

@@ -5,4 +5,17 @@ function []=analysisUITreeDoubleClickedFcn(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
+selNode = handles.Process.analysisUITree.SelectedNodes;
+
+if isempty(selNode)
+    return;
+end
+
+uuid = selNode.NodeData.UUID;
+type = deText(uuid);
+
+if contains(type,'PR')
+    handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
+else
+    handles.Process.subtabCurrent.SelectedTab = handles.Process.currentGroupTab;
+end

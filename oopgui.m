@@ -33,12 +33,12 @@ clearAllMemoizedCaches; % Clears memoized caches. Using these caches greatly imp
 %% Add all of the appropriate paths to MATLAB search path
 currFolder=fileparts(mfilename('fullpath'));
 addpath(genpath(currFolder));
-setappdata(fig,'appFolder',currFolder);
 
 %% Create the figure
 fig=uifigure('Name','pgui','Visible','on',...
     'Resize','on','AutoResizeChildren','off','SizeChangedFcn',@appResize);
 set(fig,'DeleteFcn',@(fig, event) saveGUIState(fig)); % Deletes the gui variable from the base workspace.
+setappdata(fig,'appFolder',currFolder);
 
 handles=initializeComponents(fig); % Put all of the components in their place
 setappdata(fig,'handles',handles);

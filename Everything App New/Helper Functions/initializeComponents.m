@@ -655,6 +655,7 @@ settingsResize(fig);
 %% Initialize the context menus for UI trees
 handles.Process.ContextMenuTop=uicontextmenu(fig);
 handles.Process.ContextMenu.Edit=uimenu(handles.Process.ContextMenuTop,'Text','Edit','MenuSelectedFcn',{@editObj});
+handles.Process.ContextMenu.SaveEdits=uimenu(handles.Process.ContextMenuTop,'Text','Save Edits','MenuSelectedFcn',{@saveEdits});
 % handles.Process.ContextMenu.OpenJSON=uimenu(handles.Process.ContextMenuTop,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
 handles.Process.ContextMenu.OpenMFile=uimenu(handles.Process.ContextMenuTop,'Text','Open M File','MenuSelectedFcn',{@openMFile});
 handles.Process.ContextMenu.CopyToNew=uimenu(handles.Process.ContextMenuTop,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});

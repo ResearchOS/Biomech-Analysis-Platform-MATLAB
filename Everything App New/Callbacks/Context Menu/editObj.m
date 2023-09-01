@@ -15,29 +15,26 @@ uuid = selNode.NodeData.UUID;
 
 struct = loadJSON(uuid);
 
+% Don't allow editing UUID & Abstract_UUID
+struct = rmfield(struct,'UUID');
+if isfield(struct,'Abstract_UUID')
+    struct = rmfield(struct,'Abstract_UUID');
+end
+
 appFolder = getappdata(fig,'appFolder');
 tmpFolder = [appFolder filesep 'Tmp JSON'];
 if ~isfolder(tmpFolder)
     mkdir(tmpFolder);
 end
 
-tmpPath = [tmpFolder filesep struct.UUID '.json'];
+tmpPath = [tmpFolder filesep uuid '.json'];
 
-json = jsonencode(struct);
+jsonStr = jsonencode(struct,'PrettyPrint',true);
 
-fid = fopen(tmpPath,'w');
+if ~isfile(tmpPath)
+    fid = fopen(tmpPath,'w');
+    fprintf(fid,'%s',jsonStr);
+    fclose(fid);
+end
 
 openPathWithDefaultApp(tmpPath);
-
-% a = questdlg('Accept changes?','Accept changes?','Yes','No','Cancel','No');
-% 
-% delete(tmpPath); % Clean up.
-% 
-% if ~isequal(a,'Yes')
-%     return;
-% end
-% 
-% fid=fopen(fullPath);
-% raw=fread(fid,inf);
-% fclose(fid);
-% jsonStr=char(raw');

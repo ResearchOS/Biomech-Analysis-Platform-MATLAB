@@ -28,3 +28,16 @@ json = jsonencode(struct);
 fid = fopen(tmpPath,'w');
 
 openPathWithDefaultApp(tmpPath);
+
+% a = questdlg('Accept changes?','Accept changes?','Yes','No','Cancel','No');
+% 
+% delete(tmpPath); % Clean up.
+% 
+% if ~isequal(a,'Yes')
+%     return;
+% end
+% 
+% fid=fopen(fullPath);
+% raw=fread(fid,inf);
+% fclose(fid);
+% jsonStr=char(raw');

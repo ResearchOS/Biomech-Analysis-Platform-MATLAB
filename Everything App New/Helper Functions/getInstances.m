@@ -14,7 +14,7 @@ end
 
 tablename = getTableName(type, true);
 
-sqlquery = ['SELECT UUID FROM ' tablename 'WHERE Abstract_UUID = ''' uuid ''';'];
+sqlquery = ['SELECT UUID FROM ' tablename ' WHERE Abstract_UUID = ''' uuid ''';'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
 uuids = t.UUID;

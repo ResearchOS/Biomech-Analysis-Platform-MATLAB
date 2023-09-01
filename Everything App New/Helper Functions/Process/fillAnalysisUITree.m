@@ -8,10 +8,9 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 Current_Analysis = getCurrent('Current_Analysis');
-anStruct = loadJSON(Current_Analysis);
 
 %% Get the list of functions & groups in the current analysis. How to order them?
-[orderedList, listPR_PG_AN] = getRunList(anStruct.UUID);
+[orderedList, listPR_PG_AN] = getRunList(Current_Analysis);
 orderedStruct = orderedList2Struct(orderedList, listPR_PG_AN);
 
 uiTree = handles.Process.analysisUITree;

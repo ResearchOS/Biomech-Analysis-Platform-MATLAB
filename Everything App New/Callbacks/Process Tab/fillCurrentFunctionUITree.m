@@ -35,48 +35,34 @@ handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
 abstractUUID = genUUID(className2Abbrev(abbrev,true),abstractID);
 abstractStruct=loadJSON(abstractUUID);
 
-% Test here
-return;
-
 namesInCode = abstractStruct.InputVariablesNamesInCode;
 if isequal(namesInCode,'NULL')
     return;
 end
 
-allVars = [inputVarsInst; outputVarsInst]
-for i=1:length(namesInCode)
-    name = namesInCode{i};
-    varIdx = ismember(input)
-
-
-end
-
-% inputVarsAbstract=abstractStruct.InputVariablesNamesInCode;
-% outputVarsAbstract=abstractStruct.OutputVariablesNamesInCode;
+inputVarsAbstract=abstractStruct.InputVariablesNamesInCode;
+outputVarsAbstract=abstractStruct.OutputVariablesNamesInCode;
 
 % Create input variable nodes
 for i=1:length(inputVarsAbstract)
 
-    try
-        currArgsInst=inputVarsInst{i};
-    catch
-        currArgsInst='';
-    end
     currArgsAbs=inputVarsAbstract{i};
     argNode=uitreenode(uiTree,'Text',['getArg ' num2str(currArgsAbs{1})]); % The ID number of the getArg/setArg is the first element.  
-    argNode.NodeData.UUID = ''; % Because getNode needs everything to have a UUID
-    
-    for j=2:length(currArgsAbs)
-        if ~iscell(currArgsInst) || length(currArgsInst)<j || isempty(currArgsInst{j})
-            suffix='';
-            uuid = '';
+    currArgsAbs(1) = []; % Remove the numerical getArg ID
+    argNode.NodeData.UUID = ''; % Because getNode needs everything to have a UUID    
+
+    for j=1:length(currArgsAbs)
+        idx = ismember(inputVarsInst.NameInCode, currArgsAbs{j});
+        if any(idx)
+            uuid = inputVarsInst.VR_ID{idx};
+            suffix = [' (' uuid ')'];
         else
-            suffix=[' (' currArgsInst{j} ')'];
-            uuid = currArgsInst{j};
+            suffix = '';
+            uuid = suffix;
         end
-        newNode=uitreenode(argNode,'Text',[currArgsAbs{j} suffix]);
+        newNode = uitreenode(argNode,'Text',[currArgsAbs{j} suffix]);
         newNode.NodeData.UUID = uuid;
-        assignContextMenu(newNode,handles);
+        assignContextMenu(newNode, handles);
     end
 
     expand(argNode);
@@ -85,29 +71,23 @@ end
 % Create output variable nodes
 for i=1:length(outputVarsAbstract)
 
-    if ~iscell(outputVarsAbstract) || isempty(outputVarsAbstract{i})
-        continue;
-    end
-
-    try
-        currArgsInst=outputVarsInst{i};
-    catch
-        currArgsInst='';
-    end
     currArgsAbs=outputVarsAbstract{i};
-    argNode=uitreenode(uiTree,'Text',['setArg ' num2str(currArgsAbs{1})]);  % The ID number of the getArg/setArg is the first element. 
-    
-    for j=2:length(currArgsAbs)
-        if ~iscell(currArgsInst) || length(currArgsInst)<j || isempty(currArgsInst{j})
-            suffix='';
-            uuid = '';
+    argNode=uitreenode(uiTree,'Text',['setArg ' num2str(currArgsAbs{1})]); % The ID number of the getArg/setArg is the first element.  
+    currArgsAbs(1) = []; % Remove the numerical getArg ID
+    argNode.NodeData.UUID = ''; % Because getNode needs everything to have a UUID    
+
+    for j=1:length(currArgsAbs)
+        idx = ismember(outputVarsInst.NameInCode, currArgsAbs{j});
+        if any(idx)
+            uuid = outputVarsInst.VR_ID{idx};
+            suffix = [' (' uuid ')'];
         else
-            suffix=[' (' currArgsInst{j} ')'];
-            uuid = currArgsInst{j};
-        end        
-        newNode=uitreenode(argNode,'Text',[currArgsAbs{j} suffix]);
+            suffix = '';
+            uuid = suffix;
+        end
+        newNode = uitreenode(argNode,'Text',[currArgsAbs{j} suffix]);
         newNode.NodeData.UUID = uuid;
-        assignContextMenu(newNode,handles);
+        assignContextMenu(newNode, handles);
     end
 
     expand(argNode);

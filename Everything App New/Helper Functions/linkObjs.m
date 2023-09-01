@@ -1,9 +1,11 @@
-function [isDupl]=linkObjs(leftObjs, rightObjs, date)
+function [success, msg]=linkObjs(leftObjs, rightObjs, date)
 
-%% PURPOSE: LINK TWO OBJECTS TOGETHER. INPUTS ARE THE STRUCTS THEMSELVES, OR THEIR UUID'S.
-% LINKAGE INFORMATION IS STORED IN ITS OWN FILE, UNDER "LINKAGES" IN THE
-% COMMON PATH.
+%% PURPOSE: LINK TWO OBJECTS TOGETHER. INPUTS ARE THE UUID'S TO LINK TOGETHER.
+% IF LINKING VR AND PR, THEN THE ORDER MATTERS TO DETERMINE IF INPUT OR
+% OUTPUT VARIABLE.
+% IF LINKING ANY OTHER OBJECTS, ORDER DOES NOT MATTER.
 
+msg = '';
 allTypes = {'PJ','AN','PG','PR','VR','LG','ST'};
 
 global conn;
@@ -48,6 +50,14 @@ tablenames = cellstr(tablenames.Table);
 [type2] = deText(rightObjs{1});
 otherTypes = allTypes(~ismember(allTypes,{type1,type2}));
 tableIdx = contains(tablenames, type1) & contains(tablenames, type2) & ~contains(tablenames,otherTypes);
+if sum(tableIdx)>1
+    if isequal(type1,'PR')
+        tablename = 'PR_VR';
+    elseif isequal(type2,'PR')
+        tablename = 'VR_PR';
+    end
+    tableIdx = ismember(tablenames,tablename);
+end
 assert(sum(tableIdx)==1);
 
 tablename = tablenames{tableIdx};
@@ -64,7 +74,8 @@ if contains(col1,type2)
     leftObjs = tmpR;
     rightObjs = tmpL;
 end
-isDupl = false; % Initialize that this is not a duplicate entry.
+success = true; % Initialize that this is not a duplicate entry.
+anUUID = getCurrent('Current_Analysis');
 for i=1:length(leftObjs)
     sqlquery = ['INSERT INTO ' tablename ' (' col1 ', ' col2 ') VALUES ',...
         '(''' leftObjs{i} ''', ''' rightObjs{i} ''');'];
@@ -75,23 +86,22 @@ for i=1:length(leftObjs)
     undoquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
     try
         execute(conn, sqlquery);
-        % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH
-        anUUID = getCurrent('Current_Analysis');
+        % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH  
         list = getUnorderedList(anUUID);
         links = loadLinks(list);
         G = linkageToDigraph(links);
         if ~isdag(G)
-            isDupl = true;
+            success = false;
             execute(conn, undoquery);
-            disp(['Cannot link ' leftObjs{i} ' and ' rightObjs{i} ' because it forms a cyclic graph in the current analysis']);
+            msg = ['Cannot link ' leftObjs{i} ' and ' rightObjs{i} ' because it forms a cyclic graph in the current analysis'];
             return;
         end
     catch e
         if ~contains(e.message,'UNIQUE constraint failed')
             error(e);
         end
-        disp(['Cannot add duplicate entries to ' tablename]);
-        isDupl = true;
+        msg = ['Cannot add duplicate entries to ' tablename];
+        success = false;
         return;
     end
 end

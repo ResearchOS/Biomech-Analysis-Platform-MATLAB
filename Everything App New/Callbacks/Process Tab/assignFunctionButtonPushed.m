@@ -17,7 +17,7 @@ function []=assignFunctionButtonPushed(src)
 %   3. Add node to group UI tree (in order from RunList)
 %   4. Run fillProcessUITree
 
-
+disp('Assigning function!');
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -56,15 +56,17 @@ if isempty(instanceID)
     addNewNode(absNode, selUUID, prStruct.Name);
 end
 
-isDupl = linkObjs(selUUID, containerUUID);
-if isDupl
-    return;
-end
+linkObjs(selUUID, containerUUID);
+
+fillAnalysisUITree(fig);
+uiTree = handles.Process.analysisUITree;
+selectNode(uiTree, selUUID);
+analysisUITreeSelectionChanged(fig, selUUID);
 
 if isequal(tabTitle,'Analysis')
-    fillAnalysisUITree(fig);
-    uiTree = handles.Process.analysisUITree;
-    selectNode(uiTree, selUUID);
+
+elseif isequal(tabTitle,'Group')
+    handles.Process.subtabCurrent.SelectedTab = handles.Process.currentGroupTab;
 end
-pgUUID = getCurrentProcessGroup(fig);
-fillProcessGroupUITree(fig,selUUID,pgUUID);
+
+disp('Function assigned!');

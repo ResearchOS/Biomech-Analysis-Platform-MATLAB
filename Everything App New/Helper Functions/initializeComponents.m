@@ -310,7 +310,7 @@ handles.Process.currentFunctionTab=uitab(handles.Process.subtabCurrent,'Title','
 handles.Process.runButton=uibutton(processTab,'push','Text','Run','ButtonPushedFcn',@(runButton,event) runButtonPushed(runButton));
 
 % 26. Current group UI tree
-handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','SelectionChangedFcn',@(groupUITree,event) groupUITreeSelectionChanged(groupUITree));
+handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','SelectionChangedFcn',@(groupUITree,event) groupUITreeSelectionChanged(groupUITree),'DoubleClickedFcn',@(groupUITree, event) groupUITreeDoubleClicked(groupUITree));
 
 % 27. Current function UI tree
 handles.Process.functionUITree=uitree(handles.Process.currentFunctionTab,'checkbox','SelectionChangedFcn',@(functionUITree,event) functionUITreeSelectionChanged(functionUITree));

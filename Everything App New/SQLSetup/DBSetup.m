@@ -172,6 +172,12 @@ createJoinTable = ['CREATE TABLE XXX_YYY (',...
     'BBB_ID TEXT REFERENCES DDD_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ], ',...
     'PRIMARY KEY (AAA_ID, BBB_ID)',...
     ');'];
+createJoinTable_VRPR = ['CREATE TABLE XXX_YYY (',...
+    'AAA_ID TEXT REFERENCES CCC_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ], ',...
+    'BBB_ID TEXT REFERENCES DDD_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ], ',...
+    'NameInCode TEXT NOT NULL DEFAULT [NULL], ',...
+    'PRIMARY KEY (AAA_ID, BBB_ID, NameInCode)',...
+    ');'];
 % initJoinTable = ['INSERT INTO XXX (AAA_ID, BBB_ID) VALUES (''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
 
 objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},{'PR','VR'},{'VR','PR'},{'PJ','LG'}};
@@ -207,7 +213,13 @@ for i=1:length(objAbbrevs)
         class2(end-1) = 'e'; % Analyses
     end        
 
-    createJoinTableCurr = strrep(createJoinTable,'XXX',abbrevs{1});
+    if ismember(name,{'PR_VR','VR_PR'})
+        createJoinTableTmp = createJoinTable_VRPR;
+    else
+        createJoinTableTmp = createJoinTable;
+    end
+
+    createJoinTableCurr = strrep(createJoinTableTmp,'XXX',abbrevs{1});
     createJoinTableCurr = strrep(createJoinTableCurr,'YYY',abbrevs{2});
     createJoinTableCurr = strrep(createJoinTableCurr,'AAA',newAbbrevs{1});
     createJoinTableCurr = strrep(createJoinTableCurr,'BBB',newAbbrevs{2});
@@ -227,17 +239,17 @@ end
 %% Custom Join table columns
 % Input variables.
 if ismember('VR_PR',modifiedNames)
-    sqlquery = ['ALTER TABLE VR_PR ADD NameInCode TEXT NOT NULL Default [NULL]'];
-    execute(conn, sqlquery);
+    % sqlquery = ['ALTER TABLE VR_PR ADD NameInCode TEXT NOT NULL Default [NULL]'];
+    % execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE VR_PR ADD Subvariable TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
 end
 
 % Output variables.
-if ismember('PR_VR',modifiedNames)
-    sqlquery = ['ALTER TABLE PR_VR ADD NameInCode TEXT NOT NULL Default [NULL]'];
-    execute(conn, sqlquery);
-end
+% if ismember('PR_VR',modifiedNames)
+%     sqlquery = ['ALTER TABLE PR_VR ADD NameInCode TEXT NOT NULL Default [NULL]'];
+%     execute(conn, sqlquery);
+% end
 
 %% Settings table
 % Put values into the table.

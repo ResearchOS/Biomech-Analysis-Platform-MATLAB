@@ -57,10 +57,13 @@ end
 DBSetup(dbFile);
 
 if isDel
-    transferJSON_SQL;
-    transferLinks_SQL;
-    % transferVarsToNamesInCode;
+    transferJSON_SQL; % Transfer objects
+    transferLinks_SQL; % Transfer links except for variable assignments to PR functions
+    transferVarsToNamesInCode; % Transfer variable assignments as input & output to/from PR functions
 end
+
+%% Turn off the warnings about zoom & drag mode on the UI Axes
+warning('off','MATLAB:modes:mode:InvalidPropertySet');
 
 %% Load the GUI object settings (i.e. selected nodes in UI trees, checkbox selections, projects to filter, etc.)
 loadGUIState(fig);

@@ -4,7 +4,7 @@ function [data] = table2MyStruct(table)
 
 numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows'};
 jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params',...
-    'Logsheet_Parameters','Data_Parameters','HardCodedValue','ST_ID','InputVariablesNamesInCode','OutputVariablesNamesInCode'};
+    'Logsheet_Parameters','Data_Parameters','HardCodedValue','ST_ID','InputVariablesNamesInCode','OutputVariablesNamesInCode','SpecifyTrials'};
 dateCols = {'Date_Created','Date_Modified','Date_Last_Ran'};
 
 varNames = table.Properties.VariableNames;
@@ -13,7 +13,9 @@ for i=1:length(varNames)
     varName = varNames{i};
     var = table.(varName);
 
-    if ismember(varName,numericCols)
+    if ismissing(var)
+        var = '';
+    elseif ismember(varName,numericCols)
         var = double(var);
     elseif ismember(varName,jsonCols)
         if ~isequal(var,'NULL')  
@@ -33,8 +35,6 @@ for i=1:length(varNames)
         end
     elseif ismember(varName,dateCols)
         var = datetime(var);
-    elseif ismissing(var)
-        var = '';
     else
         if isstring(var) && isscalar(var)
             var = char(var); % String to char

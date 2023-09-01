@@ -14,8 +14,15 @@ end
 uuid = selNode.NodeData.UUID;
 type = deText(uuid);
 
-if contains(type,'PR')
-    handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
-else
+if contains(type,'PG')
     handles.Process.subtabCurrent.SelectedTab = handles.Process.currentGroupTab;
+    return;
 end
+
+% Select the node in the digraph and render it.
+digraphAxesButtonDownFcn(fig, uuid);
+
+% Pass focus to function UI tree
+handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
+
+subTabCurrentSelectionChanged(fig);

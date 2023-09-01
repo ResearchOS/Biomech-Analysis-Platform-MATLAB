@@ -15,8 +15,12 @@ uiTree = getUITreeFromNode(selNode);
 
 copiedUUID = clipboard('paste');
 
+if ~isUUID(copiedUUID)
+    return;
+end
+
 [type] = deText(copiedUUID);
 
-if isequal(uiTree, handles.Process.functionUITree) && isequal(className2Abbrev(type, true), 'Variable')
+if isequal(uiTree, handles.Process.functionUITree) && isequal(type,'VR')
     assignVariableButtonPushed(fig,copiedUUID);
 end

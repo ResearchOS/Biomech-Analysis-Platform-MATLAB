@@ -13,12 +13,13 @@ function [] = transferVarsToNamesInCode()
 % Result of this function: 
 %   1. Put char name in code into the VR_PR and PR_VR tables
 %   2. Put char subvariable into the VR_PR table
-%   3. Put name in code with abstract PR?
+%   3. Put names in code with abstract PR.
 
 global conn;
 
 % 1.
 sqlquery = ['SELECT * FROM PR_VR'];
+% sqlquery = ['SELECT UUID FROM PR_VR'];
 t = fetch(conn, sqlquery);
 tOut = table2MyStruct(t);
 
@@ -26,50 +27,88 @@ sqlquery = ['SELECT * FROM VR_PR'];
 t = fetch(conn, sqlquery);
 tIn = table2MyStruct(t);
 
-% Get all PR abstract objects.
-sqlquery = ['SELECT * FROM Process_Abstract'];
-t = fetch(conn, sqlquery);
-tAbs = table2MyStruct(t);
-fldNames = fieldnames(tAbs);
+% Remove all records.
+sqlquery = ['DELETE FROM VR_PR'];
+execute(conn, sqlquery);
+sqlquery = ['DELETE FROM PR_VR'];
+execute(conn, sqlquery);
 
 % 2.
-folder = ['/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/PGUI_CommonPath/Process/Instances'];
+instFolder = ['/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/PGUI_CommonPath/Process/Instances'];
+absFolder = ['/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/PGUI_CommonPath/Process'];
 for inOut=1:2
     if inOut==1
         sqlStruct = tIn;
+        tablename = 'VR_PR';
+        type1 = 'VR';
+        type2 = 'PR';
     elseif inOut==2
         sqlStruct=tOut;
+        tablename = 'PR_VR';
+        type1 = 'PR';
+        type2 = 'VR';
     end
 
-    uuids = sqlStruct.PR_ID;
+    uuids = unique(sqlStruct.PR_ID,'stable');
     for i=1:length(uuids)
         % Load JSON files.
         clear sql;
 
-        path = [folder filesep uuids{i} '.json'];
+        path = [instFolder filesep uuids{i} '.json'];
         fid=fopen(path);
         raw=fread(fid,inf);
         fclose(fid);
         jsonStr=char(raw');
+        jsonInst=jsondecode(jsonStr);
 
-        json=jsondecode(jsonStr);
+        [type, abstractID] = deText(uuids{i});
+        absUUID = genUUID(type, abstractID);
+        path = [absFolder filesep absUUID '.json'];
+        fid=fopen(path);
+        raw=fread(fid,inf);
+        fclose(fid);
+        jsonStr=char(raw');
+        jsonAbs=jsondecode(jsonStr);
 
-        % 3. Get the abstract struct.
-        idx = ismember(tAbs.UUID,uuids{i});        
-        for fldNum=1:length(fldNames)
-            if ~iscell(tAbs.(fldNames{fldNum})(idx))
-                currAbs.(fldNames{fldNum}) = tAbs.(fldNames{fldNum})(idx);
-            else
-                currAbs.(fldNames{fldNum}) = tAbs.(fldNames{fldNum}){idx};
-            end
+        % 3. Put the names in code in the abstract SQL struct.
+        if inOut==1
+            namesInCodeJSON = jsonencode(jsonAbs.InputVariablesNamesInCode); % Abstract
+            subVars = getVarNamesArray(jsonInst,'InputSubvariables');
+            vars = getVarNamesArray(jsonInst,'InputVariables');
+            colName = 'InputVariablesNamesInCode';
+            namesInCode = getVarNamesArray(jsonAbs,colName);
+        elseif inOut==2
+            namesInCodeJSON = jsonencode(jsonAbs.OutputVariablesNamesInCode);            
+            vars = getVarNamesArray(jsonInst,'OutputVariables');
+            colName = 'OutputVariablesNamesInCode';
+            namesInCode = getVarNamesArray(jsonAbs,colName);
         end
 
-        % 4.
-        % currAbs = 
+        % Set names in code
+        % sqlquery = ['UPDATE Process_Abstract SET ' colName ' = ''' namesInCodeJSON ''' WHERE UUID = ''' absUUID ''';'];
+        % execute(conn, sqlquery);
+
+        % Get the indices of each variable in the PR_VR
+        % [~, b, c] = intersect(vrID, vars,'stable');
+        % Now 'b' idx represents the proper var UUID's and namesInCode
+        % vars=vars(c);
+        % namesInCode = namesInCode(c);                    
+
+        for j = 1:length(vars)
+            sqlquery = ['INSERT INTO ' tablename ' (VR_ID, PR_ID, NameInCode) VALUES (''' vars{j} ''', ''' uuids{i} ''', ''' namesInCode{j} ''');'];
+            % sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' namesInCode{j} ''' WHERE PR_ID = ''' uuids{i} ''' AND VR_ID = ''' vars{j} ''';'];
+            execute(conn, sqlquery);
+        end   
 
         % 5.
         if inOut==2
             continue;
+        end
+
+        % Subvariables.
+        for j=1:length(vars)
+            sqlquery = ['UPDATE ' tablename ' SET Subvariable = ''' subVars{j} ''' WHERE PR_ID = ''' uuids{i} ''' AND VR_ID = ''' vars{j} ''' AND NameInCode = ''' namesInCode{j} ''';'];
+            execute(conn, sqlquery);
         end
 
     end

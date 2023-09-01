@@ -30,8 +30,8 @@ if ~exist('color','var') || isempty(color)
 end
 
 % The nodes that haven't had all of their variables filled in.
-% unfinishedIdx = getUnfinishedFcns(G); % FIX THIS AFTER RE-IMPLEMENTING NAMES IN CODE
-unfinishedIdx = false(size(markerSize)); % TEMPORARY
+unfinishedIdx = getUnfinishedFcns(G); % FIX THIS AFTER RE-IMPLEMENTING NAMES IN CODE
+% unfinishedIdx = false(size(markerSize)); % TEMPORARY
 color(unfinishedIdx,:) = repmat(rgb('bright orange'),sum(unfinishedIdx),1);
 markerSize(unfinishedIdx,:) = repmat(6,sum(unfinishedIdx),1);
 

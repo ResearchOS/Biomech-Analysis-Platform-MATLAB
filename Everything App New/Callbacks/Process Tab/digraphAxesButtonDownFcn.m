@@ -23,9 +23,10 @@ ydata = h.YData';
 xWins = [xdata-xTol/2 xdata+xTol/2];
 yWins = [ydata-yTol/2 ydata+yTol/2];
 
-doSelectionChanged = false; % Because the digraph wasn't clicked, it's just being updated. OR no node was clicked on.
+nodeSelected = false; % Because the digraph wasn't clicked, it's just being updated. OR no node was clicked on.
 G = getappdata(fig,'digraph');
 if nargin == 1 || isempty(uuid)
+    listClicked = false;
     idx = (currPoint(1)>xWins(:,1) & currPoint(1)<xWins(:,2)) & ...
     (currPoint(2)>yWins(:,1) & currPoint(2)<yWins(:,2));    
     if sum(idx)>1
@@ -36,9 +37,10 @@ if nargin == 1 || isempty(uuid)
         idx(minDistIdx) = true;
     end
     if sum(idx)==1
-        doSelectionChanged = true; % The selection was made in the digraph, so update the list selection accordingly.
+        nodeSelected = true; % The selection was made in the digraph, so update the list selection accordingly.
     end
 else    
+    listClicked = true;
     idx = ismember(G.Nodes.Name, uuid);    
 end
 if ~any(idx)
@@ -59,13 +61,13 @@ end
 
 renderGraph(fig, [], markerSize, colors);
 
-if ~doSelectionChanged
+if ~nodeSelected
     % Clear current function UI tree
-    delete(handles.Process.functionUITree.Children);
-    handles.Process.currentFunctionLabel.Text = 'Current Process';
     % Pass focus to current analysis UI tree, expanding the group that the
     % currently selected node is in.
-    handles.Process.subtabCurrent.SelectedTab = handles.Process.currentAnalysisTab;
+    if ~listClicked
+        handles.Process.subtabCurrent.SelectedTab = handles.Process.currentAnalysisTab;
+    end
     selNode = handles.Process.analysisUITree.SelectedNodes;
     if isempty(selNode)
         return;
@@ -74,6 +76,7 @@ if ~doSelectionChanged
     for i=1:length(list)-1
         expand(list(i));
     end
+    subTabCurrentSelectionChanged(fig);
     return;
 end
 
@@ -83,12 +86,13 @@ scroll(handles.Process.analysisUITree, node);
 analysisUITreeSelectionChanged(fig, uuid);
 
 handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
+subTabCurrentSelectionChanged(fig);
 
 end
 
 function [tolX, tolY] = getDigraphTol(ax)
 
-perc = 0.08; % Percent of the graph that the click must be within next to a node.
+perc = 0.04; % Percent of the graph that the click must be within next to a node.
 xlims = ax.XLim;
 ylims = ax.YLim;
 

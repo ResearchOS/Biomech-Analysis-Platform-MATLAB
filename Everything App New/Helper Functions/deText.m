@@ -40,6 +40,10 @@ if ~(ischar(uuid) || isstring(uuid))
     return;
 end
 
+if isstring(uuid)
+    uuid = char(uuid);
+end
+
 if isempty(uuid)
     return;
 end

@@ -11,3 +11,4 @@ clear global conn;
 evalin('base','clear gui;');
 
 clearAllMemoizedCaches; % Clears memoized caches. Using these caches greatly improves startup time.
+warning('on','MATLAB:modes:mode:InvalidPropertySet');

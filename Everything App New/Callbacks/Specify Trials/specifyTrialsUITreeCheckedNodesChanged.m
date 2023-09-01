@@ -48,7 +48,7 @@ end
 
 checkedIdx = ismember(src.CheckedNodes, selSTNode);
 
-% If unchecking the box, rmove it from the list.
+% If unchecking the box, remove it from the list.
 [type] = deText(classUUID);
 if ~ismember(type,{'PR','LG'})    
     return;

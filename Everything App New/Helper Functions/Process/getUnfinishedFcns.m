@@ -3,42 +3,78 @@ function [idx] = getUnfinishedFcns(G)
 %% PURPOSE: GET THE LOGICAL INDEX OF THE PROCESS FUNCTIONS IN G.NODES.NAME
 %  THAT HAVE NOT HAD ALL VARIABLES ADDED.
 
-names = G.Nodes.Name;
+global conn;
 
-idx = true(length(names),1);
+names = G.Nodes.Name;
+[type, abstractID] = deText(names);
+abstractUUIDs = cell(size(names));
+for i=1:length(names)
+    abstractUUIDs{i} = genUUID(type{i}, abstractID{i});
+end
+
+sqlquery = ['SELECT PR_ID, NameInCode FROM VR_PR;'];
+tIn = fetch(conn, sqlquery);
+tIn = table2MyStruct(tIn);
+prIn = tIn.PR_ID;
+prInName = tIn.NameInCode;
+if isempty(prIn)
+    prIn = {};
+end
+
+sqlquery = ['SELECT PR_ID, NameInCode FROM PR_VR;'];
+tOut = fetch(conn, sqlquery);
+tOut = table2MyStruct(tOut);
+prOut = tOut.PR_ID;
+prOutName = tOut.NameInCode;
+if isempty(prOut)
+    prOut = {};
+end
+
+% pr = [prIn; prOut];
+
+% idx = ismember(names,pr);
+
+sqlquery = ['SELECT UUID, InputVariablesNamesInCode, OutputVariablesNamesInCode FROM Process_Abstract'];
+t = fetch(conn, sqlquery);
+absPR = table2MyStruct(t);
+
+% [~,ia,ib] = intersect(abstractUUIDs,absPR.UUID,'stable');
+absUUIDs = absPR.UUID;
+inVars = absPR.InputVariablesNamesInCode;
+outVars = absPR.OutputVariablesNamesInCode;
+
+idx = false(length(names),1);
 for i=1:length(names)
     name = names{i};
-    instStruct = loadJSON(name);
-
     [type, abstractID] = deText(name);
-    abstractUUID = genUUID(type, abstractID);
-    abstractStruct = loadJSON(abstractUUID);
-
     if isequal(type,'LG')
         continue;
     end
+    abstractName = genUUID(type, abstractID);
+    absIdx = ismember(absUUIDs, abstractName);
 
-    % Check each getArg/setArg size
-    if ~isequal(size(abstractStruct.InputVariablesNamesInCode),size(instStruct.InputVariables)) || ...
-            ~isequal(size(abstractStruct.OutputVariablesNamesInCode),size(instStruct.OutputVariables))
-        idx(i,1) = false;
-        continue;
-    end
+    % Idx of all names in code for this instance object.
+    inIdx = ismember(prIn, name);
+    outIdx = ismember(prOut, name);    
 
-    for j = 1:length(instStruct.InputVariables)
-        if any(cellfun(@isempty, instStruct.InputVariables{j}))                
-            idx(i,1) = false;
-            continue;
+    % The names in code that are in the abstract object.
+    inVarsCurr = inVars{absIdx};
+    outVarsCurr = outVars{absIdx};
+
+    for j=1:length(inVarsCurr)
+        if ~all(ismember(inVarsCurr{j}(2:end),prInName(inIdx)))
+            idx(i,1) = true;
+            break;
         end
     end
 
-    for j = 1:length(instStruct.OutputVariables)
-        if any(cellfun(@isempty, instStruct.OutputVariables{j}))
-            idx(i,1) = false;
-            continue;
+    for j=1:length(outVarsCurr)
+        if ~all(ismember(outVarsCurr{j}(2:end),prOutName(outIdx)))
+            idx(i,1) = true;
+            break;
         end
     end
 
 end
 
-idx = ~idx; % Was returning which functions were finished, flip it to be an idx of unfinished functions.
+% idx = ~idx; % Was returning which functions were finished, flip it to be an idx of unfinished functions.

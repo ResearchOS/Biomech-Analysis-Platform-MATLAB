@@ -1,10 +1,8 @@
-function [] = setPR_VROutOfDate(src, uuid, outOfDateBool,autoManual)
+function [] = setPR_VROutOfDate(src, uuid, outOfDateBool,prop)
 
 %% PURPOSE: SET OUTOFDATE OF ALL DEPENDENT PR & VR OF THE SPECIFIED PR UUID
-% autoManual: 'Auto' or 'Manual'
-%   'Auto': When running the process queue, etc.
-%   'Manual': Only triggered when clicking "outOfDate" checkbox on group
-%   subtab in Process tab.
+% prop: True when I should propagate the changes to all downstream
+% dependent PR's.
 
 global conn;
 
@@ -14,25 +12,23 @@ fig=ancestor(src,'figure','toplevel');
 assert(isequal(type,'PR'));
 
 if nargin==3
-    autoManual = 'AUTO';
+    prop = false;
 end
-autoManual = upper(autoManual);
-assert(ismember(autoManual,{'AUTO','MANUAL'}));
 
 G = getappdata(fig,'digraph');
-if isempty(G)
-    containerUUID = getCurrent('Current_Analysis');
-    list = getUnorderedList(containerUUID);
-    links = loadLinks(list);
-    G = linkageToDigraph(links);
-    setappdata(fig,'digraph',G);
+if isempty(G) || prop
+    G = refreshDigraph();
 end
 
-if isequal(autoManual,'AUTO') && outOfDateBool
-    depPR = {uuid}; % One UUID because when changi
+if ~prop
+    depPR = {uuid}; % One UUID to just update the current PR.
 else
     [~, depPR] = getDeps(G,'down',uuid); % The downstream PR's.
     depPR = [{uuid}; depPR]; % Add the UUID to the front of the list of dependencies
+    containerUUID = getCurrent('Current_Analysis');
+    list = getRunList(containerUUID, G);
+    listIdx = ismember(list(:,1),depPR);
+    ordDepList = list(listIdx,1); % Ordered dependency list
 end
 
 % Get all of the output variables from the downstream PR's.
@@ -77,12 +73,11 @@ end
 %% If putting PR out of date = false, then need to check if all input VR to each out-of-date PR is out of date.
 % If they are all up to date with this change, then the PR is up to date,
 % and all of its output VR's are up to date, and so on.
-if ~outOfDateBool
-    depPRuniq = unique(depPR,'stable');    
-    for i=1:length(depPRuniq)
+if ~outOfDateBool  
+    for i=1:length(ordDepList)
 
         % Get all of the input variables to this PR. If they're all outOfDate=false, then PR is outOfDate = false.
-        uuid = depPRuniq{i};
+        uuid = ordDepList{i};
         inVarsIdx = ismember(depPR_In,uuid); % Idx of this PR
         inVars = depVR_In(inVarsIdx);
 
@@ -92,11 +87,6 @@ if ~outOfDateBool
 
         outVarsIdx = ismember(depPR_Out,uuid);
         outVars = depVR_Out(outVarsIdx);
-        varsStr = '(';
-        for j=1:length(outVars)
-            varsStr = [varsStr '''' outVars{j} ''', '];
-        end
-        varsStr = [varsStr(1:end-2) ')'];
 
         % At least one input variable out of date. Set the PR and all its
         % output variables to be outOfDate = true.
@@ -105,13 +95,28 @@ if ~outOfDateBool
             outOfDateScalar = 1;            
         end
 
-        % VR OutOfDate
-        sqlquery = ['UPDATE ' tablenameVR ' SET OutOfDate = ' num2str(outOfDateScalar) ' WHERE UUID IN ' varsStr ';'];
-        execute(conn, sqlquery);        
-
         % PR OutOfDate
         sqlquery = ['UPDATE ' tablenamePR ' SET OutOfDate = ' num2str(outOfDateScalar) ' WHERE UUID = ''' uuid ''';'];
         execute(conn, sqlquery);
+
+        if isempty(outVars)
+            continue;
+        end
+
+        varsStr = '(';
+        for j=1:length(outVars)
+            varsStr = [varsStr '''' outVars{j} ''', '];
+        end
+        varsStr = [varsStr(1:end-2) ')'];        
+
+        % VR OutOfDate
+        sqlquery = ['UPDATE ' tablenameVR ' SET OutOfDate = ' num2str(outOfDateScalar) ' WHERE UUID IN ' varsStr ';'];
+        execute(conn, sqlquery);
+
+        % Need to update the vars' outOfDate values
+        sqlquery = ['SELECT UUID, OutOfDate FROM Variables_Instances'];
+        varsFromTable = fetch(conn, sqlquery);
+        varsFromTable = table2MyStruct(varsFromTable);
         
     end
 end

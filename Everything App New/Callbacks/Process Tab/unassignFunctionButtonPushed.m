@@ -22,7 +22,7 @@ end
 
 selUUID = selNode.NodeData.UUID;
 
-[containerUUID] = getContainer(selUUID, fig);
+[containerUUID] = getContainer(tab);
 type = deText(selUUID);
 
 if ~isequal(type,'PR')
@@ -38,3 +38,6 @@ proceed = deleteNode(selNode);
 if ~proceed
     return;
 end
+
+%% Set outOfDate
+setPR_VROutOfDate(fig, selUUID, false, true);

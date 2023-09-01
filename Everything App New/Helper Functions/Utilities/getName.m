@@ -6,6 +6,11 @@ function [names] = getName(uuids, isInstance)
 
 global conn;
 
+if isempty(uuids)
+    names = {};
+    return;
+end
+
 if exist('isInstance','var')~=1
     isInstance = true;
 end
@@ -14,6 +19,13 @@ makeChar = false;
 if ~iscell(uuids)
     makeChar = true;
     uuids = {uuids};
+end
+
+bool = isUUID(uuids);
+if ~bool
+    disp('Not UUIDs!');
+    names = {};
+    return;
 end
 
 types = deText(uuids);

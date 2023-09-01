@@ -2,6 +2,7 @@ function []=addArgsButtonPushed(src,event)
 
 %% PURPOSE:
 
+disp('Adding arguments!');
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -63,7 +64,7 @@ end
 
 fcnNode = handles.Process.groupUITree.SelectedNodes;
 fcnUUID = fcnNode.NodeData.UUID;
-fcnStruct = loadJSON(fcnUUID);
+% fcnStruct = loadJSON(fcnUUID);
 
 [type, abstractID, instanceID] = deText(fcnUUID);
 fcnAbstractUUID = genUUID(type, abstractID);
@@ -71,11 +72,11 @@ abstractFcnStruct = loadJSON(fcnAbstractUUID);
 
 if isequal(varType,'getArg')
     checkArgsAbstract=abstractFcnStruct.InputVariablesNamesInCode;
-    checkArgsInst=fcnStruct.InputVariables;
-    checkSubArgsInst=fcnStruct.InputSubvariables;
+    % checkArgsInst=fcnStruct.InputVariables;
+    % checkSubArgsInst=fcnStruct.InputSubvariables;
 elseif isequal(varType,'setArg')
     checkArgsAbstract=abstractFcnStruct.OutputVariablesNamesInCode;
-    checkArgsInst=fcnStruct.OutputVariables;
+    % checkArgsInst=fcnStruct.OutputVariables;
 end
 % The index to place the new arguments in the abstract function object.
 absIdx = length(checkArgsAbstract)+1;
@@ -85,24 +86,24 @@ for i=1:length(checkArgsAbstract)
         break;
     end
 end
-% The index to place the new arguments in the instance function object.
-instIdx = length(checkArgsInst)+1;
-for i=1:length(checkArgsInst)
-    if isequal(checkArgsInst{i}{1},number)
-        instIdx = i;
-        break;
-    end
-end
-if isequal(varType,'getArg')
-    % The index to place the new arguments in the instance function object.
-    instSubIdx = length(checkSubArgsInst)+1;
-    for i=1:length(checkSubArgsInst)
-        if isequal(checkSubArgsInst{i}{1},number)
-            instSubIdx = i;
-            break;
-        end
-    end
-end
+% % The index to place the new arguments in the instance function object.
+% instIdx = length(checkArgsInst)+1;
+% for i=1:length(checkArgsInst)
+%     if isequal(checkArgsInst{i}{1},number)
+%         instIdx = i;
+%         break;
+%     end
+% end
+% if isequal(varType,'getArg')
+%     % The index to place the new arguments in the instance function object.
+%     instSubIdx = length(checkSubArgsInst)+1;
+%     for i=1:length(checkSubArgsInst)
+%         if isequal(checkSubArgsInst{i}{1},number)
+%             instSubIdx = i;
+%             break;
+%         end
+%     end
+% end
 
 % c.
 if isequal(varType,'getArg')
@@ -130,8 +131,8 @@ for i=1:length(subVarsEmpty)
     subVarsEmpty{i}='';
 end
 
-subVarsEmpty=[{number}; subVarsEmpty']; % Initialize the subvariables as empty.
-argsEmpty=subVarsEmpty; % To initialize the project-specific args as empty.
+% subVarsEmpty=[{number}; subVarsEmpty']; % Initialize the subvariables as empty.
+% argsEmpty=subVarsEmpty; % To initialize the project-specific args as empty.
 argsSplit=[{number}; argsSplit']; % Column vector for JSON format.
 
 % 3. Store the info in the PI process struct.
@@ -141,31 +142,16 @@ if isequal(varType,'getArg')
     else
         abstractFcnStruct.InputVariablesNamesInCode = [abstractFcnStruct.InputVariablesNamesInCode; {argsSplit}];
     end
-    if instIdx<=length(fcnStruct.InputVariables)
-        fcnStruct.InputVariables(instIdx)={argsEmpty};
-    else
-        fcnStruct.InputVariables = [fcnStruct.InputVariables; {argsEmpty}];
-    end
-    if instSubIdx<=length(fcnStruct.InputSubvariables)
-        fcnStruct.InputSubvariables(instSubIdx)={subVarsEmpty};
-    else
-        fcnStruct.InputSubvariables = [fcnStruct.InputSubvariables; {subVarsEmpty}];
-    end
 elseif isequal(varType,'setArg')
     if absIdx<=length(abstractFcnStruct.OutputVariablesNamesInCode)
         abstractFcnStruct.OutputVariablesNamesInCode(absIdx)={argsSplit};
     else
         abstractFcnStruct.OutputVariablesNamesInCode = [abstractFcnStruct.OutputVariablesNamesInCode; {argsSplit}];
     end
-    if instIdx<=length(fcnStruct.OutputVariables)
-        fcnStruct.OutputVariables(instIdx)={argsEmpty};
-    else
-        fcnStruct.OutputVariables = [fcnStruct.OutputVariables; {argsEmpty}];
-    end
 end
 
-writeJSON(getJSONPath(abstractFcnStruct), abstractFcnStruct);
-writeJSON(getJSONPath(fcnStruct), fcnStruct);
+writeJSON(abstractFcnStruct);
 
 % 4. Add the args to the UI tree
 fillCurrentFunctionUITree(fig);
+disp('Finished adding arguments!');

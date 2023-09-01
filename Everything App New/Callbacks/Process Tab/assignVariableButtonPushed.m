@@ -90,21 +90,23 @@ end
 %% Test that adding this variable to this function does not result in a cyclic graph.
 % If so, stop the process.
 currFcnUUID = currFcnNode.NodeData.UUID;
-prevVarUUID = currFcnNode.NodeData.UUID;
+prevVarUUID = currVarNode.NodeData.UUID;
 if isempty(prevVarUUID)
     if isOut
         [success, msg] = linkObjs(currFcnUUID, allVarUUID); % Output variable        
     else
         [success, msg] = linkObjs(allVarUUID, currFcnUUID);        
     end
-    if ~success
-        disp(msg);
-        return;
-    end
-    nameInCode = currFcnNode.Text; % Name in code only, no UUID.
-    sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''';'];
+    % if ~success
+    %     disp(msg);
+    %     return;
+    % end
+    currVarNode.NodeData.UUID = allVarUUID;
+    % spaceIdx = strfind(currVarNode.Text,' '); % Should only be one space.
+    nameInCode = currVarNode.Text;
+    sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''';'];    
     execute(conn, sqlquery);
-    currFcnNode.Text = [currFcnNode.Text '(' allVarUUID ')'];
+    currVarNode.Text = [currVarNode.Text ' (' allVarUUID ')'];
 else
     sqlquery = ['UPDATE ' tablename ' SET VR_ID = ''' allVarUUID ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' prevVarUUID ''';'];
     execute(conn, sqlquery);    

@@ -17,7 +17,7 @@ end
 
 G = getappdata(fig,'digraph');
 if isempty(G) || prop
-    G = refreshDigraph();
+    G = refreshDigraph(fig);
 end
 
 if ~prop

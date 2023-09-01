@@ -1,4 +1,4 @@
-function []=addToQueueButtonPushed(src,event)
+function []=addToQueueButtonPushed(src,uuids)
 
 %% PURPOSE: ADD THE CURRENT PROCESSING FUNCTION OR GROUP TO QUEUE
 % Uses the reachability matrix using transclosure to determine
@@ -29,7 +29,9 @@ end
 
 %% 2. Add new (selected or checked) PR to the queue
 tmp = [addNodes.NodeData];
-uuids={tmp.UUID}'; % The process functions to add (checked in the process group list)
+if nargin==1
+    uuids={tmp.UUID}'; % The process functions to add (checked in the process group list)
+end
 
 % If a PG is selected and nothing is checked, add its contained PR to the queue.
 if isempty(checkedNodes) && contains(uuids,'PG') % Assumes that uuid's is length 1 because only one selection at a time is possible
@@ -56,10 +58,7 @@ uuids = uuids(~inQueueIdx);
 containerUUID = getCurrent('Current_Analysis');
 G = getappdata(fig,'digraph');
 if isempty(G)    
-    list = getUnorderedList(containerUUID);
-    links = loadLinks(list);
-    G = linkageToDigraph(links);
-    setappdata(fig,'digraph',G);
+    G = refreshDigraph(fig);
 end
 % Get the reachability matrix for upstream dependencies (where all nodes
 % can reach)

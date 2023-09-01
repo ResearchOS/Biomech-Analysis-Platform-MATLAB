@@ -21,8 +21,8 @@ stStruct=loadJSON(stUUID);
 % Index of the selected node. Nodes are in same order as in JSON.
 idx=ismember(handles.selectedLogsheetHeadersUITree.Children,selNode);
 
-logic=stStruct.Logsheet_Logic{idx};
-handles.logsheetLogicDropDown.Value=logic;
+params = stStruct.Logsheet_Parameters(idx);
 
-value=stStruct.Logsheet_Value{idx};
-handles.logsheetLogicValueEditField.Value=value;
+handles.logsheetLogicDropDown.Value = params.Logic;
+
+handles.logsheetLogicValueEditField.Value = params.Value;

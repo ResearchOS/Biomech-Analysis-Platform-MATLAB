@@ -33,6 +33,7 @@ clearAllMemoizedCaches; % Clears memoized caches. Using these caches greatly imp
 %% Add all of the appropriate paths to MATLAB search path
 currFolder=fileparts(mfilename('fullpath'));
 addpath(genpath(currFolder));
+setappdata(fig,'appFolder',currFolder);
 
 %% Create the figure
 fig=uifigure('Name','pgui','Visible','on',...

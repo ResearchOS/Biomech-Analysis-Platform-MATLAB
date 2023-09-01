@@ -1,9 +1,15 @@
-function [data] = table2MyStruct(table)
+function [data] = table2MyStruct(table,format)
 
 %% PURPOSE: CONVERT A TABLE FROM SQL TO A STRUCT WITH THE PROPER DATA TYPES
+% format: 'cell' or 'struct'. Struct means vector struct, cell means scalar
+% struct with cell arrays.
+
+if nargin==1
+    format = 'cell';
+end
 
 numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows'};
-jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params',...
+jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','Logsheet_Path',...
     'Logsheet_Parameters','Data_Parameters','HardCodedValue','ST_ID','InputVariablesNamesInCode','OutputVariablesNamesInCode','SpecifyTrials'};
 dateCols = {'Date_Created','Date_Modified','Date_Last_Ran'};
 
@@ -43,5 +49,11 @@ for i=1:length(varNames)
         end
     end
 
-    data.(varName) = var;
+    if isequal(format,'cell')
+        data.(varName) = var; 
+    else
+        for j=1:length(var)
+            data(j).(varName) = var{j};
+        end
+    end
 end

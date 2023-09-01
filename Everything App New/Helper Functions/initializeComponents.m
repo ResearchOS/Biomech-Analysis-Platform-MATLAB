@@ -654,13 +654,13 @@ settingsResize(fig);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the context menus for UI trees
 handles.Process.ContextMenuTop=uicontextmenu(fig);
-handles.Process.ContextMenu.ChangeName=uimenu(handles.Process.ContextMenuTop,'Text','Change Name','MenuSelectedFcn',{@changeName});
-handles.Process.ContextMenu.OpenJSON=uimenu(handles.Process.ContextMenuTop,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
+handles.Process.ContextMenu.Edit=uimenu(handles.Process.ContextMenuTop,'Text','Edit','MenuSelectedFcn',{@editObj});
+% handles.Process.ContextMenu.OpenJSON=uimenu(handles.Process.ContextMenuTop,'Text','Open JSON','MenuSelectedFcn',{@openJSONFile});
 handles.Process.ContextMenu.OpenMFile=uimenu(handles.Process.ContextMenuTop,'Text','Open M File','MenuSelectedFcn',{@openMFile});
 handles.Process.ContextMenu.CopyToNew=uimenu(handles.Process.ContextMenuTop,'Text','Copy to New','MenuSelectedFcn',{@copyToNewPS});
-handles.Process.ContextMenu.NewVersion=uimenu(handles.Process.ContextMenuTop,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
-handles.Process.ContextMenu.CompareVersions=uimenu(handles.Process.ContextMenuTop,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
-handles.Process.ContextMenu.Archive=uimenu(handles.Process.ContextMenuTop,'Text','Archive','MenuSelectedFcn',{@deleteObject});
+% handles.Process.ContextMenu.NewVersion=uimenu(handles.Process.ContextMenuTop,'Text','New Version','MenuSelectedFcn',{@createNewVersion});
+% handles.Process.ContextMenu.CompareVersions=uimenu(handles.Process.ContextMenuTop,'Text','Compare Versions','MenuSelectedFcn',{@compareVersions});
+% handles.Process.ContextMenu.Archive=uimenu(handles.Process.ContextMenuTop,'Text','Archive','MenuSelectedFcn',{@deleteObject});
 handles.Process.ContextMenu.CopyUUID=uimenu(handles.Process.ContextMenuTop,'Text','Copy UUID','MenuSelectedFcn',{@copyText});
 handles.Process.ContextMenu.PasteUUID=uimenu(handles.Process.ContextMenuTop,'Text','Paste UUID','MenuSelectedFcn',{@pasteText});
-handles.Process.ContextMenu.OpenAbstractJSON=uimenu(handles.Process.ContextMenuTop,'Text','Open Abstract JSON','MenuSelectedFcn',{@openPIJSONFile});
+% handles.Process.ContextMenu.OpenAbstractJSON=uimenu(handles.Process.ContextMenuTop,'Text','Open Abstract JSON','MenuSelectedFcn',{@openPIJSONFile});

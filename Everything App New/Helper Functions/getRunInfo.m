@@ -1,12 +1,13 @@
 function [runInfo]=getRunInfo(absStruct,instStruct)
 
 %% PURPOSE: COMPILE INFO THAT GETARG/SETARG NEED TO RUN THE SPECIFIED FUNCTION.
+% 1. Data path
+% 2. The abstract & instance structs.
+% 3. Map the names in code to the variable names.
 
-Current_Project_Name = getCurrent('Current_Project_Name');
-projectStruct=loadJSON(Current_Project_Name);
+global conn;
 
-computerID=getComputerID();
-runInfo.DataPath=projectStruct.DataPath.(computerID);
+runInfo.DataPath=getCurrent('Data_Path');
 
 % Store the info for the function to run.
 runInfo.Fcn.AbsStruct=absStruct;
@@ -26,28 +27,39 @@ for inOut=1:numIters
     switch inOut
         case 1
             fldName='Input';
+            tablename = 'VR_PR';
         case 2
             fldName='Output';
+            tablename = 'PR_VR';
     end
 
-    vars=instStruct.([fldName 'Variables']);
-    varNamesInCode=absStruct.([fldName 'VariablesNamesInCode']);
+    sqlquery = ['SELECT VR_ID, NameInCode FROM ' tablename ' WHERE PR_ID = ' instStruct.UUID];
+    t = fetch(conn, sqlquery);
+    tJoin = table2MyStruct(t);
+
+    varStr = getCondStr(tJoin.VR_ID);
+    sqlquery = ['SELECT * FROM ' tablename ' WHERE UUID IN ' varStr];
+    t = fetch(conn, sqlquery);
+    vrStructs = table2MyStruct(t,'struct');
+    vrUUIDs = {vrStructs.UUID};
+
+    varNamesInCode=absStruct.([fldName 'VariablesNamesInCode']); % Cell array of cell arrays.
 
     if isempty(varNamesInCode)
         continue; % For plotting (when making them process functions)
 %         error(['Missing ' fldName ' Variables Names In Code!']);
     end
     
-    assert(length(vars)==length(varNamesInCode),['Mismatch in number of getArgs! ' instStruct.UUID]);
-    assert(~isempty(vars),['Missing ' lower(fldName) ' arguments to run the function! ' instStruct.UUID])
-    for i=1:length(vars)
-        assert(length(vars{i})==length(varNamesInCode{i}),['Mismatch in number of variables in getArg ' num2str(vars{i}{1}) ' ' instStruct.UUID]);
-        for j=2:length(vars{i})
+    % assert(length(vars)==length(varNamesInCode),['Mismatch in number of getArgs! ' instStruct.UUID]);
+    % assert(~isempty(vars),['Missing ' lower(fldName) ' arguments to run the function! ' instStruct.UUID])
+    for i=1:length(varNamesInCode)
+        % assert(length(vars{i})==length(varNamesInCode{i}),['Mismatch in number of variables in getArg ' num2str(vars{i}{1}) ' ' instStruct.UUID]);
+        for j=2:length(varNamesInCode{i})
             
-            currVarInst=vars{i}{j};            
-            varStructInst=loadJSON(currVarInst);   
+            idx = ismember(vrUUIDs,varNamesInCode{i}{j});            
+            varStructInst=vrStructs(idx);   
 
-            [type, abstractID, instanceID] = deText(currVarInst);
+            [type, abstractID, instanceID] = deText(varStructInst.UUID);
             currVarAbs = genUUID(type, abstractID);                        
             varStructAbs=loadJSON(currVarAbs);
 

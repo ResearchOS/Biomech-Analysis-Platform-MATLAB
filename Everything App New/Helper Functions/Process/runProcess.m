@@ -2,6 +2,8 @@ function [stop, message, emailSubject, e]=runProcess(instUUID,guiInBase)
 
 %% PURPOSE: ACTUALLY RUN THE SPECIFIED FUNCTION
 
+global conn;
+
 slash=filesep;
 e='';
 
@@ -28,12 +30,14 @@ absStruct=loadJSON(abstractUUID);
 % the future.
 specifyTrials=getST(instUUID);
 
-fcnName=absStruct.MFileName;
+fcnName=absStruct.ExecFileName;
 fcnLevel=absStruct.Level;
 
+currDate = char(datetime('now'));
+
 message = '';
-emailSubject = ['Error running process function ' instStruct.UUID ' ' instStruct.Text];
-messageProj = ['Date: ' char(datetime('now')) newline 'Subject: ' emailSubject newline 'This function is level: ' fcnLevel newline];
+emailSubject = ['Error running process function ' instStruct.UUID ' ' instStruct.Name];
+messageProj = ['Date: ' currDate newline 'Subject: ' emailSubject newline 'This function is level: ' fcnLevel newline];
 
 stop = false;
 if exist(fcnName,'file')~=2
@@ -43,13 +47,83 @@ if exist(fcnName,'file')~=2
     return;
 end
 
+G = getappdata(fig,'digraph');
+if isempty(G)
+    refreshDigraph(fig);
+end
+
 %% CHECK IF ALL UPSTREAM FUNCTIONS & VARIABLES ARE UP TO DATE!
+[~,deps] = getDeps(G,'up',instUUID);
+sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
+depIdx = ismember(t.UUID,deps);
+t.UUID(~depIdx) = [];
+t.OutOfDate(~depIdx) = [];
+outOfDateIdx = ismember(t.OutOfDate,1);
+if any(outOfDateIdx)
+    outOfDateDeps = t.UUID(outOfDateIdx);
+    a = questdlg('There are dependent PR out of date. Add them to queue?','Add deps to queue?','Yes','No','Cancel','Yes');
+    if isequal(a,'Yes')
+        addToQueueButtonPushed(fig,outOfDateDeps);
+    end
+    stop = true;    
+end
+
+% Only need to check the input variables to this function. If a var is hard
+% coded and not up to date, that's ok. If is hard coded = 0 and not up to
+% date, suggest to the user that they add the pre-req PR's to the queue.
+sqlquery = ['SELECT VR_ID FROM VR_PR WHERE PR_ID = ''' instUUID ''';'];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
+varNames = t.VR_ID;
+varStr = getCondStr(varNames);
+sqlquery = ['SELECT UUID, Abstract_UUID, OutOfDate FROM Variables_Instances WHERE UUID IN ' varStr];
+t = fetch(conn, sqlquery);
+tInst = table2MyStruct(t);
+
+if ~iscell(tInst.Abstract_UUID)
+    tInst.UUID = {tInst.UUID};
+    tInst.Abstract_UUID = {tInst.Abstract_UUID};
+end
+
+absVars = unique(tInst.Abstract_UUID,'stable');
+absVarStr = getCondStr(absVars);
+sqlquery = ['SELECT UUID, IsHardCoded FROM Variables_Abstract WHERE UUID IN ' absVarStr];
+t = fetch(conn, sqlquery);
+tAbs = table2MyStruct(t);
+
+if ~iscell(tAbs.UUID)
+    tAbs.UUID = {tAbs.UUID};
+end
+
+hardCodedIdxAbs = ismember(tAbs.IsHardCoded,1);
+hardCodedUUID = tAbs.UUID(hardCodedIdxAbs);
+hardCodedIdxInst = contains(tInst.UUID, hardCodedUUID);
+outOfDateIdx = tInst.OutOfDate==1 & ~hardCodedIdxInst;
+hardCodedOutOfDate = tInst.UUID(hardCodedIdxInst & tInst.OutOfDate==1);
+if any(outOfDateIdx)
+    outOfDateInputs = t.UUID(outOfDateIdx);
+    outOfDateStr = getCondStr(outOfDateInputs);
+    sqlquery = ['SELECT PR_ID FROM PR_VR WHERE PR_ID = ''' instUUID ''' AND VR_ID IN ' outOfDateStr];
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    a = questdlg('There are input variables out of date. Add their PR to queue?',' Add deps to queue?','Yes','No','Cancel','Yes');
+    if isequal(a,'Yes')
+        addToQueueButtonPushed(fig, t.PR_ID);
+    end
+    stop = true;    
+end
+
+if stop
+    return; % Because something is out of date.
+end
 
 %% NOTE: NEED THE VARIABLES' LEVELS, AND THE FUNCTION'S LEVELS.
 Current_Logsheet = getCurrent('Current_Logsheet');
 logsheetStruct=loadJSON(Current_Logsheet);
 computerID=getComputerID();
-logsheetPath=logsheetStruct.LogsheetPath.(computerID);
+logsheetPath=logsheetStruct.Logsheet_Path.(computerID);
 [logsheetFolder,name]=fileparts(logsheetPath);
 logsheetPathMAT=[logsheetFolder slash name '.mat'];
 load(logsheetPathMAT,'logVar');
@@ -80,23 +154,6 @@ subNames=fieldnames(trialNames);
 %% Create runInfo and assign it to base workspace.
 % Store the info for the process struct
 getRunInfo(absStruct,instStruct);
-
-%% Check if all of the input variables are up to date!
-inVars = getVarNamesArray(instStruct, 'InputVariables');
-for i=1:length(inVars)
-    if isempty(inVars{i})
-        disp('Missing an input variable!');
-        return;
-    end
-    varStruct = loadJSON(inVars{i});
-    [type, abstractID] = deText(varStruct.UUID);
-    absVar = genUUID(type, abstractID);
-    varAbsStruct = loadJSON(absVar);
-    if varStruct.OutOfDate && ~varAbsStruct.IsHardCoded
-        disp(['Cannot run this function because input variable ' getName(varStruct.UUID) ' ' varStruct.UUID ' is out of date!']);
-        return;
-    end
-end
 
 %% Run the function!
 sendEmail = handles.Process.sendEmailsCheckbox.Value;
@@ -189,6 +246,17 @@ if ~ismember('P',fcnLevel)
     end
 end
 
+%% Update the hard-coded out of date input variables to be up to date.
+hardCodedStr = getCondStr(hardCodedOutOfDate);
+currDate = char(datetime('now'));
+sqlquery = ['UPDATE Variables_Instances SET OutOfDate = 0, Date_Modified = ''' currDate ''' WHERE UUID IN ' hardCodedStr];
+if ~isempty(hardCodedOutOfDate)
+    execute(conn, sqlquery);
+end
+
+%% Update out of date for PR & outputs. Don't propagate beyond the outputs of this PR.
+setPR_VROutOfDate(fig, instUUID, false, false);
+
 %% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
 modifyVarsDate(instStruct.UUID); % When setting "OutOfDate" to false, this does NOT get recursively applied to up or downstream objects.
 
@@ -198,6 +266,7 @@ remQueueIdx=ismember(queue,instStruct.UUID);
 queue(remQueueIdx)=[];
 
 setCurrent(queue,'Process_Queue');
+refreshDigraph(fig);
 
 evalin('base','clear runInfo'); % Clean up after myself
 if isempty(remQueueIdx)

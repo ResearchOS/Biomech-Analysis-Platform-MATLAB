@@ -19,11 +19,7 @@ stStruct=loadJSON(stUUID);
 
 idxNum=find(ismember(handles.selectedLogsheetHeadersUITree.Children,selNode)==1);
 
-stStruct.Logsheet_Headers(idxNum)=[];
-
-stStruct.Logsheet_Logic(idxNum)=[];
-
-stStruct.Logsheet_Value(idxNum)=[];
+stStruct.Logsheet_Parameters(idxNum) = [];
 
 delete(selNode);
 
@@ -38,4 +34,4 @@ if ~isempty(handles.selectedLogsheetHeadersUITree.Children)
     selectedLogsheetHeadersUITreeSelectionChanged(fig);
 end
 
-writeJSON(getJSONPath(stStruct), stStruct);
+writeJSON(stStruct);

@@ -4,6 +4,8 @@ function []=outOfDateCheckboxValueChanged(src,event)
 
 global conn;
 
+disp('Setting out of date  attribute');
+
 fig = ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles'); 
 
@@ -17,6 +19,8 @@ outOfDateBool = handles.Process.outOfDateCheckbox.Value;
 
 uuid = selNode.NodeData.UUID;
 
-setPR_VROutOfDate(fig, uuid, outOfDateBool,'Manual');
+setPR_VROutOfDate(fig, uuid, outOfDateBool, true);
 
 toggleDigraphCheckboxValueChanged(fig);
+
+disp('Finished setting out of date attribute');

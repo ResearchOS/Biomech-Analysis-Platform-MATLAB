@@ -17,23 +17,29 @@ stUUID=titleSplit{end};
 
 stStruct=loadJSON(stUUID);
 
+logParams = stStruct.Logsheet_Parameters;
+
+idx = length(logParams)+1;
+
 %% Add header
 header=selNode.Text;
 
 uitreenode(handles.selectedLogsheetHeadersUITree,'Text',header);
 
-stStruct.Logsheet_Headers=[stStruct.Logsheet_Headers; {header}];
+logParams(idx).Headers = header;
 
 %% Add logic
 handles.logsheetLogicDropDown.Value='ignore';
 
-stStruct.Logsheet_Logic=[stStruct.Logsheet_Logic; {'ignore'}];
+logParams(idx).Logic = 'ignore';
 
 %% Add logic value
 handles.logsheetLogicValueEditField.Value='';
 
-stStruct.Logsheet_Value=[stStruct.Logsheet_Value; {''}];
+logParams(idx).Value = '';
 
-writeJSON(getJSONPath(stStruct), stStruct);
+%% Write the changes
+stStruct.Logsheet_Parameters = logParams;
+writeJSON(stStruct);
 
 handles.selectedLogsheetHeadersUITree.SelectedNodes=handles.selectedLogsheetHeadersUITree.Children(end);

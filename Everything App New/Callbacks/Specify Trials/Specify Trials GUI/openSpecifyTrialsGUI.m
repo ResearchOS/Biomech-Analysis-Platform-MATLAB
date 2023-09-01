@@ -49,7 +49,7 @@ if ~isempty(handles.logsheetHeadersUITree.Children)
 end
 
 %% Initialize the selected headers
-selHeaders=stStruct.Logsheet_Headers;
+selHeaders={stStruct.Logsheet_Parameters.Headers};
 
 for i=1:length(selHeaders)
     uitreenode(handles.selectedLogsheetHeadersUITree,'Text',selHeaders{i});

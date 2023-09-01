@@ -22,6 +22,6 @@ stStruct=loadJSON(stUUID);
 idx=ismember(handles.selectedLogsheetHeadersUITree.Children,selNode);
 
 logic=handles.logsheetLogicDropDown.Value;
-stStruct.Logsheet_Logic{idx}=logic;
+stStruct.Logsheet_Parameters(idx).Logic=logic;
 
-writeJSON(getJSONPath(stStruct), stStruct);
+writeJSON(stStruct);

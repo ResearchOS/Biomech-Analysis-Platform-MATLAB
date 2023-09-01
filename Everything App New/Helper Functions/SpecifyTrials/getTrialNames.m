@@ -178,16 +178,10 @@ for inclExcl=1:2
                                         if contains(currLogElem,currVal)
                                             passAll(m)=1;
                                         end
-%                                         if ~isempty(strfind(currLogElem,currVal))
-%                                             passAll(m)=1;
-%                                         end
                                     case 'does not contain'
                                         if ~contains(currLogElem,currVal)
                                             passAll(m)=1;
                                         end
-%                                         if isempty(strfind(currLogElem,currVal))
-%                                             passAll(m)=1;
-%                                         end
                                     case 'is empty'
                                         if isnan(currLogElem)
                                             passAll(m)=1;

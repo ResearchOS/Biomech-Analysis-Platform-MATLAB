@@ -22,6 +22,7 @@ end
 
 if ~prop
     depPR = {uuid}; % One UUID to just update the current PR.
+    ordDepList = depPR;
 else
     [~, depPR] = getDeps(G,'down',uuid); % The downstream PR's.
     depPR = [{uuid}; depPR]; % Add the UUID to the front of the list of dependencies
@@ -47,25 +48,23 @@ depsIdx = ismember(t.PR_ID,depPR); % Index of the PR's of interest (dependencies
 depPR_In = t.PR_ID(depsIdx); % The downstream PR in same order as var
 depVR_In = t.VR_ID(depsIdx); % The input vars to all downstream PR's
 
-% Get the outOfDate from all variables.
-sqlquery = ['SELECT UUID, OutOfDate FROM Variables_Instances'];
-varsFromTable = fetch(conn, sqlquery);
-varsFromTable = table2MyStruct(varsFromTable);
+currDate = char(datetime('now'));
 
 %% If putting PR out of date = true, then all PR & VR downstream are out of date automatically.
 tablenamePR = getTableName('PR',true);
 tablenameVR = getTableName('VR',true);
+
 if outOfDateBool    
     for i=1:length(depPR)
         uuid = depPR{i};
-        sqlquery = ['UPDATE ' tablenamePR ' SET OutOfDate = true WHERE UUID = ''' uuid ''';'];
+        sqlquery = ['UPDATE ' tablenamePR ' SET OutOfDate = true, Date_Modified = ''' currDate ''' WHERE UUID = ''' uuid ''';'];
         execute(conn, sqlquery);
     end
 
     tablenameVR = getTableName('VR',true);
     for i=1:length(depVR_Out)
         uuid = depVR_Out{i};
-        sqlquery = ['UPDATE ' tablenameVR ' SET OutOfDate = true WHERE UUID = ''' uuid ''';'];
+        sqlquery = ['UPDATE ' tablenameVR ' SET OutOfDate = true, Date_Modified = ''' currDate ''' WHERE UUID = ''' uuid ''';'];
         execute(conn, sqlquery);
     end
 end
@@ -75,6 +74,11 @@ end
 % and all of its output VR's are up to date, and so on.
 if ~outOfDateBool  
     for i=1:length(ordDepList)
+
+        % Get the outOfDate from all variables.
+        sqlquery = ['SELECT UUID, OutOfDate FROM Variables_Instances'];
+        varsFromTable = fetch(conn, sqlquery);
+        varsFromTable = table2MyStruct(varsFromTable);
 
         % Get all of the input variables to this PR. If they're all outOfDate=false, then PR is outOfDate = false.
         uuid = ordDepList{i};
@@ -96,7 +100,7 @@ if ~outOfDateBool
         end
 
         % PR OutOfDate
-        sqlquery = ['UPDATE ' tablenamePR ' SET OutOfDate = ' num2str(outOfDateScalar) ' WHERE UUID = ''' uuid ''';'];
+        sqlquery = ['UPDATE ' tablenamePR ' SET OutOfDate = ' num2str(outOfDateScalar) ', Date_Modified = ''' currDate ''' WHERE UUID = ''' uuid ''';'];
         execute(conn, sqlquery);
 
         if isempty(outVars)
@@ -110,13 +114,8 @@ if ~outOfDateBool
         varsStr = [varsStr(1:end-2) ')'];        
 
         % VR OutOfDate
-        sqlquery = ['UPDATE ' tablenameVR ' SET OutOfDate = ' num2str(outOfDateScalar) ' WHERE UUID IN ' varsStr ';'];
+        sqlquery = ['UPDATE ' tablenameVR ' SET OutOfDate = ' num2str(outOfDateScalar) ', Date_Modified = ''' currDate ''' WHERE UUID IN ' varsStr ';'];
         execute(conn, sqlquery);
-
-        % Need to update the vars' outOfDate values
-        sqlquery = ['SELECT UUID, OutOfDate FROM Variables_Instances'];
-        varsFromTable = fetch(conn, sqlquery);
-        varsFromTable = table2MyStruct(varsFromTable);
         
     end
 end

@@ -2,13 +2,7 @@ function [inclStruct]=getInclStruct(specifyTrials)
 
 %% PURPOSE: RETURN THE INCLUSION CRITERIA FROM THE SPECIFY TRIALS.
 
-slash=filesep;
-
-commonPath=getCommonPath();
-
-stFolder=[commonPath slash 'SpecifyTrials'];
-
-oldPath=cd(stFolder);
+global conn;
 
 inclStruct=struct();
 
@@ -16,25 +10,30 @@ if isempty(specifyTrials)
     return;
 end
 
-for i=1:length(specifyTrials)
+stStr = getCondStr(specifyTrials);
 
-    currST=specifyTrials{i};
+sqlquery = ['SELECT UUID, Logsheet_Parameters FROM SpecifyTrials_Abstract WHERE UUID IN ' stStr];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
+if ~iscell(t.UUID)
+    t.UUID = {t.UUID};
+    t.Logsheet_Parameters = {t.Logsheet_Parameters};
+end
 
-    fullPath=getClassFilePath(currST, 'SpecifyTrials');
-    stStruct=loadJSON(fullPath);
+uuids = t.UUID;
+allParams = t.Logsheet_Parameters;
 
-    inclStruct.Include.Condition(i).Name=currST;
+for i=1:length(uuids)
 
-    logHeaders=stStruct.Logsheet_Headers;
-    logLogic=stStruct.Logsheet_Logic;
-    logValue=stStruct.Logsheet_Value;
+    currST=uuids{i};
+    params = allParams{i};
 
-    for j=1:length(logHeaders)
-        inclStruct.Include.Condition(i).Logsheet(j).Name=logHeaders{j};
-        inclStruct.Include.Condition(i).Logsheet(j).Logic=logLogic{j};
-        inclStruct.Include.Condition(i).Logsheet(j).Value=logValue{j};
+    inclStruct.Include.Condition(i).Name=currST;    
+
+    for j=1:length(params)
+        inclStruct.Include.Condition(i).Logsheet(j).Name = params(j).Headers;
+        inclStruct.Include.Condition(i).Logsheet(j).Logic = params(j).Logic;
+        inclStruct.Include.Condition(i).Logsheet(j).Value = params(j).Value;
     end
 
 end
-
-cd(oldPath);

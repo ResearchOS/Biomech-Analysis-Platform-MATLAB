@@ -32,7 +32,7 @@ handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
 [outputVarsInst] = getAssignedVars(uuid, 'Output');
 
 % Load project-independent file.
-abstractUUID = genUUID(className2Abbrev(abbrev,true),abstractID);
+abstractUUID = genUUID(className2Abbrev(abbrev),abstractID);
 abstractStruct=loadJSON(abstractUUID);
 
 namesInCode = abstractStruct.InputVariablesNamesInCode;

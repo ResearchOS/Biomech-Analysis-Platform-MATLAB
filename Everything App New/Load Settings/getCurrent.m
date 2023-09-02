@@ -1,14 +1,20 @@
-function [var] = getCurrent(varName)
+function [var] = getCurrent(varName,withID)
 
 %% PURPOSE: RETURN THE VARIABLE FROM THE CURRENT SETTINGS VARIABLE
+% withID: Return the paths with computer ID. Most likely being called by
+% setCurrent.
+
+if nargin==1
+    withID = false;
+end
 
 h = @memoizedGetCurrent;
 fcnH = memoize(h);
-var = fcnH(varName);
+var = fcnH(varName, withID);
 
 end
 
-function [var] = memoizedGetCurrent(varName)
+function [var] = memoizedGetCurrent(varName, withID)
 var = [];
 global conn;
 
@@ -38,12 +44,28 @@ if ismember(varName,projectSettingsVars)
     sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ''' projectName ''';'];
     t = fetch(conn, sqlquery);
     struct = table2MyStruct(t);
-    if isstruct(struct.(varName))
+    if isstruct(struct.(varName)) && ~withID
         var = struct.(varName).(computerID);
     else
         var = struct.(varName);
     end
 
+end
+
+%% Look at analyses table to determine
+analysisSettingsVars = {'Current_View'};
+
+if ismember(varName,analysisSettingsVars)
+    computerID = getCurrent('Computer_ID');
+    analysisName = getCurrent('Current_Analysis');
+    sqlquery = ['SELECT ' varName ' FROM Analyses_Instances WHERE UUID = ''' analysisName ''';'];
+    t = fetch(conn, sqlquery);
+    struct = table2MyStruct(t);   
+    if ~withID
+        var = struct.(varName).(computerID);
+    else
+        var = struct.(varName);
+    end
 end
 
 end

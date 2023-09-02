@@ -66,6 +66,7 @@ queueNames = getName(queue);
 for i=1:length(queue)
     addNewNode(handles.Process.queueUITree, queue{i}, queueNames{i});
 end
+setappdata(fig,'multiSelect',false);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Plot tab

@@ -1,4 +1,4 @@
-function [] = saveEdits(src,event)
+function [] = saveEdits(src,uuid)
 
 %% PURPOSE: SAVE JSON FILE WITH EDITS TO OBJECT.
 
@@ -11,7 +11,9 @@ if isempty(selNode)
     return;
 end
 
-uuid = selNode.NodeData.UUID;
+if nargin==1
+    uuid = selNode.NodeData.UUID;
+end
 
 struct = loadJSON(uuid);
 
@@ -25,13 +27,6 @@ if exist(tmpPath,'file')~=2
     return;
 end
 
-a = questdlg([struct.Name ' (' struct.UUID ')'],'Accept changes?','Yes','No','Cancel','No');
-
-if ~isequal(a,'Yes')
-    delete(tmpPath);
-    return;
-end
-
 fid=fopen(tmpPath);
 raw=fread(fid,inf);
 fclose(fid);
@@ -40,6 +35,13 @@ try
     json = jsondecode(jsonStr);
 catch
     disp('File does not follow the JSON format!');
+    return;
+end
+
+a = questdlg([json.Name ' (' struct.UUID ')'],'Accept changes?','Yes','No','Cancel','No');
+
+if ~isequal(a,'Yes')
+    delete(tmpPath);
     return;
 end
 
@@ -61,5 +63,5 @@ delete(tmpPath);
 
 % The display name changed, so update the display.
 if ~isequal(struct.Name,json.Name)
-    fillAnalysisUITree(fig);
+    changeName(fig, struct.UUID, json.Name);
 end

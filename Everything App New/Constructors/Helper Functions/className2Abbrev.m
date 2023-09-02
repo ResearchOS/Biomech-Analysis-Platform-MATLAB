@@ -1,66 +1,81 @@
-function abbrev = className2Abbrev(class, reverse)
+function abbrev = className2Abbrev(class)
 
-list = false;
+isChar = false;
+if ischar(class)
+    class = {class};
+    isChar = true;
+end
 
-if nargin==1
-    reverse=false;
-    if isequal(upper(class),'LIST')
-        list = true;
+abbrevs = cell(size(class));
+for i=1:length(class)
+    currClass = class{i};
+
+    if length(currClass)==2
+        reverse = true;
+    else
+        reverse = false;
     end
-end
 
-if list
-    abbrev = {'Project', 'Process', 'ProcessGroup', 'SpecifyTrials',...
-        'Logsheet','Analysis','Variable','Component','Plot'};
-    return;
-end
-
-if ~reverse
-    switch class
-        case 'Project'
-            abbrev = 'PJ';
-        case 'Process'
-            abbrev = 'PR';
-        case 'ProcessGroup'
-            abbrev = 'PG';
-        case 'SpecifyTrials'
-            abbrev = 'ST';
-        case 'Logsheet'
-            abbrev = 'LG';
-        case 'Analysis'
-            abbrev = 'AN';
-        case 'Variable'
-            abbrev = 'VR';
-        case 'Component'
-            abbrev = 'CP';
-        case 'Plot'
-            abbrev = 'PL';
-        otherwise
-            abbrev = '';
+    if ~reverse
+        switch currClass
+            case 'Project'
+                abbrev = 'PJ';
+            case 'Process'
+                abbrev = 'PR';
+            case 'ProcessGroup'
+                abbrev = 'PG';
+            case 'SpecifyTrials'
+                abbrev = 'ST';
+            case 'Logsheet'
+                abbrev = 'LG';
+            case 'Analysis'
+                abbrev = 'AN';
+            case 'Variable'
+                abbrev = 'VR';
+            case 'Component'
+                abbrev = 'CP';
+            case 'Plot'
+                abbrev = 'PL';
+            case 'View'
+                abbrev = 'VW';
+            otherwise
+                abbrev = '';
+        end
     end
+
+    if reverse
+        switch currClass
+            case 'PR'
+                abbrev = 'Process';
+            case 'PJ'
+                abbrev = 'Project';
+            case 'PG'
+                abbrev = 'ProcessGroup';
+            case 'ST'
+                abbrev = 'SpecifyTrials';
+            case 'LG'
+                abbrev = 'Logsheet';
+            case 'AN'
+                abbrev = 'Analysis';
+            case 'VR'
+                abbrev = 'Variable';
+            case 'CP'
+                abbrev = 'Component';
+            case 'PL'
+                abbrev = 'Plot';
+            case 'VW'
+                abbrev = 'View';
+            otherwise
+                abbrev='';
+        end
+    end
+
+    abbrevs{i} = abbrev;
+
 end
 
-if reverse
-    switch class
-        case 'PR'
-            abbrev = 'Process';
-        case 'PJ'
-            abbrev = 'Project';
-        case 'PG'
-            abbrev = 'ProcessGroup';
-        case 'ST'
-            abbrev = 'SpecifyTrials';
-        case 'LG'
-            abbrev = 'Logsheet';
-        case 'AN'
-            abbrev = 'Analysis';
-        case 'VR'
-            abbrev = 'Variable';
-        case 'CP'
-            abbrev = 'Component';
-        case 'PL'
-            abbrev = 'Plot';
-        otherwise
-            abbrev='';
-    end
+if isChar
+    abbrevs = abbrevs{1};
 end
+
+abbrev = abbrevs;

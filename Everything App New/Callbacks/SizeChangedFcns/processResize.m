@@ -191,7 +191,7 @@ objResize(tab.digraphAxes, [0.58 0.01], [0.41 0.94]);
 % objResize(tab.switchDigraphModeDropDown, [0.7 0.95], [0.1 compHeight]);
 
 % 38. Pretty variables dropdown
-objResize(tab.prettyVarsCheckbox, [0.82 0.95], [0.1 compHeight]);
+objResize(tab.prettyVarsCheckbox, [0.93 0.95], [0.1 compHeight]);
 
 % 35. Add specify trials button
 objResize(tab.addSpecifyTrialsButton, [0.58 0.2], [0.03 compHeight]);
@@ -210,3 +210,30 @@ objResize(tab.outOfDateCheckbox, [0.22 0.83], [0.1 compHeight]);
 
 % 50. Send emails checkbox
 objResize(tab.sendEmailsCheckbox, [0.9 0.95], [0.1 compHeight]);
+
+% 51. Views dropdown
+objResize(tab.viewsDropDown, [0.73 0.95], [0.1 compHeight]);
+
+% 52. Edit/save view state button
+objResize(tab.editViewButton, [0.69 0.95], [0.04 compHeight]);
+
+% 53. Select multi state button
+objResize(tab.multiSelectButton, [0.85 0.95], [0.05 compHeight]);
+
+% 54. Add node from list button
+objResize(tab.addToViewButton, [0.58 0.8], [0.03 compHeight]);
+
+% 55. Remove node from axes button
+objResize(tab.removeFromViewButton, [0.58 0.75], [0.03 compHeight]);
+
+% 56. Add/remove successors button
+objResize(tab.successorsButton, [0.58 0.7], [0.03 compHeight]);
+
+% 57. Add/remove predecessors button
+objResize(tab.predecessorsButton, [0.58 0.65], [0.03 compHeight]);
+
+% 58. Create new view button
+objResize(tab.newViewButton, [0.58 0.6], [0.03 compHeight]);
+
+% 59. Archive view button
+objResize(tab.archiveViewButton, [0.58 0.55], [0.03 compHeight]);

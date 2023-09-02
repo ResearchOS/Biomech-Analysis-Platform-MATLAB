@@ -14,7 +14,7 @@ abstractUUID = genUUID(abbrev, abstractID);
 
 fullPath = getJSONPath(abstractUUID);
 
-class = className2Abbrev(abbrev, true);
+class = className2Abbrev(abbrev);
 
 if exist(fullPath,'file')~=2
     a=questdlg('File does not exist. Create it?','Missing file','Yes','No','Cancel','No');    

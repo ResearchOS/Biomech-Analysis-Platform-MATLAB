@@ -12,7 +12,7 @@ else
     suffix = 'Abstract';
 end
 
-class = className2Abbrev(type, true);
+class = className2Abbrev(type);
 class = makeClassPlural(class);
 tablename = [class '_' suffix];
 

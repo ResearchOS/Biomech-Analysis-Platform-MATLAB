@@ -27,6 +27,7 @@ createAbstract = false;
 if exist('abstractID','var')~=1
     abstractID = '';    
 end
+
 if isempty(abstractID) || ~instanceBool
     createAbstract=true;
 end
@@ -42,7 +43,7 @@ end
 % Initialize the fields common to all structures (abstract & instances, all
 % object types).
 if ischar(class) && length(class)==2
-    class = className2Abbrev(class, true);
+    class = className2Abbrev(class);
 end
 
 % If creating an abstract object AND an instance at the same time, need to run this twice.
@@ -117,16 +118,11 @@ end
 function struct = createProcessStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-    struct.SpecifyTrials={};
-    % struct.InputVariables={};
-    % struct.InputSubvariables={};
-    % struct.OutputVariables={};
+    struct.SpecifyTrials={};    
     struct.Date_Last_Ran='';
 else
     struct.Level = 'T';
-    struct.NamesInCode = {};
-    % struct.InputVariablesNamesInCode = {};
-    % struct.OutputVariablesNamesInCode = {};
+    struct.NamesInCode = {};    
     struct.ExecFileName = '';
 end
 
@@ -136,7 +132,7 @@ end
 function struct = createProcessGroupStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-    % struct.RunList={};  
+    
 else
 
 end
@@ -167,10 +163,22 @@ end
 function struct = createAnalysisStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-    struct.Tags = {};
-    % struct.RunList = {}; % The list of functions & groups to run, in order.
+    struct.Tags = {};   
+    computerID=getComputerID();
+    struct.Current_View.(computerID) = '';
 else
     
+end
+
+end
+
+%% VIEW
+function struct = createViewStruct(instanceBool, struct, saveObj)
+
+if instanceBool
+    struct.InclNodes = {};
+else
+
 end
 
 end

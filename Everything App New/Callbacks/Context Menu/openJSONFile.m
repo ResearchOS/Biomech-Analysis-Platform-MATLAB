@@ -9,7 +9,7 @@ selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
 uuid = selNode.NodeData.UUID;
 [abbrev,abstractID,instanceID]=deText(uuid);
 fullPath = getJSONPath(uuid);
-class = className2Abbrev(abbrev, true);
+class = className2Abbrev(abbrev);
 
 if exist(fullPath,'file')~=2
     a=questdlg('File does not exist. Create it?','Missing file','Yes','No','Cancel','No');    

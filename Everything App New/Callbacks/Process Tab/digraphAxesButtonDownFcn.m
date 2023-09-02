@@ -24,7 +24,7 @@ xWins = [xdata-xTol/2 xdata+xTol/2];
 yWins = [ydata-yTol/2 ydata+yTol/2];
 
 nodeSelected = false; % Because the digraph wasn't clicked, it's just being updated. OR no node was clicked on.
-G = getappdata(fig,'digraph');
+G = getappdata(fig,'viewG');
 if nargin == 1 || isempty(uuid)
     listClicked = false;
     idx = (currPoint(1)>xWins(:,1) & currPoint(1)<xWins(:,2)) & ...
@@ -59,9 +59,11 @@ else
 
 end
 
-renderGraph(fig, [], markerSize, colors);
+renderGraph(fig, G, markerSize, colors);
 
 if ~nodeSelected
+    handles.Process.successorsButton.Text = 'S';
+    handles.Process.predecessorsButton.Text = 'P';
     % Clear current function UI tree
     % Pass focus to current analysis UI tree, expanding the group that the
     % currently selected node is in.
@@ -87,6 +89,23 @@ analysisUITreeSelectionChanged(fig, uuid);
 
 handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
 subTabCurrentSelectionChanged(fig);
+
+% Update successors & predecessors button
+Gall = getappdata(fig,'digraph');
+succ = successors(Gall,uuid);
+pred = predecessors(Gall,uuid);
+
+signS = '+';
+signP = '+';
+if all(ismember(succ,G.Nodes.Name))
+    signS = '-';
+end
+if all(ismember(pred,G.Nodes.Name))
+    signP = '-';
+end
+
+handles.Process.successorsButton.Text = ['S' signS];
+handles.Process.predecessorsButton.Text = ['P' signP];
 
 end
 

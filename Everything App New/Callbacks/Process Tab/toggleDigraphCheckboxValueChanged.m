@@ -22,6 +22,18 @@ handles.Process.allSpecifyTrialsUITree.Visible = ~val;
 handles.Process.runButton.Visible = ~val;
 handles.Process.sendEmailsCheckbox.Visible = ~val;
 
+% Change view visibility
+handles.Process.viewsDropDown.Visible = val;
+handles.Process.editViewButton.Visible = val;
+handles.Process.multiSelectButton.Visible = val;
+handles.Process.addToViewButton.Visible = val;
+handles.Process.removeFromViewButton.Visible = val;
+handles.Process.successorsButton.Visible = val;
+handles.Process.predecessorsButton.Visible = val;
+handles.Process.predecessorsButton.Visible = val;
+handles.Process.newViewButton.Visible = val;
+handles.Process.archiveViewButton.Visible = val;
+
 if ~val
     delete(handles.Process.digraphAxes.Children);
 end
@@ -40,9 +52,8 @@ if ~val
     return; % Don't fill in the digraph if it's not visible!
 end
 
-containerUUID = getCurrent('Current_Analysis');
-list = getUnorderedList(containerUUID);
-links = loadLinks(list);
-G = linkageToDigraph(links);
+refreshDigraph(fig);
 
+Current_View = getCurrent('Current_View');
+G = filterGraph(fig, Current_View);
 renderGraph(fig, G); % Show the graph.

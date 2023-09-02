@@ -1,23 +1,31 @@
-function [projectStruct]=newComputerProjectPaths(pjUUID)
+function [struct]=newComputerProjectPaths(uuid)
 
 %% PURPOSE: ENSURE THAT THERE ARE FIELDS FOR THE COMPUTER-SPECIFIC PATHS
 
 computerID = getComputerID();
 
-projectStruct = loadJSON(pjUUID);
-pjStructTmp = createNewObject(true,'Project','Default','','',false);
+struct = loadJSON(uuid);
+type = deText(uuid);
+tmpStruct = createNewObject(true,type,'Default','','',false);
 
 doWrite = false;
-if ~isfield(projectStruct,'Project_Path') || ~isfield(projectStruct.Project_Path,computerID)
-    doWrite = true;
-    projectStruct.Project_Path.(computerID) = pjStructTmp.Project_Path.(computerID); % Assign default
-end
+if isequal(type,'PJ')    
+    if ~isfield(struct,'Project_Path') || ~isfield(struct.Project_Path,computerID)
+        doWrite = true;
+        struct.Project_Path.(computerID) = tmpStruct.Project_Path.(computerID); % Assign default
+    end
 
-if ~isfield(projectStruct,'Data_Path') || ~isfield(projectStruct.Data_Path,computerID)
-    doWrite = true;
-    projectStruct.Data_Path.(computerID) = pjStructTmp.Data_Path.(computerID); % Assign default
+    if ~isfield(struct,'Data_Path') || ~isfield(struct.Data_Path,computerID)
+        doWrite = true;
+        struct.Data_Path.(computerID) = tmpStruct.Data_Path.(computerID); % Assign default
+    end
+elseif isequal(type,'AN')
+    if ~isfield(struct,'Current_View') || ~isfield(struct.Current_View,computerID)
+        doWrite = true;
+        struct.Current_View.(computerID) = tmpStruct.Current_View.(computerID);
+    end
 end
 
 if doWrite
-    writeJSON(projectStruct);
+    writeJSON(struct);
 end

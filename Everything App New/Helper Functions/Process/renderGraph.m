@@ -8,7 +8,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 if nargin==1 || isempty(G)
-    G = getappdata(fig,'digraph');
+    G = getappdata(fig,'viewG');
 end
 if exist('markerSize','var')~=1 || isempty(markerSize)
     markerSize = getappdata(fig,'markerSize');
@@ -31,7 +31,6 @@ end
 
 % The nodes that haven't had all of their variables filled in.
 unfinishedIdx = getUnfinishedFcns(G); % FIX THIS AFTER RE-IMPLEMENTING NAMES IN CODE
-% unfinishedIdx = false(size(markerSize)); % TEMPORARY
 color(unfinishedIdx,:) = repmat(rgb('bright orange'),sum(unfinishedIdx),1);
 markerSize(unfinishedIdx,:) = repmat(6,sum(unfinishedIdx),1);
 
@@ -91,7 +90,7 @@ if exist('edgeID','var') && ~isempty(edgeID)
     labeledge(h, edgeIdx, edgenames(edgeIdx));
 end
 
-setappdata(fig,'digraph',G);
+setappdata(fig,'viewG',G);
 setappdata(fig,'markerSize',markerSize);
 
 drawnow;

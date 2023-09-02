@@ -1,4 +1,4 @@
-function [] = editObj(src,event)
+function [] = editObj(src,uuid)
 
 %% PURPOSE: OPEN A POPUP WINDOW TO EDIT THE ATTRIBUTES OF THE SELECTED OBJECT.
 
@@ -11,7 +11,9 @@ if isempty(selNode)
     return;
 end
 
-uuid = selNode.NodeData.UUID;
+if nargin==1
+    uuid = selNode.NodeData.UUID;
+end
 
 struct = loadJSON(uuid);
 

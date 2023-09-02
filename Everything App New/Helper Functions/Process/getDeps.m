@@ -32,6 +32,6 @@ deps = {};
 if nargin==3
     uuidIdx = ismember(G.Nodes.Name, uuid);
     tmpIdx = logical(R(uuidIdx,:))'; % Make column vector.
-    deps = G.Nodes.Name(tmpIdx); % The uuids reachable from this UUID
+    deps = G.Nodes.Name(tmpIdx); % The uuids reachable from this UUID    
     % deps = successors(G, uuid);
 end

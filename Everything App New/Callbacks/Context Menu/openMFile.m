@@ -49,7 +49,7 @@ if isempty(fileName)
 end
 fileName=fileName{1};
 [type] = deText(struct.UUID);
-filePath = createMFile(fileName, className2Abbrev(type, true), struct.Level);
+filePath = createMFile(fileName, className2Abbrev(type), struct.Level);
 
 %% Assign the file to the current struct.
 struct.ExecFileName = fileName;

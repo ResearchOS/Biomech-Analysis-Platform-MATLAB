@@ -360,6 +360,33 @@ handles.Process.outOfDateCheckbox=uicheckbox(handles.Process.currentGroupTab,'Va
 % 50. Send emails checkbox
 handles.Process.sendEmailsCheckbox=uicheckbox(processTab, 'Visible', true, 'Value', false, 'Text', 'Send Email','ValueChangedFcn',@(sendEmailsCheckbox, event) sendEmailsCheckboxValueChanged(sendEmailsCheckbox));
 
+% 51. Views dropdown
+handles.Process.viewsDropDown = uidropdown(processTab,'Visible',false,'Items',{'ALL'},'Editable','off','ValueChangedFcn',@(viewsDropDown, event) viewsDropDownValueChanged(viewsDropDown));
+
+% 52. Edit/save view state button
+handles.Process.editViewButton = uibutton(processTab,'state','Visible',false,'Text','Edit','ValueChangedFcn',@(editViewButton, event) editViewButtonPressed(editViewButton));
+
+% 53. Select multi state button
+handles.Process.multiSelectButton = uibutton(processTab,'state','Visible',false,'Text','Multi','ValueChangedFcn',@(multiSelectButton, event) multiSelectButtonValueChanged(multiSelectButton));
+
+% 54. Add node (from list) button
+handles.Process.addToViewButton = uibutton(processTab,'push','Visible',false,'Text','->','ButtonPushedFcn',@(addToViewButton,event) addToViewButtonPushed(addToViewButton));
+
+% 55. Remove node (from axes) button
+handles.Process.removeFromViewButton = uibutton(processTab,'push','Visible',false,'Text','<-','ButtonPushedFcn',@(removeFromViewButton, event) removeFromViewButtonPushed(removeFromViewButton));
+
+% 56. Add/remove successors button
+handles.Process.successorsButton = uibutton(processTab,'push','Visible',false,'Text','S','ButtonPushedFcn',@(successorsButton, event) successorsButtonPushed(successorsButton));
+
+% 57. Add/remove predecessors button
+handles.Process.predecessorsButton = uibutton(processTab,'push','Visible',false,'Text','P','ButtonPushedFcn',@(predecessorsButton, event) predecessorsButtonPushed(predecessorsButton));
+
+% 58. Create new view button
+handles.Process.newViewButton = uibutton(processTab,'push','Visible',false,'Text','VW+','ButtonPushedFcn',@(newViewButton, event) newViewButtonPushed(newViewButton));
+
+% 59. Archive view button
+handles.Process.archiveViewButton = uibutton(processTab,'push','Visible',false,'Text','VW-','ButtonPushedFcn',@(archiveViewButton, event) archiveViewButtonPushed(archiveViewButton));
+
 % 35. Add specify trials button
 handles.Process.addSpecifyTrialsButton=uibutton(processTab,'Text','S+');
 addSpecifyTrialsButton=handles.Process.addSpecifyTrialsButton;

@@ -63,15 +63,8 @@ createInst = ['CREATE TABLE XXX_Instances (UUID TEXT PRIMARY KEY NOT NULL UNIQUE
     'OutOfDate        INTEGER NOT NULL DEFAULT (true)',...
     ');'];
 
-% Create a first row that means nothing because MATLAB can't have a NULL
-% value in the first row.
-% date = char(datetime('now'));
-% defaultAbsInit = ['INSERT INTO XXX_Abstract (UUID, Date_Created, Date_Modified, Name, Created_By, Last_Modified_By, Description, OutOfDate)',...
-%     'VALUES (''ZZZZZZ'', ''' date ''', ''' date ''', ''INIT'', ''INIT'', ''INIT'', ''INIT'', 0);'];
-% defaultInstInit = ['INSERT INTO XXX_Instances (UUID, Date_Created, Date_Modified, Name, Created_By, Last_Modified_By, Description, OutOfDate, Abstract_UUID)',...
-%     'VALUES (''ZZZZZZ_ZZZ'', ''' date ''', ''' date ''', ''INIT'', ''INIT'', ''INIT'', ''INIT'', 0, ''ZZZZZZ'');'];
-
-objTableNames = {'Projects','Analyses','ProcessGroups','Process','Variables','Logsheets','SpecifyTrials'};
+allTypes = getTypes();
+objTableNames = makeClassPlural(className2Abbrev(allTypes));
 modifiedNames = {};
 for i=1:length(objTableNames)
     tableName = objTableNames{i};
@@ -80,8 +73,6 @@ for i=1:length(objTableNames)
     if ~any(contains(tableNames,tableName) & contains(tableNames,'Abstract'))
         createAbsCurr = strrep(createAbs, 'XXX', tableName);
         execute(conn, createAbsCurr);
-        % defaultAbsInitCurr = strrep(defaultAbsInit, 'XXX', tableName);
-        % execute(conn, defaultAbsInitCurr);
         modifiedNames = [modifiedNames; {[tableName '_Abstract']}];
     end
 
@@ -89,8 +80,6 @@ for i=1:length(objTableNames)
     if ~any(contains(tableNames,tableName) & contains(tableNames,'Instance'))
         createInstCurr = strrep(createInst, 'XXX', tableName);
         execute(conn, createInstCurr);
-        % defaultInstInitCurr = strrep(defaultInstInit, 'XXX', tableName);
-        % execute(conn, defaultInstInitCurr);
         modifiedNames = [modifiedNames; {[tableName '_Instances']}];
     end
 end
@@ -163,8 +152,14 @@ end
 if ismember('Analyses_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Analyses_Instances ADD Tags TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
+    sqlquery = ['ALTER TABLE Analyses_Instances ADD Current_View TEXT REFERENCES Views_Instances ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL Default [NULL]'];
+    execute(conn, sqlquery);
 end
 
+if ismember('Views_Instances',modifiedNames)
+    sqlquery = ['ALTER TABLE Views_Instances ADD InclNodes TEXT NOT NULL Default [NULL]'];
+    execute(conn, sqlquery);
+end
 
 %% JOIN TABLES
 createJoinTable = ['CREATE TABLE XXX_YYY (',...
@@ -178,9 +173,8 @@ createJoinTable_VRPR = ['CREATE TABLE XXX_YYY (',...
     'NameInCode TEXT NOT NULL DEFAULT [NULL], ',...
     'PRIMARY KEY (AAA_ID, BBB_ID, NameInCode)',...
     ');'];
-% initJoinTable = ['INSERT INTO XXX (AAA_ID, BBB_ID) VALUES (''ZZZZZZ_ZZZ'', ''ZZZZZZ_ZZZ'');'];
 
-objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},{'PR','VR'},{'VR','PR'},{'PJ','LG'}};
+objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},{'PR','VR'},{'VR','PR'},{'PJ','LG'},{'AN','VW'}};
 modifiedNames = {};
 for i=1:length(objAbbrevs)
     abbrevs = objAbbrevs{i};
@@ -198,8 +192,8 @@ for i=1:length(objAbbrevs)
         newAbbrevs = abbrevs;
     end
 
-    class1 = className2Abbrev(abbrevs{1}, true);
-    class2 = className2Abbrev(abbrevs{2}, true);
+    class1 = className2Abbrev(abbrevs{1});
+    class2 = className2Abbrev(abbrevs{2});
     if ~isequal(class1(end),'s')
         class1 = [class1 's'];
     end
@@ -228,28 +222,14 @@ for i=1:length(objAbbrevs)
 
     execute(conn, createJoinTableCurr);
 
-    % initJoinTableCurr = strrep(initJoinTable,'XXX',name);
-    % initJoinTableCurr = strrep(initJoinTableCurr,'AAA',newAbbrevs{1});
-    % initJoinTableCurr = strrep(initJoinTableCurr,'BBB',newAbbrevs{2});
-    % 
-    % execute(conn, initJoinTableCurr);
-
 end
 
 %% Custom Join table columns
 % Input variables.
 if ismember('VR_PR',modifiedNames)
-    % sqlquery = ['ALTER TABLE VR_PR ADD NameInCode TEXT NOT NULL Default [NULL]'];
-    % execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE VR_PR ADD Subvariable TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
 end
-
-% Output variables.
-% if ismember('PR_VR',modifiedNames)
-%     sqlquery = ['ALTER TABLE PR_VR ADD NameInCode TEXT NOT NULL Default [NULL]'];
-%     execute(conn, sqlquery);
-% end
 
 %% Settings table
 % Put values into the table.

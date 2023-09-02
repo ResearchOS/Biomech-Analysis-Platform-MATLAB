@@ -7,7 +7,7 @@ fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 if ischar(class) && length(class)==2
-    class = className2Abbrev(class, true);
+    class = className2Abbrev(class);
 end
 
 if exist('allOrCurr','var')~=1

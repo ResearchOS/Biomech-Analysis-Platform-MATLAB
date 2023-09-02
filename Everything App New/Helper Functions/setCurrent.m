@@ -16,10 +16,9 @@ if ismember(varName,rootSettingsVars)
         commonPath.(computerID) = var;
         var = jsonencode(commonPath);
     end
-    sqlquery = ['UPDATE Settings SET VariableValue = ''' var ''' WHERE VariableName = ''' varName ''''];
+    sqlquery = ['UPDATE Settings SET VariableValue = ''' var ''' WHERE VariableName = ''' varName ''';'];
     execute(conn, sqlquery);   
 end
-
 
 %% Look at projects table to determine.
 projectSettingsVars = {'DataPath','ProjectPath','Process_Queue',...
@@ -29,7 +28,7 @@ if ismember(varName, projectSettingsVars)
     projectName = getCurrent('Current_Project_Name');    
     if ismember(varName,{'DataPath','ProjectPath'})
         computerID = getCurrent('Computer_ID');
-        currVal = getCurrent(varName);
+        currVal = getCurrent(varName, true);
         currVal.(computerID) = var;
         currVal = jsonencode(currVal);
     elseif ismember(varName,{'Process_Queue'})
@@ -37,6 +36,18 @@ if ismember(varName, projectSettingsVars)
     else
         currVal = var;
     end    
-    sqlquery = ['UPDATE Projects_Instances SET ' varName ' = ''' currVal ''' WHERE UUID = ''' projectName ''''];
+    sqlquery = ['UPDATE Projects_Instances SET ' varName ' = ''' currVal ''' WHERE UUID = ''' projectName ''';'];
+    execute(conn, sqlquery);    
+end
+
+%% Look at analysis table to determine.
+analysisSettingsVars = {'Current_View'};
+if ismember(varName,analysisSettingsVars)
+    analysisName = getCurrent('Current_Analysis');
+    computerID = getCurrent('Computer_ID');
+    currVal = getCurrent(varName, true);
+    currVal.(computerID) = var;        
+    currVal = jsonencode(currVal);
+    sqlquery = ['UPDATE Analyses_Instances SET ' varName ' = ''' currVal ''' WHERE UUID = ''' analysisName ''';'];
     execute(conn, sqlquery);    
 end

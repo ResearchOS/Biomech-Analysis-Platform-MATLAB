@@ -70,7 +70,7 @@ for inOut=1:numIters
 
 end
 
-runInfo.Class=className2Abbrev(fcnType, true);
+runInfo.Class=className2Abbrev(fcnType);
 
 if ~isequal(fcnType,'Component')
     assignin('base','runInfo',runInfo);

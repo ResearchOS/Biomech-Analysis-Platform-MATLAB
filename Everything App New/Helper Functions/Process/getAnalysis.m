@@ -122,9 +122,5 @@ if isempty(anUUID)
     [anUUID] = getAnalysis(inUUID, anUUID);
 end
 
-if length(anUUID)==1
-    anUUID = anUUID{1};
-end
-
 
 end

@@ -19,27 +19,30 @@ varNames = fieldnames(struct);
 % Convert data types.
 for i=1:length(varNames)
     varName = varNames{i};
-    var = struct.(varName);
+    for j=1:length(struct)
+        var = struct(j).(varName);
 
-    if ismember(varName,numericCols)
-        var = num2str(var);
-    elseif ismember(varName,jsonCols)
-        var = ['''' jsonencode(var) ''''];
-    elseif ismember(varName,dateCols)
-        var = ['''' char(var) ''''];
-    elseif ismissing(var)
-        var = '';
-    else
-        var = ['''' char(var) ''''];
+        if ismember(varName,numericCols)
+            var = num2str(var);
+        elseif ismember(varName,jsonCols)
+            var = ['''' jsonencode(var) ''''];
+        elseif ismember(varName,dateCols)
+            var = ['''' char(var) ''''];
+        elseif ismissing(var)
+            var = '';
+        else
+            var = ['''' char(var) ''''];
+        end
+
+        assert(ischar(var));
+        data(j).(varName) = var;
     end
-
-    assert(ischar(var));
-    data.(varName) = var;
 
 end
 
 % Put the data into the sql query.
 if isequal(type,'UPDATE')
+    assert(length(data)==1);
     sqlquery = ['UPDATE ' tablename ' SET '];
     for i=1:length(varNames)
         varName = varNames{i};
@@ -58,10 +61,15 @@ if isequal(type,'INSERT')
     end
     varNamesStr = [varNamesStr(1:end-2) ')'];
     valsStr = '(';
-    for i=1:length(varNames)
-        var = data.(varNames{i});
-        assert(ischar(var));
-        valsStr = [valsStr var ', '];
+    for j=1:length(data)
+        for i=1:length(varNames)
+            var = data(j).(varNames{i});
+            assert(ischar(var));
+            valsStr = [valsStr var ', '];
+        end
+        if j<length(data)
+            valsStr = [valsStr(1:end-2) '), ('];
+        end
     end
     valsStr = [valsStr(1:end-2) ')'];
 

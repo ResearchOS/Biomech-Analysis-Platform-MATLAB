@@ -50,7 +50,7 @@ for i=1:length(selUUIDs)
     end
     if ismember('down',dir)
         [~,tmp] = getDeps(G,'down',selUUIDs{i});
-        deps = [deps; tmp];
+        deps = [deps; tmp; selUUIDs(i)];
     end
 end
 
@@ -62,6 +62,8 @@ if isempty(selUUIDs)
     t = table2MyStruct(t);
     deps = t.InclNodes;
 end
+
+deps = unique(deps,'stable');
 
 depsJSON = jsonencode(deps);
 sqlquery = ['UPDATE Views_Instances SET InclNodes = ''' depsJSON ''' WHERE UUID = ''' uuid ''';'];

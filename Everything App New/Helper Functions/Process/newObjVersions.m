@@ -114,10 +114,6 @@ for i=1:length(tablenames)
             allStruct(j).(col2) = newObjs{currTypeIdxNums2(j)}; % Change the UUID to the new UUID.
         end
 
-        % Save the links
-        sqlquery = struct2SQL(tablename, allStruct, 'INSERT');
-        execute(conn, sqlquery);
-
     else % Change names of entries in just one column, e.g. AN_PG or AN_PR
 
         if contains(types,type1)

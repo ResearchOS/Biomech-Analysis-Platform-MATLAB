@@ -11,7 +11,7 @@ if isempty(selNode)
     return;
 end
 
-if nargin==1
+if nargin==1 || ~ischar(uuid)
     uuid = selNode.NodeData.UUID;
 end
 

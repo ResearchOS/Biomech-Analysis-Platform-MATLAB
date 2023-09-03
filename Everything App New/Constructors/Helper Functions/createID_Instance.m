@@ -1,13 +1,15 @@
-function [instanceID]=createID_Instance(abstractID, class)
+function [instanceID]=createID_Instance(abstractID, class, uuids)
 
 %% PURPOSE: CREATE INSTANCE ID FOR THE SPECIFIED OBJECT.
 global conn;
 idLength = 3; % Number of characters in instanceID
 
-tablename = getTableName(class);
-sqlquery = ['SELECT UUID FROM ' tablename];
-uuids = fetch(conn, sqlquery);
-uuids = uuids.UUID;
+if nargin==2
+    tablename = getTableName(class);
+    sqlquery = ['SELECT UUID FROM ' tablename];
+    uuids = fetch(conn, sqlquery);
+    uuids = uuids.UUID;
+end
 
 isNewID=false;
 maxNum = (16^idLength) - 1;

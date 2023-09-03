@@ -13,7 +13,7 @@ for i=1:length(uuids)
     [type, abstractID, instanceID] = deText(uuid);
 
     %% Type
-    types = {'LG','PJ','PR','PG','VR','AN','ST'};
+    types = getTypes();
     if ~ismember(type,types)
         bool = false;
         return;

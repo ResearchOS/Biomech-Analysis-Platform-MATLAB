@@ -54,7 +54,11 @@ for i=1:length(varNames)
         data.(varName) = var; 
     else
         for j=1:length(var)
-            data(j).(varName) = var{j};
+            if iscell(var)
+                data(j).(varName) = var{j};
+            else
+                data(j).(varName) = var(j);
+            end
         end
     end
 end

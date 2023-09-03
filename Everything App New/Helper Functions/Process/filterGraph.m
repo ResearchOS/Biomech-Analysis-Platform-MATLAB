@@ -14,6 +14,9 @@ t = table2MyStruct(t);
 inclNodes = t.InclNodes;
 
 G = getappdata(fig,'digraph');
+if isempty(G)
+    G = refreshDigraph(fig);
+end
 names = G.Nodes.Name;
 markerSize = getappdata(fig,'markerSize');
 maxMarkerSize = max(markerSize);

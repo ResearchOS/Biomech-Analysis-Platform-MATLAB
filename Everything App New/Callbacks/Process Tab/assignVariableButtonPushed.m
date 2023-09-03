@@ -87,9 +87,42 @@ elseif isequal(parentNode.Text(1:6),'setArg')
     tablename = 'PR_VR';
 end
 
+%% Check that this variable & PR only belongs to the current analysis. If not, tell the user that if they want to make changes, a new object will be created.
+% Or just ask them if they want to propagate the changes to other analyses?
+% More advanced option!
+currFcnUUID = currFcnNode.NodeData.UUID;
+anVR = {};
+if isOut
+    anVR = getAnalysis(allVarUUID);
+end
+anPR = getAnalysis(currFcnUUID);
+anList = [anPR; anVR];
+
+Current_Analysis = getCurrent('Current_Analysis');
+
+% The VR & PR are found in multiple analyses.
+if ~isequal(anList,{Current_Analysis})
+    a = questdlg('Make changes to current analysis only?','Multiple analyses found!','Current','All','Cancel','Current');
+    if isempty(a)
+        return;
+    end
+    if isequal(a,'All')
+        % Nothing needed here. Changes made to the current objects will
+        % automatically propagate to all analyses.
+    end
+    if isequal(a,'Current')        
+        % Need to create new versions of this variable (if output) and all
+        % downstream PR's and their output variables (and inputs where
+        % needed).
+        [list] = newObjVersions(currFcnUUID, anList);
+
+        anList = Current_Analysis;
+
+    end
+end
+
 %% Test that adding this variable to this function does not result in a cyclic graph.
 % If so, stop the process.
-currFcnUUID = currFcnNode.NodeData.UUID;
 prevVarUUID = currVarNode.NodeData.UUID;
 if isempty(prevVarUUID)
     if isOut
@@ -117,7 +150,7 @@ end
 
 % Set out of date for PR & its VR
 refreshDigraph(fig);
-setPR_VROutOfDate(fig, currFcnUUID, true, true);
+setPR_VROutOfDate(fig, currFcnUUID, true, true, anList);
 
 %% Update the digraph
 toggleDigraphCheckboxValueChanged(fig);

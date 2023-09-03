@@ -93,7 +93,7 @@ for i=1:length(tablenames)
         currObjsStr1 = getCondStr(currTypeObjs1);
         currObjsStr2 = getCondStr(currTypeObjs2);        
 
-        % The 'OR' is important when looking at PR, don't change their
+        % The 'OR' is important when looking at PR, maybe don't change their
         % input VR's. For all other tables/types, 'OR' may as well be
         % 'AND', because changing the contained object also changes the container.
         sqlquery = ['SELECT * FROM ' tablename ' WHERE ' col1 'IN ' currObjsStr1 ' OR ' col2 ' IN ' currObjsStr2];
@@ -113,6 +113,10 @@ for i=1:length(tablenames)
         for j=1:length(allStruct)
             allStruct(j).(col2) = newObjs{currTypeIdxNums2(j)}; % Change the UUID to the new UUID.
         end
+
+        % Save the links
+        sqlquery = struct2SQL(tablename, allStruct, 'INSERT');
+        execute(conn, sqlquery);
 
     else % Change names of entries in just one column, e.g. AN_PG or AN_PR
 
@@ -140,10 +144,14 @@ for i=1:length(tablenames)
             allStruct(j).(col) = newObjs{currTypeIdxNums(j)}; % Change the UUID to the new UUID.
         end
 
-    end
+        % Delete the links
+        sqlquery = ['DELETE FROM ' tablename ' WHERE ' col ' IN ' currObjsStr ';'];
+        execute(conn, sqlquery);        
+
+    end           
 
     % Save the links
     sqlquery = struct2SQL(tablename, allStruct, 'INSERT');
-    execute(conn, sqlquery);               
+    execute(conn, sqlquery);
 
 end

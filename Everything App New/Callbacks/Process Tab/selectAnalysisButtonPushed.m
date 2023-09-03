@@ -55,7 +55,20 @@ handles.Process.viewsDropDown.Items = viewNames;
 handles.Process.viewsDropDown.ItemsData = uuids;
 
 Current_View = getCurrent('Current_View');
+% Current_View does not exist, but uuids are not empty. Select "ALL" view.
+if isempty(Current_View) && ~isempty(uuids)
+    idx = ismember(viewNames,'ALL');
+    Current_View = uuids{idx};
+end
+
+% Current_View does not exist, and uuids are empty. Make new view?
+if isempty(Current_View) && isempty(uuids)
+    error('How did this happen?');
+end
+setCurrent('Current_View',Current_View);
+
 idx = ismember(uuids,Current_View);
 handles.Process.viewsDropDown.Value = uuids{idx};
+viewsDropDownValueChanged(fig);
 
 fillAnalysisUITree(fig);

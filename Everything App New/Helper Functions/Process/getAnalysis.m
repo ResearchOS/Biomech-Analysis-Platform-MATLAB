@@ -9,6 +9,7 @@ uuid = origUUID;
 type = deText(uuid);
 
 if ismember(type,{'LG','PJ','ST'})
+    anUUID = {};
     return;
 end
 

@@ -5,8 +5,14 @@ function [success, msg]=linkObjs(leftObjs, rightObjs, date)
 % OUTPUT VARIABLE.
 % IF LINKING ANY OTHER OBJECTS, ORDER DOES NOT MATTER.
 
+success = true; % Initialize that this is not a duplicate entry.
 msg = '';
-allTypes = {'PJ','AN','PG','PR','VR','LG','ST'};
+
+if isempty(leftObjs) || isempty(rightObjs)
+    return;
+end
+
+allTypes = getTypes();
 
 global conn;
 
@@ -74,7 +80,6 @@ if contains(col1,type2)
     leftObjs = tmpR;
     rightObjs = tmpL;
 end
-success = true; % Initialize that this is not a duplicate entry.
 anUUID = getCurrent('Current_Analysis');
 for i=1:length(leftObjs)
     sqlquery = ['INSERT INTO ' tablename ' (' col1 ', ' col2 ') VALUES ',...

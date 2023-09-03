@@ -2,9 +2,13 @@ function [] = unlinkObjs(leftObjs, rightObjs)
 
 %% PURPOSE: UNLINK OBJECTS IN THE LINKAGE MATRIX.
 
-allTypes = {'PJ','AN','PG','PR','VR','LG','ST'};
-
 global conn;
+
+if isempty(leftObjs) || isempty(rightObjs)
+    return;
+end
+
+allTypes = getTypes();
 
 if ischar(leftObjs)
     leftObjs = {leftObjs};

@@ -11,7 +11,7 @@ if isempty(selNode)
     return;
 end
 
-list = getUITreeFromNode(selNode);
+[~,list] = getUITreeFromNode(selNode);
 for i=1:length(list)
     uuid = list(i).NodeData.UUID;
     if contains(uuid,'PR')

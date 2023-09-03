@@ -6,20 +6,6 @@ function []=changeName(src, uuid, name)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-% selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
-% 
-% uuid = selNode.NodeData.UUID;
-% struct = loadJSON(uuid);
-% 
-% name = promptName('Enter New Name',struct.Text);
-% 
-% if isempty(name)
-%     return;
-% end
-% 
-% struct.Text = name;
-% writeJSON(struct);
-
 figure(fig);
 
 %% Change the name in the all tree.
@@ -46,7 +32,6 @@ else
         allNode.Text = name;
     end
 end
-
 
 %% Change the name in any/all of the current trees
 % Analysis node

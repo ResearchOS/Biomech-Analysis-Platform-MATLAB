@@ -12,6 +12,7 @@ t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
 
 inclNodes = t.InclNodes;
+name = t.Name;
 
 G = getappdata(fig,'digraph');
 if isempty(G)
@@ -22,6 +23,9 @@ if isempty(G.Edges)
 end
 names = G.Nodes.Name;
 markerSize = getappdata(fig,'markerSize');
+if isempty(markerSize)
+    markerSize = repmat(4,length(names),1);
+end
 maxMarkerSize = max(markerSize);
 minMarkerSize = min(markerSize);
 if maxMarkerSize == minMarkerSize
@@ -31,16 +35,17 @@ else
 end
 selNames = names(selIdx);
 
-exclNodesIdx = ~ismember(names,inclNodes);
+if ~isequal(name,'ALL')
+    exclNodesIdx = ~ismember(names,inclNodes);
 
-G = rmnode(G,names(exclNodesIdx));
+    G = rmnode(G,names(exclNodesIdx));
+end
 newSelNamesIdx = ismember(G.Nodes.Name,selNames);
 
-markerSize = repmat(minMarkerSize,length(newSelNamesIdx),1);
+markerSize = repmat(minMarkerSize,length(newSelNamesIdx),1); % Change markerSize length in case nodes are excluded.
 
 % Assumes there's only two marker sizes.
 markerSize(newSelNamesIdx) = maxMarkerSize;
-% markerSize(~newSelNamesIdx) = minMarkerSize;
 
 setappdata(fig,'markerSize',markerSize);
 setappdata(fig,'viewG',G);

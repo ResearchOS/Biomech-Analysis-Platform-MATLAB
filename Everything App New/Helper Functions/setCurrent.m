@@ -25,7 +25,10 @@ projectSettingsVars = {'DataPath','ProjectPath','Process_Queue',...
     'Current_Analysis','Current_Logsheet'};
 
 if ismember(varName, projectSettingsVars)    
-    projectName = getCurrent('Current_Project_Name');    
+    projectName = getCurrent('Current_Project_Name');
+    if isempty(projectName)
+        return;
+    end
     if ismember(varName,{'DataPath','ProjectPath'})
         computerID = getCurrent('Computer_ID');
         currVal = getCurrent(varName, true);
@@ -44,6 +47,9 @@ end
 analysisSettingsVars = {'Current_View'};
 if ismember(varName,analysisSettingsVars)
     analysisName = getCurrent('Current_Analysis');
+    if isempty(analysisName)
+        return;
+    end
     computerID = getCurrent('Computer_ID');
     currVal = getCurrent(varName, true);
     currVal.(computerID) = var;        

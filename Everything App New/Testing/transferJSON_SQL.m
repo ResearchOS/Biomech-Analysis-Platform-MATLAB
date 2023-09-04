@@ -8,6 +8,7 @@ function [] = transferJSON_SQL()
 
 commonPath = '/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/PGUI_CommonPath';
 classNames = {'Project','Analysis','ProcessGroup','Process','Variable','SpecifyTrials','Logsheet'};
+computerID = getCurrent('Computer_ID');
 
 maps.General.DateCreated = 'Date_Created';
 maps.General.DateModified = 'Date_Modified';
@@ -17,7 +18,6 @@ maps.General.Description = 'Description';
 maps.General.OutOfDate = 'OutOfDate';
 maps.General.UUID = 'UUID';
 maps.General.LastModifiedBy = 'Last_Modified_By';
-maps.Analysis.Instances.Tags = 'Tags';
 maps.Logsheet.Abstract.NumHeaderRows = 'Num_Header_Rows';
 maps.Logsheet.Abstract.SubjectCodenameHeader = 'Subject_Codename_Header';
 maps.Logsheet.Abstract.TargetTrialIDHeader = 'Target_TrialID_Header';
@@ -32,7 +32,9 @@ maps.Project.Instances.DataPath = 'Data_Path';
 maps.Project.Instances.ProjectPath = 'Project_Path';
 maps.Project.Instances.Process_Queue = 'Process_Queue';
 maps.Project.Instances.Current_Logsheet = 'Current_Logsheet';
-maps.Project.Instances.Current_Analysis = 'Current_Analysis';
+maps.Project.Instances.Other = {'Current_Analysis'};
+maps.Analysis.Instances.Tags = 'Tags';
+maps.Analysis.Instances.Other = {'Current_View'};
 maps.SpecifyTrials.Abstract.Other = {'Logsheet_Parameters','Data_Parameters'};
 maps.Variable.Abstract.Level = 'Level';
 maps.Variable.Abstract.IsHardCoded = 'IsHardCoded';
@@ -184,6 +186,18 @@ for classNum = 1:length(classNames)
                 otherName = otherNames{otherNum};
                 if isequal(otherName, 'SpecifyTrials')
                     sql.SpecifyTrials = {};
+                elseif isequal(otherName,'Current_Analysis')
+                    sql.Current_Analysis = json.(otherName);
+                elseif isequal(otherName,'Current_View')
+                    try
+                        vwStruct = createNewObject(false,'VW','ALL','000000','',true);
+                    catch e
+                        if ~contains(e.message,'UNIQUE constraint failed')
+                            error(e);
+                        end
+                    end
+                    vwStruct = createNewObject(true,'VW','ALL','000000','',true);                    
+                    sql.Current_View.(computerID) = vwStruct.UUID;
                 end
 
 

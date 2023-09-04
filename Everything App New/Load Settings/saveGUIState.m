@@ -5,7 +5,6 @@ function []=saveGUIState(fig)
 
 global conn;
 close(conn);
-% pause(1); % To allow time for the connection to actually close?
 clear global conn;
 
 evalin('base','clear gui;');

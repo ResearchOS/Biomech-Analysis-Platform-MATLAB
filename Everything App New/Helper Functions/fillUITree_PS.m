@@ -1,4 +1,4 @@
-function []=fillUITree_PS(fig, class, uiTree)
+function []=fillUITree_PS(fig, class, uiTree, anInst)
 
 %% PUEPOSE: FILL IN THE CLASS UI TREE WITH PROJECT-SPECIFIC NODES, WITH PARENT NODES THAT ARE PROJECT-INDEPENDENT
 global conn;
@@ -22,9 +22,13 @@ if isempty(t.UUID)
     return; % Nothing in the table!
 end
 
-instUUIDs = cellstr(t.UUID);
-instNames = cellstr(t.Name);
+instUUIDs = t.UUID;
+instNames = t.Name;
 [abbrevs, abstractIDs, instanceIDs] = deText(instUUIDs);
+
+inAnIdx = ismember(instUUIDs, anInst); % The indices of the instances in the current analysis.
+instUUIDs(~inAnIdx) = [];
+instNames(~inAnIdx) = [];
 
 for i=1:length(instUUIDs)
         

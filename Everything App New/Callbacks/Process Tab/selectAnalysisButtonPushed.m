@@ -71,4 +71,8 @@ idx = ismember(uuids,Current_View);
 handles.Process.viewsDropDown.Value = uuids{idx};
 viewsDropDownValueChanged(fig);
 
-fillAnalysisUITree(fig);
+% Fill the "ALL" UI trees
+loadGUIState(fig);
+
+% Fill the current analysis UI tree
+% fillAnalysisUITree(fig);

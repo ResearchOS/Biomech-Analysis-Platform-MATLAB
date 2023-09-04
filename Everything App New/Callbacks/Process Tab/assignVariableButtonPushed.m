@@ -91,6 +91,8 @@ end
 % Or just ask them if they want to propagate the changes to other analyses?
 % More advanced option!
 currFcnUUID = currFcnNode.NodeData.UUID;
+prevVarUUID = currVarNode.NodeData.UUID;
+
 anVR = {};
 if isOut
     anVR = getAnalysis(allVarUUID);
@@ -101,29 +103,34 @@ anList = [anPR; anVR];
 Current_Analysis = getCurrent('Current_Analysis');
 
 % The VR & PR are found in multiple analyses.
+anType = {};
 if ~isequal(anList,{Current_Analysis})
-    a = questdlg('Make changes to current analysis only?','Multiple analyses found!','Current','All','Cancel','Current');
-    if isempty(a)
+    anType = questdlg('Make changes to current analysis only?','Multiple analyses found!','Current','All','Cancel','Current');
+    if isempty(anType)
         return;
     end
-    if isequal(a,'All')
+    if isequal(anType,'All')
         % Nothing needed here. Changes made to the current objects will
         % automatically propagate to all analyses.
     end
-    if isequal(a,'Current')        
+    if isequal(anType,'Current')        
         % Need to create new versions of this variable (if output) and all
         % downstream PR's and their output variables (and inputs where
         % needed).
-        [list] = newObjVersions(currFcnUUID, anList);
+        [renamedList, oldList] = newObjVersions(currFcnUUID, anList);
+        currFcnIdx = ismember(oldList,currFcnUUID);
+        currFcnUUID = renamedList(currFcnIdx);
+        allVarIdx = ismember(oldList, allVarUUID);
+        allVarUUID = renamedList(allVarIdx);
+        prevVarIdx = ismember(oldList,prevVarUUID);
+        prevVarUUID = renamedList(prevVarIdx);
 
         anList = Current_Analysis;
 
     end
 end
 
-%% Test that adding this variable to this function does not result in a cyclic graph.
-% If so, stop the process.
-prevVarUUID = currVarNode.NodeData.UUID;
+%% Add the variable to the function
 if isempty(prevVarUUID)
     if isOut
         [success, msg] = linkObjs(currFcnUUID, allVarUUID); % Output variable        
@@ -134,8 +141,7 @@ if isempty(prevVarUUID)
     %     disp(msg);
     %     return;
     % end
-    currVarNode.NodeData.UUID = allVarUUID;
-    % spaceIdx = strfind(currVarNode.Text,' '); % Should only be one space.
+    currVarNode.NodeData.UUID = allVarUUID;    
     nameInCode = currVarNode.Text;
     sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''';'];    
     execute(conn, sqlquery);
@@ -151,6 +157,11 @@ end
 % Set out of date for PR & its VR
 refreshDigraph(fig);
 setPR_VROutOfDate(fig, currFcnUUID, true, true, anList);
+
+if isequal(anType,'Current')
+    selectAnalysisButtonPushed(fig);
+    return;
+end
 
 %% Update the digraph
 toggleDigraphCheckboxValueChanged(fig);

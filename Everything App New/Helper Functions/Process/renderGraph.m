@@ -44,6 +44,10 @@ ax = handles.Process.digraphAxes;
 delete(ax.Children);
 set(ax,'ColorOrderIndex', 1);
 
+if isempty(G.Edges)
+    return;
+end
+
 h  = plot(ax,G,'NodeLabel',G.Nodes.PrettyName,'Interpreter','none','PickableParts','none','HitTest','on');
 
 h.MarkerSize = markerSize;

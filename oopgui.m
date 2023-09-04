@@ -10,7 +10,7 @@ if ~isempty(conn) && isa(conn,'sqlite')
     clear global conn;
 end
 
-isDel = false;
+isDel = true;
 if isDel
     delete('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/Biomech-Analysis-Platform/Databases/biomechOS.db');
 end

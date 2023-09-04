@@ -56,7 +56,7 @@ for i=1:length(types)
         instanceID = createID_Instance(currTypeAbstractIDs{j}, types{i}, uuids);
         newObjs{currTypeIdxNums(j)} = genUUID(types{i}, currTypeAbstractIDs{j}, instanceID);
         uuids = [uuids; newObjs(currTypeIdxNums(j))];
-        % Replace the UUID. In the future should also change date created/modified, but not worried about that right now.
+        % Replace the UUID. In the future should also change date created/modified & who it was created by, but not worried about that right now.
         allStruct(j).UUID = newObjs{currTypeIdxNums(j)};
     end    
         
@@ -70,13 +70,13 @@ end
 tablenames = sqlfind(conn, '');
 idx = contains(tablenames.Table,types);
 tablenames(~idx,:) = [];
-for i=1:length(tablenames)
-    tablename = tablenames.Table(i);
+for i=1:length(tablenames.Table)
+    tablename = char(tablenames.Table(i));
     tmpName = strsplit(tablename,'_');
-    col1 = tmpName{1};
-    col2 = tmpName{2};
-    type1 = col1;
-    type2 = col2;
+    type1 = tmpName{1};
+    type2 = tmpName{2};
+    col1 = [type1 '_ID'];
+    col2 = [type2 '_ID'];    
 
     if isequal(col1,col2)
         col1 = ['Parent_' col1];
@@ -84,53 +84,69 @@ for i=1:length(tablenames)
     end
 
     % Change names of both columns
-    if contains(types,type1) && contains(types,type2)
+    if any(contains(types,type1)) && any(contains(types,type2))
 
-        currTypeObjsIdx1 = ismember(objsToRename,type1);
-        currTypeObjsIdx2 = ismember(objsToRename,type2);
+        currTypeObjsIdx1 = contains(objsToRename,type1);
+        currTypeObjsIdx2 = contains(objsToRename,type2);
         currTypeObjs1 = objsToRename(currTypeObjsIdx1);
         currTypeObjs2 = objsToRename(currTypeObjsIdx2);
         currObjsStr1 = getCondStr(currTypeObjs1);
-        currObjsStr2 = getCondStr(currTypeObjs2);        
+        currObjsStr2 = getCondStr(currTypeObjs2);     
+
+        if isempty(currTypeObjs1) && isempty(currTypeObjs2)
+            continue;
+        end
 
         % The 'OR' is important when looking at PR, maybe don't change their
         % input VR's. For all other tables/types, 'OR' may as well be
         % 'AND', because changing the contained object also changes the container.
-        sqlquery = ['SELECT * FROM ' tablename ' WHERE ' col1 'IN ' currObjsStr1 ' OR ' col2 ' IN ' currObjsStr2];
+        sqlquery = ['SELECT * FROM ' tablename ' WHERE ' col1 ' IN ' currObjsStr1 ' OR ' col2 ' IN ' currObjsStr2];
         t = fetch(conn, sqlquery);
+        if isempty(t)
+            continue;
+        end
         allStruct = table2MyStruct(t,'struct');
 
         % Rename the links
         currTypeIdxNums1 = find(currTypeObjsIdx1);
         currTypeIdxNums2 = find(currTypeObjsIdx2);
         [~,order1] = sort(currTypeObjs1);
-        allStruct(order1) = allStruct;
-        for j=1:length(allStruct)
-            allStruct(j).(col1) = newObjs{currTypeIdxNums1(j)}; % Change the UUID to the new UUID.
+        allStruct(order1) = allStruct(currTypeObjsIdx1);
+        for j=1:length(currTypeIdxNums1)
+            allStruct(currTypeIdxNums1(j)).(col1) = newObjs{currTypeIdxNums1(j)}; % Change the UUID to the new UUID.
         end
         [~,order2] = sort(currTypeObjs2);
-        allStruct(order2) = allStruct;
-        for j=1:length(allStruct)
-            allStruct(j).(col2) = newObjs{currTypeIdxNums2(j)}; % Change the UUID to the new UUID.
+        allStruct(order2) = allStruct(currTypeObjsIdx2);
+        for j=1:length(currTypeIdxNums2)
+            allStruct(currTypeIdxNums2(j)).(col2) = newObjs{currTypeIdxNums2(j)}; % Change the UUID to the new UUID.
         end
 
     else % Change names of entries in just one column, e.g. AN_PG or AN_PR
 
-        if contains(types,type1)
+        if any(contains(types,type1))
             col = col1;
             type = type1;
-        elseif contains(types,type2)
+        elseif any(contains(types,type2))
             col = col2;
             type = type2;
         end
-        currTypeObjsIdx = ismember(objsToRename,type);
+        currTypeObjsIdx = contains(objsToRename,type);
         currTypeObjs = objsToRename(currTypeObjsIdx);
+
+        if isempty(currTypeObjs)
+            continue;
+        end
 
         % Get the existing links.
         currObjsStr = getCondStr(currTypeObjs);
-        sqlquery = ['SELECT * FROM ' tablename ' WHERE ' col ' IN ' currObjsStr];
+        sqlquery = ['SELECT * FROM ' tablename ' WHERE AN_ID = ''' Current_Analysis ''' AND ' col ' IN ' currObjsStr];
         t = fetch(conn, sqlquery);
+        if isempty(t)
+            continue;
+        end
         allStruct = table2MyStruct(t,'struct');
+        currANIdx = ismember({allStruct.AN_ID},Current_Analysis);
+        allStruct(~currANIdx) = [];
 
         % Rename the links.
         [~,order] = sort(currTypeObjs);
@@ -141,7 +157,7 @@ for i=1:length(tablenames)
         end
 
         % Delete the links
-        sqlquery = ['DELETE FROM ' tablename ' WHERE ' col ' IN ' currObjsStr ';'];
+        sqlquery = ['DELETE FROM ' tablename ' WHERE AN_ID = ''' Current_Analysis ''' AND ' col ' IN ' currObjsStr ';'];
         execute(conn, sqlquery);        
 
     end           

@@ -51,3 +51,20 @@ if ismember(varName,analysisSettingsVars)
     sqlquery = ['UPDATE Analyses_Instances SET ' varName ' = ''' currVal ''' WHERE UUID = ''' analysisName ''';'];
     execute(conn, sqlquery);    
 end
+
+if isequal(varName,'Current_View')
+    Current_Analysis = getCurrent('Current_Analysis');
+    linkObjs(var, Current_Analysis);
+end
+
+if isequal(varName,'Current_Analysis')
+    Current_Project = getCurrent('Current_Project_Name');
+    Current_View = getCurrent('Current_View');
+    linkObjs(var, Current_Project);
+    linkObjs(var, Current_View);
+end
+
+if isequal(varName, 'Current_Project_Name')
+    Current_Analysis = getCurrent('Current_Analysis');
+    linkObjs(var, Current_Analysis);
+end

@@ -22,7 +22,10 @@ if isequal(type,'PJ')
 elseif isequal(type,'AN')
     if ~isfield(struct,'Current_View') || ~isfield(struct.Current_View,computerID)
         doWrite = true;
-        struct.Current_View.(computerID) = tmpStruct.Current_View.(computerID);
+        if ~isstruct(struct.Current_View)
+            struct = rmfield(struct,'Current_View');
+        end
+        struct.Current_View.(computerID) = '';
     end
 end
 

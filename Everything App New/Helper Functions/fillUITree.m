@@ -7,30 +7,39 @@ global conn;
 delete(uiTree.Children);
 
 tablename = getTableName(class);
+
 sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
 t = fetch(conn,sqlquery);
 t = table2MyStruct(t);
+
+if ~iscell(t.UUID)
+    t.UUID = {t.UUID};
+    t.Name = {t.Name};
+end
 
 allUUIDs = t.UUID;
 allNames = t.Name;
 
 %% Get the list of all objects of the current type in the current analysis
-O = getObjLinks();
-H = transclosure(flipedge(O));
-Current_Analysis = getCurrent('Current_Analysis');
-anIdx = ismember(O.Nodes.Name,Current_Analysis);
-R = full(adjacency(H));
-allObjsInst = O.Nodes.Name(any(logical(R(anIdx,:)),1));
+allObjsInst = allUUIDs;
+if ~contains(tablename,{'Project','Logsheet','Analyses'})
+    O = getObjLinks();
+    H = transclosure(flipedge(O));
+    Current_Analysis = getCurrent('Current_Analysis');
+    anIdx = ismember(O.Nodes.Name,Current_Analysis);
+    R = full(adjacency(H));
+    allObjsInst = O.Nodes.Name(logical(R(anIdx,:)));
 
-type = className2Abbrev(class);
-allObjsInst = allObjsInst(contains(allObjsInst,type));
+    type = className2Abbrev(class);
+    allObjsInst = allObjsInst(contains(allObjsInst,type));
 
-[types, abstractIDs] = deText(allObjsInst);
-abstractUUIDs = genUUID(types, abstractIDs);
-allUUIDsIdx = ismember(allUUIDs,abstractUUIDs);
+    [types, abstractIDs] = deText(allObjsInst);
+    abstractUUIDs = genUUID(types, abstractIDs);
+    allUUIDsIdx = ismember(allUUIDs,abstractUUIDs);
 
-allUUIDs = allUUIDs(allUUIDsIdx);
-allNames = allNames(allUUIDsIdx);
+    allUUIDs = allUUIDs(allUUIDsIdx);
+    allNames = allNames(allUUIDsIdx);
+end
 
 %% Get the list of the objects that match the search term.
 searchIdx = contains(allNames,searchTerm);

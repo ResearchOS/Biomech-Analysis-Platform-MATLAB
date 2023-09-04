@@ -68,6 +68,39 @@ if instanceBool
     objStruct = instStruct;
 end
 
+if ~saveObj || ~instanceBool
+    return;
+end
+
+%% Link objects. If any getCurrent returns empty, linking fails.
+% Is there ever a reason for these classes not to link to current? If so,
+% add another flag.
+if isequal(class,'Project')
+    try
+        linkObjs(instStruct.UUID, instStruct.Current_Analysis); % PJ_AN
+    catch e
+        if ~contains(e.message,'UNIQUE constraint failed')
+            error(e);
+        end
+    end
+end
+
+if isequal(class,'Analysis')
+    computerID = getCurrent('Computer_ID');
+    try
+        linkObjs(instStruct.UUID, instStruct.Current_View.(computerID)); % AN_VW
+    catch e
+        if ~contains(e.message,'UNIQUE constraint failed')
+            error(e);
+        end
+    end
+    linkObjs(instStruct.UUID, getCurrent('Current_Project')); % PJ_AN
+end
+
+if isequal(class,'View')
+    linkObjs(instStruct.UUID, getCurrent('Current_Analysis')); % AN_VW
+end
+
 end
 
 %% VARIABLE
@@ -86,12 +119,15 @@ end
 function struct = createProjectStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-    computerID=getComputerID();
+    computerID=getCurrent('Computer_ID');
     struct.Data_Path.(computerID)=''; % Where the Raw Data Files are located.
     struct.Project_Path.(computerID)=''; % Where the project's files are located.
     struct.Process_Queue = {};
-    struct.Current_Logsheet = '';  
-    struct.Current_Analysis = '';
+    struct.Current_Logsheet = '';      
+
+    % Create new analysis and assign it to the project.
+    anStruct = createNewObject(true, 'Analysis', 'Default','','', saveObj);
+    struct.Current_Analysis = anStruct.UUID;
 else
     
 end
@@ -164,8 +200,19 @@ function struct = createAnalysisStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.Tags = {};   
-    computerID=getComputerID();
-    struct.Current_View.(computerID) = '';
+    computerID=getComputerID();    
+
+    % Create new view and assign it. Handle attempts at redundantly
+    % creating abstract object.
+    try
+        vwAbsStruct = createNewObject(false, 'View', 'ALL','000000','', saveObj);
+    catch e
+        if ~contains(e.message,'UNIQUE constraint failed')
+            error(e);
+        end
+    end
+    vwStruct = createNewObject(true, 'View','ALL','000000', '', saveObj);
+    struct.Current_View.(computerID) = vwStruct.UUID;
 else
     
 end

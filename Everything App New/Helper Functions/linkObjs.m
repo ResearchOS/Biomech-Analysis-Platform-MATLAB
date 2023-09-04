@@ -91,6 +91,9 @@ for i=1:length(leftObjs)
     undoquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
     try
         execute(conn, sqlquery);
+        if isempty(anUUID)
+            return;
+        end
         % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH  
         list = getUnorderedList(anUUID);
         links = loadLinks(list);

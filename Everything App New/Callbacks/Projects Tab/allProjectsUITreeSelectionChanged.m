@@ -18,7 +18,7 @@ uuid = projectNode.NodeData.UUID;
 if ~isempty(instanceID)
     % Ensure that the current computer's ID field is present.
     struct = newComputerProjectPaths(uuid);
-    computerID = getComputerID();
+    computerID = getCurrent('Computer_ID');
     dataPath=struct.Data_Path.(computerID);
     projectPath=struct.Project_Path.(computerID);
 else

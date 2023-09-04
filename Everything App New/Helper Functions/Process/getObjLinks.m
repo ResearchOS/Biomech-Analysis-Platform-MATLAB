@@ -40,6 +40,11 @@ for i=1:length(tablenames)
         t.(col2) = {};
     end
 
+    if ~iscell(t.(col1))
+        t.(col1) = {t.(col1)};
+        t.(col2) = {t.(col2)};
+    end
+
     % Flip column order for VR & PR connections because they're in opposite order from other tables' columns.
     if ismember(tablename,{'VR_PR','PR_VR'})
         array = [array; t.(col1), t.(col2)];

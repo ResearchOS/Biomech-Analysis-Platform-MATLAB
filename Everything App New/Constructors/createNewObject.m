@@ -75,7 +75,7 @@ end
 %% Link objects. If any getCurrent returns empty, linking fails.
 % Is there ever a reason for these classes not to link to current? If so,
 % add another flag.
-if isequal(class,'Project')
+if isequal(class,'Project')    
     try
         linkObjs(instStruct.UUID, instStruct.Current_Analysis); % PJ_AN
     catch e
@@ -86,7 +86,7 @@ if isequal(class,'Project')
 end
 
 if isequal(class,'Analysis')
-    computerID = getCurrent('Computer_ID');
+    computerID = getCurrent('Computer_ID');    
     try
         linkObjs(instStruct.UUID, instStruct.Current_View.(computerID)); % AN_VW
     catch e
@@ -97,7 +97,7 @@ if isequal(class,'Analysis')
     linkObjs(instStruct.UUID, getCurrent('Current_Project')); % PJ_AN
 end
 
-if isequal(class,'View')
+if isequal(class,'View')    
     linkObjs(instStruct.UUID, getCurrent('Current_Analysis')); % AN_VW
 end
 

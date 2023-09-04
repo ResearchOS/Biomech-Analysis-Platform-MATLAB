@@ -20,7 +20,10 @@ for i=1:length(varNames)
     varName = varNames{i};
     var = table.(varName);
 
-    if ismissing(var)
+    if isempty(var)
+        data.(varName) = {};
+        continue;
+    elseif ismissing(var)
         var = '';
     elseif ismember(varName,numericCols)
         var = double(var);

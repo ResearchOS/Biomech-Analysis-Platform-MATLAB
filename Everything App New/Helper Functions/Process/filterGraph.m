@@ -17,6 +17,9 @@ G = getappdata(fig,'digraph');
 if isempty(G)
     G = refreshDigraph(fig);
 end
+if isempty(G.Edges)
+    return;
+end
 names = G.Nodes.Name;
 markerSize = getappdata(fig,'markerSize');
 maxMarkerSize = max(markerSize);

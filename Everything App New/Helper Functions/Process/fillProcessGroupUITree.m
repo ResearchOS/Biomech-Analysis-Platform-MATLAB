@@ -52,11 +52,6 @@ end
 
 %% Select the corresponding node in the UI tree
 selectNode(handles.Process.groupUITree, prUUID);
-% if ~isempty(prUUID)
-%     selectNode(handles.Process.groupUITree, runList{end,1}); % Can't select a processing group.
-% else
-% 
-% end
 
 %% Select the corresponding processing node in the graph.
 obj=get(fig,'CurrentObject');

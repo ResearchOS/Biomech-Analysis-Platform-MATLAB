@@ -263,21 +263,21 @@ if ~ismember('Settings',tableNames)
     % Try to get the second row of the Projects_Instances table. If there's
     % only one row (the initialization row), then create a new row, and set
     % the current project as its UUID.
-    sqlquery = 'SELECT COUNT(UUID) FROM Projects_Instances;';
-    numRows = fetch(conn, sqlquery);
-    numRows = double(numRows.("COUNT(UUID)"));
-    if numRows == 0
+    sqlquery = 'SELECT UUID, Date_Modified FROM Projects_Instances;';
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);    
+    if isempty(t.UUID)
         projStruct = createNewObject(true, 'Project', 'Default','','', true);
         uuid = projStruct.UUID;
-    else % Projects instances already exists, but the Settings table is being rebuilt for some reason.
-        sqlquery = 'SELECT Date_Modified FROM Projects_Instances';
-        dates = sqlread(conn, sqlquery);
+    else % Projects instances already exists, but the Settings table is being rebuilt for some reason.        
+        dates = t.Date_Modified;
         dates = datetime(dates);
-        date = char(max(dates));
-        sqlquery = ['SELECT UUID FROM Projects_Instances WHERE Date_Modified = ''' date ''''];
-        uuid = sqlread(conn, sqlquery);
+        [~,idx] = max(dates);
+        uuid = t.UUID(idx(1));
     end
 
     sqlquery = ['UPDATE Settings SET VariableValue = ''' uuid ''' WHERE VariableName = ''Current_Project_Name'''];
     execute(conn, sqlquery);
+    setCurrent(uuid, 'Current_Project_Name');
+    % setCurrent(projStruct.Process_Queue, 'Process_Queue');
 end

@@ -18,6 +18,11 @@ sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
 t = fetch(conn,sqlquery);
 t = table2MyStruct(t);
 
+if ~iscell(t.UUID)
+    t.UUID = {t.UUID};
+    t.Name = {t.Name};
+end
+
 if isempty(t.UUID)
     return; % Nothing in the table!
 end
@@ -26,7 +31,7 @@ instUUIDs = t.UUID;
 instNames = t.Name;
 [abbrevs, abstractIDs, instanceIDs] = deText(instUUIDs);
 
-inAnIdx = ismember(instUUIDs, anInst); % The indices of the instances in the current analysis.
+inAnIdx = contains(instUUIDs, anInst); % The indices of the instances matching abstract objects in this analysis.
 instUUIDs(~inAnIdx) = [];
 instNames(~inAnIdx) = [];
 

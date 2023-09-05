@@ -34,13 +34,18 @@ uniqueTypes = unique(types,'stable');
 names = cell(length(types),1);
 for i=1:length(uniqueTypes)
     isInstance = true;
-    if isempty(instanceIDs{i})
+    idx = find(contains(types,uniqueTypes{i}));
+    if isempty(instanceIDs{idx(1)})
         isInstance = false;
     end
     tablename = getTableName(uniqueTypes{i}, isInstance);
     sqlquery = ['SELECT UUID, Name FROM ' tablename];
     t = fetch(conn, sqlquery);            
     t = table2MyStruct(t);
+
+    if isempty(fieldnames(t))
+        continue;
+    end
 
     if isempty(t.UUID)
         continue;

@@ -14,6 +14,12 @@ sqlquery = ['SELECT VR_ID, NameInCode FROM ' tablename ' WHERE PR_ID = ''' uuid 
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
 
+if isempty(fieldnames(t))
+    t.VR_ID = {''};
+    t.NameInCode = {''};
+    return;
+end
+
 if isnumeric(t.VR_ID)
     t.VR_ID = {''};
     t.NameInCode = {''};
@@ -23,9 +29,3 @@ if ~iscell(t.VR_ID)
     t.VR_ID = {t.VR_ID};
     t.NameInCode = {t.NameInCode};
 end
-
-% vars = struct();
-% for i=1:length(t.VR_ID)
-%     vars(i).UUID = t.VR_ID{i};
-%     vars(i).NameInCode = t.NameInCode{i};
-% end

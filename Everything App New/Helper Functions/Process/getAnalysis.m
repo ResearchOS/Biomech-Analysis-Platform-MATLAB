@@ -8,7 +8,7 @@ global conn;
 uuid = origUUID;
 type = deText(uuid);
 
-if ismember(type,{'LG','PJ','ST'})
+if ismember(type,{'PJ'})
     anUUID = {};
     return;
 end

@@ -34,11 +34,23 @@ fldNames = {'Num_Header_Rows','Subject_Codename_Header','Target_TrialID_Header',
 for i=1:length(fldNames)
     lgInst.(fldNames{i}) = lgAbsNew.(fldNames{i});
 end
-writeJSON(lgInst);
-setCurrent('LGA8402E_F0F','Current_Logsheet'); % 1.
+instanceID = createID_Instance(lgAbsNew.UUID, 'Logsheet');
+lgUUID = genUUID('LG',lgAbsNew.UUID(3:end), instanceID);
+lgInst.UUID = lgUUID;
+lgInst.Abstract_UUID = lgAbsNew.UUID;
+saveClass(lgInst); % Make new logsheet instance to match the existing abstract logsheet.
+setCurrent(lgInst.UUID,'Current_Logsheet'); % 1.
 
 %% Process queue from project to analysis per user.
 pq.(Current_User) = {};
 sqlquery = ['UPDATE Analyses_Instances SET Process_Queue = ''' jsonencode(pq) ''' WHERE UUID = ''' Current_Analysis ''';'];
 execute(conn, sqlquery);
 setCurrent({},'Process_Queue'); % 2.
+
+%% Assign the abstract ST to the AN_ST table.
+sqlquery = ['SELECT UUID FROM SpecifyTrials_Abstract'];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
+for i=1:length(t.UUID)
+    linkObjs(Current_Analysis, t.UUID{i}); % Link specify trials abstract ID to analysis ID
+end

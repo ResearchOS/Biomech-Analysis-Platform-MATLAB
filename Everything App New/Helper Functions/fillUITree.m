@@ -22,7 +22,7 @@ allNames = t.Name;
 
 %% Get the list of all objects of the current type in the current project
 allObjsInst = allUUIDs;
-if ~contains(tablename,{'Project','Logsheet','Analyses','SpecifyTrials'})
+if ~contains(tablename,{'Project'})
     O = getObjLinks();
     H = transclosure(flipedge(O));
     Current_Project_Name = getCurrent('Current_Project_Name');

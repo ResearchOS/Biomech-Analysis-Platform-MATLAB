@@ -5,6 +5,9 @@ function []=setCurrent(var, varName)
 global conn;
 clearAllMemoizedCaches;
 
+% prevVal = getCurrent(varName); % The previous value, to store in the undo/redo stack.
+
+
 %% Look at Settings table to determine.
 rootSettingsVars = {'dbFile', 'Current_Project_Name',...
     'Current_Tab_Title','Current_User'};
@@ -20,8 +23,8 @@ if ismember(varName,rootSettingsVars)
         currVal.(Current_User) = var;        
     end
     var = jsonencode(currVal);
-    sqlquery = ['UPDATE Settings SET VariableValue = ''' var ''' WHERE VariableName = ''' varName ''';'];
-    execute(conn, sqlquery);  
+    sqlquery = ['UPDATE Settings SET VariableValue = ''' var ''' WHERE VariableName = ''' varName ''';'];          
+    execute(conn, sqlquery);
     if isequal(varName,'Current_Project_Name')
         linkObjs(currVal.(Current_User), getCurrent('Current_Analysis'));
     end
@@ -52,8 +55,7 @@ if ismember(varName, projectSettingsVars)
     if isequal(varName,'Current_Analysis')
         linkObjs(var, Current_Project);
         Current_View = getCurrent('Current_View');
-        linkObjs(var,Current_View);
-        % setCurrent(Current_View,'Current_View');
+        linkObjs(var,Current_View);        
     end
 end
 
@@ -74,18 +76,3 @@ if ismember(varName,analysisSettingsVars)
         linkObjs(var, Current_Analysis);
     end
 end
-
-% if ismember(varName,{'Current_View','Current_Logsheet'})    
-%     linkObjs(var, Current_Analysis);
-% end
-% 
-% if isequal(varName,'Current_Analysis')
-%     Current_View = getCurrent('Current_View');
-%     linkObjs(var, Current_Project);
-%     linkObjs(var, Current_View);
-% end
-% 
-% if isequal(varName, 'Current_Project_Name')
-%     Current_Analysis = getCurrent('Current_Analysis');
-%     linkObjs(var, Current_Analysis);
-% end

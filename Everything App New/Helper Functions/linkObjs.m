@@ -88,6 +88,7 @@ for i=1:length(leftObjs)
     type2 = deText(rightObjs{i});
     assert(contains(col1,type1) && contains(col2, type2)); % Check that things are being put in the proper column.
 
+    % undoquery = undoRedoCommand(sqlquery);
     undoquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
     try
         execute(conn, sqlquery);
@@ -103,7 +104,7 @@ for i=1:length(leftObjs)
             execute(conn, undoquery);
             msg = ['Cannot link ' leftObjs{i} ' and ' rightObjs{i} ' because it forms a cyclic graph in the current analysis'];
             return;
-        end
+        end        
     catch e
         if ~contains(e.message,'UNIQUE constraint failed')
             error(e);

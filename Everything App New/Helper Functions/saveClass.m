@@ -1,4 +1,4 @@
-function []=saveClass(classStruct, container)
+function []=saveClass(classStruct)
 
 %% PURPOSE: SAVE A CLASS INSTANCE TO A NEW ROW (USING INSERT STATEMENT)
 global conn;

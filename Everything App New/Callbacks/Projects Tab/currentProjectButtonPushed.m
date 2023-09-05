@@ -11,6 +11,9 @@ if isempty(selNode)
     return;
 end
 
+undoRedoStack = getappdata(fig,'undoRedoStack');
+
+
 % Include name & UUID because the name isn't guaranteed to be unique
 uuid = selNode.NodeData.UUID;
 [type, abstractID, instanceID] = deText(uuid);

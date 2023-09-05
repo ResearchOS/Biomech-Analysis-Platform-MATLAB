@@ -22,9 +22,14 @@ unlinkObjs(Current_Analysis, uuid);
 %% Remove the view from the current drop down list.
 currIdx = ismember(handles.Process.viewsDropDown.ItemsData,uuid);
 handles.Process.viewsDropDown.Items(currIdx) = [];
+handles.Process.viewsDropDown.ItemsData(currIdx) = [];
 
 allIdx = contains(handles.Process.viewsDropDown.ItemsData,repmat('0',1,length(abstractID)));
-handles.Process.viewsDropDown.Value = handles.Process.viewsDropDown.Items{allIdx};
+handles.Process.viewsDropDown.Value = handles.Process.viewsDropDown.ItemsData{allIdx};
+
+if ~iscell(anList)
+    anList = {anList};
+end
 
 % Check if this view exists in any other analyses.
 anList(ismember(anList,Current_Analysis)) = [];
@@ -33,3 +38,5 @@ if isempty(anList)
    sqlquery = ['DELETE FROM Views_Instances WHERE UUID = ''' uuid ''';'];
    execute(conn, sqlquery);
 end
+
+viewsDropDownValueChanged(fig);

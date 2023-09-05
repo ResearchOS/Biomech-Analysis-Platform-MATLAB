@@ -23,23 +23,25 @@ end
 allG = getappdata(fig,'digraph');
 selNodes = G.Nodes.Name(selIdx);
 
-succ = {};
+prop = true;
+a = questdlg('Propagate the changes downstream?','Propagate','Yes','No','Cancel','Cancel');
+if isempty(a) || isequal(a,'Cancel')
+    return;
+end
+if isequal(a,'No')
+    prop = false;
+end
+
+succs = {};
 for i=1:length(selNodes)
-    succ = [succ; successors(allG,selNodes{i})];
+    succs = [succs; successors(allG,selNodes{i})];
 end
 
-if add
-    newSuccIdx = ~ismember(succ,G.Nodes.Name);
-else
-    newSuccIdx = ismember(succ,G.Nodes.Name);
-end
-newSucc = succ(newSuccIdx); % The potential new nodes to add/remove.
+succNames = getName(succs);
 
-newSuccNames = getName(newSucc);
-
-succStr = cell(size(newSucc));
-for i=1:length(newSucc)
-    succStr{i} = [newSuccNames{i} ' (' newSucc{i}];
+succStr = cell(size(succs));
+for i=1:length(succs)
+    succStr{i} = [succNames{i} ' (' succs{i}];
 end
 
 [idx, tf] = listdlg('ListString',succStr,'PromptString',['Select PR to ' str],'SelectionMode','multiple');
@@ -47,7 +49,21 @@ if ~tf
     return;
 end
 
-newSucc = newSucc(idx);
+succs = succs(idx);
+
+if prop
+    R = getDeps(allG, 'down', succs);
+    succsIdx = ismember(allG.Nodes.Name, succs);
+    succNodesIdx = any(logical(R(succsIdx,:)),1);
+    succs = allG.Nodes.Name(succNodesIdx);
+end
+
+if add
+    newSuccIdx = ~ismember(succs,G.Nodes.Name);
+else
+    newSuccIdx = ismember(succs,G.Nodes.Name);
+end
+newSucc = succs(newSuccIdx); % The potential new nodes to add/remove.
 
 if isequal(str,'add')
     addNodesToView(fig,newSucc);

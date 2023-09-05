@@ -23,23 +23,25 @@ end
 allG = getappdata(fig,'digraph');
 selNodes = G.Nodes.Name(selIdx);
 
-pred = {};
+prop = true;
+a = questdlg('Propagate the changes upstream?','Propagate?','Yes','No','Cancel','Cancel');
+if isempty(a) || isequal(a,'Cancel')
+    return;
+end
+if isequal(a,'No')
+    prop = false;
+end
+
+preds = {};
 for i=1:length(selNodes)
-    pred = [pred; predecessors(allG,selNodes{i})];
+    preds = [preds; predecessors(allG,selNodes{i})];
 end
 
-if add
-    newPredIdx = ~ismember(pred,G.Nodes.Name);
-else
-    newPredIdx = ismember(pred,G.Nodes.Name);
-end
-newPred = pred(newPredIdx); % The potential new nodes to add/remove.
+predNames = getName(preds);
 
-newPredNames = getName(newPred);
-
-predStr = cell(size(newPred));
-for i=1:length(newPred)
-    predStr{i} = [newPredNames{i} ' (' newPred{i}];
+predStr = cell(size(preds));
+for i=1:length(preds)
+    predStr{i} = [predNames{i} ' (' preds{i}];
 end
 
 [idx, tf] = listdlg('ListString',predStr,'PromptString',['Select PR to ' str],'SelectionMode','multiple');
@@ -47,7 +49,21 @@ if ~tf
     return;
 end
 
-newPred = newPred(idx);
+preds = preds(idx);
+
+if prop
+    R = getDeps(allG, 'up', preds);
+    predsIdx = ismember(allG.Nodes.Name,preds);
+    predNodesIdx = any(logical(R(predsIdx,:)),1); % The indices of the selected nodes
+    preds = allG.Nodes.Name(predNodesIdx);
+end
+
+if add
+    newPredIdx = ~ismember(preds,G.Nodes.Name);
+else
+    newPredIdx = ismember(preds,G.Nodes.Name);
+end
+newPred = preds(newPredIdx); % The potential new nodes to add/remove.
 
 if isequal(str,'add')
     addNodesToView(fig,newPred);

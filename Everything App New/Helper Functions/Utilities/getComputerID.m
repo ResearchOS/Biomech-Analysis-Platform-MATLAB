@@ -6,15 +6,6 @@ function [id]=getComputerID()
 
 % Current method taken from this page: https://www.mathworks.com/matlabcentral/answers/101892-what-is-a-host-id-how-do-i-find-my-host-id-in-order-to-activate-my-license
 
-try
-    id = getCurrent('Computer_ID');
-    if ~isempty(id) && ~isstruct(id) && ~isequal(id,'NULL')
-        return;
-    end
-catch
-
-end
-
 if ismac==1
     [~,id]=system('ifconfig en0 | grep ether');
 elseif ispc==1
@@ -27,5 +18,3 @@ elseif ispc==1
 end
 
 id=genvarname(id);
-
-setCurrent(id,'Computer_ID');

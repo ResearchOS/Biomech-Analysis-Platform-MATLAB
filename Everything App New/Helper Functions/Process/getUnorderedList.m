@@ -15,9 +15,10 @@ end
 listPG = fetch(conn, sqlquery);
 listPG = table2MyStruct(listPG);
 fldName = fieldnames(listPG);
-listPG = listPG.(fldName{1});
-if isempty(listPG)
+if isempty(fldName)
     listPG = {};
+else
+    listPG = listPG.(fldName{1});
 end
 
 % Get the processing functions in this container.
@@ -28,9 +29,10 @@ else
 end
 listPR = fetch(conn, sqlquery);
 listPR = table2MyStruct(listPR);
-listPR = listPR.PR_ID;
-if isempty(listPR)
+if isempty(fieldnames(listPR))
     listPR = {};
+else
+    listPR = listPR.PR_ID;
 end
 if isempty(listPR) && isempty(listPG)    
     listPR_PG_AN = {};

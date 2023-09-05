@@ -3,13 +3,14 @@ function [links]=loadLinks(list)
 %% PURPOSE: JOIN AND LOAD THE LINKAGE TABLES RESPONSIBLE FOR CONNECTING THE PROCESSING FUNCTIONS TO EACH OTHER VIA VARIABLES.
 global conn;
 
+if isempty(list)
+    links = cell(0,3);
+    return;
+end
+
 % Only the contained UUIDs ('PR') should be loaded, because only they are in the PR_VR & VR_PR tables.
 if size(list,2)==2
     list = list(:,1);
-end
-
-if isempty(list)
-    list = '';
 end
 
 prIdx = contains(list,'PR'); % All processing functions together (from all groups in current analysis).

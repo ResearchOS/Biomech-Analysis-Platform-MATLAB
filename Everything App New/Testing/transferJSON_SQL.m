@@ -8,7 +8,8 @@ function [] = transferJSON_SQL()
 
 commonPath = '/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/PGUI_CommonPath';
 classNames = {'Project','Analysis','ProcessGroup','Process','Variable','SpecifyTrials','Logsheet'};
-computerID = getCurrent('Computer_ID');
+% computerID = getCurrent('Computer_ID');
+Current_User = getCurrent('Current_User');
 
 maps.General.DateCreated = 'Date_Created';
 maps.General.DateModified = 'Date_Modified';
@@ -30,8 +31,8 @@ maps.Process.Instances.DateLastRan = 'Date_Last_Ran';
 maps.Process.Instances.Other = {'SpecifyTrials'};
 maps.Project.Instances.DataPath = 'Data_Path';
 maps.Project.Instances.ProjectPath = 'Project_Path';
-maps.Project.Instances.Process_Queue = 'Process_Queue';
-maps.Project.Instances.Current_Logsheet = 'Current_Logsheet';
+% maps.Project.Instances.Process_Queue = 'Process_Queue';
+% maps.Project.Instances.Current_Logsheet = 'Current_Logsheet';
 maps.Project.Instances.Other = {'Current_Analysis'};
 maps.Analysis.Instances.Tags = 'Tags';
 maps.Analysis.Instances.Other = {'Current_View'};
@@ -197,7 +198,7 @@ for classNum = 1:length(classNames)
                         end
                     end
                     vwStruct = createNewObject(true,'VW','ALL','000000','',true);                    
-                    sql.Current_View.(computerID) = vwStruct.UUID;
+                    sql.Current_View.(Current_User) = vwStruct.UUID;
                 end
 
 

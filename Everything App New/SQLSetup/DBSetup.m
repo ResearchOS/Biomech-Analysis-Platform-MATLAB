@@ -1,4 +1,4 @@
-function []=DBSetup(dbFile)
+function []=DBSetup(dbFile, isTest)
 
 %% PURPOSE: SET UP THE DATABASE AND THE TABLES
 global conn
@@ -37,6 +37,18 @@ end
 % "VR_PR"
 % "PJ_LG"
 % Settings
+% "AN_LG"
+% "LG_VR"
+% "AN_ST"
+% Users
+
+%% Create Users table
+if ~ismember('Users',tableNames)
+    sqlquery = 'CREATE TABLE Users (Username TEXT PRIMARY KEY NOT NULL UNIQUE DEFAULT [NULL]);';
+    execute(conn, sqlquery);
+    sqlquery = 'INSERT INTO Users (Username) VALUES (''Admin'');';
+    execute(conn, sqlquery);
+end
 
 %% Object tables
 % Create the abstract & instance tables.
@@ -51,7 +63,7 @@ createAbs = strcat(['CREATE TABLE XXX_Abstract (UUID TEXT PRIMARY KEY NOT NULL U
     'Last_Modified_By TEXT    NOT NULL DEFAULT [NULL], ',...
     'Description      TEXT    NOT NULL DEFAULT [NULL], ',...
     'OutOfDate        INTEGER NOT NULL DEFAULT (true)',...
-    ');']); 
+    ');']);
 createInst = ['CREATE TABLE XXX_Instances (UUID TEXT PRIMARY KEY NOT NULL UNIQUE DEFAULT [ZZZZZZ_ZZZ], ',...
     'Date_Created     TEXT    NOT NULL DEFAULT [NULL], ',...
     'Created_By       TEXT    NOT NULL DEFAULT [NULL], ',...
@@ -90,13 +102,17 @@ if ismember('Projects_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Projects_Instances ADD Data_Path TEXT NOT NULL DEFAULT [NULL]'];
     execute(conn, sqlquery);    
     sqlquery = ['ALTER TABLE Projects_Instances ADD Project_Path TEXT NOT NULL DEFAULT [NULL]'];
-    execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Projects_Instances ADD Process_Queue TEXT NOT NULL DEFAULT [NULL]'];
-    execute(conn, sqlquery);
+    execute(conn, sqlquery);    
     sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Analysis TEXT REFERENCES Analyses_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Logsheet TEXT REFERENCES Logsheets_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ]'];
-    execute(conn, sqlquery);  
+    % For testing only START
+    if isTest 
+        sqlquery = ['ALTER TABLE Projects_Instances ADD Current_Logsheet TEXT REFERENCES Logsheets_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ]'];
+        execute(conn, sqlquery);
+        sqlquery = ['ALTER TABLE Projects_Instances ADD Process_Queue TEXT NOT NULL DEFAULT [NULL]'];
+        execute(conn, sqlquery);
+    end
+    % END TESTING
 end
 
 if ismember('Process_Abstract',modifiedNames)
@@ -136,16 +152,33 @@ if ismember('SpecifyTrials_Abstract',modifiedNames)
     execute(conn, sqlquery);
 end
 
-if ismember('Logsheets_Abstract',modifiedNames)
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Logsheet_Path TEXT NOT NULL Default [NULL]'];
+% START TESTING
+if isTest
+    if ismember('Logsheets_Abstract',modifiedNames)
+        sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Logsheet_Path TEXT NOT NULL Default [NULL]'];
+        execute(conn, sqlquery);
+        sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Num_Header_Rows INTEGER NOT NULL DEFAULT -1'];
+        execute(conn, sqlquery);
+        sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Subject_Codename_Header TEXT NOT NULL Default [NULL]'];
+        execute(conn, sqlquery);
+        sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Target_TrialID_Header TEXT NOT NULL Default [NULL]'];
+        execute(conn, sqlquery);
+        sqlquery = ['ALTER TABLE Logsheets_Abstract ADD LogsheetVar_Params TEXT NOT NULL Default [NULL]'];
+        execute(conn, sqlquery);
+    end
+end
+% END TESTING
+
+if ismember('Logsheets_Instances',modifiedNames)
+    sqlquery = ['ALTER TABLE Logsheets_Instances ADD Logsheet_Path TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Num_Header_Rows INTEGER NOT NULL DEFAULT -1'];
+    sqlquery = ['ALTER TABLE Logsheets_Instances ADD Num_Header_Rows INTEGER NOT NULL DEFAULT -1'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Subject_Codename_Header TEXT NOT NULL Default [NULL]'];
+    sqlquery = ['ALTER TABLE Logsheets_Instances ADD Subject_Codename_Header TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD Target_TrialID_Header TEXT NOT NULL Default [NULL]'];
+    sqlquery = ['ALTER TABLE Logsheets_Instances ADD Target_TrialID_Header TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE Logsheets_Abstract ADD LogsheetVar_Params TEXT NOT NULL Default [NULL]'];
+    sqlquery = ['ALTER TABLE Logsheets_Instances ADD LogsheetVar_Params TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
 end
 
@@ -153,6 +186,10 @@ if ismember('Analyses_Instances',modifiedNames)
     sqlquery = ['ALTER TABLE Analyses_Instances ADD Tags TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Analyses_Instances ADD Current_View TEXT REFERENCES Views_Instances ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL Default [NULL]'];
+    execute(conn, sqlquery);    
+    sqlquery = ['ALTER TABLE Analyses_Instances ADD Current_Logsheet TEXT REFERENCES Logsheets_Instances(UUID) ON DELETE RESTRICT ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ]'];
+    execute(conn, sqlquery);
+    sqlquery = ['ALTER TABLE Analyses_Instances ADD Process_Queue TEXT NOT NULL DEFAULT [NULL]'];
     execute(conn, sqlquery);
 end
 
@@ -174,7 +211,10 @@ createJoinTable_VRPR = ['CREATE TABLE XXX_YYY (',...
     'PRIMARY KEY (AAA_ID, BBB_ID, NameInCode)',...
     ');'];
 
-objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},{'PR','VR'},{'VR','PR'},{'PJ','LG'},{'AN','VW'}};
+% Except for VR_PR and PR_VR, the left column is the parent, the right
+% column is the child.
+objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},...
+    {'PR','VR'},{'VR','PR'},{'PJ','LG'},{'AN','VW'},{'AN','LG'},{'VR','LG'},{'AN','ST'}};
 modifiedNames = {};
 for i=1:length(objAbbrevs)
     abbrevs = objAbbrevs{i};
@@ -239,7 +279,7 @@ if ~ismember('Settings',tableNames)
     execute(conn, sqlquery);
 
     % Initialize the settings in the table.
-    VariableName = {'commonPath', 'Computer_ID', 'Current_Project_Name','Current_Tab_Title'}';
+    VariableName = {'dbFile', 'Current_Project_Name','Current_Tab_Title','Current_User'}';
     VariableValue = {'NULL','NULL','NULL','NULL'}';
     t = table(VariableName, VariableValue);
     sqlwrite(conn, 'Settings', t);
@@ -247,16 +287,24 @@ if ~ismember('Settings',tableNames)
     %% Now that the table has been initialized, put the proper values in it.
     % Computer ID
     computerID = getComputerID(); % Also sets the Computer ID
+    % sqlquery = ['UPDATE Settings SET VariableValue = ''' computerID ''' WHERE VariableName = ''Computer_ID'''];
+    % execute(conn, sqlquery);
 
-    % DB file path (previously known as common path)
-    commonPath.(computerID) = dbFile;
-    sqlquery = ['UPDATE Settings SET VariableValue = ''' jsonencode(commonPath) ''' WHERE VariableName = ''commonPath'''];
-    execute(conn, sqlquery);    
+    % DB file path
+    dbFileNew.(computerID) = dbFile;
+    sqlquery = ['UPDATE Settings SET VariableValue = ''' jsonencode(dbFileNew) ''' WHERE VariableName = ''dbFile'''];
+    execute(conn, sqlquery);      
+
+    % Current_User
+    Current_User.(computerID) = 'Admin';
+    sqlquery = ['UPDATE Settings SET VariableValue = ''' jsonencode(Current_User) ''' WHERE VariableName = ''Current_User'''];
+    execute(conn, sqlquery); 
+    Current_User = Current_User.(computerID);    
 
     % Current_Tab_Title
-    Current_Tab_Title = 'Projects';
-    sqlquery = ['UPDATE Settings SET VariableValue = ''' Current_Tab_Title ''' WHERE VariableName = ''Current_Tab_Title'''];
-    execute(conn, sqlquery);
+    Current_Tab_Title.(Current_User) = 'Projects';
+    sqlquery = ['UPDATE Settings SET VariableValue = ''' jsonencode(Current_Tab_Title) ''' WHERE VariableName = ''Current_Tab_Title'''];
+    execute(conn, sqlquery);    
 
     % Current_Project_Name
 
@@ -266,18 +314,26 @@ if ~ismember('Settings',tableNames)
     sqlquery = 'SELECT UUID, Date_Modified FROM Projects_Instances;';
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);    
-    if isempty(t.UUID)
-        projStruct = createNewObject(true, 'Project', 'Default','','', true);
-        uuid = projStruct.UUID;
+    if isempty(fieldnames(t))
+        abstractID = createID_Abstract('Project');
+        instanceID = createID_Instance(abstractID, 'Project');
+        uuid = genUUID('PJ',abstractID, instanceID);                
+
+        Current_Project_Name.(Current_User) = uuid;
+        sqlquery = ['UPDATE Settings SET VariableValue = ''' jsonencode(Current_Project_Name) ''' WHERE VariableName = ''Current_Project_Name'''];
+        execute(conn, sqlquery);
+
+        projStruct = createNewObject(false, 'Project', 'Default',abstractID,'', true);
+        projStruct = createNewObject(true, 'Project', 'Default',abstractID,instanceID, true);
+        % setCurrent(projStruct.Current_Analysis.(Current_User), 'Current_Analysis');
     else % Projects instances already exists, but the Settings table is being rebuilt for some reason.        
         dates = t.Date_Modified;
         dates = datetime(dates);
         [~,idx] = max(dates);
         uuid = t.UUID(idx(1));
-    end
 
-    sqlquery = ['UPDATE Settings SET VariableValue = ''' uuid ''' WHERE VariableName = ''Current_Project_Name'''];
-    execute(conn, sqlquery);
-    setCurrent(uuid, 'Current_Project_Name');
-    % setCurrent(projStruct.Process_Queue, 'Process_Queue');
+        Current_Project_Name.(Current_User.(computerID)) = uuid;
+        sqlquery = ['UPDATE Settings SET VariableValue = ''' jsonencode(Current_Project_Name) ''' WHERE VariableName = ''Current_Project_Name'''];
+        execute(conn, sqlquery);
+    end       
 end

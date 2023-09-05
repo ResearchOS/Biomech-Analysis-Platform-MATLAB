@@ -1,24 +1,24 @@
-function []=openCommonPathButtonPushed(src,event)
+function []=opendbFilePathButtonPushed(src,event)
 
 %% PURPOSE: OPEN THE COMMON (PROJECT-INDEPENDENT) SETTINGS PATH
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-rootSettingsFile=getRootSettingsFile();
-load(rootSettingsFile,'commonPath');
+dbFile = getCurrent('DBFile');
+[folder] = fileparts(dbFile);
 
-if isempty(commonPath) || exist(commonPath,'dir')~=7
+if isempty(folder) || exist(folder,'dir')~=7
     beep;
     warning('Need to enter a valid common path!');
     return;
 end
 
 if ispc==1
-    winopen(commonPath);
+    winopen(folder);
     return;
 end
 
-newPath=['''' commonPath ''''];
+newPath=['''' folder ''''];
 
 system(['open ' newPath]);

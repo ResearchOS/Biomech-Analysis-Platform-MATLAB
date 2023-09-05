@@ -2,6 +2,8 @@ function []=oopgui()
 
 %% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
 % Check that the connection is valid or not. Close/delete it so the GUI can open a new clean connection.
+
+%% TODO: AN_LG, AN_ST, LG_VR
 global conn;
 if ~isempty(conn) && isa(conn,'sqlite')
     if isvalid(conn)
@@ -55,12 +57,13 @@ catch
     end
     dbFile = [dbFolder slash 'biomechOS.db'];
 end
-DBSetup(dbFile);
+DBSetup(dbFile, isDel);
 
 if isDel
     transferJSON_SQL; % Transfer objects
     transferLinks_SQL; % Transfer links except for variable assignments to PR functions
     transferVarsToNamesInCode; % Transfer variable assignments as input & output to/from PR functions
+    transferColumns;
 end
 
 %% Turn off the warnings about zoom & drag mode on the UI Axes

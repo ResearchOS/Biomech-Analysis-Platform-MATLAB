@@ -34,7 +34,11 @@ for i=1:length(pg)
     sqlquery = ['SELECT PR_ID FROM PG_PR WHERE PG_ID = ''' pg{i} ''';'];
     listPR = fetch(conn, sqlquery);
     listPR = table2MyStruct(listPR);
-    listPR = listPR.PR_ID;
+    if isempty(fieldnames(listPR))
+        listPR = {};
+    else
+        listPR = listPR.PR_ID;
+    end
     if isempty(listPR)
         listPR = {};
     end
@@ -45,7 +49,11 @@ for i=1:length(pg)
     sqlquery = ['SELECT Child_PG_ID FROM PG_PG WHERE Parent_PG_ID = ''' pg{i} ''';'];
     listPG = fetch(conn, sqlquery);
     listPG = table2MyStruct(listPG);
-    listPG = listPG.Child_PG_ID;
+    if isempty(fieldnames(listPG))
+        listPG = {};
+    else
+        listPG = listPG.Child_PG_ID;
+    end
     if isempty(listPG)
         listPG = {};
     end    

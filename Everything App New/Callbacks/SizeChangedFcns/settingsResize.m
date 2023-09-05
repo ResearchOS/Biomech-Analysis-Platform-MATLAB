@@ -24,7 +24,7 @@ if isequal(ancSize,[defaultPos(3)*2 defaultPos(4)]) % If currently in default fi
     if ~isempty(getappdata(fig,'fontSizeRelToHeight')) % If the figure has been restored to default size after previously being resized.
         fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight'); % Get the original ratio.
     else % Figure initialized as default size
-        initFontSize=get(tab.commonPathEditField,'FontSize'); % Get the initial font size
+        initFontSize=get(tab.dbFilePathEditField,'FontSize'); % Get the initial font size
         fontSizeRelToHeight=initFontSize/ancSize(2); % Font size relative to figure height.
         setappdata(fig,'fontSizeRelToHeight',fontSizeRelToHeight); % Store the font size relative to figure height.
     end 
@@ -41,13 +41,13 @@ end
 compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
 
 % 1. Select common path button
-objResize(tab.commonPathButton, [0.01 0.9], [0.1 compHeight]);
+objResize(tab.dbFilePathButton, [0.01 0.9], [0.1 compHeight]);
 
 % 3. Common path edit field
-objResize(tab.commonPathEditField, [0.12 0.9], [0.2 compHeight]);
+objResize(tab.dbFilePathEditField, [0.12 0.9], [0.2 compHeight]);
 
 % 4. Open common path button
-objResize(tab.openCommonPathButton, [0.33 0.9], [0.05 compHeight]);
+objResize(tab.opendbFilePathButton, [0.33 0.9], [0.05 compHeight]);
 
 % 5. Store settings checkbox
-objResize(tab.storeSettingsCheckbox, [0.8 0.9], [0.2 compHeight]);
+% objResize(tab.storeSettingsCheckbox, [0.8 0.9], [0.2 compHeight]);

@@ -1,21 +1,21 @@
-function []=commonPathEditFieldValueChanged(src,event)
+function []=dbFilePathEditFieldValueChanged(src,event)
 
 %% PURPOSE: SET THE COMMON PATH
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-field=handles.Settings.commonPathEditField;
-commonPath=field.Value;
+field=handles.Settings.dbFilePathEditField;
+dbFile=field.Value;
 
-if isempty(commonPath)
+if isempty(dbFile)
     return;
 end
 
-setCommonPath(commonPath);
+setDBFile(dbFile);
 
 %% Tell the user that the app should be reloaded, and offer to do it for them.
-opt = questdlg('Changing the common folder path requires the app to restart. Do you want to do that now?');
+opt = questdlg('Changing the DB path requires the app to restart. Do you want to do that now?');
 
 if ~isequal(opt,'Yes')
     return;

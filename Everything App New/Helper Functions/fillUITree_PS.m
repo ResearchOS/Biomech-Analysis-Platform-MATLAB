@@ -18,6 +18,10 @@ sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
 t = fetch(conn,sqlquery);
 t = table2MyStruct(t);
 
+if isempty(fieldnames(t))
+    return;
+end
+
 if ~iscell(t.UUID)
     t.UUID = {t.UUID};
     t.Name = {t.Name};

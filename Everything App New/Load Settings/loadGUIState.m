@@ -1,44 +1,22 @@
 function []=loadGUIState(fig)
 
 %% PURPOSE: LOAD THE GUI STATE
+
+global conn;
+
 handles=getappdata(fig,'handles');
 
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
 
 Current_Project_Name = getCurrent('Current_Project_Name');
 
-%% Fill the UI trees with their correct values
-% sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 
-%     handles.Process.sortVariablesDropDown; handles.Process.sortProcessDropDown;
-%     handles.Plot.sortPlotsDropDown; handles.Plot.sortComponentsDropDown;
-%     handles.Process.sortGroupsDropDown; handles.Process.sortAnalysesDropDown];
-% uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree;
-%     handles.Process.allVariablesUITree; handles.Process.allProcessUITree;
-%     handles.Plot.allPlotsUITree; handles.Plot.allComponentsUITree;
-%     handles.Process.allGroupsUITree; handles.Process.allAnalysesUITree];
-% classNamesUITrees={'Project','Logsheet',...
-%     'Variable','Process',...
-%     'Plot','Component',...
-%     'ProcessGroup','Analysis'};
-% REMOVED PLOT & COMPONENTS
+%% Fill PJ UI trees with the correct values
+% All other UI trees are filled when selecting the project.
+sortDropDown=handles.Projects.sortProjectsDropDown;
+uiTree=handles.Projects.allProjectsUITree;
 
-% This is now done in "selectAnalysisButtonPushed"
-sortDropDowns=[handles.Projects.sortProjectsDropDown; handles.Import.sortLogsheetsDropDown; 
-    handles.Process.sortAnalysesDropDown];
-uiTrees=[handles.Projects.allProjectsUITree; handles.Import.allLogsheetsUITree;
-    handles.Process.allAnalysesUITree];
-classNamesUITrees={'Project','Logsheet',...
-    'Analysis'};
-
-for i=1:length(classNamesUITrees)
-    class=classNamesUITrees{i};
-    uiTree=uiTrees(i);
-    sortDropDown=sortDropDowns(i);
-
-    fillUITree(fig, class, uiTree, '', sortDropDown);    
-end
-
-fillUITree_SpecifyTrials(fig); % Fill in the specify trials
+fillUITree(fig, 'Project', uiTree, '', sortDropDown);    
+% fillUITree_SpecifyTrials(fig); % Fill in the specify trials
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab
@@ -49,21 +27,21 @@ currentProjectButtonPushed(fig);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Import tab
-Current_Logsheet = getCurrent('Current_Logsheet');
-if ~isempty(Current_Logsheet)
-    selectNode(handles.Import.allLogsheetsUITree, Current_Logsheet);
-    % % Bring up the current logsheet's metadata.
-    % allLogsheetsUITreeSelectionChanged(fig, true);
-end
+% Current_Logsheet = getCurrent('Current_Logsheet');
+% if ~isempty(Current_Logsheet)
+%     selectNode(handles.Import.allLogsheetsUITree, Current_Logsheet);
+%     % % Bring up the current logsheet's metadata.
+%     % allLogsheetsUITreeSelectionChanged(fig, true);
+% end
  
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Process tab
-queue = getCurrent('Process_Queue');
-queueNames = getName(queue);
-for i=1:length(queueNames)
-    addNewNode(handles.Process.queueUITree, queue{i}, queueNames{i});
-end
-setappdata(fig,'multiSelect',false);
+% queue = getCurrent('Process_Queue');
+% queueNames = getName(queue);
+% for i=1:length(queueNames)
+%     addNewNode(handles.Process.queueUITree, queue{i}, queueNames{i});
+% end
+% setappdata(fig,'multiSelect',false);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Plot tab
@@ -98,9 +76,19 @@ setappdata(fig,'multiSelect',false);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Settings tab
-%% Put the common path into the edit field
-commonPath=getCurrent('commonPath');
-handles.Settings.commonPathEditField.Value=commonPath;
+%% Load the list of all users, put them into the users dropdown
+sqlquery = ['SELECT Username FROM Users'];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
+if ~iscell(t.Username)
+    t.Username = {t.Username};
+end
+handles.Settings.usersDropDown.Items = t.Username;
+handles.Settings.usersDropDown.Value = getCurrent('Current_User');
+
+%% Put the DB file path into the edit field
+dbFile=getCurrent('DBFile');
+handles.Settings.dbFilePathEditField.Value=dbFile;
 
 Current_Tab_Title = getCurrent('Current_Tab_Title');
 handles.Tabs.tabGroup1.SelectedTab=handles.(Current_Tab_Title).Tab;

@@ -25,6 +25,11 @@ sqlquery = ['SELECT SpecifyTrials FROM ' tablename ' WHERE UUID = ''' uuid ''';'
 st = fetch(conn, sqlquery);
 st = table2MyStruct(st);
 
+if isempty(fieldnames(st))
+    st = {};
+    return;
+end
+
 st = st.SpecifyTrials;
 
 if isempty(st)

@@ -11,10 +11,15 @@ end
 numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows'};
 jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','Logsheet_Path',...
     'Logsheet_Parameters','Data_Parameters','HardCodedValue','ST_ID','InputVariablesNamesInCode','OutputVariablesNamesInCode','SpecifyTrials',...
-    'Current_View','InclNodes'};
+    'Current_View','InclNodes','Current_Logsheet','Current_Analysis'};
 dateCols = {'Date_Created','Date_Modified','Date_Last_Ran'};
 
 varNames = table.Properties.VariableNames;
+
+if isempty(table)
+    data = struct();
+    return;
+end
 
 for i=1:length(varNames)
     varName = varNames{i};
@@ -29,8 +34,12 @@ for i=1:length(varNames)
         var = double(var);
     elseif ismember(varName,jsonCols)
         if ~isequal(var,'NULL')  
-            if isscalar(var) && (isstring(var) || ischar(var))                
-                var = jsondecode(var);
+            if isscalar(var) && (isstring(var) || ischar(var))  
+                try
+                    var = jsondecode(var);
+                catch
+                    var = ''; % Not initialized properly.                    
+                end
             else
                 tmp = cell(size(var));
                 for j = 1:length(var)

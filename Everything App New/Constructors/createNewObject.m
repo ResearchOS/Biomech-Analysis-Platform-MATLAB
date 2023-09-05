@@ -63,7 +63,7 @@ if instanceBool
     objStruct = initializeCommonStructFields(true, class, name, abstractID, instanceID);
     instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);    
     if saveObj
-        saveClass(instStruct);
+        saveClass(instStruct);                
     end
     objStruct = instStruct;
 end
@@ -75,31 +75,32 @@ end
 %% Link objects. If any getCurrent returns empty, linking fails.
 % Is there ever a reason for these classes not to link to current? If so,
 % add another flag.
-if isequal(class,'Project')    
-    try
-        linkObjs(instStruct.UUID, instStruct.Current_Analysis); % PJ_AN
-    catch e
-        if ~contains(e.message,'UNIQUE constraint failed')
-            error(e);
-        end
-    end
-end
-
-if isequal(class,'Analysis')
-    computerID = getCurrent('Computer_ID');    
-    try
-        linkObjs(instStruct.UUID, instStruct.Current_View.(computerID)); % AN_VW
-    catch e
-        if ~contains(e.message,'UNIQUE constraint failed')
-            error(e);
-        end
-    end
-    linkObjs(instStruct.UUID, getCurrent('Current_Project')); % PJ_AN
-end
-
-if isequal(class,'View')    
-    linkObjs(instStruct.UUID, getCurrent('Current_Analysis')); % AN_VW
-end
+% if isequal(class,'Project')    
+%     Current_User = getCurrent('Current_User');
+%     try
+%         linkObjs(instStruct.UUID, instStruct.Current_Analysis.(Current_User)); % PJ_AN
+%     catch e
+%         if ~contains(e.message,'UNIQUE constraint failed')
+%             error(e);
+%         end
+%     end
+% end
+% 
+% if isequal(class,'Analysis')
+%     Current_User = getCurrent('Current_User');
+%     try
+%         linkObjs(instStruct.UUID, instStruct.Current_View.(Current_User)); % AN_VW
+%     catch e
+%         if ~contains(e.message,'UNIQUE constraint failed')
+%             error(e);
+%         end
+%     end
+%     linkObjs(instStruct.UUID, getCurrent('Current_Project')); % PJ_AN
+% end
+% 
+% if isequal(class,'View')    
+%     linkObjs(instStruct.UUID, getCurrent('Current_Analysis')); % AN_VW
+% end
 
 end
 
@@ -119,15 +120,14 @@ end
 function struct = createProjectStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-    computerID=getCurrent('Computer_ID');
+    computerID=getComputerID();
     struct.Data_Path.(computerID)=''; % Where the Raw Data Files are located.
-    struct.Project_Path.(computerID)=''; % Where the project's files are located.
-    struct.Process_Queue = {};
-    struct.Current_Logsheet = '';      
+    struct.Project_Path.(computerID)=''; % Where the project's files are located.    
 
     % Create new analysis and assign it to the project.
     anStruct = createNewObject(true, 'Analysis', 'Default','','', saveObj);
-    struct.Current_Analysis = anStruct.UUID;
+    Current_User = getCurrent('Current_User');
+    struct.Current_Analysis.(Current_User) = anStruct.UUID;
 else
     
 end
@@ -179,18 +179,18 @@ end
 function struct = createLogsheetStruct(instanceBool, struct, saveObj)
 
 if instanceBool
-
-else
     computerID=getComputerID();
     struct.Logsheet_Path.(computerID)='';
     struct.Num_Header_Rows=-1;
     struct.Subject_Codename_Header='';
     struct.Target_TrialID_Header='';
 
-    struct.Headers={}; % The headers for the current logsheet.
-    struct.Level={}; % Trial or subject
-    struct.Type={}; % Char or double
-    struct.Variables={}; % The variable struct text (file name)
+    struct.LogsheetVar_Params.Headers={}; % The headers for the current logsheet.
+    struct.LogsheetVar_Params.Level={}; % Trial or subject
+    struct.LogsheetVar_Params.Type={}; % Char or double
+    struct.LogsheetVar_Params.Variables={}; % The variable struct text (file name)
+else
+    
 end
 
 end
@@ -200,7 +200,7 @@ function struct = createAnalysisStruct(instanceBool, struct, saveObj)
 
 if instanceBool
     struct.Tags = {};   
-    computerID=getComputerID();    
+    Current_User=getCurrent('Current_User');    
 
     % Create new view and assign it. Handle attempts at redundantly
     % creating abstract object.
@@ -212,7 +212,12 @@ if instanceBool
         end
     end
     vwStruct = createNewObject(true, 'View','ALL','000000', '', saveObj);
-    struct.Current_View.(computerID) = vwStruct.UUID;
+    struct.Current_View.(Current_User) = vwStruct.UUID;
+
+    logStruct = createNewObject(true, 'Logsheet', 'Default','','', saveObj);
+    struct.Current_Logsheet.(Current_User) = logStruct.UUID;
+
+    struct.Process_Queue.(Current_User) = {};
 else
     
 end

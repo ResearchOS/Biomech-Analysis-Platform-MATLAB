@@ -1,28 +1,54 @@
-function uuid = genUUID(class, abstractID, instanceID, name)
-
-uuid='';
-if ischar(class) && length(class)==2
-    abbrev = class;
-else
-    abbrev = className2Abbrev(class);
-end
+function uuids = genUUID(class, abstractID, instanceID, name)
 
 if nargin<=1
     return;
 end
 
-if nargin<3
-    instanceID='';
+if isempty(class)
+    class = {};
 end
 
-if ~isempty(abstractID) && isempty(instanceID)
-    uuid = [abbrev abstractID];
-    return;
+if ~iscell(class)
+    class = {class};
 end
 
-if ~isempty(instanceID)
-    uuid = [abbrev abstractID '_' instanceID];
-    return;
+makeChar = false;
+if isempty(abstractID)
+    abstractID = {};
+end
+if ~iscell(abstractID)
+    makeChar = true;
+    abstractID = {abstractID};
+end
+
+if nargin==2 || isempty(instanceID)
+    instanceID = {};
+end
+
+if ~iscell(instanceID)
+    instanceID = {instanceID};
+end
+
+uuids = cell(size(abstractID));
+for i=1:length(abstractID)
+
+    if ischar(class{i}) && length(class{i})==2
+        abbrev = class{i};
+    else
+        abbrev = className2Abbrev(class{i});
+    end    
+
+    if ~isempty(abstractID{i}) && (length(instanceID)<i || isempty(instanceID{i}))
+        uuids{i} = [abbrev abstractID{i}];
+        continue;
+    end
+
+    uuids{i} = [abbrev abstractID{i} '_' instanceID{i}];
+
+end
+
+if makeChar
+    uuids = uuids{1};
 end
 
 % What do I do if they include the name?

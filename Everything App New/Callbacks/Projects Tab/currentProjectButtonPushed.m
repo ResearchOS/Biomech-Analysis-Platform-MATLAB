@@ -22,38 +22,26 @@ handles.Projects.projectsLabel.Text=[selNode.Text ' ' uuid];
 
 setCurrent(uuid, 'Current_Project_Name');
 
-% Select the current analysis node, and show its entries.
+%% Fill the "ALL" UI trees with objects from the current analysis.
+sortDropDowns=[handles.Process.sortVariablesDropDown; handles.Process.sortProcessDropDown;
+    handles.Process.sortGroupsDropDown; handles.Import.sortLogsheetsDropDown; handles.Process.sortAnalysesDropDown];
+uiTrees=[handles.Process.allVariablesUITree; handles.Process.allProcessUITree;
+    handles.Process.allGroupsUITree; handles.Import.allLogsheetsUITree; handles.Process.allAnalysesUITree];
+classNamesUITrees={'Variable','Process',...
+    'ProcessGroup','Logsheet','Analysis'};
+
+for i=1:length(classNamesUITrees)
+    class=classNamesUITrees{i};
+    uiTree=uiTrees(i);
+    sortDropDown=sortDropDowns(i);
+    
+    fillUITree(fig, class, uiTree, '', sortDropDown);    
+end
+
+fillUITree_SpecifyTrials(fig); % Fill in the specify trials
+
+%% Select the current analysis node, and show its entries.
 Current_Analysis = getCurrent('Current_Analysis');
-
-%% If this project has never had an analysis assigned, create one and assign it.
-% if isempty(Current_Analysis)
-%     [anStructInst, anStructAbs] = createNewObject(true, 'AN', 'Default', '', '', true);
-%     absNode = addNewNode(handles.Process.allAnalysesUITree, anStructAbs.UUID, anStructAbs.Name);
-%     addNewNode(absNode, anStructInst.UUID, anStructInst.Name);
-%     Current_Analysis = anStructInst.UUID;
-%     setCurrent(Current_Analysis, 'Current_Analysis');
-% end
-
-% Current_View = getCurrent('Current_View');
-% if isempty(Current_View)
-%     % Create a new view and assign it to the current analysis
-%     try
-%         absViewStruct = createNewObject(false, 'VW','ALL','000000','',true);
-%     catch e
-%         if ~contains(e.message,'UNIQUE')
-%             error(e);
-%         end
-%     end
-%     viewStruct = createNewObject(true, 'VW', 'ALL','000000', '', true);
-%     Current_View = viewStruct.UUID; 
-%     setCurrent(Current_View,'Current_View');
-%     linkObjs(Current_View, Current_Analysis);
-% end
 
 selectNode(handles.Process.allAnalysesUITree, Current_Analysis);
 selectAnalysisButtonPushed(fig);
-
-%% Select the current logsheet.
-Current_Logsheet = getCurrent('Current_Logsheet');
-selectNode(handles.Import.allLogsheetsUITree, Current_Logsheet);
-% allLogsheetsUITreeSelectionChanged(fig);

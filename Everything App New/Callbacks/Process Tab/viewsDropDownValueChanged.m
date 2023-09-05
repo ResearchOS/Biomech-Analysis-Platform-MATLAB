@@ -22,6 +22,10 @@ if isfile(tmpPath)
 end
 handles.Process.editViewButton.Value = value;
 
-G = filterGraph(fig, uuid); % Filter the 'ALL' graph with the current view.
+viewAxes = handles.Process.toggleDigraphCheckbox.Value;
 
-renderGraph(fig, G); % Render the filtered graph.
+if viewAxes==1
+    G = filterGraph(fig, uuid); % Filter the 'ALL' graph with the current view.
+
+    renderGraph(fig, G); % Render the filtered graph.
+end

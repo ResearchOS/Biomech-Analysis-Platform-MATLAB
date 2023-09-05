@@ -14,6 +14,14 @@ t = table2MyStruct(t);
 inclNodes = t.InclNodes;
 name = t.Name;
 
+if isempty(inclNodes)
+    inclNodes = {};    
+end
+
+if isempty(name)
+    name = {};
+end
+
 G = getappdata(fig,'digraph');
 if isempty(G)
     G = refreshDigraph(fig);
@@ -22,6 +30,9 @@ if isempty(G.Edges)
     return;
 end
 names = G.Nodes.Name;
+if isequal(name,'ALL')
+    inclNodes = names; % Keep all nodes.
+end
 markerSize = getappdata(fig,'markerSize');
 if isempty(markerSize)
     markerSize = repmat(4,length(names),1);
@@ -35,11 +46,8 @@ else
 end
 selNames = names(selIdx);
 
-if ~isequal(name,'ALL')
-    exclNodesIdx = ~ismember(names,inclNodes);
-
-    G = rmnode(G,names(exclNodesIdx));
-end
+exclNodesIdx = ~ismember(names,inclNodes);
+G = rmnode(G,names(exclNodesIdx));
 newSelNamesIdx = ismember(G.Nodes.Name,selNames);
 
 markerSize = repmat(minMarkerSize,length(newSelNamesIdx),1); % Change markerSize length in case nodes are excluded.

@@ -9,14 +9,14 @@ if nargin==0
 end
 
 types = getTypes();
-alwaysRemTypes = {'PJ','AN','ST','LG'};
-types(ismember(types,alwaysRemTypes)) = [];
+% alwaysRemTypes = {'PJ','AN','ST','LG'};
+% types(ismember(types,alwaysRemTypes)) = [];
 types(ismember(types,remTypes)) = [];
 
 tablenames = sqlfind(conn, '');
 tablenames = tablenames.Table(contains(tablenames.Table,types));
 
-array = {};
+array = cell(0,2);
 for i=1:length(tablenames)
 
     tablename = tablenames{i};
@@ -35,9 +35,11 @@ for i=1:length(tablenames)
     sqlquery = ['SELECT ' col1 ', ' col2 ' FROM ' tablename];
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
+    if isempty(fieldnames(t))
+        continue;
+    end
     if isempty(t.(col1))
-        t.(col1) = {};
-        t.(col2) = {};
+        continue;
     end
 
     if ~iscell(t.(col1))

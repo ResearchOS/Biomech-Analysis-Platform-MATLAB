@@ -1,4 +1,4 @@
-function []=saveClass(classStruct, date)
+function []=saveClass(classStruct, container)
 
 %% PURPOSE: SAVE A CLASS INSTANCE TO A NEW ROW (USING INSERT STATEMENT)
 global conn;
@@ -13,8 +13,8 @@ else
 end
 
 class = className2Abbrev(type);
-class = makeClassPlural(class);
-tablename = [class '_' suffix];
+classPlural = makeClassPlural(class);
+tablename = [classPlural '_' suffix];
 
 sqlquery = struct2SQL(tablename, classStruct, 'INSERT');
 execute(conn, sqlquery);

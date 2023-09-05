@@ -663,17 +663,23 @@ statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButto
 % 1. Common path label
 % handles.Settings.commonPathLabel=uilabel(settingsTab,'Text','Common Path','FontWeight','Bold');
 
-% 1. Select common path button
-handles.Settings.commonPathButton=uibutton(settingsTab,'push','Text','Common Path','Tag','CommonPathButton','ButtonPushedFcn',@(commonPathButton,event) commonPathButtonPushed(commonPathButton));
+% 1. Select db file path button
+handles.Settings.dbFilePathButton=uibutton(settingsTab,'push','Text','DB File','Tag','DBFileButton','ButtonPushedFcn',@(dbFileButton,event) dbFileButtonPushed(dbFileButton));
 
 % 3. Common path edit field
-handles.Settings.commonPathEditField=uieditfield(settingsTab,'Value','','Tag','CommonPathEditField','ValueChangedFcn',@(commonPathEditField,event) commonPathEditFieldValueChanged(commonPathEditField));
+handles.Settings.dbFilePathEditField=uieditfield(settingsTab,'Value','','ValueChangedFcn',@(dbFilePathEditField,event) dbFilePathEditFieldValueChanged(dbFilePathEditField));
 
 % 4. Open common path button
-handles.Settings.openCommonPathButton=uibutton(settingsTab,'push','Text','O','Tag','OpenCommonPathButton','ButtonPushedFcn',@(openCommonPathButton,event) openCommonPathButtonPushed(openCommonPathButton));
+handles.Settings.opendbFilePathButton=uibutton(settingsTab,'push','Text','O','ButtonPushedFcn',@(opendbFilePathButton,event) opendbFilePathButtonPushed(opendbFilePathButton));
 
-% 5. Store settings in GUI app data checkbox
-handles.Settings.storeSettingsCheckbox=uicheckbox(settingsTab,'Value',false,'Text','Store Settings','ValueChangedFcn',@(storeSettingsCheckbox,event) storeSettingsCheckboxValueChanged(storeSettingsCheckbox));
+% 5. All users dropdown
+handles.Settings.usersDropDown = uidropdown(settingsTab,'Items',{'Admin'},'Value','Admin','Editable','off','ValueChangedFcn',@(usersDropDown, event) usersDropDownValueChanged(usersDropDown));
+
+% 6. Add user button
+handles.Settings.addUserButton = uibutton(settingsTab,'push','Text','Add User','ButtonPushedFcn',@(addUserButton, event) addUserButtonPushed(addUserButton));
+
+% 7. Delete user button
+handles.Settings.removeUserButton = uibutton(settingsTab,'push','Text','Delete User','ButtonPushedFcn',@(removeUserButton, event) removeUserButtonPushed(removeUserButton));
 
 setappdata(fig,'handles',handles);
 settingsResize(fig);

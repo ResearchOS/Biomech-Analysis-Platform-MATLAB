@@ -20,15 +20,17 @@ end
 allUUIDs = t.UUID;
 allNames = t.Name;
 
-%% Get the list of all objects of the current type in the current analysis
+%% Get the list of all objects of the current type in the current project
 allObjsInst = allUUIDs;
-if ~contains(tablename,{'Project','Logsheet','Analyses'})
+if ~contains(tablename,{'Project','Logsheet','Analyses','SpecifyTrials'})
     O = getObjLinks();
     H = transclosure(flipedge(O));
-    Current_Analysis = getCurrent('Current_Analysis');
-    anIdx = ismember(O.Nodes.Name,Current_Analysis);
+    Current_Project_Name = getCurrent('Current_Project_Name');
+    projIdx = ismember(O.Nodes.Name,Current_Project_Name);
     R = full(adjacency(H));
-    allObjsInst = O.Nodes.Name(logical(R(anIdx,:)));
+    % Objects currently or previously associated with this project OR never associated with any project at all.
+    inclIdx = projIdx | (indegree(O)==0 | outdegree(O)==0);
+    allObjsInst = O.Nodes.Name(any(logical(R(inclIdx,:)),1));
 
     type = className2Abbrev(class);
     allObjsInst = allObjsInst(contains(allObjsInst,type));

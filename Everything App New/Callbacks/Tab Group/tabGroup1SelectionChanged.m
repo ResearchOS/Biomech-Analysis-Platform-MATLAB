@@ -11,8 +11,9 @@ handles=getappdata(fig,'handles');
 
 %% Store the current tab.
 Current_Tab_Title=handles.Tabs.tabGroup1.SelectedTab.Title;
-sqlquery = ['UPDATE Settings SET VariableValue = ''' Current_Tab_Title ''' WHERE VariableName  = ''Current_Tab_Title'';'];
-execute(conn, sqlquery);
+setCurrent(Current_Tab_Title,'Current_Tab_Title');
+% sqlquery = ['UPDATE Settings SET VariableValue = ''' Current_Tab_Title ''' WHERE VariableName  = ''Current_Tab_Title'';'];
+% execute(conn, sqlquery);
 
 %% If switching between Plot and Process tab, change the visibility of the "Variables" tab.
 if ismember(Current_Tab_Title,{'Projects','Import','Stats','Settings'})

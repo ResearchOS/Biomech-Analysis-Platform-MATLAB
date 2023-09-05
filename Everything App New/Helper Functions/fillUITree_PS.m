@@ -1,4 +1,4 @@
-function []=fillUITree_PS(fig, class, uiTree, anInst)
+function []=fillUITree_PS(fig, class, uiTree, anAbs)
 
 %% PUEPOSE: FILL IN THE CLASS UI TREE WITH PROJECT-SPECIFIC NODES, WITH PARENT NODES THAT ARE PROJECT-INDEPENDENT
 global conn;
@@ -33,16 +33,19 @@ end
 
 instUUIDs = t.UUID;
 instNames = t.Name;
-[abbrevs, abstractIDs, instanceIDs] = deText(instUUIDs);
 
-inAnIdx = contains(instUUIDs, anInst); % The indices of the instances matching abstract objects in this analysis.
+inAnIdx = contains(instUUIDs, anAbs); % The indices of the instances matching abstract objects in this analysis.
 instUUIDs(~inAnIdx) = [];
 instNames(~inAnIdx) = [];
 
+[abbrevs, abstractIDs, instanceIDs] = deText(instUUIDs);
+
+abstractUUIDs = genUUID(abbrevs, abstractIDs);
+
 for i=1:length(instUUIDs)
         
-    instanceUUID = genUUID(class, abstractIDs{i}, instanceIDs{i});
-    abstractUUID = genUUID(class, abstractIDs{i});
+    instanceUUID = instUUIDs{i};
+    abstractUUID = abstractUUIDs{i};
     idx=ismember(uuids, abstractUUID); % The abstract node idx
 
     if ~any(idx)
@@ -51,18 +54,18 @@ for i=1:length(instUUIDs)
 
     abstractNode = uiTree.Children(idx); % The abstract node
 
-    if ~isempty(abstractNode.Children)
-        tmp = [abstractNode.Children.NodeData];
-        existInstanceUUID = {tmp.UUID}; % UUID's of already-existing nodes.
-    else
-        existInstanceUUID = {};
-    end
-
-    existIdx = ismember(instanceUUID, existInstanceUUID);
-
-    if existIdx
-        continue;
-    end
+    % if ~isempty(abstractNode.Children)
+    %     tmp = [abstractNode.Children.NodeData];
+    %     existInstanceUUID = {tmp.UUID}; % UUID's of already-existing nodes.
+    % else
+    %     existInstanceUUID = {};
+    % end
+    % 
+    % existIdx = ismember(instanceUUID, existInstanceUUID);
+    % 
+    % if existIdx
+    %     continue;
+    % end
 
     newNode = addNewNode(abstractNode, instanceUUID, instNames{i});
 

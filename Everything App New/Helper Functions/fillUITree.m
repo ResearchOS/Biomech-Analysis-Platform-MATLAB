@@ -80,4 +80,4 @@ end
 selectNode(uiTree, selNode.NodeData.UUID);
 
 %% ADD THE PROJECT-SPECIFIC VERSIONS TO THE UI TREE
-fillUITree_PS(fig, class, uiTree, allObjsInst);
+fillUITree_PS(fig, class, uiTree, allUUIDs);

@@ -28,17 +28,20 @@ if ~bool
     return;
 end
 
-types = deText(uuids);
+[types,~,instanceIDs] = deText(uuids);
 uniqueTypes = unique(types,'stable');
 
 names = cell(length(types),1);
 for i=1:length(uniqueTypes)
+    isInstance = true;
+    if isempty(instanceIDs{i})
+        isInstance = false;
+    end
     tablename = getTableName(uniqueTypes{i}, isInstance);
     sqlquery = ['SELECT UUID, Name FROM ' tablename];
-    t = fetch(conn, sqlquery);        
-    zIdx = ismember(t.UUID,'ZZZZZZ_ZZZ');
-    t(zIdx,:) = [];
+    t = fetch(conn, sqlquery);            
     t = table2MyStruct(t);
+
     if isempty(t.UUID)
         continue;
     end

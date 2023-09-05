@@ -54,19 +54,6 @@ for i=1:length(instUUIDs)
 
     abstractNode = uiTree.Children(idx); % The abstract node
 
-    % if ~isempty(abstractNode.Children)
-    %     tmp = [abstractNode.Children.NodeData];
-    %     existInstanceUUID = {tmp.UUID}; % UUID's of already-existing nodes.
-    % else
-    %     existInstanceUUID = {};
-    % end
-    % 
-    % existIdx = ismember(instanceUUID, existInstanceUUID);
-    % 
-    % if existIdx
-    %     continue;
-    % end
-
     newNode = addNewNode(abstractNode, instanceUUID, instNames{i});
 
     assignContextMenu(newNode,handles);

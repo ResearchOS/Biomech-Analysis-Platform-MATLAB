@@ -45,6 +45,7 @@ setappdata(fig,'appFolder',currFolder);
 handles=initializeComponents(fig); % Put all of the components in their place
 setappdata(fig,'handles',handles);
 assignin('base','gui',fig); % Put the GUI object into the base workspace.
+setappdata(fig,'undoRedoStack',{});
 
 %% Initialize the SQL database
 slash = filesep;

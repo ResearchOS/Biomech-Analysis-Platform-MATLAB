@@ -14,16 +14,15 @@ end
 uuid = selNode.NodeData.UUID;
 struct=loadJSON(uuid);
 
-computerID=getComputerID();
+[type, abstractID, instanceID] = deText(uuid);
 
-if ~isfield(struct.Logsheet_Path,computerID)
-    tmp = createNewObject(false, 'Logsheet', 'Default', '', '', false);
-    if ~isstruct(struct.Logsheet_Path)
-        struct = rmfield(struct,'Logsheet_Path');  
-    end
-    struct.Logsheet_Path.(computerID) = tmp.Logsheet_Path.(computerID);
-    writeJSON(struct);
+if isempty(instanceID)
+    return; % Need to clear all GUI elements when abstract logsheet is selected.
 end
+
+newComputerProjectPaths(uuid);
+
+computerID = getComputerID();
 
 % Set the logsheet path field.
 if exist(struct.Logsheet_Path.(computerID),'file')==2

@@ -18,3 +18,7 @@ if ~any(checkedIdx)
 end
 
 specifyTrialsUITree.CheckedNodes = specifyTrialsUITree.Children(checkedIdx);
+
+Current_Analysis = getCurrent('Current_Analysis');
+
+linkObjs(Current_Analysis, specifyTrials);

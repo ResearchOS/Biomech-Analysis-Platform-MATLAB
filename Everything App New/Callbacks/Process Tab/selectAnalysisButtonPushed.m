@@ -63,3 +63,10 @@ disp('Successfully switched to new analysis');
 Current_Logsheet = getCurrent('Current_Logsheet');
 selectNode(handles.Import.allLogsheetsUITree, Current_Logsheet);
 allLogsheetsUITreeSelectionChanged(fig);
+
+%% Fill the queue UI tree
+queue = getCurrent('Process_Queue');
+queueNames = getName(queue);
+for i=1:length(queueNames)
+    addNewNode(handles.Process.queueUITree, queue{i}, queueNames{i});
+end

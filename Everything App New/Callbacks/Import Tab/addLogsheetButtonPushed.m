@@ -11,15 +11,12 @@ if isempty(logsheetName)
     return;
 end
 
-struct = createNewObject(false, 'Logsheet', logsheetName, '', '', true);
+struct = createNewObject(true, 'Logsheet', logsheetName, '', '', true);
 
-searchTerm=getSearchTerm(handles.Import.searchField);
-
-fillUITree(fig,'Logsheet',handles.Import.allLogsheetsUITree, ...
-    searchTerm, handles.Import.sortLogsheetsDropDown);
+% Create abstract & instance nodes
+absNode = addNewNode(handles.Import.allLogsheetsUITree, struct.Abstract_UUID, struct.Name);
+addNewNode(absNode, struct.UUID, struct.Name);
 
 selectNode(handles.Import.allLogsheetsUITree, struct.UUID);
 
 allLogsheetsUITreeSelectionChanged(fig);
-
-linkObjs(struct.UUID, getCurrent('Current_Project_Name'));

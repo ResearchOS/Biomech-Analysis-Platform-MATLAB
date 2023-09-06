@@ -16,7 +16,6 @@ sortDropDown=handles.Projects.sortProjectsDropDown;
 uiTree=handles.Projects.allProjectsUITree;
 
 fillUITree(fig, 'Project', uiTree, '', sortDropDown);    
-% fillUITree_SpecifyTrials(fig); % Fill in the specify trials
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab
@@ -24,6 +23,8 @@ fillUITree(fig, 'Project', uiTree, '', sortDropDown);
 selectNode(handles.Projects.allProjectsUITree, Current_Project_Name);
 allProjectsUITreeSelectionChanged(fig);
 currentProjectButtonPushed(fig);
+
+setappdata(fig,'multiSelect',false); % Disable multiselect on graph by default
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Import tab
@@ -87,7 +88,7 @@ handles.Settings.usersDropDown.Items = t.Username;
 handles.Settings.usersDropDown.Value = getCurrent('Current_User');
 
 %% Put the DB file path into the edit field
-dbFile=getCurrent('DBFile');
+dbFile=getCurrent('dbFile');
 handles.Settings.dbFilePathEditField.Value=dbFile;
 
 Current_Tab_Title = getCurrent('Current_Tab_Title');

@@ -180,6 +180,8 @@ if ismember('Logsheets_Instances',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Logsheets_Instances ADD LogsheetVar_Params TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
+    sqlquery = ['ALTER TABLE Logsheets_Instances ADD SpecifyTrials TEXT NOT NULL Default [' jsonencode('NULL') ']'];
+    execute(conn, sqlquery); 
 end
 
 if ismember('Analyses_Instances',modifiedNames)

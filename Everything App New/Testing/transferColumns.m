@@ -22,7 +22,6 @@ Current_Analysis = 'ANF4D23E_83B';
 setCurrent(Current_Analysis,'Current_Analysis'); % 4.
 
 Current_View = getCurrent('Current_View');
-% vwStruct = createNewObject(true, 'VW', 'ALL', '000000','',true);
 setCurrent(Current_View, 'Current_View');
 
 %% Logsheet from project to analysis per user.
@@ -38,6 +37,7 @@ instanceID = createID_Instance(lgAbsNew.UUID, 'Logsheet');
 lgUUID = genUUID('LG',lgAbsNew.UUID(3:end), instanceID);
 lgInst.UUID = lgUUID;
 lgInst.Abstract_UUID = lgAbsNew.UUID;
+lgInst.LogsheetVar_Params = cell2struct(struct2cell(lgInst.LogsheetVar_Params), {'Headers','Level','Type','Var_ID'});
 saveClass(lgInst); % Make new logsheet instance to match the existing abstract logsheet.
 setCurrent(lgInst.UUID,'Current_Logsheet'); % 1.
 

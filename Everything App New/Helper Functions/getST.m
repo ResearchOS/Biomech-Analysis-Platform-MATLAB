@@ -4,23 +4,20 @@ function [st]=getST(uuid)
 % UUID is in the right column
 global conn;
 
-% st = {};
-% disp('ST not implemented yet!');
-% return;
-
-[type] = deText(uuid);
+[type, abstractID, instanceID] = deText(uuid);
 
 st = {};
 if ~ismember(type,{'LG','PR'})
     return; % Only logsheets and process functions have specify trials.
 end
 
-if isequal(type,'LG')
-    disp('ST still not done for logsheets!');
-    return;
+isInstance = true;
+if isempty(instanceID)
+    isInstance = false;
 end
 
-tablename = 'Process_Instances';
+tablename = getTableName(type, isInstance);
+
 sqlquery = ['SELECT SpecifyTrials FROM ' tablename ' WHERE UUID = ''' uuid ''';'];
 st = fetch(conn, sqlquery);
 st = table2MyStruct(st);
@@ -32,6 +29,6 @@ end
 
 st = st.SpecifyTrials;
 
-if isempty(st)
+if isempty(st) || isequal(st,'NULL')
     st={};
 end

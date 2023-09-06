@@ -28,8 +28,11 @@ if ~contains(tablename,{'Project'})
     Current_Project_Name = getCurrent('Current_Project_Name');
     projIdx = ismember(O.Nodes.Name,Current_Project_Name);
     R = full(adjacency(H));
+    for i=1:length(R)
+        R(i,i) = 1; % Insert 1's on the main diagonal, indicating that nodes are reachable from themselves.
+    end
     % Objects currently or previously associated with this project OR never associated with any project at all.
-    inclIdx = projIdx | (indegree(O)==0 | outdegree(O)==0);
+    inclIdx = projIdx | (indegree(O)==0 & outdegree(O)==0);
     allObjsInst = O.Nodes.Name(any(logical(R(inclIdx,:)),1));
 
     type = className2Abbrev(class);

@@ -2,6 +2,8 @@ function []=specifyTrialsUITreeCheckedNodesChanged(src,event)
 
 %% PURPOSE: CHANGE WHICH SPECIFY TRIALS ARE BEING RUN FOR THE CURRENT CLASS.
 
+global conn;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -46,19 +48,33 @@ if isempty(selSTNode)
     return;
 end
 
-checkedIdx = ismember(src.CheckedNodes, selSTNode);
+checkedIdx = ismember(selSTNode, src.CheckedNodes);
 
 % If unchecking the box, remove it from the list.
 [type] = deText(classUUID);
-if ~ismember(type,{'PR','LG'})    
+if ~ismember(type,{'PR','LG'})
     return;
 end
 
 stUUID = selSTNode.NodeData.UUID;
 
-%% Put the objects in the linkage matrix.
-if any(checkedIdx) % Checked, link the objects.
-    linkObjs(stUUID, classUUID);
-else % Unchecked, unlink the objects.
-    unlinkObjs(stUUID, classUUID);
+st = getST(classUUID);
+
+if checkedIdx
+    st = [st; {stUUID}];
+else
+    st(ismember(st,stUUID)) = [];
 end
+
+%% Put the specify trials in the object's SQL table.
+tableName = getTableName(type, true);
+sqlquery = ['UPDATE ' tableName ' SET SpecifyTrials = ''' jsonencode(st) ''' WHERE UUID = ''' classUUID ''';'];
+execute(conn, sqlquery);
+
+if ~any(checkedIdx)
+    return;
+end
+
+%% Put the specify trials in this analysis.
+Current_Analysis = getCurrent('Current_Analysis');
+linkObjs(stUUID, Current_Analysis);

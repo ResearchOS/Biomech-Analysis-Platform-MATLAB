@@ -36,25 +36,28 @@ handles.Import.numHeaderRowsField.Value=struct.Num_Header_Rows;
 
 %% Set the items in the headers drop downs, reading from the logsheet
 params=struct.LogsheetVar_Params;
-if isempty(params)
-    headers = {};
+if isnumeric(params(1).Headers)
+    params.Headers = {};
+    params.Level = {};
+    params.Type = {};
+    params.Variables = {};
+end
+
+if isempty(params(1).Headers)
+    headers = {''};
 else
-    headers = {params.Header};
+    headers = {params.Headers};
 end
 
 % Set the subject codename header
-if ~isempty(headers)
-    handles.Import.subjectCodenameDropDown.Items=headers;
-    handles.Import.targetTrialIDDropDown.Items=headers;
-else
-    handles.Import.subjectCodenameDropDown.Items={''};
-    handles.Import.targetTrialIDDropDown.Items={''};
-end
+handles.Import.subjectCodenameDropDown.Items=headers;
+handles.Import.targetTrialIDDropDown.Items=headers;
+
 if ismember(struct.Subject_Codename_Header,headers)
     value=struct.Subject_Codename_Header;
 else
     handles.Import.subjectCodenameDropDown.Items=[{''} handles.Import.subjectCodenameDropDown.Items];
-    value='';    
+    value='';
 end
 handles.Import.subjectCodenameDropDown.Value=value;
 
@@ -68,14 +71,17 @@ end
 handles.Import.targetTrialIDDropDown.Value=value;
 
 % Fill logsheet headers UI tree
+if length(headers)==1 && isequal(headers{1},'')
+    headers = {};
+end
 fillHeadersUITree(fig,headers);
 
 % Set the current logsheet for the project.
 setCurrent(struct.UUID, 'Current_Logsheet');
 
 % Link the logsheet to the project.
-Current_Project = getCurrent('Current_Project_Name');
-linkObjs(struct.UUID, Current_Project);
+Current_Analysis = getCurrent('Current_Analysis');
+linkObjs(struct.UUID, Current_Analysis);
 
 %% Check the boxes for the specify trials for this logsheet.
 st = getST(struct.UUID);

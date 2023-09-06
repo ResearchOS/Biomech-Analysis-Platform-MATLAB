@@ -5,7 +5,7 @@ function []=opendbFilePathButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-dbFile = getCurrent('DBFile');
+dbFile = getCurrent('dbFile');
 [folder] = fileparts(dbFile);
 
 if isempty(folder) || exist(folder,'dir')~=7

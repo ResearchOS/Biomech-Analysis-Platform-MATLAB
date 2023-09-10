@@ -42,3 +42,22 @@ end
 listInclContainer = [listPR; listPG]; % The top level groups & functions in the analysis.
 listInclContainer(:,2) = {containerUUID}; % Include the container UUID.
 listPR_PG_AN = getPRFromPG(listInclContainer(:,1), listInclContainer); % Get all processing functions in the groups.
+
+% Get the logsheets in this container
+if isequal(type,'AN')
+    sqlquery = ['SELECT LG_ID FROM AN_LG WHERE AN_ID = ''' containerUUID ''';'];
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    if isempty(fieldnames(t))
+        return;
+    end
+    if isempty(t.LG_ID)
+        return;
+    end
+    if ~iscell(t.LG_ID)
+        t.LG_ID = {t.LG_ID};
+    end
+
+    % Append the LG & AN to the unordered list.
+    listPR_PG_AN = [listPR_PG_AN; [t.LG_ID, repmat({containerUUID}, length(t.LG_ID), 1)]];
+end

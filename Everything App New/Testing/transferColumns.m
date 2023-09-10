@@ -54,3 +54,11 @@ t = table2MyStruct(t);
 for i=1:length(t.UUID)
     linkObjs(Current_Analysis, t.UUID{i}); % Link specify trials abstract ID to analysis ID
 end
+
+%% Assign the variables from the logsheet to the join table
+headers = {lgInst.LogsheetVar_Params.Headers};
+vars = {lgInst.LogsheetVar_Params.Variables};
+for i=1:length(headers)
+    sqlquery = ['INSERT INTO VR_LG (LG_ID, VR_ID, HeaderName) VALUES (''' lgInst.UUID ''', ' vars{i} ''', ' headers{i} ''');'];
+    execute(conn, sqlquery);
+end

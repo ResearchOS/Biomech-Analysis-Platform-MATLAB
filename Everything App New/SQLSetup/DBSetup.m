@@ -273,6 +273,11 @@ if ismember('VR_PR',modifiedNames)
     execute(conn, sqlquery);
 end
 
+if ismember('VR_LG',modifiedNames)
+    sqlquery = ['ALTER TABLE VR_LG ADD HeaderName TEXT NOT NULL Default [NULL]'];
+    execute(conn, sqlquery);
+end
+
 %% Settings table
 % Put values into the table.
 if ~ismember('Settings',tableNames)

@@ -2,6 +2,8 @@ function []=runLogsheetButtonPushed(src,event)
 
 %% PURPOSE: RUN THE LOGSHEET
 
+global conn;
+
 tic;
 
 fig=ancestor(src,'figure','toplevel');
@@ -25,7 +27,8 @@ numHeaderRows=logsheetStruct.Num_Header_Rows;
 subjIDColHeader=logsheetStruct.Subject_Codename_Header;
 targetTrialIDColHeader=logsheetStruct.Target_TrialID_Header;
 
-computerID=getComputerID();
+computerID = getCurrent('Computer_ID');
+% computerID=getComputerID();
 
 path=logsheetStruct.Logsheet_Path.(computerID);
 
@@ -129,22 +132,26 @@ searchTerm=getSearchTerm(handles.Process.variablesSearchField);
 sortDropDown=handles.Process.sortVariablesDropDown;
 
 %% Create the variables settings JSON files for subject & trial levels
-date=datetime('now');
+% date=datetime('now');
 selHeaders={handles.Import.headersUITree.CheckedNodes.Text};
+sqlquery = ['SELECT LG_ID, VR_ID FROM VR_LG WHERE LG_ID = ''' logsheetStruct.UUID ''';'];
+t = fetch(conn, sqlquery);
+t = table2MyStruct(t);
 for i=1:length(selHeaders)
     idx=ismember(headers,selHeaders{i});
     varUUID=varUUIDs{idx};
     header=headers{idx};
     
-    if ~isempty(varUUID) && exist(getJSONPath(varUUID),'file')==2
-        continue; % If the variable already exists (and I assume it's linked to the logsheet) don't do anything.
+    if isempty(varUUID) || ~ismember(varUUID,t.VR_ID)
+        continue; % If the variable already exists and is linked to the logsheet don't do anything.
     end
 
     varStruct = createNewObject(true, 'Variable', header, '', '', true);
     varUUID = varStruct.UUID;
-    linkObjs(uuid, varUUID, date);
+    sqlquery = ['INSERT INTO VR_LG (LG_ID, VR_ID, HeaderName) VALUES (''' logsheetStruct.UUID ''', ' varUUID ''', ' header ''');'];
+    execute(conn, sqlquery);
 
-    logsheetStruct.Variables{idx}=varUUID;
+    logsheetStruct.LogsheetVar_Params(idx).Variables=varUUID;
     varUUIDs{idx}=varUUID; % For the next iteration
 
 end

@@ -27,6 +27,12 @@ H = transclosure(G);
 % to answer the question "Which nodes are reachable from node 3?", you can look at the third row in the matrix
 % number of rows & cols = number of nodes.
 R = full(adjacency(H)); % "Reachability matrix"
+% Put the node itself into the reachability matrix, because of course the
+% node is reachable from itself.
+for i=1:size(R,1)
+    R(i,i) = 1;
+end
+
 
 deps = {};
 if nargin==3

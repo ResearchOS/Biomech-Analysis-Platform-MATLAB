@@ -1,4 +1,4 @@
-function [links, hardCodedVR]=loadLinks(list)
+function [links, inputOnlyVR]=loadLinks(list)
 
 %% PURPOSE: JOIN AND LOAD THE LINKAGE TABLES RESPONSIBLE FOR CONNECTING THE PROCESSING FUNCTIONS TO EACH OTHER VIA VARIABLES.
 global conn;
@@ -51,9 +51,15 @@ if any(lgIdx)
     end
 end
 
-idx = ismember(links(:,1),list) | ismember(links(:,3),list);
+% Hard-coded variables are "input only" as are non-hard coded vars that
+% just aren't assigned to any PR's as outputs yet.
+inputOnlyVRidx = cellfun(@isempty, links(:,1));
+inputOnlyVR = links(inputOnlyVRidx,2);
 
-hardCodedVRidx = cellfun(@isempty, links(:,1));
-hardCodedVR = links(hardCodedVRidx,2);
+missingColElemIdx = inputOnlyVRidx | cellfun(@isempty, links(:,3)); % Ensure that all edges have source and target nodes.
+
+links(missingColElemIdx,:) = [];
+
+idx = ismember(links(:,1),list) | ismember(links(:,3),list); % Ensure that only the relevant parts of the list are returned.
 
 links(~idx,:) = [];

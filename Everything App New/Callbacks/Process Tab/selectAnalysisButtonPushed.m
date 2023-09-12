@@ -66,6 +66,12 @@ allLogsheetsUITreeSelectionChanged(fig);
 
 %% Fill the queue UI tree
 queue = getCurrent('Process_Queue');
+if isempty(queue)
+    queue = {};
+end
+if ~iscell(queue)
+    queue = {queue};
+end
 queueNames = getName(queue);
 for i=1:length(queueNames)
     addNewNode(handles.Process.queueUITree, queue{i}, queueNames{i});

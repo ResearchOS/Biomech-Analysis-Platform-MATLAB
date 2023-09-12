@@ -49,7 +49,7 @@ end
 
 G = getappdata(fig,'digraph');
 if isempty(G)
-    refreshDigraph(fig);
+    G = refreshDigraph(fig);
 end
 
 %% CHECK IF ALL UPSTREAM FUNCTIONS & VARIABLES ARE UP TO DATE!
@@ -57,6 +57,9 @@ end
 sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
+instUUIDidx = ismember(t.UUID,instUUID);
+t.UUID(instUUIDidx) = []; % Remove the PR from the check for dependencies.
+t.OutOfDate(instUUIDidx) = [];
 depIdx = ismember(t.UUID,deps);
 t.UUID(~depIdx) = [];
 t.OutOfDate(~depIdx) = [];
@@ -132,13 +135,13 @@ load(logsheetPathMAT,'logVar');
 % projectPath=getProjectPath(fig);
 % oldPath=cd([projectPath slash 'Process']);
 inclStruct=getInclStruct(specifyTrials);
-conds = 1;
+conds = 0;
 trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
 % remSubNames={}; % Remove nothing
-remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
-% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
 if ~conds
     if any(ismember(remSubNames,fieldnames(trialNames)))
@@ -152,7 +155,7 @@ end
 subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
-% Store the info for the process struct
+% Store the info for getArg and setArg
 getRunInfo(absStruct,instStruct);
 
 %% Run the function!

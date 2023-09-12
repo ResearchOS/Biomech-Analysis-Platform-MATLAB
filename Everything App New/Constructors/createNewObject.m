@@ -140,12 +140,12 @@ function struct = createSpecifyTrialsStruct(instanceBool, struct, saveObj)
 if instanceBool
 
 else
-    struct.Logsheet_Headers={};
-    struct.Logsheet_Logic={};
-    struct.Logsheet_Value={};
-    struct.Data_Variables={};
-    struct.Data_Logic={};
-    struct.Data_Value={};
+    struct.Logsheet_Parameters.Headers={};
+    struct.Logsheet_Parameters.Logic={};
+    struct.Logsheet_Parameters.Value={};
+    struct.Logsheet_Parameters.Variables={};
+    struct.Logsheet_Parameters.Logic={};
+    struct.Logsheet_Parameters.Value={};
 end
 
 end
@@ -158,7 +158,8 @@ if instanceBool
     struct.Date_Last_Ran='';
 else
     struct.Level = 'T';
-    struct.NamesInCode = {};    
+    struct.InputVariablesNamesInCode = {};  
+    struct.OutputVariablesNamesInCode = {};
     struct.ExecFileName = '';
 end
 

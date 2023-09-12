@@ -106,7 +106,7 @@ Current_Analysis = getCurrent('Current_Analysis');
 anType = {};
 if ~isequal(anList,{Current_Analysis})
     anType = questdlg('Make changes to current analysis only?','Multiple analyses found!','Current','All','Cancel','Current');
-    if isempty(anType)
+    if isempty(anType) || isequal(anType,'Cancel')
         return;
     end
     if isequal(anType,'All')
@@ -156,7 +156,7 @@ end
 
 % Set out of date for PR & its VR
 refreshDigraph(fig);
-setPR_VROutOfDate(fig, currFcnUUID, true, true, anList);
+setPR_VROutOfDate(fig, currFcnUUID, true, true);
 
 if isequal(anType,'Current')
     selectAnalysisButtonPushed(fig);

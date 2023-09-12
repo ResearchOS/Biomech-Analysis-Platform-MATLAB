@@ -16,11 +16,13 @@ if exist(path,'dir')~=7
     return;
 end
 
-projectUUID = getCurrent('Current_Project_Name');
-struct=loadJSON(projectUUID);
+setCurrent(path, 'Data_Path');
 
-computerID=getComputerID();
-
-struct.Data_Path.(computerID)=path;
-
-writeJSON(struct);
+% projectUUID = getCurrent('Current_Project_Name');
+% struct=loadJSON(projectUUID);
+% 
+% computerID=getComputerID();
+% 
+% struct.Data_Path.(computerID)=path;
+% 
+% writeJSON(struct);

@@ -62,7 +62,11 @@ if isequal(class,'Process')
     sqlquery = ['SELECT AN_ID FROM AN_PR WHERE AN_ID IN ' uuidStr ';'];
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
-    anUUID_PR = t.AN_ID; % Analyses obtained from PR's
+    if isempty(fieldnames(t))
+        anUUID_PR = {};
+    else
+        anUUID_PR = t.AN_ID; % Analyses obtained from PR's
+    end
     if isempty(anUUID_PR)
         anUUID_PR = {};
     end
@@ -74,7 +78,11 @@ if isequal(class,'Process')
     sqlquery = ['SELECT PG_ID FROM PG_PR WHERE PR_ID IN ' uuidStr ';'];
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
-    pgUUID_PR = t.PG_ID;
+    if isempty(fieldnames(t))
+        pgUUID_PR = {};
+    else
+        pgUUID_PR = t.PG_ID;
+    end
     if isempty(pgUUID_PR)
         pgUUID_PR = {};
     end
@@ -93,7 +101,11 @@ if ismember(class,{'Process','ProcessGroup'})
     sqlquery = ['SELECT AN_ID FROM AN_PG WHERE PG_ID IN ' uuidStr ';'];
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
-    anUUID_PG = t.AN_ID;
+    if isempty(fieldnames(t))
+        anUUID_PG = {};
+    else
+        anUUID_PG = t.AN_ID;
+    end
     if isempty(anUUID_PG)
         anUUID_PG = {};
     end
@@ -105,7 +117,11 @@ if ismember(class,{'Process','ProcessGroup'})
     sqlquery = ['SELECT Parent_PG_ID FROM PG_PG WHERE Child_PG_ID IN ' uuidStr ';'];
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
-    pgUUID_PG = t.Parent_PG_ID;
+    if isempty(fieldnames(t))
+        pgUUID_PG = {};
+    else
+        pgUUID_PG = t.Parent_PG_ID;
+    end
     if isempty(pgUUID_PG)
         pgUUID_PG = {};
     end

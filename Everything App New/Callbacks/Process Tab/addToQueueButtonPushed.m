@@ -73,6 +73,11 @@ outOfDateUUID = t.UUID(outOfDateIdx);
 
 idx = ismember(G.Nodes.Name,uuids); % Get UUIDs index in digraph.
 
+if ~any(idx)
+    disp('No inputs or outputs linked to this Process!');
+    return;
+end
+
 % Get the reachable nodes.
 reachableIdx = any(R(idx,:),1);
 reachableUUIDs = G.Nodes.Name(reachableIdx);

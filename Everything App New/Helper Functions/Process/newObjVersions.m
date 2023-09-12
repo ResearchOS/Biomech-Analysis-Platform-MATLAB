@@ -28,6 +28,12 @@ allDepObjs = O.Nodes.Name(logical(R2(depIdx,:)));
 % Removes AN objects, which is correct!
 objsToRename = allDepObjs(ismember(allDepObjs,currANObjsInMultAN));
 
+if isempty(objsToRename)
+    objsToRename = {};
+    newObjs = {};
+    return;
+end
+
 %% 1. Copy the objects in their object tables to new rows with new
 % UUID's (same abstract ID's).
 newObjs = cell(size(objsToRename));
@@ -139,7 +145,7 @@ for i=1:length(tablenames.Table)
 
         % Get the existing links.
         currObjsStr = getCondStr(currTypeObjs);
-        sqlquery = ['SELECT * FROM ' tablename ' WHERE AN_ID = ''' Current_Analysis ''' AND ' col ' IN ' currObjsStr];
+        sqlquery = ['SELECT * FROM ' tablename ' WHERE ' col ' IN ' currObjsStr];
         t = fetch(conn, sqlquery);
         if isempty(t)
             continue;

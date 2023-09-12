@@ -10,6 +10,9 @@ e = '';
 disp('Running process queue');
 
 queue=getCurrent('Process_Queue');
+if ~iscell(queue)
+    queue = {queue};
+end
 
 %% For now, just run everything. Later on, I can do checks to see if there are any dependencies that are not up to date.
 [bool,logVar]=checkLogsheetSetup(fig);
@@ -28,8 +31,7 @@ catch
 end
 
 startAll=tic;
-slash=filesep;
-oldDir=cd([getCommonPath slash 'Code']); % Ensure that the proper functions are being called.
+% oldDir=cd([getCommonPath filesep 'Code']); % Ensure that the proper functions are being called.
 for i=1:length(queue)    
 
     uuid=queue{i};
@@ -40,7 +42,7 @@ for i=1:length(queue)
 
 end
 
-cd(oldDir);
+% cd(oldDir);
 
 sendEmail = handles.Process.sendEmailsCheckbox.Value;
 

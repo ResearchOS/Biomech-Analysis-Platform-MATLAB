@@ -22,17 +22,38 @@ linkObjs(anStruct.UUID,getCurrent('Current_Project_Name'));
 sqlquery = ['SELECT VW_ID FROM AN_VW WHERE AN_ID = ''' Current_Analysis ''';'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
-vwUUID = t.VW_ID;
+if isempty(fieldnames(t))
+    vwUUID = {};
+else
+    if ~iscell(t.VW_ID)
+        t.VW_ID = {t.VW_ID};
+    end
+    vwUUID = t.VW_ID;
+end
 
 sqlquery = ['SELECT PG_ID FROM AN_PG WHERE AN_ID = ''' Current_Analysis ''';'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
-pgUUID = t.PG_ID;
+if isempty(fieldnames(t))
+    pgUUID = {};
+else
+    if ~iscell(t.PG_ID)
+        t.PG_ID = {t.PG_ID};
+    end
+    pgUUID = t.PG_ID;
+end
 
 sqlquery = ['SELECT PR_ID FROM AN_PR WHERE AN_ID = ''' Current_Analysis ''';'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
-prUUID = t.PR_ID;
+if isempty(fieldnames(t))
+    prUUID = {};
+else
+    if ~iscell(t.PR_ID)
+        t.PR_ID = {t.PR_ID};
+    end
+    prUUID = t.PR_ID;
+end
 
 %% 3. Link them to the new analysis.
 linkObjs(vwUUID, anStruct.UUID);

@@ -68,8 +68,11 @@ for i=1:length(varNames)
         for j=1:length(var)
             if iscell(var)
                 data(j).(varName) = var{j};
-            else
+            elseif ~ischar(var)
                 data(j).(varName) = var(j);
+            else
+                data(j).(varName) = var;
+                break;
             end
         end
     end

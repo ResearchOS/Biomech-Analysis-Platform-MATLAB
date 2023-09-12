@@ -45,10 +45,11 @@ end
 
 load(pathMAT,'logVar');
 
-headers={logsheetStruct.LogsheetVar_Params.Headers};
-levels={logsheetStruct.LogsheetVar_Params.Level};
-types={logsheetStruct.LogsheetVar_Params.Type};
-varUUIDs={logsheetStruct.LogsheetVar_Params.Variables};
+params = logsheetStruct.LogsheetVar_Params;
+headers={params.Headers}';
+levels={params.Level}';
+types={params.Type}';
+varUUIDs={params.Var_ID}';
 
 trialIdx=ismember(levels,'Trial') & checkedIdx; % The trial level variables idx that were checked.
 subjectIdx=ismember(levels,'Subject') & checkedIdx; % The subject level variables idx that were checked.
@@ -63,15 +64,7 @@ if isempty(specTrialsName)
     return;
 end
 
-projectUUID = getCurrent('Current_Project_Name');
-if isempty(projectUUID)
-    disp('Select a project first!');
-    return;
-end
-
-projectStruct=loadJSON(projectUUID);
-
-dataPath=projectStruct.Data_Path.(computerID);
+dataPath=getCurrent('Data_Path');
 
 if exist(dataPath,'dir')~=7
     disp('Invalid data path!');
@@ -137,27 +130,40 @@ selHeaders={handles.Import.headersUITree.CheckedNodes.Text};
 sqlquery = ['SELECT LG_ID, VR_ID FROM VR_LG WHERE LG_ID = ''' logsheetStruct.UUID ''';'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
+if isempty(fieldnames(t))
+    t.VR_ID = {};
+else
+    if ~iscell(t.VR_ID)
+        t.VR_ID = {t.VR_ID};
+    end
+end
+doWrite = false;
 for i=1:length(selHeaders)
     idx=ismember(headers,selHeaders{i});
     varUUID=varUUIDs{idx};
     header=headers{idx};
     
-    if isempty(varUUID) || ~ismember(varUUID,t.VR_ID)
+    if ~isempty(varUUID) && ismember(varUUID,t.VR_ID)
         continue; % If the variable already exists and is linked to the logsheet don't do anything.
     end
 
-    varStruct = createNewObject(true, 'Variable', header, '', '', true);
-    varUUID = varStruct.UUID;
-    sqlquery = ['INSERT INTO VR_LG (LG_ID, VR_ID, HeaderName) VALUES (''' logsheetStruct.UUID ''', ' varUUID ''', ' header ''');'];
+    doWrite = true;
+    if isempty(varUUID) % The variable exists but is not linked to the logsheet.
+        varStruct = createNewObject(true, 'Variable', header, '', '', true);
+        varUUID = varStruct.UUID;
+    end
+    sqlquery = ['INSERT INTO VR_LG (LG_ID, VR_ID, HeaderName) VALUES (''' logsheetStruct.UUID ''', ''' varUUID ''', ''' header ''');'];
     execute(conn, sqlquery);
 
-    logsheetStruct.LogsheetVar_Params(idx).Variables=varUUID;
+    logsheetStruct.LogsheetVar_Params(idx).Var_ID=varUUID;
     varUUIDs{idx}=varUUID; % For the next iteration
 
 end
 
-writeJSON(logsheetStruct);
-fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
+if doWrite
+    writeJSON(logsheetStruct);
+    fillUITree(fig, 'Variable', handles.Process.allVariablesUITree, searchTerm, sortDropDown);
+end
 
 %% Trial level data
 trialIdxNums=find(trialIdx==1);

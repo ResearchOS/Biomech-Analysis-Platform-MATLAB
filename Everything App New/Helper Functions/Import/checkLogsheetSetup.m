@@ -24,8 +24,8 @@ try
     errorData=[]; % For error reporting.
 
     % 1. Logsheet path.
-    assert(isfield(logsheetStruct.LogsheetPath,computerID),'Logsheet path not  found on this computer.');
-    path=logsheetStruct.LogsheetPath.(computerID);
+    assert(isfield(logsheetStruct.Logsheet_Path,computerID),'Logsheet path not  found on this computer.');
+    path=logsheetStruct.Logsheet_Path.(computerID);
     assert(exist(path,'file')==2,'Logsheet path not found');
 
     % 2. Logsheet path MAT.
@@ -33,43 +33,48 @@ try
     pathMAT=[folder slash name '.mat'];
     assert(exist(pathMAT,'file')==2,'Logsheet MAT file path not found');
     load(pathMAT,'logVar');
-    headers=logVar(1,:)';
+    headersFirstRow=logVar(1,:)';
+
+    params = logsheetStruct.LogsheetVar_Params;
+    headers = {params.Headers}';
+    level = {params.Level}';
+    type = {params.Type}';
 
     % 3. Check that headers have not changed.
-    assert(isequal(headers,logsheetStruct.Headers),'Headers have changed');
-    assert(length(logsheetStruct.Headers)==length(logsheetStruct.Type),'Headers & type mismatch');
-    assert(length(logsheetStruct.Headers)==length(logsheetStruct.Level),'Headers & level mismatch');
-    assert(length(logsheetStruct.Type)==length(logsheetStruct.Level),'Type & level mismatch');
+    assert(isequal(headersFirstRow,headers),'Headers have changed');
+    assert(length(headers)==length(type),'Headers & type mismatch');
+    assert(length(headers)==length(level),'Headers & level mismatch');
+    assert(length(type)==length(level),'Type & level mismatch');
 
     % 4. Check that the headers are all valid variable names.
-    assert(all(cellfun(@isvarname, headers)));
+    assert(all(cellfun(@isvarname, headersFirstRow)));
 
     % 1. Num Header Rows
-    assert(isa(logsheetStruct.NumHeaderRows,'double'),'NumHeaderRows must be a positive integer double!');
-    assert(mod(logsheetStruct.NumHeaderRows,1)==0,'NumHeaderRows must be a positive integer');
-    assert(logsheetStruct.NumHeaderRows>0,'NumHeaderRows must be positive');
+    assert(isa(logsheetStruct.Num_Header_Rows,'double'),'NumHeaderRows must be a positive integer double!');
+    assert(mod(logsheetStruct.Num_Header_Rows,1)==0,'NumHeaderRows must be a positive integer');
+    assert(logsheetStruct.Num_Header_Rows>0,'NumHeaderRows must be positive');
 
     % 2. Subject Codename Header
-    assert(isa(logsheetStruct.SubjectCodenameHeader,'char'));
-    assert(~isempty(logsheetStruct.SubjectCodenameHeader));
-    assert(any(ismember(logsheetStruct.SubjectCodenameHeader,logsheetStruct.Headers)));
+    assert(isa(logsheetStruct.Subject_Codename_Header,'char'));
+    assert(~isempty(logsheetStruct.Subject_Codename_Header));
+    assert(any(ismember(logsheetStruct.Subject_Codename_Header,headers)));
 
     % 7. Check that all subject codenames are valid variable names.
-    codenameHeaderIdx=ismember(logsheetStruct.Headers,logsheetStruct.SubjectCodenameHeader);
-    codenames=logVar(logsheetStruct.NumHeaderRows+1:end,codenameHeaderIdx);
+    codenameHeaderIdx=ismember(headers,logsheetStruct.Subject_Codename_Header);
+    codenames=logVar(logsheetStruct.Num_Header_Rows+1:end,codenameHeaderIdx);
     errorIdx=find(~cellfun(@isvarname, codenames)==1);
 %     errorData=codenames(errorIdx);
 %     assert(isempty(errorIdx),['Subject codenames not valid variable names in lines: ' errorIdx]);
     assert(isempty(errorIdx),'Subject codenames not valid variable names');
 
     % 3. Target Trial ID
-    assert(isa(logsheetStruct.TargetTrialIDHeader,'char'));
-    assert(~isempty(logsheetStruct.TargetTrialIDHeader));
-    assert(any(ismember(logsheetStruct.TargetTrialIDHeader,logsheetStruct.Headers)));
+    assert(isa(logsheetStruct.Target_TrialID_Header,'char'));
+    assert(~isempty(logsheetStruct.Target_TrialID_Header));
+    assert(any(ismember(logsheetStruct.Target_TrialID_Header,headers)));
 
     % 9. Check that all target trial names are valid variable names.
-    targetTrialIDIdx=ismember(logsheetStruct.Headers,logsheetStruct.TargetTrialIDHeader);
-    targetTrialNames=logVar(logsheetStruct.NumHeaderRows+1:end,targetTrialIDIdx);
+    targetTrialIDIdx=ismember(headers,logsheetStruct.Target_TrialID_Header);
+    targetTrialNames=logVar(logsheetStruct.Num_Header_Rows+1:end,targetTrialIDIdx);
     assert(all(cellfun(@isvarname, targetTrialNames)));
 
 catch

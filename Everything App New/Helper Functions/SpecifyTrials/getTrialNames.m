@@ -18,16 +18,16 @@ if ~exist('org','var')
 end
 
 % Subject ID Column Header Name
-subjIDHeaderName=logsheetStruct.SubjectCodenameHeader;
+subjIDHeaderName=logsheetStruct.Subject_Codename_Header;
 % subjIDHeaderName=NonFcnSettingsStruct.Import.SubjectIDColHeader;
 
 % Target Trial ID Column Header Name
 % targetTrialIDColHeaderField=findobj(fig,'Type','uieditfield','Tag','TargetTrialIDColHeaderField');
-targetTrialIDColHeaderName=logsheetStruct.TargetTrialIDHeader;
+targetTrialIDColHeaderName=logsheetStruct.Target_TrialID_Header;
 
 % Number of Header Rows
 % numHeaderRowsField=findobj(fig,'Type','uinumericeditfield','Tag','NumHeaderRowsField');
-numHeaderRows=logsheetStruct.NumHeaderRows;
+numHeaderRows=logsheetStruct.Num_Header_Rows;
 
 % No specifyTrials criteria were provided, so grab all trials.
 if length(fieldnames(inclStruct))==0

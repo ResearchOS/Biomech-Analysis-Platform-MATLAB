@@ -30,16 +30,19 @@ switch nargin
         error('Need to specify getArg ID at minimum (nargin>=1)');    
 end
 
-instStructFcn=runInfo.Fcn.InstStruct;
+uuids = runInfo.Input.VR_ID;
+namesInCode = runInfo.Input.NameInCode;
+subVars = runInfo.Input.Subvariable;
 
-% Get the actual variable names as stored in file.
-inputVars=instStructFcn.InputVariables;
-subVars=instStructFcn.InputSubvariables;
+isHardCoded = runInfo.Input.IsHardCoded;
+hardCodedValue = runInfo.Input.HardCodedValue;
+varLevel = runInfo.Input.Level;
 
-for i=1:length(inputVars)
+absNamesInCode = runInfo.Input.AbsNamesInCode;
 
-    currVars=inputVars{i};
-    currSubvars=subVars{i};
+for i=1:length(absNamesInCode)
+
+    currVars=absNamesInCode{i};    
 
     if ~isequal(currVars{1},id)
         continue; % Ensure that only the desired getArg ID is used.
@@ -49,19 +52,21 @@ for i=1:length(inputVars)
 
     for j=2:length(currVars)
 
-        instStruct=runInfo.Var.Input(i).InstStruct{j-1};
-        absStruct=runInfo.Var.Input(i).AbsStruct{j-1};
+        varIdx = ismember(namesInCode,currVars{j});
 
-        % 1. If hard-coded, use value stored in struct and continue.
-        if absStruct.IsHardCoded
-            varargout{j-1}=instStruct.HardCodedValue;
+        if ~any(varIdx)
+            continue; % Variable not in the list. Why?
+        end
+
+        if isHardCoded(varIdx)
+            varargout{j-1} = hardCodedValue{j-1};
             continue;
         end
 
         % 3. If dynamic, find the proper file by looking at its text,
         % level, and subName/trialName/repNum values.
-        uuid=instStruct.UUID;
-        varLevel=absStruct.Level;
+        uuid=uuids{varIdx};
+        varLevel=varLevel{varIdx};
 
         if level<varLevel
             error('Missing subject and/or trial name specification');
@@ -77,8 +82,8 @@ for i=1:length(inputVars)
                 varargout{j-1}=loadMAT(dataPath,uuid,subName,trialName);
         end
 
-        if ~isempty(currSubvars{j})
-            varargout{j-1}=eval(['varargout{j-1}' currSubvars{j}]);
+        if ~isempty(subVars{j-1}) && ~isequal(subVars{j-1},'NULL')
+            varargout{j-1}=eval(['varargout{j-1}' subVars{j-1}]);
         end
 
     end

@@ -31,7 +31,7 @@ if ismember(varName,rootSettingsVars)
 end
 
 %% Look at projects table to determine.
-projectSettingsVars = {'DataPath','ProjectPath',...
+projectSettingsVars = {'Data_Path','Project_Path',...
     'Current_Analysis'};
 
 if ismember(varName, projectSettingsVars)    
@@ -39,11 +39,10 @@ if ismember(varName, projectSettingsVars)
     if isempty(Current_Project)
         return;
     end
-    if ismember(varName,{'DataPath','ProjectPath'})
+    if ismember(varName,{'Data_Path','Project_Path'})
         computerID = getComputerID();
         currVal = getCurrent(varName, true);
-        currVal.(computerID) = var;
-        currVal = jsonencode(currVal);
+        currVal.(computerID) = var;        
     elseif ismember(varName,{'Current_Analysis'})
         Current_User = getCurrent('Current_User');
         currVal = getCurrent(varName, true);

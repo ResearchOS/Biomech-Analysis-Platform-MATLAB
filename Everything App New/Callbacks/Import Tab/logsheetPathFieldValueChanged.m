@@ -58,9 +58,10 @@ if any(~isValidName)
     return;
 end
 
-if isempty(struct.LogsheetVar_Params.Headers)
+headers = {struct.LogsheetVar_Params.Headers}';
+if isempty(headers)
     for i=1:length(headers)
-        struct.LogsheetVar_Params(i).Header=headers{i};
+        struct.LogsheetVar_Params(i).Headers=headers{i};
         struct.LogsheetVar_Params(i).Level={''};
         struct.LogsheetVar_Params(i).Type={''};
         struct.LogsheetVar_Params(i).Variables={''};

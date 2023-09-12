@@ -1,77 +1,111 @@
-function [runInfo]=getRunInfo(absStruct,instStruct)
+function [runInfo]=getRunInfo(absStruct, instStruct)
 
 %% PURPOSE: COMPILE INFO THAT GETARG/SETARG NEED TO RUN THE SPECIFIED FUNCTION.
 % 1. Data path
-% 2. The abstract & instance structs.
-% 3. Map the names in code to the variable names.
+% 2. Map the names in code to the variable names.
+% 3. getArg only:
+%   - Subvariables
+%   - IsHardCoded
+%   - HardCodedValue
 
 global conn;
 
+%% 1. Data Path
 runInfo.DataPath=getCurrent('Data_Path');
+type = deText(instStruct.UUID);
+runInfo.Type = type;
 
-% Store the info for the function to run.
-runInfo.Fcn.AbsStruct=absStruct;
-runInfo.Fcn.InstStruct=instStruct;
-
-[fcnType] = deText(absStruct.UUID);
-
-if isequal(fcnType,'PR')
-    numIters=2; % Input and output variables.
-else
-    numIters=1; % Inputs only.
-end
-
-% Store the info for each variable.
-for inOut=1:numIters
-
-    switch inOut
-        case 1
-            fldName='Input';
-            tablename = 'VR_PR';
-        case 2
-            fldName='Output';
-            tablename = 'PR_VR';
+for inOut=1:2
+    if inOut==1
+        fldName = 'Input';
+        tablename = 'VR_PR';
+    elseif inOut==2
+        fldName = 'Output';
+        tablename = 'PR_VR';
     end
 
-    sqlquery = ['SELECT VR_ID, NameInCode FROM ' tablename ' WHERE PR_ID = ' instStruct.UUID];
-    t = fetch(conn, sqlquery);
-    tJoin = table2MyStruct(t);
+    runInfo.(fldName).AbsNamesInCode = absStruct.([fldName 'VariablesNamesInCode']);
 
-    varStr = getCondStr(tJoin.VR_ID);
-    sqlquery = ['SELECT * FROM ' tablename ' WHERE UUID IN ' varStr];
-    t = fetch(conn, sqlquery);
-    vrStructs = table2MyStruct(t,'struct');
-    vrUUIDs = {vrStructs.UUID};
-
-    varNamesInCode=absStruct.([fldName 'VariablesNamesInCode']); % Cell array of cell arrays.
-
-    if isempty(varNamesInCode)
-        continue; % For plotting (when making them process functions)
-%         error(['Missing ' fldName ' Variables Names In Code!']);
+    %% Inputs & Outputs
+    if inOut==1
+        sqlquery = ['SELECT VR_ID, NameInCode, Subvariable FROM ' tablename ' WHERE PR_ID = ''' instStruct.UUID ''';'];
+    elseif inOut==2
+        sqlquery = ['SELECT VR_ID, NameInCode FROM ' tablename ' WHERE PR_ID = ''' instStruct.UUID ''';'];
     end
-    
-    % assert(length(vars)==length(varNamesInCode),['Mismatch in number of getArgs! ' instStruct.UUID]);
-    % assert(~isempty(vars),['Missing ' lower(fldName) ' arguments to run the function! ' instStruct.UUID])
-    for i=1:length(varNamesInCode)
-        % assert(length(vars{i})==length(varNamesInCode{i}),['Mismatch in number of variables in getArg ' num2str(vars{i}{1}) ' ' instStruct.UUID]);
-        for j=2:length(varNamesInCode{i})
-            
-            idx = ismember(vrUUIDs,varNamesInCode{i}{j});            
-            varStructInst=vrStructs(idx);   
-
-            [type, abstractID, instanceID] = deText(varStructInst.UUID);
-            currVarAbs = genUUID(type, abstractID);                        
-            varStructAbs=loadJSON(currVarAbs);
-
-            runInfo.Var.(fldName)(i).InstStruct{j-1}=varStructInst;
-            runInfo.Var.(fldName)(i).AbsStruct{j-1}=varStructAbs;
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    if isempty(fieldnames(t))
+        t.VR_ID = {};
+        t.NameInCode = {};
+        if inOut==1
+            t.Subvariable = {};
+        end
+    end
+    if ~iscell(t.VR_ID)
+        t.VR_ID = {t.VR_ID};
+        t.NameInCode = {t.NameInCode};
+        if inOut==1
+            t.Subvariable = {t.Subvariable};
         end
     end
 
+    runInfo.(fldName).VR_ID = t.VR_ID;
+    runInfo.(fldName).NameInCode = t.NameInCode;
+
+    if inOut==1
+        runInfo.(fldName).Subvariable = t.Subvariable;
+    end        
+
+    % Get abstract UUID's to see if hard coded
+    [types, abstractIDs] = deText(t.VR_ID);
+    abstractUUIDs = genUUID(types, abstractIDs);
+    absStr = getCondStr(abstractUUIDs);
+    sqlquery = ['SELECT UUID, IsHardCoded, Level FROM Variables_Abstract WHERE UUID IN ' absStr ';'];
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    if isempty(fieldnames(t))
+        t.UUID = {};
+        t.IsHardCoded = {};
+        t.Level = {};
+    end
+    if ~iscell(t.UUID)
+        t.UUID = {t.UUID};
+        t.IsHardCoded = {t.IsHardCoded};
+        t.Level = {t.Level};
+    end
+
+    runInfo.(fldName).Level = t.Level;
+
+    %% Inputs only
+    if inOut==2
+        continue;
+    end
+
+    isHardCodedIdx = t.IsHardCoded == 1;
+    t.UUID(~isHardCodedIdx) = [];
+
+    hardCodedVRidx = contains(runInfo.(fldName).VR_ID, t.UUID);
+    runInfo.(fldName).IsHardCoded = hardCodedVRidx;
+
+    % Get hard-coded values.
+    hardCodedStr = getCondStr(runInfo.(fldName).VR_ID(runInfo.(fldName).IsHardCoded));
+    sqlquery = ['SELECT UUID, HardCodedValue FROM Variables_Instances WHERE UUID IN ' hardCodedStr ';'];
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    if isempty(fieldnames(t))
+        t.UUID = {};
+        t.HardCodedValue = {};
+    end
+    if ~iscell(t.UUID)
+        t.UUID = {t.UUID};
+        t.HardCodedValue = {t.HardCodedValue};
+    end
+    hardCodedVals = repmat({''},length(runInfo.(fldName).VR_ID),1);
+    hardCodedVals(hardCodedVRidx) = t.HardCodedValue; % Is this in the right order?
+    runInfo.(fldName).HardCodedValue = hardCodedVals;
+
 end
 
-runInfo.Class=className2Abbrev(fcnType);
-
-if ~isequal(fcnType,'Component')
+if ~isequal(type,'Component')
     assignin('base','runInfo',runInfo);
 end

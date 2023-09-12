@@ -36,7 +36,7 @@ subVars = runInfo.Input.Subvariable;
 
 isHardCoded = runInfo.Input.IsHardCoded;
 hardCodedValue = runInfo.Input.HardCodedValue;
-varLevel = runInfo.Input.Level;
+varLevels = runInfo.Input.Level;
 
 absNamesInCode = runInfo.Input.AbsNamesInCode;
 
@@ -66,7 +66,7 @@ for i=1:length(absNamesInCode)
         % 3. If dynamic, find the proper file by looking at its text,
         % level, and subName/trialName/repNum values.
         uuid=uuids{varIdx};
-        varLevel=varLevel{varIdx};
+        varLevel=varLevels{varIdx};
 
         if level<varLevel
             error('Missing subject and/or trial name specification');

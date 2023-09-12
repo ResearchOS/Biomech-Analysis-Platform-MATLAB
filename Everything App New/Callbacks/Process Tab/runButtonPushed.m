@@ -10,6 +10,10 @@ e = '';
 disp('Running process queue');
 
 queue=getCurrent('Process_Queue');
+if isempty(queue)
+    disp('Nothing in queue!');
+    return;
+end
 if ~iscell(queue)
     queue = {queue};
 end
@@ -45,12 +49,13 @@ end
 % cd(oldDir);
 
 sendEmail = handles.Process.sendEmailsCheckbox.Value;
+elapsedTime = round(toc(startAll),2);
 
 if ~stop
-    disp(['Finished running all functions in queue in ' num2str(round(toc(startAll),2)) ' seconds']);
+    disp(['Finished running all functions in queue in ' num2str(elapsedTime) ' seconds']);
     if sendEmail
         subjectSuccess = 'Successfully ran all functions';
-        messageSuccess = 'Nice job';
+        messageSuccess = ['Nice job. Finished in ' num2str(elapsedTime) ' seconds'];
         sendEmails(subjectSuccess, messageSuccess);
     end
 else

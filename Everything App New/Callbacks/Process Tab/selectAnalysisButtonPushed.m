@@ -65,6 +65,7 @@ selectNode(handles.Import.allLogsheetsUITree, Current_Logsheet);
 allLogsheetsUITreeSelectionChanged(fig);
 
 %% Fill the queue UI tree
+delete(handles.Process.queueUITree.Children);
 queue = getCurrent('Process_Queue');
 if isempty(queue)
     queue = {};

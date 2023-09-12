@@ -13,21 +13,24 @@ if isempty(checkedNodes)
         return;
     end
 else
-    remNodes = checkedNodes;
+    remNodes = checkedNodes;    
 end
+
+tmp = [remNodes.NodeData];
+uuids={tmp.UUID}';
+
+delete(remNodes);
 
 queue = getCurrent('Process_Queue');
 if isempty(queue)
     return; % This should never really happen here.
 end
-
-tmp = [remNodes.NodeData];
-uuids={tmp.UUID}';
+if ~iscell(queue)
+    queue = {queue};
+end
 
 idx = ismember(queue,uuids);
 
 queue(idx) = [];
 
 setCurrent(queue, 'Process_Queue');
-
-delete(remNodes);

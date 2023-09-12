@@ -34,16 +34,18 @@ else
     level='T';
 end
 
-st=dbstack;
-st(2).name;
+% st=dbstack;
+% st(2).name;
 
-instStructFcn=runInfo.Fcn.InstStruct;
+uuids = runInfo.Output.VR_ID;
+namesInCode = runInfo.Output.NameInCode;
+levels = runInfo.Output.Level;
 
-outputVars=instStructFcn.OutputVariables;
+absNamesInCode = runInfo.Output.AbsNamesInCode;
 
-for i=1:length(outputVars)
+for i=1:length(absNamesInCode)
 
-    currVars=outputVars{i};
+    currVars=absNamesInCode{i};
 
     if ~isequal(currVars{1},id)
         continue; % Ensure that only the desired setArg ID is used.
@@ -51,11 +53,14 @@ for i=1:length(outputVars)
 
     for j=2:length(currVars)
 
-        instStruct=runInfo.Var.Output(i).InstStruct{j-1};
-        absStruct=runInfo.Var.Output(i).AbsStruct{j-1};
-        varLevel=absStruct.Level;
+        varIdx = ismember(namesInCode,currVars{j});
 
-        uuid=instStruct.UUID;
+        if ~any(varIdx)
+            continue;
+        end
+
+        uuid = uuids{varIdx};
+        varLevel = levels{varIdx};
 
         if level<varLevel
             error('Missing subject and/or trial name specification');
@@ -63,11 +68,11 @@ for i=1:length(outputVars)
 
         switch varLevel
             case 'P'
-                saveMAT(dataPath,instStructFcn,uuid,varargin{j-1});
+                saveMAT(dataPath,currVars{j},uuid,varargin{j-1});
             case 'S'
-                saveMAT(dataPath,instStructFcn,uuid,varargin{j-1},subName);
+                saveMAT(dataPath,currVars{j},uuid,varargin{j-1},subName);
             case 'T'
-                saveMAT(dataPath,instStructFcn,uuid,varargin{j-1},subName,trialName);
+                saveMAT(dataPath,currVars{j},uuid,varargin{j-1},subName,trialName);
         end
 
     end

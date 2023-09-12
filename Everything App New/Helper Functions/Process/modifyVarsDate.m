@@ -35,12 +35,14 @@ end
 
 ids=runInfo.SetArgIDsUsed; % This ensures that if there's any setArg ID's that are unused for some reason, they're not updated.
 
-outputVars=struct.OutputVariables;
+outputVars=runInfo.Output.VR_ID;
+namesInCode = runInfo.Output.NameInCode;
+absNamesInCode = runInfo.Output.AbsNamesInCode;
 
 %% Update each of the output variables.
-for i=1:length(outputVars)
+for i=1:length(absNamesInCode)
 
-    currVars=outputVars{i};
+    currVars=absNamesInCode{i};
 
     % The first index is the setArg ID, then the rest are the output
     % variable names.
@@ -50,7 +52,9 @@ for i=1:length(outputVars)
 
     for j=2:length(currVars)
 
-        varUUID=currVars{j};        
+        idx = ismember(namesInCode, currVars{j});
+
+        varUUID=outputVars{idx};        
         varStruct=loadJSON(varUUID);
         varStruct.OutOfDate = false;        
         

@@ -53,6 +53,9 @@ for inOut=1:2
     runInfo.(fldName).NameInCode = t.NameInCode;
 
     if inOut==1
+        if isempty(t.Subvariable)
+            t.Subvariable = cell(size(t.VR_ID));
+        end
         runInfo.(fldName).Subvariable = t.Subvariable;
     end        
 
@@ -69,12 +72,18 @@ for inOut=1:2
         t.Level = {};
     end
     if ~iscell(t.UUID)
-        t.UUID = {t.UUID};
-        t.IsHardCoded = {t.IsHardCoded};
+        t.UUID = {t.UUID};        
         t.Level = {t.Level};
     end
 
-    runInfo.(fldName).Level = t.Level;
+    % Handle multiple instances of one abstract, in which case there will be a mismatch between lengths of levels and VR UUID's.
+    levels = cell(size(runInfo.(fldName).VR_ID));
+    for i=1:length(t.UUID)
+        idx = contains(runInfo.(fldName).VR_ID,t.UUID{i});
+        levels(idx) = t.Level(i);
+    end
+
+    runInfo.(fldName).Level = levels;
 
     %% Inputs only
     if inOut==2
@@ -88,20 +97,25 @@ for inOut=1:2
     runInfo.(fldName).IsHardCoded = hardCodedVRidx;
 
     % Get hard-coded values.
-    hardCodedStr = getCondStr(runInfo.(fldName).VR_ID(runInfo.(fldName).IsHardCoded));
-    sqlquery = ['SELECT UUID, HardCodedValue FROM Variables_Instances WHERE UUID IN ' hardCodedStr ';'];
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
-    if isempty(fieldnames(t))
-        t.UUID = {};
-        t.HardCodedValue = {};
-    end
-    if ~iscell(t.UUID)
-        t.UUID = {t.UUID};
-        t.HardCodedValue = {t.HardCodedValue};
-    end
     hardCodedVals = repmat({''},length(runInfo.(fldName).VR_ID),1);
-    hardCodedVals(hardCodedVRidx) = t.HardCodedValue; % Is this in the right order?
+    if any(runInfo.(fldName).IsHardCoded)
+        hardCodedStr = getCondStr(runInfo.(fldName).VR_ID(runInfo.(fldName).IsHardCoded));
+        sqlquery = ['SELECT UUID, HardCodedValue FROM Variables_Instances WHERE UUID IN ' hardCodedStr ';'];
+        t = fetch(conn, sqlquery);
+        t = table2MyStruct(t);
+        if isempty(fieldnames(t))
+            t.UUID = {};
+            t.HardCodedValue = {};
+        end
+        if ~iscell(t.UUID)
+            t.UUID = {t.UUID};
+            t.HardCodedValue = {t.HardCodedValue};
+        end
+        tmp = t.HardCodedValue;
+        [~,k] = sort(runInfo.(fldName).VR_ID(hardCodedVRidx));
+        tmp(k) = tmp;
+        hardCodedVals(hardCodedVRidx) = tmp;
+    end
     runInfo.(fldName).HardCodedValue = hardCodedVals;
 
 end

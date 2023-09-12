@@ -24,7 +24,10 @@ end
 %% 1. Get the existing queue
 queue = getCurrent('Process_Queue');
 if isempty(queue)
-    queue = '';
+    queue = {};
+end
+if ~iscell(queue)
+    queue = {queue};
 end
 
 %% 2. Add new (selected or checked) PR to the queue

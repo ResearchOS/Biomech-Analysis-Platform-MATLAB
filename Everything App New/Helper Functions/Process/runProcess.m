@@ -263,10 +263,18 @@ setPR_VROutOfDate(fig, instUUID, false, false);
 %% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
 modifyVarsDate(instStruct.UUID); % When setting "OutOfDate" to false, this does NOT get recursively applied to up or downstream objects.
 
-%% Remove the completed process function from the queue
+%% Remove the completed process function from the queue.
+% No need to update the digraph because obviously the digraph is not being
+% shown, and will be updated when shown next.
 queue=getCurrent('Process_Queue');
+if ~iscell(queue)
+    queue = {queue};
+end
 remQueueIdx=ismember(queue,instStruct.UUID);
 queue(remQueueIdx)=[];
+queueNode = getNode(handles.Process.queueUITree, instStruct.UUID);
+delete(queueNode);
+drawnow;
 
 setCurrent(queue,'Process_Queue');
 refreshDigraph(fig);
@@ -278,12 +286,3 @@ if isempty(remQueueIdx)
 end
 
 disp([fcnName ' finished running in ' num2str(round(toc(startFcn),2)) ' seconds']);
-
-if guiInBase
-    handles=getappdata(fig,'handles');
-    delete(handles.Process.queueUITree.Children(remQueueIdx));
-    drawnow;
-end
-
-%% Update the digraph
-% toggleDigraphCheckboxValueChanged(fig);

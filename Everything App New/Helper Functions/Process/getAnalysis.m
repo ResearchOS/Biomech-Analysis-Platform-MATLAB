@@ -132,8 +132,8 @@ if ismember(class,{'Process','ProcessGroup'})
 end
 
 %% Recursively run, or finish if AN found.
-anUUID = [anUUID_PG; anUUID_PR];
-inUUID = [pgUUID_PG; pgUUID_PR];
+anUUID = unique([anUUID_PG; anUUID_PR],'stable');
+inUUID = unique([pgUUID_PG; pgUUID_PR],'stable');
 if isempty(anUUID)
     [anUUID] = getAnalysis(inUUID, anUUID);
 end

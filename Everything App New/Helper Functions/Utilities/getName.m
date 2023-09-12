@@ -50,6 +50,10 @@ for i=1:length(uniqueTypes)
     if isempty(t.UUID)
         continue;
     end
+    if ~iscell(t.UUID)
+        t.UUID = {t.UUID};
+        t.Name = {t.Name};
+    end
     for j=1:length(uuids)
         uuid = uuids{j};        
         nameIdx = ismember(t.UUID, uuid); % Where in the object list the UUID's & names are.

@@ -5,6 +5,7 @@ function [bool,logVar]=checkLogsheetSetup(src)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+logVar = {};
 Current_Logsheet = getCurrent('Current_Logsheet');
 
 if isempty(Current_Logsheet)

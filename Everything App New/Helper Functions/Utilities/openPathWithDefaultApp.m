@@ -8,20 +8,5 @@ if ispc==1
 end
 
 %% For Mac.
-spaceSplit=strsplit(fullPath,' ');
-
-newPath='';
-for i=1:length(spaceSplit)
-    if i>1        
-        mid='\ ';
-    else
-        mid='';
-    end
-    newPath=[newPath mid spaceSplit{i}];
-end
-
+newPath=['"' fullPath '"']; % Deal with spaces by enclosing in double quotes.
 system(['open ' newPath]);
-
-
-% What about this as an alternate method for Mac?
-% newPath=['''' path ''''];

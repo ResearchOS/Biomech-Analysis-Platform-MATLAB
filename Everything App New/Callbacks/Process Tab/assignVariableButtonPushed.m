@@ -98,7 +98,7 @@ if isOut
     anVR = getAnalysis(allVarUUID);
 end
 anPR = getAnalysis(currFcnUUID);
-anList = [anPR; anVR];
+anList = unique([anPR; anVR],'stable');
 
 Current_Analysis = getCurrent('Current_Analysis');
 

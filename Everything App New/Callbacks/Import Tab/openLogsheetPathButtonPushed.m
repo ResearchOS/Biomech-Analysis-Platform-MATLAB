@@ -7,8 +7,9 @@ handles=getappdata(fig,'handles');
 
 % path=handles.Import.logsheetPathField.Value;
 logsheet = getCurrent('Current_Logsheet');
+logStruct = loadJSON(logsheet);
 computerID = getCurrent('Computer_ID');
-path = logsheet.Logsheet_Path.(computerID);
+path = logStruct.Logsheet_Path.(computerID);
 
 if isempty(path) || exist(path,'file')~=2
     beep;

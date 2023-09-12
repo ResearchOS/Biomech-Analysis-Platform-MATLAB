@@ -28,7 +28,6 @@ subjIDColHeader=logsheetStruct.Subject_Codename_Header;
 targetTrialIDColHeader=logsheetStruct.Target_TrialID_Header;
 
 computerID = getCurrent('Computer_ID');
-% computerID=getComputerID();
 
 path=logsheetStruct.Logsheet_Path.(computerID);
 
@@ -305,5 +304,8 @@ if any(subjectIdx)
 
     end
 end
+
+% This does not work for VR's from LG yet. No need at the moment
+% setPR_VROutOfDate(fig, uuid, false, false);
 
 toc;

@@ -97,8 +97,16 @@ if ismember(varName,analysisSettingsVars)
         var = '';
         return;
     end
-    if ~withID        
-        var = char(struct.(varName).(Current_User));
+    if ~withID
+        if isstring(struct.(varName).(Current_User))
+            var = char(struct.(varName).(Current_User));
+        else
+            if iscell(struct.(varName).(Current_User)) && iscell(struct.(varName).(Current_User){1})
+                var = struct.(varName).(Current_User){1};
+            else
+                var = struct.(varName).(Current_User);
+            end
+        end
     else
         var = struct.(varName);
     end

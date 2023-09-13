@@ -50,23 +50,33 @@ for i=1:length(absNamesInCode)
 
     varargout=cell(1,length(currVars)-1); % Initialize output variables.
 
+    % Isolate only the vars in this getArg ID
+    currVarsIdx = ismember(namesInCode,currVars(2:end));
+    currNamesInCode = namesInCode(currVarsIdx);
+    currUUIDs = uuids(currVarsIdx);
+    currSubVars = subVars(currVarsIdx);
+
+    currIsHardCoded = isHardCoded(currVarsIdx);
+    currHardCodedValue = hardCodedValue(currVarsIdx);
+    currVarLevels = varLevels(currVarsIdx);
+
     for j=2:length(currVars)
 
-        varIdx = ismember(namesInCode,currVars{j});
+        varIdx = ismember(currNamesInCode,currVars{j});
 
         if ~any(varIdx)
             continue; % Variable not in the list. Why?
         end
 
-        if isHardCoded(varIdx)
-            varargout{j-1} = hardCodedValue{j-1};
+        if currIsHardCoded(varIdx)
+            varargout{j-1} = currHardCodedValue{j-1};
             continue;
         end
 
         % 3. If dynamic, find the proper file by looking at its text,
         % level, and subName/trialName/repNum values.
-        uuid=uuids{varIdx};
-        varLevel=varLevels{varIdx};
+        uuid=currUUIDs{varIdx};
+        varLevel=currVarLevels{varIdx};
 
         if level<varLevel
             error('Missing subject and/or trial name specification');
@@ -82,8 +92,8 @@ for i=1:length(absNamesInCode)
                 varargout{j-1}=loadMAT(dataPath,uuid,subName,trialName);
         end
 
-        if ~isempty(subVars{j-1}) && ~isequal(subVars{j-1},'NULL')
-            varargout{j-1}=eval(['varargout{j-1}' subVars{j-1}]);
+        if ~isempty(currSubVars{j-1}) && ~isequal(currSubVars{j-1},'NULL')
+            varargout{j-1}=eval(['varargout{j-1}' currSubVars{j-1}]);
         end
 
     end

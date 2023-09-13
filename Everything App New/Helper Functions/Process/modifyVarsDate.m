@@ -50,14 +50,50 @@ for i=1:length(absNamesInCode)
         continue; % This setArg ID was not used in the actual process function.
     end
 
+    currVarsIdx = ismember(namesInCode, currVars(2:end));
+    currNamesInCode = namesInCode(currVarsIdx);
+    currOutputVars = outputVars(currVarsIdx);    
+
     for j=2:length(currVars)
 
-        idx = ismember(namesInCode, currVars{j});
+        idx = ismember(currNamesInCode, currVars{j});
 
-        varUUID=outputVars{idx};        
+        varUUID=currOutputVars{idx};        
         varStruct=loadJSON(varUUID);
         varStruct.OutOfDate = false;        
         
+        writeJSON(varStruct);
+
+    end
+
+end
+
+%% Update each of the hard-coded input variables.
+absNamesInCode = runInfo.Input.AbsNamesInCode;
+namesInCode = runInfo.Input.NameInCode;
+inputVars = runInfo.Input.VR_ID;
+isHardCoded = runInfo.Input.IsHardCoded;
+for i=1:length(absNamesInCode)
+
+    currVars = absNamesInCode{i};
+
+    currVarsIdx = ismember(namesInCode, currVars(2:end));
+    currNamesInCode = namesInCode(currVarsIdx);
+    currInputVars = inputVars(currVarsIdx);
+    currIsHardCoded = isHardCoded(currVarsIdx);
+
+    for j = 2:length(currVars)
+
+        idx = ismember(currNamesInCode, currVars{j});
+
+        if ~currIsHardCoded(idx)
+            continue; % Only update hard-coded variables.
+        end
+
+        varUUID = currInputVars{idx};
+        varStruct = loadJSON(varUUID);
+        varStruct.OutOfDate = false;
+
         writeJSON(varStruct);
 
     end

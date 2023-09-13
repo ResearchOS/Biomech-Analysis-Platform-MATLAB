@@ -71,13 +71,11 @@ fcnAbstractUUID = genUUID(type, abstractID);
 abstractFcnStruct = loadJSON(fcnAbstractUUID);
 
 if isequal(varType,'getArg')
-    checkArgsAbstract=abstractFcnStruct.InputVariablesNamesInCode;
-    % checkArgsInst=fcnStruct.InputVariables;
-    % checkSubArgsInst=fcnStruct.InputSubvariables;
+    checkArgsAbstract=abstractFcnStruct.InputVariablesNamesInCode;    
 elseif isequal(varType,'setArg')
-    checkArgsAbstract=abstractFcnStruct.OutputVariablesNamesInCode;
-    % checkArgsInst=fcnStruct.OutputVariables;
+    checkArgsAbstract=abstractFcnStruct.OutputVariablesNamesInCode;    
 end
+
 % The index to place the new arguments in the abstract function object.
 absIdx = length(checkArgsAbstract)+1;
 for i=1:length(checkArgsAbstract)
@@ -86,24 +84,6 @@ for i=1:length(checkArgsAbstract)
         break;
     end
 end
-% % The index to place the new arguments in the instance function object.
-% instIdx = length(checkArgsInst)+1;
-% for i=1:length(checkArgsInst)
-%     if isequal(checkArgsInst{i}{1},number)
-%         instIdx = i;
-%         break;
-%     end
-% end
-% if isequal(varType,'getArg')
-%     % The index to place the new arguments in the instance function object.
-%     instSubIdx = length(checkSubArgsInst)+1;
-%     for i=1:length(checkSubArgsInst)
-%         if isequal(checkSubArgsInst{i}{1},number)
-%             instSubIdx = i;
-%             break;
-%         end
-%     end
-% end
 
 % c.
 if isequal(varType,'getArg')
@@ -131,8 +111,6 @@ for i=1:length(subVarsEmpty)
     subVarsEmpty{i}='';
 end
 
-% subVarsEmpty=[{number}; subVarsEmpty']; % Initialize the subvariables as empty.
-% argsEmpty=subVarsEmpty; % To initialize the project-specific args as empty.
 argsSplit=[{number}; argsSplit']; % Column vector for JSON format.
 
 % 3. Store the info in the PI process struct.

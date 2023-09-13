@@ -51,16 +51,22 @@ for i=1:length(absNamesInCode)
         continue; % Ensure that only the desired setArg ID is used.
     end
 
+    currVarsIdx = ismember(namesInCode, currVars(2:end));
+
+    currNamesInCode = namesInCode(currVarsIdx);
+    currUUIDs = uuids(currVarsIdx);
+    currLevels = levels(currVarsIdx);
+
     for j=2:length(currVars)
 
-        varIdx = ismember(namesInCode,currVars{j});
+        varIdx = ismember(currNamesInCode,currVars{j});
 
         if ~any(varIdx)
             continue;
         end
 
-        uuid = uuids{varIdx};
-        varLevel = levels{varIdx};
+        uuid = currUUIDs{varIdx};
+        varLevel = currLevels{varIdx};
 
         if level<varLevel
             error('Missing subject and/or trial name specification');

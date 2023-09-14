@@ -1,4 +1,4 @@
-function [runInfo]=getRunInfo(absStruct, instStruct)
+function [runInfo, stop]=getRunInfo(absStruct, instStruct)
 
 %% PURPOSE: COMPILE INFO THAT GETARG/SETARG NEED TO RUN THE SPECIFIED FUNCTION.
 % 1. Data path
@@ -11,6 +11,7 @@ function [runInfo]=getRunInfo(absStruct, instStruct)
 global conn;
 
 %% 1. Data Path
+stop = false;
 runInfo.DataPath=getCurrent('Data_Path');
 type = deText(instStruct.UUID);
 runInfo.Type = type;
@@ -35,6 +36,11 @@ for inOut=1:2
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
     if isempty(fieldnames(t))
+        if inOut==1
+            stop = true;
+        elseif inOut==2
+            continue;
+        end
         t.VR_ID = {};
         t.NameInCode = {};
         if inOut==1

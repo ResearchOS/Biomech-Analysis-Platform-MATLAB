@@ -118,9 +118,9 @@ end
 %     stop = true;    
 % end
 
-if stop
-    return; % Because something is out of date.
-end
+% if stop
+%     return; % Because something is out of date.
+% end
 
 %% NOTE: NEED THE VARIABLES' LEVELS, AND THE FUNCTION'S LEVELS.
 Current_Logsheet = getCurrent('Current_Logsheet');
@@ -135,7 +135,7 @@ load(logsheetPathMAT,'logVar');
 % projectPath=getProjectPath(fig);
 % oldPath=cd([projectPath slash 'Process']);
 inclStruct=getInclStruct(specifyTrials);
-conds = 0;
+conds = 1;
 trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
@@ -156,7 +156,11 @@ subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
 % Store the info for getArg and setArg
-getRunInfo(absStruct,instStruct);
+[runInfo, runInfoStop] = getRunInfo(absStruct,instStruct);
+if runInfoStop
+    stop = true;
+    return;
+end
 
 %% Run the function!
 sendEmail = handles.Process.sendEmailsCheckbox.Value;

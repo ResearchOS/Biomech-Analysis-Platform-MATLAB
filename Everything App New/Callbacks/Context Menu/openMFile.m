@@ -32,7 +32,8 @@ if nargin==1
     fileName = struct.ExecFileName;
 end
 
-oldDir=cd([getCommonPath filesep 'Code']);
+commonPath = '/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/PGUI_CommonPath';
+oldDir=cd([commonPath filesep 'Code' filesep 'Process_Functions']);
 try
     filePath=which(fileName);
     edit(filePath);

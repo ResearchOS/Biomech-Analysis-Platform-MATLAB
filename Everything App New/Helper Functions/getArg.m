@@ -83,13 +83,21 @@ for i=1:length(absNamesInCode)
         end
 
         % 4. Load the dynamic variable.
-        switch varLevel
-            case 'P'
-                varargout{j-1}=loadMAT(dataPath,uuid);
-            case 'S'
-                varargout{j-1}=loadMAT(dataPath,uuid,subName);
-            case 'T'
-                varargout{j-1}=loadMAT(dataPath,uuid,subName,trialName);
+        try
+            switch varLevel
+                case 'P'
+                    varargout{j-1}=loadMAT(dataPath,uuid);
+                case 'S'
+                    varargout{j-1}=loadMAT(dataPath,uuid,subName);
+                case 'T'
+                    varargout{j-1}=loadMAT(dataPath,uuid,subName,trialName);
+            end
+        catch e
+            if contains(e.message,'Unable to find file or directory')
+                disp(['Missing variable: ' uuid ' (' getName(uuid) ' Subject: ' subName ' Trial: ' trialName]);
+                varargout{j-1} = missing;
+                continue;
+            end
         end
 
         if ~isempty(currSubVars{j-1}) && ~isequal(currSubVars{j-1},'NULL')

@@ -6,7 +6,7 @@ Q = figure;
 hold on;
 
 if nargin==0 || isempty(G)
-    G = getObjLinks();
+    G = getAllObjLinks();
 end
 
 prettyNames = getName(G.Nodes.Name);
@@ -14,7 +14,7 @@ prettyNames = getName(G.Nodes.Name);
 idx = cellfun(@isnumeric, prettyNames);
 prettyNames(idx) = G.Nodes.Name(idx);
 
-types = getTypes();
+% types = getTypes();
 
 colors = repmat([0 0 0], length(G.Nodes.Name),1);
 nodeColors.LG = 'grass green';
@@ -26,11 +26,12 @@ nodeColors.VW = 'sky blue';
 nodeColors.PG = 'orange';
 nodeColors.PR = 'dark brown';
 
-labels = fieldnames(nodeColors);
+% labels = fieldnames(nodeColors);
+types = unique(deText(G.Nodes.Name),'stable');
 for i=1:length(types)
-    h(i) = scatter(NaN,NaN,10,rgb(nodeColors.(labels{i})),'filled');
+    h(i) = scatter(NaN,NaN,10,rgb(nodeColors.(types{i})),'filled');
 end
-legend(labels,'AutoUpdate','off');
+legend(types,'AutoUpdate','off');
 
 h = plot(G, 'NodeLabel',prettyNames,'Interpreter','None');
 

@@ -76,7 +76,7 @@ if isempty(instanceID)
     absNode = selectNode(handles.Process.allVariablesUITree, abstractUUID);
 
     % Create the new node in the "all" UI tree
-    addNewNode(absNode, allVarUUID, varStruct.Text);
+    addNewNode(absNode, allVarUUID, varStruct.Name);
 end
 
 isOut = false;

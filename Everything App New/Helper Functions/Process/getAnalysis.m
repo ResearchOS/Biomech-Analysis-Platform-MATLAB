@@ -43,6 +43,9 @@ if isequal(class,'Variable')
     sqlquery = ['SELECT PR_ID FROM PR_VR WHERE VR_ID IN ' uuidStr ';'];
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
+    if isempty(fieldnames(t))
+        t.PR_ID = {};
+    end
     uuid_PR = t.PR_ID;
     if isempty(uuid_PR)
         return; % Variable not assigned to anything, so no anUUID.

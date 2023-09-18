@@ -5,7 +5,7 @@ function [newObjs, objsToRename] = newObjVersions(uuid,anList)
 global conn;
 
 Current_Analysis = getCurrent('Current_Analysis');
-O = getObjLinks(); % Don't need to rename views, but I do need to rename InclNodes in the views.
+O = getAllObjLinks(); % Don't need to rename views, but I do need to rename InclNodes in the views.
 
 % Get all of the objects in all shared analysis.
 H = transclosure(flipedge(O));

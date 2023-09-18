@@ -6,6 +6,8 @@ function [conn] = connectToSQLite(dbFile,method)
 % https://github.com/xerial/sqlite-jdbc
 % https://www.mathworks.com/matlabcentral/answers/751729-how-to-extract-data-from-a-sqlite-database-with-null-values
 
+global conn;
+
 if ~exist('method','var')
     method = 'DEFAULT';
 else

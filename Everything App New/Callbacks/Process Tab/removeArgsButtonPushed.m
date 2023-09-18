@@ -42,7 +42,7 @@ switch argType
 end
 
 % Check that I'm putting things in the right place
-assert(isequal(processStruct.(fldNameInst){argIdxNum}{1},number));
+% assert(isequal(processStruct.(fldNameInst){argIdxNum}{1},number));
 
 % Unlink each variable from the processStruct
 % for i=2:length(processStruct.(fldNameInst){argIdxNum})

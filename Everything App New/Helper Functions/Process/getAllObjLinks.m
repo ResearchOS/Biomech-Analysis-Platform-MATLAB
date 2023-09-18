@@ -1,4 +1,4 @@
-function [G] = getObjLinks(remTypes)
+function [G] = getAllObjLinks(remTypes, inclExcl)
 
 %% PURPOSE: RETURN A GRAPH WHERE EACH NODE IS AN OBJECT TYPE, AND THE EDGES ARE JUST THE CONNECTIONS BETWEEN THEM.
 
@@ -8,13 +8,16 @@ if nargin==0
     remTypes = {};
 end
 
+if nargin<2
+    inclExcl = 'excl'; % By default, specify the types to exclude.
+end
+
 types = getTypes();
-% alwaysRemTypes = {'PJ','AN','ST','LG'};
-% types(ismember(types,alwaysRemTypes)) = [];
-types(ismember(types,remTypes)) = [];
 
 tablenames = sqlfind(conn, '');
-tablenames = tablenames.Table(contains(tablenames.Table,types));
+tablenames = tablenames.Table;
+tablenames(~contains(cellstr(tablenames),types)) = []; % Only the 'types' tables.
+tablenames(contains(tablenames,remTypes)) = []; % Only the desired types
 
 array = cell(0,2);
 for i=1:length(tablenames)
@@ -57,3 +60,4 @@ for i=1:length(tablenames)
 end
 
 G = digraph(array(:,1),array(:,2));
+G.Nodes.PrettyName = getName(G.Nodes.Name);

@@ -7,6 +7,12 @@ function [orderedList, listPR_PG_AN] = getRunList(containerUUID, arg2)
 % tic;
 assert(ischar(containerUUID));
 
+%%% ATTEMPT WITH getAllObjLinks %%%
+G = getAllObjLinks();
+G2 = getAllObjsLinksInContainer(G, containerUUID);
+fcnsG = getFcnsOnlyDigraph(G2);
+orderedList = fcnsG.Nodes.Name(toposort(fcnsG));
+
 % Step 1
 if nargin==1
     listPR_PG_AN = getUnorderedList(containerUUID); % Returns list with PR, PG, and AN types.
@@ -25,6 +31,10 @@ if isequal(size(arg2,2),2) && ~isa(arg2,'digraph')
 end
 if exist('listPR_PG_AN','var')==1
     links = loadLinks(listPR_PG_AN); % Convert unordered list of processing functions into a linkage table.
+    if isempty(links)
+        orderedList = {};
+        return;
+    end
 end
 
 % Step 3: N x 3 cell array of PR in column 1, VR in column 2, PR in column 3
@@ -41,11 +51,6 @@ if isa(arg2,'digraph')
 end
 
 % Always executed no matter what arg2 is.
-% H = transclosure(G);
-% R = full(adjacency(H)); % "Reachability matrix"
-% sumR = sum(R,2);
-% [sortSumR,k] = sort(sumR,1,'descend');
-% orderedList = [G.Nodes.Name(k), num2cell(sortSumR)]; % Changes the criteria to "maxNum" from "minNum"
 orderedList = orderDeps(G,'full'); % All PR. Need to convert this to parent objects.
 
 if exist('listPR_PG_AN','var')==1

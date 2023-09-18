@@ -10,11 +10,12 @@ handles=getappdata(fig,'handles');
 
 uiTree = handles.Process.groupUITree;
 
+delete(uiTree.Children);
+delete(handles.Process.functionUITree.Children);
+handles.Process.currentFunctionLabel.Text = 'Current Process'; 
+
 if isempty(pgUUID) && isempty(prUUID)
-    handles.Process.currentGroupLabel.Text = 'Current Group';
-    handles.Processs.currentFunctionLabel.Text = 'Current Process';
-    delete(uiTree.Children);
-    delete(handles.Process.functionUITree.Children);
+    handles.Process.currentGroupLabel.Text = 'Current Group';      
     return; % Nothing to fill, don't do anything.
 end
 
@@ -27,11 +28,17 @@ else
     ordStruct = orderedList2Struct(runList, containerList);
 end
 
-pgStruct=loadJSON(pgUUID);
+if ~isempty(pgUUID)
+    pgStruct=loadJSON(pgUUID);
+    uuid = pgUUID;
+else
+    pgStruct = loadJSON(prUUID);
+    uuid = prUUID;
+end
 
-handles.Process.currentGroupLabel.Text = [pgStruct.Name ' ' pgUUID];
+handles.Process.currentGroupLabel.Text = [pgStruct.Name ' ' uuid];
 
-delete(uiTree.Children);
+% delete(uiTree.Children);
 
 topLevel = fieldnames(ordStruct);
 if isempty(topLevel)

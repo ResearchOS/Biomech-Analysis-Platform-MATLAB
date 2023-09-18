@@ -32,31 +32,29 @@ for i=1:length(pg)
     
     % Get the processing functions in this group.
     sqlquery = ['SELECT PR_ID FROM PG_PR WHERE PG_ID = ''' pg{i} ''';'];
-    listPR = fetch(conn, sqlquery);
-    listPR = table2MyStruct(listPR);
-    if isempty(fieldnames(listPR))
-        listPR = {};
-    else
-        listPR = listPR.PR_ID;
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    if isempty(fieldnames(t))
+        t.PR_ID = {};
     end
-    if isempty(listPR)
-        listPR = {};
+    if ~iscell(t.PR_ID)
+        t.PR_ID = {t.PR_ID};
     end
+    listPR = t.PR_ID;
     listPR = [listPR, repmat(pg(i),length(listPR),1)]; % Specifies the group that the PR's are in.
     allPR = [allPR; listPR];  
 
     % Get the processing groups in this group.
     sqlquery = ['SELECT Child_PG_ID FROM PG_PG WHERE Parent_PG_ID = ''' pg{i} ''';'];
-    listPG = fetch(conn, sqlquery);
-    listPG = table2MyStruct(listPG);
-    if isempty(fieldnames(listPG))
-        listPG = {};
-    else
-        listPG = listPG.Child_PG_ID;
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    if isempty(fieldnames(t))
+        t.Child_PG_ID = {};
     end
-    if isempty(listPG)
-        listPG = {};
-    end    
+    if ~iscell(t.Child_PG_ID)    
+        t.Child_PG_ID = {t.Child_PG_ID};
+    end
+    listPG = t.Child_PG_ID;  
     for j = 1:length(listPG)
         prsRec = getPRFromPG(listPG{j}, allPR);
         append = [prsRec, repmat(pg{i},length(prsRec), 1)];

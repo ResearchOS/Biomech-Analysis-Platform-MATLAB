@@ -105,8 +105,13 @@ while ~all(ismember(fieldnames(ordStruct),containerList{1,2}))
     % Reorder the struct fields according to their min nums
     currContainers = fieldnames(ordStruct.(parentContainer).Contains);
     nums = [];
-    for i=1:length(currContainers)
-        nums = [nums; ordStruct.(parentContainer).Contains.(currContainers{i}).MinNum];
+    for i=1:length(currContainers)        
+        if isempty(ordStruct.(parentContainer).Contains.(currContainers{i}).MinNum)
+            num = inf; % Put at end
+        else
+            num = ordStruct.(parentContainer).Contains.(currContainers{i}).MinNum;
+        end
+        nums = [nums; num];
     end
 
     [~,k] = sort(nums);

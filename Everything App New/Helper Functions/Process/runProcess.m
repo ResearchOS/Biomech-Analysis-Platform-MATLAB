@@ -14,10 +14,17 @@ if nargin<2
 end
 
 if guiInBase
-    fig=evalin('base','gui;');
+    try
+        headless = false;
+        fig=evalin('base','gui;');
+    catch
+        headless = true;
+    end
 end
 
-handles=getappdata(fig,'handles');
+if ~headless
+    handles=getappdata(fig,'handles');
+end
 
 [type, abstractID, instanceID] = deText(instUUID);
 abstractUUID = genUUID(type, abstractID);
@@ -47,9 +54,11 @@ if exist(fcnName,'file')~=2
     return;
 end
 
-G = getappdata(fig,'digraph');
-if isempty(G)
-    G = refreshDigraph(fig);
+if ~headless
+    G = getappdata(fig,'digraph');
+    if isempty(G)
+        G = refreshDigraph(fig);
+    end
 end
 
 %% CHECK IF ALL UPSTREAM FUNCTIONS & VARIABLES ARE UP TO DATE!
@@ -135,7 +144,7 @@ load(logsheetPathMAT,'logVar');
 % projectPath=getProjectPath(fig);
 % oldPath=cd([projectPath slash 'Process']);
 inclStruct=getInclStruct(specifyTrials);
-conds = 1;
+conds = 0;
 trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
@@ -163,7 +172,11 @@ if runInfoStop
 end
 
 %% Run the function!
-sendEmail = handles.Process.sendEmailsCheckbox.Value;
+if ~headless
+    sendEmail = handles.Process.sendEmailsCheckbox.Value;
+else
+    sendEmail = false; % Hard coded for now. Later this should be in SQL.
+end
 if ismember('P',fcnLevel)
 
     disp(['Running ' fcnName]);
@@ -262,6 +275,9 @@ end
 % end
 
 %% Update out of date for PR & outputs. Don't propagate beyond the outputs of this PR.
+if headless
+    fig = '';
+end
 setPR_VROutOfDate(fig, instUUID, false, false);
 
 %% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
@@ -276,12 +292,14 @@ if ~iscell(queue)
 end
 remQueueIdx=ismember(queue,instStruct.UUID);
 queue(remQueueIdx)=[];
-queueNode = getNode(handles.Process.queueUITree, instStruct.UUID);
-delete(queueNode);
-drawnow;
-
 setCurrent(queue,'Process_Queue');
-refreshDigraph(fig);
+
+if ~headless
+    queueNode = getNode(handles.Process.queueUITree, instStruct.UUID);
+    delete(queueNode);
+    drawnow;
+    refreshDigraph(fig);
+end
 
 evalin('base','clear runInfo'); % Clean up after myself
 if isempty(remQueueIdx)

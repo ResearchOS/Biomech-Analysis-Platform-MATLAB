@@ -2,8 +2,12 @@ function []=runButtonPushed(src,event)
 
 %% PURPOSE: RUN THE FUNCTIONS CURRENTLY SELECTED IN THE QUEUE
 
-fig=ancestor(src,'figure','toplevel');
-handles=getappdata(fig,'handles');
+headless = true;
+if nargin>1
+    headless = false;
+    fig=ancestor(src,'figure','toplevel');
+    handles=getappdata(fig,'handles');
+end
 stop = false;
 e = '';
 
@@ -19,20 +23,20 @@ if ~iscell(queue)
 end
 
 %% For now, just run everything. Later on, I can do checks to see if there are any dependencies that are not up to date.
-[bool,logVar]=checkLogsheetSetup(fig);
-if ~bool
-    disp('Need to set up logsheet!');
-    return;
-end
+% [bool,logVar]=checkLogsheetSetup(fig);
+% if ~bool
+%     disp('Need to set up logsheet!');
+%     return;
+% end
 
 % Make sure that a data path has been set up
 
-try
-    testGUI=evalin('base','gui;'); % Var isn't used, just checking if GUI var is in base workspace.
-    clear testGUI;
-catch
-    assignin('base','gui',fig); % Ensure that the fig variable is available for use.
-end
+% try
+%     testGUI=evalin('base','gui;'); % Var isn't used, just checking if GUI var is in base workspace.
+%     clear testGUI;
+% catch
+%     assignin('base','gui',fig); % Ensure that the fig variable is available for use.
+% end
 
 startAll=tic;
 % oldDir=cd([getCommonPath filesep 'Code']); % Ensure that the proper functions are being called.
@@ -48,7 +52,11 @@ end
 
 % cd(oldDir);
 
-sendEmail = handles.Process.sendEmailsCheckbox.Value;
+if ~headless
+    sendEmail = handles.Process.sendEmailsCheckbox.Value;
+else
+    sendEmail = false; % Hard-coded for now.
+end
 elapsedTime = round(toc(startAll),2);
 
 if ~stop

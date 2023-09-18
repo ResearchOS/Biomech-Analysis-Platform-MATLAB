@@ -6,7 +6,11 @@ function [] = setPR_VROutOfDate(src, uuid, outOfDateBool,prop)
 
 global conn;
 
-fig=ancestor(src,'figure','toplevel');
+if ~isempty(src)
+    fig=ancestor(src,'figure','toplevel');
+else
+    fig = '';
+end
 
 [type] = deText(uuid);
 assert(isequal(type,'PR'));
@@ -15,9 +19,13 @@ if nargin==3
     prop = false;
 end
 
-G = getappdata(fig,'digraph');
-if isempty(G) || prop
-    G = refreshDigraph(fig);
+if ~isempty(fig)
+    G = getappdata(fig,'digraph');
+    if isempty(G) || prop
+        G = refreshDigraph(fig);
+    end
+else
+    G = refreshDigraph();
 end
 
 if ~prop

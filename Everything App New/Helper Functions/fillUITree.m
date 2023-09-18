@@ -22,7 +22,7 @@ allNames = t.Name;
 
 %% Get the list of all objects of the current type in the current project
 if ~contains(tablename,{'Project'})
-    O = getObjLinks();
+    O = getAllObjLinks();
 
     % Work backwards to get the "main branch" of objects leading to this
     % Project.

@@ -52,7 +52,8 @@ switch class
         end
 end
 
-rootPath=[getCommonPath slash 'Code' slash classFolder];
+commonPath = '/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/PGUI_CommonPath';
+rootPath=[commonPath slash 'Code' slash classFolder];
 filePath=[rootPath slash fileName '.m'];
 
 % Check one more time if the specified file already exists

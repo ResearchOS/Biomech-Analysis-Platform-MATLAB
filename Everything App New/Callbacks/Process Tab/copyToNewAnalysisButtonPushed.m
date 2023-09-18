@@ -4,6 +4,9 @@ function [] = copyToNewAnalysisButtonPushed(src,event)
 
 global conn;
 
+
+    
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 

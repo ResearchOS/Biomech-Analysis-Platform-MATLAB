@@ -149,8 +149,9 @@ trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
 % remSubNames={}; % Remove nothing
-% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
-remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat'};
+% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
 if ~conds
     if any(ismember(remSubNames,fieldnames(trialNames)))

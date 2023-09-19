@@ -8,10 +8,11 @@ function [orderedList, listPR_PG_AN] = getRunList(containerUUID, arg2)
 assert(ischar(containerUUID));
 
 %%% ATTEMPT WITH getAllObjLinks %%%
-% G = getAllObjLinks();
-% G2 = getAllObjsLinksInContainer(G, containerUUID);
-% fcnsG = getFcnsOnlyDigraph(G2);
-% orderedList = fcnsG.Nodes.Name(toposort(fcnsG));
+G = getAllObjLinks();
+G2 = getAllObjsLinksInContainer(G, containerUUID);
+fcnsG = getFcnsOnlyDigraph(G2);
+order = toposort(fcnsG);
+orderedList(:,1) = fcnsG.Nodes.Name(order);
 
 % Step 1
 if nargin==1

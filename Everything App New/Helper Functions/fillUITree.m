@@ -20,14 +20,40 @@ end
 allUUIDs = t.UUID;
 allNames = t.Name;
 
-%% Get the list of all objects of the current type in the current project
+%% Get the list of all objects of the current type in the current project AND not associated with any project.
 if ~contains(tablename,{'Project'})
-    O = getAllObjLinks();
+    O = getAllObjLinks(); % All objects connected to other objects.
+    Current_Project_Name = getCurrent('Current_Project_Name');
+
+    % The current project's objects.
+    Oproj = getAllObjsLinksInContainer(O, Current_Project_Name);
+    projObs = Oproj.Nodes.Name;
+
+    % All objects with links. Check if there are ever any linked objects
+    % not in a project. There shouldn't be!
+    [types, abstractIDs] = deText(O.Nodes.Name);
+    abstractUUIDs = genUUID(types, abstractIDs);
+    allProjsIdx = ismember(allUUIDs, abstractUUIDs);
+    noProjObjs = allUUIDs(~allProjsIdx); % Objects not associated with any project.
+
+    % This project's and no-project objects.
+    objUUIDs = [projObs; noProjObjs];
+    [types, abstractIDs] = deText(objUUIDs);
+    abstractUUIDs = genUUID(types, abstractIDs);
+    allUUIDsIdx = ismember(allUUIDs, abstractUUIDs);
+    allUUIDs = allUUIDs(allUUIDsIdx);
+    allNames = allNames(allUUIDsIdx);
+    % 
+    % % Get the objects that are not associated with any project.
+    % noProjUUIDsIdx = ~contains(projObs,allUUIDs);
+    % noProjUUIDs = projObs(~noProjUUIDsIdx);
+    % 
+    % % Concatenate and order the UUID's and pretty names.
+    % allUUIDsIdx = ismember(allUUIDs,[Osub.Nodes.Name; noProjUUIDs]);    
 
     % Work backwards to get the "main branch" of objects leading to this
     % Project.
-    H = transclosure(flipedge(O));
-    Current_Project_Name = getCurrent('Current_Project_Name');
+    H = transclosure(flipedge(O));    
     projIdx = ismember(O.Nodes.Name,Current_Project_Name);
     R = full(adjacency(H));
     for i=1:length(R)

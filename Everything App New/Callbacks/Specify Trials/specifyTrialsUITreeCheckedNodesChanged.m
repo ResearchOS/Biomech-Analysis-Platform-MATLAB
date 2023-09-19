@@ -30,6 +30,8 @@ switch class
                 uiTree = handles.Process.analysisUITree;
             case 'Group'
                 uiTree=handles.Process.groupUITree;
+            case 'Function'
+                uiTree=handles.Process.groupUITree;
         end
 end
 

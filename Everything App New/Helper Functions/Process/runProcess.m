@@ -61,76 +61,6 @@ if ~headless
     end
 end
 
-%% CHECK IF ALL UPSTREAM FUNCTIONS & VARIABLES ARE UP TO DATE!
-% [~,deps] = getDeps(G,'up',instUUID);
-% sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
-% t = fetch(conn, sqlquery);
-% t = table2MyStruct(t);
-% instUUIDidx = ismember(t.UUID,instUUID);
-% t.UUID(instUUIDidx) = []; % Remove the PR from the check for dependencies.
-% t.OutOfDate(instUUIDidx) = [];
-% depIdx = ismember(t.UUID,deps);
-% t.UUID(~depIdx) = [];
-% t.OutOfDate(~depIdx) = [];
-% outOfDateIdx = ismember(t.OutOfDate,1);
-% if any(outOfDateIdx)
-%     outOfDateDeps = t.UUID(outOfDateIdx);
-%     a = questdlg('There are dependent PR out of date. Add them to queue?','Add deps to queue?','Yes','No','Cancel','Yes');
-%     if isequal(a,'Yes')
-%         addToQueueButtonPushed(fig,outOfDateDeps);
-%     end
-%     stop = true;    
-% end
-
-% Only need to check the input variables to this function. If a var is hard
-% coded and not up to date, that's ok. If is hard coded = 0 and not up to
-% date, suggest to the user that they add the pre-req PR's to the queue.
-% sqlquery = ['SELECT VR_ID FROM VR_PR WHERE PR_ID = ''' instUUID ''';'];
-% t = fetch(conn, sqlquery);
-% t = table2MyStruct(t);
-% varNames = t.VR_ID;
-% varStr = getCondStr(varNames);
-% sqlquery = ['SELECT UUID, Abstract_UUID, OutOfDate FROM Variables_Instances WHERE UUID IN ' varStr];
-% t = fetch(conn, sqlquery);
-% tInst = table2MyStruct(t);
-% 
-% if ~iscell(tInst.Abstract_UUID)
-%     tInst.UUID = {tInst.UUID};
-%     tInst.Abstract_UUID = {tInst.Abstract_UUID};
-% end
-% 
-% absVars = unique(tInst.Abstract_UUID,'stable');
-% absVarStr = getCondStr(absVars);
-% sqlquery = ['SELECT UUID, IsHardCoded FROM Variables_Abstract WHERE UUID IN ' absVarStr];
-% t = fetch(conn, sqlquery);
-% tAbs = table2MyStruct(t);
-% 
-% if ~iscell(tAbs.UUID)
-%     tAbs.UUID = {tAbs.UUID};
-% end
-% 
-% hardCodedIdxAbs = ismember(tAbs.IsHardCoded,1);
-% hardCodedUUID = tAbs.UUID(hardCodedIdxAbs);
-% hardCodedIdxInst = contains(tInst.UUID, hardCodedUUID);
-% outOfDateIdx = tInst.OutOfDate==1 & ~hardCodedIdxInst;
-% hardCodedOutOfDate = tInst.UUID(hardCodedIdxInst & tInst.OutOfDate==1);
-% if any(outOfDateIdx)
-%     outOfDateInputs = tInst.UUID(outOfDateIdx);
-%     outOfDateStr = getCondStr(outOfDateInputs);
-%     sqlquery = ['SELECT PR_ID FROM PR_VR WHERE PR_ID = ''' instUUID ''' AND VR_ID IN ' outOfDateStr];
-%     t = fetch(conn, sqlquery);
-%     t = table2MyStruct(t);
-%     a = questdlg('There are input variables out of date. Add their PR to queue?',' Add deps to queue?','Yes','No','Cancel','Yes');
-%     if isequal(a,'Yes')
-%         addToQueueButtonPushed(fig, t.PR_ID);
-%     end
-%     stop = true;    
-% end
-
-% if stop
-%     return; % Because something is out of date.
-% end
-
 %% NOTE: NEED THE VARIABLES' LEVELS, AND THE FUNCTION'S LEVELS.
 Current_Logsheet = getCurrent('Current_Logsheet');
 logsheetStruct=loadJSON(Current_Logsheet);
@@ -149,6 +79,7 @@ trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
 % remSubNames={}; % Remove nothing
+% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal','Nairobi','Tokyo','Berlin','Denver','Oslo','Boston','Seattle','Chicago','Paris'};
 remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};

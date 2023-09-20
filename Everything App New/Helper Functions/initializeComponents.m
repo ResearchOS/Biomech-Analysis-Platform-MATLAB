@@ -351,9 +351,6 @@ handles.Process.digraphAxes=uiaxes(processTab,'Visible',false,'Box','off','XTick
 % 37. Switch digraph mode
 % handles.Process.switchDigraphModeDropDown=uidropdown(processTab,'Visible',false,'Items',{'Graph','Linear'},'Value','Graph','Editable','off','ValueChangedFcn',@(switchDigraphModeDropDown, event) switchDigraphModeDropDownValueChanged(switchDigraphModeDropDown));
 
-% 38. Pretty variables checkbox
-handles.Process.prettyVarsCheckbox=uicheckbox(processTab,'Visible',false,'Value',false,'Text','Pretty Vars','ValueChangedFcn',@(prettyVarsCheckbox, event) prettyVarsCheckboxValueChanged(prettyVarsCheckbox));
-
 % 49. Out of date checkbox
 handles.Process.outOfDateCheckbox=uicheckbox(handles.Process.currentGroupTab,'Value',false,'Text','Out of Date','ValueChangedFcn',@(outOfDateCheckbox, event) outOfDateCheckboxValueChanged(outOfDateCheckbox));
 
@@ -368,6 +365,9 @@ handles.Process.editViewButton = uibutton(processTab,'state','Visible',false,'Te
 
 % 53. Select multi state button
 handles.Process.multiSelectButton = uibutton(processTab,'state','Visible',false,'Text','Multi','ValueChangedFcn',@(multiSelectButton, event) multiSelectButtonValueChanged(multiSelectButton));
+
+% 38. Pretty variables checkbox
+handles.Process.prettyVarsCheckbox=uicheckbox(processTab,'Visible',false,'Value',false,'Text','Pretty Vars','ValueChangedFcn',@(prettyVarsCheckbox, event) prettyVarsCheckboxValueChanged(prettyVarsCheckbox));
 
 % 54. Add node (from list) button
 handles.Process.addToViewButton = uibutton(processTab,'push','Visible',false,'Text','->','ButtonPushedFcn',@(addToViewButton,event) addToViewButtonPushed(addToViewButton));

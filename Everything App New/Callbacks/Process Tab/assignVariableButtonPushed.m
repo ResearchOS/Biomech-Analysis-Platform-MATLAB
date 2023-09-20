@@ -143,15 +143,16 @@ if isempty(prevVarUUID)
     % end
     currVarNode.NodeData.UUID = allVarUUID;    
     nameInCode = currVarNode.Text;
-    sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''';'];    
+    sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''' AND NameInCode = ''' nameInCode ''';'];    
     execute(conn, sqlquery);
     currVarNode.Text = [currVarNode.Text ' (' allVarUUID ')'];
 else
-    sqlquery = ['UPDATE ' tablename ' SET VR_ID = ''' allVarUUID ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' prevVarUUID ''';'];
-    execute(conn, sqlquery);    
-    currVarNode.NodeData.UUID = allVarUUID;
     spaceIdx = strfind(currVarNode.Text,' '); % Should only be one space.
-    currVarNode.Text = [currVarNode.Text(1:spaceIdx-1) ' (' allVarUUID ')'];
+    nameInCode = currVarNode.Text(1:spaceIdx-1);
+    sqlquery = ['UPDATE ' tablename ' SET VR_ID = ''' allVarUUID ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' prevVarUUID ''' AND NameInCode = ''' nameInCode ''';'];
+    execute(conn, sqlquery);    
+    currVarNode.NodeData.UUID = allVarUUID;    
+    currVarNode.Text = [nameInCode ' (' allVarUUID ')'];
 end
 
 % Set out of date for PR & its VR

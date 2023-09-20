@@ -143,7 +143,7 @@ if isempty(prevVarUUID)
     % end
     currVarNode.NodeData.UUID = allVarUUID;    
     nameInCode = currVarNode.Text;
-    sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''' AND NameInCode = ''' nameInCode ''';'];    
+    sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''';'];    
     execute(conn, sqlquery);
     currVarNode.Text = [currVarNode.Text ' (' allVarUUID ')'];
 else

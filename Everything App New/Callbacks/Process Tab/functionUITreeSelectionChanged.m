@@ -23,7 +23,7 @@ end
 % If no node in the graph is selected, select the current node.
 markerSize = getappdata(fig,'markerSize');
 
-if isscalar(markerSize)
+if isscalar(markerSize) || ~any(markerSize==8)
     % 1. Get the name of the current function.
     fcnNode = handles.Process.groupUITree.SelectedNodes;
     if isempty(fcnNode)

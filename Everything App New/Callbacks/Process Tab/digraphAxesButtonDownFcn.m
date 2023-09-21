@@ -44,6 +44,7 @@ if nargin == 1 || isempty(uuid)
         nodeClicked = true; % The selection was made in the digraph, so update the list selection accordingly.
     end
 else    
+    nodeClicked = true;
     listClicked = true;
     idx = ismember(G.Nodes.Name, uuid);    
 end
@@ -101,12 +102,18 @@ if ~nodeClicked
 end
 
 % Change the selection in the current UI trees
-node = selectNode(handles.Process.analysisUITree, uuid);
-scroll(handles.Process.analysisUITree, node);
-analysisUITreeSelectionChanged(fig, uuid);
+if ~listClicked
+    node = selectNode(handles.Process.analysisUITree, uuid);
+    if ~isempty(node)
+        scroll(handles.Process.analysisUITree, node);
+        analysisUITreeSelectionChanged(fig, uuid);
 
-handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
-subTabCurrentSelectionChanged(fig);
+        handles.Process.subtabCurrent.SelectedTab = handles.Process.currentFunctionTab;
+        subTabCurrentSelectionChanged(fig);
+    else
+        assert(~isempty(uuid));
+    end
+end
 
 % Update successors & predecessors button
 Gall = getappdata(fig,'digraph');

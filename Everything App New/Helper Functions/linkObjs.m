@@ -97,9 +97,6 @@ for i=1:length(leftObjs)
         end
         % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH  
         G = getAllObjLinks();
-        % list = getUnorderedList(anUUID);
-        % links = loadLinks(list);
-        % G = linkageToDigraph(links);
         if ~isdag(G)
             success = false;
             execute(conn, undoquery);

@@ -36,7 +36,7 @@ markerSize(unfinishedIdx,:) = repmat(6,sum(unfinishedIdx),1);
 
 % The selected node.
 if any(markerSize==8)
-    color(markerSize==8,:) = [0 0 0]; % Black
+    color(markerSize==8,:) = repmat([0 0 0],sum(markerSize==8),1); % Black
 end
 
 % Reset the axes.
@@ -63,13 +63,15 @@ end
 
 % If a node is selected, highlight its in and out edges.
 if any(markerSize==8)
-    idx = ismember(markerSize, 8);
-    ins = inedges(G, G.Nodes.Name(idx));
-    highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
-    labeledge(h, ins, edgenames(ins));
-    outs = outedges(G, G.Nodes.Name(idx));
-    highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
-    labeledge(h, outs, edgenames(outs));
+    idxNums = find(ismember(markerSize, 8));
+    for i=1:length(idxNums)
+        ins = inedges(G, G.Nodes.Name(idxNums(i)));
+        highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
+        labeledge(h, ins, edgenames(ins));
+        outs = outedges(G, G.Nodes.Name(idxNums(i)));
+        highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
+        labeledge(h, outs, edgenames(outs));
+    end
 end
 
 %% Change line style to '--' for edges (variables) that are outdated.

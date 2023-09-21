@@ -191,7 +191,7 @@ objResize(tab.digraphAxes, [0.58 0.01], [0.41 0.94]);
 % objResize(tab.switchDigraphModeDropDown, [0.7 0.95], [0.1 compHeight]);
 
 % 38. Pretty variables dropdown
-objResize(tab.prettyVarsCheckbox, [0.85 0.95], [0.1 compHeight]);
+objResize(tab.prettyVarsCheckbox, [0.61 0.9], [0.1 compHeight]);
 
 % 35. Add specify trials button
 objResize(tab.addSpecifyTrialsButton, [0.58 0.2], [0.03 compHeight]);

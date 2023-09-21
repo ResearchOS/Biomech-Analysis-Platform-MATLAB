@@ -8,7 +8,7 @@ if nargin==1
     format = 'cell';
 end
 
-numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows'};
+numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows','UsesConds'};
 jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','Logsheet_Path',...
     'Logsheet_Parameters','Data_Parameters','HardCodedValue','InputVariablesNamesInCode','OutputVariablesNamesInCode','SpecifyTrials',...
     'Current_View','InclNodes','Current_Logsheet','Current_Analysis'};

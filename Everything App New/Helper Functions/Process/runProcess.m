@@ -74,26 +74,30 @@ load(logsheetPathMAT,'logVar');
 % projectPath=getProjectPath(fig);
 % oldPath=cd([projectPath slash 'Process']);
 inclStruct=getInclStruct(specifyTrials);
-conds = 0;
+conds = absStruct.UsesConds;
 trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
 % remSubNames={}; % Remove nothing
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal','Nairobi','Tokyo','Berlin','Denver','Oslo','Boston','Seattle','Chicago','Paris'};
-remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
+% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat'};
-% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
 
-if ~conds
-    if any(ismember(remSubNames,fieldnames(trialNames)))
-        trialNames=rmfield(trialNames,remSubNames);
-    end
-else
-    if any(ismember(remSubNames,fieldnames(trialNames.Condition)))
-        trialNames.Condition=rmfield(trialNames.Condition,remSubNames);
+subNames=fieldnames(trialNames);
+if exist('remSubNames','var') && ~isempty(remSubNames)
+    if ~conds
+        if any(ismember(remSubNames,fieldnames(trialNames)))
+            trialNames=rmfield(trialNames,remSubNames);
+        end        
+        subNames=fieldnames(trialNames);
+    else
+        if any(ismember(remSubNames,fieldnames(trialNames.Condition)))
+            trialNames.Condition=rmfield(trialNames.Condition,remSubNames);
+        end
+        subNames=fieldnames(trialNames.Condition);
     end
 end
-subNames=fieldnames(trialNames);
 
 %% Create runInfo and assign it to base workspace.
 % Store the info for getArg and setArg

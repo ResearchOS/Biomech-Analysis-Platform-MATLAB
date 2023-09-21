@@ -123,6 +123,8 @@ if ismember('Process_Abstract',modifiedNames)
     execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Abstract ADD ExecFileName TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
+    sqlquery = ['ALTER TABLE Process_Abstract ADD UsesConds INTEGER NOT NULL Default 0']; % Needed here? Maybe will be eventually moved to Plot tables.
+    execute(conn, sqlquery);
 end
 
 if ismember('Process_Instances',modifiedNames)

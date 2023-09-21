@@ -12,6 +12,8 @@ if isempty(ax.Children)
 end
 assert(length(ax.Children)==1);
 
+isMulti = handles.Process.multiSelectButton.Value;
+
 currPoint = ax.CurrentPoint(1,1:2);
 [xTol, yTol] = getDigraphTol(ax);
 
@@ -23,8 +25,10 @@ ydata = h.YData';
 xWins = [xdata-xTol/2 xdata+xTol/2];
 yWins = [ydata-yTol/2 ydata+yTol/2];
 
-nodeSelected = false; % Because the digraph wasn't clicked, it's just being updated. OR no node was clicked on.
+nodeClicked = false; % Because the digraph wasn't clicked, it's just being updated. OR no node was clicked on.
 G = getappdata(fig,'viewG');
+
+
 if nargin == 1 || isempty(uuid)
     listClicked = false;
     idx = (currPoint(1)>xWins(:,1) & currPoint(1)<xWins(:,2)) & ...
@@ -37,31 +41,45 @@ if nargin == 1 || isempty(uuid)
         idx(minDistIdx) = true;
     end
     if sum(idx)==1
-        nodeSelected = true; % The selection was made in the digraph, so update the list selection accordingly.
+        nodeClicked = true; % The selection was made in the digraph, so update the list selection accordingly.
     end
 else    
     listClicked = true;
     idx = ismember(G.Nodes.Name, uuid);    
 end
-if ~any(idx)
+
+
+if ~nodeClicked && ~isMulti
     markerSize = repmat(4,length(G.Nodes.Name),1);
     colors = repmat([0 0.447 0.741],length(G.Nodes.Name),1);    
     uuid = '';
-else
-    assert(sum(idx)==1);
-
-    markerSize = repmat(4,length(xdata),1);
-    markerSize(idx) = 8;
-
+else    
+    markerSize = getappdata(fig,'markerSize');
+    if isempty(markerSize) || ~isMulti
+        markerSize = repmat(4,length(xdata),1);
+    end
+    if any(idx)
+        assert(sum(idx)==1);        
+        if markerSize(idx)==4
+            markerSize(idx) = 8; % Select
+        else
+            markerSize(idx) = 4; % Deselect
+        end
+        
+        uuid = G.Nodes.Name{idx};
+    end
     colors = repmat([0 0.447 0.741], length(xdata), 1);
-    colors(idx,:) = [0 0 0];    
-    uuid = G.Nodes.Name{idx};   
+    colors(markerSize==8,:) = repmat([0 0 0],sum(markerSize==8),1);
 
 end
 
 renderGraph(fig, G, markerSize, colors);
 
-if ~nodeSelected
+if isMulti
+    return; % Don't do the below changes to GUI if selecting multiple nodes.
+end
+
+if ~nodeClicked
     handles.Process.successorsButton.Text = 'S';
     handles.Process.predecessorsButton.Text = 'P';
     % Clear current function UI tree

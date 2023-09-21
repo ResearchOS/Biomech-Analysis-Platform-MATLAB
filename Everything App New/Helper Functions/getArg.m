@@ -48,35 +48,42 @@ for i=1:length(absNamesInCode)
         continue; % Ensure that only the desired getArg ID is used.
     end
 
-    varargout=cell(1,length(currVars)-1); % Initialize output variables.
+    currVars(1) = []; % Remove the ID
 
-    % Isolate only the vars in this getArg ID
-    currVarsIdx = ismember(namesInCode,currVars(2:end));
+    varargout=cell(1,length(currVars)); % Initialize output variables.
+
+    % Ensure the ability to run a function with only a subset of variables
+    % initialized.
+    currVars(~ismember(currVars,namesInCode)) = []; % Remove vars (from list in abstract) that are not assigned in this instance yet.
+
+    % Isolate only the vars in this getArg ID (that have been implemented)
+    % currVarsIdx = ismember(namesInCode,currVars);
+    currVarsIdx = makeSameOrder(currVars, namesInCode);
     currNamesInCode = namesInCode(currVarsIdx);
     currUUIDs = uuids(currVarsIdx);
     currSubVars = subVars(currVarsIdx);
 
     currIsHardCoded = isHardCoded(currVarsIdx);
     currHardCodedValue = hardCodedValue(currVarsIdx);
-    currVarLevels = varLevels(currVarsIdx);
+    currVarLevels = varLevels(currVarsIdx);    
 
-    for j=2:length(currVars)
+    for j=1:length(currVars)
 
-        varIdx = ismember(currNamesInCode,currVars{j});
+        % varIdx = ismember(currNamesInCode,currVars{j});        
 
-        if ~any(varIdx)
-            continue; % Variable not in the list. Why?
-        end
+        % if ~any(varIdx)
+        %     continue; % Variable not in the list. Why?
+        % end
 
-        if currIsHardCoded(varIdx)
-            varargout{j-1} = currHardCodedValue{j-1};
+        if currIsHardCoded(j)
+            varargout{j} = currHardCodedValue{j};
             continue;
         end
 
         % 3. If dynamic, find the proper file by looking at its text,
         % level, and subName/trialName/repNum values.
-        uuid=currUUIDs{varIdx};
-        varLevel=currVarLevels{varIdx};
+        uuid=currUUIDs{j};
+        varLevel=currVarLevels{j};
 
         if level<varLevel
             error('Missing subject and/or trial name specification');
@@ -86,22 +93,22 @@ for i=1:length(absNamesInCode)
         try
             switch varLevel
                 case 'P'
-                    varargout{j-1}=loadMAT(dataPath,uuid);
+                    varargout{j}=loadMAT(dataPath,uuid);
                 case 'S'
-                    varargout{j-1}=loadMAT(dataPath,uuid,subName);
+                    varargout{j}=loadMAT(dataPath,uuid,subName);
                 case 'T'
-                    varargout{j-1}=loadMAT(dataPath,uuid,subName,trialName);
+                    varargout{j}=loadMAT(dataPath,uuid,subName,trialName);
             end
         catch e
             if contains(e.message,'Unable to find file or directory')
                 disp(['Missing variable: ' uuid ' (' getName(uuid) ' Subject: ' subName ' Trial: ' trialName]);
-                varargout{j-1} = missing;
+                varargout{j} = missing;
                 continue;
             end
         end
 
-        if ~isempty(currSubVars{j-1}) && ~isequal(currSubVars{j-1},'NULL')
-            varargout{j-1}=eval(['varargout{j-1}' currSubVars{j-1}]);
+        if ~isempty(currSubVars{j}) && ~isequal(currSubVars{j},'NULL')
+            varargout{j}=eval(['varargout{j}' currSubVars{j}]);
         end
 
     end

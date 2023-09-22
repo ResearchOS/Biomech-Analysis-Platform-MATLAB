@@ -5,14 +5,24 @@ function []=digraphAxesButtonDownFcn(src, uuid)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-ax = handles.Process.digraphAxes;
+isMulti = false;
+if isequal(fig.Name,'pgui')
+    ax = handles.Process.digraphAxes;
+    isMulti = handles.Process.multiSelectButton.Value;
+    G = getappdata(fig,'viewG');
+    popupAx = '';
+    isPopup = false;
+else
+    ax = findobj(fig,'Type','Axes');
+    popupAx = ax;
+    G = ax.UserData.G;
+    isPopup = true;
+end
 
 if isempty(ax.Children)
     return; % Do nothing if nothing to be done.
 end
 assert(length(ax.Children)==1);
-
-isMulti = handles.Process.multiSelectButton.Value;
 
 currPoint = ax.CurrentPoint(1,1:2);
 [xTol, yTol] = getDigraphTol(ax);
@@ -26,7 +36,6 @@ xWins = [xdata-xTol/2 xdata+xTol/2];
 yWins = [ydata-yTol/2 ydata+yTol/2];
 
 nodeClicked = false; % Because the digraph wasn't clicked, it's just being updated. OR no node was clicked on.
-G = getappdata(fig,'viewG');
 
 
 if nargin == 1 || isempty(uuid)
@@ -74,9 +83,9 @@ else
 
 end
 
-renderGraph(fig, G, markerSize, colors);
+renderGraph(fig, G, markerSize, colors, [], popupAx);
 
-if isMulti
+if isMulti || isPopup
     return; % Don't do the below changes to GUI if selecting multiple nodes.
 end
 

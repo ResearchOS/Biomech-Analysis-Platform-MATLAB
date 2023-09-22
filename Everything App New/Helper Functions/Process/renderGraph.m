@@ -1,4 +1,4 @@
-function [] = renderGraph(src, G, markerSize, color, edgeID)
+function [] = renderGraph(src, G, markerSize, color, edgeID, popupAx)
 
 %% PURPOSE: RENDER THE DIGRAPH IN THE UI AXES
 
@@ -6,6 +6,15 @@ global conn;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
+
+if nargin==6 && ~isempty(popupAx)    
+    isPopup = true;
+    popupHandles = getappdata(popupAx.Parent,'handles');
+    prettyVars = popupHandles.PrettyVarsCheckbox.Value;
+else
+    popupAx = '';
+    isPopup = false;
+end
 
 if nargin==1 || isempty(G)
     G = getappdata(fig,'viewG');
@@ -40,7 +49,11 @@ if any(markerSize==8)
 end
 
 % Reset the axes.
-ax = handles.Process.digraphAxes;
+if ~isPopup
+    ax = handles.Process.digraphAxes;
+else
+    ax = popupAx;
+end
 delete(ax.Children);
 set(ax,'ColorOrderIndex', 1);
 
@@ -55,7 +68,13 @@ h.NodeColor = color;
 h.EdgeColor = defaultColor;
 h.LineWidth = 0.5;
 
-if handles.Process.prettyVarsCheckbox.Value
+if ~isPopup
+    checkboxVal = handles.Process.prettyVarsCheckbox.Value;
+elseif isPopup
+    checkboxVal = prettyVars;
+end
+
+if checkboxVal
     edgenames = G.Edges.PrettyName;
 else
     edgenames = G.Edges.Name;
@@ -96,7 +115,9 @@ if exist('edgeID','var') && ~isempty(edgeID)
     labeledge(h, edgeIdx, edgenames(edgeIdx));
 end
 
-setappdata(fig,'viewG',G);
-setappdata(fig,'markerSize',markerSize);
+if ~isPopup
+    setappdata(fig,'viewG',G);
+    setappdata(fig,'markerSize',markerSize);
+end
 
 drawnow;

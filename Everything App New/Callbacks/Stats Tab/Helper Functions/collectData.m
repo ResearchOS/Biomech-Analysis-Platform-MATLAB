@@ -9,11 +9,13 @@ if isempty(multiVar)
 end
 
 inclStruct=getInclStruct(specifyTrials);
-logText='YA_All_Spr21TWW_18F869';
-logPath=getClassFilePath(logText,'Logsheet');
-logStruct=loadJSON(logPath);
+logUUID = 'LG71F125_74F';
+logStruct = loadJSON(logUUID);
+% logText='YA_All_Spr21TWW_18F869';
+% logPath=getClassFilePath(logText,'Logsheet');
+% logStruct=loadJSON(logPath);
 computerID=getComputerID();
-structPath=logStruct.LogsheetPath.(computerID);
+structPath=logStruct.Logsheet_Path.(computerID);
 [folder,file,ext]=fileparts(structPath);
 structPathMAT=[folder filesep file '.mat'];
 load(structPathMAT,'logVar');
@@ -51,7 +53,7 @@ end
 
 %% Put the variables into the table.
 disp('Put the variables into the table')
-dataPath=getDataPath();
+dataPath=getCurrent('Data_Path');
 if ~isempty(multiVarNames)
     allTable=[tableTrialNames trialSubNames];
 else

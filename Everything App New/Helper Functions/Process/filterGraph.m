@@ -2,7 +2,7 @@ function [G] = filterGraph(src, vwUUID)
 
 %% PURPOSE: FILTER THE GRAPH OF THE CURRENT ANALYSIS FOR THE CURRENT VIEW. ASSUME IT'S ALREADY UP TO DATE.
 
-global conn;
+global conn globalG viewG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -22,14 +22,10 @@ if isempty(name)
     name = {};
 end
 
-G = getappdata(fig,'digraph');
-if isempty(G)
-    G = refreshDigraph(fig);
-end
-if isempty(G.Edges)
+if isempty(globalG.Edges)
     return;
 end
-names = G.Nodes.Name;
+names = globalG.Nodes.Name;
 if isequal(name,'ALL')
     inclNodes = names; % Keep all nodes.
 end
@@ -46,9 +42,10 @@ else
 end
 selNames = names(selIdx);
 
+
 exclNodesIdx = ~ismember(names,inclNodes);
-G = rmnode(G,names(exclNodesIdx));
-newSelNamesIdx = ismember(G.Nodes.Name,selNames);
+viewG = rmnode(globalG,names(exclNodesIdx));
+newSelNamesIdx = ismember(viewG.Nodes.Name,selNames);
 
 markerSize = repmat(minMarkerSize,length(newSelNamesIdx),1); % Change markerSize length in case nodes are excluded.
 
@@ -56,4 +53,3 @@ markerSize = repmat(minMarkerSize,length(newSelNamesIdx),1); % Change markerSize
 markerSize(newSelNamesIdx) = maxMarkerSize;
 
 setappdata(fig,'markerSize',markerSize);
-setappdata(fig,'viewG',G);

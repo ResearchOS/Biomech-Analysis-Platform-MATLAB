@@ -5,11 +5,12 @@ function [orderedList, listPR_PG_AN] = getRunList(containerUUID, arg2)
 % arg2: Any of the inputs required for any of the steps 2 onward. Each
 % step's input is distinguished by its size and/or type.
 % tic;
+global globalG;
+
 assert(ischar(containerUUID));
 
 %%% ATTEMPT WITH getAllObjLinks %%%
-G = getAllObjLinks();
-G2 = getAllObjsLinksInContainer(G, containerUUID);
+G2 = getAllObjsLinksInContainer(globalG, containerUUID);
 fcnsG = getFcnsOnlyDigraph(G2);
 order = toposort(fcnsG);
 orderedList(:,1) = fcnsG.Nodes.Name(order);

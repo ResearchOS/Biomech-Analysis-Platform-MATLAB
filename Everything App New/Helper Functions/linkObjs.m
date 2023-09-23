@@ -5,6 +5,8 @@ function [success, msg]=linkObjs(leftObjs, rightObjs, date)
 % OUTPUT VARIABLE.
 % IF LINKING ANY OTHER OBJECTS, ORDER DOES NOT MATTER.
 
+global conn globalG;
+
 success = true; % Initialize that this is not a duplicate entry.
 msg = '';
 
@@ -13,8 +15,6 @@ if isempty(leftObjs) || isempty(rightObjs)
 end
 
 allTypes = getTypes();
-
-global conn;
 
 if ischar(leftObjs)
     leftObjs = {leftObjs};    
@@ -80,7 +80,7 @@ if contains(col1,type2)
     leftObjs = tmpR;
     rightObjs = tmpL;
 end
-anUUID = getCurrent('Current_Analysis');
+% anUUID = getCurrent('Current_Analysis');
 for i=1:length(leftObjs)
     sqlquery = ['INSERT INTO ' tablename ' (' col1 ', ' col2 ') VALUES ',...
         '(''' leftObjs{i} ''', ''' rightObjs{i} ''');'];
@@ -89,20 +89,23 @@ for i=1:length(leftObjs)
     assert(contains(col1,type1) && contains(col2, type2)); % Check that things are being put in the proper column.
 
     % undoquery = undoRedoCommand(sqlquery);
-    undoquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
-    try
-        execute(conn, sqlquery);
-        if isempty(anUUID)
-            return;
-        end
-        % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH  
-        G = getAllObjLinks();
-        if ~isdag(G)
+    % undoquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
+    try        
+        % if isempty(anUUID)
+        %     return;
+        % end
+        tmpG = globalG;
+        tmpG = addedge(tmpG, leftObjs{i}, rightObjs{i});
+        % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH          
+        if ~isdag(tmpG)
             success = false;
-            execute(conn, undoquery);
-            msg = ['Cannot link ' leftObjs{i} ' and ' rightObjs{i} ' because it forms a cyclic graph in the current analysis'];
+            % execute(conn, undoquery);
+            msg = ['Cannot link ' leftObjs{i} ' and ' rightObjs{i} ' because it forms a cyclic graph'];
             return;
-        end        
+        else % If there are no cycles, add the link to the SQL database and update the globalG.
+            execute(conn, sqlquery);
+            globalG = tmpG;
+        end
     catch e
         if ~contains(e.message,'UNIQUE constraint failed')
             error(e);

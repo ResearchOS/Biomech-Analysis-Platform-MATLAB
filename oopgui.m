@@ -4,7 +4,7 @@ function []=oopgui()
 % Check that the connection is valid or not. Close/delete it so the GUI can open a new clean connection.
 
 %% TODO: AN_LG, AN_ST, LG_VR
-global conn;
+global conn globalG;
 if ~isempty(conn) && isa(conn,'sqlite')
     if isvalid(conn)
         close(conn); % The processing was stopped in a way that was not just closing the GUI. Most likely during testing/interacting with the code.
@@ -59,6 +59,7 @@ catch
     dbFile = [dbFolder slash 'biomechOS.db'];
 end
 DBSetup(dbFile, isDel);
+globalG = getAllObjLinks();
 
 if isDel
     transferJSON_SQL; % Transfer objects

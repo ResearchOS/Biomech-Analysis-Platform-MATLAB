@@ -2,7 +2,7 @@ function []=fillUITree(fig, class, uiTree, searchTerm, sortDropDown)
 
 %% PURPOSE: FILL IN THE UI TREE.
 
-global conn;
+global conn globalG;
 
 delete(uiTree.Children);
 
@@ -22,16 +22,16 @@ allNames = t.Name;
 
 %% Get the list of all objects of the current type in the current project AND not associated with any project.
 if ~contains(tablename,{'Project'})
-    O = getAllObjLinks(); % All objects connected to other objects.
+    % O = getAllObjLinks(); % All objects connected to other objects.
     Current_Project_Name = getCurrent('Current_Project_Name');
 
     % The current project's objects.
-    Oproj = getAllObjsLinksInContainer(O, Current_Project_Name);
+    Oproj = getAllObjsLinksInContainer(globalG, Current_Project_Name);
     projObs = Oproj.Nodes.Name;
 
     % All objects with links. Check if there are ever any linked objects
     % not in a project. There shouldn't be!
-    [types, abstractIDs] = deText(O.Nodes.Name);
+    [types, abstractIDs] = deText(globalG.Nodes.Name);
     abstractUUIDs = genUUID(types, abstractIDs);
     allProjsIdx = ismember(allUUIDs, abstractUUIDs);
     noProjObjs = allUUIDs(~allProjsIdx); % Objects not associated with any project.
@@ -53,15 +53,15 @@ if ~contains(tablename,{'Project'})
 
     % Work backwards to get the "main branch" of objects leading to this
     % Project.
-    H = transclosure(flipedge(O));    
-    projIdx = ismember(O.Nodes.Name,Current_Project_Name);
+    H = transclosure(flipedge(globalG));    
+    projIdx = ismember(globalG.Nodes.Name,Current_Project_Name);
     R = full(adjacency(H));
     for i=1:length(R)
         R(i,i) = 1; % Insert 1's on the main diagonal, indicating that nodes are reachable from themselves.
     end
     % Objects currently or previously on the "main branch" that connects to this project OR never associated with any project at all.
-    inclIdx = projIdx | (indegree(O)==0 & outdegree(O)==0);
-    allObjsInst = O.Nodes.Name(any(logical(R(inclIdx,:)),1));
+    inclIdx = projIdx | (indegree(globalG)==0 & outdegree(globalG)==0);
+    allObjsInst = globalG.Nodes.Name(any(logical(R(inclIdx,:)),1));
 
     type = className2Abbrev(class);
     allObjsInst = allObjsInst(contains(allObjsInst,type));
@@ -71,14 +71,14 @@ if ~contains(tablename,{'Project'})
     % offshoots from the "main branch"). By definition, these branches
     % terminate before reaching a "Project" node (or they would have been
     % caught above)
-    H2 = transclosure(O);
+    H2 = transclosure(globalG);
     R = full(adjacency(H2));
     for i=1:length(R)
         R(i,i) = 1;
     end    
-    idx = ismember(O.Nodes.Name,allObjsInst);
+    idx = ismember(globalG.Nodes.Name,allObjsInst);
     inclIdx = logical(any(R(idx,:),1));
-    offBranchObjsInst = O.Nodes.Name(inclIdx);    
+    offBranchObjsInst = globalG.Nodes.Name(inclIdx);    
     offBranchObjsInst = offBranchObjsInst(contains(offBranchObjsInst,type));
 
     allObjsInst = unique([allObjsInst; offBranchObjsInst],'stable'); % Append

@@ -31,10 +31,11 @@ H.Nodes.PrettyName = G.Nodes.PrettyName(ismember(G.Nodes.Name, H.Nodes.Name));
 markerSize(nodeIdx) = 8;
 Q = uifigure('Units','normalized');
 delete(Q.Children);
-ax = uiaxes(Q,'Box','off','XTickLabel',{},'YTickLabel',{},'XTick',{},'YTick',{});
+ax = uiaxes(Q,'Box','off','XTickLabel',{},'YTickLabel',{},'XTick',{},'YTick',{},'HandleVisibility','on');
 set(ax,'PickableParts','visible','HitTest','on','ButtonDownFcn',@(figAx, event) digraphAxesButtonDownFcn(figAx));
 ax.UserData.G = H;
 
-handles.PrettyVarsCheckbox = uicheckbox(Q,"Value",0,'Text','Pretty Vars');
+handles.PrettyVarsCheckbox = uicheckbox(Q,"Value",0,'Text','Pretty Vars','Position',[100 500 84 22]);
+handles.addNodesButton = uibutton(Q,'Text','N+','ButtonPushedFcn',@(addNodesButton, event) addNodesButtonPushed(addNodesButton));
 setappdata(Q,'handles',handles);
 renderGraph(fig, H, markerSize, [], [], ax);

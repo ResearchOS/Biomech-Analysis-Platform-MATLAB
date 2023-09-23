@@ -2,7 +2,7 @@ function [] = unlinkObjs(leftObjs, rightObjs)
 
 %% PURPOSE: UNLINK OBJECTS IN THE LINKAGE MATRIX.
 
-global conn;
+global conn globalG;
 
 if isempty(leftObjs) || isempty(rightObjs)
     return;
@@ -79,6 +79,7 @@ for i=1:length(leftObjs)
     sqlquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
     try
         execute(conn, sqlquery);
+        globalG = rmedge(globalG, leftObjs{i}, rightObjs{i});
     catch e
         disp(e.message);
     end

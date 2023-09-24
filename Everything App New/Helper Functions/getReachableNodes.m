@@ -1,7 +1,14 @@
-function [reachableNodes] = getReachableNodes(G, uuid)
+function [reachableNodes] = getReachableNodes(G, uuid, dir)
 
 %% PURPOSE: GET ALL OF THE REACHABLE NODES FROM THE SPECIFIED UUID IN THE SPECIFIED GRAPH
 
+if nargin<3
+    dir = 'down';
+end
+
+if isequal(dir,'up')
+    G = flipedge(G);
+end
 H = transclosure(G);
 R = full(adjacency(H));
 for i=1:size(R,1)

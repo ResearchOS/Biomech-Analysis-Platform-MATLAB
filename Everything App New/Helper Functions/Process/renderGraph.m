@@ -2,7 +2,7 @@ function [] = renderGraph(src, G, markerSize, color, edgeID, popupAx)
 
 %% PURPOSE: RENDER THE DIGRAPH IN THE UI AXES
 
-global conn;
+global conn viewG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -17,8 +17,9 @@ else
 end
 
 if nargin==1 || isempty(G)
-    G = getappdata(fig,'viewG');
+    G = viewG;
 end
+
 if exist('markerSize','var')~=1 || isempty(markerSize)
     markerSize = getappdata(fig,'markerSize');
     if isempty(markerSize)
@@ -83,14 +84,17 @@ end
 % If a node is selected, highlight its in and out edges.
 if any(markerSize==8)
     idxNums = find(ismember(markerSize, 8));
+    ins = [];
+    outs = [];
     for i=1:length(idxNums)
-        ins = inedges(G, G.Nodes.Name(idxNums(i)));
-        highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
-        labeledge(h, ins, edgenames(ins));
-        outs = outedges(G, G.Nodes.Name(idxNums(i)));
-        highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
-        labeledge(h, outs, edgenames(outs));
+        ins = [ins; inedges(G, G.Nodes.Name(idxNums(i)))];
+        outs = [outs; outedges(G, G.Nodes.Name(idxNums(i)))];
     end
+
+    highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
+    labeledge(h, ins, edgenames(ins));        
+    highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
+    labeledge(h, outs, edgenames(outs));
 end
 
 %% Change line style to '--' for edges (variables) that are outdated.

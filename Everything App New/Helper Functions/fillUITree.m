@@ -26,7 +26,7 @@ if ~contains(tablename,{'Project'})
     Current_Project_Name = getCurrent('Current_Project_Name');
 
     % The current project's objects.
-    Oproj = getAllObjsLinksInContainer(globalG, Current_Project_Name);
+    Oproj = getSubgraph(globalG, Current_Project_Name);
     projObs = Oproj.Nodes.Name;
 
     % All objects with links. Check if there are ever any linked objects

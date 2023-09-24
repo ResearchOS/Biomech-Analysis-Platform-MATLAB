@@ -2,6 +2,8 @@ function []=toggleDigraphCheckboxValueChanged(src,event)
 
 %% PURPOSE: HIDE OR SHOW THE DIGRAPH & ASSOCIATED COMPONENTS
 
+global globalG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -51,8 +53,6 @@ end
 if ~val
     return; % Don't fill in the digraph if it's not visible!
 end
-
-refreshDigraph(fig);
 
 Current_View = getCurrent('Current_View');
 G = filterGraph(fig, Current_View);

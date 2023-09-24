@@ -88,17 +88,15 @@ elseif isequal(parentNode.Text(1:6),'setArg')
 end
 
 %% Check that this variable & PR only belongs to the current analysis. If not, tell the user that if they want to make changes, a new object will be created.
-% Or just ask them if they want to propagate the changes to other analyses?
-% More advanced option!
 currFcnUUID = currFcnNode.NodeData.UUID;
 prevVarUUID = currVarNode.NodeData.UUID;
 
 anVR = {};
 if isOut
-    anVR = getObjs(allVarUUID,'AN');
+    anVR = getObjs(allVarUUID,'AN','down');
 end
-anPR = getObjs(currFcnUUID,'AN');
-anList = unique([anPR; anVR],'stable');
+anPR = getObjs(currFcnUUID,'AN','down');
+anList = unique([anPR; anVR],'stable'); % All analyses reachable
 
 Current_Analysis = getCurrent('Current_Analysis');
 
@@ -117,8 +115,8 @@ if ~isequal(anList,{Current_Analysis})
         % Need to create new versions of this variable (if output) and all
         % downstream PR's and their output variables (and inputs where
         % needed).
-        nodes = getReachableNodes(globalG, currFcnUUID);
-        anList(ismember(anList,Current_Analysis)) = []; % Remove the current analysis from this list.
+        nodes = getReachableNodes(globalG, currFcnUUID);        
+        anList(ismember(anList,Current_Analysis)) = []; % Remove the current analysis from the list of all analyses.
         % Remove all projects, and all other analyses from being copied        
         nodes(ismember(nodes,anList)) = [];
         nodes(contains(nodes,'PJ')) = [];
@@ -143,18 +141,30 @@ if isempty(prevVarUUID)
     execute(conn, sqlquery);
     currVarNode.Text = [currVarNode.Text ' (' allVarUUID ')'];
 else
-    unlinkObjs(prevVarUUID, Current_Analysis);
+    if isOut
+        unlinkObjs(currFcnUUID,prevVarUUID);
+        linkObjs(currFcnUUID, allVarUUID);
+    else
+        unlinkObjs(prevVarUUID, currFcnUUID);
+        linkObjs(allVarUUID, currFcnUUID);
+    end
+    tmpG = rmedge(globalG, prevVarUUID, Current_Analysis);
+    path = shortestpath(tmpG, prevVarUUID, Current_Analysis);
+    if isempty(path)
+        unlinkObjs(prevVarUUID, Current_Analysis); % The unlinked variable is no longer part of this analysis.
+    end
     spaceIdx = strfind(currVarNode.Text,' '); % Should only be one space.
-    nameInCode = currVarNode.Text(1:spaceIdx-1);
-    sqlquery = ['UPDATE ' tablename ' SET VR_ID = ''' allVarUUID ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' prevVarUUID ''' AND NameInCode = ''' nameInCode ''';'];
-    execute(conn, sqlquery);    
+    nameInCode = currVarNode.Text(1:spaceIdx-1);  
     currVarNode.NodeData.UUID = allVarUUID;    
     currVarNode.Text = [nameInCode ' (' allVarUUID ')'];
 end
 
-% Set out of date for PR & its VR
-% refreshDigraph(fig);
-setObjsOutOfDate(fig, currFcnUUID, true, true);
+% Set out of date for downstream objects
+if isOut
+
+else
+    setObjsOutOfDate(fig, currFcnUUID, true, true);
+end
 
 if isequal(anType,'Current')
     selectAnalysisButtonPushed(fig);
@@ -162,6 +172,7 @@ if isequal(anType,'Current')
 end
 
 %% Update the digraph
-toggleDigraphCheckboxValueChanged(fig);
+renderGraph(fig);
+% toggleDigraphCheckboxValueChanged(fig);
 
 disp('Finished assigning variable!');

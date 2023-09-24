@@ -16,9 +16,9 @@ function []=assignVariableButtonPushed(src,allVarUUID)
 % Case 2: Front end: name in code & VR name on node. Back end: PR & VR record with name
 %   - update VR_ID in record (find with prev VR). Update node text.
 
-%% NOTE: built-in isdag(G) to check if there are cycles in the graph! May be faster than getting run list to do this?
+%% NOTE: HERE, CHECK IF THE VR IS HARD-CODED. IF SO, SET OUTOFDATE TO 0.
 
-global conn;
+global conn globalG;
 
 disp(['Assigning variable!']);
 fig=ancestor(src,'figure','toplevel');
@@ -69,7 +69,7 @@ if isempty(instanceID)
     if ~isequal(a,'Yes')
         return;
     end
-    figure(fig);
+    figure(fig);      
     varStruct = createNewObject(true, 'Variable', allNode.Text, abstractID, '', true);
     allVarUUID = varStruct.UUID;
     abstractUUID = genUUID(type, abstractID);
@@ -95,9 +95,9 @@ prevVarUUID = currVarNode.NodeData.UUID;
 
 anVR = {};
 if isOut
-    anVR = getAnalysis(allVarUUID);
+    anVR = getObjs(allVarUUID,'AN');
 end
-anPR = getAnalysis(currFcnUUID);
+anPR = getObjs(currFcnUUID,'AN');
 anList = unique([anPR; anVR],'stable');
 
 Current_Analysis = getCurrent('Current_Analysis');
@@ -117,13 +117,12 @@ if ~isequal(anList,{Current_Analysis})
         % Need to create new versions of this variable (if output) and all
         % downstream PR's and their output variables (and inputs where
         % needed).
-        [renamedList, oldList] = newObjVersions(currFcnUUID, anList);
-        currFcnIdx = ismember(oldList,currFcnUUID);
-        currFcnUUID = renamedList(currFcnIdx);
-        allVarIdx = ismember(oldList, allVarUUID);
-        allVarUUID = renamedList(allVarIdx);
-        prevVarIdx = ismember(oldList,prevVarUUID);
-        prevVarUUID = renamedList(prevVarIdx);
+        nodes = getReachableNodes(globalG, currFcnUUID);
+        anList(ismember(anList,Current_Analysis)) = []; % Remove the current analysis from this list.
+        % Remove all projects, and all other analyses from being copied        
+        nodes(ismember(nodes,anList)) = [];
+        nodes(contains(nodes,'PJ')) = [];
+        copyToNew(nodes);
 
         anList = Current_Analysis;
 
@@ -131,22 +130,20 @@ if ~isequal(anList,{Current_Analysis})
 end
 
 %% Add the variable to the function
+linkObjs(allVarUUID, Current_Analysis);
 if isempty(prevVarUUID)
     if isOut
         [success, msg] = linkObjs(currFcnUUID, allVarUUID); % Output variable        
     else
         [success, msg] = linkObjs(allVarUUID, currFcnUUID);        
     end
-    % if ~success
-    %     disp(msg);
-    %     return;
-    % end
     currVarNode.NodeData.UUID = allVarUUID;    
     nameInCode = currVarNode.Text;
     sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''' AND NameInCode = ''NULL'';'];    
     execute(conn, sqlquery);
     currVarNode.Text = [currVarNode.Text ' (' allVarUUID ')'];
 else
+    unlinkObjs(prevVarUUID, Current_Analysis);
     spaceIdx = strfind(currVarNode.Text,' '); % Should only be one space.
     nameInCode = currVarNode.Text(1:spaceIdx-1);
     sqlquery = ['UPDATE ' tablename ' SET VR_ID = ''' allVarUUID ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' prevVarUUID ''' AND NameInCode = ''' nameInCode ''';'];
@@ -156,8 +153,8 @@ else
 end
 
 % Set out of date for PR & its VR
-refreshDigraph(fig);
-setPR_VROutOfDate(fig, currFcnUUID, true, true);
+% refreshDigraph(fig);
+setObjsOutOfDate(fig, currFcnUUID, true, true);
 
 if isequal(anType,'Current')
     selectAnalysisButtonPushed(fig);

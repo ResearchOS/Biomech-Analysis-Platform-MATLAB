@@ -306,6 +306,6 @@ if any(subjectIdx)
 end
 
 % This does not work for VR's from LG yet. No need at the moment
-% setPR_VROutOfDate(fig, uuid, false, false);
+setObjsOutOfDate(fig, uuid, false, false);
 
 toc;

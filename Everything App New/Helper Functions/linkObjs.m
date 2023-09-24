@@ -10,6 +10,7 @@ global conn globalG;
 success = true; % Initialize that this is not a duplicate entry.
 msg = '';
 
+%% Ensure leftObjs & rightObjs are in the proper format.
 if isempty(leftObjs) || isempty(rightObjs)
     return;
 end
@@ -49,6 +50,7 @@ end
 
 assert(length(leftObjs)==length(rightObjs));
 
+%% Get the table and column names
 tablenames = sqlfind(conn,'');
 tablenames = cellstr(tablenames.Table);
 
@@ -80,26 +82,21 @@ if contains(col1,type2)
     leftObjs = tmpR;
     rightObjs = tmpL;
 end
-% anUUID = getCurrent('Current_Analysis');
+
+%% Link the objects
 for i=1:length(leftObjs)
     sqlquery = ['INSERT INTO ' tablename ' (' col1 ', ' col2 ') VALUES ',...
         '(''' leftObjs{i} ''', ''' rightObjs{i} ''');'];
     type1 = deText(leftObjs{i});
     type2 = deText(rightObjs{i});
     assert(contains(col1,type1) && contains(col2, type2)); % Check that things are being put in the proper column.
-
-    % undoquery = undoRedoCommand(sqlquery);
-    % undoquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
-    try        
-        % if isempty(anUUID)
-        %     return;
-        % end
+    
+    try                
         tmpG = globalG;
-        tmpG = addedge(tmpG, leftObjs{i}, rightObjs{i});
+        tmpG = addedge(tmpG, rightObjs{i},leftObjs{i});
         % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH          
         if ~isdag(tmpG)
-            success = false;
-            % execute(conn, undoquery);
+            success = false;            
             msg = ['Cannot link ' leftObjs{i} ' and ' rightObjs{i} ' because it forms a cyclic graph'];
             return;
         else % If there are no cycles, add the link to the SQL database and update the globalG.

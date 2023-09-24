@@ -214,7 +214,7 @@ end
 if headless
     fig = '';
 end
-setPR_VROutOfDate(fig, instUUID, false, false);
+setObjsOutOfDate(fig, instUUID, false, false);
 
 %% NOTE: AFTER A PROCESS FUNCTION FINISHES RUNNING, NEED TO CHANGE THE 'DATEMODIFIED' METADATA FOR THE VARIABLES' JSON FILES!
 modifyVarsDate(instStruct.UUID); % When setting "OutOfDate" to false, this does NOT get recursively applied to up or downstream objects.

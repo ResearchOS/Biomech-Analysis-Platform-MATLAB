@@ -19,7 +19,7 @@ outOfDateBool = handles.Process.outOfDateCheckbox.Value;
 
 uuid = selNode.NodeData.UUID;
 
-setPR_VROutOfDate(fig, uuid, outOfDateBool, true);
+setObjsOutOfDate(fig, uuid, outOfDateBool, true);
 
 toggleDigraphCheckboxValueChanged(fig);
 

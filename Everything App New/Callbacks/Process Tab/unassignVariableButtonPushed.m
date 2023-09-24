@@ -78,7 +78,7 @@ elseif isequal(parentNode.Text(1:6),'setArg')
 end
 
 % Set out of date for PR & its VR
-setPR_VROutOfDate(fig, currFcnUUID, true);
+setObjsOutOfDate(fig, currFcnUUID, true);
 
 %% Update the digraph
 toggleDigraphCheckboxValueChanged(fig);

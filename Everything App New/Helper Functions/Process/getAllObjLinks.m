@@ -2,11 +2,14 @@ function [G] = getAllObjLinks(remTypes, inclExcl)
 
 %% PURPOSE: RETURN A GRAPH WHERE EACH NODE IS AN OBJECT TYPE, AND THE EDGES ARE JUST THE CONNECTIONS BETWEEN THEM.
 
-global conn;
+global conn globalG;
 
 if nargin==0
     remTypes = {};
 end
+
+% Exclude the SpecifyTrials because it's abstract
+remTypes = [remTypes; {'ST'}];
 
 if nargin<2
     inclExcl = 'excl'; % By default, specify the types to exclude.
@@ -19,7 +22,28 @@ tablenames = tablenames.Table;
 tablenames(~contains(cellstr(tablenames),types)) = []; % Only the 'types' tables.
 tablenames(contains(tablenames,remTypes)) = []; % Only the desired types
 
-array = cell(0,2);
+%% Get all of the nodes
+allTypes = getTypes();
+allTypes(contains(allTypes,remTypes)) = [];
+isInstance = true;
+Name = {};
+OutOfDate = [];
+for i=1:length(allTypes)
+
+    type = allTypes{i}; 
+    tablename = getTableName(type, isInstance);
+    sqlquery = ['SELECT UUID, OutOfDate FROM ' tablename];
+    t = fetch(conn, sqlquery);
+    t = table2MyStruct(t);
+    Name = [Name; t.UUID];
+    OutOfDate = [OutOfDate; t.OutOfDate];
+
+end
+
+%% Get all of the edges
+EndNodes = cell(0,2);
+NameInCode = {};
+Subvariable = {};
 for i=1:length(tablenames)
 
     tablename = tablenames{i};
@@ -35,7 +59,7 @@ for i=1:length(tablenames)
     col1 = [type1 '_ID'];
     col2 = [type2 '_ID'];
 
-    sqlquery = ['SELECT ' col1 ', ' col2 ' FROM ' tablename];
+    sqlquery = ['SELECT * FROM ' tablename];
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
     if isempty(fieldnames(t))
@@ -48,16 +72,40 @@ for i=1:length(tablenames)
     if ~iscell(t.(col1))
         t.(col1) = {t.(col1)};
         t.(col2) = {t.(col2)};
+        allCols = fieldnames(t);
+        allCols(ismember(allCols,{col1,col2})) = [];
+        for j=1:length(allCols)
+            t.(allCols{j}) = {t.(allCols{j})};
+        end
     end
 
     % Flip column order for VR & PR connections because they're in opposite order from other tables' columns.
     if ismember(tablename,{'VR_PR','PR_VR'})
-        array = [array; t.(col1), t.(col2)];
+        EndNodes = [EndNodes; t.(col1), t.(col2)];
     else
-        array = [array; t.(col2), t.(col1)];
+        EndNodes = [EndNodes; t.(col2), t.(col1)];
+    end
+
+    % NameInCode & Subvariable will only be for VR & PR connections. All
+    % other object types, this column will just be empty.
+    if isfield(t,'NameInCode')
+        NameInCode = [NameInCode; t.NameInCode];
+    else
+        NameInCode = [NameInCode; repmat({''},length(t.(col1)),1)];
+    end
+    if isfield(t,'Subvariable')
+        Subvariable = [Subvariable; t.Subvariable];
+    else
+        Subvariable = [Subvariable; repmat({''},length(t.(col1)),1)];
     end
 
 end
 
-G = digraph(array(:,1),array(:,2));
-G.Nodes.PrettyName = getName(G.Nodes.Name);
+%% Construct the digraph
+nodeTable = table(Name, OutOfDate);
+edgeTable = table(EndNodes);
+
+globalG = digraph(edgeTable, nodeTable);
+globalG.Edges.NameInCode = NameInCode;
+globalG.Edges.Subvariable = Subvariable;
+G = globalG;

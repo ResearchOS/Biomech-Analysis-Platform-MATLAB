@@ -15,7 +15,7 @@ if isequal(abstractID,repmat('0',1,length(abstractID)))
     return; % Cannot delete the 'ALL' view.
 end
 
-anList = getAnalysis(uuid);
+anList = getAnalyses(uuid);
 Current_Analysis = getCurrent('Current_Analysis');
 unlinkObjs(Current_Analysis, uuid);
 

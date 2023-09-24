@@ -40,4 +40,4 @@ if ~proceed
 end
 
 %% Set outOfDate
-setPR_VROutOfDate(fig, selUUID, false, true);
+setObjsOutOfDate(fig, selUUID, false, true);

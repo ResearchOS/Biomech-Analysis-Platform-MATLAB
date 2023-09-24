@@ -79,7 +79,7 @@ for i=1:length(leftObjs)
     sqlquery = ['DELETE FROM ' tablename ' WHERE ' col1 ' = ''' leftObjs{i} ''' AND ' col2 ' = ''' rightObjs{i} ''';'];
     try
         execute(conn, sqlquery);
-        globalG = rmedge(globalG, leftObjs{i}, rightObjs{i});
+        globalG = rmedge(globalG, rightObjs{i}, leftObjs{i});
     catch e
         disp(e.message);
     end

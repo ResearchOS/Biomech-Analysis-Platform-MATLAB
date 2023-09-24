@@ -217,7 +217,7 @@ createJoinTable_VRPR = ['CREATE TABLE XXX_YYY (',...
 % Except for VR_PR and PR_VR, the left column is the parent, the right
 % column is the child.
 objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},...
-    {'PR','VR'},{'VR','PR'},{'AN','VW'},{'AN','LG'},{'VR','LG'},{'AN','ST'}};
+    {'PR','VR'},{'VR','PR'},{'AN','VW'},{'AN','LG'},{'VR','LG'},{'AN','ST'},{'AN','VR'}};
 modifiedNames = {};
 for i=1:length(objAbbrevs)
     abbrevs = objAbbrevs{i};

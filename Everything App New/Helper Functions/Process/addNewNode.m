@@ -29,9 +29,9 @@ assignContextMenu(newNode,handles);
 
 allUITrees = [handles.Process.allAnalysesUITree; handles.Process.allGroupsUITree; handles.Process.allProcessUITree; handles.Process.allVariablesUITree];
 uiTree = getUITreeFromNode(newNode);
-if isequal(type,'PG') && ~ismember(uiTree, allUITrees)
-    createProcessGroupNode(newNode, ordStruct);
-end
+% if isequal(type,'PG') && ~ismember(uiTree, allUITrees)
+%     createProcessGroupNode(newNode, ordStruct);
+% end
 
 if ~ismember(parent,allUITrees)
     return; % No sorting needed.

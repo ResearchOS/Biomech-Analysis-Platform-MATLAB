@@ -23,9 +23,13 @@ if isempty(name)
 end
 
 if isempty(globalG.Edges)
+    G = digraph;
     return;
 end
-names = globalG.Nodes.Name;
+
+fcnsG = getFcnsOnlyDigraph(globalG);
+
+names = fcnsG.Nodes.Name;
 if isequal(name,'ALL')
     inclNodes = names; % Keep all nodes.
 end
@@ -44,7 +48,7 @@ selNames = names(selIdx);
 
 
 exclNodesIdx = ~ismember(names,inclNodes);
-viewG = rmnode(globalG,names(exclNodesIdx));
+viewG = rmnode(fcnsG,names(exclNodesIdx));
 newSelNamesIdx = ismember(viewG.Nodes.Name,selNames);
 
 markerSize = repmat(minMarkerSize,length(newSelNamesIdx),1); % Change markerSize length in case nodes are excluded.

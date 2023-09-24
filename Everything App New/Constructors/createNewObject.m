@@ -11,6 +11,8 @@ function [objStruct, absStruct] = createNewObject(instanceBool, class, name, abs
 % abstract). 2nd output argument is always the abstract. This is helpful
 % when creating instance & abstract at the same time.
 
+global globalG;
+
 assert(islogical(instanceBool) && isscalar(instanceBool)); % Check that it's a boolean
 
 if nargin==0
@@ -53,54 +55,18 @@ if createAbstract
     objStruct = initializeCommonStructFields(false, class, name, abstractID, instanceID);
     absStruct = feval(['create' class 'Struct'],false, objStruct, saveObj);
     if saveObj
-        saveClass(absStruct);
+        saveClass(absStruct);        
     end
     [type,abstractID] = deText(absStruct.UUID);
-    objStruct = absStruct;    
 end
 
 if instanceBool
     objStruct = initializeCommonStructFields(true, class, name, abstractID, instanceID);
     instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);    
     if saveObj
-        saveClass(instStruct);                
-    end
-    objStruct = instStruct;
+        saveClass(instStruct);         
+    end    
 end
-
-if ~saveObj || ~instanceBool
-    return;
-end
-
-%% Link objects. If any getCurrent returns empty, linking fails.
-% Is there ever a reason for these classes not to link to current? If so,
-% add another flag.
-% if isequal(class,'Project')    
-%     Current_User = getCurrent('Current_User');
-%     try
-%         linkObjs(instStruct.UUID, instStruct.Current_Analysis.(Current_User)); % PJ_AN
-%     catch e
-%         if ~contains(e.message,'UNIQUE constraint failed')
-%             error(e);
-%         end
-%     end
-% end
-% 
-% if isequal(class,'Analysis')
-%     Current_User = getCurrent('Current_User');
-%     try
-%         linkObjs(instStruct.UUID, instStruct.Current_View.(Current_User)); % AN_VW
-%     catch e
-%         if ~contains(e.message,'UNIQUE constraint failed')
-%             error(e);
-%         end
-%     end
-%     linkObjs(instStruct.UUID, getCurrent('Current_Project')); % PJ_AN
-% end
-% 
-% if isequal(class,'View')    
-%     linkObjs(instStruct.UUID, getCurrent('Current_Analysis')); % AN_VW
-% end
 
 end
 

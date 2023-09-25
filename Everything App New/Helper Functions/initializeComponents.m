@@ -698,4 +698,5 @@ handles.Process.ContextMenu.CopyToNew=uimenu(handles.Process.ContextMenuTop,'Tex
 handles.Process.ContextMenu.CopyUUID=uimenu(handles.Process.ContextMenuTop,'Text','Copy UUID','MenuSelectedFcn',{@copyText});
 handles.Process.ContextMenu.PasteUUID=uimenu(handles.Process.ContextMenuTop,'Text','Paste UUID','MenuSelectedFcn',{@pasteText});
 handles.Process.ContextMenu.ShowNeighbors=uimenu(handles.Process.ContextMenuTop,'Text','Show Neighbors','MenuSelectedFcn',{@showNeighbors});
+handles.Process.ContextMenu.EditSubvar=uimenu(handles.Process.ContextMenuTop,'Text','Edit Subvar','MenuSelectedFcn',{@editSubvar});
 % handles.Process.ContextMenu.OpenAbstractJSON=uimenu(handles.Process.ContextMenuTop,'Text','Open Abstract JSON','MenuSelectedFcn',{@openPIJSONFile});

@@ -91,14 +91,22 @@ for i=1:length(leftObjs)
     type2 = deText(rightObjs{i});
     assert(contains(col1,type1) && contains(col2, type2)); % Check that things are being put in the proper column.
     
-    try                
+    try
         tmpG = globalG;
-        if ~all(ismember({type1, type2},{'PR','VR'}))
-            tmpG = addedge(tmpG, rightObjs{i}, leftObjs{i});
-        else
-            tmpG = addedge(tmpG, leftObjs{i}, rightObjs{i});
+        % Edge Table
+        NameInCode = {''};
+        Subvariable = {''};
+        EndNodes = [rightObjs(i) leftObjs(i)]; 
+        if all(ismember({type1, type2},{'PR','VR'}))                      
+            EndNodes = [leftObjs(i) rightObjs(i)]; 
         end
-        % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH          
+        % Check that we are never adding any new nodes here, just make new edges.
+        assert(all(ismember(EndNodes(:,1),globalG.Nodes.Name)));
+        assert(all(ismember(EndNodes(:,2),globalG.Nodes.Name)));
+        edgeTable = table(EndNodes, NameInCode, Subvariable);
+        tmpG = addedge(tmpG, edgeTable);
+        
+        % Check that this new edge does not result in a cyclic graph.
         if ~isdag(tmpG)
             success = false;            
             msg = ['Cannot link ' leftObjs{i} ' and ' rightObjs{i} ' because it forms a cyclic graph'];

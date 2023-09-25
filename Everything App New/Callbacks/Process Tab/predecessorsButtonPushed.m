@@ -2,10 +2,12 @@ function []=predecessorsButtonPushed(src,event)
 
 %% PURPOSE: ADD OR REMOVE PREDECESSORS IN THE VIEW
 
+global globalG viewG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-G = getappdata(fig,'viewG');
+G = viewG;
 markerSize = getappdata(fig,'markerSize');
 selIdx = markerSize == 8;
 
@@ -20,11 +22,11 @@ if contains(handles.Process.predecessorsButton.Text,'-')
     add = false;
 end
 
-allG = getappdata(fig,'digraph');
+allG = getFcnsOnlyDigraph(globalG);
 selNodes = G.Nodes.Name(selIdx);
 
 prop = true;
-a = questdlg('Propagate the changes upstream?','Propagate?','Yes','No','Cancel','Cancel');
+a = questdlg('Get all upstream nodes?','Propagate?','Yes','No','Cancel','Cancel');
 if isempty(a) || isequal(a,'Cancel')
     return;
 end
@@ -32,30 +34,28 @@ if isequal(a,'No')
     prop = false;
 end
 
-preds = {};
-for i=1:length(selNodes)
-    preds = [preds; predecessors(allG,selNodes{i})];
-end
+if ~prop
+    preds = {};
+    for i=1:length(selNodes)
+        preds = [preds; predecessors(allG,selNodes{i})];
+    end
+    preds(ismember(preds, viewG.Nodes.Name)) = [];
 
-predNames = getName(preds);
+    predNames = getName(preds);
 
-predStr = cell(size(preds));
-for i=1:length(preds)
-    predStr{i} = [predNames{i} ' (' preds{i}];
-end
+    predStr = cell(size(preds));
+    for i=1:length(preds)
+        predStr{i} = [predNames{i} ' (' preds{i}];
+    end
+    [idx, tf] = listdlg('ListString',predStr,'PromptString',['Select PR to ' str],'SelectionMode','multiple');
+    if ~tf
+        return;
+    end
 
-[idx, tf] = listdlg('ListString',predStr,'PromptString',['Select PR to ' str],'SelectionMode','multiple');
-if ~tf
-    return;
-end
+    preds = preds(idx);
 
-preds = preds(idx);
-
-if prop
-    R = getDeps(allG, 'up', preds);
-    predsIdx = ismember(allG.Nodes.Name,preds);
-    predNodesIdx = any(logical(R(predsIdx,:)),1); % The indices of the selected nodes
-    preds = allG.Nodes.Name(predNodesIdx);
+elseif prop
+    preds = getReachableNodes(allG, selNodes, 'up');
 end
 
 if add

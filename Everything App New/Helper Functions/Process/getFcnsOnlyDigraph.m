@@ -59,7 +59,6 @@ end
 
 %% Append the non-PR and VR objects to Name and EndNodes.
 nonVRedgeIdx = ~(contains(G.Edges.EndNodes(:,1),'VR') | contains(G.Edges.EndNodes(:,2),'VR'));
-% otherObjIdx = ~ismember(G.Edges.EndNodes(:,1),EndNodes(:,1)) & ~ismember(G.Edges.EndNodes(:,2),EndNodes(:,2));
 EndNodes = [EndNodes; G.Edges.EndNodes(nonVRedgeIdx,:)];
 Name = [Name; repmat({''},sum(nonVRedgeIdx),1)];
 

@@ -20,8 +20,8 @@ sqlquery = struct2SQL(tablename, classStruct, 'INSERT');
 execute(conn, sqlquery);
 
 if ~isempty(instanceID)
-    Name = instStruct.UUID;
-    OutOfDate = instStruct.OutOfDate;
+    Name = {classStruct.UUID};
+    OutOfDate = classStruct.OutOfDate;
     nodeProps = table(Name, OutOfDate);
     globalG = addnode(globalG, nodeProps);
 end

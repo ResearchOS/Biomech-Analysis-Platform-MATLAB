@@ -76,6 +76,10 @@ if ~ismember('PrettyName',G.Nodes.Properties.VariableNames)
     G.Nodes.PrettyName = getName(G.Nodes.Name);
 end
 
+if ~ismember('PrettyName',G.Edges.Properties.VariableNames) && ismember('Name',G.Edges.Properties.VariableNames)
+    G.Edges.PrettyName = getName(G.Edges.Name);
+end
+
 if ~isPopup
     checkboxVal = handles.Process.prettyVarsCheckbox.Value;
 elseif isPopup

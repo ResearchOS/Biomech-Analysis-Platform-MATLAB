@@ -2,7 +2,7 @@ function []=digraphAxesButtonDownFcn(src, uuid)
 
 %% PURPOSE: SELECT OR DE-SELECT A NODE IN THE UI AXES
 
-global globalG;
+global globalG viewG popupG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -11,14 +11,14 @@ isMulti = false;
 if isequal(fig.Name,'pgui')
     ax = handles.Process.digraphAxes;
     isMulti = handles.Process.multiSelectButton.Value;
-    G = getappdata(fig,'viewG');
     popupAx = '';
     isPopup = false;
+    G = viewG;
 else
     ax = findobj(fig,'Type','Axes');
-    popupAx = ax;
-    G = ax.UserData.G;
+    popupAx = ax;    
     isPopup = true;
+    G = popupG;
 end
 
 if isempty(ax.Children)
@@ -81,9 +81,10 @@ else
         uuid = G.Nodes.Name{idx};
     end
     colors = repmat([0 0.447 0.741], length(xdata), 1);
-    colors(markerSize==8,:) = repmat([0 0 0],sum(markerSize==8),1);
-
+    colors(markerSize==8,:) = repmat([0 0 0],sum(markerSize==8),1);    
 end
+
+setappdata(fig,'markerSize',markerSize);
 
 renderGraph(fig, G, markerSize, colors, [], popupAx);
 

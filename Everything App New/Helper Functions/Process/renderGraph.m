@@ -2,7 +2,7 @@ function [] = renderGraph(src, G, markerSize, color, edgeID, popupAx)
 
 %% PURPOSE: RENDER THE DIGRAPH IN THE UI AXES
 
-global conn viewG;
+global conn viewG popupG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -17,7 +17,11 @@ else
 end
 
 if nargin==1 || isempty(G)
-    G = viewG;
+    if isPopup
+        G = popupG;
+    else
+        G = viewG;
+    end
 end
 
 if exist('markerSize','var')~=1 || isempty(markerSize)
@@ -40,13 +44,19 @@ if ~exist('color','var') || isempty(color)
 end
 
 % The nodes that haven't had all of their variables filled in.
-unfinishedIdx = getUnfinishedFcns(G); % FIX THIS AFTER RE-IMPLEMENTING NAMES IN CODE
+% unfinishedIdx = getUnfinishedFcns(G); % FIX THIS AFTER RE-IMPLEMENTING NAMES IN CODE
+unfinishedIdx = false(size(markerSize));
 color(unfinishedIdx,:) = repmat(rgb('bright orange'),sum(unfinishedIdx),1);
 markerSize(unfinishedIdx,:) = repmat(6,sum(unfinishedIdx),1);
 
 % The selected node.
 if any(markerSize==8)
     color(markerSize==8,:) = repmat([0 0 0],sum(markerSize==8),1); % Black
+end
+
+if isPopup
+    vrIdx = contains(G.Nodes.Name,'VR');
+    color(vrIdx,:) = repmat(rgb('red'),sum(vrIdx),1);
 end
 
 % Reset the axes.
@@ -66,24 +76,33 @@ if ~ismember('PrettyName',G.Nodes.Properties.VariableNames)
     G.Nodes.PrettyName = getName(G.Nodes.Name);
 end
 
-h  = plot(ax,G,'NodeLabel',G.Nodes.PrettyName,'Interpreter','none','PickableParts','none','HitTest','on');
-
-h.MarkerSize = markerSize;
-h.NodeColor = color;
-h.EdgeColor = defaultColor;
-h.LineWidth = 0.5;
-
 if ~isPopup
     checkboxVal = handles.Process.prettyVarsCheckbox.Value;
 elseif isPopup
     checkboxVal = prettyVars;
 end
 
-if checkboxVal
-    edgenames = G.Edges.PrettyName;
+if ~isPopup
+    nodeNames = G.Nodes.PrettyName;
+    if checkboxVal
+        edgenames = G.Edges.PrettyName;
+    else
+        edgenames = G.Edges.Name;
+    end
 else
-    edgenames = G.Edges.Name;
+    if checkboxVal
+        nodeNames = G.Nodes.PrettyName;
+    else
+        nodeNames = G.Nodes.Name;
+    end
 end
+
+h  = plot(ax,G,'NodeLabel',nodeNames,'Interpreter','none','PickableParts','none','HitTest','on');
+
+h.MarkerSize = markerSize;
+h.NodeColor = color;
+h.EdgeColor = defaultColor;
+h.LineWidth = 0.5;
 
 % If a node is selected, highlight its in and out edges.
 if any(markerSize==8)
@@ -94,14 +113,20 @@ if any(markerSize==8)
         ins = [ins; inedges(G, G.Nodes.Name(idxNums(i)))];
         outs = [outs; outedges(G, G.Nodes.Name(idxNums(i)))];
     end
-
-    highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);
-    labeledge(h, ins, edgenames(ins));        
+    
+    highlight(h, 'Edges',ins, 'EdgeColor',rgb('grass green'),'LineWidth',2);     
     highlight(h, 'Edges', outs, 'EdgeColor',rgb('brick red'),'LineWidth',2);
-    labeledge(h, outs, edgenames(outs));
+    if ~isPopup
+        labeledge(h, ins, edgenames(ins));
+        labeledge(h, outs, edgenames(outs));
+    end
 end
 
 %% Change line style to '--' for edges (variables) that are outdated.
+if isPopup
+    return;
+end
+
 sqlquery = ['SELECT UUID, OutOfDate FROM Variables_Instances'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
@@ -123,9 +148,9 @@ if exist('edgeID','var') && ~isempty(edgeID)
     labeledge(h, edgeIdx, edgenames(edgeIdx));
 end
 
-if ~isPopup
-    setappdata(fig,'viewG',G);
-    setappdata(fig,'markerSize',markerSize);
-end
+% if ~isPopup
+%     viewG = G;
+%     % setappdata(fig,'markerSize',markerSize);
+% end
 
 drawnow;

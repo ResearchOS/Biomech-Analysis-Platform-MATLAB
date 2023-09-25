@@ -7,6 +7,10 @@ global conn viewG popupG;
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+if ~handles.Process.toggleDigraphCheckbox.Value
+    return;
+end
+
 if nargin==6 && ~isempty(popupAx)    
     isPopup = true;
     popupHandles = getappdata(popupAx.Parent,'handles');

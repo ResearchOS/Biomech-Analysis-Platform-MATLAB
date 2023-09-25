@@ -27,7 +27,8 @@ end
 
 % 3. Get rid of unwanted object types. Important that this is
 % here to get the correct results for fillAnalysisUITree
-rmIdx = contains(orderedEdges(:,1),{'VR','VW','LG'}) | contains(orderedEdges(:,2),{'VR','VW','LG'});
+exclObjs = {'VR','VW','LG','ST'};
+rmIdx = contains(orderedEdges(:,1),exclObjs) | contains(orderedEdges(:,2),exclObjs);
 orderedEdges(rmIdx,:) = [];
 
 % Reorder the children objects (that are also parents) that are out of

@@ -160,11 +160,12 @@ else
 end
 
 % Set out of date for downstream objects
-if isOut
-
-else
-    setObjsOutOfDate(fig, currFcnUUID, true, true);
-end
+setObjsOutOfDate(fig, currFcnUUID, true, true);
+% if isOut
+% 
+% else
+% 
+% end
 
 if isequal(anType,'Current')
     selectAnalysisButtonPushed(fig);

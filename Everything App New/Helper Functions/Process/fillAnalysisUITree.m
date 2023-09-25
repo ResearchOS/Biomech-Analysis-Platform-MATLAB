@@ -14,16 +14,10 @@ Current_Analysis = getCurrent('Current_Analysis');
 
 %% The nodes in the current analysis
 tmpG = getSubgraph(globalG, Current_Analysis, 'up'); % Everything within the current analysis.
-order = toposort(tmpG);
-orderedNodes = tmpG.Nodes.Name(order);
-nodeIdx = contains(orderedNodes,{'PG','PR','AN'});
-rmNodes = orderedNodes(~nodeIdx);
-orderedNodes = orderedNodes(nodeIdx);
-tmpG = rmnode(tmpG, rmNodes);
 
 %% Get the list of functions & groups in the current analysis
-tmpG.Nodes.Name = orderedNodes;
-orderedEdges = orderedList2Struct(tmpG); % Nodes are in the topologically sorted order!
+% Returns edges only between PG, PR, AN objects.
+orderedEdges = orderedList2Struct(tmpG);
 
 uiTree = handles.Process.analysisUITree;
 fillAN_PG_UITree(uiTree, handles, orderedEdges);

@@ -62,6 +62,10 @@ if isempty(G.Edges)
     return;
 end
 
+if ~ismember('PrettyName',G.Nodes.Properties.VariableNames)
+    G.Nodes.PrettyName = getName(G.Nodes.Name);
+end
+
 h  = plot(ax,G,'NodeLabel',G.Nodes.PrettyName,'Interpreter','none','PickableParts','none','HitTest','on');
 
 h.MarkerSize = markerSize;

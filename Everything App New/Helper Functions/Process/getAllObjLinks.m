@@ -103,9 +103,7 @@ end
 
 %% Construct the digraph
 nodeTable = table(Name, OutOfDate);
-edgeTable = table(EndNodes);
+edgeTable = table(EndNodes, NameInCode, Subvariable);
 
 globalG = digraph(edgeTable, nodeTable);
-globalG.Edges.NameInCode = NameInCode;
-globalG.Edges.Subvariable = Subvariable;
 G = globalG;

@@ -1,4 +1,4 @@
-function [G2] = getFcnsOnlyDigraph(G)
+function [G2] = getFcnsOnlyDigraph(G, types)
 
 %% PURPOSE: REMOVE ALL NODES THAT ARE NOT VR OR PR. CONNECTS PR TO PR, NAMES THE EDGES BY THE VR UUID
 % USES THE OUTPUT OF getSubgraph
@@ -6,7 +6,9 @@ function [G2] = getFcnsOnlyDigraph(G)
 
 
 %% 1. Remove all nodes that are not PR or VR.
-types = {'VR','PR'};
+if nargin==1
+    types = {'VR','PR'};
+end
 
 remIdx = ~contains(G.Nodes.Name,types);
 remNodes = G.Nodes.Name(remIdx);
@@ -14,7 +16,6 @@ remNodes = G.Nodes.Name(remIdx);
 G = rmnode(G, remNodes);
 
 %% 2. Remove all VR nodes, replace them with edges between PR's.
-
 vrIdx = contains(G.Nodes.Name,{'VR'});
 vrNodes = G.Nodes.Name(vrIdx);
 
@@ -34,6 +35,7 @@ for nodeIdx=1:length(vrNodes)
         preds = {''};
     end
 
+    succs(contains(succs,'AN')) = [];
     if isempty(succs)
         noSuccs = true;
         succs = {''};
@@ -55,9 +57,15 @@ for nodeIdx=1:length(vrNodes)
 
 end
 
-%% Add the new edges, and remove the VR nodes (and associated edges) from the graph.
+%% Append the non-PR and VR objects to Name and EndNodes.
+nonVRedgeIdx = ~(contains(G.Edges.EndNodes(:,1),'VR') | contains(G.Edges.EndNodes(:,2),'VR'));
+% otherObjIdx = ~ismember(G.Edges.EndNodes(:,1),EndNodes(:,1)) & ~ismember(G.Edges.EndNodes(:,2),EndNodes(:,2));
+EndNodes = [EndNodes; G.Edges.EndNodes(nonVRedgeIdx,:)];
+Name = [Name; repmat({''},sum(nonVRedgeIdx),1)];
+
+%% Make a new digraph from the edges and nodes.
 edgeTable = table(EndNodes, Name);
-prIdx = contains(G.Nodes.Name,{'PR'});
-Name = G.Nodes.Name(prIdx);
+nonVRIdx = contains(G.Nodes.Name,types(~ismember(types,'VR')));
+Name = G.Nodes.Name(nonVRIdx);
 nodeTable = table(Name);
 G2 = digraph(edgeTable,nodeTable);

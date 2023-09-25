@@ -2,6 +2,8 @@ function []=digraphAxesButtonDownFcn(src, uuid)
 
 %% PURPOSE: SELECT OR DE-SELECT A NODE IN THE UI AXES
 
+global globalG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -125,9 +127,8 @@ if ~listClicked
 end
 
 % Update successors & predecessors button
-Gall = getappdata(fig,'digraph');
-succ = successors(Gall,uuid);
-pred = predecessors(Gall,uuid);
+succ = successors(globalG,uuid);
+pred = predecessors(globalG,uuid);
 
 signS = '+';
 signP = '+';

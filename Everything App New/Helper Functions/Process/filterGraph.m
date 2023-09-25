@@ -57,3 +57,5 @@ markerSize = repmat(minMarkerSize,length(newSelNamesIdx),1); % Change markerSize
 markerSize(newSelNamesIdx) = maxMarkerSize;
 
 setappdata(fig,'markerSize',markerSize);
+
+G = viewG;

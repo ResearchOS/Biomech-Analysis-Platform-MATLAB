@@ -6,6 +6,8 @@ function [] = analysisUITreeSelectionChanged(src, digraphUUID)
 % If a function node is selected, update the groupUITree (with run list if part of a
 % group, or just the function's UUID if not) AND update the functionUITree
 
+global globalG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -41,4 +43,22 @@ elseif ~isempty(prUUID)
     checkSpecifyTrialsUITree(getST(prUUID), handles.Process.allSpecifyTrialsUITree);
 end
 
-fillProcessGroupUITree(fig, prUUID, pgUUID);
+%% The nodes in the current analysis
+tmpG = getSubgraph(globalG, pgUUID, 'up'); % Everything within the current analysis.
+
+%% Get the list of functions & groups in the current analysis
+% Returns edges only between PG, PR, AN objects.
+orderedEdges = orderedList2Struct(tmpG);
+
+uiTree = handles.Process.groupUITree;
+fillAN_PG_UITree(uiTree, handles, orderedEdges);
+
+% handles.Process.subtabCurrent.SelectedTab = handles.Process.currentGroupTab;
+drawnow;
+
+if isequal(abbrev,'PG')
+    return;
+end
+
+selectNode(uiTree, origUUID);
+fillCurrentFunctionUITree(fig, origUUID);

@@ -12,11 +12,23 @@ handles.Process.currentGroupLabel.Text = 'Current Group';
 if isequal(uiTree, handles.Process.groupUITree)
     selNode = handles.Process.analysisUITree.SelectedNodes;
     uuid = selNode.NodeData.UUID;
+    type = deText(uuid);
+    if ~isequal(type,'PG')
+        [~,list] = getUITreeFromNode(selNode);
+        if length(list)>2
+            selNode = list(2);
+        end
+        uuid = selNode.NodeData.UUID;        
+    end
     handles.Process.currentGroupLabel.Text = [selNode.Text ' ' uuid];
 elseif isequal(uiTree, handles.Process.functionUITree)
     selNode = handles.Process.groupUITree.SelectedNodes;
-    uuid = selNode.NodeData.UUID;
-    handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
+    uuid = selNode.NodeData.UUID;    
+    type = deText(uuid);
+    if isequal(type,'PR')
+       handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
+       return;
+    end    
 end
 
 h = gobjects(size(ordStruct));

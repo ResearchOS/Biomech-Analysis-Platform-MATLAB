@@ -27,8 +27,8 @@ markerSize = getappdata(fig,'markerSize');
 selIdx = ismember(markerSize,8);
 selUUIDs = G.Nodes.Name(selIdx);
 
-listOpts = {'Upstream','Downstream','Both','Selected Nodes Only'};
-a = listdlg('ListString',listOpts);
+listOpts = {'Upstream','Downstream','Both','Neighbors Only'};
+a = listdlg('ListString',listOpts,'SelectionMode','single','PromptString','Select the nodes to include in this view.');
 a = listOpts{a};
 if isempty(a)
     return;
@@ -44,7 +44,7 @@ end
 
 % Allow for multiple selections to seed the new view. Get all dependencies
 % in the specified direction.
-if ~isequal(a,'Selected Nodes Only')
+if ~isequal(a,'Neighbors Only')
     deps = getObjs(selUUIDs, 'PR', dir);
 else
     succs = successors(G, selUUIDs);

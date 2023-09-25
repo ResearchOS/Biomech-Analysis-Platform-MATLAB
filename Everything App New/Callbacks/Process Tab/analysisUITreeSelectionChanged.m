@@ -53,7 +53,6 @@ orderedEdges = orderedList2Struct(tmpG);
 uiTree = handles.Process.groupUITree;
 fillAN_PG_UITree(uiTree, handles, orderedEdges);
 
-% handles.Process.subtabCurrent.SelectedTab = handles.Process.currentGroupTab;
 drawnow;
 
 if isequal(abbrev,'PG')

@@ -57,8 +57,15 @@ fillAN_PG_UITree(uiTree, handles, orderedEdges);
 drawnow;
 
 if isequal(abbrev,'PG')
+    digraphAxesButtonDownFcn(src,'');
     return;
 end
 
 selectNode(uiTree, origUUID);
 fillCurrentFunctionUITree(fig, origUUID);
+
+%% Select the corresponding processing node in the graph.
+obj=get(fig,'CurrentObject');
+if ~isequal(class(obj),'matlab.ui.control.UIAxes')
+    digraphAxesButtonDownFcn(src, origUUID);
+end

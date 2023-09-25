@@ -93,7 +93,11 @@ for i=1:length(leftObjs)
     
     try                
         tmpG = globalG;
-        tmpG = addedge(tmpG, rightObjs{i},leftObjs{i});
+        if ~all(ismember({type1, type2},{'PR','VR'}))
+            tmpG = addedge(tmpG, rightObjs{i}, leftObjs{i});
+        else
+            tmpG = addedge(tmpG, leftObjs{i}, rightObjs{i});
+        end
         % CHECK TO MAKE SURE THIS DOES NOT RESULT IN A CYCLIC DIGRAPH          
         if ~isdag(tmpG)
             success = false;            

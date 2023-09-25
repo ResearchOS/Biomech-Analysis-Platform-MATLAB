@@ -2,6 +2,8 @@ function []=unassignVariableButtonPushed(src,event)
 
 %% PURPOSE: UNASSIGN VARIABLE FROM CURRENT PROCESSING FUNCTION
 
+global globalG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -11,6 +13,8 @@ currFcnNode = handles.Process.groupUITree.SelectedNodes;
 if isempty(currFcnNode)
     return;
 end
+
+currFcnUUID = currFcnNode.NodeData.UUID;
 
 % Current process UI tree
 processUITree=handles.Process.functionUITree; 
@@ -32,53 +36,39 @@ if isequal(parentNode,processUITree)
     return;
 end
 
-getSetArgIdxNum = str2double(parentNode.Text(isstrprop(parentNode.Text,'digit'))); % Number of this getArg or setArg
-
 if isequal(parentNode.Text(1:6),'getArg')
-    fldName = 'InputVariables';
-    absFldName = 'InputVariablesNamesInCode';
+    % fldName = 'InputVariables';
+    % absFldName = 'InputVariablesNamesInCode';
+    isOut = false;
 elseif isequal(parentNode.Text(1:6),'setArg')
-    fldName = 'OutputVariables';
-    absFldName = 'OutputVariablesNamesInCode';
+    % fldName = 'OutputVariables';
+    % absFldName = 'OutputVariablesNamesInCode';
+    isOut = true;
 end
 
-currFcnUUID = currFcnNode.NodeData.UUID;
-fcnStruct = loadJSON(currFcnUUID);
-
-[fcnType, fcnAbstractID, fcnInstanceID] = deText(currFcnUUID);
-absFcnUUID = genUUID(fcnType, fcnAbstractID);
-absFcnStruct = loadJSON(absFcnUUID);
-
-getSetArgIdx = [];
-for i=1:length(fcnStruct.(fldName))
-    if isequal(fcnStruct.(fldName){i}{1},getSetArgIdxNum)
-        getSetArgIdx = i;
-        break;
-    end
+%% Unlink the variable from the PR.
+preds = predecessors(globalG, currVarUUID);
+if isOut
+    unlinkObjs(currFcnUUID,currVarUUID);    
+else
+    unlinkObjs(currVarUUID, currFcnUUID);    
 end
-assert(~isempty(getSetArgIdx));
 
-argIdx = ismember(absFcnStruct.(absFldName){getSetArgIdx}(2:end),varNameInCode); % Get which argument this is.
-argIdx = [false; argIdx];
-fcnStruct.(fldName){getSetArgIdx}(argIdx) = {''};
-if isequal(fldName,'InputVariables')
-    fcnStruct.InputSubvariables{getSetArgIdx}(argIdx) = {''}; % Changing the variable, so the subvariable should be reset.
-end
-writeJSON(getJSONPath(fcnStruct), fcnStruct);
-
+currVarNode.Text = varNameInCode;
 currVarNode.NodeData.UUID = '';
-argTextSplit = strsplit(currVarNode.Text);
-currVarNode.Text = argTextSplit{1};
 
-%% Unlink the variable from the process function
-if isequal(parentNode.Text(1:6),'getArg')
-    unlinkObjs(currVarUUID, currFcnUUID);
-elseif isequal(parentNode.Text(1:6),'setArg')
-    unlinkObjs(currFcnUUID, currVarUUID);
-end
+%% Check if the previous variable should be removed from the current analysis
+anList = getObjs(preds, 'AN', 'down');
+Current_Analysis = getCurrent('Current_Analysis');
+if ~ismember(Current_Analysis,anList)
+    unlinkObjs(currVarUUID, Current_Analysis); % The unlinked variable is no longer part of this analysis.
+end 
 
 % Set out of date for PR & its VR
 setObjsOutOfDate(fig, currFcnUUID, true);
 
 %% Update the digraph
 toggleDigraphCheckboxValueChanged(fig);
+
+
+

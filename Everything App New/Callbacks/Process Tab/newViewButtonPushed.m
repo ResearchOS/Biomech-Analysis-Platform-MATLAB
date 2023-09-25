@@ -27,7 +27,7 @@ markerSize = getappdata(fig,'markerSize');
 selIdx = ismember(markerSize,8);
 selUUIDs = G.Nodes.Name(selIdx);
 
-listOpts = {'Upstream','Downstream','Both','Neighbors Only'};
+listOpts = {'Upstream','Downstream','Both','Neighbors Only','Empty'};
 a = listdlg('ListString',listOpts,'SelectionMode','single','PromptString','Select the nodes to include in this view.');
 a = listOpts{a};
 if isempty(a)
@@ -44,21 +44,23 @@ end
 
 % Allow for multiple selections to seed the new view. Get all dependencies
 % in the specified direction.
-if ~isequal(a,'Neighbors Only')
+if ~ismember(a,{'Neighbors Only','Empty'})
     deps = getObjs(selUUIDs, 'PR', dir);
-else
+elseif ~ismember(a,{'Empty'})
     succs = successors(G, selUUIDs);
     preds = predecessors(G, selUUIDs);
     deps = [selUUIDs; preds; succs];
 end
 
 % If nothing is selected, copy the view
-if isempty(selUUIDs)
+if isempty(selUUIDs) && ~isequal(a,'Empty')
     Current_View = getCurrent('Current_View');
     sqlquery = ['SELECT InclNodes FROM Views_Instances WHERE UUID = ''' Current_View ''';'];
     t = fetch(conn, sqlquery);
     t = table2MyStruct(t);
     deps = t.InclNodes;
+else
+    deps = {};
 end
 
 deps = unique(deps,'stable');

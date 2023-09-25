@@ -4,7 +4,7 @@ function [] = newViewButtonPushed(src,event)
 % From currently selected nodes? Ask if want downstream & upstream deps.
 % Copy current view entirely if nothing is selected?
 
-global conn;
+global conn globalG viewG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -21,13 +21,15 @@ uuid = viewStruct.UUID;
 Current_Analysis = getCurrent('Current_Analysis');
 linkObjs(uuid, Current_Analysis);
 
-G = getappdata(fig,'digraph');
+G = viewG;
 markerSize = getappdata(fig,'markerSize');
 
 selIdx = ismember(markerSize,8);
 selUUIDs = G.Nodes.Name(selIdx);
 
-a = questdlg('Which direction? Exit this window to abort','Select Direction','Upstream','Downstream','Both','Downstream');
+listOpts = {'Upstream','Downstream','Both','Selected Nodes Only'};
+a = listdlg('ListString',listOpts);
+a = listOpts{a};
 if isempty(a)
     return;
 end
@@ -42,16 +44,12 @@ end
 
 % Allow for multiple selections to seed the new view. Get all dependencies
 % in the specified direction.
-deps = {};
-for i=1:length(selUUIDs)
-    if ismember('up',dir)
-        [~,tmp] = getDeps(G,'up',selUUIDs{i});
-        deps = [deps; tmp; selUUIDs(i)];
-    end
-    if ismember('down',dir)
-        [~,tmp] = getDeps(G,'down',selUUIDs{i});
-        deps = [deps; tmp; selUUIDs(i)];
-    end
+if ~isequal(a,'Selected Nodes Only')
+    deps = getObjs(selUUIDs, 'PR', dir);
+else
+    succs = successors(G, selUUIDs);
+    preds = predecessors(G, selUUIDs);
+    deps = [selUUIDs; preds; succs];
 end
 
 % If nothing is selected, copy the view

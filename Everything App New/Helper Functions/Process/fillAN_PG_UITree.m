@@ -4,8 +4,8 @@ function []=fillAN_PG_UITree(uiTree, handles, ordStruct)
 
 % Delete all existing entries in current UI trees.
 delete(uiTree.Children);
-delete(handles.Process.functionUITree.Children);
-handles.Process.currentFunctionLabel.Text = 'Current Process';
+% delete(handles.Process.functionUITree.Children);
+% handles.Process.currentFunctionLabel.Text = 'Current Process';
 delete(handles.Process.groupUITree.Children);
 handles.Process.currentGroupLabel.Text = 'Current Group';
 
@@ -22,18 +22,22 @@ if isequal(uiTree, handles.Process.groupUITree)
     end
     handles.Process.currentGroupLabel.Text = [selNode.Text ' ' uuid];
 elseif isequal(uiTree, handles.Process.functionUITree)
-    selNode = handles.Process.groupUITree.SelectedNodes;
-    uuid = selNode.NodeData.UUID;    
-    type = deText(uuid);
-    if isequal(type,'PR')
-       handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
-       return;
-    end    
+    % selNode = handles.Process.groupUITree.SelectedNodes;
+    % uuid = selNode.NodeData.UUID;    
+    % type = deText(uuid);
+    % if isequal(type,'PR')
+    %    handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
+    %    return;
+    % end    
+else
+    uuid = getCurrent('Current_Analysis');
 end
 
 h = gobjects(size(ordStruct));
 uniqueParents = flip(unique(ordStruct(:,2),'stable'));
 numUnique = length(uniqueParents);
+uniqueParentsRootIdx = ismember(uniqueParents,uuid);
+uniqueParents = [uuid; uniqueParents(~uniqueParentsRootIdx)];
 texts = getName(ordStruct(:,1));
 for i=1:numUnique
 

@@ -7,13 +7,14 @@ handles=getappdata(fig,'handles');
 
 selNode=handles.Process.groupUITree.SelectedNodes;
 
-if isempty(selNode)
-    return;
-end
-
 uiTree=handles.Process.functionUITree;
 
 delete(uiTree.Children);
+
+if isempty(selNode)
+    handles.Process.currentFunctionLabel.Text = 'Current Process';
+    return;
+end
 
 if nargin==1 || isempty(digraphUUID)
     uuid = selNode.NodeData.UUID;

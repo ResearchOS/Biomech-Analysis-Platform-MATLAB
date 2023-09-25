@@ -4,7 +4,7 @@ function []=addToQueueButtonPushed(src,uuids)
 % Uses the reachability matrix using transclosure to determine
 % dependencies.
 
-global conn;
+global conn globalG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -42,10 +42,12 @@ if nargin==1
 end
 
 % If a PG is selected and nothing is checked, add its contained PR to the queue.
+fcnG = getFcnsOnlyDigraph(globalG);
 if isempty(checkedNodes) && any(contains(uuids,'PG')) % Assumes that uuid's is length 1 because only one selection at a time is possible
     assert(length(uuids)==1);
-    uuid_Containers = getUnorderedList(uuids{1});
-    uuids = uuid_Containers(:,1);
+    uuids = predecessors(fcnG, uuids{1});    
+    % uuid_Containers = getUnorderedList(uuids{1});
+    % uuids = uuid_Containers(:,1);
 end
 
 % Remove everything that's not a process function (like process groups).
@@ -63,14 +65,7 @@ end
 % Remove the UUID's that are already in the queue.
 uuids = uuids(~inQueueIdx);
 
-containerUUID = getCurrent('Current_Analysis');
-G = getappdata(fig,'digraph');
-if isempty(G)
-    G = refreshDigraph(fig);
-end
-% Get the reachability matrix for upstream dependencies (where all nodes
-% can reach)
-[Rup] = getDeps(G,'up'); % 'up' because I want to know the PR that the current PR's rely on that are not up to date.
+G = globalG;
 
 % Get the out of date values for all PR instances.
 sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
@@ -87,8 +82,7 @@ if ~any(idx)
 end
 
 % Get the reachable nodes.
-reachableIdx = any(Rup(idx,:),1);
-reachableUUIDs = G.Nodes.Name(reachableIdx);
+reachableUUIDs = getReachableNodes(G, uuids, 'up');
 
 outOfDateDepIdx = ismember(outOfDateUUID, reachableUUIDs); % Find the out of date UUID's in the dependencies list.
 
@@ -96,7 +90,11 @@ outOfDateDeps = outOfDateUUID(outOfDateDepIdx); % Get the out of date dependenci
 
 allUUIDs = [outOfDateDeps; uuids]; % Append the out of date dependencies to the ones specified to add.
 
-runList = getRunList(containerUUID, G);
+Current_Analysis = getCurrent('Current_Analysis');
+anG = getSubgraph(G, Current_Analysis,'up');
+anFcnG = getFcnsOnlyDigraph(anG);
+runList = anFcnG.Nodes.Name(toposort(anFcnG));
+% runList = getRunList(containerUUID, G);
 orderedUUIDsIdx = ismember(runList(:,1), allUUIDs); % In case some out of date PR is between the ones to add.
 addUUIDs = runList(orderedUUIDsIdx,1);
 
@@ -112,11 +110,7 @@ queue = runList(runListInQueueIdx); % Same order as run list.
 %% If the user wants to add the downstream dependencies too.
 if isequal(getDown,'Yes')
 
-    [Rdown] = getDeps(G,'down');
-    idx = ismember(G.Nodes.Name,queue);
-
-    reachableIdx = any(Rdown(idx,:),1);
-    reachableUUIDs = G.Nodes.Name(reachableIdx);
+    reachableUUIDs = getReachableNodes(queue, 'down');
 
     outOfDateDepIdx = ismember(outOfDateUUID, reachableUUIDs);
 

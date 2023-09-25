@@ -2,10 +2,12 @@ function []=successorsButtonPushed(src,event)
 
 %% PURPOSE: ADD OR REMOVE THE SUCCESSORS OF THE SELECTED NODE(S) IN THE DIGRAPH.
 
+global globalG viewG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-G = getappdata(fig,'viewG');
+G = viewG;
 markerSize = getappdata(fig,'markerSize');
 selIdx = markerSize == 8;
 
@@ -20,11 +22,11 @@ if contains(handles.Process.successorsButton.Text,'-')
     add = false;
 end
 
-allG = getappdata(fig,'digraph');
+allG = getFcnsOnlyDigraph(globalG);
 selNodes = G.Nodes.Name(selIdx);
 
 prop = true;
-a = questdlg('Propagate the changes downstream?','Propagate','Yes','No','Cancel','Cancel');
+a = questdlg('Get all downstream nodes?','Propagate','Yes','No','Cancel','Cancel');
 if isempty(a) || isequal(a,'Cancel')
     return;
 end
@@ -32,30 +34,28 @@ if isequal(a,'No')
     prop = false;
 end
 
-succs = {};
-for i=1:length(selNodes)
-    succs = [succs; successors(allG,selNodes{i})];
-end
+if ~prop
+    succs = {};
+    for i=1:length(selNodes)
+        succs = [succs; successors(allG,selNodes{i})];
+    end
+    succs(ismember(succs, viewG.Nodes.Name)) = [];
 
-succNames = getName(succs);
+    succNames = getName(succs);
 
-succStr = cell(size(succs));
-for i=1:length(succs)
-    succStr{i} = [succNames{i} ' (' succs{i}];
-end
+    succStr = cell(size(succs));
+    for i=1:length(succs)
+        succStr{i} = [succNames{i} ' (' succs{i}];
+    end
+    [idx, tf] = listdlg('ListString',succStr,'PromptString',['Select PR to ' str],'SelectionMode','multiple');
+    if ~tf
+        return;
+    end
 
-[idx, tf] = listdlg('ListString',succStr,'PromptString',['Select PR to ' str],'SelectionMode','multiple');
-if ~tf
-    return;
-end
+    succs = succs(idx);
 
-succs = succs(idx);
-
-if prop
-    R = getDeps(allG, 'down', succs);
-    succsIdx = ismember(allG.Nodes.Name, succs);
-    succNodesIdx = any(logical(R(succsIdx,:)),1);
-    succs = allG.Nodes.Name(succNodesIdx);
+elseif prop
+    succs = getReachableNodes(allG, selNodes, 'down');
 end
 
 if add

@@ -8,9 +8,6 @@ if nargin==0
     remTypes = {};
 end
 
-% Exclude the SpecifyTrials because it's abstract
-remTypes = [remTypes; {'ST'}];
-
 if nargin<2
     inclExcl = 'excl'; % By default, specify the types to exclude.
 end
@@ -25,12 +22,15 @@ tablenames(contains(tablenames,remTypes)) = []; % Only the desired types
 %% Get all of the nodes
 allTypes = getTypes();
 allTypes(contains(allTypes,remTypes)) = [];
-isInstance = true;
 Name = {};
 OutOfDate = [];
 for i=1:length(allTypes)
 
     type = allTypes{i}; 
+    isInstance = true;
+    if isequal(type,'ST')
+        isInstance = false;
+    end
     tablename = getTableName(type, isInstance);
     sqlquery = ['SELECT UUID, OutOfDate FROM ' tablename];
     t = fetch(conn, sqlquery);

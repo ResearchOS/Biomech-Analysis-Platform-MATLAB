@@ -50,6 +50,11 @@ if ~contains(tablename,{'Project'})
     allNames = allNames(allUUIDsIdx);
 end
 
+if contains(tablename,{'SpecifyTrials'})
+    allUUIDs = t.UUID;
+    allNames = t.Name;
+end
+
 %% Get the list of the objects that match the search term.
 searchIdx = contains(allNames,searchTerm);
 allSearchResults=allNames(searchIdx); % Include only the nodes that match the search term

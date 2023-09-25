@@ -53,15 +53,15 @@ orderedEdges = orderedList2Struct(tmpG);
 uiTree = handles.Process.groupUITree;
 fillAN_PG_UITree(uiTree, handles, orderedEdges);
 
+selectNode(uiTree, origUUID);
+fillCurrentFunctionUITree(fig, origUUID);
+
 drawnow;
 
 if isequal(abbrev,'PG')
     digraphAxesButtonDownFcn(src,'');
     return;
 end
-
-selectNode(uiTree, origUUID);
-fillCurrentFunctionUITree(fig, origUUID);
 
 %% Select the corresponding processing node in the graph.
 obj=get(fig,'CurrentObject');

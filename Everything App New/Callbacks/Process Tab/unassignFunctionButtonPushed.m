@@ -22,7 +22,6 @@ end
 
 selUUID = selNode.NodeData.UUID;
 
-[containerUUID] = getContainer(tab);
 type = deText(selUUID);
 
 if ~isequal(type,'PR')
@@ -30,7 +29,15 @@ if ~isequal(type,'PR')
     return;
 end
 
-%% Unlink the group from the current group or analysis.
+[~,list] = getUITreeFromNode(selNode);
+if length(list)>2
+    container = list(2); % If indented.
+    containerUUID = container.NodeData.UUID;
+else
+    containerUUID = getContainer(tab);
+end
+
+%% Unlink the PR from the current group or analysis.
 unlinkObjs(selUUID, containerUUID);
 
 %% Update GUI
@@ -40,4 +47,4 @@ if ~proceed
 end
 
 %% Set outOfDate
-setObjsOutOfDate(fig, selUUID, false, true);
+setObjsOutOfDate(fig, selUUID, true, true);

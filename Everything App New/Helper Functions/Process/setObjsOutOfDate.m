@@ -27,9 +27,7 @@ elseif outOfDateBool==0
 
     for i=1:length(uuids)
         anyOutOfDateBool = false; % False if none of the predecessors are out of date.
-        preds = predecessors(G2,uuids{i});  
-        
-        outOfDates = 
+        preds = predecessors(G2,uuids{i});                  
 
         for j = 1:length(preds)
             type = deText(preds{j});

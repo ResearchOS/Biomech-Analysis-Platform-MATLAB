@@ -2,6 +2,8 @@ function []=functionUITreeSelectionChanged(src,event)
 
 %% PURPOSE:
 
+global globalG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -32,7 +34,7 @@ if isscalar(markerSize) || ~any(markerSize==8)
     fcnUUID = fcnNode.NodeData.UUID;
 
     % 2. Get its index in the digraph.
-    G = getappdata(fig,'digraph');
+    G = globalG;
     idx = ismember(G.Nodes.Name,fcnUUID);
 
     % 3. Set the marker size

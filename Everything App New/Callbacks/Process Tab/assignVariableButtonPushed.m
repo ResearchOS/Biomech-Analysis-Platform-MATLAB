@@ -127,45 +127,26 @@ if ~isequal(anList,{Current_Analysis})
     end
 end
 
-%% Add the variable to the function
-linkObjs(allVarUUID, Current_Analysis);
-if isempty(prevVarUUID)
-    if isOut
-        [success, msg] = linkObjs(currFcnUUID, allVarUUID); % Output variable        
-    else
-        [success, msg] = linkObjs(allVarUUID, currFcnUUID);        
-    end
-    currVarNode.NodeData.UUID = allVarUUID;    
-    nameInCode = currVarNode.Text;
-    sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''' AND NameInCode = ''NULL'';'];    
-    execute(conn, sqlquery);
-    currVarNode.Text = [currVarNode.Text ' (' allVarUUID ')'];
-else
-    if isOut
-        unlinkObjs(currFcnUUID,prevVarUUID);
-        linkObjs(currFcnUUID, allVarUUID);
-    else
-        unlinkObjs(prevVarUUID, currFcnUUID);
-        linkObjs(allVarUUID, currFcnUUID);
-    end
-    tmpG = rmedge(globalG, prevVarUUID, Current_Analysis);
-    path = shortestpath(tmpG, prevVarUUID, Current_Analysis);
-    if isempty(path)
-        unlinkObjs(prevVarUUID, Current_Analysis); % The unlinked variable is no longer part of this analysis.
-    end
-    spaceIdx = strfind(currVarNode.Text,' '); % Should only be one space.
-    nameInCode = currVarNode.Text(1:spaceIdx-1);  
-    currVarNode.NodeData.UUID = allVarUUID;    
-    currVarNode.Text = [nameInCode ' (' allVarUUID ')'];
+if ~isempty(prevVarUUID)
+    % Unassign the previously assigned variable.
+    unassignVariableButtonPushed(fig);
 end
+
+%% Add the variable to the function
+if isOut
+    [success, msg] = linkObjs(currFcnUUID, allVarUUID); % Output variable        
+else
+    [success, msg] = linkObjs(allVarUUID, currFcnUUID);        
+end
+currVarNode.NodeData.UUID = allVarUUID;    
+nameInCode = currVarNode.Text;
+sqlquery = ['UPDATE ' tablename ' SET NameInCode = ''' nameInCode ''' WHERE PR_ID = ''' currFcnUUID ''' AND VR_ID = ''' allVarUUID ''' AND NameInCode = ''NULL'';'];    
+execute(conn, sqlquery);
+currVarNode.Text = [currVarNode.Text ' (' allVarUUID ')'];
+linkObjs(allVarUUID, Current_Analysis);
 
 % Set out of date for downstream objects
 setObjsOutOfDate(fig, currFcnUUID, true, true);
-% if isOut
-% 
-% else
-% 
-% end
 
 if isequal(anType,'Current')
     selectAnalysisButtonPushed(fig);
@@ -174,6 +155,5 @@ end
 
 %% Update the digraph
 renderGraph(fig);
-% toggleDigraphCheckboxValueChanged(fig);
 
 disp('Finished assigning variable!');

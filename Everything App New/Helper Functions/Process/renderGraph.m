@@ -68,7 +68,7 @@ end
 delete(ax.Children);
 set(ax,'ColorOrderIndex', 1);
 
-if isempty(G.Edges)
+if isempty(G.Nodes)
     return;
 end
 

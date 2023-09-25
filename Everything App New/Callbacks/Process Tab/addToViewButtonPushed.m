@@ -32,6 +32,7 @@ end
 
 addNodesToView(fig,uuid);
 
+Current_View = getCurrent('Current_View');
 G = filterGraph(fig, Current_View);
 
 renderGraph(fig, G);

@@ -2,7 +2,7 @@ function [] = removeNodesFromView(src, nodes)
 
 %% PURPOSE: REMOVE NODES FROM THE CURRENT VIEW.
 
-global conn;
+global conn viewG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -11,7 +11,7 @@ if ~iscell(nodes)
     nodes = {nodes};
 end
 
-G = getappdata(fig, 'viewG');
+G = viewG;
 
 G = rmnode(G, nodes);
 
@@ -25,5 +25,5 @@ execute(conn, sqlquery);
 
 markerSize = repmat(4,length(G.Nodes.Name),1);
 
-setappdata(fig,'viewG',G);
+viewG = G;
 setappdata(fig,'markerSize',markerSize);

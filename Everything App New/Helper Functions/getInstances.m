@@ -17,4 +17,8 @@ tablename = getTableName(type, true);
 sqlquery = ['SELECT UUID FROM ' tablename ' WHERE Abstract_UUID = ''' uuid ''';'];
 t = fetch(conn, sqlquery);
 t = table2MyStruct(t);
-uuids = t.UUID;
+if ~isempty(fieldnames(t))
+    uuids = t.UUID;
+else
+    uuids = {};
+end

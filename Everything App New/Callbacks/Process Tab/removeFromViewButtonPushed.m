@@ -2,6 +2,8 @@ function [] =removeFromViewButtonPushed(src,event)
 
 %% PURPOSE: REMOVE SELECTED NODE(S) IN THE DIGRAPH FROM THE VIEW.
 
+global viewG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -14,10 +16,11 @@ end
 
 Current_View = getCurrent('Current_View');
 
-G = getappdata(fig,'viewG');
+G = viewG;
 remNodes = G.Nodes.Name(remIdx);
 
 removeNodesFromView(fig, remNodes);
 
 G = filterGraph(fig, Current_View);
 renderGraph(fig, G);
+viewG = G;

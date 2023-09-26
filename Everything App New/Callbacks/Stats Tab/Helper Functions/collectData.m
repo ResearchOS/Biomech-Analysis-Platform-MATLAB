@@ -1,4 +1,4 @@
-function [allTable,numericColIdx]=collectData(metaVarNames,varNames,specifyTrials,multiVar,dims)
+function [allTable,numericColIdx]=collectData(metaVarNames,varNames,allTrialNames,multiVar,dims)
 
 %% PURPOSE: PULL THE DATA TOGETHER INTO A TABLE TO ANALYZE.
 
@@ -7,19 +7,6 @@ if isempty(multiVar)
     isMulti=false;
     multiVar={''};
 end
-
-inclStruct=getInclStruct(specifyTrials);
-logUUID = 'LG71F125_74F';
-logStruct = loadJSON(logUUID);
-% logText='YA_All_Spr21TWW_18F869';
-% logPath=getClassFilePath(logText,'Logsheet');
-% logStruct=loadJSON(logPath);
-computerID=getComputerID();
-structPath=logStruct.Logsheet_Path.(computerID);
-[folder,file,ext]=fileparts(structPath);
-structPathMAT=[folder filesep file '.mat'];
-load(structPathMAT,'logVar');
-allTrialNames=getTrialNames(inclStruct,logVar,0,logStruct);
 
 %% Get the number of rows in the table.
 disp('Get the number of rows in the table');
@@ -132,6 +119,9 @@ for i=1:length(tableTrialNames)
         end
 
         if isnumeric(allTable{rowNum,multiVarCol+j})
+            if isempty(allTable{rowNum,multiVarCol+j})
+                allTable{rowNum,multiVarCol+j} = NaN;
+            end
             assert(isscalar(allTable{rowNum,multiVarCol+j}));
         end
 

@@ -53,9 +53,14 @@ for i=1:length(uniqueTypes)
     if ~iscell(t.UUID)
         t.UUID = {t.UUID};
         t.Name = {t.Name};
-    end
+    end    
+    [type] = deText(t.UUID{1});
     for j=1:length(uuids)
-        uuid = uuids{j};        
+        uuid = uuids{j};          
+        if ~ismember(uuid, t.UUID) && contains(uuid, type)
+            names(j,1) = {'Nonexistent'};
+            continue;
+        end
         nameIdx = ismember(t.UUID, uuid); % Where in the object list the UUID's & names are.
         name = t.Name(nameIdx);
         if ~isempty(name)

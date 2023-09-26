@@ -84,9 +84,11 @@ end
 % Get the reachable nodes.
 reachableUUIDs = getReachableNodes(G, uuids, 'up');
 
-outOfDateDepIdx = ismember(outOfDateUUID, reachableUUIDs); % Find the out of date UUID's in the dependencies list.
+allOutOfDate = G.Nodes.Name(G.Nodes.OutOfDate==1);
 
-outOfDateDeps = outOfDateUUID(outOfDateDepIdx); % Get the out of date dependencies
+outOfDateDepIdx = ismember(reachableUUIDs, allOutOfDate); % Find the out of date UUID's in the dependencies list.
+
+outOfDateDeps = reachableUUIDs(outOfDateDepIdx); % Get the out of date dependencies
 
 allUUIDs = [outOfDateDeps; uuids]; % Append the out of date dependencies to the ones specified to add.
 
@@ -109,14 +111,14 @@ queue = runList(runListInQueueIdx); % Same order as run list.
 
 %% If the user wants to add the downstream dependencies too.
 if isequal(getDown,'Yes')
+    
+    reachableUUIDs = getReachableNodes(anFcnG, queue, 'down');
 
-    reachableUUIDs = getReachableNodes(queue, 'down');
+    % outOfDateDepIdx = ismember(outOfDateUUID, reachableUUIDs);
+    % 
+    % outOfDateDeps = outOfDateUUID(outOfDateDepIdx);
 
-    outOfDateDepIdx = ismember(outOfDateUUID, reachableUUIDs);
-
-    outOfDateDeps = outOfDateUUID(outOfDateDepIdx);
-
-    allUUIDs = [outOfDateDeps; uuids];
+    allUUIDs = [reachableUUIDs; uuids];
     orderedUUIDsIdx = ismember(runList(:,1), allUUIDs); % In case some out of date PR is between the ones to add.
     addUUIDs = runList(orderedUUIDsIdx,1);
 

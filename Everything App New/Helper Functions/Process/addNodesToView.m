@@ -11,25 +11,24 @@ if ~iscell(nodes)
     nodes = {nodes};
 end
 
-% Add the node.
-G = viewG;
-
 % Add the edges from the main digraph to the current view.
 allG = getFcnsOnlyDigraph(globalG);
-% allG = globalG;
 
-for i=1:length(nodes)
-    uuid = nodes{i};
-    nodeIdx = ismember(allG.Nodes.Name,uuid);
-    addNode = allG.Nodes(nodeIdx,:);
-    addEdgesIdx = (ismember(allG.Edges.EndNodes(:,1),G.Nodes.Name) & ismember(allG.Edges.EndNodes(:,2),uuid)) | ... % inedges to the new node.
-        (ismember(allG.Edges.EndNodes(:,1),uuid) & ismember(allG.Edges.EndNodes(:,2),G.Nodes.Name)); % outedges of the new node.
-    addEdges = allG.Edges(addEdgesIdx,:);
-    if ~ismember(uuid,G.Nodes.Name)
-        G = addnode(G, addNode);
-        G = addedge(G, addEdges);
-    end
+% Add the nodes that are not yet already part of the graph.
+G = viewG;
+uuids = nodes(~ismember(nodes,G.Nodes.Name));
+uuidIdx = ismember(allG.Nodes.Name,uuids);
+addNodesTable = allG.Nodes(uuidIdx,:);
+G = addnode(G, addNodesTable);
+
+addEdgesIdx = false(size(allG.Edges.EndNodes,1),1);
+for i=1:length(uuids)
+    uuid = uuids{i};       
+    addEdgesIdx = addEdgesIdx | (ismember(allG.Edges.EndNodes(:,1),G.Nodes.Name) & ismember(allG.Edges.EndNodes(:,2),uuid)) | ... % inedges to the new node.
+        (ismember(allG.Edges.EndNodes(:,1),uuid) & ismember(allG.Edges.EndNodes(:,2),G.Nodes.Name)); % outedges of the new node.        
 end
+addEdgesTable = allG.Edges(addEdgesIdx,:);
+G = addedge(G, addEdgesTable);
 
 inclNodes = G.Nodes.Name;
 

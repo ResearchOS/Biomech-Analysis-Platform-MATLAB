@@ -2,6 +2,8 @@ function []=viewsDropDownValueChanged(src,event)
 
 %% PURPOSE: SWITCH TO A NEW VIEW IN THE CURRENT ANALYSIS
 
+global viewG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -24,6 +26,8 @@ handles.Process.editViewButton.Value = value;
 
 viewAxes = handles.Process.toggleDigraphCheckbox.Value;
 
+viewG = [];
+setappdata(fig,'markerSize',[]);
 if viewAxes==1
     G = filterGraph(fig, uuid); % Filter the 'ALL' graph with the current view.
 

@@ -8,7 +8,6 @@ fig = ancestor(src,'figure','toplevel');
 handles = getappdata(fig,'handles');
 
 ax = handles.Axes;
-% viewG = ax.UserData.G;
 markerSize = getappdata(fig,'markerSize');
 uuid = popupG.Nodes.Name(markerSize==8);
 

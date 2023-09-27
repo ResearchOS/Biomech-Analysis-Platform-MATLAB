@@ -22,18 +22,11 @@ if isempty(name)
     name = {};
 end
 
-% if isempty(viewG.Edges)
-%     EndNodes = cell(0,2);
-%     Name = cell(0,1);
-%     OutOfDate = [];
-%     nodeTable = table(Name, OutOfDate);
-%     edgeTable = table(EndNodes,Name);
-%     G = digraph(edgeTable, nodeTable);
-%     viewG = G;
-%     return;
-% end
-
-fcnsG = getFcnsOnlyDigraph(globalG);
+if isempty(viewG)
+    fcnsG = getFcnsOnlyDigraph(globalG);
+else
+    fcnsG = viewG;
+end
 
 names = fcnsG.Nodes.Name;
 if isequal(name,'ALL')

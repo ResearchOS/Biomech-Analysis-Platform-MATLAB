@@ -22,7 +22,7 @@ uuid=selNode.NodeData.UUID;
 %     error('How is the clicked on PR not part of the selected group?!');
 % end
 
-newUUIDs = copyToNew(uuid, false); % By default, not creating a whole new analysis. In the future, ask the user (or have a default setting)
+newUUIDs = copyToNew(uuid); % By default, not creating a whole new analysis. In the future, ask the user (or have a default setting)
 
 Current_View = getCurrent('Current_View');
 struct = loadJSON(Current_View);

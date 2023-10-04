@@ -37,4 +37,16 @@ Current_View = getCurrent('Current_View');
 sqlquery = ['UPDATE Views_Instances SET InclNodes = ''' inclNodesJSON ''' WHERE UUID = ''' Current_View ''';'];
 execute(conn, sqlquery);
 
+% Get the markers that were originally selected.
+markerSize = getappdata(fig,'markerSize');
+selNodesIdx = markerSize==8;
+selNodes = viewG.Nodes.Name(selNodesIdx);
+
+% Make sure those same markers stay selected, and also update the
+% markerSize variable.
+selNodesIdxNew = ismember(G.Nodes.Name,selNodes);
+markerSize = repmat(4,length(G.Nodes.Name),1);
+markerSize(selNodesIdxNew) = 8;
+setappdata(fig,'markerSize',markerSize);
+
 viewG = G;

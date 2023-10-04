@@ -4,6 +4,10 @@ function [newUUIDs] = copyToNew(uuids)
 
 global globalG;
 
+if ~iscell(uuids)
+    uuids = {uuids};
+end
+
 % The graph containing only uuids to rename
 tmpG = subgraph(globalG, uuids);
 

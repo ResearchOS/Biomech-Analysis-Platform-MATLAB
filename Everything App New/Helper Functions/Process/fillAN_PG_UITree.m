@@ -4,8 +4,6 @@ function []=fillAN_PG_UITree(uiTree, handles, ordStruct)
 
 % Delete all existing entries in current UI trees.
 delete(uiTree.Children);
-% delete(handles.Process.functionUITree.Children);
-% handles.Process.currentFunctionLabel.Text = 'Current Process';
 delete(handles.Process.groupUITree.Children);
 handles.Process.currentGroupLabel.Text = 'Current Group';
 
@@ -20,15 +18,7 @@ if isequal(uiTree, handles.Process.groupUITree)
         end
         uuid = selNode.NodeData.UUID;        
     end
-    handles.Process.currentGroupLabel.Text = [selNode.Text ' ' uuid];
-elseif isequal(uiTree, handles.Process.functionUITree)
-    % selNode = handles.Process.groupUITree.SelectedNodes;
-    % uuid = selNode.NodeData.UUID;    
-    % type = deText(uuid);
-    % if isequal(type,'PR')
-    %    handles.Process.currentFunctionLabel.Text = [selNode.Text ' ' uuid];
-    %    return;
-    % end    
+    handles.Process.currentGroupLabel.Text = [selNode.Text ' ' uuid]; 
 else
     uuid = getCurrent('Current_Analysis');
 end

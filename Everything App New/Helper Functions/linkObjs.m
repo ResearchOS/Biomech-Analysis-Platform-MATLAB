@@ -35,9 +35,9 @@ if isstruct(rightObjs)
     rightObjs = {rightObjs.UUID};
 end
 
-if length(leftObjs)>1 && length(rightObjs)>1
-    error('Either the left or right element must be scalar');
-end
+% if length(leftObjs)>1 && length(rightObjs)>1
+%     error('Either the left or right element must be scalar');
+% end
 
 % Ensure that there are two lists of equal length.
 if length(leftObjs)==1

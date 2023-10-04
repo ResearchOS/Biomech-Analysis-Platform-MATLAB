@@ -5,6 +5,8 @@ function []=fillProcessGroupUITree(src, prUUID, pgUUID)
 % group. If not, just put in that function name. Update the group label to
 % reflect the current group name, or no group name.
 
+global globalG;
+
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
@@ -20,41 +22,12 @@ if isempty(pgUUID) && isempty(prUUID)
 end
 
 if isempty(pgUUID) % Function does not belong to a group.
-    ordStruct.NULL.Contains.(prUUID).Contains = [];
-    ordStruct.NULL.Contains.(prUUID).PrettyName = getName(prUUID);
+    addNewNode(uiTree, prUUID, getName(prUUID));
 else
     % Get all of the group and function names in the group
-    [runList, containerList] = getRunList(pgUUID);   
-    ordStruct = orderedList2Struct(runList, containerList);
-end
-
-if ~isempty(pgUUID)
-    pgStruct=loadJSON(pgUUID);
-    uuid = pgUUID;
-else
-    pgStruct = loadJSON(prUUID);
-    uuid = prUUID;
-end
-
-handles.Process.currentGroupLabel.Text = [pgStruct.Name ' ' uuid];
-
-% delete(uiTree.Children);
-
-topLevel = fieldnames(ordStruct);
-if isempty(topLevel)
-    return;
-end
-
-ordStruct = ordStruct.(topLevel{1}).Contains;
-
-fldNames = fieldnames(ordStruct);
-
-for i=1:size(fldNames,1)
-    uuid = fldNames{i};
-    prettyName = ordStruct.(uuid).PrettyName;
-
-    addNewNode(uiTree, uuid, prettyName, '', ordStruct.(uuid).Contains);    
-
+    tmpG = getSubgraph(globalG, pgUUID, 'up');
+    orderedEdges = orderedList2Struct(tmpG);
+    fillAN_PG_UITree(uiTree, handles, orderedEdges);
 end
 
 %% Select the corresponding node in the UI tree

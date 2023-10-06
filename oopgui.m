@@ -59,7 +59,6 @@ catch
     dbFile = [dbFolder slash 'biomechOS.db'];
 end
 DBSetup(dbFile, isDel);
-globalG = getAllObjLinks();
 
 if isDel
     transferJSON_SQL; % Transfer objects
@@ -67,6 +66,8 @@ if isDel
     transferVarsToNamesInCode; % Transfer variable assignments as input & output to/from PR functions
     transferColumns;
 end
+
+globalG = getAllObjLinks();
 
 %% Turn off the warnings about zoom & drag mode on the UI Axes
 warning('off','MATLAB:modes:mode:InvalidPropertySet');

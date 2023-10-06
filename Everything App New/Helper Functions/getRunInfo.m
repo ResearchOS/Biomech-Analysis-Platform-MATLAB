@@ -8,8 +8,6 @@ function [runInfo, stop]=getRunInfo(absStruct, instStruct)
 %   - IsHardCoded
 %   - HardCodedValue
 
-global conn;
-
 %% 1. Data Path
 stop = false;
 runInfo.DataPath=getCurrent('Data_Path');
@@ -33,25 +31,12 @@ for inOut=1:2
     elseif inOut==2
         sqlquery = ['SELECT VR_ID, NameInCode FROM ' tablename ' WHERE PR_ID = ''' instStruct.UUID ''';'];
     end
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
-    if isempty(fieldnames(t))
+    t = fetchQuery(sqlquery);
+    if isempty(t.VR_ID)
         if inOut==1
             stop = true;
         elseif inOut==2
             continue;
-        end
-        t.VR_ID = {};
-        t.NameInCode = {};
-        if inOut==1
-            t.Subvariable = {};
-        end
-    end
-    if ~iscell(t.VR_ID)
-        t.VR_ID = {t.VR_ID};
-        t.NameInCode = {t.NameInCode};
-        if inOut==1
-            t.Subvariable = {t.Subvariable};
         end
     end
 
@@ -59,9 +44,6 @@ for inOut=1:2
     runInfo.(fldName).NameInCode = t.NameInCode;
 
     if inOut==1
-        if isempty(t.Subvariable)
-            t.Subvariable = cell(size(t.VR_ID));
-        end
         runInfo.(fldName).Subvariable = t.Subvariable;
     end        
 
@@ -70,17 +52,7 @@ for inOut=1:2
     abstractUUIDs = genUUID(types, abstractIDs);
     absStr = getCondStr(abstractUUIDs);
     sqlquery = ['SELECT UUID, IsHardCoded, Level FROM Variables_Abstract WHERE UUID IN ' absStr ';'];
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
-    if isempty(fieldnames(t))
-        t.UUID = {};
-        t.IsHardCoded = {};
-        t.Level = {};
-    end
-    if ~iscell(t.UUID)
-        t.UUID = {t.UUID};        
-        t.Level = {t.Level};
-    end
+    t = fetchQuery(sqlquery);
 
     % Handle multiple instances of one abstract, in which case there will be a mismatch between lengths of levels and VR UUID's.
     levels = cell(size(runInfo.(fldName).VR_ID));
@@ -107,16 +79,7 @@ for inOut=1:2
     if any(runInfo.(fldName).IsHardCoded)
         hardCodedStr = getCondStr(runInfo.(fldName).VR_ID(runInfo.(fldName).IsHardCoded));
         sqlquery = ['SELECT UUID, HardCodedValue FROM Variables_Instances WHERE UUID IN ' hardCodedStr ';'];
-        t = fetch(conn, sqlquery);
-        t = table2MyStruct(t);
-        if isempty(fieldnames(t))
-            t.UUID = {};
-            t.HardCodedValue = {};
-        end
-        if ~iscell(t.UUID)
-            t.UUID = {t.UUID};
-            t.HardCodedValue = {t.HardCodedValue};
-        end
+        t = fetchQuery(sqlquery);
         tmp = t.HardCodedValue;
         [~,k] = sort(runInfo.(fldName).VR_ID(hardCodedVRidx));
         tmp(k) = tmp;

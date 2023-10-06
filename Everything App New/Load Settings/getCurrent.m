@@ -31,13 +31,12 @@ rootSettingsVars = {'dbFile', 'Current_Project_Name',...
 
 if ismember(varName,rootSettingsVars)  
     sqlquery = ['SELECT VariableValue FROM Settings WHERE VariableName = ''' varName ''''];
-    var = fetch(conn, sqlquery);
-    var = table2MyStruct(var);
-    if isempty(fieldnames(var))
+    var = fetchQuery(sqlquery);
+    var = var.VariableValue;
+    if isempty(var)
         var = '';
         return;
-    end
-    var = var.VariableValue;
+    end  
     var = jsondecode(var);
     if ismember(varName,{'dbFile','Current_User'})        
         computerID = getCurrent('Computer_ID'); 
@@ -58,9 +57,8 @@ projectSettingsVars = {'Data_Path','Project_Path','Current_Analysis'};
 if ismember(varName,projectSettingsVars)            
     projectName = getCurrent('Current_Project_Name');
     sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ''' projectName ''';'];
-    t = fetch(conn, sqlquery);
-    struct = table2MyStruct(t);
-    if isempty(fieldnames(struct))
+    struct = fetchQuery(sqlquery);
+    if isempty(struct.(varName))
         var = '';
         return;
     end
@@ -91,9 +89,8 @@ if ismember(varName,analysisSettingsVars)
     Current_User = getCurrent('Current_User');
     analysisName = getCurrent('Current_Analysis');
     sqlquery = ['SELECT ' varName ' FROM Analyses_Instances WHERE UUID = ''' analysisName ''';'];
-    t = fetch(conn, sqlquery);
-    struct = table2MyStruct(t); 
-    if isempty(fieldnames(struct))
+    struct = fetchQuery(sqlquery);
+    if isempty(struct.(varName))
         var = '';
         return;
     end

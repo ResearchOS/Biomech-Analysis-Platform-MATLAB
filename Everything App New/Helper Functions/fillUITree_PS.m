@@ -1,7 +1,6 @@
 function []=fillUITree_PS(fig, class, uiTree, anAbs)
 
 %% PUEPOSE: FILL IN THE CLASS UI TREE WITH PROJECT-SPECIFIC NODES, WITH PARENT NODES THAT ARE PROJECT-INDEPENDENT
-global conn;
 
 handles=getappdata(fig,'handles');
 
@@ -15,20 +14,10 @@ uuids = {tmp.UUID};
 % The project-specific class instances
 tablename = getTableName(class, true);
 sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
-t = fetch(conn,sqlquery);
-t = table2MyStruct(t);
-
-if isempty(fieldnames(t))
-    return;
-end
-
-if ~iscell(t.UUID)
-    t.UUID = {t.UUID};
-    t.Name = {t.Name};
-end
+t = fetchQuery(sqlquery);
 
 if isempty(t.UUID)
-    return; % Nothing in the table!
+    return;
 end
 
 instUUIDs = t.UUID;

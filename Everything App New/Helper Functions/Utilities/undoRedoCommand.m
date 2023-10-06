@@ -5,8 +5,6 @@ function [undoquery] = undoRedoCommand(sqlquery)
 % INSERT syntax: INSERT INTO tablename (col1,...,coln) VALUES (val1,...,valn);
 % UPDATE syntax: UPDATE tablename SET column1 = value1, column2 = value2 WHERE col = value;
 
-global conn;
-
 if ~isequal(sqlquery(end),';')
     sqlquery = [sqlquery ';'];
 end
@@ -16,8 +14,7 @@ if isequal(sqlquery(1:6),'DELETE')
     tablename = sqlquery(13:whereIdx-1); % The tablename
     condStr = sqlquery(whereIdx+7:end-1); % The WHERE condition.
     selectquery = ['SELECT * FROM ' tablename ' WHERE ' condStr];
-    t = fetch(conn, selectquery);
-    t = table2MyStruct(t);    
+    t = fetchQuery(selectquery);    
     undoquery = struct2SQL(tablename, t, 'INSERT');
 end
 

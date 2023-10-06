@@ -2,38 +2,26 @@ function [listPR_PG_AN, listInclContainer] = getUnorderedList(containerUUID)
 
 %% PURPOSE: RETURN AN UNORDERED LIST OF PROCESSING FUNCTIONS AND THEIR CONTAINERS IN THE SPECIFIED CONTAINER
 
-global conn;
-
 [type] = deText(containerUUID);
 
 % Get the groups in this container
 if isequal(type,'AN')
-    sqlquery = ['SELECT PG_ID FROM AN_PG WHERE AN_ID = ''' containerUUID ''';'];
+    sqlquery = ['SELECT PG_ID FROM PG_AN WHERE AN_ID = ''' containerUUID ''';'];
 else
     sqlquery = ['SELECT Child_PG_ID FROM PG_PG WHERE Parent_PG_ID = ''' containerUUID ''';'];
 end
-listPG = fetch(conn, sqlquery);
-listPG = table2MyStruct(listPG);
+listPG = fetchQuery(sqlquery);
 fldName = fieldnames(listPG);
-if isempty(fldName)
-    listPG = {};
-else
-    listPG = listPG.(fldName{1});
-end
+listPG = listPG.(fldName{1});
 
 % Get the processing functions in this container.
 if isequal(type,'AN')
-    sqlquery = ['SELECT PR_ID FROM AN_PR WHERE AN_ID = ''' containerUUID ''';'];
+    sqlquery = ['SELECT PR_ID FROM PR_AN WHERE AN_ID = ''' containerUUID ''';'];
 else
-    sqlquery = ['SELECT PR_ID FROM PG_PR WHERE PG_ID = ''' containerUUID ''';'];
+    sqlquery = ['SELECT PR_ID FROM PR_PG WHERE PG_ID = ''' containerUUID ''';'];
 end
-listPR = fetch(conn, sqlquery);
-listPR = table2MyStruct(listPR);
-if isempty(fieldnames(listPR))
-    listPR = {};
-else
-    listPR = listPR.PR_ID;
-end
+listPR = fetchQuery(sqlquery);
+listPR = listPR.PR_ID;
 if isempty(listPR) && isempty(listPG)    
     listPR_PG_AN = {};
     return;
@@ -45,12 +33,8 @@ listPR_PG_AN = getPRFromPG(listInclContainer(:,1), listInclContainer); % Get all
 
 % Get the logsheets in this container
 if isequal(type,'AN')
-    sqlquery = ['SELECT LG_ID FROM AN_LG WHERE AN_ID = ''' containerUUID ''';'];
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
-    if isempty(fieldnames(t))
-        return;
-    end
+    sqlquery = ['SELECT LG_ID FROM LG_AN WHERE AN_ID = ''' containerUUID ''';'];
+    t = fetchQuery(sqlquery);
     if isempty(t.LG_ID)
         return;
     end

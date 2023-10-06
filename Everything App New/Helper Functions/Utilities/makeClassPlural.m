@@ -1,6 +1,6 @@
 function [plural] = makeClassPlural(class)
 
-%% PURPOSE: CHANGE THE CLASS NAME AS PROVIDED BY className2Abbrev TO PLURAL
+%% PURPOSE: CHANGE THE CLASS NAME TO PLURAL
 
 isChar = false;
 if ~iscell(class)
@@ -11,6 +11,10 @@ end
 plurals = cell(size(class));
 for i=1:length(class)
     currClass = class{i};
+
+    if length(currClass)==2
+        currClass = className2Abbrev(currClass);
+    end
 
     plural = currClass; % The case 'Process' requires this.
 

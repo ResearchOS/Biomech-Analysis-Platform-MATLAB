@@ -28,18 +28,20 @@ end
 % "SpecifyTrials_Abstract"
 % "Variables_Abstract"
 % "Process_Abstract"
-% "PJ_AN"
-% "AN_PR"
-% "AN_PG"
-% "PG_PR"
+% "AN_PJ"
+% "PR_AN"
+% "PG_AN"
+% "PR_PG"
 % "PG_PG"
 % "PR_VR"
 % "VR_PR"
 % Settings
-% "AN_LG"
+% "LG_AN"
 % "LG_VR"
-% "AN_ST"
+% "ST_AN"
 % Users
+% "VW_AN"
+% "VR_AN"
 
 %% Create Users table
 if ~ismember('Users',tableNames)
@@ -75,7 +77,7 @@ createInst = ['CREATE TABLE XXX_Instances (UUID TEXT PRIMARY KEY NOT NULL UNIQUE
     ');'];
 
 allTypes = getTypes();
-objTableNames = makeClassPlural(className2Abbrev(allTypes));
+objTableNames = makeClassPlural(allTypes);
 modifiedNames = {};
 for i=1:length(objTableNames)
     tableName = objTableNames{i};
@@ -216,8 +218,8 @@ createJoinTable_VRPR = ['CREATE TABLE XXX_YYY (',...
 
 % Except for VR_PR and PR_VR, the left column is the parent, the right
 % column is the child.
-objAbbrevs = {{'PJ','AN'},{'AN','PR'},{'AN','PG'},{'PG','PR'},{'PG','PG'},...
-    {'PR','VR'},{'VR','PR'},{'AN','VW'},{'AN','LG'},{'VR','LG'},{'AN','ST'},{'AN','VR'}};
+objAbbrevs = {{'AN','PJ'},{'PR','AN'},{'PG','AN'},{'PR','PG'},{'PG','PG'},...
+    {'PR','VR'},{'VR','PR'},{'VW','AN'},{'LG','AN'},{'LG','VR'},{'ST','AN'},{'VR','AN'}};
 modifiedNames = {};
 for i=1:length(objAbbrevs)
     abbrevs = objAbbrevs{i};
@@ -235,20 +237,8 @@ for i=1:length(objAbbrevs)
         newAbbrevs = abbrevs;
     end
 
-    class1 = className2Abbrev(abbrevs{1});
-    class2 = className2Abbrev(abbrevs{2});
-    if ~isequal(class1(end),'s')
-        class1 = [class1 's'];
-    end
-    if isequal(abbrevs{1},'AN')
-        class1(end-1) = 'e'; % Analyses
-    end
-    if ~isequal(class2(end),'s')
-        class2 = [class2 's'];
-    end
-    if isequal(abbrevs{2},'AN')
-        class2(end-1) = 'e'; % Analyses
-    end        
+    class1 = makeClassPlural(abbrevs{1});
+    class2 = makeClassPlural(abbrevs{2});     
 
     if ismember(name,{'PR_VR','VR_PR'})
         createJoinTableTmp = createJoinTable_VRPR;
@@ -272,10 +262,12 @@ end
 if ismember('VR_PR',modifiedNames)
     sqlquery = ['ALTER TABLE VR_PR ADD Subvariable TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
+    sqlquery = ['ALTER TABLE VR_PR ADD PRIMARY KEY (PR_ID, VR_ID, NameInCode, Subvariable);'];
+    execute(conn, sqlquery);
 end
 
 if ismember('VR_LG',modifiedNames)
-    sqlquery = ['ALTER TABLE VR_LG ADD HeaderName TEXT NOT NULL Default [NULL]'];
+    sqlquery = ['ALTER TABLE LG_VR ADD HeaderName TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
 end
 
@@ -320,9 +312,8 @@ if ~ismember('Settings',tableNames)
     % only one row (the initialization row), then create a new row, and set
     % the current project as its UUID.
     sqlquery = 'SELECT UUID, Date_Modified FROM Projects_Instances;';
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);    
-    if isempty(fieldnames(t))
+    t = fetchQuery(sqlquery);
+    if isempty(t.UUID)
         abstractID = createID_Abstract('Project');
         instanceID = createID_Instance(abstractID, 'Project');
         uuid = genUUID('PJ',abstractID, instanceID);                

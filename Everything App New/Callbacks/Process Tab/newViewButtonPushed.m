@@ -56,8 +56,7 @@ end
 if isempty(selUUIDs) && ~isequal(a,'Empty')
     Current_View = getCurrent('Current_View');
     sqlquery = ['SELECT InclNodes FROM Views_Instances WHERE UUID = ''' Current_View ''';'];
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
+    t = fetchQuery(sqlquery);
     deps = t.InclNodes;
 else
     deps = {};

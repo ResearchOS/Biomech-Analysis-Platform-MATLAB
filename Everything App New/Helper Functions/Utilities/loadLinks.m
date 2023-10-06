@@ -31,23 +31,14 @@ if any(lgIdx)
     lgUUIDs = list(lgIdx);
     lgStr = getCondStr(lgUUIDs);
     sqlquery = ['SELECT VR_ID, LG_ID FROM LG_VR WHERE LG_ID IN ' lgStr ';'];
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
+    t = fetchQuery(sqlquery);
 
-    % If any LG & VR found.
-    if ~isempty(t)
-        if ~iscell(t.VR_ID)
-            t.VR_ID = {t.VR_ID};
-            t.LG_ID = {t.LG_ID};
-        end
-
-        % Put the logsheet where the VR is an input, and there is no
-        % output.
-        for i=1:length(t.VR_ID)
-            vrIdx = ismember(links(:,2),t.VR_ID{i});
-            assert(all(cellfun(@isempty, links(vrIdx,1))));
-            links(vrIdx,1) = t.LG_ID(i);
-        end
+    % Put the logsheet where the VR is an input, and there is no
+    % output.
+    for i=1:length(t.VR_ID)
+        vrIdx = ismember(links(:,2),t.VR_ID{i});
+        assert(all(cellfun(@isempty, links(vrIdx,1))));
+        links(vrIdx,1) = t.LG_ID(i);
     end
 end
 

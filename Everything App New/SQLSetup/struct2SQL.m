@@ -14,31 +14,46 @@ jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Param
     'Current_View','InclNodes','Current_Logsheet','Current_Analysis'};
 dateCols = {'Date_Created','Date_Modified','Date_Last_Ran'};
 
+linkageCols = {'EndNodes'};
+
 varNames = fieldnames(struct);
 
 % Convert data types.
+varNamesNew = varNames;
 for i=1:length(varNames)
     varName = varNames{i};
     for j=1:length(struct)
         var = struct(j).(varName);
 
-        if ismember(varName,numericCols)
+        if ismember(varName,linkageCols)
+            [col1, col2] = getLinkageCols(var);
+            data(j).(col1) = var{1};
+            data(j).(col2) = var{2};
+            struct(j).(col1) = var{1};
+            struct(j).(col2) = var{2};
+            % varNamesNew(ismember(varNamesNew,varName)) = [];
+            % varNamesNew = [varNamesNew; col1; col2];
+            continue;
+        elseif ismember(varName,numericCols)
             var = num2str(var);
         elseif ismember(varName,jsonCols)
-            var = ['''' jsonencode(var) ''''];
+            var = jsonencode(var);
         elseif ismember(varName,dateCols)
-            var = ['''' char(var) ''''];
+            var = char(var);
         elseif ismissing(var)
             var = '';
         else
-            var = ['''' char(var) ''''];
+            var = char(var);
         end
 
-        assert(ischar(var));
+        assert(ischar(var));        
         data(j).(varName) = var;
     end
 
 end
+
+varNames = fieldnames(struct); % Now with linkage column headers added.
+varNames(ismember(varNames,linkageCols)) = []; % Remove linkage col variables (end nodes)
 
 % Put the data into the sql query.
 if isequal(type,'UPDATE')
@@ -65,7 +80,7 @@ if isequal(type,'INSERT')
         for i=1:length(varNames)
             var = data(j).(varNames{i});
             assert(ischar(var));
-            valsStr = [valsStr var ', '];
+            valsStr = [valsStr '''' var ''', '];
         end
         if j<length(data)
             valsStr = [valsStr(1:end-2) '), ('];

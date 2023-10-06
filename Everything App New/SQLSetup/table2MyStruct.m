@@ -65,11 +65,11 @@ for i=1:length(varNames)
     if isequal(format,'cell')
         data.(varName) = var; 
     else
-        for j=1:length(var)
-            if iscell(var)
+        for j=1:size(var,1)
+            if iscell(var) && isscalar(var(j,:))
                 data(j).(varName) = var{j};
             elseif ~ischar(var)
-                data(j).(varName) = var(j);
+                data(j).(varName) = var(j,:);
             else
                 data(j).(varName) = var;
                 break;

@@ -16,12 +16,18 @@ class = className2Abbrev(type);
 classPlural = makeClassPlural(class);
 tablename = [classPlural '_' suffix];
 
-sqlquery = struct2SQL(tablename, classStruct, 'INSERT');
-execute(conn, sqlquery);
-
 if ~isempty(instanceID)
     Name = {classStruct.UUID};
     OutOfDate = classStruct.OutOfDate;
-    nodeProps = table(Name, OutOfDate);
-    globalG = addnode(globalG, nodeProps);
+    nodeProps = table(Name, OutOfDate);    
+    try
+        globalG = addnode(globalG, nodeProps);
+    catch e        
+        if ~contains(e.message,'Node names must be unique.')
+            error(e);
+        end
+    end
 end
+
+sqlquery = struct2SQL(tablename, classStruct, 'INSERT');
+execute(conn, sqlquery);

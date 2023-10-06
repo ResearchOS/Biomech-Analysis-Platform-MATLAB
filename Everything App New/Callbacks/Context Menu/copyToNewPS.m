@@ -21,6 +21,9 @@ prev = loadJSON(uuid);
 instanceID = createID_Instance(abstractID, type);
 newUUID = genUUID(type, abstractID, instanceID);
 name = promptName('Enter New Name',prev.Name);
+if isempty(name)
+    return;
+end
 prev.UUID = newUUID;
 prev.Name = name;
 nodeIdx = ismember(globalG.Nodes.Name,uuid);
@@ -40,6 +43,9 @@ if ~isdag(tmpG)
     return;
 end
 globalG = tmpG;
+saveClass(prev);
+% linkObjs(edgesTable.EndNodes(:,1),edgesTable.EndNodes(:,2));
+linkObjs(edgesTable);
 
 %% 4. Update the GUI.
 uiTree = getUITreeFromNode(selNode);
@@ -54,19 +60,24 @@ switch uiTree
     otherwise        
         fillUITree(fig, type, uiTree, ''); % Search term should be re-implemented at a later date.
 end
-selectNode(uiTree, uuid);
-
-%% 5. Commit the changes in SQL and the digraph.
-saveClass(prev);
-linkObjs(edgesTable.EndNodes(:,1),edgesTable.EndNodes(:,2));
-
-newUUIDs = copyToNew(uuid); % By default, not creating a whole new analysis. In the future, ask the user (or have a default setting)
+selectNode(uiTree, newUUID);
 
 Current_View = getCurrent('Current_View');
 struct = loadJSON(Current_View);
-struct.InclNodes = [struct.InclNodes; newUUIDs];
-writeJSON(struct);
+if ismember(uuid, struct.InclNodes)
+    addNodesButtonPushed(fig);    
+end
 
-refreshDigraph(fig);
 
-currentProjectButtonPushed(fig);
+
+%% 5. Commit the changes in SQL and the digraph.
+
+
+% newUUIDs = copyToNew(uuid); % By default, not creating a whole new analysis. In the future, ask the user (or have a default setting)
+% 
+
+
+% 
+% refreshDigraph(fig);
+% 
+% currentProjectButtonPushed(fig);

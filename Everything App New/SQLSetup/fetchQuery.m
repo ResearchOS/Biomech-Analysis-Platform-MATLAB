@@ -19,19 +19,55 @@ cols = strrep(cols, ' ', ''); % Remove the white space (can SQL columns have spa
 
 colNames = strsplit(cols,',');
 
+%% If '*' is used instead of column names.
+if isequal(colNames,{'*'})
+    % Get the table name
+    spaceIdx = strfind(sqlquery,' '); % Idx of all spaces in the SQL query
+    beforeTableNameSpaceNum = find(ismember(spaceIdx,fromIdx+4)); % The space number of the space after 'FROM'
+    tablenameStartIdx = spaceIdx(beforeTableNameSpaceNum)+1;
+    if beforeTableNameSpaceNum==length(spaceIdx)
+        if isequal(sqlquery(end),';')
+            tablenameEndIdx = length(sqlquery)-1; % With a semicolon
+        else
+            tablenameEndIdx = length(sqlquery); % Assumes no semicolon
+        end
+    else
+        tablenameEndIdx = spaceIdx(beforeTableNameSpaceNum+1)-1;
+    end
+    tablename = sqlquery(tablenameStartIdx:tablenameEndIdx);
+    info = sqlfind(conn,tablename);
+    colNames = cellstr(info.Columns{1});
+end
+
+%% Ensure that everything is a cell or char or numeric. No strings!
+% NOTE: ALWAYS ENSURE THAT EVERY FIELD IS RETURNED AS EMPTY CELL IF NOT
+% PRESENT, OR AS THE PROPER TYPE (SPECIFIED BY ALL COL TYPES) IF IT IS
+% PRESENT.
+
+% SHOULD COMPLEMENT/ALREADY BE DONE IN TABLE2MYSTRUCT?
+colTypes = allColTypes();
+colTypeFldNames = fieldnames(colTypes);
 for i=1:length(colNames)
 
     colName = colNames{i};
 
     if ~isfield(t,colName)
         t.(colName) = {};
-    elseif ~iscell(t.(colName))
+        continue;
+    end
+
+    % for j=1:length(colTypeFldNames)
+    %     if ismember(colName,colTypes.(colTypeFldNames{j}))
+    % 
+
+    if ~iscell(t.(colName))
         if ischar(t.(colName))
             t.(colName) = {t.(colName)};
+        elseif isstring(t.(colName))
+            t.(colName) = cellstr(t.(colName));
         end
     end
 
-    assert(iscell(t.(colName)) || ischar(t.(colName)) || isnumeric(t.(colName)));
-    assert(~isstring(t.(colName)));
+    assert(~isstring(t.(colName)));  
     
 end

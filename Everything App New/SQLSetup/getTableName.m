@@ -7,11 +7,15 @@ function [tablename] = getTableName(class, isInstance)
 
 if nargin==1 || islogical(isInstance)
     if nargin==1
-        assert(all(isUUID(class)));
-        isInstance = true;
-        [class, ~, instanceID] = deText(class);
-        if isempty(instanceID)
-            isInstance = false;
+        try
+            assert(all(isUUID(class)));
+            isInstance = true;
+            [class, ~, instanceID] = deText(class);
+            if isempty(instanceID)
+                isInstance = false;
+            end
+        catch
+            isInstance = false; % If class name not UUID is provided.
         end
     end
 

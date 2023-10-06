@@ -8,14 +8,6 @@ end
 
 assert(ismember(upper(type),{'INSERT','UPDATE'}));
 
-numericCols = {'OutOfDate','IsHardCoded','Num_Header_Rows','UsesConds'};
-jsonCols = {'Data_Path','Project_Path','Process_Queue','Tags','LogsheetVar_Params','Logsheet_Path',...
-    'Logsheet_Parameters','Data_Parameters','HardCodedValue','InputVariablesNamesInCode','OutputVariablesNamesInCode','SpecifyTrials',...
-    'Current_View','InclNodes','Current_Logsheet','Current_Analysis'};
-dateCols = {'Date_Created','Date_Modified','Date_Last_Ran'};
-
-linkageCols = {'EndNodes'};
-
 varNames = fieldnames(struct);
 
 % Convert data types.
@@ -25,7 +17,7 @@ for i=1:length(varNames)
     for j=1:length(struct)
         var = struct(j).(varName);
 
-        if ismember(varName,linkageCols)
+        if ismember(varName,colTypes.linkageCols)
             [col1, col2] = getLinkageCols(var);
             data(j).(col1) = var{1};
             data(j).(col2) = var{2};
@@ -34,11 +26,11 @@ for i=1:length(varNames)
             % varNamesNew(ismember(varNamesNew,varName)) = [];
             % varNamesNew = [varNamesNew; col1; col2];
             continue;
-        elseif ismember(varName,numericCols)
+        elseif ismember(varName,colTypes.numericCols)
             var = num2str(var);
-        elseif ismember(varName,jsonCols)
+        elseif ismember(varName,colTypes.jsonCols)
             var = jsonencode(var);
-        elseif ismember(varName,dateCols)
+        elseif ismember(varName,colTypes.dateCols)
             var = char(var);
         elseif ismissing(var)
             var = '';

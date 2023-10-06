@@ -2,7 +2,7 @@ function []=fillUITree(fig, class, uiTree, searchTerm, sortDropDown)
 
 %% PURPOSE: FILL IN THE UI TREE.
 
-global conn globalG;
+global globalG;
 
 delete(uiTree.Children);
 

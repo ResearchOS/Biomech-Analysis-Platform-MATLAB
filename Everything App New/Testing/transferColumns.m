@@ -59,6 +59,6 @@ end
 headers = {lgInst.LogsheetVar_Params.Headers};
 vars = {lgInst.LogsheetVar_Params.Variables};
 for i=1:length(headers)
-    sqlquery = ['INSERT INTO VR_LG (LG_ID, VR_ID, HeaderName) VALUES (''' lgInst.UUID ''', ' vars{i} ''', ' headers{i} ''');'];
+    sqlquery = ['INSERT INTO LG_VR (LG_ID, VR_ID, HeaderName) VALUES (''' lgInst.UUID ''', ' vars{i} ''', ' headers{i} ''');'];
     execute(conn, sqlquery);
 end

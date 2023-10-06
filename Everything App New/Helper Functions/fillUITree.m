@@ -9,13 +9,7 @@ delete(uiTree.Children);
 tablename = getTableName(class);
 
 sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
-t = fetch(conn,sqlquery);
-t = table2MyStruct(t);
-
-if ~iscell(t.UUID)
-    t.UUID = {t.UUID};
-    t.Name = {t.Name};
-end
+t = fetchQuery(sqlquery);
 
 allUUIDs = t.UUID;
 allNames = t.Name;

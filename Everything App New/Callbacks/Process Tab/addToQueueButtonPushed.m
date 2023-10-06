@@ -4,7 +4,7 @@ function []=addToQueueButtonPushed(src,uuids)
 % Uses the reachability matrix using transclosure to determine
 % dependencies.
 
-global conn globalG;
+global globalG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -68,11 +68,10 @@ uuids = uuids(~inQueueIdx);
 G = globalG;
 
 % Get the out of date values for all PR instances.
-sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
-t = fetch(conn, sqlquery);
-t = table2MyStruct(t);
-outOfDateIdx = t.OutOfDate==1;
-outOfDateUUID = t.UUID(outOfDateIdx);
+% sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
+% t = fetchQuery(sqlquery);
+% outOfDateIdx = t.OutOfDate==1;
+% outOfDateUUID = t.UUID(outOfDateIdx);
 
 idx = ismember(G.Nodes.Name,uuids); % Get UUIDs index in digraph.
 

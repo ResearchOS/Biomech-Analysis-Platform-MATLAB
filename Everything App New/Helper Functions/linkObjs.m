@@ -28,7 +28,7 @@ if nargin==1
         msg = 'Table not in the proper format for a digraph edgetable';
         return;
     end
-    tmpStruct = table2MyStruct(tmpTable,'struct');
+    edgeStruct = table2MyStruct(tmpTable,'struct');
     assert(all(isUUID(tmpTable.EndNodes(:,1))));
     assert(all(isUUID(tmpTable.EndNodes(:,2))));    
 elseif nargin==2
@@ -59,35 +59,35 @@ elseif nargin==2
     assert(all(isUUID(rightObjs)));
     EndNodes(:,1) = leftObjs;
     EndNodes(:,2) = rightObjs;
-    tmpStruct = table2MyStruct(table(EndNodes),'struct');
+    edgeStruct = table2MyStruct(table(EndNodes),'struct');
     clear leftObjs rightObjs;
 end
     
-
 %% Ensure that the struct has all of the column names.
+endNodes = [edgeStruct.EndNodes];
+rightObjs = endNodes(:,2);
+leftObjs = endNodes(:,1);
+
+numLinks = size(endNodes,1);
+
 allColNames = {'EndNodes','NameInCode','Subvariable'};
-missingColNames = allColNames(~ismember(allColNames,fieldnames(tmpStruct)));
+missingColNames = allColNames(~ismember(allColNames,fieldnames(edgeStruct)));
 for i=1:length(missingColNames)
-    for j=1:length(tmpStruct)
-        tmpStruct(j).(missingColNames{i}) = {'NULL'};
+    for j=1:length(edgeStruct)
+        edgeStruct(j).(missingColNames{i}) = {'NULL'};
     end
 end
 
 
 %% Everything from here down deals with the edgeTable representation of the linkages.
-endNodes = [tmpStruct.EndNodes];
-rightObjs = endNodes(:,2);
-leftObjs = endNodes(:,1);
-
-numLinks = size(endNodes,1);
 
 %% Get the table and column names
 tablenamesAll = sqlfind(conn,'');
 tablenames = cellstr(tablenamesAll.Table);
 
 %% Ensure that all columns are in the proper order. 
-% For all tables except PR_VR and VR_PR, column order is [target, source]
-% For PR_VR and VR_PR, column order is [source, target]
+% Table name order is [source, target], column order may not agree but
+% that doesn't matter.
 allTypes = getTypes();
 for i=1:numLinks
 
@@ -106,37 +106,45 @@ for i=1:numLinks
     end
     assert(sum(tableIdx)==1);
 
-    tablename = tablenames{tableIdx};
-    tableInfo = tablenamesAll(tableIdx,:);
+    tablename = tablenames{tableIdx};    
+    tableCols = strsplit(tablename,'_');
 
-    col1 = char(tableInfo.Columns{1}(1));
-    col2 = char(tableInfo.Columns{1}(2));
     % Switch the left and right objects if necessary.
-    if ismember(tablename,{'VR_PR','PR_VR'})
-        if contains(col1,targetType)
-            tmpStruct(i).EndNodes(1,:) = tmpStruct(i).EndNodes([2 1]);
-        end
-    else
-        if contains(col1,sourceType)    
-            tmpStruct(i).EndNodes(1,:) = tmpStruct(i).EndNodes([2 1]);
-        end
+    if ~isequal(tablename,[sourceType '_' targetType])
+        edgeStruct(i).EndNodes(1,:) = edgeStruct(i).EndNodes([2 1]);
     end
 
-    sourceType = deText(tmpStruct(i).EndNodes{1});
-    targetType = deText(tmpStruct(i).EndNodes{2});
-    assert(contains(col1,targetType) && contains(col2, sourceType)); % Check that things are being put in the proper column.
+    sourceType = deText(edgeStruct(i).EndNodes{1});
+    targetType = deText(edgeStruct(i).EndNodes{2});
+    assert(contains(tableCols{1},sourceType) && contains(tableCols{2}, targetType)); % Check that things are being put in the proper column.
 
 end
 
 %% Link the objects
 for i=1:numLinks
-    sqlquery = struct2SQL(tablename, tmpStruct(i), 'INSERT');
-    leftObj = tmpStruct(i).EndNodes{1}; % Opposite because that's how the tables are.
-    rightObj = tmpStruct(i).EndNodes{2};
+
+    sourceObj = edgeStruct(i).EndNodes{1}; % Opposite because that's how the tables are.
+    targetObj = edgeStruct(i).EndNodes{2};
+    sourceType = deText(sourceObj);
+    targetType = deText(targetObj);
+    tablename = getTableName(sourceType, targetType);
+
+    switch tablename
+        case 'VR_PR'
+            extraColNames = {};
+        case 'PR_VR'
+            extraColNames = {'Subvariable'};
+        otherwise
+            extraColNames = {'NameInCode','Subvariable'};
+    end
+
+    sqlStruct = rmfield(edgeStruct, extraColNames); % The data to be inserted to SQL.
+    
+    sqlquery = struct2SQL(tablename, sqlStruct(i), 'INSERT');    
 
     try
         tmpG = globalG;
-        edgeTable = struct2table(tmpStruct(i));
+        edgeTable = struct2table(edgeStruct(i));
         % Check that we are never adding any new nodes here, just make new edges.
         assert(all(ismember(edgeTable.EndNodes(:,1),globalG.Nodes.Name)));
         assert(all(ismember(edgeTable.EndNodes(:,2),globalG.Nodes.Name)));
@@ -145,7 +153,7 @@ for i=1:numLinks
         % Check that this new edge does not result in a cyclic graph.
         if ~isdag(tmpG)
             success = false;
-            msg = ['Cannot link ' leftObj ' and ' rightObj ' because it forms a cyclic graph'];
+            msg = ['Cannot link ' sourceObj ' and ' targetObj ' because it forms a cyclic graph'];
             return;
         else % If there are no cycles, add the link to the SQL database and update the globalG.
             execute(conn, sqlquery);

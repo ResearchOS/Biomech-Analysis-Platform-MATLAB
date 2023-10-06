@@ -33,8 +33,7 @@ for i=1:length(allTypes)
     end
     tablename = getTableName(type, isInstance);
     sqlquery = ['SELECT UUID, OutOfDate FROM ' tablename];
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
+    t = fetchQuery(sqlquery);
     Name = [Name; t.UUID];
     OutOfDate = [OutOfDate; t.OutOfDate];
 
@@ -60,11 +59,7 @@ for i=1:length(tablenames)
     col2 = [type2 '_ID'];
 
     sqlquery = ['SELECT * FROM ' tablename];
-    t = fetch(conn, sqlquery);
-    t = table2MyStruct(t);
-    if isempty(fieldnames(t))
-        continue;
-    end
+    t = fetchQuery(sqlquery);
     if isempty(t.(col1))
         continue;
     end
@@ -79,12 +74,7 @@ for i=1:length(tablenames)
         end
     end
 
-    % Flip column order for VR & PR connections because they're in opposite order from other tables' columns.
-    if ismember(tablename,{'VR_PR','PR_VR'})
-        EndNodes = [EndNodes; t.(col1), t.(col2)];
-    else
-        EndNodes = [EndNodes; t.(col2), t.(col1)];
-    end
+    EndNodes = [EndNodes; t.(col1), t.(col2)];
 
     % NameInCode & Subvariable will only be for VR & PR connections. All
     % other object types, this column will just be empty.

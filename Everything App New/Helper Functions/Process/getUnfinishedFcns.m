@@ -3,8 +3,6 @@ function [idx] = getUnfinishedFcns(G)
 %% PURPOSE: GET THE LOGICAL INDEX OF THE PROCESS FUNCTIONS IN G.NODES.NAME
 %  THAT HAVE NOT HAD ALL VARIABLES ADDED.
 
-global conn;
-
 names = G.Nodes.Name;
 [type, abstractID] = deText(names);
 abstractUUIDs = cell(size(names));
@@ -13,30 +11,21 @@ for i=1:length(names)
 end
 
 sqlquery = ['SELECT PR_ID, NameInCode FROM VR_PR;'];
-tIn = fetch(conn, sqlquery);
-tIn = table2MyStruct(tIn);
+tIn = fetchQuery(sqlquery);
 prIn = tIn.PR_ID;
 prInName = tIn.NameInCode;
-if isempty(prIn)
-    prIn = {};
-end
 
 sqlquery = ['SELECT PR_ID, NameInCode FROM PR_VR;'];
-tOut = fetch(conn, sqlquery);
-tOut = table2MyStruct(tOut);
+tOut = fetchQuery(sqlquery);
 prOut = tOut.PR_ID;
 prOutName = tOut.NameInCode;
-if isempty(prOut)
-    prOut = {};
-end
 
 % pr = [prIn; prOut];
 
 % idx = ismember(names,pr);
 
 sqlquery = ['SELECT UUID, InputVariablesNamesInCode, OutputVariablesNamesInCode FROM Process_Abstract'];
-t = fetch(conn, sqlquery);
-absPR = table2MyStruct(t);
+absPR = fetchQuery(sqlquery);
 
 % [~,ia,ib] = intersect(abstractUUIDs,absPR.UUID,'stable');
 absUUIDs = absPR.UUID;

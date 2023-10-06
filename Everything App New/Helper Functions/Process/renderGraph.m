@@ -136,8 +136,7 @@ if isPopup
 end
 
 sqlquery = ['SELECT UUID, OutOfDate FROM Variables_Instances'];
-t = fetch(conn, sqlquery);
-t = table2MyStruct(t);
+t = fetchQuery(sqlquery);
 outOfDateIdx = t.OutOfDate==1;
 notDoneIdx = find(ismember(G.Edges.Name,t.UUID(outOfDateIdx)));
 highlight(h, 'Edges', notDoneIdx, 'LineStyle','--');
@@ -155,10 +154,5 @@ if exist('edgeID','var') && ~isempty(edgeID)
     highlight(h, 'Edges', edgeIdx, 'EdgeColor', rgb('orange'),'LineWidth',2);
     labeledge(h, edgeIdx, edgenames(edgeIdx));
 end
-
-% if ~isPopup
-%     viewG = G;
-%     % setappdata(fig,'markerSize',markerSize);
-% end
 
 drawnow;

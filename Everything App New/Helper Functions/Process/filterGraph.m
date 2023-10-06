@@ -2,25 +2,16 @@ function [G] = filterGraph(src, vwUUID)
 
 %% PURPOSE: FILTER THE GRAPH OF THE CURRENT ANALYSIS FOR THE CURRENT VIEW. ASSUME IT'S ALREADY UP TO DATE.
 
-global conn globalG viewG;
+global globalG viewG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
 sqlquery = ['SELECT * FROM Views_Instances WHERE UUID = ''' vwUUID ''';'];
-t = fetch(conn, sqlquery);
-t = table2MyStruct(t);
+t = fetchQuery(sqlquery);
 
 inclNodes = t.InclNodes;
 name = t.Name;
-
-if isempty(inclNodes)
-    inclNodes = {};    
-end
-
-if isempty(name)
-    name = {};
-end
 
 if isempty(viewG)
     fcnsG = getFcnsOnlyDigraph(globalG);

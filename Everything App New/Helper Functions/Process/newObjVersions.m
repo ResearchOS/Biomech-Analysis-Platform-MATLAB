@@ -45,15 +45,13 @@ for i=1:length(types)
     currTypeObjs = objsToRename(currTypeIdx);     
     uuidStr = getCondStr(currTypeObjs);
     sqlquery = ['SELECT * FROM ' tablename ' WHERE UUID IN ' uuidStr ';'];
-    t = fetch(conn, sqlquery);
-    allStruct = table2MyStruct(t,'struct');
+    allStruct = fetchQuery(sqlquery);
     [~,order] = sort(currTypeObjs);
     allStruct(order) = allStruct; % Reorder struct fields to match currTypeObjs
 
     % Create new UUID's with same abstract ID.    
     sqlquery = ['SELECT UUID FROM ' tablename];
-    uuids = fetch(conn, sqlquery);
-    uuids = table2MyStruct(uuids);
+    uuids = fetchQuery(sqlquery);
     uuids = uuids.UUID;
 
     currTypeAbstractIDs = abstractIDs(currTypeIdx);

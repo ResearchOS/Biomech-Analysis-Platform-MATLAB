@@ -34,9 +34,8 @@ nameInCode = strsplit(text,' ');
 nameInCode = nameInCode{1};
 
 sqlquery = ['SELECT Subvariable FROM VR_PR WHERE PR_ID = ''' prUUID ''' AND VR_ID = ''' vrUUID ''' AND NameInCode = ''' nameInCode ''';'];
-t = fetch(conn, sqlquery);
-t = table2MyStruct(t);
-if isempty(fieldnames(t))
+t = fetchQuery(sqlquery);
+if isempty(t.Subvariable)
     return;
 end
 

@@ -2,8 +2,6 @@ function []=selectAnalysisButtonPushed(src)
 
 %% PURPOSE: SHOW THE ENTRIES FOR THE CURRENTLY SELECTED ANALYSIS.
 
-global conn;
-
 disp('Switching to new analysis!');
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -33,20 +31,15 @@ setCurrent(Current_Analysis,'Current_Analysis');
 Current_View = getCurrent('Current_View');
 
 % Change the items in the views drop down
-sqlquery = ['SELECT VW_ID FROM AN_VW WHERE AN_ID = ''' Current_Analysis ''';'];
-t = fetch(conn, sqlquery);
-t = table2MyStruct(t);
+sqlquery = ['SELECT VW_ID FROM VW_AN WHERE AN_ID = ''' Current_Analysis ''';'];
+t = fetchQuery(sqlquery);
 uuids = t.VW_ID;
 str = getCondStr(uuids);
-sqlquery = ['SELECT UUID, Name FROM Views_Instances WHERE UUID IN ' str];
-t = fetch(conn, sqlquery);
-t = table2MyStruct(t);
-viewNames = t.Name;
 
-if ~iscell(viewNames)
-    viewNames = {viewNames};
-    uuids = {t.UUID};
-end
+sqlquery = ['SELECT UUID, Name FROM Views_Instances WHERE UUID IN ' str];
+t = fetchQuery(sqlquery);
+viewNames = t.Name;
+uuids = t.UUID;
 
 handles.Process.viewsDropDown.Items = viewNames;
 handles.Process.viewsDropDown.ItemsData = uuids;

@@ -40,20 +40,12 @@ for i=1:length(uniqueTypes)
     end
     tablename = getTableName(uniqueTypes{i}, isInstance);
     sqlquery = ['SELECT UUID, Name FROM ' tablename];
-    t = fetch(conn, sqlquery);            
-    t = table2MyStruct(t);
-
-    if isempty(fieldnames(t))
-        continue;
-    end
+    t = fetchQuery(sqlquery);
 
     if isempty(t.UUID)
         continue;
     end
-    if ~iscell(t.UUID)
-        t.UUID = {t.UUID};
-        t.Name = {t.Name};
-    end    
+
     [type] = deText(t.UUID{1});
     for j=1:length(uuids)
         uuid = uuids{j};          

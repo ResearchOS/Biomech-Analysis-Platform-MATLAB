@@ -2,7 +2,6 @@ function [st]=getST(uuid)
 
 %% PURPOSE: GET THE SPECIFY TRIALS FOR THE SPECIFIED UUID FROM THE LINKAGE MATRIX.
 % UUID is in the right column
-global conn;
 
 [type, abstractID, instanceID] = deText(uuid);
 
@@ -19,14 +18,7 @@ end
 tablename = getTableName(type, isInstance);
 
 sqlquery = ['SELECT SpecifyTrials FROM ' tablename ' WHERE UUID = ''' uuid ''';'];
-st = fetch(conn, sqlquery);
-st = table2MyStruct(st);
-
-if isempty(fieldnames(st))
-    st = {};
-    return;
-end
-
+st = fetchQuery(sqlquery);
 st = st.SpecifyTrials;
 
 if isempty(st) || isequal(st,'NULL')

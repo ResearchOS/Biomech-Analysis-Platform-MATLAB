@@ -79,11 +79,7 @@ setappdata(fig,'multiSelect',false); % Disable multiselect on graph by default
 %% Settings tab
 %% Load the list of all users, put them into the users dropdown
 sqlquery = ['SELECT Username FROM Users'];
-t = fetch(conn, sqlquery);
-t = table2MyStruct(t);
-if ~iscell(t.Username)
-    t.Username = {t.Username};
-end
+t = fetchQuery(sqlquery);
 handles.Settings.usersDropDown.Items = t.Username;
 handles.Settings.usersDropDown.Value = getCurrent('Current_User');
 

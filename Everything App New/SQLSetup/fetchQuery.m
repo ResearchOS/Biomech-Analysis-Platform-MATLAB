@@ -1,15 +1,23 @@
-function [t] = fetchQuery(sqlquery)
+function [t] = fetchQuery(sqlquery,charFmt, resultFormat)
 
 %% PURPOSE: RUN THE SQL SELECT QUERY AND FORMAT THE OUTPUT.
-% Output is ALWAYS a cell, empty or not.
+% Output is ALWAYS a cell, empty or not, unless.
 
 global conn;
+
+if nargin==1
+    charFmt = 'cell'; % Other option: 'char'
+end
+
+if nargin<=2
+    resultFormat = 'cell'; % Other option: 'struct'
+end
 
 assert(contains(sqlquery,'SELECT'));
 assert(contains(sqlquery,'FROM'));
 
 t = fetch(conn, sqlquery);
-t = table2MyStruct(t);
+t = table2MyStruct(t, resultFormat);
 
 selIdx = strfind(sqlquery,'SELECT');
 fromIdx = strfind(sqlquery,'FROM');
@@ -45,8 +53,8 @@ end
 % PRESENT.
 
 % SHOULD COMPLEMENT/ALREADY BE DONE IN TABLE2MYSTRUCT?
-colTypes = allColTypes();
-colTypeFldNames = fieldnames(colTypes);
+% colTypes = allColTypes();
+% colTypeFldNames = fieldnames(colTypes);
 for i=1:length(colNames)
 
     colName = colNames{i};
@@ -56,18 +64,23 @@ for i=1:length(colNames)
         continue;
     end
 
+    if ischar(t.(colName)) && isequal(charFmt,'cell')
+        t.(colName) = {t.(colName)};
+    end
+        
+
     % for j=1:length(colTypeFldNames)
     %     if ismember(colName,colTypes.(colTypeFldNames{j}))
     % 
 
-    if ~iscell(t.(colName))
-        if ischar(t.(colName))
-            t.(colName) = {t.(colName)};
-        elseif isstring(t.(colName))
-            t.(colName) = cellstr(t.(colName));
-        end
-    end
-
-    assert(~isstring(t.(colName)));  
+    % if ~iscell(t.(colName))
+    %     if ischar(t.(colName))
+    %         t.(colName) = {t.(colName)};
+    %     elseif isstring(t.(colName))
+    %         t.(colName) = cellstr(t.(colName));
+    %     end
+    % end
+    % 
+    % assert(~isstring(t.(colName)));  
     
 end

@@ -4,4 +4,4 @@ function [data]=loadJSON(uuid)
 
 tablename = getTableName(uuid);
 sqlquery = ['SELECT * FROM ' tablename ' WHERE UUID = ''' uuid ''';'];
-data = fetchQuery(sqlquery);
+data = fetchQuery(sqlquery,'char');

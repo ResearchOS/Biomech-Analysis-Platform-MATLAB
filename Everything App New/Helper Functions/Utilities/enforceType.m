@@ -1,0 +1,51 @@
+function [typeVar] = enforceType(var, varName)
+
+%% PURPOSE: ENSURE THAT A VARIABLE IS RETURNED FROM SQL AS THE CORRECT TYPE/FORMAT
+
+colTypes = allColTypes();
+colTypeFldNames = fieldnames(colTypes);
+
+%% Determine what type of variable this is:
+isChar = true;
+for i=1:length(colTypeFldNames)
+    colTypeFldName = colTypeFldNames{i};
+    if ismember(varName,colTypes.(colTypeFldName))
+        isChar = false;
+        break;
+    end
+end
+
+if isChar
+    colTypeFldName = 'char';
+end
+
+switch colTypeFldName
+    case 'char' % type: cell array of chars
+        if isstring(var)
+            if ~isscalar(var)
+                typeVar = cellstr(var);                
+            elseif ~ismissing(var)
+                typeVar = char(var);                
+            elseif ismissing(var)
+                typeVar = '';
+            end
+        end
+        assert(ischar(typeVar) || iscell(typeVar));
+    case 'numericCols' % type: double
+        typeVar = double(var);
+        assert(isnumeric(typeVar));
+    case 'jsonCols' % type: struct
+        try
+            typeVar = jsondecode(var);
+            assert(isstruct(typeVar) || iscell(typeVar));
+        catch
+            typeVar = {};
+        end       
+    case 'linkageCols' % type: Nx2 matrix (or table?)
+        typeVar = var;
+        assert(iscell(typeVar));
+        assert(size(typeVar,2)==2);
+    case 'dateCols' % type: datetime
+        typeVar = datetime(var);
+        assert(isdatetime(typeVar));
+end

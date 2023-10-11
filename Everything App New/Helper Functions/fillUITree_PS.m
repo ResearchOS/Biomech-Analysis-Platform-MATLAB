@@ -14,7 +14,7 @@ uuids = {tmp.UUID};
 % The project-specific class instances
 tablename = getTableName(class, true);
 sqlquery = ['SELECT UUID, Name FROM ' tablename ';'];
-t = fetchQuery(sqlquery);
+t = fetchQuery(sqlquery,'cell');
 
 if isempty(t.UUID)
     return;

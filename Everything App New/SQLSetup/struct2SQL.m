@@ -7,6 +7,7 @@ if nargin==2
 end
 
 assert(ismember(upper(type),{'INSERT','UPDATE'}));
+colTypes = allColTypes();
 
 varNames = fieldnames(struct);
 
@@ -19,8 +20,8 @@ for i=1:length(varNames)
 
         if ismember(varName,colTypes.linkageCols)
             [col1, col2] = getLinkageCols(var);
-            data(j).(col1) = var{1};
-            data(j).(col2) = var{2};
+            data(j).(col1) = ['''' var{1} ''''];
+            data(j).(col2) = ['''' var{2} ''''];
             struct(j).(col1) = var{1};
             struct(j).(col2) = var{2};
             % varNamesNew(ismember(varNamesNew,varName)) = [];
@@ -39,13 +40,13 @@ for i=1:length(varNames)
         end
 
         assert(ischar(var));        
-        data(j).(varName) = var;
+        data(j).(varName) = ['''' var ''''];
     end
 
 end
 
 varNames = fieldnames(struct); % Now with linkage column headers added.
-varNames(ismember(varNames,linkageCols)) = []; % Remove linkage col variables (end nodes)
+varNames(ismember(varNames,colTypes.linkageCols)) = []; % Remove linkage col variables (end nodes)
 
 % Put the data into the sql query.
 if isequal(type,'UPDATE')
@@ -72,7 +73,7 @@ if isequal(type,'INSERT')
         for i=1:length(varNames)
             var = data(j).(varNames{i});
             assert(ischar(var));
-            valsStr = [valsStr '''' var ''', '];
+            valsStr = [valsStr var ', '];
         end
         if j<length(data)
             valsStr = [valsStr(1:end-2) '), ('];

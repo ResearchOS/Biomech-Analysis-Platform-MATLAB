@@ -17,7 +17,6 @@ end
 
 function [var] = memoizedGetCurrent(varName, withID)
 var = [];
-global conn;
 
 %% Computer ID
 % Runs the first time, then will be memoized (and therefore faster)
@@ -31,7 +30,7 @@ rootSettingsVars = {'dbFile', 'Current_Project_Name',...
 
 if ismember(varName,rootSettingsVars)  
     sqlquery = ['SELECT VariableValue FROM Settings WHERE VariableName = ''' varName ''''];
-    var = fetchQuery(sqlquery);
+    var = fetchQuery(sqlquery,'char');
     var = var.VariableValue;
     if isempty(var)
         var = '';

@@ -2,8 +2,6 @@ function []=loadGUIState(fig)
 
 %% PURPOSE: LOAD THE GUI STATE
 
-global conn;
-
 handles=getappdata(fig,'handles');
 
 %% NEED TO ENSURE THAT THE PROPER ENTRIES IN THE UITREES ARE SELECTED FOR THE BELOW CODE TO WORK.
@@ -79,7 +77,7 @@ setappdata(fig,'multiSelect',false); % Disable multiselect on graph by default
 %% Settings tab
 %% Load the list of all users, put them into the users dropdown
 sqlquery = ['SELECT Username FROM Users'];
-t = fetchQuery(sqlquery);
+t = fetchQuery(sqlquery,'cell');
 handles.Settings.usersDropDown.Items = t.Username;
 handles.Settings.usersDropDown.Value = getCurrent('Current_User');
 

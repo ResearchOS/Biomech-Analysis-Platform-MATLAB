@@ -2,7 +2,7 @@ function []=oopgui()
 
 %% PURPOSE: IMPLEMENT THE PGUI IN AN OBJECT-ORIENTED FASHION
 % Check that the connection is valid or not. Close/delete it so the GUI can open a new clean connection.
-
+ 
 %% TODO: AN_LG, AN_ST, LG_VR
 global conn globalG;
 if ~isempty(conn) && isa(conn,'sqlite')

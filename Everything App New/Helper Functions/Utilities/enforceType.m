@@ -29,18 +29,29 @@ switch colTypeFldName
             elseif ismissing(var)
                 typeVar = '';
             end
+        elseif iscell(var)
+            typeVar = var;
+            assert(all(cellfun(@ischar, typeVar)));
         end
         assert(ischar(typeVar) || iscell(typeVar));
     case 'numericCols' % type: double
         typeVar = double(var);
         assert(isnumeric(typeVar));
     case 'jsonCols' % type: struct
-        try
-            typeVar = jsondecode(var);
-            assert(isstruct(typeVar) || iscell(typeVar));
-        catch
-            typeVar = {};
-        end       
+        if isstring(var) && ~isscalar(var)
+            var = cellstr(var);
+            typeVar = cell(size(var));
+            for i=1:length(var)
+                typeVar{i} = jsondecode(var{i});
+            end
+        else
+            try
+                typeVar = jsondecode(var);
+                assert(isstruct(typeVar) || iscell(typeVar));
+            catch
+                typeVar = {};
+            end
+        end
     case 'linkageCols' % type: Nx2 matrix (or table?)
         typeVar = var;
         assert(iscell(typeVar));

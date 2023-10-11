@@ -2,7 +2,7 @@ function []=copyToNewPS(src, event)
 
 %% PURPOSE: COPY THE SPECIFIED PS STRUCT TO A NEW PS STRUCT.
 
-global globalG viewG;
+global globalG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -42,10 +42,8 @@ if ~isdag(tmpG)
     disp('Cannot copy object as it creates a cyclic graph');
     return;
 end
-globalG = tmpG;
-saveClass(prev);
-% linkObjs(edgesTable.EndNodes(:,1),edgesTable.EndNodes(:,2));
-linkObjs(edgesTable);
+saveClass(prev); % Saves new nodes to SQL and digraph.
+linkObjs(edgesTable); % Saves new edges to SQL and digraph.
 
 %% 4. Update the GUI.
 uiTree = getUITreeFromNode(selNode);
@@ -65,7 +63,7 @@ selectNode(uiTree, newUUID);
 Current_View = getCurrent('Current_View');
 struct = loadJSON(Current_View);
 if ismember(uuid, struct.InclNodes)
-    addNodesButtonPushed(fig);    
+    addToViewButtonPushed(fig);    
 end
 
 

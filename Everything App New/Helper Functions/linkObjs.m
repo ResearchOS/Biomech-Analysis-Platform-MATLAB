@@ -30,7 +30,8 @@ if nargin==1
     end
     edgeStruct = table2MyStruct(tmpTable,'struct');
     assert(all(isUUID(tmpTable.EndNodes(:,1))));
-    assert(all(isUUID(tmpTable.EndNodes(:,2))));    
+    assert(all(isUUID(tmpTable.EndNodes(:,2))));   
+    EndNodes = tmpTable.EndNodes;
 elseif nargin==2
     % With 2 inputs, this is the UUID's of the objects, and it should be
     % converted to a table and then a struct.    
@@ -64,11 +65,10 @@ elseif nargin==2
 end
     
 %% Ensure that the struct has all of the column names.
-endNodes = [edgeStruct.EndNodes];
-rightObjs = endNodes(:,2);
-leftObjs = endNodes(:,1);
+rightObjs = EndNodes(:,2);
+leftObjs = EndNodes(:,1);
 
-numLinks = size(endNodes,1);
+numLinks = size(EndNodes,1);
 
 allColNames = {'EndNodes','NameInCode','Subvariable'};
 missingColNames = allColNames(~ismember(allColNames,fieldnames(edgeStruct)));
@@ -144,7 +144,7 @@ for i=1:numLinks
 
     try
         tmpG = globalG;
-        edgeTable = struct2table(edgeStruct(i));
+        edgeTable = struct2table(edgeStruct(i),'AsArray',true);
         % Check that we are never adding any new nodes here, just make new edges.
         assert(all(ismember(edgeTable.EndNodes(:,1),globalG.Nodes.Name)));
         assert(all(ismember(edgeTable.EndNodes(:,2),globalG.Nodes.Name)));

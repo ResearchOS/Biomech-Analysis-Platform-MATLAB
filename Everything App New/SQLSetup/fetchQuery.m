@@ -67,20 +67,5 @@ for i=1:length(colNames)
     if ischar(t.(colName)) && isequal(charFmt,'cell')
         t.(colName) = {t.(colName)};
     end
-        
-
-    % for j=1:length(colTypeFldNames)
-    %     if ismember(colName,colTypes.(colTypeFldNames{j}))
-    % 
-
-    % if ~iscell(t.(colName))
-    %     if ischar(t.(colName))
-    %         t.(colName) = {t.(colName)};
-    %     elseif isstring(t.(colName))
-    %         t.(colName) = cellstr(t.(colName));
-    %     end
-    % end
-    % 
-    % assert(~isstring(t.(colName)));  
     
 end

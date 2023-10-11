@@ -2,8 +2,6 @@ function []=addToViewButtonPushed(src,event)
 
 %% PURPOSE: ADD A PR FROM THE CURRENT ANALYSIS/GROUP/FUNCTION LIST TO THE CURRENT VIEW
 
-global conn;
-
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 

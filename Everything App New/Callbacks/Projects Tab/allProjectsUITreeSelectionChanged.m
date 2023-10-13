@@ -1,4 +1,4 @@
-function []=allProjectsUITreeSelectionChanged(src)
+function []=allProjectsUITreeSelectionChanged(src, event)
 
 %% PURPOSE: UPDATE THE DATA & PROJECT PATHS FOR THE CURRENTLY SELECTED PROJECT NODE.
 

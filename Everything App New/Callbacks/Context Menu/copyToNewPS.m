@@ -42,7 +42,7 @@ if ~isdag(tmpG)
     disp('Cannot copy object as it creates a cyclic graph');
     return;
 end
-saveClass(prev); % Saves new nodes to SQL and digraph.
+saveObj(prev); % Saves new nodes to SQL and digraph.
 linkObjs(edgesTable); % Saves new edges to SQL and digraph.
 
 %% 4. Update the GUI.

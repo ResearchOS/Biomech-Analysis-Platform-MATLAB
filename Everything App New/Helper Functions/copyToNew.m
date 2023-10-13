@@ -46,7 +46,7 @@ assert(isdag(tmp_globalG));
 for i=1:length(newUUIDs)
     a = loadJSON(uuids{i});
     a.UUID = newUUIDs{i};
-    saveClass(a); % Insert the newly renamed object into the database.
+    saveObj(a); % Insert the newly renamed object into the database.
 end
 for i=1:size(tmpG.Edges.EndNodes,1)
     linkObjs(tmpG.Edges.EndNodes{i,1},tmpG.Edges.EndNodes{i,2});

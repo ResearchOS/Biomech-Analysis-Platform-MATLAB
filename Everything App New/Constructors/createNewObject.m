@@ -1,8 +1,7 @@
-function [objStruct, absStruct] = createNewObject(instanceBool, class, name, abstractID, instanceID, saveObj)
+function [objStruct, absStruct] = createNewObject(instanceBool, class, name, abstractID, instanceID, saveObjBool, args)
 
 %% PURPOSE: CREATE A NEW STRUCT OF ANY CLASS
-% This function is only used when creating a *new* project. Not when
-% copying from an existing object.
+% This function is only used when creating a new object.
 
 % instanceBool: True: create an instance of an object, and abstract if not yet created. False: create an
 % abstract object
@@ -10,8 +9,6 @@ function [objStruct, absStruct] = createNewObject(instanceBool, class, name, abs
 % 1st output argument is the struct that was requested (instance or
 % abstract). 2nd output argument is always the abstract. This is helpful
 % when creating instance & abstract at the same time.
-
-global globalG;
 
 assert(islogical(instanceBool) && isscalar(instanceBool)); % Check that it's a boolean
 
@@ -39,7 +36,11 @@ if exist('instanceID','var')~=1
 end
 
 if exist('saveObj','var')~=1
-    saveObj = true;
+    saveObjBool = true;
+end
+
+if exist('args','var')~=1
+    args = '';
 end
 
 % Initialize the fields common to all structures (abstract & instances, all
@@ -53,25 +54,29 @@ end
 % instance object-specific fields.
 if createAbstract
     objStruct = initializeCommonStructFields(false, class, name, abstractID, instanceID);
-    absStruct = feval(['create' class 'Struct'],false, objStruct, saveObj);
-    if saveObj
-        saveClass(absStruct);        
+    absStruct = feval(['create' class 'Struct'],false, objStruct, saveObjBool, args);
+    if saveObjBool
+        saveObj(absStruct);        
     end
-    [type,abstractID] = deText(absStruct.UUID);
+    [type,abstractID] = deText(absStruct.UUID);    
 end
 
 if instanceBool
     objStruct = initializeCommonStructFields(true, class, name, abstractID, instanceID);
-    instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObj);    
-    if saveObj
-        saveClass(instStruct);         
+    instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObjBool, args);    
+    if saveObjBool
+        saveObj(instStruct);         
     end    
+end
+
+if exist('absStruct','var')~=1
+    absStruct = '';
 end
 
 end
 
 %% VARIABLE
-function struct = createVariableStruct(instanceBool, struct, saveObj)
+function struct = createVariableStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
     struct.HardCodedValue = [];
@@ -83,17 +88,15 @@ end
 end
 
 %% PROJECT
-function struct = createProjectStruct(instanceBool, struct, saveObj)
+function struct = createProjectStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
     computerID=getComputerID();
     struct.Data_Path.(computerID)=''; % Where the Raw Data Files are located.
     struct.Project_Path.(computerID)=''; % Where the project's files are located.    
-
-    % Create new analysis and assign it to the project.
-    anStruct = createNewObject(true, 'Analysis', 'Default','','', saveObj);
+       
     Current_User = getCurrent('Current_User');
-    struct.Current_Analysis.(Current_User) = anStruct.UUID;
+    struct.Current_Analysis.(Current_User) = args.Current_Analysis;
 else
     
 end
@@ -101,7 +104,7 @@ end
 end
 
 %% SPECIFY TRIALS
-function struct = createSpecifyTrialsStruct(instanceBool, struct, saveObj)
+function struct = createSpecifyTrialsStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
 
@@ -117,7 +120,7 @@ end
 end
 
 %% PROCESS
-function struct = createProcessStruct(instanceBool, struct, saveObj)
+function struct = createProcessStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
     struct.SpecifyTrials={};    
@@ -132,7 +135,7 @@ end
 end
 
 %% PROCESS GROUP
-function struct = createProcessGroupStruct(instanceBool, struct, saveObj)
+function struct = createProcessGroupStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
     
@@ -143,7 +146,7 @@ end
 end
 
 %% LOGSHEET
-function struct = createLogsheetStruct(instanceBool, struct, saveObj)
+function struct = createLogsheetStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
     computerID=getComputerID();
@@ -163,27 +166,14 @@ end
 end
 
 %% ANALYSIS
-function struct = createAnalysisStruct(instanceBool, struct, saveObj)
+function struct = createAnalysisStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
     struct.Tags = {};   
     Current_User=getCurrent('Current_User');    
 
-    % Create new view and assign it. Handle attempts at redundantly
-    % creating abstract object.
-    try
-        vwAbsStruct = createNewObject(false, 'View', 'ALL','000000','', saveObj);
-    catch e
-        if ~contains(e.message,'UNIQUE constraint failed')
-            error(e);
-        end
-    end
-    vwStruct = createNewObject(true, 'View','ALL','000000', '', saveObj);
-    struct.Current_View.(Current_User) = vwStruct.UUID;
-
-    logStruct = createNewObject(true, 'Logsheet', 'Default','','', saveObj);
-    struct.Current_Logsheet.(Current_User) = logStruct.UUID;
-
+    struct.Current_View.(Current_User) = args.Current_View;    
+    struct.Current_Logsheet.(Current_User) = args.Current_Logsheet;
     struct.Process_Queue.(Current_User) = {};
 else
     
@@ -192,7 +182,7 @@ end
 end
 
 %% VIEW
-function struct = createViewStruct(instanceBool, struct, saveObj)
+function struct = createViewStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
     struct.InclNodes = {};
@@ -203,7 +193,7 @@ end
 end
 
 %% PLOT
-function struct = createPlotStruct(instanceBool, struct, saveObj)
+function struct = createPlotStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
 
@@ -214,7 +204,7 @@ end
 end
 
 %% COMPONENT
-function struct = createComponentStruct(instanceBool, struct, saveObj)
+function struct = createComponentStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
 

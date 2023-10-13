@@ -38,7 +38,7 @@ lgUUID = genUUID('LG',lgAbsNew.UUID(3:end), instanceID);
 lgInst.UUID = lgUUID;
 lgInst.Abstract_UUID = lgAbsNew.UUID;
 lgInst.LogsheetVar_Params = cell2struct(struct2cell(lgInst.LogsheetVar_Params), {'Headers','Level','Type','Var_ID'});
-saveClass(lgInst); % Make new logsheet instance to match the existing abstract logsheet.
+saveObj(lgInst); % Make new logsheet instance to match the existing abstract logsheet.
 setCurrent(lgInst.UUID,'Current_Logsheet'); % 1.
 
 %% Process queue from project to analysis per user.

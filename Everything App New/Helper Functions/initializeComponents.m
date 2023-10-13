@@ -39,7 +39,7 @@ sortOptions=sort(sortOptions); % Alphabetical order
 handles.Projects.projectsLabel=uilabel(projectsTab,'Text','Projects','Tag','ProjectsLabel','FontWeight','bold');
 
 % 2. Add new project button
-handles.Projects.addProjectButton=uibutton(projectsTab,'push','Text','P+','Tag','AddProjectButton','Tooltip','Create new project','ButtonPushedFcn',@(addProjectButton,event) addProjectButtonPushed(addProjectButton));
+handles.Projects.addProjectButton=uibutton(projectsTab,'push','Text','P+','Tag','AddProjectButton','Tooltip','Create new project','ButtonPushedFcn',@componentCallback);
 
 % 3. Remove project button
 handles.Projects.removeProjectButton=uibutton(projectsTab,'push','Text','P-','Tag','RemoveProjectButton','Tooltip','Remove current project from the list','ButtonPushedFcn',@(removeProjectButton,event) removeProjectButtonPushed(removeProjectButton));
@@ -48,7 +48,7 @@ handles.Projects.removeProjectButton=uibutton(projectsTab,'push','Text','P-','Ta
 handles.Projects.sortProjectsDropDown=uidropdown(projectsTab,'Editable','off','Items',sortOptions,'Tooltip','Sort Projects','Tag','SortProjectsDropDown','Value',sortOptions{1},'ValueChangedFcn',@(sortProjectsDropDown,event) sortProjectsDropDownValueChanged(sortProjectsDropDown));
 
 % 5. All projects UI tree
-handles.Projects.allProjectsUITree=uitree(projectsTab,'checkbox','SelectionChangedFcn',@(allProjectsUITree,event) allProjectsUITreeSelectionChanged(allProjectsUITree),'CheckedNodesChangedFcn',@(allProjectsUITree,event) allProjectsUITreeCheckedNodesChanged(allProjectsUITree));
+handles.Projects.allProjectsUITree=uitree(projectsTab,'checkbox','SelectionChangedFcn',@allProjectsUITreeSelectionChanged,'CheckedNodesChangedFcn',@allProjectsUITreeCheckedNodesChanged);
 
 % 6. Load project snapshot button (settings & code only, not data)
 handles.Projects.loadSnapshotButton=uibutton(projectsTab,'push','Text','Load Snapshot','Tag','LoadSnapshotButton','Tooltip','Load Previously Saved Snapshot of the Current Project','ButtonPushedFcn',@(loadSnapshotButton,event) loadSnapshotButtonPushed(loadSnapshotButton));

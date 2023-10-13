@@ -10,14 +10,14 @@ figSize=get(fig,'Position'); % Get the figure's position.
 figSize=figSize(3:4); % Width & height of the figure upon creation. Size syntax: left offset, bottom offset, width, height (pixels)
 
 %% Create tab group with the four primary tabs
-tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@(tabGroup1,event) tabGroup1SelectionChanged(tabGroup1),'Tag','TabGroup'); % Create the tab group for the four stages of data processing
+tabGroup1=uitabgroup(fig,'Position',[0 0 figSize],'AutoResizeChildren','off','SelectionChangedFcn',@tabGroup1SelectionChanged,'Tag','TabGroup'); % Create the tab group for the four stages of data processing
 fig.UserData=struct('TabGroup1',tabGroup1); % Store the components to the figure.
-projectsTab=uitab(tabGroup1,'Title','Projects','Tag','Projects','AutoResizeChildren','off','SizeChangedFcn',@projectsResize); % Create the projects tab
-importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off','SizeChangedFcn',@importResize); % Create the import tab
-processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off','SizeChangedFcn',@processResize); % Create the process tab
-plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off','SizeChangedFcn',@plotResize); % Create the plot tab
-statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off','SizeChangedFcn',@statsResize); % Create the stats tab
-settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off','SizeChangedFcn',@settingsResize); % Create the settings tab
+projectsTab=uitab(tabGroup1,'Title','Projects','Tag','Projects','AutoResizeChildren','off'); % Create the projects tab
+importTab=uitab(tabGroup1,'Title','Import','Tag','Import','AutoResizeChildren','off'); % Create the import tab
+processTab=uitab(tabGroup1,'Title','Process','Tag','Process','AutoResizeChildren','off'); % Create the process tab
+plotTab=uitab(tabGroup1,'Title','Plot','Tag','Plot','AutoResizeChildren','off'); % Create the plot tab
+statsTab=uitab(tabGroup1,'Title','Stats','Tag','Stats','AutoResizeChildren','off'); % Create the stats tab
+settingsTab=uitab(tabGroup1,'Title','Settings','Tag','Settings','AutoResizeChildren','off'); % Create the settings tab
 handles.Tabs.tabGroup1=tabGroup1;
 
 % Store handles to individual tabs.
@@ -87,7 +87,7 @@ handles.Projects.currentProjectButton=uibutton(projectsTab,'push','Tooltip','Sel
 % handles.Projects.loadProjectArchiveButton=uibutton(projectsTab,'Text','Load Archive','Tag','LoadArchiveButton','ButtonPushedFcn',@(loadArchiveButton,event) loadArchiveButtonPushed(loadArchiveButton));
 
 setappdata(fig,'handles',handles);
-projectsResize(fig);
+% projectsResize(fig.Projects);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the import tab.
@@ -182,7 +182,7 @@ editSpecifyTrialsButton=handles.Import.editSpecifyTrialsButton;
 set(editSpecifyTrialsButton,'ButtonPushedFcn',@(editSpecifyTrialsButton,event) editSpecifyTrialsButtonPushed(editSpecifyTrialsButton));
 
 setappdata(fig,'handles',handles);
-importResize(fig);
+% importResize(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the process tab.
@@ -409,7 +409,7 @@ set(editSpecifyTrialsButton,'ButtonPushedFcn',@(editSpecifyTrialsButton,event) e
 
 handles.Process.subtabCurrent.SelectedTab=handles.Process.currentGroupTab;
 setappdata(fig,'handles',handles);
-processResize(fig);
+% processResize(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the plot tab
@@ -532,7 +532,7 @@ handles.Plot.editPropertyTextArea=uitextarea(handles.Plot.propertiesTab,'Value',
 
 handles.Plot.subtabCurrent.SelectedTab=handles.Plot.currentPlotTab;
 setappdata(fig,'handles',handles);
-plotResize(fig);
+% plotResize(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the stats tab
@@ -656,7 +656,7 @@ statsTab.UserData=struct('VarsUITree',handles.Stats.varsUITree,'CreateTableButto
     'RemovePubTableButton',handles.Stats.removePubTableButton,'PubTablesUITree',handles.Stats.pubTablesUITree,'EditPubTableButton',handles.Stats.editPubTableButton,'PubTablesPanel',handles.Stats.pubTablesPanel,...
     'RunPubTableButton',handles.Stats.runPubTableButton,'NumSigFigsEditField',handles.Stats.numSigFigsEditField,'NumSigFigsLabel',handles.Stats.sigFigsLabel);
 
-@statsResize;
+% @statsResize;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the settings tab
@@ -682,7 +682,8 @@ handles.Settings.addUserButton = uibutton(settingsTab,'push','Text','Add User','
 handles.Settings.removeUserButton = uibutton(settingsTab,'push','Text','Delete User','ButtonPushedFcn',@(removeUserButton, event) removeUserButtonPushed(removeUserButton));
 
 setappdata(fig,'handles',handles);
-settingsResize(fig);
+% settingsResize(fig);
+appResize(fig);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the context menus for UI trees

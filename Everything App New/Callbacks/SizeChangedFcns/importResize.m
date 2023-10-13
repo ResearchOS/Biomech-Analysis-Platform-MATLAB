@@ -1,49 +1,49 @@
-function importResize(src, event)
+function importResize(tab, compHeight, fontSize, figSize)
 
 %% PURPOSE: RESIZE THE COMPONENTS WITHIN THE IMPORT TAB
 
-fig=ancestor(src,'figure','toplevel');
-handles=getappdata(fig,'handles');
-
-% Modify component location
-figSize=src.Position(3:4); % Width x height
-
-%% Check if called on uifigure creation. If so, skip resizing components because they don't exist yet.
-if isempty(handles)
-    return;
-else
-    tab=handles.Import;
-    fldNames=fieldnames(tab);
-    if isequal(fldNames{1},'Tab') && length(fldNames)==1
-        return;
-    end
-end
-
-% Identify the ratio of font size to figure height (will likely be different for each computer). Used to scale the font size.
-fig=ancestor(src,'figure','toplevel');
-ancSize=fig.Position(3:4);
-defaultPos=get(0,'defaultfigureposition');
-if isequal(ancSize,[defaultPos(3)*2 defaultPos(4)]) % If currently in default figure size
-    if ~isempty(getappdata(fig,'fontSizeRelToHeight')) % If the figure has been restored to default size after previously being resized.
-        fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight'); % Get the original ratio.
-    else % Figure initialized as default size
-        initFontSize=get(tab.logsheetPathField,'FontSize'); % Get the initial font size
-        fontSizeRelToHeight=initFontSize/ancSize(2); % Font size relative to figure height.
-        setappdata(fig,'fontSizeRelToHeight',fontSizeRelToHeight); % Store the font size relative to figure height.
-    end 
-else
-    fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight');
-end
-
-% Set new font size
-newFontSize=round(fontSizeRelToHeight*ancSize(2)); % Multiply relative font size by the figures height
-if newFontSize>20
-    newFontSize=20; % Cap the font size (and therefore the text box/button sizes too)
-end
-
-%% Positions specified as relative to tab width & height
-% All positions here are specified as relative positions
-compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
+% fig=ancestor(src,'figure','toplevel');
+% handles=getappdata(fig,'handles');
+% 
+% % Modify component location
+% figSize=src.Position(3:4); % Width x height
+% 
+% %% Check if called on uifigure creation. If so, skip resizing components because they don't exist yet.
+% if isempty(handles)
+%     return;
+% else
+%     tab=handles.Import;
+%     fldNames=fieldnames(tab);
+%     if isequal(fldNames{1},'Tab') && length(fldNames)==1
+%         return;
+%     end
+% end
+% 
+% % Identify the ratio of font size to figure height (will likely be different for each computer). Used to scale the font size.
+% fig=ancestor(src,'figure','toplevel');
+% ancSize=fig.Position(3:4);
+% defaultPos=get(0,'defaultfigureposition');
+% if isequal(ancSize,[defaultPos(3)*2 defaultPos(4)]) % If currently in default figure size
+%     if ~isempty(getappdata(fig,'fontSizeRelToHeight')) % If the figure has been restored to default size after previously being resized.
+%         fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight'); % Get the original ratio.
+%     else % Figure initialized as default size
+%         initFontSize=get(tab.logsheetPathField,'FontSize'); % Get the initial font size
+%         fontSizeRelToHeight=initFontSize/ancSize(2); % Font size relative to figure height.
+%         setappdata(fig,'fontSizeRelToHeight',fontSizeRelToHeight); % Store the font size relative to figure height.
+%     end 
+% else
+%     fontSizeRelToHeight=getappdata(fig,'fontSizeRelToHeight');
+% end
+% 
+% % Set new font size
+% newFontSize=round(fontSizeRelToHeight*ancSize(2)); % Multiply relative font size by the figures height
+% if newFontSize>20
+%     newFontSize=20; % Cap the font size (and therefore the text box/button sizes too)
+% end
+% 
+% %% Positions specified as relative to tab width & height
+% % All positions here are specified as relative positions
+% compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
 
 % 1. Logsheets label
 objResize(tab.logsheetsLabel, [0.01 0.95], [0.15 compHeight]);

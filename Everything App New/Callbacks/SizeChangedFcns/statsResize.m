@@ -1,4 +1,4 @@
-function []=statsResize(src,event)
+function []=statsResize(tab,compHeight, fontSize, figSize)
 
 %% PURPOSE: RESIZE THE COMPONENTS IN THE STATS TAB
 

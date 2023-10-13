@@ -38,8 +38,7 @@ addpath(genpath(currFolder));
 
 %% Create the figure
 fig=uifigure('Name','pgui','Visible','on',...
-    'Resize','on','AutoResizeChildren','off','SizeChangedFcn',@appResize);
-set(fig,'DeleteFcn',@(fig, event) saveGUIState(fig)); % Deletes the gui variable from the base workspace.
+    'Resize','on','AutoResizeChildren','off','SizeChangedFcn',@appResize,'DeleteFcn',@saveGUIState);
 setappdata(fig,'appFolder',currFolder);
 
 handles=initializeComponents(fig); % Put all of the components in their place

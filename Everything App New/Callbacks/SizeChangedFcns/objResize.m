@@ -1,7 +1,7 @@
 function []=objResize(obj,relPos,size)
 
 %% PURPOSE: RESIZE THE SPECIFIED OBJECT
-newFontSize=evalin('caller','newFontSize;');
+newFontSize=evalin('caller','fontSize;');
 figSize=evalin('caller','figSize;');
 
 % Size can be specified as relative or absolute

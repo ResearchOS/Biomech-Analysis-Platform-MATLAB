@@ -1,10 +1,8 @@
-function []=tabGroup1SelectionChanged(src,currTab)
+function []=tabGroup1SelectionChanged(src, event)
 
 %% PURPOSE: STORE THE MOST RECENTLY SELECTED TAB SO THE PGUI CAN OPEN TO IT THE NEXT TIME
 % Also, set the parent tab of the processing map figure objects to the
 % currently selected tab.
-
-global conn;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');

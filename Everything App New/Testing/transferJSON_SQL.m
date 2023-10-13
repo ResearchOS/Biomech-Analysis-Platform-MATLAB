@@ -119,7 +119,7 @@ for classNum = 1:length(classNames)
         end
 
         try
-            saveClass(sql);
+            saveObj(sql);
         catch e
             if ~contains(e.message,'UNIQUE constraint failed')
                 error(e);
@@ -207,7 +207,7 @@ for classNum = 1:length(classNames)
         end
 
         try
-            saveClass(sql);
+            saveObj(sql);
         catch e
             if ~contains(e.message,'UNIQUE constraint failed')
                 error(e);

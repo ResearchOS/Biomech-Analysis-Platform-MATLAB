@@ -39,6 +39,14 @@ elseif nargin==2
         return;
     end  
 
+    if isstruct(leftObjs)
+        leftObjs = {leftObjs.UUID};
+    end
+
+    if isstruct(rightObjs)
+        rightObjs = {rightObjs.UUID};
+    end
+
     if ~iscell(leftObjs)
         leftObjs = {leftObjs};
     end

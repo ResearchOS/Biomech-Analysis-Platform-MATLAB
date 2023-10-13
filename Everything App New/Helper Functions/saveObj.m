@@ -10,6 +10,7 @@ end
 assert(ismember(type,{'INSERT','UPDATE'}));
 
 uuid = classStruct.UUID;
+assert(isUUID(uuid));
 [abbrev,abstractID,instanceID]=deText(uuid);
 
 if ~isempty(instanceID)
@@ -26,17 +27,25 @@ try
     sqlquery = struct2SQL(tablename, classStruct, type);
     execute(conn, sqlquery);
 catch e
-
+    error('What happened with SQL?!');
 end
 
-if isempty(instanceID) || isequal(type, 'UPDATE')
+if isempty(instanceID)
     return;
 end
 
-%% Insert the instance into the digraph.
 Name = {classStruct.UUID};
 OutOfDate = classStruct.OutOfDate;
-nodeProps = table(Name, OutOfDate);    
+
+if isequal(type,'UPDATE')
+    idx = ismember(globalG.Nodes.Name, Name);
+    assert(sum(idx)==1);
+    globalG.Nodes.OutOfDate(idx) = OutOfDate;
+end
+
+%% Insert the instance into the digraph.
+nodeProps = table(Name, OutOfDate);
+
 try
     globalG = addnode(globalG, nodeProps);
 catch e        

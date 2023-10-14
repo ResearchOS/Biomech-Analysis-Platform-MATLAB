@@ -19,8 +19,8 @@ fillUITree(fig, 'Project', uiTree, '', sortDropDown);
 %% Projects tab
 % Bring up the current project's project & data paths.
 selectNode(handles.Projects.allProjectsUITree, Current_Project_Name);
-allProjectsUITreeSelectionChanged(fig);
-currentProjectButtonPushed(fig);
+projectsCallbacks(handles.Projects.allProjectsUITree);
+projectsCallbacks(handles.Projects.currentProjectButton);
 
 setappdata(fig,'multiSelect',false); % Disable multiselect on graph by default
 

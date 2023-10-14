@@ -69,8 +69,8 @@ if instanceBool
     end    
 end
 
-if exist('absStruct','var')~=1
-    absStruct = '';
+if nargout==2 && exist('absStruct','var')~=1
+    absStruct = loadJSON(getAbstractID(instStruct.UUID));
 end
 
 end

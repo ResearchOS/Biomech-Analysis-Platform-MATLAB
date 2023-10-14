@@ -3,7 +3,8 @@ function [node, cont]=getNode(parent, uuid, node, cont)
 %% PURPOSE: OPERATES RECURSIVELY. RETURN THE NODE OBJECT SPECIFIED BY UUID IN THE GIVEN UITREE (RECURSIVE)
 % UUID'S STORED IN "node.NodeData.UUID"
 
-node = findobj(parent, 'NodeData', uuid);
+struct.UUID = uuid;
+node = findobj(parent, 'NodeData', struct);
 
 % if exist('cont','var')~=1
 %     cont = true;

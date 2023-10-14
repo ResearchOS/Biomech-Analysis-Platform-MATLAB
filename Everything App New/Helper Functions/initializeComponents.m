@@ -42,13 +42,13 @@ handles.Projects.projectsLabel=uilabel(projectsTab,'Text','Projects','Tag','Proj
 handles.Projects.addProjectButton=uibutton(projectsTab,'push','Text','P+','Tag','AddProjectButton','Tooltip','Create new project','ButtonPushedFcn',@componentCallback);
 
 % 3. Remove project button
-handles.Projects.removeProjectButton=uibutton(projectsTab,'push','Text','P-','Tag','RemoveProjectButton','Tooltip','Remove current project from the list','ButtonPushedFcn',@(removeProjectButton,event) removeProjectButtonPushed(removeProjectButton));
+handles.Projects.removeProjectButton=uibutton(projectsTab,'push','Text','P-','Tag','RemoveProjectButton','Tooltip','Remove current project from the list','ButtonPushedFcn',@componentCallback);
 
 % 4. Sort projects dropdown
 handles.Projects.sortProjectsDropDown=uidropdown(projectsTab,'Editable','off','Items',sortOptions,'Tooltip','Sort Projects','Tag','SortProjectsDropDown','Value',sortOptions{1},'ValueChangedFcn',@(sortProjectsDropDown,event) sortProjectsDropDownValueChanged(sortProjectsDropDown));
 
 % 5. All projects UI tree
-handles.Projects.allProjectsUITree=uitree(projectsTab,'checkbox','SelectionChangedFcn',@allProjectsUITreeSelectionChanged,'CheckedNodesChangedFcn',@allProjectsUITreeCheckedNodesChanged);
+handles.Projects.allProjectsUITree=uitree(projectsTab,'checkbox','SelectionChangedFcn',@componentCallback,'CheckedNodesChangedFcn',@allProjectsUITreeCheckedNodesChanged);
 
 % 6. Load project snapshot button (settings & code only, not data)
 handles.Projects.loadSnapshotButton=uibutton(projectsTab,'push','Text','Load Snapshot','Tag','LoadSnapshotButton','Tooltip','Load Previously Saved Snapshot of the Current Project','ButtonPushedFcn',@(loadSnapshotButton,event) loadSnapshotButtonPushed(loadSnapshotButton));
@@ -57,28 +57,28 @@ handles.Projects.loadSnapshotButton=uibutton(projectsTab,'push','Text','Load Sna
 handles.Projects.saveSnapshotButton=uibutton(projectsTab,'push','Text','Save Snapshot','Tag','SaveSnapshotButton','Tooltip','Save Snapshot of the Current Project','ButtonPushedFcn',@(saveSnapshotButton,event) saveSnapshotButtonPushed(saveSnapshotButton));
 
 % 8. Project data path button
-handles.Projects.dataPathButton=uibutton(projectsTab,'push','Tooltip','Select Data Path','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',@(dataPathButton,event) dataPathButtonPushed(dataPathButton));
+handles.Projects.dataPathButton=uibutton(projectsTab,'push','Tooltip','Select Data Path','Text','Data Path','Tag','DataPathButton','ButtonPushedFcn',{@componentCallback, 'Data_Path'});
 
 % 9. Project data path edit field
-handles.Projects.dataPathField=uieditfield(projectsTab,'text','Value','Data Path (contains ''Raw Data Files'' folder)','Tag','DataPathField','ValueChangedFcn',@(dataPathField,event) dataPathFieldValueChanged(dataPathField)); % Data path name edit field (to the folder containing 'Subject Data' folder)
+handles.Projects.dataPathField=uieditfield(projectsTab,'text','Value','Data Path (contains ''Raw Data Files'' folder)','Tag','DataPathField','ValueChangedFcn',{@componentCallback, 'Data_Path'}); % Data path name edit field (to the folder containing 'Subject Data' folder)
 
 % 10. Open data path button
-handles.Projects.openDataPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenDataPathButton','Tooltip','Open data folder','ButtonPushedFcn',@(openDataPathButton,event) openDataPathButtonPushed(openDataPathButton));
+handles.Projects.openDataPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenDataPathButton','Tooltip','Open data folder','ButtonPushedFcn',{@componentCallback, 'Data_Path'});
 
 % 11. Project folder path button (contains everything related to the current project)
-handles.Projects.projectPathButton=uibutton(projectsTab,'push','Tooltip','Select Project Folder Path','Text','Project Path','Tag','ProjectPathButton','ButtonPushedFcn',@(projectPathButton,event) projectPathButtonPushed(projectPathButton));
+handles.Projects.projectPathButton=uibutton(projectsTab,'push','Tooltip','Select Project Folder Path','Text','Project Path','Tag','ProjectPathButton','ButtonPushedFcn',{@componentCallback, 'Project_Path'});
 
 % 12. Project folder path edit field
-handles.Projects.projectPathField=uieditfield(projectsTab,'text','Value','Path to Project Folder','Tag','ProjectPathField','ValueChangedFcn',@(projectPathField,event) projectPathFieldValueChanged(projectPathField)); % Code path name edit field (to the folder containing all code for this project).
+handles.Projects.projectPathField=uieditfield(projectsTab,'text','Value','Path to Project Folder','Tag','ProjectPathField','ValueChangedFcn',{@componentCallback, 'Project_Path'});
 
 % 13. Open project path button
-handles.Projects.openProjectPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenProjectPathButton','Tooltip','Open project folder','ButtonPushedFcn',@(openProjectPathButton,event) openProjectPathButtonPushed(openProjectPathButton));
+handles.Projects.openProjectPathButton=uibutton(projectsTab,'push','Text','O','Tag','OpenProjectPathButton','Tooltip','Open project folder','ButtonPushedFcn',{@componentCallback, 'Project_Path'});
 
 % 14. Projects search field
 handles.Projects.searchField=uieditfield(projectsTab,'text','Value','Search','Tag','SearchField','ValueChangingFcn',@(searchField,event) projectsSearchFieldValueChanging(searchField));
 
 % 15. Current project button
-handles.Projects.currentProjectButton=uibutton(projectsTab,'push','Tooltip','Select current project','Text','Select','ButtonPushedFcn',@(currentProjectButton,event) currentProjectButtonPushed(currentProjectButton));
+handles.Projects.currentProjectButton=uibutton(projectsTab,'push','Tooltip','Select current project','Text','Select','ButtonPushedFcn',@componentCallback);
 
 % 14. Create project archive button (settings, code, & data)
 % handles.Projects.createProjectArchiveButton=uibutton(projectsTab,'Text','Save Archive','Tag','ArchiveButton','ButtonPushedFcn',@(archiveButton,event) archiveButtonPushed(archiveButton));

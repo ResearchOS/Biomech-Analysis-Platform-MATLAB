@@ -205,10 +205,10 @@ handles.Process.analysesTab=uitab(handles.Process.subTabAll,'Title','Analyses','
 % handles.Process.variablesLabel=uilabel(handles.Process.variablesTab,'Text','Variables','FontWeight','bold');
 
 % 2. Add variable button
-handles.Process.addVariableButton=uibutton(handles.Process.variablesTab,'text','V+','ButtonPushedFcn',@(addVariableButton,event) addVariableButtonPushed(addVariableButton));
+handles.Process.addVariableButton=uibutton(handles.Process.variablesTab,'text','V+','ButtonPushedFcn',{@componentCallback,'All_VR'});
 
 % 3. Remove variable button
-handles.Process.removeVariableButton=uibutton(handles.Process.variablesTab,'text','V-','ButtonPushedFcn',@(removeVariableButton,event) removeVariableButtonPushed(removeVariableButton));
+handles.Process.removeVariableButton=uibutton(handles.Process.variablesTab,'text','V-','ButtonPushedFcn',{@componentCallback,'All_VR'});
 
 % 4. Sort variables drop down
 handles.Process.sortVariablesDropDown=uidropdown(handles.Process.variablesTab,'Editable','off','Items',sortOptions,'ValueChangedFcn',@(sortVariablesDropDown,event) sortVariablesDropDownValueChanged(sortVariablesDropDown));
@@ -223,10 +223,10 @@ handles.Process.variablesSearchField=uieditfield(handles.Process.variablesTab,'V
 % handles.Process.processLabel=uilabel(handles.Process.functionsTab,'Text','Functions','FontWeight','bold');
 
 % 8. Add function button
-handles.Process.addProcessButton=uibutton(handles.Process.functionsTab,'text','F+','ButtonPushedFcn',@(addProcessButton,event) addProcessButtonPushed(addProcessButton));
+handles.Process.addProcessButton=uibutton(handles.Process.functionsTab,'text','F+','ButtonPushedFcn',{@componentCallback,'All_PR'});
 
 % 9. Remove function button
-handles.Process.removeProcessButton=uibutton(handles.Process.functionsTab,'text','F-','ButtonPushedFcn',@(removeProcessButton,event) removeProcessButtonPsuhed(removeProcessButton));
+handles.Process.removeProcessButton=uibutton(handles.Process.functionsTab,'text','F-','ButtonPushedFcn',{@componentCallback,'All_PR'});
 
 % 10. Sort functions drop down
 handles.Process.sortProcessDropDown=uidropdown(handles.Process.functionsTab,'Editable','off','Items',sortOptions,'ValueChangedFcn',@(sortFunctionsDropDown,event) sortProcessDropDownValueChanged(sortFunctionsDropDown));

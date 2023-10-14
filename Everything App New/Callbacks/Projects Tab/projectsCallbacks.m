@@ -8,8 +8,24 @@ allHandles = handles;
 
 handles = handles.Projects;
 
+if exist('event','var')~=1
+    event = '';
+end
+if exist('args','var')~=1
+    args = '';
+end
+
+uuid = '';
+if isempty(args)
+    uuid = getSelUUID(handles.allProjectsUITree);
+elseif isfield(args,'UUID')
+    uuid = args.UUID;
+end
+
+assert(isUUID(uuid));
+
 switch src
-    case handles.addProjectButton        
+    case handles.addProjectButton
 
         % 1. Create all of the objects (AN & PJ with arguments)
         lg = createNewObject(true, 'Logsheet', '', '', '', true);        
@@ -33,9 +49,9 @@ switch src
         linkObjs(vw, an);
         linkObjs(lg, an);
 
-        abs_node = getNode(handles.Process.allProjectsUITree, pj_abs.UUID);
+        abs_node = getNode(handles.allProjectsUITree, pj_abs.UUID);
         if isempty(abs_node)
-            abs_node = addNewNode(handles.Process.allProjectsUITree, pj_abs.UUID, pj_abs.Name);
+            abs_node = addNewNode(handles.allProjectsUITree, pj_abs.UUID, pj_abs.Name);
         end
         addNewNode(abs_node, pj.UUID, pj.Name);
 
@@ -49,17 +65,65 @@ switch src
         projectsCallbacks(handles.currentProjectButton);
 
     case handles.removeProjectButton
+        a = questdlg(['UUID: ' uuid ', Name: ' getName(uuid)],'Are you sure you want to delete this?','No');
+        if ~isequal(a,'Yes')
+            return;
+        end
+        % 1. Delete the project node in database and digraph.
+        % Automatically deletes associated edges.
+        deleteObject(uuid);        
+
+        % 2. Delete the node in the GUI.
+        node = getNode(handles.allProjectsUITree, uuid);        
+        delete(node);
 
     case handles.sortProjectsDropDown
 
-    case handles.allProjectsUITree
+    case handles.allProjectsUITree        
+        computerID = getComputerID();
+        struct = loadJSON(uuid);
 
-    case handles.currentProjectButton
+        % Put the data and project path for this project into the text fields.
+        if ~isInstance(uuid)
+            dataPath = '';
+            projectPath = '';
+        else
+            dataPath = struct.Data_Path.(computerID);
+            projectPath = struct.Project_Path.(computerID);
+        end
+        handles.projectPathField.Value = projectPath;
+        handles.dataPathField.Value = dataPath;    
+        
+        if isInstance(uuid)
+            projectsCallbacks(handles.projectPathField);
+            projectsCallbacks(handles.dataPathField);
+        end
 
-    case handles.projectPathButton
+    case handles.currentProjectButton        
+        setCurrent(uuid, 'Current_Project_Name');
+        fillAllUITrees(fig);
+        Current_Analysis = getCurrent('Current_Analysis');
+        selectNode(allHandles.Process.allAnalysesUITree, Current_Analysis);
+        selectAnalysisButtonPushed(fig);
 
-    case handles.dataPathButton
+    case {handles.openProjectPathButton, handles.openDataPathButton}
+        path = src.Value;
+        openPathWithDefaultApp(path);
 
+    case {handles.projectPathButton, handles.dataPathButton}
+        path = getPathFromPicker(getCurrent(args));
+        if exist(path,'dir')~=7
+            return;
+        end
+        src.Value = path;
+        projectsCallbacks(handles.projectPathField);
 
-
+    case {handles.projectPathField, handles.dataPathField}        
+        path = src.Value;
+        prevPath = getCurrent(args, false, uuid);
+        if exist(path,'dir')~=7
+            path = prevPath;
+        end
+        src.Value = path;
+        setCurrent(path, args);
 end

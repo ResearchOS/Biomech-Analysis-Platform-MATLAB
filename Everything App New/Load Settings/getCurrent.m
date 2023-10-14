@@ -1,4 +1,4 @@
-function [var] = getCurrent(varName,withID)
+function [var] = getCurrent(varName, withID, uuid)
 
 %% PURPOSE: RETURN THE VARIABLE FROM THE CURRENT SETTINGS VARIABLE
 % withID: Return the paths with computer ID. Most likely being called by
@@ -8,14 +8,18 @@ if nargin==1
     withID = false;
 end
 
-var = memoizedGetCurrent(varName, withID);
+if exist('uuid','var')~=2
+    uuid = '';
+end
+
+var = memoizedGetCurrent(varName, withID, uuid);
 % h = @memoizedGetCurrent;
 % fcnH = memoize(h);
 % var = fcnH(varName, withID);
 
 end
 
-function [var] = memoizedGetCurrent(varName, withID)
+function [var] = memoizedGetCurrent(varName, withID, uuid)
 var = [];
 
 %% Computer ID
@@ -53,9 +57,11 @@ end
 %% Look at projects table to determine.
 projectSettingsVars = {'Data_Path','Project_Path','Current_Analysis'};
 
-if ismember(varName,projectSettingsVars)            
-    projectName = getCurrent('Current_Project_Name');
-    sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ''' projectName ''';'];
+if ismember(varName,projectSettingsVars)
+    if ~isUUID(uuid)
+        uuid = getCurrent('Current_Project_Name');
+    end
+    sqlquery = ['SELECT ' varName ' FROM Projects_Instances WHERE UUID = ''' uuid ''';'];
     struct = fetchQuery(sqlquery);
     if isempty(struct.(varName))
         var = '';
@@ -86,8 +92,10 @@ analysisSettingsVars = {'Current_View','Current_Logsheet','Process_Queue'};
 
 if ismember(varName,analysisSettingsVars)    
     Current_User = getCurrent('Current_User');
-    analysisName = getCurrent('Current_Analysis');
-    sqlquery = ['SELECT ' varName ' FROM Analyses_Instances WHERE UUID = ''' analysisName ''';'];
+    if ~isUUID(uuid)
+        uuid = getCurrent('Current_Analysis');
+    end
+    sqlquery = ['SELECT ' varName ' FROM Analyses_Instances WHERE UUID = ''' uuid ''';'];
     struct = fetchQuery(sqlquery);
     if isempty(struct.(varName))
         var = '';

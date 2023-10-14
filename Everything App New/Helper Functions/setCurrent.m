@@ -42,7 +42,7 @@ if ismember(varName, projectSettingsVars)
         currVal.(computerID) = var;        
     elseif ismember(varName,{'Current_Analysis'})
         Current_User = getCurrent('Current_User');
-        currVal = getCurrent(varName, true);
+        currVal = getCurrent(varName, true, Current_Project);
         currVal.(Current_User) = var;            
     end
     currVal = jsonencode(currVal);
@@ -58,7 +58,7 @@ if ismember(varName,analysisSettingsVars)
     if isempty(Current_Analysis)
         return;
     end    
-    currVal = getCurrent(varName, true);
+    currVal = getCurrent(varName, true, Current_Analysis);
     currVal.(Current_User) = var;        
     currVal = jsonencode(currVal);
     sqlquery = ['UPDATE Analyses_Instances SET ' varName ' = ''' currVal ''' WHERE UUID = ''' Current_Analysis ''';'];

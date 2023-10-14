@@ -65,17 +65,7 @@ switch src
         projectsCallbacks(handles.currentProjectButton);
 
     case handles.removeProjectButton
-        a = questdlg(['UUID: ' uuid ', Name: ' getName(uuid)],'Are you sure you want to delete this?','No');
-        if ~isequal(a,'Yes')
-            return;
-        end
-        % 1. Delete the project node in database and digraph.
-        % Automatically deletes associated edges.
-        deleteObject(uuid);        
-
-        % 2. Delete the node in the GUI.
-        node = getNode(handles.allProjectsUITree, uuid);        
-        delete(node);
+        confirmAndDeleteObject(uuid);
 
     case handles.sortProjectsDropDown
 

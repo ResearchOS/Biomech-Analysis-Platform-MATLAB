@@ -40,6 +40,12 @@ tmp = [addNodes.NodeData];
 if nargin==1
     uuids={tmp.UUID}'; % The process functions to add (checked in the process group list)
 end
+if ~iscell(uuids)
+    uuids = {uuids};
+end
+if size(uuids,2)>1
+    uuids = uuids';
+end
 
 % If a PG is selected and nothing is checked, add its contained PR to the queue.
 fcnG = getFcnsOnlyDigraph(globalG);

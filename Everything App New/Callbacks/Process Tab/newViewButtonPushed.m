@@ -1,10 +1,10 @@
-function [uuid] = newViewButtonPushed(src,event)
+function [uuid] = newViewButtonPushed(src, G)
 
 %% PURPOSE: CREATE A NEW VIEW. ASSUMES THAT THE DIGRAPH IS ALREADY UP TO DATE.
 % From currently selected nodes? Ask if want downstream & upstream deps.
 % Copy current view entirely if nothing is selected?
 
-global conn viewG;
+global conn;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -22,8 +22,8 @@ uuid = viewStruct.UUID;
 Current_Analysis = getCurrent('Current_Analysis');
 linkObjs(uuid, Current_Analysis);
 
-selIdx = viewG.Nodes.Selected==1;
-selUUIDs = viewG.Nodes.Name(selIdx);
+selIdx = G.Nodes.Selected==1;
+selUUIDs = G.Nodes.Name(selIdx);
 
 listOpts = {'Upstream','Downstream','Both','Neighbors Only','Empty'};
 a = listdlg('ListString',listOpts,'SelectionMode','single','PromptString','Select the nodes to include in this view.');

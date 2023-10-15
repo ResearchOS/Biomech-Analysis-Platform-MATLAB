@@ -20,9 +20,11 @@ vrIdx = contains(G.Nodes.Name,{'VR'});
 vrNodes = G.Nodes.Name(vrIdx);
 
 Name = {};
+OutOfDate = [];
 EndNodes = cell(0,2);
 for nodeIdx=1:length(vrNodes)
     uuid = vrNodes{nodeIdx};
+    currOutOfDate = G.Nodes.OutOfDate(ismember(G.Nodes.Name, uuid));
     % Get each VR's predecessor & successor nodes.
     succs = successors(G, uuid);
     preds = predecessors(G, uuid);
@@ -53,6 +55,7 @@ for nodeIdx=1:length(vrNodes)
 
     if ~noPreds && ~noSuccs
         Name = [Name; repmat({uuid},predNum*succNum,1)];
+        OutOfDate = [OutOfDate; repmat(currOutOfDate, predNum*succNum, 1)];
     end
 
 end
@@ -61,10 +64,12 @@ end
 nonVRedgeIdx = ~(contains(G.Edges.EndNodes(:,1),'VR') | contains(G.Edges.EndNodes(:,2),'VR'));
 EndNodes = [EndNodes; G.Edges.EndNodes(nonVRedgeIdx,:)];
 Name = [Name; repmat({''},sum(nonVRedgeIdx),1)];
+OutOfDate = [OutOfDate; repmat(false, sum(nonVRedgeIdx), 1)];
 
 %% Make a new digraph from the edges and nodes.
-edgeTable = table(EndNodes, Name);
+edgeTable = table(EndNodes, Name, OutOfDate);
 nonVRIdx = contains(G.Nodes.Name,types(~ismember(types,'VR')));
 Name = G.Nodes.Name(nonVRIdx);
-nodeTable = table(Name);
+OutOfDate = G.Nodes.OutOfDate(nonVRIdx);
+nodeTable = table(Name, OutOfDate);
 G2 = digraph(edgeTable,nodeTable);

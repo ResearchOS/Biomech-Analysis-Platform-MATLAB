@@ -10,6 +10,11 @@ global globalG;
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+if isempty(uuid)
+    delete(uiTree.Children);
+    return;
+end
+
 %% The nodes in the current analysis or group.
 tmpG = getSubgraph(globalG, uuid, 'up'); % Everything within the current analysis.
 

@@ -2,7 +2,7 @@ function [uuid] = processCallbacks(src, event, args)
 
 %% PURPOSE: CONTROLLER FOR PROCESS CALLBACKS.
 
-global globalG;
+global globalG viewG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -38,10 +38,10 @@ switch type
         switch subtabTitle
             case 'Analysis'
                 currUITree = handles.analysisUITree;
-            case 'Group'
+            case {'Group', 'Function'}
                 currUITree = handles.groupUITree;
-            case 'Function'
-                currUITree = handles.functionUITree;
+            % case 'Function'
+            %     currUITree = handles.functionUITree;
             otherwise
                 error('What happened?!');
         end
@@ -60,10 +60,11 @@ if iscell(uuid)
     uuid = uuid{1}; % Shouldn't really happen, but just in case due to changes in getSelUUID
 end
 
-if ~isUUID(uuid)
-    disp(['Not a UUID! ' uuid]);
-    return;
-end
+% Some callbacks need a UUID, some don't.
+% if ~isUUID(uuid)
+%     disp(['Not a UUID! ' uuid]);
+%     return;
+% end
 
 switch src
     % Add new abstract objects. DONE.
@@ -77,8 +78,16 @@ switch src
 
     % Change the current analysis. DONE.
     case handles.selectAnalysisButton
+        setCurrent(uuid, 'Current_Analysis');
         fillAnalysisUITree(fig, handles.analysisUITree, uuid); % Still needs to deal with current UI tree titles
         linkObjs(uuid, getCurrent('Current_Project_Name'));
+        initViewsDropdown(fig, uuid);
+        if handles.toggleDigraphCheckbox.Value
+            % args.UUID = getCurrent('Current_View'); % Not really needed for the callback itself, but needed to pass the logic at the beginning of this file.
+            processCallbacks(handles.viewsDropDown);
+        end
+        fillQueueUITree(fig, uuid);
+        fillLogsheetUITree(fig, uuid);
 
     % Fill the group and process UI trees. DONE.
     case handles.analysisUITree
@@ -90,7 +99,7 @@ switch src
         nodeType = deText(uuid);
         if isequal(nodeType,'PR')
             node = node.Parent;
-            if ~isa(class(node), 'matlab.ui.container.CheckBoxTree')
+            if ~isequal(class(node), 'matlab.ui.container.CheckBoxTree')
                 containerUUID = node.NodeData.UUID;
             else
                 containerUUID = getCurrent('Current_Analysis');
@@ -179,17 +188,14 @@ switch src
 
     % Add args to PR.
     case handles.addArgsButton
+        addArgsButtonPushed(fig);
 
     % Remove args from PR.
     case handles.removeArgsButton
+        removeArgsButtonPushed(fig);
 
     % Show digraph checkbox.
     case handles.toggleDigraphCheckbox
-        val = 'off';
-        if src.Value
-            val = 'on';
-        end
-        handles.Ax.Visible = val;
         toggleVisibility_Digraph(allHandles); % Show or hide the graphics objects related to the digraph.   
         if ~src.Value
             return;
@@ -202,24 +208,20 @@ switch src
         uuid = viewsDropDownValueChanged(fig);        
         vw = loadJSON(uuid);
         % Compute PR & VR - only digraph, with "Selected" column.
-        % Render that graph.
+        fcnsG = getFcnsOnlyDigraph(globalG);
+        viewG = getSubgraph(fcnsG, vw.InclNodes, 'none');
+        viewG.Nodes.Selected = false(length(viewG.Nodes.Name),1);
+        viewG.Nodes.PrettyName = getName(viewG.Nodes.Name);
+        viewG.Edges.PrettyName = getName(viewG.Edges.Name);
+        % Render the view's graph.
+        renderDigraph(fig, viewG);
 
     % Edit/save view state
     case handles.editViewButton
         % Open the .json file if button state is [false]
         % Close .json and save changes to SQL if button state is [true]
         % Render the digraph.
-        
 
-    % Toggle multiselect
-    case handles.multiSelectButton
-        % Change appdata property
-        setappdata(fig,'multiSelect',handles.multiSelectButton.Value);
-
-    % Pretty var names
-    case handles.prettyVarsCheckbox
-        % Change appdata property
-        setappdata(fig,'prettyVars',handles.prettyVarsCheckbox.Value);
 
     % Add node from list to view
     case handles.addToViewButton
@@ -238,15 +240,37 @@ switch src
 
     % Remove node from view
     case handles.removeFromViewButton
-        
+        uuids = viewG.Nodes.Name(viewG.Nodes.Selected==1);
+        vw = loadJSON(getCurrent('Current_View'));
+        vw.InclNodes(ismember(vw.InclNodes, uuids)) = [];
+        saveObj(vw,'UPDATE');
+        processCallbacks(handles.viewsDropDown);
 
     % New view
     case handles.newViewButton
-        uuid = newViewButtonPushed(fig);
+        uuid = newViewButtonPushed(fig, viewG);
         handles.viewsDropDown.Value = uuid;
         processCallbacks(handles.viewsDropDown);
 
+    case handles.prettyVarsCheckbox
+        renderDigraph(fig, viewG);
+
     % Digraph axes interaction
     case handles.digraphAxes
+        isMulti = handles.multiSelectButton.Value;
+        ax = handles.digraphAxes;
+        uuid = getClickedUUID(ax, viewG);
+        % Update viewG.
+        if ~isMulti
+            viewG.Nodes.Selected = false(length(viewG.Nodes.Name),1);
+            % Change the selection in the current UI trees
+            selectNode(handles.analysisUITree, uuid);
+            processCallbacks(handles.analysisUITree);
+        end
+        idx = ismember(viewG.Nodes.Name, uuid);
+        viewG.Nodes.Selected(idx) = ~viewG.Nodes.Selected(idx);
+        % Render digraph.
+        renderDigraph(fig, viewG);
+        handles.subtabCurrent.SelectedTab = handles.currentFunctionTab;
 
 end

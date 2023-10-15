@@ -17,7 +17,6 @@ tmpG = getSubgraph(globalG, uuid, 'up'); % Everything within the current analysi
 % Returns edges only between PG, PR, AN objects.
 orderedEdges = orderedList2Struct(tmpG);
 
-% uiTree = handles.Process.analysisUITree;
 fillAN_PG_UITree(uiTree, handles, orderedEdges);
 
 switch uiTree

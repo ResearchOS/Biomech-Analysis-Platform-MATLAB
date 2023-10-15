@@ -53,6 +53,13 @@ end
 % Once to create abstract object-specific fields and once to create
 % instance object-specific fields.
 if createAbstract
+    if ~instanceBool
+        name = promptName('Enter Object Name','Default');
+        if isempty(name)
+            objStruct = {};
+            return;
+        end
+    end
     objStruct = initializeCommonStructFields(false, class, name, abstractID, instanceID);
     absStruct = feval(['create' class 'Struct'],false, objStruct, saveObjBool, args);
     if saveObjBool
@@ -66,7 +73,7 @@ if instanceBool
     instStruct = feval(['create' class 'Struct'],instanceBool, objStruct, saveObjBool, args);    
     if saveObjBool
         saveObj(instStruct);         
-    end    
+    end
 end
 
 if nargout==2 && exist('absStruct','var')~=1

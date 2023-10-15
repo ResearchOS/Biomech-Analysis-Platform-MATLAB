@@ -1,12 +1,14 @@
-function []=viewsDropDownValueChanged(src,event)
+function [uuid]=viewsDropDownValueChanged(src,event)
 
 %% PURPOSE: SWITCH TO A NEW VIEW IN THE CURRENT ANALYSIS
 
-global viewG;
+% global viewG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
+% NEED TO INITIALIZE THE VIEW DROP DOWN ENTRIES WITH UUID WHEN
+% ANALYSIS IS CHANGED.
 items = handles.Process.viewsDropDown.ItemsData;
 value = handles.Process.viewsDropDown.Value;
 
@@ -24,12 +26,12 @@ if isfile(tmpPath)
 end
 handles.Process.editViewButton.Value = value;
 
-viewAxes = handles.Process.toggleDigraphCheckbox.Value;
-
-viewG = [];
-setappdata(fig,'markerSize',[]);
-if viewAxes==1
-    G = filterGraph(fig, uuid); % Filter the 'ALL' graph with the current view.
-
-    renderGraph(fig, G); % Render the filtered graph.
-end
+% viewAxes = handles.Process.toggleDigraphCheckbox.Value;
+% 
+% viewG = [];
+% setappdata(fig,'markerSize',[]);
+% if viewAxes==1
+%     G = filterGraph(fig, uuid); % Filter the 'ALL' graph with the current view.
+% 
+%     renderGraph(fig, G); % Render the filtered graph.
+% end

@@ -7,7 +7,7 @@ global globalG;
 % Need to account for input/output var, object ordering, etc.
 
 tmpG = addedge(globalG, objL, objR);
-anList = getObjs({objsL; objsR}, {'AN'}, 'down', tmpG);
+anList = getObjs({objL; objR}, {'AN'}, 'down', tmpG);
 
 isMult = false;
 Current_Analysis = getCurrent('Current_Analysis');

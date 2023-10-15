@@ -4,10 +4,22 @@ function [uuid] = getSelUUID(uiTree)
 
 uuid = '';
 
+checkedNodes = uiTree.CheckedNodes;
 selNode = uiTree.SelectedNodes;
 
-if isempty(selNode)
+if isempty(checkedNodes) && isempty(selNode)
     return;
 end
 
-uuid = selNode.NodeData.UUID;
+if isempty(checkedNodes)
+    nodes = selNode;
+else
+    nodes = checkedNodes;
+end
+
+tmp= [nodes.NodeData];
+uuid = {tmp.UUID};
+
+if length(uuid)==1
+    uuid = uuid{1};
+end

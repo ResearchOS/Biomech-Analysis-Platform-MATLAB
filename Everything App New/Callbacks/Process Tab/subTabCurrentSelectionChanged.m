@@ -13,10 +13,10 @@ switch currTab
         showQueueButtons = true;
     case 'Group'        
         varVis=false; 
-        showQueueButtons = false;
+        showQueueButtons = true;
     case 'Function'
         varVis=true;
-        showQueueButtons = false;
+        showQueueButtons = true;
 end
 
 handles.Process.assignVariableButton.Visible=varVis;

@@ -46,8 +46,6 @@ fcnG = getFcnsOnlyDigraph(globalG);
 if isempty(checkedNodes) && any(contains(uuids,'PG')) % Assumes that uuid's is length 1 because only one selection at a time is possible
     assert(length(uuids)==1);
     uuids = predecessors(fcnG, uuids{1});    
-    % uuid_Containers = getUnorderedList(uuids{1});
-    % uuids = uuid_Containers(:,1);
 end
 
 % Remove everything that's not a process function (like process groups).
@@ -66,12 +64,6 @@ end
 uuids = uuids(~inQueueIdx);
 
 G = globalG;
-
-% Get the out of date values for all PR instances.
-% sqlquery = ['SELECT UUID, OutOfDate FROM Process_Instances'];
-% t = fetchQuery(sqlquery);
-% outOfDateIdx = t.OutOfDate==1;
-% outOfDateUUID = t.UUID(outOfDateIdx);
 
 idx = ismember(G.Nodes.Name,uuids); % Get UUIDs index in digraph.
 
@@ -95,7 +87,6 @@ Current_Analysis = getCurrent('Current_Analysis');
 anG = getSubgraph(G, Current_Analysis,'up');
 anFcnG = getFcnsOnlyDigraph(anG);
 runList = anFcnG.Nodes.Name(toposort(anFcnG));
-% runList = getRunList(containerUUID, G);
 orderedUUIDsIdx = ismember(runList(:,1), allUUIDs); % In case some out of date PR is between the ones to add.
 addUUIDs = runList(orderedUUIDsIdx,1);
 
@@ -112,10 +103,6 @@ queue = runList(runListInQueueIdx); % Same order as run list.
 if isequal(getDown,'Yes')
     
     reachableUUIDs = getReachableNodes(anFcnG, queue, 'down');
-
-    % outOfDateDepIdx = ismember(outOfDateUUID, reachableUUIDs);
-    % 
-    % outOfDateDeps = outOfDateUUID(outOfDateDepIdx);
 
     allUUIDs = [reachableUUIDs; uuids];
     orderedUUIDsIdx = ismember(runList(:,1), allUUIDs); % In case some out of date PR is between the ones to add.

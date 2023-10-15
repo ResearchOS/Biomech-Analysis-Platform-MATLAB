@@ -2,6 +2,10 @@ function [struct] = createAndShowObject(parent, instanceBool, type, name, abstra
 
 %% PURPOSE: CREATE A NEW OBJECT AND DISPLAY THE NODE IN THE APPROPRIATE UI TREE.
 
+if exist('args','var')~=1
+    args = '';
+end
+
 % 1. Create the new abstract object.
 struct = createNewObject(instanceBool, type, name, abstractID, instanceID, saveObjBool, args);
 if isempty(struct)

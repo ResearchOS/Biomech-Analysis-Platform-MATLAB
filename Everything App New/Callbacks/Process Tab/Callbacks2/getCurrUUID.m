@@ -1,4 +1,4 @@
-function [currUUID] = getCurrUUID(uuid)
+function [currUUID] = getCurrUUID(uuid, handles)
 
 %% PURPOSE: RETURN THE UUID IN THE APPROPRIATE CURRENT UI TREE THAT AN OBJECT IN THE ALL UI TREE IS BEING ASSIGNED TO
 % Depends on the class of the UUID and the current subtab
@@ -8,28 +8,40 @@ type = deText(uuid);
 title = handles.Process.subtabCurrent.SelectedTab.Title;
 
 if isequal(type, 'VR') && isequal(title,'Function')
-
     currUUID = handles.Process.groupUITree.SelectedNodes.NodeData.UUID;
+    return;
+end
 
-elseif ismember(type,{'PR','PG'}) && isequal(title,'Group')
+if ~ismember(type,{'PR','PG'})
+    return;
+end
 
+if isequal(title,'Group')
+
+    selNode = handles.Process.groupUITree.SelectedNodes;
     label = handles.Process.currentGroupLabel.Text;
-    currUUID = strsplit(label,' ');
-    currUUID = currUUID{2};
+    containerUUID = strsplit(label,' ');
+    containerUUID = containerUUID{2};
 
-elseif ismember(type,{'PG'}) && isequal(title,'Analysis')
+elseif isequal(title,'Analysis')
 
-    currUUID = getCurrent('Current_Analysis');
+    selNode = handles.Process.analysisUITree.SelectedNodes;
+    containerUUID = getCurrent('Current_Analysis');
 
-elseif ismember(type,{'PR'}) && isequal(title,'Analysis')
+end
 
-    selNode = handles.Process.analysisUITree.SelectedNodes.NodeData.UUID;
-    [~, list] = getUITreeFromNode(selNode);
-    
-    if length(list)>2
-        selNode = list(2); % Parent node.
-        currUUID = selNode.NodeData.UUID; % PG
+
+if isempty(selNode)
+    currUUID = containerUUID;
+else
+    nodeType = deText(selNode.NodeData.UUID);
+    if isequal(nodeType,'PR')
+        selNode = selNode.Parent;
+    end
+
+    if ~isequal(class(selNode),'matlab.ui.container.CheckBoxTree')
+        currUUID = selNode.NodeData.UUID;
     else
-        currUUID = getCurrent('Current_Analysis');
+        currUUID = containerUUID;
     end
 end

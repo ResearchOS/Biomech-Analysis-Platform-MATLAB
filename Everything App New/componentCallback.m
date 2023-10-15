@@ -9,7 +9,7 @@ if exist('event','var')~=1
 end
 
 if exist('args','var')~=1
-    args = '';
+    args.Type = '';
 end
 
 switch currTab

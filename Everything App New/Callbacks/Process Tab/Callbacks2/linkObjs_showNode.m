@@ -1,26 +1,45 @@
-function [] = linkObjs_showNode(lUUID, rUUID)
+function [] = linkObjs_showNode(lUUID, rUUID, handles)
 
 %% PURPOSE: LINK THE OBJECTS TOGETHER, AND CREATE THE NODE IN THE UI TREE.
 % THIS MUST BE DONE DIFFERENTLY FOR SOME CLASSES VS. OTHERS.
+
+global conn;
 
 lType = deText(lUUID);
 rType = deText(rUUID);
 
 EndNodes = {lUUID, rUUID};
 
-title = handles.Process.subTabCurrent.SelectedTab.Title;
+title = handles.Process.subtabCurrent.SelectedTab.Title;
 
 % VR & PR. (covers input and output variables)
 if all(ismember({lType, rType}, {'VR','PR'}))
     selNode = handles.Process.currentFunctionUITree.SelectedNodes;
-    nodeText = strsplit(selNode.Text,' ');
-    NameInCode = nodeText{1};
-    edgeTable = table(EndNodes, NameInCode);
+    nodeText = strsplit(selNode.Text,' ');    
+    struct.NameInCode = nodeText{1};
+    if isequal(lType,'VR')
+        tablename = 'VR_PR';
+        struct.VR_ID = lUUID;
+        struct.PR_ID = rUUID;
+    else
+        tablename = 'PR_VR';
+        struct.PR_ID = lUUID;
+        struct.VR_ID = rUUID;
+    end
+    sqlquery = ['DELETE FROM ' tablename ' WHERE PR_ID = ''' struct.PR_ID ''' AND NameInCode = ''' struct.NameInCode ''';'];
+    execute(conn, sqlquery);
+    if isequal(tablename,'VR_PR')
+        struct.Subvariable = 'NULL';
+        sqluery = ['INSERT INTO ' tablename '(PR_ID, VR_ID, NameInCode, Subvariable) VALUES (''' struct.PR_ID ''', ''' struct.VR_ID ''', ''' struct.NameInCode ''', ''' struct.Subvariable ''');'];
+    else
+        sqluery = ['INSERT INTO ' tablename '(PR_ID, VR_ID, NameInCode) VALUES (''' struct.PR_ID ''', ''' struct.VR_ID ''', ''' struct.NameInCode ''');'];
+    end
+    execute(conn, sqlquery);
 else
     edgeTable = table(EndNodes);
+    linkObjs(edgeTable);
 end
 
-linkObjs(edgeTable);
 
 %% Show the node.
 if all(ismember({lType, rType}, {'VR', 'PR'})) && isequal(title,'Function')
@@ -34,28 +53,16 @@ end
 
 % Create the node.
 if isequal(title, 'Group')
-    uiTree = handles.Process.groupUITree;
-    selNode = uiTree.SelectedNodes;
-    nodeType = deText(selNode.NodeData.UUID);
-    if ~isequal(nodeType,'PG')
-        selNode = selNode.Parent;
-    end
+    uiTree = handles.Process.groupUITree;    
 elseif isequal(title,'Analysis')
     uiTree = handles.Process.analysisUITree;
-    selNode = uiTree.SelectedNodes;
-    if isequal(rType,'PG')
-        if isequal(selNode.NodeData.UUID,'PR')
-            selNode = selNode.Parent;
-        end
-    elseif isequal(rType,'AN')
-        if isempty(selNode)
-            selNode = uiTree;
-        elseif isequal(selNode.NodeData.UUID,'PR')
-            selNode = selNode.Parent;
-        end
-    end
+end
+selNode = getNode(uiTree, rUUID);
+if isempty(selNode)
+    selNode = uiTree;
 end
 node = addNewNode(selNode, lUUID, getName(lUUID));
 uiTree.SelectedNodes = node;
+selectNode(uiTree, node);
 processCallbacks(uiTree);
 

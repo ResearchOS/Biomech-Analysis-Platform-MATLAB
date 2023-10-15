@@ -22,8 +22,11 @@ fillAN_PG_UITree(uiTree, handles, orderedEdges);
 switch uiTree
     case handles.Process.analysisUITree
         tab = handles.Process.currentAnalysisTab;
+        label = handles.Process.currentAnalysisLabel;
     case handles.Process.groupUITree
         tab = handles.Process.subtabCurrent.SelectedTab;
+        label = handles.Process.currentGroupLabel;
 end
 handles.Process.subtabCurrent.SelectedTab = tab;
+label.Text = [getName(uuid) ' ' uuid];
 drawnow;

@@ -1,12 +1,10 @@
-function [newUUIDs] = copyToNew(uuids)
+function [newUUIDs] = copyToNew(lUUID, rUUID)
 
 %% PURPOSE: COPY NODES TO NEW VERSIONS
 
 global globalG;
 
-if ~iscell(uuids)
-    uuids = {uuids};
-end
+uuids = {lUUID; rUUID};
 
 % The graph containing only uuids to rename
 tmpG = subgraph(globalG, uuids);

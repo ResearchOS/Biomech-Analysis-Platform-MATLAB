@@ -65,7 +65,8 @@ switch src
         projectsCallbacks(handles.currentProjectButton);
 
     case handles.removeProjectButton
-        confirmAndDeleteObject(uuid);
+        node = getNode(handles.allProjectsUITree, uuid);
+        confirmAndDeleteObject(uuid, node);
 
     case handles.sortProjectsDropDown
 
@@ -94,7 +95,8 @@ switch src
         fillAllUITrees(fig);
         Current_Analysis = getCurrent('Current_Analysis');
         selectNode(allHandles.Process.allAnalysesUITree, Current_Analysis);
-        selectAnalysisButtonPushed(fig);
+        processCallbacks(allHandles.Process.selectAnalysisButton, '', 'All_AN');
+        % selectAnalysisButtonPushed(fig);
 
     case {handles.openProjectPathButton, handles.openDataPathButton}
         path = src.Value;

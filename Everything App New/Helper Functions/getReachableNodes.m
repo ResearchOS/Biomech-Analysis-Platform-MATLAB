@@ -1,6 +1,6 @@
-function [reachableNodes] = getReachableNodes(G, uuid, dir)
+function [reachableNodes] = getReachableNodes(G, uuids, dir)
 
-%% PURPOSE: GET ALL OF THE REACHABLE NODES FROM THE SPECIFIED UUID IN THE SPECIFIED GRAPH
+%% PURPOSE: GET ALL OF THE REACHABLE NODES FROM THE SPECIFIED UUID IN THE SPECIFIED GRAPH. INCLUDES THE UUID INPUTTED!
 
 if nargin<3
     dir = 'down';
@@ -15,6 +15,6 @@ for i=1:size(R,1)
     R(i,i)=1;
 end
 
-uuidIdx = ismember(G.Nodes.Name,uuid);
+uuidIdx = ismember(G.Nodes.Name,uuids);
 reachableIdx = any(logical(R(uuidIdx,:)),1);
 reachableNodes = G.Nodes.Name(reachableIdx);

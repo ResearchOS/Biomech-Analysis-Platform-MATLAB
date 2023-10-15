@@ -49,7 +49,7 @@ handles.Process.viewsDropDown.Value = uuids{idx};
 viewsDropDownValueChanged(fig);
 
 % Fill the current analysis UI tree
-fillAnalysisUITree(fig);
+fillAnalysisUITree(fig, handles.Process.analysisUITree, Current_Analysis);
 disp('Successfully switched to new analysis');
 
 %% Select the current logsheet.

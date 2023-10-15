@@ -238,22 +238,22 @@ handles.Process.allProcessUITree=uitree(handles.Process.functionsTab,'checkbox',
 handles.Process.processSearchField=uieditfield(handles.Process.functionsTab,'Value','Search','ValueChangingFcn',@(functionsSearchField,event) processSearchFieldValueChanging(functionsSearchField));
 
 % 13. Assign variable button
-handles.Process.assignVariableButton=uibutton(handles.Process.variablesTab,'Text','->','Visible','off','ButtonPushedFcn',@(assignVariableButton,event) assignVariableButtonPushed(assignVariableButton));
+handles.Process.assignVariableButton=uibutton(handles.Process.variablesTab,'Text','->','Visible','off','ButtonPushedFcn',{@componentCallback, 'VR'});
 
 % 14. Unassign variable button
-handles.Process.unassignVariableButton=uibutton(handles.Process.variablesTab,'Text','<-','Visible','off','ButtonPushedFcn',@(unassignVariableButton,event) unassignVariableButtonPushed(unassignVariableButton));
+handles.Process.unassignVariableButton=uibutton(handles.Process.variablesTab,'Text','<-','Visible','off','ButtonPushedFcn',{@componentCallback, 'VR'});
 
 % 15. Assign function button
-handles.Process.assignFunctionButton=uibutton(handles.Process.functionsTab,'Text','->','Visible','on','ButtonPushedFcn',@(assignFunctionButton,event) assignFunctionButtonPushed(assignFunctionButton));
+handles.Process.assignFunctionButton=uibutton(handles.Process.functionsTab,'Text','->','Visible','on','ButtonPushedFcn',{@componentCallback, 'PR'});
 
 % 16. Unassign function button
-handles.Process.unassignFunctionButton=uibutton(handles.Process.functionsTab,'Text','<-','Visible','on','ButtonPushedFcn',@(unassignFunctionButton,event) unassignFunctionButtonPushed(unassignFunctionButton));
+handles.Process.unassignFunctionButton=uibutton(handles.Process.functionsTab,'Text','<-','Visible','on','ButtonPushedFcn',{@componentCallback, 'PR'});
 
 % 13. Add group button
-handles.Process.addGroupButton=uibutton(handles.Process.groupsTab,'Text','G+','ButtonPushedFcn',@(addGroupButton,event) addGroupButtonPushed(addGroupButton));
+handles.Process.addGroupButton=uibutton(handles.Process.groupsTab,'Text','G+','ButtonPushedFcn',{@componentCallback, 'All_PG'});
 
 % 14. Remove group button
-handles.Process.removeGroupButton=uibutton(handles.Process.groupsTab,'Text','G-','ButtonPushedFcn',@(removeGroupButton,event) removeGroupButtonPushed(removeGroupButton));
+handles.Process.removeGroupButton=uibutton(handles.Process.groupsTab,'Text','G-','ButtonPushedFcn',{@componentCallback, 'All_PG'});
 
 % 15. Sort group drop down
 handles.Process.sortGroupsDropDown=uidropdown(handles.Process.groupsTab,'Editable','off','Items',sortOptions,'ValueChangedFcn',@(sortGroupsDropDown,event) sortGroupsDropDownValueChanged(sortGroupsDropDown));
@@ -265,28 +265,28 @@ handles.Process.allGroupsUITree=uitree(handles.Process.groupsTab,'checkbox','Sel
 handles.Process.groupsSearchField=uieditfield(handles.Process.groupsTab,'Value','Search','ValueChangingFcn',@(groupsSearchField,event) groupsSearchFieldValueChanging(groupsSearchField));
 
 % 18. Assign group button
-handles.Process.assignGroupButton=uibutton(handles.Process.groupsTab,'Text','->','Visible','on','ButtonPushedFcn',@(assignGroupButton,event) assignGroupButtonPushed(assignGroupButton));
+handles.Process.assignGroupButton=uibutton(handles.Process.groupsTab,'Text','->','Visible','on','ButtonPushedFcn',{@componentCallback, 'PG'});
 
 % 19. Unassign group button
-handles.Process.unassignGroupButton=uibutton(handles.Process.groupsTab,'Text','<-','Visible','on','ButtonPushedFcn',@(unassignGroupButton,event) unassignGroupButtonPushed(unassignGroupButton));
+handles.Process.unassignGroupButton=uibutton(handles.Process.groupsTab,'Text','<-','Visible','on','ButtonPushedFcn',{@componentCallback, 'PG'});
 
 % 20. Add analysis button
-handles.Process.addAnalysisButton=uibutton(handles.Process.analysesTab,'Text','A+','ButtonPushedFcn',@(addAnalysisButton,event) addAnalysisButtonPushed(addAnalysisButton));
+handles.Process.addAnalysisButton=uibutton(handles.Process.analysesTab,'Text','A+','ButtonPushedFcn',{@componentCallback, 'All_AN'});
 
 % 21. Remove analysis button
-handles.Process.removeAnalysisButton=uibutton(handles.Process.analysesTab,'Text','A-','ButtonPushedFcn',@(removeAnalysisButton,event) removeAnalysisButtonPushed(removeAnalysisButton));
+handles.Process.removeAnalysisButton=uibutton(handles.Process.analysesTab,'Text','A-','ButtonPushedFcn',{@componentCallback, 'All_AN'});
 
 % 22. Sort analyses drop down
 handles.Process.sortAnalysesDropDown=uidropdown(handles.Process.analysesTab,'Editable','off','Items',sortOptions','ValueChangedFcn',@(sortAnalysesDropDown,event) sortAnalysesDropDown(sortAnalysesDropDown));
 
 % 23. All analyses UI tree
-handles.Process.allAnalysesUITree=uitree(handles.Process.analysesTab,'checkbox','SelectionChangedFcn',@(allAnalysesUITree,event) allAnalysesUITreeSelectionChanged(allAnalysesUITree));
+handles.Process.allAnalysesUITree=uitree(handles.Process.analysesTab,'checkbox','SelectionChangedFcn',@componentCallback);
 
 % 24. Analyses search field
 handles.Process.analysesSearchField=uieditfield(handles.Process.analysesTab,'Value','Search','ValueChangingFcn',@(analysesSearchField, event) analysesSearchFieldValueChanging(analysesSearchField));
 
 % 25. Select analysis button
-handles.Process.selectAnalysisButton=uibutton(handles.Process.analysesTab,'push','Text','Sel','ButtonPushedFcn',@(selectAnalysisButton,event) selectAnalysisButtonPushed(selectAnalysisButton));
+handles.Process.selectAnalysisButton=uibutton(handles.Process.analysesTab,'push','Text','Sel','ButtonPushedFcn',{@componentCallback, 'All_AN'});
 
 % 18. Queue UI tree
 handles.Process.queueUITree=uitree(processTab,'checkbox');
@@ -307,25 +307,25 @@ handles.Process.currentGroupTab=uitab(handles.Process.subtabCurrent,'Title','Gro
 handles.Process.currentFunctionTab=uitab(handles.Process.subtabCurrent,'Title','Function','AutoResizeChildren','off');
 
 % 25. Run button
-handles.Process.runButton=uibutton(processTab,'push','Text','Run','ButtonPushedFcn',@(runButton,event) runButtonPushed(runButton));
+handles.Process.runButton=uibutton(processTab,'push','Text','Run','ButtonPushedFcn',@componentCallback);
 
 % 26. Current group UI tree
-handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','SelectionChangedFcn',@(groupUITree,event) groupUITreeSelectionChanged(groupUITree),'DoubleClickedFcn',@(groupUITree, event) groupUITreeDoubleClicked(groupUITree));
+handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','SelectionChangedFcn',@componentCallback,'DoubleClickedFcn',{@componentCallback, 'DoubleClick'});
 
 % 27. Current function UI tree
-handles.Process.functionUITree=uitree(handles.Process.currentFunctionTab,'checkbox','SelectionChangedFcn',@(functionUITree,event) functionUITreeSelectionChanged(functionUITree));
+handles.Process.functionUITree=uitree(handles.Process.currentFunctionTab,'checkbox','SelectionChangedFcn',@componentCallback);
 
 % 28. Current analysis UI tree
-handles.Process.analysisUITree=uitree(handles.Process.currentAnalysisTab,'checkbox','SelectionChangedFcn',@(analysisUITree,event) analysisUITreeSelectionChanged(analysisUITree),'DoubleClickedFcn',@(analysisUITree, event) analysisUITreeDoubleClickedFcn(analysisUITree));
+handles.Process.analysisUITree=uitree(handles.Process.currentAnalysisTab,'checkbox','SelectionChangedFcn',@componentCallback,'DoubleClickedFcn',{@componentCallback, 'DoubleClick'});
 
 % 20. Add to queue button
-handles.Process.addToQueueButton=uibutton(processTab,'push','Text','->','ButtonPushedFcn',@(addToQueueButton,event) addToQueueButtonPushed(addToQueueButton));
+handles.Process.addToQueueButton=uibutton(processTab,'push','Text','->','ButtonPushedFcn',@componentCallback);
 
 % 21. Remove from queue button
-handles.Process.removeFromQueueButton=uibutton(processTab,'push','Text','<-','ButtonPushedFcn',@(removeFromQueueButton,event) removeFromQueueButtonPushed(removeFromQueueButton));
+handles.Process.removeFromQueueButton=uibutton(processTab,'push','Text','<-','ButtonPushedFcn',@componentCallback);
 
 % 30. Save as new analysis button
-handles.Process.copyToNewAnalysisButton=uibutton(handles.Process.currentAnalysisTab,'push','Text',{'Copy To New','Analysis'},'ButtonPushedFcn',@(copyToNewAnalysisButton,event) copyToNewAnalysisButtonPushed(copyToNewAnalysisButton));
+handles.Process.copyToNewAnalysisButton=uibutton(handles.Process.currentAnalysisTab,'push','Text',{'Copy To New','Analysis'},'ButtonPushedFcn',@componentCallback);
 
 % 32. Current analysis label
 handles.Process.currentAnalysisLabel=uilabel(handles.Process.currentAnalysisTab,'Text','Current Analysis','FontWeight','bold');
@@ -337,75 +337,72 @@ handles.Process.currentGroupLabel=uilabel(handles.Process.currentGroupTab,'Text'
 handles.Process.currentFunctionLabel=uilabel(handles.Process.currentFunctionTab,'Text','Current Function','FontWeight','bold');
 
 % 33. Add getArg/setArg button
-handles.Process.addArgsButton=uibutton(handles.Process.currentFunctionTab,'Text','+','ButtonPushedFcn',@(addArgsButton,event) addArgsButtonPushed(addArgsButton));
+handles.Process.addArgsButton=uibutton(handles.Process.currentFunctionTab,'Text','+','ButtonPushedFcn',@componentCallback);
 
 % 34. Remove getArg/setArg button
-handles.Process.removeArgsButton=uibutton(handles.Process.currentFunctionTab,'Text','-','ButtonPushedFcn',@(removeArgsButton,event) removeArgsButtonPushed(removeArgsButton));
+handles.Process.removeArgsButton=uibutton(handles.Process.currentFunctionTab,'Text','-','ButtonPushedFcn',@componentCallback);
 
 % 35. Toggle digraph button
-handles.Process.toggleDigraphCheckbox=uicheckbox(processTab,'Value',false,'Text','Show Digraph','ValueChangedFcn',@(toggleDigraphCheckbox, event) toggleDigraphCheckboxValueChanged(toggleDigraphCheckbox));
+handles.Process.toggleDigraphCheckbox=uicheckbox(processTab,'Value',false,'Text','Show Digraph','ValueChangedFcn',@componentCallback);
 
 % 36. Digraph UI axes
-handles.Process.digraphAxes=uiaxes(processTab,'Visible',false,'Box','off','XTickLabel',{},'YTickLabel',{},'XTick',{},'YTick',{},'PickableParts','visible','HitTest','on','ButtonDownFcn',@(digraphAxes, event) digraphAxesButtonDownFcn(digraphAxes));
-
-% 37. Switch digraph mode
-% handles.Process.switchDigraphModeDropDown=uidropdown(processTab,'Visible',false,'Items',{'Graph','Linear'},'Value','Graph','Editable','off','ValueChangedFcn',@(switchDigraphModeDropDown, event) switchDigraphModeDropDownValueChanged(switchDigraphModeDropDown));
+handles.Process.digraphAxes=uiaxes(processTab,'Visible',false,'Box','off','XTickLabel',{},'YTickLabel',{},'XTick',{},'YTick',{},'PickableParts','visible','HitTest','on','ButtonDownFcn',@componentCallback);
 
 % 49. Out of date checkbox
-handles.Process.outOfDateCheckbox=uicheckbox(handles.Process.currentGroupTab,'Value',false,'Text','Out of Date','ValueChangedFcn',@(outOfDateCheckbox, event) outOfDateCheckboxValueChanged(outOfDateCheckbox));
+handles.Process.outOfDateCheckbox=uicheckbox(handles.Process.currentGroupTab,'Value',false,'Text','Out of Date','ValueChangedFcn',@componentCallback);
 
 % 50. Send emails checkbox
-handles.Process.sendEmailsCheckbox=uicheckbox(processTab, 'Visible', true, 'Value', false, 'Text', 'Send Email','ValueChangedFcn',@(sendEmailsCheckbox, event) sendEmailsCheckboxValueChanged(sendEmailsCheckbox));
+handles.Process.sendEmailsCheckbox=uicheckbox(processTab, 'Visible', true, 'Value', false, 'Text', 'Send Email','ValueChangedFcn',@componentCallback);
 
 % 51. Views dropdown
-handles.Process.viewsDropDown = uidropdown(processTab,'Visible',false,'Items',{'ALL'},'Editable','off','ValueChangedFcn',@(viewsDropDown, event) viewsDropDownValueChanged(viewsDropDown));
+handles.Process.viewsDropDown = uidropdown(processTab,'Visible',false,'Items',{'ALL'},'Editable','off','ValueChangedFcn',@componentCallback);
 
 % 52. Edit/save view state button
-handles.Process.editViewButton = uibutton(processTab,'state','Visible',false,'Text','Edit','ValueChangedFcn',@(editViewButton, event) editViewButtonPressed(editViewButton));
+handles.Process.editViewButton = uibutton(processTab,'state','Visible',false,'Text','Edit','ValueChangedFcn',@componentCallback);
 
 % 53. Select multi state button
-handles.Process.multiSelectButton = uibutton(processTab,'state','Visible',false,'Text','Multi','ValueChangedFcn',@(multiSelectButton, event) multiSelectButtonValueChanged(multiSelectButton));
+handles.Process.multiSelectButton = uibutton(processTab,'state','Visible',false,'Text','Multi','ValueChangedFcn',@componentCallback);
 
 % 38. Pretty variables checkbox
-handles.Process.prettyVarsCheckbox=uicheckbox(processTab,'Visible',false,'Value',false,'Text','Pretty Vars','ValueChangedFcn',@(prettyVarsCheckbox, event) prettyVarsCheckboxValueChanged(prettyVarsCheckbox));
+handles.Process.prettyVarsCheckbox=uicheckbox(processTab,'Visible',false,'Value',false,'Text','Pretty Vars','ValueChangedFcn',@componentCallback);
 
 % 54. Add node (from list) button
-handles.Process.addToViewButton = uibutton(processTab,'push','Visible',false,'Text','->','ButtonPushedFcn',@(addToViewButton,event) addToViewButtonPushed(addToViewButton));
+handles.Process.addToViewButton = uibutton(processTab,'push','Visible',false,'Text','->','ButtonPushedFcn',@componentCallback);
 
 % 55. Remove node (from axes) button
-handles.Process.removeFromViewButton = uibutton(processTab,'push','Visible',false,'Text','<-','ButtonPushedFcn',@(removeFromViewButton, event) removeFromViewButtonPushed(removeFromViewButton));
+handles.Process.removeFromViewButton = uibutton(processTab,'push','Visible',false,'Text','<-','ButtonPushedFcn',@componentCallback);
 
 % 56. Add/remove successors button
-handles.Process.successorsButton = uibutton(processTab,'push','Visible',false,'Text','S','ButtonPushedFcn',@(successorsButton, event) successorsButtonPushed(successorsButton));
+handles.Process.successorsButton = uibutton(processTab,'push','Visible',false,'Text','S','ButtonPushedFcn',@componentCallback);
 
 % 57. Add/remove predecessors button
-handles.Process.predecessorsButton = uibutton(processTab,'push','Visible',false,'Text','P','ButtonPushedFcn',@(predecessorsButton, event) predecessorsButtonPushed(predecessorsButton));
+handles.Process.predecessorsButton = uibutton(processTab,'push','Visible',false,'Text','P','ButtonPushedFcn',@componentCallback);
 
 % 58. Create new view button
-handles.Process.newViewButton = uibutton(processTab,'push','Visible',false,'Text','VW+','ButtonPushedFcn',@(newViewButton, event) newViewButtonPushed(newViewButton));
+handles.Process.newViewButton = uibutton(processTab,'push','Visible',false,'Text','VW+','ButtonPushedFcn',@componentCallback);
 
 % 59. Archive view button
-handles.Process.archiveViewButton = uibutton(processTab,'push','Visible',false,'Text','VW-','ButtonPushedFcn',@(archiveViewButton, event) archiveViewButtonPushed(archiveViewButton));
+handles.Process.archiveViewButton = uibutton(processTab,'push','Visible',false,'Text','VW-','ButtonPushedFcn',@componentCallback);
 
 % 35. Add specify trials button
 handles.Process.addSpecifyTrialsButton=uibutton(processTab,'Text','S+');
 addSpecifyTrialsButton=handles.Process.addSpecifyTrialsButton;
-set(addSpecifyTrialsButton,'ButtonPushedFcn',@(addSpecifyTrialsButton,event) addSpecifyTrialsButtonPushed(addSpecifyTrialsButton))
+set(addSpecifyTrialsButton,'ButtonPushedFcn',{@componentCallback, 'All_ST'});
 
 % 36. Remove specify trials button
 handles.Process.removeSpecifyTrialsButton=uibutton(processTab,'Text','S-');
 removeSpecifyTrialsButton=handles.Process.removeSpecifyTrialsButton;
-set(removeSpecifyTrialsButton,'ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
+set(removeSpecifyTrialsButton,'ButtonPushedFcn',{@componentCallback,'All_ST'});
 
 % 37. Specify trials UI tree
 handles.Process.allSpecifyTrialsUITree=uitree(processTab,'checkbox');
 specifyTrialsUITree=handles.Process.allSpecifyTrialsUITree;
-set(specifyTrialsUITree,'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree));
+set(specifyTrialsUITree,'CheckedNodesChangedFcn',{@componentCallback,'ST'});
 
 % 38. Edit specify trials node button
 handles.Process.editSpecifyTrialsButton=uibutton(processTab,'Text','Edit');
 editSpecifyTrialsButton=handles.Process.editSpecifyTrialsButton;
-set(editSpecifyTrialsButton,'ButtonPushedFcn',@(editSpecifyTrialsButton,event) editSpecifyTrialsButtonPushed(editSpecifyTrialsButton));
+set(editSpecifyTrialsButton,'ButtonPushedFcn',@componentCallback);
 
 handles.Process.subtabCurrent.SelectedTab=handles.Process.currentGroupTab;
 setappdata(fig,'handles',handles);

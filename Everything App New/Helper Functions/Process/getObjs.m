@@ -1,4 +1,4 @@
-function [uuids] = getObjs(uuid,types,dir)
+function [uuids] = getObjs(uuids, types, dir, tmpG)
 
 %% PURPOSE: GET THE OBJECTS OF THE SPECIFIED TYPE, UP OR DOWNSTREAM
 
@@ -6,7 +6,7 @@ global globalG;
 
 if nargin<2
     types = getTypes();
-    types(contains(types,{'ST'})) = [];
+    types(contains(types,{'ST'})) = []; % Because ST is abstract (?)
 end
 
 if ~iscell(types)
@@ -22,11 +22,13 @@ if iscell(dir)
     dir = dir{1};
 end
 
-tmpG = globalG;
-if isequal(dir,'up')
-    tmpG = flipedge(globalG);
+if exist('tmpG','var')~=1
+    tmpG = globalG;
+    if isequal(dir,'up')
+        tmpG = flipedge(globalG);
+    end
 end
 
-reachableNodes = getReachableNodes(tmpG, uuid);
+reachableNodes = getReachableNodes(tmpG, uuids);
 idx = contains(reachableNodes,types);
 uuids = reachableNodes(idx);

@@ -1,4 +1,4 @@
-function [success, msg]=linkObjs(leftObjs, rightObjs, date)
+function [success, msg]=linkObjs(leftObjs, rightObjs, nameInCode)
 
 %% PURPOSE: LINK TWO OBJECTS TOGETHER. INPUTS ARE:
 % 1. THE UUID'S TO LINK TOGETHER, OR

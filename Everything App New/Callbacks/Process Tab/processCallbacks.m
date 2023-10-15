@@ -1,6 +1,8 @@
-function [] = processCallbacks(src, event, args)
+function [uuid] = processCallbacks(src, event, args)
 
 %% PURPOSE: CONTROLLER FOR PROCESS CALLBACKS.
+
+global globalG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
@@ -16,15 +18,15 @@ if exist('args','var')~=1
 end
 
 switch args
-    case 'All_VR'
+    case {'All_VR','VR'}
         uiTree = handles.allVariablesUITree;
-    case 'All_PR'
+    case {'All_PR','PR'}
         uiTree = handles.allProcessUITree;
-    case {handles.addGroupButton, handles.removeGroupButton, handles.allGroupsUITree}
+    case {'All_PG','PG'}
         uiTree = handles.allGroupsUITree;
-    case {handles.addAnalysisButton, handles.removeAnalysisButton, handles.allAnalysesUITree}
+    case 'All_AN'
         uiTree = handles.allAnalysesUITree;
-    case {handles.specifyTrialsUITree, handles.editSpecifyTrialsButton, handles.removeSpecifyTrialsButton, handles.addSpecifyTrialsButton}
+    case 'All_ST'
         uiTree = handles.specifyTrialsUITree;
     otherwise
         uiTree = handles.analysisUITree;
@@ -42,77 +44,81 @@ if ~isUUID(uuid)
 end
 
 switch src
-    % Add objects.
+    % Add new abstract objects. DONE.
     case {handles.addVariableButton, handles.addProcessButton, handles.addGroupButton, handles.addAnalysisButton, handles.addSpecifyTrialsButton}
-        % 1. Create the new abstract object.
-        struct = createNewObject(false, args(5:6), '', '', '', true);
+        createAndShowObject(uiTree, false, args(5:6), '', '', '', true);
 
-        % 2. Add it to the UI tree & select it.
-        addNewNode(uiTree, struct.UUID, struct.Name);
-        selectNode(uiTree, struct.UUID);
-
-    % Delete objects.
+    % Delete objects. DONE.
     case {handles.removeVariableButton, handles.removeProcessButton, handles.removeGroupButton, handles.removeAnalysisButton, handles.removeSpecifyTrialsButton}
-        confirmAndDeleteObject(uuid);
+        node = getNode(uiTree, uuid);
+        confirmAndDeleteObject(uuid, node);
 
-    % Change the current analysis.
-    case handles.selectAnalysisButton        
+    % Change the current analysis. DONE.
+    case handles.selectAnalysisButton
         fillAnalysisUITree(fig, handles.analysisUITree, uuid); % Still needs to deal with current UI tree titles
         linkObjs(uuid, getCurrent('Current_Project_Name'));
 
-    % Fill the group and process UI trees
+    % Fill the group and process UI trees. DONE.
     case handles.analysisUITree
+        if isequal(args,'DoubleClick')
+            analysisUITreeDoubleClickedFcn(fig);
+            return;
+        end
         fillAnalysisUITree(fig, handles.groupUITree, uuid); % Fill the group UI tree.
-        showSpecifyTrials(uuid);
         processCallbacks(handles.groupUITree, '', uuid);        
 
-    % Fill the process UI tree, and select the node in the analysis UI tree too
+    % Fill the process UI tree, and select the node in the analysis UI tree
+    % too. DONE.
     case handles.groupUITree
+        if isequal(args,'DoubleClick')
+            groupUITreeDoubleClicked(fig);
+            return;
+        end
         selectNode(handles.analysisUITree, uuid);
-        fillCurrentFunctionUITree(fig, uuid);
-        showSpecifyTrials(uuid);
+        st = getST(uuid);
+        checkSpecifyTrialsUITree(st, handles.allSpecifyTrialsUITree);
+        fillCurrentFunctionUITree(fig, uuid);        
 
-    case handles.processUITree
+    % DONE.
+    case handles.functionUITree
         % Do nothing here.
 
     % Check that there is no overlap between analyses. If so, handle it.
     case {handles.assignVariableButton, handles.unassignVariableButton, ...
             handles.assignProcessButton, handles.unassignProcessButton, ...
             handles.assignGroupButton, handles.unassignGroupButton}
-        % 1. If abstract node selected, create new instance object (assignment only).
+        % 1. If abstract node selected, create new instance object (occurs during assignment only).        
+        if ~isInstance(uuid)
+            abstractNode = getNode(uiTree, uuid);
+            struct = createAndShowObject(abstractNode, true, getClassFromUITree(uiTree), abstractNode.Text, uuid, '', true);
+            uuid = struct.UUID;
+        end
+        currUUID = getCurrUUID(uuid);
+        [lUUID, rUUID] = getLRObjs(uuid, currUUID);
 
-        % 2. Check if the connection would modify an object within another analysis,
-        % if so ask the user what they want to do.
-        %   a. Make changes to all involved analyses (easy, just proceed with changes to the PR)
-        %   b. Abort the change
-        %   c. Duplicate this PR and all downstream nodes in the current
-        %   analysis (except the AN itself), and then assign the new VR to
-        %   the PR. Don't forget to remove the previous nodes from this AN!
+        isMult = checkMultAN(lUUID, rUUID);
+        if isMult
+            listString = {'Abort the change','Copy to new analysis','Propagate changes to multiple analyses'};
+            a = listdlg('PromptString','Make a decision','ListString',listString);
+            if contains(a,'Abort') % Abort the change
+                return;
+            % Duplicate this PR and all downstream nodes in the current
+            %   analysis (except the AN itself), and then assign the new VR to
+            %   the PR. Don't forget to remove the previous nodes from this AN!
+            elseif contains(a,'Copy to new') % 
+                [lUUID, rUUID] = '';
+            elseif contains(a,'Propagate') % Make changes to all involved analyses (easy, just proceed with changes to the PR/PG)
+            else
+                return; % Anything else like cancel or X
+            end
+        end
 
-        processCallbacks(src, '', args);
-
-    % Assign VR to PR, and to AN.
-    case handles.assignVariableButton   
-        % 1. Put the VR->PR / PR->VR and VR->AN edge into the SQL database and the digraph.
-
-        % 2. Show the variable in the processUITree next to the correct
-        % name in code.
-
-        % 3. If this PR is in the current view, update the view with the
-        % new edge.
-
-    % Assign PR to PG.
-    case handles.assignProcessButton
-        % 1. Put the PR -> PG edge into the SQL database and the digraph
-
-        % 2. Show the PR in the analysis UI tree and the group UI tree
-
-    % Assign PG to PG or AN.
-    case handles.assignGroupButton
-        % 1. Put the PG -> PG / PG -> AN edge into SQL and the digraph.
-
-        % 2. Show the PG and any PR in the analysis UI tree and the group
-        % UI tree
+        if ismember(src,{handles.assignVariableButton, handles.assignProcessButton, handles.assignGroupButton})
+            linkObjs_showNode(lUUID, rUUID);            
+        else
+            unlinkObjs(uuid, currUUID);
+                                  
+        end
 
     % Assign PR or all PR's in PG to queue
     case handles.assignToQueueButton
@@ -122,9 +128,19 @@ switch src
 
     % Edit the specify trials condition selected.
     case handles.editSpecifyTrialsButton
+        editSpecifyTrialsButtonPushed(fig);
 
     % Run the queue.
-    case runButtonPushed
+    case handles.runButtonPushed
+        runButtonPushed(fig);
+
+    % Show digraph
+    case handles.toggleDigraphCheckbox
+        val = 'off';
+        if src.Value
+            val = 'on';
+        end
+        handles.Ax.Visible = val;
         
 
 

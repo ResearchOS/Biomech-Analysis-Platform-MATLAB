@@ -2,7 +2,7 @@ function [] = renderGraph(src, G, markerSize, color, edgeID, popupAx)
 
 %% PURPOSE: RENDER THE DIGRAPH IN THE UI AXES
 
-global conn viewG popupG;
+global viewG popupG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');

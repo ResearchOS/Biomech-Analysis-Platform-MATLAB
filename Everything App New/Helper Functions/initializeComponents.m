@@ -40,6 +40,7 @@ args.PG.Type = 'PG';
 args.all_PG.Type = 'All_PG';
 args.AN.Type = 'AN';
 args.all_AN.Type = 'All_AN';
+args.DoubleClick.Type = 'DoubleClick';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize the projects tab.
@@ -318,13 +319,13 @@ handles.Process.currentFunctionTab=uitab(handles.Process.subtabCurrent,'Title','
 handles.Process.runButton=uibutton(processTab,'push','Text','Run','ButtonPushedFcn',@componentCallback);
 
 % 26. Current group UI tree
-handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','SelectionChangedFcn',{@componentCallback, args.PG},'DoubleClickedFcn',{@componentCallback, 'DoubleClick'});
+handles.Process.groupUITree=uitree(handles.Process.currentGroupTab,'checkbox','SelectionChangedFcn',{@componentCallback, args.PG},'DoubleClickedFcn',{@componentCallback, args.DoubleClick});
 
 % 27. Current function UI tree
 handles.Process.functionUITree=uitree(handles.Process.currentFunctionTab,'checkbox','SelectionChangedFcn',{@componentCallback, args.PR});
 
 % 28. Current analysis UI tree
-handles.Process.analysisUITree=uitree(handles.Process.currentAnalysisTab,'checkbox','SelectionChangedFcn',{@componentCallback, args.AN},'DoubleClickedFcn',{@componentCallback, 'DoubleClick'});
+handles.Process.analysisUITree=uitree(handles.Process.currentAnalysisTab,'checkbox','SelectionChangedFcn',{@componentCallback, args.AN},'DoubleClickedFcn',{@componentCallback, args.DoubleClick});
 
 % 20. Add to queue button
 handles.Process.addToQueueButton=uibutton(processTab,'push','Text','->','ButtonPushedFcn',@componentCallback);

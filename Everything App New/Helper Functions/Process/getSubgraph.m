@@ -7,5 +7,9 @@ if nargin<3
     dir = 'up';
 end
 
-nodes = getReachableNodes(G, uuids, dir);
+if ~ismember(dir,{'up','down'})
+    nodes = uuids;
+else
+    nodes = getReachableNodes(G, uuids, dir);
+end
 tmpG = subgraph(G, nodes);

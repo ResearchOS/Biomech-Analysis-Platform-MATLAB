@@ -51,7 +51,7 @@ end
 %% Show out of date variables.
 if any(outOfDateEdgesIdx)
     outOfDateEdgesIdxNums = find(outOfDateEdgesIdx==1);
-    highilight(h, 'Edges', outOfDateEdgesIdxNums, 'LineStyle', '--');
+    highlight(h, 'Edges', outOfDateEdgesIdxNums, 'LineStyle', '--');
 end
 
 %% Show the currently selected variable in the current function UI tree

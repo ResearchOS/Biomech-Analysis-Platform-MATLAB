@@ -18,3 +18,7 @@ end
 uuidIdx = ismember(G.Nodes.Name,uuids);
 reachableIdx = any(logical(R(uuidIdx,:)),1);
 reachableNodes = G.Nodes.Name(reachableIdx);
+
+if size(reachableNodes,2)>1
+    reachableNodes = reachableNodes';
+end

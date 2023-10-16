@@ -124,7 +124,14 @@ switch src
         selectNode(handles.analysisUITree, uuid);
         st = getST(uuid);
         checkSpecifyTrialsUITree(st, handles.allSpecifyTrialsUITree);
-        fillCurrentFunctionUITree(fig, uuid);        
+        fillCurrentFunctionUITree(fig, uuid);
+        isMulti = handles.multiSelectButton.Value;
+        if ~isMulti
+            viewG.Nodes.Selected = false(length(viewG.Nodes.Name),1);
+            idx = ismember(viewG.Nodes.Name, uuid);
+            viewG.Nodes.Selected(idx) = true;
+            renderDigraph(fig, viewG);
+        end
 
     % DONE.
     case handles.functionUITree
@@ -220,6 +227,9 @@ switch src
         vw = loadJSON(uuid);
         % Compute PR & VR - only digraph, with "Selected" column.
         fcnsG = getFcnsOnlyDigraph(globalG);
+        if isequal(vw.Abstract_UUID,'VW000000')
+            vw.InclNodes = fcnsG.Nodes.Name;
+        end        
         viewG = getSubgraph(fcnsG, vw.InclNodes, 'none');
         viewG.Nodes.Selected = false(length(viewG.Nodes.Name),1);
         viewG.Nodes.PrettyName = getName(viewG.Nodes.Name);
@@ -272,21 +282,21 @@ switch src
         isMulti = handles.multiSelectButton.Value;
         ax = handles.digraphAxes;
         uuid = getClickedUUID(ax, viewG);
+        idx = ismember(viewG.Nodes.Name, uuid);        
         % Update viewG.
-        if ~isMulti
+        if ~isMulti && isUUID(uuid)            
             viewG.Nodes.Selected = false(length(viewG.Nodes.Name),1);
+            viewG.Nodes.Selected(idx) = true;
             % Change the selection in the current UI trees
             selectNode(handles.analysisUITree, uuid);
-            if isUUID(uuid)
-                args.UUID = uuid;
-                args.Type = 'PG';
-                processCallbacks(handles.analysisUITree, '', args);
-            end
-        end
-        idx = ismember(viewG.Nodes.Name, uuid);
-        viewG.Nodes.Selected(idx) = ~viewG.Nodes.Selected(idx);
-        % Render digraph.
-        renderDigraph(fig, viewG);
+            args.UUID = uuid;
+            args.Type = 'AN';
+            processCallbacks(handles.analysisUITree, '', args);
+        else
+            % Render digraph.
+            viewG.Nodes.Selected(idx) = ~viewG.Nodes.Selected(idx);
+            renderDigraph(fig, viewG);
+        end                
         handles.subtabCurrent.SelectedTab = handles.currentFunctionTab;
 
 end

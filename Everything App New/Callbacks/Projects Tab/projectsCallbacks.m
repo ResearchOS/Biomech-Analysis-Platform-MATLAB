@@ -22,8 +22,6 @@ elseif isfield(args,'UUID')
     uuid = args.UUID;
 end
 
-% assert(isUUID(uuid));
-
 switch src
     case handles.addProjectButton
 

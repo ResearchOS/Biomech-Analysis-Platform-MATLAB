@@ -40,6 +40,10 @@ switch a
         dir = {'up','down'};
 end
 
+if ~any(selIdx) && ~isequal(a,'Empty')
+    selUUIDs = G.Nodes.Name;
+end
+
 % Allow for multiple selections to seed the new view. Get all dependencies
 % in the specified direction.
 if ~ismember(a,{'Neighbors Only','Empty'})
@@ -51,12 +55,7 @@ elseif ~ismember(a,{'Empty'})
 end
 
 % If nothing is selected, copy the view
-if isempty(selUUIDs) && ~isequal(a,'Empty')
-    Current_View = getCurrent('Current_View');
-    sqlquery = ['SELECT InclNodes FROM Views_Instances WHERE UUID = ''' Current_View ''';'];
-    t = fetchQuery(sqlquery);
-    deps = t.InclNodes;
-else
+if isequal(a,'Empty')
     deps = {};
 end
 

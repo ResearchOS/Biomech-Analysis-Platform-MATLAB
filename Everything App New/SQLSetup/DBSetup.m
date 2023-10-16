@@ -38,10 +38,11 @@ end
 % Settings
 % "LG_AN"
 % "LG_VR"
-% "ST_AN"
+% % % "ST_AN"
 % Users
 % "VW_AN"
 % "VR_AN"
+% "ST_PR_AN"
 
 %% Create Users table
 if ~ismember('Users',tableNames)
@@ -262,12 +263,22 @@ end
 if ismember('VR_PR',modifiedNames)
     sqlquery = ['ALTER TABLE VR_PR ADD Subvariable TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
-    sqlquery = ['ALTER TABLE VR_PR ADD PRIMARY KEY (PR_ID, VR_ID, NameInCode, Subvariable);'];
+    sqlquery = ['ALTER TABLE VR_PR ADD PRIMARY KEY (PR_ID, NameInCode);'];
     execute(conn, sqlquery);
 end
 
 if ismember('VR_LG',modifiedNames)
     sqlquery = ['ALTER TABLE LG_VR ADD HeaderName TEXT NOT NULL Default [NULL]'];
+    execute(conn, sqlquery);
+end
+
+%% PR_ST_AN table
+if ~ismember('PR_ST_AN',tableNames)
+    sqlquery = ['CREATE TABLE PR_ST_AN (', ...
+        'ST_ID REFERENCES SpecifyTrials_Abstract (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ],',...
+        'AN_ID REFERENCES Analyses_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ],',...
+        'PR_ID REFERENCES Process_Instances (UUID) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL DEFAULT [ZZZZZZ_ZZZ],',...
+        'PRIMARY KEY (ST_ID, AN_ID, PR_ID));'];
     execute(conn, sqlquery);
 end
 

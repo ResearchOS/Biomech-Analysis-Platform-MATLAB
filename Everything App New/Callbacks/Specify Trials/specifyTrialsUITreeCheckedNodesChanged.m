@@ -68,15 +68,34 @@ else
     st(ismember(st,stUUID)) = [];
 end
 
-%% Put the specify trials in the object's SQL table.
-tableName = getTableName(type, true);
-sqlquery = ['UPDATE ' tableName ' SET SpecifyTrials = ''' jsonencode(st) ''' WHERE UUID = ''' classUUID ''';'];
-execute(conn, sqlquery);
+%% Put the specify trials in this analysis.
+Current_Analysis = getCurrent('Current_Analysis');
+if checkedIdx    
+    linkObjs(stUUID, Current_Analysis);    
+end
 
-if ~any(checkedIdx)
+%% Put the specify trials in the object's SQL table.
+if isequal(type,'LG')
+    tableName = getTableName(type, true);
+    sqlquery = ['UPDATE ' tableName ' SET SpecifyTrials = ''' jsonencode(st) ''' WHERE UUID = ''' classUUID ''';'];
+    execute(conn, sqlquery);
     return;
 end
 
-%% Put the specify trials in this analysis.
-Current_Analysis = getCurrent('Current_Analysis');
-linkObjs(stUUID, Current_Analysis);
+prID = getSelUUID(uiTree);
+
+%% Delete the specifyTrials entries already in the table.
+sqlquery = ['DELETE FROM PR_ST_AN WHERE PR_ID = ''' prID ''' AND AN_ID = ''' Current_Analysis ''';'];
+execute(conn, sqlquery);
+
+if isempty(st)
+    return;
+end
+
+sqlquery = ['INSERT INTO PR_ST_AN (PR_ID, ST_ID, AN_ID) VALUES '];
+for i=1:length(st)
+    str = getCondStr({prID, st{i}, Current_Analysis});
+    sqlquery = [sqlquery str ', '];
+end
+sqlquery = [sqlquery(1:end-2) ';'];
+execute(conn, sqlquery);

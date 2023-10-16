@@ -40,6 +40,8 @@ args.PG.Type = 'PG';
 args.all_PG.Type = 'All_PG';
 args.AN.Type = 'AN';
 args.all_AN.Type = 'All_AN';
+args.ST.Type = 'ST';
+args.all_ST.Type = 'All_ST';
 args.DoubleClick.Type = 'DoubleClick';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -181,7 +183,7 @@ removeSpecifyTrialsButton=handles.Import.removeSpecifyTrialsButton;
 set(removeSpecifyTrialsButton,'ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
 
 % 27. Specify trials UI tree
-handles.Import.allSpecifyTrialsUITree=uitree(importTab,'checkbox');
+handles.Import.allSpecifyTrialsUITree=uitree(importTab,'checkbox','Tag','Import');
 specifyTrialsUITree=handles.Import.allSpecifyTrialsUITree;
 set(specifyTrialsUITree,'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree));
 
@@ -396,17 +398,17 @@ handles.Process.archiveViewButton = uibutton(processTab,'push','Visible',false,'
 % 35. Add specify trials button
 handles.Process.addSpecifyTrialsButton=uibutton(processTab,'Text','S+');
 addSpecifyTrialsButton=handles.Process.addSpecifyTrialsButton;
-set(addSpecifyTrialsButton,'ButtonPushedFcn',{@componentCallback, 'All_ST'});
+set(addSpecifyTrialsButton,'ButtonPushedFcn',{@componentCallback, args.all_ST});
 
 % 36. Remove specify trials button
 handles.Process.removeSpecifyTrialsButton=uibutton(processTab,'Text','S-');
 removeSpecifyTrialsButton=handles.Process.removeSpecifyTrialsButton;
-set(removeSpecifyTrialsButton,'ButtonPushedFcn',{@componentCallback,'All_ST'});
+set(removeSpecifyTrialsButton,'ButtonPushedFcn',{@componentCallback,args.all_ST});
 
 % 37. Specify trials UI tree
-handles.Process.allSpecifyTrialsUITree=uitree(processTab,'checkbox');
+handles.Process.allSpecifyTrialsUITree=uitree(processTab,'checkbox','Tag','Process');
 specifyTrialsUITree=handles.Process.allSpecifyTrialsUITree;
-set(specifyTrialsUITree,'CheckedNodesChangedFcn',{@componentCallback,'ST'});
+set(specifyTrialsUITree,'CheckedNodesChangedFcn',{@componentCallback,args.ST});
 
 % 38. Edit specify trials node button
 handles.Process.editSpecifyTrialsButton=uibutton(processTab,'Text','Edit');

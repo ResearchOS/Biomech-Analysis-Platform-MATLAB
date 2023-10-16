@@ -22,7 +22,7 @@ elseif isfield(args,'UUID')
     uuid = args.UUID;
 end
 
-assert(isUUID(uuid));
+% assert(isUUID(uuid));
 
 switch src
     case handles.addProjectButton
@@ -95,7 +95,9 @@ switch src
         fillAllUITrees(fig);
         Current_Analysis = getCurrent('Current_Analysis');
         selectNode(allHandles.Process.allAnalysesUITree, Current_Analysis);
-        processCallbacks(allHandles.Process.selectAnalysisButton, '', 'All_AN');
+        args.Type = 'All_AN';
+        args.UUID = Current_Analysis;
+        processCallbacks(allHandles.Process.selectAnalysisButton, '', args);
         % selectAnalysisButtonPushed(fig);
 
     case {handles.openProjectPathButton, handles.openDataPathButton}

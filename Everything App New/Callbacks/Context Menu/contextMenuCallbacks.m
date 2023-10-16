@@ -26,5 +26,15 @@ switch name
         copyToNewPS(src, args);
     case 'OpenMFile'
         openMFile(fig);
+    case 'Edit'
+        editObj(fig, uuid);
+    case 'SaveEdits'
+        saveEdits(fig);
+    case 'CopyUUID'
+        copyText(fig);
+    case 'PasteUUID'
+        pasteText(fig);
+    case 'EditSubvar'
+        editSubvar(fig);
 
 end

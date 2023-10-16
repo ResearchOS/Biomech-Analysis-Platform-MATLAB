@@ -88,7 +88,7 @@ switch src
             processCallbacks(handles.viewsDropDown);
         end
         fillQueueUITree(fig, uuid);
-        fillLogsheetUITree(fig, uuid);
+        fillLogsheetUITree(fig, uuid);        
 
     % Fill the group and process UI trees. DONE.
     case handles.analysisUITree

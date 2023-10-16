@@ -10,7 +10,7 @@ if nargin==0 || isempty(G)
 end
 
 if nargin==1 || exist('types','var')~=1
-    types = {};
+    types = getTypes();
 end
 
 nodes = G.Nodes.Name(~contains(G.Nodes.Name,types));

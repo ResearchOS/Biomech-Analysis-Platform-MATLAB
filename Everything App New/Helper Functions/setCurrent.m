@@ -7,6 +7,12 @@ clearAllMemoizedCaches;
 
 % prevVal = getCurrent(varName); % The previous value, to store in the undo/redo stack.
 
+if ismember(varName,{'Current_Project_Name','Current_Analysis','Current_View','Current_Logsheet'})
+    if ~isUUID(var)
+        error('Not a UUID');
+    end
+end
+
 
 %% Look at Settings table to determine.
 rootSettingsVars = {'dbFile', 'Current_Project_Name',...

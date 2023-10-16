@@ -32,8 +32,9 @@ switch type
     case {'All_AN','AN'}
         uiTree = handles.allAnalysesUITree;
         currUITree = handles.analysisUITree;
-    case 'All_ST'
-        uiTree = handles.specifyTrialsUITree;
+    case {'All_ST','ST'}
+        uiTree = handles.allSpecifyTrialsUITree;
+        currUITree = handles.allSpecifyTrialsUITree;
     otherwise
         switch subtabTitle
             case 'Analysis'
@@ -111,7 +112,7 @@ switch src
         argsOut.Type = 'PG';
         argsOut.UUID = uuid;
         selectNode(handles.groupUITree, uuid);
-        processCallbacks(handles.groupUITree, '', argsOut);        
+        processCallbacks(handles.groupUITree, '', argsOut);
 
     % Fill the process UI tree, and select the node in the analysis UI tree
     % too. DONE.
@@ -181,6 +182,16 @@ switch src
     % Edit the specify trials condition selected.
     case handles.editSpecifyTrialsButton
         editSpecifyTrialsButtonPushed(fig);
+
+    % Check specify trials UI tree
+    case handles.allSpecifyTrialsUITree
+        uuid = getSelUUID(handles.analysisUITree);
+        type = deText(uuid);
+        if ~isequal(type,'PR')
+            handles.specifyTrialsUITree.CheckedNodes = [];
+            return;
+        end
+        specifyTrialsUITreeCheckedNodesChanged(handles.allSpecifyTrialsUITree);
 
     % Run the queue.
     case handles.runButton
@@ -265,7 +276,11 @@ switch src
             viewG.Nodes.Selected = false(length(viewG.Nodes.Name),1);
             % Change the selection in the current UI trees
             selectNode(handles.analysisUITree, uuid);
-            processCallbacks(handles.analysisUITree);
+            if isUUID(uuid)
+                args.UUID = uuid;
+                args.Type = 'PG';
+                processCallbacks(handles.analysisUITree, '', args);
+            end
         end
         idx = ismember(viewG.Nodes.Name, uuid);
         viewG.Nodes.Selected(idx) = ~viewG.Nodes.Selected(idx);

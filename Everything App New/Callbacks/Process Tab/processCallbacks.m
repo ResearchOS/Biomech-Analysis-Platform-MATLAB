@@ -61,12 +61,6 @@ if iscell(uuid)
     uuid = uuid{1}; % Shouldn't really happen, but just in case due to changes in getSelUUID
 end
 
-% Some callbacks need a UUID, some don't.
-% if ~isUUID(uuid)
-%     disp(['Not a UUID! ' uuid]);
-%     return;
-% end
-
 switch src
     % Add new abstract objects. DONE.
     case {handles.addVariableButton, handles.addProcessButton, handles.addGroupButton, handles.addAnalysisButton, handles.addSpecifyTrialsButton}

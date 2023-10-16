@@ -131,8 +131,8 @@ if ismember('Process_Abstract',modifiedNames)
 end
 
 if ismember('Process_Instances',modifiedNames)
-    sqlquery = ['ALTER TABLE Process_Instances ADD SpecifyTrials TEXT NOT NULL Default [NULL]'];
-    execute(conn, sqlquery);
+    % sqlquery = ['ALTER TABLE Process_Instances ADD SpecifyTrials TEXT NOT NULL Default [NULL]'];
+    % execute(conn, sqlquery);
     sqlquery = ['ALTER TABLE Process_Instances ADD Date_Last_Ran TEXT NOT NULL Default [NULL]'];
     execute(conn, sqlquery);
 end

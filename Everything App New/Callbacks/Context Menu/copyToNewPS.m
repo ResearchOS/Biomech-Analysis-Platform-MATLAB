@@ -7,8 +7,6 @@ global globalG;
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-% selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
-
 uuid=args.UUID;
 
 %% 1. Get all of the things that this object is connected to, store as edge table.

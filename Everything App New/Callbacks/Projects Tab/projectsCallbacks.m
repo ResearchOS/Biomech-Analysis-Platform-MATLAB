@@ -15,11 +15,13 @@ if exist('args','var')~=1
     args = '';
 end
 
-uuid = '';
-if isempty(args)
-    uuid = getSelUUID(handles.allProjectsUITree);
-elseif isfield(args,'UUID')
+if isfield(args,'UUID')
     uuid = args.UUID;
+else
+    uuid = getSelUUID(handles.allProjectsUITree);
+end
+if iscell(uuid)
+    uuid = uuid{1}; % Shouldn't really happen, but just in case due to changes in getSelUUID
 end
 
 switch src
@@ -96,7 +98,7 @@ switch src
         args.Type = 'All_AN';
         args.UUID = Current_Analysis;
         processCallbacks(allHandles.Process.selectAnalysisButton, '', args);
-        % selectAnalysisButtonPushed(fig);
+        handles.projectsLabel.Text = [getName(uuid) ' ' uuid];
 
     case {handles.openProjectPathButton, handles.openDataPathButton}
         path = src.Value;

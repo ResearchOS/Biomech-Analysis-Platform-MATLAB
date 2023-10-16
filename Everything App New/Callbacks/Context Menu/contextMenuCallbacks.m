@@ -24,5 +24,7 @@ switch name
     case 'CopyToNew'
         args.UUID = uuid;
         copyToNewPS(src, args);
+    case 'OpenMFile'
+        openMFile(fig);
 
 end

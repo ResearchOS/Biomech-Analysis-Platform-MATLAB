@@ -13,7 +13,7 @@ Current_Project_Name = getCurrent('Current_Project_Name');
 sortDropDown=handles.Projects.sortProjectsDropDown;
 uiTree=handles.Projects.allProjectsUITree;
 
-fillUITree(fig, 'Project', uiTree, '', sortDropDown);    
+fillUITree(fig, 'Project', uiTree, '', sortDropDown);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Projects tab

@@ -28,6 +28,10 @@ if nargin==1
         msg = 'Table not in the proper format for a digraph edgetable';
         return;
     end
+    emptyNameInCodeIdx = cellfun(@isempty, tmpTable.NameInCode);
+    emptySubvarIdx = cellfun(@isempty, tmpTable.Subvariable);
+    tmpTable.NameInCode(emptyNameInCodeIdx) = repmat({'NULL'},sum(emptyNameInCodeIdx),1);
+    tmpTable.Subvariable(emptySubvarIdx) = repmat({'NULL'}, sum(emptySubvarIdx),1);
     edgeStruct = table2MyStruct(tmpTable,'struct');
     assert(all(isUUID(tmpTable.EndNodes(:,1))));
     assert(all(isUUID(tmpTable.EndNodes(:,2))));   
@@ -78,7 +82,7 @@ leftObjs = EndNodes(:,1);
 
 numLinks = size(EndNodes,1);
 
-allColNames = {'EndNodes','NameInCode','Subvariable'};
+allColNames = {'EndNodes','NameInCode','Subvariable','HeaderName'};
 missingColNames = allColNames(~ismember(allColNames,fieldnames(edgeStruct)));
 for i=1:length(missingColNames)
     for j=1:length(edgeStruct)
@@ -139,11 +143,13 @@ for i=1:numLinks
 
     switch tablename
         case 'VR_PR'
-            extraColNames = {};
+            extraColNames = {'HeaderName'};
         case 'PR_VR'
-            extraColNames = {'Subvariable'};
+            extraColNames = {'Subvariable','HeaderName'};
+        case 'LG_VR'
+            extraColNames = {'NameInCode', 'Subvariable'};
         otherwise
-            extraColNames = {'NameInCode','Subvariable'};
+            extraColNames = {'NameInCode','Subvariable','HeaderName'};
     end
 
     sqlStruct = rmfield(edgeStruct, extraColNames); % The data to be inserted to SQL.
@@ -153,7 +159,7 @@ for i=1:numLinks
     try
         tmpG = globalG;
         edgeTable = struct2table(edgeStruct(i),'AsArray',true);
-        % Check that we are never adding any new nodes here, just make new edges.
+        % Check that we are never adding any new nodes here, just make new edges.        
         assert(all(ismember(edgeTable.EndNodes(:,1),globalG.Nodes.Name)));
         assert(all(ismember(edgeTable.EndNodes(:,2),globalG.Nodes.Name)));
         tmpG = addedge(tmpG, edgeTable);
@@ -164,8 +170,8 @@ for i=1:numLinks
             msg = ['Cannot link ' sourceObj ' and ' targetObj ' because it forms a cyclic graph'];
             return;
         else % If there are no cycles, add the link to the SQL database and update the globalG.
-            execute(conn, sqlquery);
-            globalG = tmpG;
+            execute(conn, sqlquery);            
+            globalG = tmpG;            
         end
     catch e
         if ~contains(e.message,'UNIQUE constraint failed')

@@ -30,8 +30,8 @@ catch e
     error('What happened with SQL?!');
 end
 
-if isempty(instanceID)
-    return;
+if ~isInstance(uuid) && ~isequal(abbrev, 'ST')
+    return; % ST abstract objects are ok.
 end
 
 Name = {classStruct.UUID};

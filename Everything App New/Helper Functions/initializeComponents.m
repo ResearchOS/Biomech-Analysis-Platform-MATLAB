@@ -107,68 +107,68 @@ setappdata(fig,'handles',handles);
 handles.Import.logsheetsLabel=uilabel(importTab,'Text','Logsheets','FontWeight','bold');
 
 % 2. Create new logsheet button
-handles.Import.addLogsheetButton=uibutton(importTab,'push','Text','L+','ButtonPushedFcn',@(addLogsheetButton,event) addLogsheetButtonPushed(addLogsheetButton));
+handles.Import.addLogsheetButton=uibutton(importTab,'push','Text','L+','ButtonPushedFcn',@componentCallback);
 
 % 3. Remove logsheet button
-handles.Import.removeLogsheetButton=uibutton(importTab,'push','Text','L-','ButtonPushedFcn',@(removeLogsheetButton,event) removeLogsheetButtonPushed(removeLogsheetButton));
+handles.Import.removeLogsheetButton=uibutton(importTab,'push','Text','L-','ButtonPushedFcn',@componentCallback);
 
 % 4. Sort logsheets dropdown
 handles.Import.sortLogsheetsDropDown=uidropdown(importTab,'Editable','off','Items',sortOptions','Value',sortOptions{1},'ValueChangedFcn',@(sortLogsheetsDropDown,event) sortLogsheetsDropDownValueChanged(sortLogsheetsDropDown));
 
 % 5. All logsheets UI tree
-handles.Import.allLogsheetsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(allLogsheetsUITree,event) allLogsheetsUITreeSelectionChanged(allLogsheetsUITree),'CheckedNodesChangedFcn',@(allLogsheetsUITree,event) allLogsheetsUITreeCheckedNodesChanged(allLogsheetsUITree));
+handles.Import.allLogsheetsUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@componentCallback,'CheckedNodesChangedFcn',@(allLogsheetsUITree,event) allLogsheetsUITreeCheckedNodesChanged(allLogsheetsUITree));
 
 % 6. Logsheet search field
 handles.Import.searchField=uieditfield(importTab,'Value','Search','ValueChangingFcn',@(searchField,event) importSearchFieldValueChanging(searchField));
 
 % 7. Logsheet path field
-handles.Import.logsheetPathField=uieditfield(importTab,'Value','Enter Logsheet Path','ValueChangedFcn',@(logsheetPathField,event) logsheetPathFieldValueChanged(logsheetPathField));
+handles.Import.logsheetPathField=uieditfield(importTab,'Value','Enter Logsheet Path','ValueChangedFcn',@componentCallback);
 
 % 8. Logsheet path button
-handles.Import.logsheetPathButton=uibutton(importTab,'push','Text','Set Logsheet Path','ButtonPushedFcn',@(logsheetPathButton,event) logsheetPathButtonPushed(logsheetPathButton));
+handles.Import.logsheetPathButton=uibutton(importTab,'push','Text','Set Logsheet Path','ButtonPushedFcn',@componentCallback);
 
 % 9. Open logsheet path button
-handles.Import.openLogsheetPathButton=uibutton(importTab,'push','Text','O','ButtonPushedFcn',@(openLogsheetPathButton,event) openLogsheetPathButtonPushed(openLogsheetPathButton));
+handles.Import.openLogsheetPathButton=uibutton(importTab,'push','Text','O','ButtonPushedFcn',@componentCallback);
 
 % 10. Number of header rows label
 handles.Import.numHeaderRowsLabel=uilabel(importTab,'Text','# Header Rows','FontWeight','bold');
 
 % 11. Number of header rows numeric edit field
-handles.Import.numHeaderRowsField=uieditfield(importTab,'numeric','Value',-1,'ValueChangedFcn',@(numHeaderRowsField,event) numHeaderRowsFieldValueChanged(numHeaderRowsField));
+handles.Import.numHeaderRowsField=uieditfield(importTab,'numeric','Value',-1,'ValueChangedFcn',@componentCallback);
 
 % 12. Subject codename label
 handles.Import.subjectCodenameLabel=uilabel(importTab,'Text','Subject Codename','FontWeight','bold');
 
 % 13. Subject codename edit field
-handles.Import.subjectCodenameDropDown=uidropdown(importTab,'Items',{''},'ValueChangedFcn',@(subjectCodenameDropDown,event) subjectCodenameDropDownValueChanged(subjectCodenameDropDown));
+handles.Import.subjectCodenameDropDown=uidropdown(importTab,'Items',{''},'ValueChangedFcn',@componentCallback);
 
 % 14. Target trial ID label
 handles.Import.targetTrialIDLabel=uilabel(importTab,'Text','Target Trial ID','FontWeight','bold');
 
 % 15. Target trial ID edit field
-handles.Import.targetTrialIDDropDown=uidropdown(importTab,'Items',{''},'ValueChangedFcn',@(targetTrialIDDropDown,event) targetTrialIDDropDownValueChanged(targetTrialIDDropDown));
+handles.Import.targetTrialIDDropDown=uidropdown(importTab,'Items',{''},'ValueChangedFcn',@componentCallback);
 
 % 16. Data type-specific trial ID label (optional if only one data type)
 
 % 17. Data type-specific trial ID edit field (optional if only one data type)
 
 % 20. Header variables UI tree
-handles.Import.headersUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@(headersUITree,event) headersUITreeSelectionChanged(headersUITree));
+handles.Import.headersUITree=uitree(importTab,'checkbox','SelectionChangedFcn',@componentCallback);
 
 % 21. Levels drop down
-handles.Import.levelDropDown=uidropdown(importTab,'Items',{'','Subject','Trial'},'Value','','ValueChangedFcn',@(levelDropDown,event) levelDropDownValueChanged(levelDropDown));
+handles.Import.levelDropDown=uidropdown(importTab,'Items',{'','Subject','Trial'},'Value','','ValueChangedFcn',@componentCallback);
 
 % 22. Type drop down
-handles.Import.typeDropDown=uidropdown(importTab,'Items',{'','Double','Char'},'Value','','ValueChangedFcn',@(typeDropDown,event) typeDropDownValueChanged(typeDropDown));
+handles.Import.typeDropDown=uidropdown(importTab,'Items',{'','Double','Char'},'Value','','ValueChangedFcn',@componentCallback);
 
 % 23. Check all button
-handles.Import.checkAllButton=uibutton(importTab,'Text','Check All','ButtonPushedFcn',@(checkAllButton,event) checkAllButtonPushed(checkAllButton));
+handles.Import.checkAllButton=uibutton(importTab,'Text','Check All','ButtonPushedFcn',@componentCallback);
 
 % 24. Uncheck all button
-handles.Import.uncheckAllButton=uibutton(importTab,'Text','Uncheck All','ButtonPushedFcn',@(uncheckAllButton,event) uncheckAllButtonPushed(uncheckAllButton));
+handles.Import.uncheckAllButton=uibutton(importTab,'Text','Uncheck All','ButtonPushedFcn',@componentCallback);
 
 % 25. Run logsheet button
-handles.Import.runLogsheetButton=uibutton(importTab,'Text','Run','ButtonPushedFcn',@(runLogsheetButton,event) runLogsheetButtonPushed(runLogsheetButton));
+handles.Import.runLogsheetButton=uibutton(importTab,'Text','Run','ButtonPushedFcn',@componentCallback);
 
 % 24. Specify trials label
 handles.Import.specifyTrialsLabel=uilabel(importTab,'Text','Specify Trials','FontWeight','bold');
@@ -176,22 +176,22 @@ handles.Import.specifyTrialsLabel=uilabel(importTab,'Text','Specify Trials','Fon
 % 25. Add specify trials button
 handles.Import.addSpecifyTrialsButton=uibutton(importTab,'Text','S+');
 addSpecifyTrialsButton=handles.Import.addSpecifyTrialsButton;
-set(addSpecifyTrialsButton,'ButtonPushedFcn',@(addSpecifyTrialsButton,event) addSpecifyTrialsButtonPushed(addSpecifyTrialsButton))
+set(addSpecifyTrialsButton,'ButtonPushedFcn',@componentCallback);
 
 % 26. Remove specify trials button
 handles.Import.removeSpecifyTrialsButton=uibutton(importTab,'Text','S-');
 removeSpecifyTrialsButton=handles.Import.removeSpecifyTrialsButton;
-set(removeSpecifyTrialsButton,'ButtonPushedFcn',@(removeSpecifyTrialsButton,event) removeSpecifyTrialsButtonPushed(removeSpecifyTrialsButton));
+set(removeSpecifyTrialsButton,'ButtonPushedFcn',@componentCallback);
 
 % 27. Specify trials UI tree
 handles.Import.allSpecifyTrialsUITree=uitree(importTab,'checkbox','Tag','Import');
 specifyTrialsUITree=handles.Import.allSpecifyTrialsUITree;
-set(specifyTrialsUITree,'CheckedNodesChangedFcn',@(specifyTrialsUITree,event) specifyTrialsUITreeCheckedNodesChanged(specifyTrialsUITree));
+set(specifyTrialsUITree,'CheckedNodesChangedFcn',@componentCallback);
 
 % 28. Edit specify trials node button
 handles.Import.editSpecifyTrialsButton=uibutton(importTab,'Text','Edit');
 editSpecifyTrialsButton=handles.Import.editSpecifyTrialsButton;
-set(editSpecifyTrialsButton,'ButtonPushedFcn',@(editSpecifyTrialsButton,event) editSpecifyTrialsButtonPushed(editSpecifyTrialsButton));
+set(editSpecifyTrialsButton,'ButtonPushedFcn',@componentCallback);
 
 setappdata(fig,'handles',handles);
 % importResize(fig);

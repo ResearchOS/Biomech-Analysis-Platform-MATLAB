@@ -35,7 +35,7 @@ if exist('instanceID','var')~=1
     instanceID = '';
 end
 
-if exist('saveObj','var')~=1
+if exist('saveObjBool','var')~=1
     saveObjBool = true;
 end
 

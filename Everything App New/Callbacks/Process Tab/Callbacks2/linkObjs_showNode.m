@@ -35,6 +35,8 @@ if all(ismember({lType, rType}, {'VR','PR'}))
         sqluery = ['INSERT INTO ' tablename '(PR_ID, VR_ID, NameInCode) VALUES (''' struct.PR_ID ''', ''' struct.VR_ID ''', ''' struct.NameInCode ''');'];
     end
     execute(conn, sqlquery);
+    Current_Analysis = getCurrent('Current_Analysis');
+    linkObjs(struct.VR_ID, Current_Analysis);
 else
     edgeTable = table(EndNodes);
     linkObjs(edgeTable);

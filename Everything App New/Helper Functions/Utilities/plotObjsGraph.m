@@ -1,4 +1,4 @@
-function [] = plotObjsGraph(G)
+function [] = plotObjsGraph(G, types)
 
 %% PURPOSE: PLOT THE GRAPH WITH ALL NODES AS ALL OBJECTS.
 close all;
@@ -8,6 +8,13 @@ hold on;
 if nargin==0 || isempty(G)
     G = getAllObjLinks();
 end
+
+if nargin==1 || exist('types','var')~=1
+    types = {};
+end
+
+nodes = G.Nodes.Name(~contains(G.Nodes.Name,types));
+G = rmnode(G, nodes);
 
 prettyNames = getName(G.Nodes.Name);
 

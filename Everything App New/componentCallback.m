@@ -1,4 +1,4 @@
-function [] = componentCallback(src, event, args)
+function [] = componentCallback(src, event, args, contextMenuItem)
 
 %% PURPOSE: SERVES AS THE TOP-LEVEL CONTROLLER.
 
@@ -10,6 +10,12 @@ end
 
 if exist('args','var')~=1
     args.Type = '';
+end
+
+if isequal(args.Type,'ContextMenu')    
+    args.Name = contextMenuItem;
+    contextMenuCallbacks(src, event, args);
+    return;
 end
 
 switch currTab

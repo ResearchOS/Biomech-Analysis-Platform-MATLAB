@@ -12,6 +12,7 @@ selNode = getNode(uiTree, uuid); % The heavy lifting to select the proper node.
 if isempty(selNode)
     return;
 end
+selNode = selNode(1);
 uiTree.SelectedNodes=selNode;
 
 % Expand the parents of this node.

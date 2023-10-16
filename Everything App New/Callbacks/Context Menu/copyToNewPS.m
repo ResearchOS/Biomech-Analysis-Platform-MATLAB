@@ -1,4 +1,4 @@
-function []=copyToNewPS(src, event)
+function []=copyToNewPS(src, args)
 
 %% PURPOSE: COPY THE SPECIFIED PS STRUCT TO A NEW PS STRUCT.
 

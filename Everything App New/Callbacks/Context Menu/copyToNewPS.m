@@ -1,15 +1,15 @@
 function []=copyToNewPS(src, args)
 
-%% PURPOSE: COPY THE SPECIFIED PS STRUCT TO A NEW PS STRUCT.
+%% PURPOSE: COPY THE SPECIFIED OBJECT TO A NEW OBJECT, MAINTAINING CONNECTIONS TO OTHER OBJECTS.
 
 global globalG;
 
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
+% selNode=get(fig,'CurrentObject'); % Get the node being right-clicked on.
 
-uuid=selNode.NodeData.UUID;
+uuid=args.UUID;
 
 %% 1. Get all of the things that this object is connected to, store as edge table.
 edgesIdx = ismember(globalG.Edges.EndNodes(:,1),uuid) | ismember(globalG.Edges.EndNodes(:,2),uuid);
@@ -46,36 +46,5 @@ saveObj(prev); % Saves new nodes to SQL and digraph.
 linkObjs(edgesTable); % Saves new edges to SQL and digraph.
 
 %% 4. Update the GUI.
-uiTree = getUITreeFromNode(selNode);
-switch uiTree
-    case handles.Process.analysisUITree
-        fillAnalysisUITree(fig);
-    case handles.Process.groupUITree
-        pgUUID = getCurrentProcessGroup(fig);
-        fillProcessGroupUITree(fig, uuid, pgUUID);
-    case handles.Process.functionUITree
-        disp('Cannot copy variables in this UI tree!');
-    otherwise        
-        fillUITree(fig, type, uiTree, ''); % Search term should be re-implemented at a later date.
-end
-selectNode(uiTree, newUUID);
-
-Current_View = getCurrent('Current_View');
-struct = loadJSON(Current_View);
-if ismember(uuid, struct.InclNodes)
-    addToViewButtonPushed(fig);    
-end
-
-
-
-%% 5. Commit the changes in SQL and the digraph.
-
-
-% newUUIDs = copyToNew(uuid); % By default, not creating a whole new analysis. In the future, ask the user (or have a default setting)
-% 
-
-
-% 
-% refreshDigraph(fig);
-% 
-% currentProjectButtonPushed(fig);
+parent = src.Parent;
+addNewNode(parent, prev.UUID, prev.Name);

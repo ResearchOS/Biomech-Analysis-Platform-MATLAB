@@ -23,6 +23,6 @@ name = args.Name;
 switch name
     case 'CopyToNew'
         args.UUID = uuid;
-        copyToNewPS(fig, args);
+        copyToNewPS(src, args);
 
 end

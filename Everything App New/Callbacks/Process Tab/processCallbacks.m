@@ -164,7 +164,7 @@ switch src
         if ismember(src,[handles.assignVariableButton, handles.assignFunctionButton, handles.assignGroupButton])
             linkObjs_showNode(lUUID, rUUID, allHandles);            
         else
-            % unlinkObjs(uuid, currUUID);                                 
+            % unlinkObjs_delNode(lUUID, rUUID, allHandles);                                 
         end
 
     % Assign PR or all PR's in PG to queue
@@ -263,6 +263,7 @@ switch src
         handles.viewsDropDown.Value = uuid;
         processCallbacks(handles.viewsDropDown);
 
+    % Toggle showing pretty variable names
     case handles.prettyVarsCheckbox
         renderDigraph(fig, viewG);
 

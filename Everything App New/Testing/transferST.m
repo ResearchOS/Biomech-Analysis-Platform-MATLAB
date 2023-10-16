@@ -19,3 +19,6 @@ for i=1:length(allST)
 
     end
 end
+
+sqlquery = ['ALTER TABLE Process_Instances DROP COLUMN SpecifyTrials'];
+execute(conn, sqlquery);

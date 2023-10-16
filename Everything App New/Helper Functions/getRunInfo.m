@@ -81,9 +81,13 @@ for inOut=1:2
         sqlquery = ['SELECT UUID, HardCodedValue FROM Variables_Instances WHERE UUID IN ' hardCodedStr ';'];
         t = fetchQuery(sqlquery);
         tmp = t.HardCodedValue;
-        [~,k] = sort(runInfo.(fldName).VR_ID(hardCodedVRidx));
-        tmp(k) = tmp;
-        hardCodedVals(hardCodedVRidx) = tmp;
+        [~,k] = sort(runInfo.(fldName).VR_ID(hardCodedVRidx));        
+        try
+            tmp(k) = tmp;
+            hardCodedVals(hardCodedVRidx) = tmp;
+        catch
+            hardCodedVals{hardCodedVRidx} = tmp;
+        end
     end
     runInfo.(fldName).HardCodedValue = hardCodedVals;
 

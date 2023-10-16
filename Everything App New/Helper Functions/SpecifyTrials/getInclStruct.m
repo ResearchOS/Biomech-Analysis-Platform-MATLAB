@@ -16,6 +16,10 @@ t = fetchQuery(sqlquery);
 uuids = t.UUID;
 allParams = t.Logsheet_Parameters;
 
+if ~iscell(allParams)
+    allParams = {allParams};
+end
+
 for i=1:length(uuids)
 
     currST=uuids{i};

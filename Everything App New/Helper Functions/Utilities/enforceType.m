@@ -47,7 +47,14 @@ switch colTypeFldName
         else
             try
                 typeVar = jsondecode(var);
-                assert(isstruct(typeVar) || iscell(typeVar));
+                if ~isstring(var)
+                    assert(isstruct(typeVar) || iscell(typeVar));
+                else
+                    % if isstruct(typeVar)
+                    %     typeVar = {typeVar};
+                    % end
+                    % assert(ischar(typeVar));
+                end
             catch
                 typeVar = {};
             end

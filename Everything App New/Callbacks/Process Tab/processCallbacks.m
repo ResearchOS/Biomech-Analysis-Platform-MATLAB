@@ -37,6 +37,10 @@ switch alltabTitle
     case 'Variables'
         uiTree = handles.allVariablesUITree;
 end
+
+if isfield(args,'UITree')
+    uiTree = args.UITree;
+end
 % 
 % switch type
 %     case {'All_VR','VR'}
@@ -319,6 +323,7 @@ switch src
             selectNode(handles.analysisUITree, uuid);
             args.UUID = uuid;
             args.Type = 'AN';
+            args.UITree = handles.analysisUITree;
             processCallbacks(handles.analysisUITree, '', args);
         else
             % Render digraph.

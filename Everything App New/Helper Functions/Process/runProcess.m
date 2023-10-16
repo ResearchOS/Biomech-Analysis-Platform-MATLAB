@@ -82,7 +82,8 @@ trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal','Nairobi','Tokyo','Berlin','Denver','Oslo','Boston','Seattle','Chicago','Paris'};
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Lisbon','Baltimore','Mumbai','Busan'};
-remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+remSubNames = {'Apple_V5'};
 
 subNames=fieldnames(trialNames);
 if exist('remSubNames','var') && ~isempty(remSubNames)
@@ -229,6 +230,7 @@ end
 remQueueIdx=ismember(queue,instStruct.UUID);
 queue(remQueueIdx)=[];
 setCurrent(queue,'Process_Queue');
+fillQueueUITree(fig);
 
 if ~headless
     queueNode = getNode(handles.Process.queueUITree, instStruct.UUID);

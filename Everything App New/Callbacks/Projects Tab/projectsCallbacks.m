@@ -66,7 +66,12 @@ switch src
 
     case handles.removeProjectButton
         node = getNode(handles.allProjectsUITree, uuid);
+        if isequal(node.NodeData.UUID, getCurrent('Current_Project_Name'))
+            disp('Cannot delete active project!');
+            return;
+        end
         confirmAndDeleteObject(uuid, node);
+        figure(fig);
 
     case handles.sortProjectsDropDown
 
@@ -90,7 +95,8 @@ switch src
             projectsCallbacks(handles.dataPathField);
         end
 
-    case handles.currentProjectButton        
+    case handles.currentProjectButton    
+        disp('Switching to new project!');
         setCurrent(uuid, 'Current_Project_Name');
         fillAllUITrees(fig);
         Current_Analysis = getCurrent('Current_Analysis');
@@ -98,7 +104,7 @@ switch src
         args.Type = 'All_AN';
         args.UUID = Current_Analysis;
         processCallbacks(allHandles.Process.selectAnalysisButton, '', args);
-        handles.projectsLabel.Text = [getName(uuid) ' ' uuid];
+        handles.projectsLabel.Text = [getName(uuid) ' ' uuid];        
 
     case {handles.openProjectPathButton, handles.openDataPathButton}
         path = src.Value;

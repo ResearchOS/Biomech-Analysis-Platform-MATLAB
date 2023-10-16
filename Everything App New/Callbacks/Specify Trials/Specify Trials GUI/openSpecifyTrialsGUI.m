@@ -33,9 +33,9 @@ selLogsheet = getCurrent('Current_Logsheet');
 logsheetStruct=loadJSON(selLogsheet);
 
 % 3. Get the header names that have been properly filled in
-allHeaders=logsheetStruct.Headers;
-allLevels=logsheetStruct.Level;
-allTypes=logsheetStruct.Type;
+allHeaders={logsheetStruct.LogsheetVar_Params.Headers};
+allLevels={logsheetStruct.LogsheetVar_Params.Level};
+allTypes={logsheetStruct.LogsheetVar_Params.Type};
 okIdx=~cellfun(@isempty,allLevels) & ~cellfun(@isempty,allTypes);
 disp(allHeaders(~okIdx));
 allHeaders=allHeaders(okIdx);
@@ -52,6 +52,9 @@ end
 selHeaders={stStruct.Logsheet_Parameters.Headers};
 
 for i=1:length(selHeaders)
+    if isempty(selHeaders{i})
+        continue;
+    end
     uitreenode(handles.selectedLogsheetHeadersUITree,'Text',selHeaders{i});
 end
 

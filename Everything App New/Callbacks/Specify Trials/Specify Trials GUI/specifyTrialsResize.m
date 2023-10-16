@@ -45,6 +45,8 @@ end
 % All positions here are specified as relative positions
 compHeight=round(1.67*newFontSize); % Set the component heights that involve single lines of text}
 
+fontSize = newFontSize;
+
 % 1. Logsheet tab
 objResize(handles.Tabs.tabGroup1, [0 0], [1 1]);
 

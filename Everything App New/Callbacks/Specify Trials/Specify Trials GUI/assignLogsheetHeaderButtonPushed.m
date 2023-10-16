@@ -19,6 +19,12 @@ stStruct=loadJSON(stUUID);
 
 logParams = stStruct.Logsheet_Parameters;
 
+% Ensure that the headers are never empty. If so, remove them.
+headers = {logParams.Headers};
+emptyIdx = cellfun(@isempty, headers);
+logParams(emptyIdx) = [];
+headers = {logParams.Headers};
+
 idx = length(logParams)+1;
 
 %% Add header

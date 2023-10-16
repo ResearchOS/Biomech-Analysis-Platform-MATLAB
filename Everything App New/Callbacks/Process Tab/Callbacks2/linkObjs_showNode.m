@@ -36,10 +36,14 @@ if all(ismember({lType, rType}, {'VR','PR'}))
     end
     execute(conn, sqlquery);
     Current_Analysis = getCurrent('Current_Analysis');
-    linkObjs(struct.VR_ID, Current_Analysis);
+    bool = linkObjs(struct.VR_ID, Current_Analysis);
 else
     edgeTable = table(EndNodes);
-    linkObjs(edgeTable);
+    bool = linkObjs(edgeTable);
+end
+
+if ~bool
+    return; % No new edge made.
 end
 
 

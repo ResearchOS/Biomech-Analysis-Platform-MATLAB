@@ -45,8 +45,12 @@ if ~contains(tablename,{'Project'})
 end
 
 if contains(tablename,{'SpecifyTrials'})
-    allUUIDs = t.UUID;
-    allNames = t.Name;
+    % Put the specifyTrials in the current analysis here.
+    Current_Analysis = getCurrent('Current_Analysis');
+    sqlquery = ['SELECT ST_ID FROM ST_AN WHERE AN_ID = ''' Current_Analysis ''';'];
+    t = fetchQuery(sqlquery);
+    allUUIDs = t.ST_ID;
+    allNames = getName(allUUIDs);
 end
 
 %% Get the list of the objects that match the search term.

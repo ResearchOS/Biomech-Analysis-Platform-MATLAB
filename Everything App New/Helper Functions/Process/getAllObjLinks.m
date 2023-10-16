@@ -43,6 +43,7 @@ end
 EndNodes = cell(0,2);
 NameInCode = {};
 Subvariable = {};
+HeaderName = {};
 for i=1:length(tablenames)
 
     tablename = tablenames{i};
@@ -88,12 +89,17 @@ for i=1:length(tablenames)
     else
         Subvariable = [Subvariable; repmat({''},length(t.(col1)),1)];
     end
+    if isfield(t,'HeaderName')
+        HeaderName = [HeaderName; t.HeaderName];
+    else
+        HeaderName = [HeaderName; repmat({''}, length(t.(col1)), 1)];
+    end
 
 end
 
 %% Construct the digraph
 nodeTable = table(Name, OutOfDate);
-edgeTable = table(EndNodes, NameInCode, Subvariable);
+edgeTable = table(EndNodes, NameInCode, Subvariable, HeaderName);
 
 globalG = digraph(edgeTable, nodeTable);
 G = globalG;

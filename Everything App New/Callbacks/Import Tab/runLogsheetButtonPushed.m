@@ -46,9 +46,15 @@ load(pathMAT,'logVar');
 
 params = logsheetStruct.LogsheetVar_Params;
 headers={params.Headers}';
+k = makeSameOrder(logVar(1,:), headers);
 levels={params.Level}';
 types={params.Type}';
 varUUIDs={params.Var_ID}';
+headers = headers(k);
+levels = levels(k);
+types = types(k);
+varUUIDs = varUUIDs(k);
+checkedIdx = checkedIdx(k);
 
 trialIdx=ismember(levels,'Trial') & checkedIdx; % The trial level variables idx that were checked.
 subjectIdx=ismember(levels,'Subject') & checkedIdx; % The subject level variables idx that were checked.
@@ -131,6 +137,9 @@ t = fetchQuery(sqlquery);
 doWrite = false;
 for i=1:length(selHeaders)
     idx=ismember(headers,selHeaders{i});
+    if ~any(idx)
+        continue;
+    end
     varUUID=varUUIDs{idx};
     header=headers{idx};
     

@@ -65,6 +65,10 @@ if isempty(headers)
         struct.LogsheetVar_Params(i).Level={''};
         struct.LogsheetVar_Params(i).Type={''};
         struct.LogsheetVar_Params(i).Variables={''};
+
+        % If the header matches any that's already in the logsheet and has
+        % VR attributes assigned already, use that.
+        % if ismember(headers{i},)
     end
 end
 

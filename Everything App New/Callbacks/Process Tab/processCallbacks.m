@@ -18,35 +18,54 @@ if exist('args','var')~=1
 end
 type = args.Type;
 subtabTitle = handles.subtabCurrent.SelectedTab.Title;
+alltabTitle = handles.subTabAll.SelectedTab.Title;
 
-switch type
-    case {'All_VR','VR'}
-        uiTree = handles.allVariablesUITree;
-        currUITree = handles.functionUITree;
-    case {'All_PR','PR'}
-        uiTree = handles.allProcessUITree;
-        currUITree = handles.functionUITree;
-    case {'All_PG','PG'}
-        uiTree = handles.allGroupsUITree;
-        currUITree = handles.groupUITree;
-    case {'All_AN','AN'}
-        uiTree = handles.allAnalysesUITree;
+switch subtabTitle
+    case 'Analysis'
         currUITree = handles.analysisUITree;
-    case {'All_ST','ST'}
-        uiTree = handles.allSpecifyTrialsUITree;
-        currUITree = handles.allSpecifyTrialsUITree;
-    otherwise
-        switch subtabTitle
-            case 'Analysis'
-                currUITree = handles.analysisUITree;
-            case {'Group', 'Function'}
-                currUITree = handles.groupUITree;
-            % case 'Function'
-            %     currUITree = handles.functionUITree;
-            otherwise
-                error('What happened?!');
-        end
+    case {'Group','Function'}
+        currUITree = handles.groupUITree;
 end
+
+switch alltabTitle
+    case 'Analyses'
+        uiTree = handles.allAnalysesUITree;
+    case 'Groups'
+        uiTree = handles.allGroupsUITree;
+    case 'Functions'
+        uiTree = handles.allProcessUITree;
+    case 'Variables'
+        uiTree = handles.allVariablesUITree;
+end
+% 
+% switch type
+%     case {'All_VR','VR'}
+%         uiTree = handles.allVariablesUITree;
+%         currUITree = handles.functionUITree;
+%     case {'All_PR','PR'}
+%         uiTree = handles.allProcessUITree;
+%         currUITree = handles.functionUITree;
+%     case {'All_PG','PG'}
+%         uiTree = handles.allGroupsUITree;
+%         currUITree = handles.groupUITree;
+%     case {'All_AN','AN'}
+%         uiTree = handles.allAnalysesUITree;
+%         currUITree = handles.analysisUITree;
+%     case {'All_ST','ST'}
+%         uiTree = handles.allSpecifyTrialsUITree;
+%         currUITree = handles.allSpecifyTrialsUITree;
+%     otherwise
+%         switch subtabTitle
+%             case 'Analysis'
+%                 currUITree = handles.analysisUITree;
+%             case {'Group', 'Function'}
+%                 currUITree = handles.groupUITree;
+%             % case 'Function'
+%             %     currUITree = handles.functionUITree;
+%             otherwise
+%                 error('What happened?!');
+%         end
+% end
 
 if isfield(args,'UUID')
     uuid = args.UUID;
@@ -61,9 +80,16 @@ if iscell(uuid)
     uuid = uuid{1}; % Shouldn't really happen, but just in case due to changes in getSelUUID
 end
 
+if contains(type,'ST')
+    uiTree = handles.allSpecifyTrialsUITree;
+end
+
 switch src
+    case handles.addSpecifyTrialsButton
+        addSpecifyTrialsButtonPushed(fig);
+
     % Add new abstract objects. DONE.
-    case {handles.addVariableButton, handles.addProcessButton, handles.addGroupButton, handles.addAnalysisButton, handles.addSpecifyTrialsButton}
+    case {handles.addVariableButton, handles.addProcessButton, handles.addGroupButton, handles.addAnalysisButton}
         createAndShowObject(uiTree, false, type(5:6), '', '', '', true);
 
     % Delete objects. DONE.
@@ -73,15 +99,20 @@ switch src
 
     % Change the current analysis. DONE.
     case handles.selectAnalysisButton
+        disp('Switching to new analysis!');
         setCurrent(uuid, 'Current_Analysis');
+        disp('Filling UI trees');
         fillAnalysisUITree(fig, handles.analysisUITree, uuid); % Still needs to deal with current UI tree titles
         linkObjs(uuid, getCurrent('Current_Project_Name'));
+        disp('Initializing views dropdown');
         initViewsDropdown(fig, uuid);
         if handles.toggleDigraphCheckbox.Value
             % args.UUID = getCurrent('Current_View'); % Not really needed for the callback itself, but needed to pass the logic at the beginning of this file.
             processCallbacks(handles.viewsDropDown);
         end
+        disp('Filling queue UI tree');
         fillQueueUITree(fig, uuid);
+        disp('Filling logsheet UI tree');
         fillLogsheetUITree(fig, uuid);        
 
     % Fill the group and process UI trees. DONE.
@@ -120,7 +151,7 @@ switch src
         checkSpecifyTrialsUITree(st, handles.allSpecifyTrialsUITree);
         fillCurrentFunctionUITree(fig, uuid);
         isMulti = handles.multiSelectButton.Value;
-        if ~isMulti
+        if ~isMulti && ~isempty(viewG)
             viewG.Nodes.Selected = false(length(viewG.Nodes.Name),1);
             idx = ismember(viewG.Nodes.Name, uuid);
             viewG.Nodes.Selected(idx) = true;
@@ -135,14 +166,17 @@ switch src
     case {handles.assignVariableButton, handles.unassignVariableButton, ...
             handles.assignFunctionButton, handles.unassignFunctionButton, ...
             handles.assignGroupButton, handles.unassignGroupButton}
-        % 1. If abstract node selected, create new instance object (occurs during assignment only).        
+        % 1. If abstract node selected, create new instance object (occurs during assignment only).
+        uuid = getSelUUID(uiTree);
+        % currUUID = getSelUUID(currUITree);
+        currUUID = getCurrUUID(uuid, allHandles);
+
         if ~isInstance(uuid)
             abstractNode = getNode(uiTree, uuid);
             [~, abstractID] = deText(uuid);
             struct = createAndShowObject(abstractNode, true, getClassFromUITree(uiTree), abstractNode.Text, abstractID, '', true);
             uuid = struct.UUID;
-        end
-        currUUID = getCurrUUID(uuid, allHandles);
+        end        
         [lUUID, rUUID] = getLRObjs(uuid, currUUID);
 
         isMult = checkMultAN(lUUID, rUUID);
@@ -223,7 +257,7 @@ switch src
         fcnsG = getFcnsOnlyDigraph(globalG);
         if isequal(vw.Abstract_UUID,'VW000000')
             vw.InclNodes = fcnsG.Nodes.Name;
-        end        
+        end
         viewG = getSubgraph(fcnsG, vw.InclNodes, 'none');
         viewG.Nodes.Selected = false(length(viewG.Nodes.Name),1);
         viewG.Nodes.PrettyName = getName(viewG.Nodes.Name);

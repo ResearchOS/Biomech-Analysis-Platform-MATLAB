@@ -5,7 +5,14 @@ function []=addSpecifyTrialsButtonPushed(src,event)
 fig=ancestor(src,'figure','toplevel');
 handles=getappdata(fig,'handles');
 
-name=promptName('Enter Specify Trials condition name');
-createNewObject(false, 'SpecifyTrials', name, '', '', true); % Creates an abstract specify trials
+% name=promptName('Enter Specify Trials condition name');
+struct = createNewObject(false, 'SpecifyTrials', '', '', '', true); % Creates an abstract specify trials
+
+if isempty(struct)
+    return;
+end
+
+Current_Analysis = getCurrent('Current_Analysis');
+linkObjs(struct.UUID, Current_Analysis);
 
 fillUITree_SpecifyTrials(fig);

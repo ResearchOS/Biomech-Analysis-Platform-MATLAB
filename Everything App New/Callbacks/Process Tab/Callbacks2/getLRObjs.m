@@ -1,4 +1,4 @@
-function [uuidL, uuidR] = getLRObjs(uuid1, uuid2)
+function [uuidL, uuidR] = getLRObjs(handles, uuid1, uuid2)
 
 %% PURPOSE: GIVEN TWO UUID'S, ORDER THEM IN THE CORRECT ORDER TO BE PUT IN THE EDGE TABLE (PRIMARILY VR/PR COMBO'S)
 
@@ -14,7 +14,7 @@ if ~all(ismember({type1,type2},{'VR','PR'}))
 end
 
 %% Get whether it's an input or output variable.
-selNode = handles.Process.currentFunctionUITree.SelectedNodes;
+selNode = handles.Process.functionUITree.SelectedNodes;
 
 [~, list] = getUITreeFromNode(selNode);
 if length(list)>2

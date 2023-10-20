@@ -120,7 +120,7 @@ if ~isequal(anList,{Current_Analysis})
         % Remove all projects, and all other analyses from being copied        
         nodes(ismember(nodes,anList)) = [];
         nodes(contains(nodes,'PJ')) = [];
-        copyToNew(nodes);
+        % copyToNew(nodes);
 
         anList = Current_Analysis;
 

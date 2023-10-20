@@ -181,20 +181,30 @@ switch src
             struct = createAndShowObject(abstractNode, true, getClassFromUITree(uiTree), abstractNode.Text, abstractID, '', true);
             uuid = struct.UUID;
         end        
-        [lUUID, rUUID] = getLRObjs(uuid, currUUID);
+        [lUUID, rUUID] = getLRObjs(allHandles, uuid, currUUID);
+        rType = deText(rUUID);
 
         isMult = checkMultAN(lUUID, rUUID);
         if isMult
             listString = {'Abort the change','Copy to new analysis','Propagate changes to multiple analyses'};
             a = listdlg('PromptString','Make a decision','ListString',listString);
-            if contains(a,'Abort') % Abort the change
+            if isempty(a)
+                return; % Cancel
+            end
+            if contains(listString(a),'Abort') % Abort the change
                 return;
             % Duplicate this PR and all downstream nodes in the current
             %   analysis (except the AN itself), and then assign the new VR to
             %   the PR. Don't forget to remove the previous nodes from this AN!
-            elseif contains(a,'Copy to new') % 
-                [lUUID, rUUID] = copyToNew(lUUID, rUUID);
-            elseif contains(a,'Propagate') % Make changes to all involved analyses (easy, just proceed with changes to the PR/PG)
+            elseif contains(listString(a),'Copy to new')
+                if isequal(rType,'VR')
+                    args.UUID = lUUID;
+                    lUUID = copyToNewPS(src, args);
+                else
+                    args.UUID = rUUID;
+                    rUUID = copyToNewPS(src, args); % This works for everything except for output variables.
+                end
+            elseif contains(listString(a),'Propagate') % Make changes to all involved analyses (easy, just proceed with changes to the PR/PG)
             else
                 return; % Anything else like cancel or X
             end

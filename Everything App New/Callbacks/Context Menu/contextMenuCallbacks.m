@@ -23,10 +23,12 @@ name = args.Name;
 switch name
     case 'CopyToNew'
         args.UUID = uuid;
-        copyToNewPS(src, args);
+        uuid = copyToNewPS(src, args);
+        parent = src.Parent;
+        addNewNode(parent, uuid, getName(uuid));
     case 'OpenMFile'
         openMFile(fig);
-    case 'Edit'
+    case 'EditObj'
         editObj(fig, uuid);
     case 'SaveEdits'
         saveEdits(fig);

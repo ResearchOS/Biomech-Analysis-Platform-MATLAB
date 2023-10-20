@@ -28,6 +28,12 @@ if nargin==1
         msg = 'Table not in the proper format for a digraph edgetable';
         return;
     end
+    if ~isfield(tmpTable,'NameInCode')
+        tmpTable.NameInCode = repmat({'NULL'}, size(tmpTable,1),1);
+    end
+    if ~isfield(tmpTable,'Subvariable')
+        tmpTable.Subvariable = repmat({'NULL'}, size(tmpTable,1),1);
+    end
     emptyNameInCodeIdx = cellfun(@isempty, tmpTable.NameInCode);
     emptySubvarIdx = cellfun(@isempty, tmpTable.Subvariable);
     tmpTable.NameInCode(emptyNameInCodeIdx) = repmat({'NULL'},sum(emptyNameInCodeIdx),1);

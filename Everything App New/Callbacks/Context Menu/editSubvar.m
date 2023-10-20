@@ -41,7 +41,7 @@ end
 
 subvar = t.Subvariable;
 
-a = inputdlg('Specify subvariable','Subvariable',[1 45],{subvar});
+a = inputdlg('Specify subvariable','Subvariable',[1 45],subvar);
 if isempty(a)
     return;
 end

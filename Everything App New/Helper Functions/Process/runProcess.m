@@ -2,10 +2,9 @@ function [stop, message, emailSubject, e]=runProcess(instUUID,guiInBase)
 
 %% PURPOSE: ACTUALLY RUN THE SPECIFIED FUNCTION
 
-global conn;
-
 slash=filesep;
 e='';
+stop = false;
 
 startFcn=tic;
 
@@ -37,6 +36,12 @@ absStruct=loadJSON(abstractUUID);
 % the future.
 specifyTrials=getST(instUUID);
 
+if isempty(specifyTrials)
+    stop = true;
+    disp('No specify trials found for this processing function!');
+    return;
+end
+
 fcnName=absStruct.ExecFileName;
 fcnLevel=absStruct.Level;
 
@@ -46,7 +51,6 @@ message = '';
 emailSubject = ['Error running process function ' instStruct.UUID ' ' instStruct.Name];
 messageProj = ['Date: ' currDate newline 'Subject: ' emailSubject newline 'This function is level: ' fcnLevel newline];
 
-stop = false;
 if exist(fcnName,'file')~=2
     message = 'Specified M file does not exist!';
     disp(message);
@@ -82,8 +86,8 @@ trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal','Nairobi','Tokyo','Berlin','Denver','Oslo','Boston','Seattle','Chicago','Paris'};
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Lisbon','Baltimore','Mumbai','Busan'};
-% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
-remSubNames = {'Apple_V5'};
+remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+% remSubNames = {'Apple_V5'};
 
 subNames=fieldnames(trialNames);
 if exist('remSubNames','var') && ~isempty(remSubNames)

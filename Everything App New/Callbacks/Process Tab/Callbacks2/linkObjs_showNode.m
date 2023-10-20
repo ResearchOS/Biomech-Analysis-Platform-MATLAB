@@ -14,7 +14,7 @@ title = handles.Process.subtabCurrent.SelectedTab.Title;
 
 % VR & PR. (covers input and output variables)
 if all(ismember({lType, rType}, {'VR','PR'}))
-    selNode = handles.Process.currentFunctionUITree.SelectedNodes;
+    selNode = handles.Process.functionUITree.SelectedNodes;
     nodeText = strsplit(selNode.Text,' ');    
     struct.NameInCode = nodeText{1};
     if isequal(lType,'VR')
@@ -26,20 +26,33 @@ if all(ismember({lType, rType}, {'VR','PR'}))
         struct.PR_ID = lUUID;
         struct.VR_ID = rUUID;
     end
+    bool = true;
     sqlquery = ['DELETE FROM ' tablename ' WHERE PR_ID = ''' struct.PR_ID ''' AND NameInCode = ''' struct.NameInCode ''';'];
-    execute(conn, sqlquery);
+    try
+        execute(conn, sqlquery);
+    catch
+        bool = false;
+    end
     if isequal(tablename,'VR_PR')
         struct.Subvariable = 'NULL';
-        sqluery = ['INSERT INTO ' tablename '(PR_ID, VR_ID, NameInCode, Subvariable) VALUES (''' struct.PR_ID ''', ''' struct.VR_ID ''', ''' struct.NameInCode ''', ''' struct.Subvariable ''');'];
+        sqlquery = ['INSERT INTO ' tablename '(PR_ID, VR_ID, NameInCode, Subvariable) VALUES (''' struct.PR_ID ''', ''' struct.VR_ID ''', ''' struct.NameInCode ''', ''' struct.Subvariable ''');'];
     else
-        sqluery = ['INSERT INTO ' tablename '(PR_ID, VR_ID, NameInCode) VALUES (''' struct.PR_ID ''', ''' struct.VR_ID ''', ''' struct.NameInCode ''');'];
+        sqlquery = ['INSERT INTO ' tablename '(PR_ID, VR_ID, NameInCode) VALUES (''' struct.PR_ID ''', ''' struct.VR_ID ''', ''' struct.NameInCode ''');'];
     end
-    execute(conn, sqlquery);
+    if bool
+        try
+            execute(conn, sqlquery);
+        catch
+            bool = false;
+        end
+    end
     Current_Analysis = getCurrent('Current_Analysis');
-    bool = linkObjs(struct.VR_ID, Current_Analysis);
+    linkObjs(struct.VR_ID, Current_Analysis);
+    NameInCode = struct.NameInCode;
 else
     edgeTable = table(EndNodes);
-    bool = linkObjs(edgeTable);
+    bool = linkObjs(edgeTable);    
+    NameInCode = 'NULL';
 end
 
 if ~bool
@@ -53,8 +66,10 @@ if all(ismember({lType, rType}, {'VR', 'PR'})) && isequal(title,'Function')
         uuid = lUUID;
     else
         uuid = rUUID;
-    end
+    end    
     selNode.Text = [NameInCode ' (' uuid ')'];
+    selNode.NodeData.UUID = uuid;
+    return;
 end
 
 % Create the node.

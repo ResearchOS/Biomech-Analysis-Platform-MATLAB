@@ -130,7 +130,7 @@ end
 function struct = createProcessStruct(instanceBool, struct, saveObj, args)
 
 if instanceBool
-    struct.SpecifyTrials={};    
+    % struct.SpecifyTrials={};    
     struct.Date_Last_Ran='';
 else
     struct.Level = 'T';

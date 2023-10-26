@@ -33,10 +33,6 @@ elseif isempty(trialName)
 else
     level='T';
 end
-
-% st=dbstack;
-% st(2).name;
-
 uuids = runInfo.Output.VR_ID;
 namesInCode = runInfo.Output.NameInCode;
 levels = runInfo.Output.Level;

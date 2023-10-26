@@ -93,8 +93,11 @@ for i=1:length(absNamesInCode)
         try
             switch varLevel
                 case 'P'
+                    subName = '';
+                    trialName = '';
                     varargout{j}=loadMAT(dataPath,uuid);
                 case 'S'
+                    trialName = '';
                     varargout{j}=loadMAT(dataPath,uuid,subName);
                 case 'T'
                     varargout{j}=loadMAT(dataPath,uuid,subName,trialName);

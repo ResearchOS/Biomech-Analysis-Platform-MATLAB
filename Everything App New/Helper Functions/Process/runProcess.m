@@ -5,6 +5,8 @@ function [stop, message, emailSubject, e]=runProcess(instUUID,guiInBase)
 slash=filesep;
 e='';
 stop = false;
+% message = '';
+emailSubject = 'Biomech OS Error';
 
 startFcn=tic;
 
@@ -38,7 +40,8 @@ specifyTrials=getST(instUUID);
 
 if isempty(specifyTrials)
     stop = true;
-    disp('No specify trials found for this processing function!');
+    message = ['No specify trials found for this processing function: ' getName(instUUID)];
+    disp(message);
     return;
 end
 
@@ -82,14 +85,15 @@ conds = absStruct.UsesConds;
 trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
 % Remove multiple subjects
-% remSubNames={}; % Remove nothing
+remSubNames={}; % Remove nothing
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal','Nairobi','Tokyo','Berlin','Denver','Oslo','Boston','Seattle','Chicago','Paris'};
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Lisbon','Baltimore','Mumbai','Busan'};
-remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
-% remSubNames = {'Apple_V5'};
+% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+% remSubNames = {'Apple_V2','Apple_V5'};
 
 subNames=fieldnames(trialNames);
+remSubNames = remSubNames(ismember(remSubNames,subNames)); % Don't remove what doesn't exist.
 if exist('remSubNames','var') && ~isempty(remSubNames)
     if ~conds
         if any(ismember(remSubNames,fieldnames(trialNames)))

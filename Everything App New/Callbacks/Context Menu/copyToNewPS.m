@@ -29,6 +29,9 @@ function [newUUID]=copyToNewPS(src, args)
 % NOTE 2: There is also the "copyToNew.m" that already has some of the
 % logic for maintaining internal relationships.
 
+% NOTE 3: Sometimes, "copy to new" really means "only make changes to the
+% current (pre-existing) analysis". How to manage that?
+
 global globalG;
 
 fig=ancestor(src,'figure','toplevel');

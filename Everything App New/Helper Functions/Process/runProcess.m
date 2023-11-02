@@ -90,7 +90,7 @@ remSubNames={}; % Remove nothing
 % remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Lisbon','Baltimore','Mumbai','Busan'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
-% remSubNames = {'Apple_V2','Apple_V5'};
+% remSubNames = {'Apple_V4','Apple_V5','Apple_V7'};
 
 subNames=fieldnames(trialNames);
 remSubNames = remSubNames(ismember(remSubNames,subNames)); % Don't remove what doesn't exist.

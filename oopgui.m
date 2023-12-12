@@ -32,6 +32,9 @@ end
 
 clearAllMemoizedCaches; % Clears memoized caches. Using these caches greatly improves startup time.
 
+addpath(genpath('/Users/mitchelltillman/Desktop/Work/MATLAB Repository/ReadC3D_PhilDixon'));
+addpath(genpath('/Users/mitchelltillman/Desktop/Work/MATLAB_Code/GitRepos/PGUI_CommonPath')); % TESTING ONLY
+
 %% Add all of the appropriate paths to MATLAB search path
 currFolder=fileparts(mfilename('fullpath'));
 addpath(genpath(currFolder));

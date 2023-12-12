@@ -39,7 +39,16 @@ hardCodedValue = runInfo.Input.HardCodedValue;
 varLevels = runInfo.Input.Level;
 
 absNamesInCode = runInfo.Input.AbsNamesInCode;
-
+if exist('subName','var')==1
+    subNameOrig=subName;
+else
+    subNameOrig = '';
+end
+if exist('trialName','var')==1
+    trialNameOrig = trialName;
+else
+    trialNameOrig = '';
+end
 for i=1:length(absNamesInCode)
 
     currVars=absNamesInCode{i};    
@@ -69,11 +78,8 @@ for i=1:length(absNamesInCode)
 
     for j=1:length(currVars)
 
-        % varIdx = ismember(currNamesInCode,currVars{j});        
-
-        % if ~any(varIdx)
-        %     continue; % Variable not in the list. Why?
-        % end
+        trialName = trialNameOrig;
+        subName = subNameOrig;
 
         if currIsHardCoded(j)
             varargout{j} = currHardCodedValue{j};
@@ -89,7 +95,7 @@ for i=1:length(absNamesInCode)
             error('Missing subject and/or trial name specification');
         end
 
-        % 4. Load the dynamic variable.
+        % 4. Load the dynamic variable.        
         try
             switch varLevel
                 case 'P'

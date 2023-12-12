@@ -18,6 +18,8 @@ if isequal(args.Type,'ContextMenu')
     return;
 end
 
+system('killall BetterTouchTool DefaultFolderX AltTab');
+
 switch currTab
     case 'Projects'
         projectsCallbacks(src, event, args);

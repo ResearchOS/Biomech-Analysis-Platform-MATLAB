@@ -84,15 +84,20 @@ inclStruct=getInclStruct(specifyTrials);
 conds = absStruct.UsesConds;
 trialNames=getTrialNames(inclStruct,logVar,conds,logsheetStruct);
 
+pauseOn = false;
+
 % Remove multiple subjects
-remSubNames={}; % Remove nothing
-% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal','Nairobi','Tokyo','Berlin','Denver','Oslo','Boston','Seattle','Chicago','Paris'};
-% remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
-% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Lisbon','Baltimore','Mumbai','Busan'};
+% remSubNames={}; % Remove nothing
+remSubNames={'Lisbon','Baltimore','Mumbai','Busan','Akron','Rabat','Athens','Sacramento','Montreal'};
 % remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle'};
+% remSubNames={'Nairobi','Tokyo','Denver','Oslo','Berlin','Boston','Chicago','London','Paris','Seattle','Baltimore','Lisbon'};
 % remSubNames = {'Apple_V4','Apple_V5','Apple_V7'};
 
-subNames=fieldnames(trialNames);
+if conds
+    subNames=fieldnames(trialNames.Condition);
+else
+    subNames = fieldnames(trialNames);
+end
 remSubNames = remSubNames(ismember(remSubNames,subNames)); % Don't remove what doesn't exist.
 if exist('remSubNames','var') && ~isempty(remSubNames)
     if ~conds
@@ -159,6 +164,10 @@ if ~ismember('P',fcnLevel)
 
         messageSubj = [messageProj 'Stopped on subject #' num2str(sub) ': ' subName newline];
 
+        if pauseOn
+            pause(0.5); % Trying to avoid slowdowns due to lots of saving by spreading out the work.
+        end
+
         if ismember('S',fcnLevel)
 
             disp(['Running ' fcnName ' Subject ' subName]);
@@ -187,6 +196,10 @@ if ~ismember('P',fcnLevel)
 
         for trialNum=1:length(currTrials)
             trialName=currTrials{trialNum};
+
+            if pauseOn
+                pause(0.1); % Trying to avoid slowdowns due to lots of saving by spreading out the work.
+            end
 
             disp(['Running ' fcnName ' Subject ' subName ' Trial ' trialName]);
 
